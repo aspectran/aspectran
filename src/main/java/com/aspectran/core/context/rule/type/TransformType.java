@@ -40,7 +40,8 @@ public enum TransformType {
 	}
 
 	/**
-	 * Returns a {@code TransformType} with a value represented by the specified {@code String}.
+	 * Returns a {@code TransformType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the transform type as a {@code String}
 	 * @return a {@code TransformType}, may be {@code null}
@@ -54,7 +55,8 @@ public enum TransformType {
 	}
 
 	/**
-	 * Returns a {@code TransformType} with a value corresponding to the specified {@code ContentType}.
+	 * Returns a {@code TransformType} with a value corresponding
+	 * to the specified {@code ContentType}.
 	 *
 	 * @param contentType the content type as a {@code ContentType}
 	 * @return a {@code TransformType}, may be {@code null}

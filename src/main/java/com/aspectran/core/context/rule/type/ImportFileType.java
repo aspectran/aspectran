@@ -37,7 +37,8 @@ public enum ImportFileType {
 	}
 
 	/**
-	 * Returns an {@code ImportFileType} with a value represented by the specified {@code String}.
+	 * Returns an {@code ImportFileType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the import file type as a {@code String}
 	 * @return an {@code ImportFileType}, may be {@code null}

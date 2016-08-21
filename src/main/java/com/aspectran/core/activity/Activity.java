@@ -128,11 +128,11 @@ public interface Activity extends BeanRegistry {
 	ProcessResult getProcessResult();
 	
 	/**
-	 * Returns a action result for the specified action id from the process result,
+	 * Returns an action result for the specified action id from the process result,
 	 * or {@code null} if the action does not exist.
 	 *
 	 * @param actionId the specified action id
-	 * @return the action result
+	 * @return an action result
 	 */
 	Object getProcessResult(String actionId);
 	
@@ -184,23 +184,23 @@ public interface Activity extends BeanRegistry {
 	boolean isExceptionRaised();
 
 	/**
-	 * Returns the raised exception instance.
+	 * Returns an instance of the currently raised exception.
 	 *
-	 * @return the raised exception instance
+	 * @return an instance of the currently raised exception
 	 */
 	Throwable getRaisedException();
 
 	/**
-	 * Returns the origin raised exception instance.
+	 * Returns an instance of the originally raised exception.
 	 *
-	 * @return the origin raised exception instance
+	 * @return an instance of the originally raised exception
 	 */
 	Throwable getOriginRaisedException();
 
 	/**
-	 * Sets the raised exception.
+	 * Sets an instance of the currently raised exception.
 	 *
-	 * @param raisedException the new raised exception
+	 * @param raisedException an instance of the currently raised exception
 	 */
 	void setRaisedException(Throwable raisedException);
 
@@ -220,14 +220,14 @@ public interface Activity extends BeanRegistry {
 	<T extends Activity> T newActivity();
 
 	/**
-	 * Gets the translet.
+	 * Returns an instance of the current translet.
 	 *
-	 * @return the translet
+	 * @return an instance of the current translet
 	 */
 	Translet getTranslet();
 	
 	/**
-	 * Returns the name of the translet.
+	 * Gets the name of the current translet.
 	 *
 	 * @return the translet name
 	 */
@@ -310,9 +310,9 @@ public interface Activity extends BeanRegistry {
 	<T> T getResponseSetting(String settingName);
 	
 	/**
-	 * Register the aspect rule.
+	 * Register an aspect rule.
 	 *
-	 * @param aspectRule the aspect rule
+	 * @param aspectRule an aspect rule
 	 */
 	void registerAspectRule(AspectRule aspectRule);
 	

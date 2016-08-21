@@ -25,6 +25,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.response.ForwardResponse;
@@ -43,6 +44,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
@@ -192,7 +194,7 @@ public class CoreActivity extends AbstractActivity {
 				forwardTransletName = null;
 			}
 		} catch(Exception e) {
-			throw new ActivityException("Failed to prepare the Activity.", e);
+			throw new ActivityException("Failed to prepare activity.", e);
 		}
 	}
 
@@ -220,7 +222,7 @@ public class CoreActivity extends AbstractActivity {
 	}
 	
 	/**
-	 * Perform activity for the translet.
+	 * Perform the translet produce.
 	 */
 	private void performTranslet() {
 		if(activityEnded) {
@@ -246,7 +248,7 @@ public class CoreActivity extends AbstractActivity {
 					if(!activityEnded) {
 						if(transletRule.getContentList() != null) {
 							currentJoinpointScope = JoinpointScopeType.CONTENT;
-							performContent();
+							performProduction();
 						}
 
 						if(!activityEnded && !withoutResponse) {
@@ -294,7 +296,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ActivityException("Failed to perform the activity int the translet scope.", e);
+			throw new ActivityException("Failed to perform the translet produce from the activity.", e);
 		} finally {
 			Scope requestScope = getRequestScope(false);
 			if(requestScope != null) {
@@ -304,7 +306,7 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	/**
-	 * Perform activity for the request.
+	 * Perform the request produce.
 	 */
 	private void performRequest() {
 		try {
@@ -351,14 +353,14 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 				
-			throw new RequestException("Failed to perform the activity in the request scope.", e);
+			throw new RequestException("Failed to perform the request produce from the activity.", e);
 		}
 	}
 	
 	/**
-	 * Perform activity for the content.
+	 * Perform the content production produce.
 	 */
-	private void performContent() {
+	private void performProduction() {
 		try {
 			try {
 				// execute Before Advice Action for Content Joinpoint
@@ -369,7 +371,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 				
 				if(!activityEnded) {
-					process();
+					produce();
 				}
 				
 				// execute After Advice Action for Content Joinpoint
@@ -398,7 +400,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ProcessException("Failed to perform the activity in the content scope.", e);
+			throw new ProcessException("Failed to perform the content production produce from the activity.", e);
 		}
 	}
 	
@@ -448,7 +450,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ResponseException("Failed to perform the activity in the response scope.", e);
+			throw new ResponseException("Failed to perform the response produce from the activity.", e);
 		}
 	}
 
@@ -487,6 +489,7 @@ public class CoreActivity extends AbstractActivity {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 		if(parameterItemRuleMap != null) {
 			ItemEvaluator evaluator = null;
+			ItemRuleList missingItemRules = null;
 			for(ItemRule itemRule : parameterItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();
 				if(tokens != null) {
@@ -499,6 +502,19 @@ public class CoreActivity extends AbstractActivity {
 						getRequestAdapter().setParameter(itemRule.getName(), values);
 					}
 				}
+
+				if(itemRule.isMandatory()) {
+					String[] values = getRequestAdapter().getParameterValues(itemRule.getName());
+					if(values == null) {
+						if(missingItemRules == null) {
+							missingItemRules = new ItemRuleList();
+						}
+						missingItemRules.add(itemRule);
+					}
+				}
+			}
+			if(missingItemRules != null) {
+				throw new MissingMandatoryParametersException(missingItemRules);
 			}
 		}
 	}
@@ -517,7 +533,10 @@ public class CoreActivity extends AbstractActivity {
 		}
 	}
 
-	private void process() {
+	/**
+	 * Produce content.
+	 */
+	private void produce() {
 		ContentList contentList = transletRule.getContentList();
 
 		if(contentList != null) {
@@ -629,7 +648,7 @@ public class CoreActivity extends AbstractActivity {
 			
 			log.info("Response by Content-Type " + responseRule);
 
-			// Clear process results. No reflection to ProcessResult.
+			// Clear produce results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
 			translet.touchProcessResult(null, 0).setOmittable(true);
 			
@@ -648,6 +667,11 @@ public class CoreActivity extends AbstractActivity {
 		return forwardTransletName;
 	}
 
+	/**
+	 * Execute actions.
+	 *
+	 * @param actionList the action list
+	 */
 	protected void execute(ActionList actionList) {
 		ContentResult contentResult = null;
 
@@ -667,7 +691,13 @@ public class CoreActivity extends AbstractActivity {
 				break;
 		}
 	}
-	
+
+	/**
+	 * Execute action.
+	 *
+	 * @param action the executable action
+	 * @param contentResult the content result
+	 */
 	private void execute(Executable action, ContentResult contentResult) {
 		if(debugEnabled)
 			log.debug("action " + action);
@@ -737,9 +767,9 @@ public class CoreActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(!noThrow) {
-				throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
+				throw new ActionExecutionException("Failed to execute advice action " + aspectAdviceRule, e);
 			} else {
-				log.error("Failed to execute the advice action " + aspectAdviceRule, e);
+				log.error("Failed to execute advice action " + aspectAdviceRule, e);
 			}
 		}
 	}

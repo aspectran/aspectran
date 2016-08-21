@@ -51,7 +51,8 @@ public enum ItemValueType {
 	}
 
 	/**
-	 * Returns an {@code ItemValueType} with a value represented by the specified {@code String}.
+	 * Returns an {@code ItemValueType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the item value type as a {@code String}
 	 * @return an {@code ItemValueType}, may be {@code null}

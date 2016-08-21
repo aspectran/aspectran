@@ -46,7 +46,8 @@ public enum AspectAdviceType {
 	}
 
 	/**
-	 * Returns an {@code AspectAdviceType} with a value represented by the specified {@code String}.
+	 * Returns an {@code AspectAdviceType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the aspect advice type as a {@code String}
 	 * @return an {@code AspectAdviceType}, may be {@code null}

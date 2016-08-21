@@ -136,7 +136,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @return a {@code String} representing the
-	 *			single value of the parameter
+	 * 		single value of the parameter
 	 * @see #getParameterValues
 	 */
 	String getParameter(String name);
@@ -148,7 +148,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @return an array of {@code String} objects
-	 *			containing the parameter's values
+	 * 		containing the parameter's values
 	 * @see #getParameter
 	 */
 	String[] getParameterValues(String name);
@@ -159,8 +159,8 @@ public interface RequestAdapter {
 	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
 	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
-	 * 			containing the name of a request parameter;
-	 * 			or an empty {@code Enumeration} if the request has no parameters
+	 * 		containing the name of a request parameter;
+	 * 		or an empty {@code Enumeration} if the request has no parameters
 	 */
 	Enumeration<String> getParameterNames();
 
@@ -169,7 +169,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @param value a {@code String} representing the
-	 *			single value of the parameter
+	 * 		single value of the parameter
 	 * @see #setParameter(String, String[])
 	 */
 	void setParameter(String name, String value);
@@ -179,7 +179,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @param values an array of {@code String} objects
-	 *			containing the parameter's values
+	 * 		containing the parameter's values
 	 * @see #setParameter
 	 */
 	void setParameter(String name, String[] values);
@@ -190,7 +190,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the file parameter
 	 * @return a {@code FileParameter} representing the
-	 *			single value of the parameter
+	 * 		single value of the parameter
 	 * @see #getFileParameterValues
 	 */
 	FileParameter getFileParameter(String name);
@@ -202,7 +202,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the file parameter
 	 * @return an array of {@code FileParameter} objects
-	 *			containing the parameter's values
+	 * 		containing the parameter's values
 	 * @see #getFileParameter
 	 */
 	FileParameter[] getFileParameterValues(String name);
@@ -213,8 +213,8 @@ public interface RequestAdapter {
 	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
 	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
-	 * 			containing the name of a file parameter;
-	 * 			or an empty {@code Enumeration} if the request has no file parameters
+	 * 		containing the name of a file parameter;
+	 * 		or an empty {@code Enumeration} if the request has no file parameters
 	 */
 	Enumeration<String> getFileParameterNames();
 
@@ -223,7 +223,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the file parameter
 	 * @param fileParameter a {@code FileParameter} representing the
-	 *			single value of the parameter
+	 * 		single value of the parameter
 	 * @see #setFileParameter(String, FileParameter[])
 	 */
 	void setFileParameter(String name, FileParameter fileParameter);
@@ -233,7 +233,7 @@ public interface RequestAdapter {
 	 *
 	 * @param name a {@code String} specifying the name of the file parameter
 	 * @param fileParameters an array of {@code FileParameter} objects
-	 *			containing the file parameter's values
+	 * 		containing the file parameter's values
 	 * @see #setFileParameter
 	 */
 	void setFileParameter(String name, FileParameter[] fileParameters);
@@ -253,7 +253,7 @@ public interface RequestAdapter {
 	 * @param <T> the generic type
 	 * @param name a {@code String} specifying the name of the attribute
 	 * @return an {@code Object} containing the value of the attribute,
-	 * 			or {@code null} if the attribute does not exist
+	 * 		or {@code null} if the attribute does not exist
 	 */
 	<T> T getAttribute(String name);
 	

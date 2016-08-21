@@ -43,7 +43,8 @@ public enum DefaultSettingType {
 	}
 
 	/**
-	 * Returns a {@code DefaultSettingType} with a value represented by the specified {@code String}.
+	 * Returns a {@code DefaultSettingType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the default setting type as a {@code String}
 	 * @return a {@code DefaultSettingType}, may be {@code null}

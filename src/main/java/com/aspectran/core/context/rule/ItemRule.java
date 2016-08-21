@@ -368,6 +368,15 @@ public class ItemRule {
 	}
 
 	/**
+	 * Returns whether or not the item is mandatory.
+	 *
+	 * @return whether or not the item is mandatory
+	 */
+	public boolean isMandatory() {
+		return (mandatory == Boolean.TRUE);
+	}
+
+	/**
 	 * Sets whether or not the item is mandatory.
 	 *
 	 * @param mandatory the mandatory

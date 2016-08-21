@@ -35,7 +35,8 @@ public enum AspectTargetType {
 	}
 
 	/**
-	 * Returns an {@code AspectTargetType} with a value represented by the specified {@code String}.
+	 * Returns an {@code AspectTargetType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the aspect target type as a {@code String}
 	 * @return an {@code AspectTargetType}, may be {@code null}

@@ -15,9 +15,6 @@
  */
 package com.aspectran.console.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
@@ -30,6 +27,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
@@ -70,14 +68,21 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
+	@Override
+	protected void request() {
+		receiveRequiredParameters();
+
+		super.request();
+	}
+
 	/**
 	 * Receive required input parameters..
 	 */
-	protected void receiveRequiredParameters() {
+	private void receiveRequiredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
 		if(parameterItemRuleMap != null) {
-			List<ItemRule> parameterItemRules = new ArrayList<>(parameterItemRuleMap.values());
+			ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
 
 			System.out.println("Required parameters:");
 
@@ -87,27 +92,24 @@ public class ConsoleActivity extends CoreActivity {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
 				}
 
-				String madatoryMarker = (itemRule.getMandatory() == Boolean.TRUE) ? "*" : " ";
+				String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
 				System.out.printf("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
 				System.out.println();
 			}
 
 			System.out.println("Enter value of each parameter:");
 
-			List<ItemRule> missingItemRules = receiveRequiredParameters(parameterItemRules);
+			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
 			if(missingItemRules != null) {
 				System.out.println("Enter missing value of each parameter:");
 
-				List<ItemRule> missingItemRules2 = receiveRequiredParameters(missingItemRules);
+				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
 
 				if(missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
-					String[] itemNames = new String[missingItemRules2.size()];
-					for(int i = 0; i < itemNames.length; i++) {
-						itemNames[i] = missingItemRules2.get(i).getName();
-					}
-					String missingItemNames = StringUtils.joinCommaDelimitedList(itemNames);
-					System.out.printf("Missing parameter: %s", missingItemNames).println();
+					String[] itemNames = missingItemRules2.getItemNames();
+					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
+					System.out.printf("Missing mandatory parameters: %s", missingParamNames).println();
 
 					activityEnd();
 				}
@@ -115,8 +117,8 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
-	private List<ItemRule> receiveRequiredParameters(List<ItemRule> parameterItemRules) {
-		List<ItemRule> missingItemRules = new ArrayList<>();
+	private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
+		ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
 
 		for(ItemRule itemRule : parameterItemRules) {
 			Token[] tokens = itemRule.getTokens();
@@ -142,7 +144,7 @@ public class ConsoleActivity extends CoreActivity {
 				}
 			}
 
-			if(itemRule.getMandatory() == Boolean.TRUE && inputCount == 0) {
+			if(itemRule.isMandatory() && inputCount == 0) {
 				missingItemRules.add(itemRule);
 			}
 		}

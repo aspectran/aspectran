@@ -45,7 +45,7 @@ public interface ResponseAdapter {
 	 * sent in this response.
 	 *
 	 * @return a {@code String} specifying the name of the character encoding,
-	 * 			for example, UTF-8
+	 * 		for example, UTF-8
 	 */
 	String getCharacterEncoding();
 	
@@ -53,7 +53,7 @@ public interface ResponseAdapter {
 	 * Sets the character encoding of the response being sent to the client.
 	 *
 	 * @param characterEncoding a {@code String} specifying only the character set
-	 * 			defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
+	 * 		defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
@@ -62,7 +62,7 @@ public interface ResponseAdapter {
 	 * Returns the content type used for the MIME body sent in this response.
 	 *
 	 * @return a {@code String} specifying the content type,
-	 * 			for example, {@code text/html}, or null
+	 * 		for example, {@code text/html}, or null
 	 */
 	String getContentType();
 

@@ -56,7 +56,7 @@ public interface SessionAdapter {
 	 * in milliseconds since midnight January 1, 1970 GMT.
 	 *
 	 * @return a long specifying when this session was created,
-	 * 			expressed in milliseconds since 1/1/1970 GMT
+	 * 		expressed in milliseconds since 1/1/1970 GMT
 	 * @since 1.5.0
 	 */
 	long getCreationTime();
@@ -70,7 +70,7 @@ public interface SessionAdapter {
 	 * do not affect the access time. 
 	 *
 	 * @return a long representing the last time the client sent a request associated with this session,
-	 * 			expressed in milliseconds since 1/1/1970 GMT
+	 * 		expressed in milliseconds since 1/1/1970 GMT
 	 * @since 1.5.0
 	 */
 	long getLastAccessedTime();
@@ -83,7 +83,7 @@ public interface SessionAdapter {
 	 * A negative time indicates the session should never timeout.
 	 *
 	 * @return an integer specifying the number of seconds this session
-	 * 			remains open between client requests
+	 * 		remains open between client requests
 	 * @since 1.5.0
 	 */
 	int getMaxInactiveInterval();
@@ -93,7 +93,7 @@ public interface SessionAdapter {
 	 * of all the objects bound to this session.
 	 *
 	 * @return an Enumeration of String objects specifying the names
-	 * 			of all the objects bound to this session
+	 * 		of all the objects bound to this session
 	 * @since 1.5.0
 	 */
 	Enumeration<String> getAttributeNames();
@@ -105,7 +105,7 @@ public interface SessionAdapter {
 	 * @param <T> the generic type
 	 * @param name a {@code String} specifying the name of the attribute
 	 * @return an {@code Object} containing the value of the attribute,
-	 * 			or {@code null} if the attribute does not exist
+	 * 		or {@code null} if the attribute does not exist
 	 */
 	<T> T getAttribute(String name);
 

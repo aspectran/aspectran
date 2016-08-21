@@ -75,7 +75,13 @@ public class ProcessResult extends ArrayList<ContentResult> {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Gets the result value of an action.
+	 *
+	 * @param actionId the action id
+	 * @return the result value of an action
+	 */
 	public Object getResultValue(String actionId) {
 		ActionResult actionResult = getActionResult(actionId);
 		

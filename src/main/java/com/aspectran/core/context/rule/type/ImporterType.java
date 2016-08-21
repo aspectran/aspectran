@@ -38,7 +38,8 @@ public enum ImporterType {
 	}
 
 	/**
-	 * Returns an {@code ImporterType} with a value represented by the specified {@code String}.
+	 * Returns an {@code ImporterType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the importer type as a {@code String}
 	 * @return an {@code ImporterType}, may be {@code null}

@@ -40,7 +40,8 @@ public enum BeanReferrerType {
 	}
 
 	/**
-	 * Returns a {@code BeanReferrerType} with a value represented by the specified {@code String}.
+	 * Returns a {@code BeanReferrerType} with a value represented
+	 * by the specified {@code String}.
 	 *
 	 * @param alias the bean referrer type as a {@code String}
 	 * @return a {@code BeanReferrerType}, may be {@code null}
