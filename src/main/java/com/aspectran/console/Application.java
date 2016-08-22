@@ -78,7 +78,7 @@ public class Application {
             if(aspectranService != null) {
                 System.out.println("Do not terminate the server while the all scoped bean destroying.");
 
-                aspectranService.destroy();
+                aspectranService.shutdown();
             }
         }
 

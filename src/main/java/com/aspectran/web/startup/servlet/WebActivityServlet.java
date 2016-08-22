@@ -89,7 +89,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		if(standalone) {
 			log.info("Do not terminate the server while the all scoped bean destroying.");
 
-			aspectranService.destroy();
+			aspectranService.shutdown();
 
 			log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
 		}

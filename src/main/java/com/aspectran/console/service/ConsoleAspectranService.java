@@ -84,11 +84,11 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	}
 
 	@Override
-	public void destroy() {
+	public void shutdown() {
 		Scope scope = sessionAdapter.getSessionScope();
 		scope.destroy();
 		
-		super.destroy();
+		super.shutdown();
 	}
 	
 	/**
@@ -142,9 +142,9 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			
 			@Override
 			public void paused(long timeout) {
-				if(timeout <= 0)
+				if(timeout <= 0) {
 					timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
-				
+				}
 				aspectranService.pauseTimeout = System.currentTimeMillis() + timeout;
 			}
 			
