@@ -153,7 +153,7 @@ public class CoreActivity extends AbstractActivity {
 		// for RESTful
 		PathVariableMap pathVariableMap = getTransletRuleRegistry().getPathVariableMap(transletRule, transletName);
 
-		prepare(transletRule, null);
+		prepare(transletRule, processResult);
 
 		if(pathVariableMap != null) {
 			pathVariableMap.apply(translet);
@@ -484,7 +484,10 @@ public class CoreActivity extends AbstractActivity {
 			ItemEvaluator evaluator = new ItemExpressionParser(this);
 			for(ItemRule itemRule : parameterItemRuleMap.values()) {
 				String[] values = evaluator.evaluateAsStringArray(itemRule);
-				getRequestAdapter().setParameter(itemRule.getName(), values);
+				String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
+				if(values != oldValues) {
+					getRequestAdapter().setParameter(itemRule.getName(), values);
+				}
 			}
 		}
 	}

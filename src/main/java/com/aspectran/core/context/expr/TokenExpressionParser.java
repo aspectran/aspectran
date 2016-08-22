@@ -113,34 +113,29 @@ public class TokenExpressionParser implements TokenEvaluator {
 	@Override
 	public String evaluateAsString(Token[] tokens) {
 		Object value = evaluate(tokens);
-		
-		if(value == null)
-			return null;
-		
-		return value.toString();
+		return (value != null) ? value.toString() : null;
 	}
 
 	@Override
 	public Object evaluate(String parameterName, Token[] tokens) {
-		if(tokens == null || tokens.length == 0)
-			return getParameter(parameterName);
-		
-		Object value = evaluate(tokens);
-		
-		if(value == null)
+		if(tokens == null || tokens.length == 0) {
+			String[] values = getParameterValues(parameterName);
+			if(values != null) {
+				if(values.length == 1)
+					return values[0];
+				else if(values.length > 1)
+					return values;
+			}
 			return null;
+		}
 		
-		return value;
+		return evaluate(tokens);
 	}
 
 	@Override
 	public String evaluateAsString(String parameterName, Token[] tokens) {
 		Object value = evaluate(parameterName, tokens);
-		
-		if(value == null)
-			return null;
-		
-		return value.toString();
+		return (value != null) ? value.toString() : null;
 	}
 
 	@Override

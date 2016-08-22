@@ -74,7 +74,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		String name = itemRule.getName();
 		Object value = null;
 		
-		if(itemType == ItemType.SINGULAR) {
+		if(itemType == ItemType.SINGLE) {
 			Token[] tokens = itemRule.getTokens();
 			value = evaluate(name, tokens, valueType);
 		} else if(itemType == ItemType.ARRAY) {
@@ -98,17 +98,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		ItemValueType valueType = itemRule.getValueType();
 		String name = itemRule.getName();
 
-		if(itemType == ItemType.SINGULAR) {
+		if(itemType == ItemType.SINGLE) {
 			Token[] tokens = itemRule.getTokens();
 			Object value = evaluate(name, tokens, valueType);
 			if(value != null) {
-				return new String[] { value.toString() };
+				if(value instanceof String[])
+					return (String[])value;
+				else
+					return new String[] { value.toString() };
 			}
 		} else if(itemType == ItemType.ARRAY) {
 			Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
-			if(values != null) {
-				return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
-			}
+			return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
 		} else if(itemType == ItemType.LIST) {
 			List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
 			if(list != null) {
@@ -121,10 +122,14 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 			}
 		} else if(itemType == ItemType.MAP) {
 			Map<String, Object> map = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
-			return new String[] { map.toString() };
+			if(map != null) {
+				return new String[] { map.toString() };
+			}
 		} else if(itemType == ItemType.PROPERTIES) {
 			Properties properties = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
-			return new String[] { properties.toString() };
+			if(properties != null) {
+				return new String[] { properties.toString() };
+			}
 		}
 
 		return null;
@@ -132,11 +137,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 	private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {
 		Object value = evaluate(parameterName, tokens);
-		
-		if(value == null || valueType == null)
-			return value;
-		
-		return valuelize(value, valueType);
+		return (value == null || valueType == null) ? value : valuelize(value, valueType);
 	}
 	
 	@SuppressWarnings("all")
@@ -205,7 +206,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
-			
+
 			if(value == null)
 				return null;
 			

@@ -60,7 +60,7 @@ class ItemNodeletAdder implements NodeletAdder {
 
             assistant.pushObject(itemRule);
 
-            if(itemRule.getType() != ItemType.SINGULAR)
+            if(itemRule.getType() != ItemType.SINGLE)
                 ItemRule.beginValueCollection(itemRule);
         });
 		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
@@ -108,7 +108,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 String name = assistant.popObject();
                 ItemRule itemRule = assistant.peekObject();
 
-                if(itemRule.getType() != ItemType.SINGULAR)
+                if(itemRule.getType() != ItemType.SINGLE)
                     ItemRule.flushValueCollection(itemRule, name, tokens);
             }
         });

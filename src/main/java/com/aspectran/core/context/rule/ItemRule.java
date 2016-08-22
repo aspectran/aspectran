@@ -289,7 +289,7 @@ public class ItemRule {
 		} else {
 			this.name = name;
 			if(type == null)
-				type = ItemType.SINGULAR;
+				type = ItemType.SINGLE;
 		}
 	}
 
@@ -320,7 +320,7 @@ public class ItemRule {
 		if(type == null)
 			throw new IllegalArgumentException("Item type is must not be null.");
 
-		if(type != ItemType.SINGULAR)
+		if(type != ItemType.SINGLE)
 			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
 
 		this.tokens = tokens;
@@ -362,7 +362,7 @@ public class ItemRule {
 		tsb.append("type", type);
 		tsb.append("name", name);
 		tsb.append("valueType", valueType);
-		if(type == ItemType.SINGULAR) {
+		if(type == ItemType.SINGLE) {
 			tsb.append("value", tokens);
 		} else if(isListableType()) {
 			tsb.append("value", tokensList);
@@ -431,7 +431,7 @@ public class ItemRule {
 		if(itemType != null)
 			itemRule.setType(itemType);
 		else
-			itemRule.setType(ItemType.SINGULAR); //default
+			itemRule.setType(ItemType.SINGLE); //default
 
 		if(!StringUtils.isEmpty(name)) {
 			itemRule.setName(name);
@@ -530,7 +530,7 @@ public class ItemRule {
 	 * @return the token[]
 	 */
 	public static Token[] parseValue(ItemRule itemRule, String valueText) {
-		if(itemRule.getType() == ItemType.SINGULAR) {
+		if(itemRule.getType() == ItemType.SINGLE) {
 			if(valueText != null) {
 				itemRule.setValue(valueText);
 			}
@@ -622,7 +622,7 @@ public class ItemRule {
 			}
 		}
 		
-		if(itemRule.getType() != ItemType.SINGULAR || itemRule.getValueType() == null) {
+		if(itemRule.getType() != ItemType.SINGLE || itemRule.getValueType() == null) {
 			String name = itemRule.getType().toString() + count;
 			itemRule.setName(name);
 		} else {
@@ -709,7 +709,7 @@ public class ItemRule {
 			
 			updateReference(itemRule, parameter, attribute, bean, property);
 		} else {
-			if(itemRule.getType() == ItemType.SINGULAR) {
+			if(itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);
 				parseValue(itemRule, value);
 			} else if(itemRule.isListableType()) {

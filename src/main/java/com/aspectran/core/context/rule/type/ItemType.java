@@ -22,7 +22,7 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ItemType {
 
-	SINGULAR("singular"),
+	SINGLE("single"),
 	ARRAY("array"),
 	LIST("list"),
 	MAP("map"),

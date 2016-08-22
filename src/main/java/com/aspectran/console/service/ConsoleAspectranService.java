@@ -67,12 +67,11 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			}
 		}
 		
-		CommandParser parser = CommandParser.parseCommand(command);
 		Activity activity = null;
 
 		try {
 			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
-			activity.prepare(parser.getTransletName(), parser.getMethodType());
+			activity.prepare(command);
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");

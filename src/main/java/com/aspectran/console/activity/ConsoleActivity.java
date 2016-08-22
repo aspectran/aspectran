@@ -80,7 +80,7 @@ public class ConsoleActivity extends CoreActivity {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
 				}
 
-				System.out.printf("  @%s: %s", itemRule.getName(), TokenParser.toString(tokens));
+				System.out.printf("    %s: %s", itemRule.getName(), TokenParser.toString(tokens));
 				System.out.println();
 			}
 
@@ -92,7 +92,7 @@ public class ConsoleActivity extends CoreActivity {
 				if(tokens != null && tokens.length > 0) {
 					for(Token token : tokens) {
 						if(token.getType() == TokenType.PARAMETER) {
-							System.out.printf("  $%s: ", token.getName());
+							System.out.printf("    %s: ", token.getName());
 							if(token.getValue() != null) {
 								System.out.printf("(%s)", token.getValue());
 							}
@@ -103,7 +103,7 @@ public class ConsoleActivity extends CoreActivity {
 						}
 					}
 				} else {
-					System.out.printf("  $%s: ", itemRule.getName());
+					System.out.printf("    $%s: ", itemRule.getName());
 					String input = System.console().readLine();
 					if(input != null && !input.isEmpty()) {
 						getRequestAdapter().setParameter(itemRule.getName(), input);
