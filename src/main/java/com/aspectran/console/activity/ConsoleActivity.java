@@ -64,11 +64,17 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
-	/**
-	 * Parses the declared parameters.
-	 */
 	@Override
-	protected void parseDeclaredParameters() {
+	protected void request() {
+		receiveRequiredParameters();
+
+		super.request();
+	}
+
+	/**
+	 * Receive required input parameters..
+	 */
+	private void receiveRequiredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
 		if(parameterItemRuleMap != null) {
