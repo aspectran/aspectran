@@ -35,17 +35,23 @@ public class BasicAspectranService extends AbstractAspectranService {
 	/** Flag that indicates whether this context has been closed already */
 	private final AtomicBoolean closed = new AtomicBoolean();
 
-	/** Synchronization monitor for the "refresh" and "destroy" */
+	/** Synchronization monitor for the "restart" and "shutdown" */
 	private final Object startupShutdownMonitor = new Object();
 
 	/** Reference to the JVM shutdown hook, if registered */
 	private Thread shutdownHook;
 
+	/**
+	 * Instantiates a new Basic aspectran service.
+	 *
+	 * @param applicationAdapter the application adapter
+	 */
 	public BasicAspectranService(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
 		applicationAdapter.setAspectranServiceController(this);
 	}
 
+	@Override
 	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener) {
 		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
 	}
@@ -68,8 +74,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			log.info("AspectranService has been started successfully.");
 
-			if(aspectranServiceControllerListener != null)
+			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.started();
+			}
 		}
 	}
 
@@ -85,7 +92,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
-			stop();
+			doDestroy();
+
+			log.info("AspectranService has been stopped.");
 
 			reloadActivityContext();
 
@@ -94,8 +103,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			log.info("AspectranService has been restarted.");
 
-			if(aspectranServiceControllerListener != null)
+			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.restarted(isHardReload());
+			}
 		}
 	}
 
@@ -107,8 +117,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
-			if(aspectranServiceControllerListener != null)
+			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(-1L);
+			}
 
 			log.info("AspectranService has been paused.");
 		}
@@ -122,8 +133,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
-			if(aspectranServiceControllerListener != null)
+			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(timeout);
+			}
 		}
 	}
 
@@ -135,30 +147,16 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
-			if(aspectranServiceControllerListener != null)
+			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.resumed();
+			}
 
 			log.info("AspectranService has been resumed.");
 		}
 	}
 
-	private void stop() {
-		if(aspectranServiceControllerListener != null)
-			aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
-
-		destroyApplicationScope();
-		destroyActivityContext();
-
-		this.active.set(false);
-
-		log.info("AspectranService has been stopped.");
-
-		if(aspectranServiceControllerListener != null)
-			aspectranServiceControllerListener.stopped();
-	}
-
 	@Override
-	public void destroy() {
+	public void shutdown() {
 		synchronized(this.startupShutdownMonitor) {
 			doDestroy();
 			removeShutdownHook();
@@ -169,20 +167,35 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	/**
 	 * Actually performs destroys the singletons in the bean factory.
-	 * Called by both {@code destroy()} and a JVM shutdown hook, if any.
+	 * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
 	 */
 	private void doDestroy() {
 		if(this.active.get() && this.closed.compareAndSet(false, true)) {
-			stop();
+			if(aspectranServiceControllerListener != null) {
+				aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
+			}
+
+			destroyApplicationScope();
+			destroyActivityContext();
+
+			this.active.set(false);
+
+			if(aspectranServiceControllerListener != null) {
+				aspectranServiceControllerListener.stopped();
+			}
 		}
 	}
 
+	/**
+	 * Destroys an application scope.
+	 */
 	private void destroyApplicationScope() {
 		ApplicationAdapter applicationAdapter = getApplicationAdapter();
 		if(applicationAdapter != null) {
 			Scope scope = applicationAdapter.getApplicationScope();
-			if(scope != null)
+			if(scope != null) {
 				scope.destroy();
+			}
 		}
 	}
 

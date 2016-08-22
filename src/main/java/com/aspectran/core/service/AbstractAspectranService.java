@@ -163,7 +163,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 
 		if(activityContext != null)
-			throw new AspectranServiceException("AspectranContext has been already loaded. Must destroy the old AspectranContext before reloading.");
+			throw new AspectranServiceException("ActivityContext has been already loaded. Must destroy the old ActivityContext before reloading.");
 		
 		if(log.isDebugEnabled())
 			log.debug("Loading ActivityContext...");
