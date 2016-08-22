@@ -241,7 +241,7 @@
 <!ATTLIST item
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
-  type         (item | array | list | map | set | properties) #IMPLIED
+  type         (single | array | list | map | set | properties) #IMPLIED
   valueType    (string | int | long | float | double | boolean | parameters | file | multipartFile) #IMPLIED
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
