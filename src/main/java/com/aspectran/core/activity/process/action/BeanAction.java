@@ -132,7 +132,9 @@ public class BeanAction extends AbstractAction {
 						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
 						needTranslet = Boolean.TRUE;
 					} catch(NoSuchMethodException e) {
-						log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
+						log.info("Cannot find a method that requires a argument translet. " +
+								"So in the future will continue to call a method with no argument " +
+								"translet. beanActionRule " + beanActionRule);
 
 						needTranslet = Boolean.FALSE;
 						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
@@ -144,7 +146,7 @@ public class BeanAction extends AbstractAction {
 				return result;
 			}
 		} catch(Exception e) {
-			log.error("Failed to execute action: beanActionRule " + beanActionRule);
+			log.error("Failed to execute action that invoking method in the bean instance. beanActionRule " + beanActionRule);
 			throw e;
 		}
 	}

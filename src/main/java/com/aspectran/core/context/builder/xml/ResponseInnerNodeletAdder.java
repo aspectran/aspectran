@@ -99,11 +99,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/dispatch", (node, attributes, text) -> {
             String name = attributes.get("name");
+            String dispatcher = attributes.get("dispatcher");
             String contentType = attributes.get("contentType");
             String characterEncoding = attributes.get("characterEncoding");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 
-            DispatchResponseRule drr = DispatchResponseRule.newInstance(name, contentType, characterEncoding, defaultResponse);
+            DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding, defaultResponse);
             assistant.pushObject(drr);
 
             ActionList actionList = new ActionList();

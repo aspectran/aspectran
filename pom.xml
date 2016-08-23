@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>2.4.0</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>aspectran</name>
@@ -44,7 +44,7 @@
 	</ciManagement>
 
 	<properties>
-		<clirr.comparisonVersion>2.4.0</clirr.comparisonVersion>
+		<clirr.comparisonVersion>2.4.1</clirr.comparisonVersion>
 		<findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 	</properties>
 

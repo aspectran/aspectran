@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,6 +93,13 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
 		for(Map.Entry<K, V> entry : values.entrySet()) {
 			set(entry.getKey(), entry.getValue());
 		}
+	}
+	
+	@Override
+	public void put(K key, V[] values) {
+		List<V> list = new LinkedList<>();
+		Collections.addAll(list, values);
+		put(key, list);
 	}
 
 	@Override

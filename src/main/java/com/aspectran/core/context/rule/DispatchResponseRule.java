@@ -43,20 +43,13 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 
 	private Token[] nameTokens;
 	
+	private String dispatcher;
+
 	private String contentType;
 
 	private String characterEncoding;
 	
 	private Boolean defaultResponse;
-
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		return contentType;
-	}
 
 	/**
 	 * Gets the dispatch name.
@@ -116,6 +109,35 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	 */
 	public Token[] getNameTokens() {
 		return nameTokens;
+	}
+
+	/**
+	 * Gets the id or class name of the view dispatcher bean that
+	 * implements {@link ViewDispatcher}.
+	 *
+	 * @return the id or class name of the view dispatcher bean
+	 */
+	public String getDispatcher() {
+		return dispatcher;
+	}
+
+	/**
+	 * Gets the id or class name of the view dispatcher bean that
+	 * implements {@link ViewDispatcher}.
+	 *
+	 * @param dispatcher the id or class name of the view dispatcher bean
+	 */
+	public void setDispatcher(String dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+
+	/**
+	 * Gets the content type.
+	 * 
+	 * @return the content type
+	 */
+	public String getContentType() {
+		return contentType;
 	}
 
 	/**
@@ -204,15 +226,17 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	/**
 	 * Returns a new instance of DispatchResponseRule.
 	 *
-	 * @param dispatchName the dispatch name
+	 * @param name the dispatch name
+	 * @param dispatcher the id or class name of the view dispatcher bean
 	 * @param contentType the content type
 	 * @param characterEncoding the character encoding
 	 * @param defaultResponse the default response
 	 * @return an instance of DispatchResponseRule
 	 */
-	public static DispatchResponseRule newInstance(String dispatchName, String contentType, String characterEncoding, Boolean defaultResponse) {
+	public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding, Boolean defaultResponse) {
 		DispatchResponseRule drr = new DispatchResponseRule();
-		drr.setName(dispatchName);
+		drr.setName(name);
+		drr.setDispatcher(dispatcher);
 		drr.setContentType(contentType);
 		drr.setCharacterEncoding(characterEncoding);
 		drr.setDefaultResponse(defaultResponse);
@@ -223,13 +247,14 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	/**
 	 * Returns a new instance of DispatchResponseRule.
 	 *
-	 * @param dispatchName the dispatch name
+	 * @param name the dispatch name
+	 * @param dispatcher the id or class name of the view dispatcher bean
 	 * @param contentType the content type
 	 * @param characterEncoding the character encoding
 	 * @return the dispatch response rule
 	 */
-	public static DispatchResponseRule newInstance(String dispatchName, String contentType, String characterEncoding) {
-		return newInstance(dispatchName, contentType, characterEncoding, null);
+	public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding) {
+		return newInstance(name, dispatcher, contentType, characterEncoding, null);
 	}
 
 	/**

@@ -23,8 +23,6 @@ import com.aspectran.core.util.StringUtils;
  */
 public class CommandParser {
 
-	private String command;
-
 	private MethodType requestMethod;
 
 	private String transletName;

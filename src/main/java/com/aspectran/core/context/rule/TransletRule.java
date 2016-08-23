@@ -273,11 +273,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		touchActionList().applyActionRule(echoActionRule);
-	}
-
-	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		touchActionList().applyActionRule(beanActionRule);
 	}
@@ -290,6 +285,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		touchActionList().applyActionRule(includeActionRule);
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		touchActionList().applyActionRule(echoActionRule);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		touchActionList().applyActionRule(headingActionRule);
 	}
 	
 	private ActionList touchActionList() {

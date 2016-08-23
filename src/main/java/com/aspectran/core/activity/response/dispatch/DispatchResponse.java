@@ -38,7 +38,7 @@ public class DispatchResponse implements Response {
 
 	private final boolean debugEnabled = log.isDebugEnabled();
 
-	private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<String, ViewDispatcher>();
+	private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<>(5);
 
 	private final DispatchResponseRule dispatchResponseRule;
 
@@ -102,14 +102,20 @@ public class DispatchResponse implements Response {
 	 * @param activity the current Activity
 	 */
 	private ViewDispatcher getViewDispatcher(Activity activity) throws ClassNotFoundException {
-		String viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-
-		if(viewDispatcherName == null)
-			throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
-
+		String viewDispatcherName;
+		
+		if(dispatchResponseRule.getDispatcher() != null) {
+			viewDispatcherName = dispatchResponseRule.getDispatcher();
+		} else {
+			viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
+			if(viewDispatcherName == null) {
+				throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
+			}
+		}
+			
 		ViewDispatcher viewDispatcher;
 
-		synchronized(viewDispatcherCache)  {
+		synchronized(viewDispatcherCache) {
 			viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
 			if(viewDispatcher == null) {
 				if(viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
@@ -120,14 +126,16 @@ public class DispatchResponse implements Response {
 					viewDispatcher = activity.getBean(viewDispatcherName);
 				}
 
-				if(viewDispatcher == null)
+				if(viewDispatcher == null) {
 					throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
+				}
 
 				if(viewDispatcher.isSingleton()) {
 					viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
 
-					if(log.isDebugEnabled())
+					if(log.isDebugEnabled()) {
 						log.debug("Cached a View Dispatcher " + viewDispatcher);
+					}
 				}
 			}
 		}

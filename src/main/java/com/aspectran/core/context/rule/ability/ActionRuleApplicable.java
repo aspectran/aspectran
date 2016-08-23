@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.MethodActionRule;
 
@@ -28,13 +29,6 @@ import com.aspectran.core.context.rule.MethodActionRule;
  */
 public interface ActionRuleApplicable {
 
-	/**
-	 * Adds the echo action.
-	 * 
-	 * @param echoActionRule the echo action rule
-	 */
-	void applyActionRule(EchoActionRule echoActionRule);
-	
 	/**
 	 * Adds the bean action.
 	 *
@@ -55,5 +49,19 @@ public interface ActionRuleApplicable {
 	 * @param includeActionRule the process call action rule
 	 */
 	void applyActionRule(IncludeActionRule includeActionRule);
+
+	/**
+	 * Adds the echo action.
+	 * 
+	 * @param echoActionRule the echo action rule
+	 */
+	void applyActionRule(EchoActionRule echoActionRule);
+	
+	/**
+	 * Adds the heading action.
+	 * 
+	 * @param headingActionRule the heading action rule
+	 */
+	void applyActionRule(HeadingActionRule headingActionRule);
 
 }

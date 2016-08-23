@@ -329,7 +329,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		return tsb.toString();
 	}
 
-	public static TemplateRule newInstance(String id, String engine, String name, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+	public static TemplateRule newInstance(String id, String engine, String name, String file, 
+			String resource, String url, String content, String encoding, Boolean noCache) {
 		TemplateRule tr = new TemplateRule(engine);
 		tr.setId(id);
 		tr.setName(name);
@@ -343,7 +344,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		return tr;
 	}
 
-	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, 
+			String resource, String url, String content, String encoding, Boolean noCache) {
 		TemplateRule tr = new TemplateRule(engine);
 		tr.setName(name);
 		tr.setFile(file);

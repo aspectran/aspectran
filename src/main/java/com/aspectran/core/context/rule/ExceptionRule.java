@@ -22,7 +22,7 @@ import java.util.Map;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.HeadingAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
@@ -63,23 +63,30 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ResponseByC
 	}
 
 	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		action = new EchoAction(echoActionRule, null);
-	}
-
-	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		action = new BeanAction(beanActionRule, null);
 	}
 
 	@Override
 	public void applyActionRule(MethodActionRule methodActionRule) {
-		action = new MethodAction(methodActionRule, null);
+		throw new UnsupportedOperationException(
+				"Cannot apply the Method Action Rule to the Exception Rule.");
 	}
 
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
-		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
+		throw new UnsupportedOperationException(
+				"Cannot apply the Include Action Rule to the Exception Rule.");
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		action = new EchoAction(echoActionRule, null);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		action = new HeadingAction(headingActionRule, null);
 	}
 	
 	/**

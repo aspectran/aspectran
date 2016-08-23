@@ -172,10 +172,12 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 		tsb.append("builtinTemplate", templateRule);
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("defaultResponse", defaultResponse);
+		tsb.append("pretty", pretty);
 		return tsb.toString();
 	}
 	
-	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+	public static TransformRule newInstance(String type, String contentType, String templateId, 
+			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		TransformType transformType = TransformType.resolve(type);
 
 		if(transformType == null && contentType != null) {
@@ -198,7 +200,8 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 		return tr;
 	}
 
-	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, 
+			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		if(transformType == null && contentType != null) {
 			transformType = TransformType.resolve(ContentType.resolve(contentType));
 		}

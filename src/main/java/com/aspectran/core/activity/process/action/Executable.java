@@ -44,7 +44,7 @@ public interface Executable {
 	Object execute(Activity activity) throws Exception;
 	
 	/**
-	 * Checks if is hidden action.
+	 * Returns whether this action is hidden.
 	 * 
 	 * @return true, if is hidden action
 	 */

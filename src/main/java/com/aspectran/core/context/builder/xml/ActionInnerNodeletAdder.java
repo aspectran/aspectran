@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -46,32 +47,6 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 
 	@Override
 	public void process(String xpath, NodeletParser parser) {
-		parser.addNodelet(xpath, "/echo", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
-
-            if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <echo> element requires an 'id' attribute.");
-
-            EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-            assistant.pushObject(echoActionRule);
-
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-		parser.addNodelet(xpath, "/echo/attributes", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/echo", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/echo/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-            EchoActionRule echoActionRule = assistant.popObject();
-
-            if(!irm.isEmpty()) {
-                echoActionRule.setAttributeItemRuleMap(irm);
-            }
-
-            ActionRuleApplicable applicable = assistant.peekObject();
-            applicable.applyActionRule(echoActionRule);
-        });
 		parser.addNodelet(xpath, "/action", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
             String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
@@ -154,6 +129,55 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             IncludeActionRule includeActionRule = assistant.popObject();
             ActionRuleApplicable applicable = assistant.peekObject();
             applicable.applyActionRule(includeActionRule);
+        });
+		parser.addNodelet(xpath, "/echo", (node, attributes, text) -> {
+            String id = StringUtils.emptyToNull(attributes.get("id"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+
+            if(!assistant.isNullableActionId() && id == null)
+                throw new IllegalArgumentException("The <echo> element requires an 'id' attribute.");
+
+            EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
+            assistant.pushObject(echoActionRule);
+
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+        });
+		parser.addNodelet(xpath, "/echo/attributes", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/echo", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/echo/end()", (node, attributes, text) -> {
+            ItemRuleMap irm = assistant.popObject();
+            EchoActionRule echoActionRule = assistant.popObject();
+
+            if(!irm.isEmpty()) {
+                echoActionRule.setAttributeItemRuleMap(irm);
+            }
+
+            ActionRuleApplicable applicable = assistant.peekObject();
+            applicable.applyActionRule(echoActionRule);
+        });
+
+		parser.addNodelet(xpath, "/headers", (node, attributes, text) -> {
+            String id = StringUtils.emptyToNull(attributes.get("id"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+
+            HeadingActionRule headersActionRule = HeadingActionRule.newInstance(id, hidden);
+            assistant.pushObject(headersActionRule);
+
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+        });
+		parser.addNodelet(xpath, "/headers", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/headers/end()", (node, attributes, text) -> {
+            ItemRuleMap irm = assistant.popObject();
+            HeadingActionRule headersActionRule = assistant.popObject();
+
+            if(!irm.isEmpty()) {
+                headersActionRule.setHeaderItemRuleMap(irm);
+            }
+
+            ActionRuleApplicable applicable = assistant.peekObject();
+            applicable.applyActionRule(headersActionRule);
         });
 	}
 

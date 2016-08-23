@@ -587,11 +587,6 @@ public class RootAponDisassembler {
 				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
-		} else if(echoItemHolderParameters != null) {
-			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);
-			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-			actionRuleApplicable.applyActionRule(echoActionRule);
 		} else if(include != null) {
 			include = assistant.applyTransletNamePattern(include);
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
@@ -600,6 +595,11 @@ public class RootAponDisassembler {
 				includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(includeActionRule);
+		} else if(echoItemHolderParameters != null) {
+			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
+			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);
+			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
+			actionRuleApplicable.applyActionRule(echoActionRule);
 		}
 	}
 
@@ -684,12 +684,13 @@ public class RootAponDisassembler {
 	
 	private DispatchResponseRule disassembleDispatchResponseRule(Parameters dispatchParameters) {
 		String name = dispatchParameters.getString(DispatchParameters.name);
+		String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
 		String contentType = dispatchParameters.getString(DispatchParameters.contentType);
 		String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
 		List<Parameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.actions);
 		Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 		
-		DispatchResponseRule drr = DispatchResponseRule.newInstance(name, contentType, characterEncoding, defaultResponse);
+		DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding, defaultResponse);
 		
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();

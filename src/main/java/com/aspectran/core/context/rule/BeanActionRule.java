@@ -228,7 +228,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		tsb.append("id", actionId);
 		tsb.append("bean", beanId);
 		tsb.append("method", methodName);
-		tsb.append("hidden", hidden);
 		if(argumentItemRuleMap != null)
 			tsb.append("arguments", argumentItemRuleMap.keySet());
 		if(propertyItemRuleMap != null)
@@ -236,6 +235,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		if(aspectAdviceRule != null)
 			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		tsb.append("hidden", hidden);
 		return tsb.toString();
 	}
 	
