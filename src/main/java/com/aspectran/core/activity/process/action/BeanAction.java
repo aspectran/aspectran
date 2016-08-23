@@ -120,7 +120,7 @@ public class BeanAction extends AbstractAction {
 				if(argumentItemRuleMap == null) {
 					return MethodAction.invokeMethod(activity, bean, method, requiresTranslet);
 				} else {
-					Object[] args = makeArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
+					Object[] args = createArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
 					return method.invoke(bean, args);
 				}
 			} else {
@@ -151,7 +151,7 @@ public class BeanAction extends AbstractAction {
 		}
 	}
 
-	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
+	private static Object[] createArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
 		Object[] args = null;
 
 		if(argumentItemRuleMap != null) {

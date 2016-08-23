@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.request.multipart;
+package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 
 /**
  * The Class MultipartFormDataParserFactoryBean.
  *
  * @since 2.0.0
  */
-public class MultipartFormDataParserFactoryBean extends MultipartFormDataParserFactory implements FactoryBean<MultipartFormDataParser> {
+public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartFormDataParserFactory implements FactoryBean<MultipartFormDataParser> {
 
 	@Override
 	public MultipartFormDataParser getObject() throws Exception {

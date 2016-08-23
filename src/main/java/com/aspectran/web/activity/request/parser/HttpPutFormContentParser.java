@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.LinkedMultiValueMap;
+import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -55,22 +55,22 @@ public class HttpPutFormContentParser {
 			String body = copyToString(request.getInputStream(), charset);
 
 			String[] pairs = StringUtils.tokenize(body, "&");
-			Map<String, List<String>> parameterListMap = new HashMap<String, List<String>>();
+			MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
 
 			for(String pair : pairs) {
 				int idx = pair.indexOf('=');
 				if(idx == -1) {
 					String name = URLDecoder.decode(pair, charset.name());
-					putParameter(name, null, parameterListMap);
+					parameterMap.add(name, null);
 				} else {
 					String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
 					String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
-					putParameter(name, value, parameterListMap);
+					parameterMap.add(name, value);
 				}
 			}
 
-			if(!parameterListMap.isEmpty()) {
-				for(Map.Entry<String, List<String>> entry : parameterListMap.entrySet()) {
+			if(!parameterMap.isEmpty()) {
+				for(Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
 					String name = entry.getKey();
 					List<String> list = entry.getValue();
 					String[] values = list.toArray(new String[list.size()]);
@@ -78,7 +78,7 @@ public class HttpPutFormContentParser {
 				}
 			}
 		} catch(Exception e) {
-			throw new RequestParsingException("Could not parse multipart servlet request.", e);
+			throw new RequestParseException("Could not parse multipart servlet request.", e);
 		}
 	}
 
@@ -91,15 +91,6 @@ public class HttpPutFormContentParser {
 			out.append(buffer, 0, bytesRead);
 		}
 		return out.toString();
-	}
-
-	private static void putParameter(String name, String value, Map<String, List<String>> parameterListMap) {
-		List<String> list = parameterListMap.get(name);
-		if(list == null) {
-			list = new LinkedList<String>();
-			parameterListMap.put(name, list);
-		}
-		list.add(value);
 	}
 
 }

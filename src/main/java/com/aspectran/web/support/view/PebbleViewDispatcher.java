@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.response.view;
+package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
@@ -72,8 +72,9 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 
 		try {
 			dispatchName = dispatchResponseRule.getName();
-			if(dispatchName == null)
+			if(dispatchName == null) {
 				throw new IllegalArgumentException("No specified dispatch name.");
+			}
 
 			if(templateNamePrefix != null && templateNameSuffix != null) {
 				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
@@ -88,8 +89,9 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
@@ -104,9 +106,9 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
 			compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 
-			if(debugEnabled)
+			if(debugEnabled) {
 				log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
-
+			}
 		} catch(Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);
 		}

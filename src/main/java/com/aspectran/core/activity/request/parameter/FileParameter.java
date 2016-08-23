@@ -155,7 +155,7 @@ public class FileParameter {
 	}
 	
 	/**
-	 * Save the uploaded file to the given destination file.
+	 * Save an uploaded file as a given destination file.
 	 * If the file already exists in directory the save with a different name.
 	 *
 	 * @param destFile the destination file
@@ -167,10 +167,10 @@ public class FileParameter {
 	}
 
 	/**
-	 * Save the uploaded file to the given destination file.
+	 * Save an file as a given destination file.
 	 *
 	 * @param destFile the destination file
-	 * @param overwrite whether overwritten if the file already exists
+	 * @param overwrite whether to overwrite if it already exists
 	 * @return a saved file
 	 * @throws IOException if an I/O error has occurred
 	 */

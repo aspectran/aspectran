@@ -13,43 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.response.view;
+package com.aspectran.web.support.view;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.template.TemplateDataMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 /**
- * The Class FreeMarkerViewDispatcher.
- *
- * <p>Created: 2016. 1. 27.</p>
- *
- * @since 2.0.0
+ * JSP or other web resource integration.
+ * 
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class FreeMarkerViewDispatcher implements ViewDispatcher {
+public class JspViewDispatcher implements ViewDispatcher {
 
-	private static final Log log = LogFactory.getLog(FreeMarkerViewDispatcher.class);
+	private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
 	
-	private Configuration configuration;
-
+	private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
+	
 	private String prefix;
 
 	private String suffix;
-
-	public FreeMarkerViewDispatcher(Configuration configuration) {
-		this.configuration = configuration;
-	}
-
+	
 	/**
 	 * Sets the prefix for the template name.
 	 *
@@ -74,8 +72,9 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
 		try {
 			dispatchName = dispatchResponseRule.getName(activity);
-			if(dispatchName == null)
+			if(dispatchName == null) {
 				throw new IllegalArgumentException("No specified dispatch name.");
+			}
 
 			if(prefix != null && suffix != null) {
 				dispatchName = prefix + dispatchName + suffix;
@@ -85,13 +84,17 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 				dispatchName = dispatchName + suffix;
 			}
 			
+			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			} else {
+				responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
+			}
 
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
@@ -101,16 +104,45 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
-			TemplateDataMap model = new TemplateDataMap(activity);
+			ProcessResult processResult = activity.getProcessResult();
 
-			Template template = configuration.getTemplate(dispatchName);
-			template.process(model, responseAdapter.getWriter());
+			if(processResult != null) {
+				setAttribute(requestAdapter, processResult);
+			}
 
-			if(debugEnabled)
-				log.debug("Dispatch to a FreeMarker template page [" + dispatchName + "]");
+			HttpServletRequest request = requestAdapter.getAdaptee();
+			HttpServletResponse response = responseAdapter.getAdaptee();
+			
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
+			requestDispatcher.forward(request, response);
 
+			if(debugEnabled) {
+				log.debug("Dispatch to a JSP [" + dispatchName + "]");
+			}
 		} catch(Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this, dispatchName), e);
+			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
+		}
+	}
+
+	/**
+	 * Stores an attribute in request.
+	 *
+	 * @param requestAdapter the request adapter
+	 * @param processResult the process result
+	 */
+	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
+		for(ContentResult contentResult : processResult) {
+			for(ActionResult actionResult : contentResult) {
+				Object actionResultValue = actionResult.getResultValue();
+
+				if(actionResultValue instanceof ProcessResult) {
+					setAttribute(requestAdapter, (ProcessResult)actionResultValue);
+				} else {
+					String actionId = actionResult.getActionId();
+					if(actionId != null)
+						requestAdapter.setAttribute(actionId, actionResultValue);
+				}
+			}
 		}
 	}
 

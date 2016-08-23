@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.request.multipart;
+package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 
 /**
  * The Class MultipartFormDataParserFactory.
  *
  * @since 2.0.0
  */
-public class MultipartFormDataParserFactory {
+public class CommonsMultipartFormDataParserFactory {
 	
 	private String temporaryFilePath;
 	
@@ -36,7 +37,7 @@ public class MultipartFormDataParserFactory {
 	/**
 	 * Instantiates a new Multipart request wrapper resolver.
 	 */
-	public MultipartFormDataParserFactory() {
+	public CommonsMultipartFormDataParserFactory() {
 	}
 
 	/**
@@ -126,15 +127,15 @@ public class MultipartFormDataParserFactory {
 	 * @return the multipart form data parser
 	 */
 	public MultipartFormDataParser createMultipartFormDataParser() {
-		MultipartFormDataParser parser = new MultipartFormDataParser();
+		MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
 
 		if(maxRequestSize > -1)
 			parser.setMaxRequestSize(maxRequestSize);
 
 		if(temporaryFilePath != null)
-			parser.setTemporaryFilePath(temporaryFilePath);
+			parser.setTempDirectoryPath(temporaryFilePath);
 		else
-			parser.setTemporaryFilePath(SystemUtils.getProperty("java.io.tmpdir"));
+			parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
 
 		parser.setAllowedFileExtensions(allowedFileExtensions);
 		parser.setDeniedFileExtensions(deniedFileExtensions);

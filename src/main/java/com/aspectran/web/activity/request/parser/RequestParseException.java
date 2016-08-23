@@ -18,11 +18,11 @@ package com.aspectran.web.activity.request.parser;
 import com.aspectran.core.activity.request.RequestException;
 
 /**
- * The Class RequestParsingException.
+ * The Class RequestParseException.
  *
  * @since 2.3.0
  */
-public class RequestParsingException extends RequestException {
+public class RequestParseException extends RequestException {
 
 	/** @serial */
 	private static final long serialVersionUID = -2918986957102012812L;
@@ -30,7 +30,7 @@ public class RequestParsingException extends RequestException {
 	/**
 	 * Simple constructor.
 	 */
-	public RequestParsingException() {
+	public RequestParseException() {
 		super();
 	}
 
@@ -39,7 +39,7 @@ public class RequestParsingException extends RequestException {
 	 *
 	 * @param msg A message to associate with the exception
 	 */
-	public RequestParsingException(String msg) {
+	public RequestParseException(String msg) {
 		super(msg);
 	}
 
@@ -48,7 +48,7 @@ public class RequestParsingException extends RequestException {
 	 *
 	 * @param cause The real cause of the exception
 	 */
-	public RequestParsingException(Throwable cause) {
+	public RequestParseException(Throwable cause) {
 		super(cause);
 	}
 
@@ -58,7 +58,7 @@ public class RequestParsingException extends RequestException {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public RequestParsingException(String msg, Throwable cause) {
+	public RequestParseException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
