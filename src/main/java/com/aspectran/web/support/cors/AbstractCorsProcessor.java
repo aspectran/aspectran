@@ -252,7 +252,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 		}
 	}
 
-	public boolean getAllowCredentials() {
+	public boolean isAllowCredentials() {
 		return allowCredentials;
 	}
 	

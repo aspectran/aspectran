@@ -67,7 +67,7 @@ public class SettingsAdviceRule {
 
 	public void putSetting(String name, Object value) {
 		if(settings == null) {
-			settings = new HashMap<String, Object>();
+			settings = new HashMap<String, Object>(5);
 		}
 		
 		settings.put(name, value);

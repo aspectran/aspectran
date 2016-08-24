@@ -36,7 +36,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
@@ -50,7 +50,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class QuartzSchedulerService implements SchedulerService {
 
-	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "ASPECTRAN_CONTEXT";
+	public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
 	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
 	
@@ -60,7 +60,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	
 	private List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>();
 	
-	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<String, Scheduler>();
+	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<>();
 	
 	private int startDelaySeconds = 0;
 	
@@ -259,11 +259,11 @@ public class QuartzSchedulerService implements SchedulerService {
 		return trigger;
 	}
 	
-	private JobDetail[] buildJobDetails(List<AspectJobAdviceRule> aspectJobAdviceRuleList) {
-		List<JobDetail> jobDetailList = new ArrayList<JobDetail>();
+	private JobDetail[] buildJobDetails(List<JobRule> aspectJobAdviceRuleList) {
+		List<JobDetail> jobDetailList = new ArrayList<>();
 		
 		for(int i = 0; i < aspectJobAdviceRuleList.size(); i++) {
-			AspectJobAdviceRule aspectJobAdviceRule = aspectJobAdviceRuleList.get(i);
+			JobRule aspectJobAdviceRule = aspectJobAdviceRuleList.get(i);
 			JobDetail jobDetail = buildJobDetail(aspectJobAdviceRule, i);
 			
 			if(jobDetail != null)
@@ -273,7 +273,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		return jobDetailList.toArray(new JobDetail[jobDetailList.size()]);
 	}
 
-	private JobDetail buildJobDetail(AspectJobAdviceRule aspectJobAdviceRule, int index) {
+	private JobDetail buildJobDetail(JobRule aspectJobAdviceRule, int index) {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
@@ -281,7 +281,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
+		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
 		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
 
 		return JobBuilder.newJob(ActivityLauncherJob.class)

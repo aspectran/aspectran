@@ -61,9 +61,10 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	protected void addSettings(Map<String, Object> settings) {
 		if(settings != null) {
 			if(this.settings == null) {
-				this.settings = new HashMap<>();
+				this.settings = new HashMap<>(settings);
+			} else {
+				this.settings.putAll(settings);
 			}
-			this.settings.putAll(settings);
 		}
 	}
 
@@ -104,32 +105,32 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	}
 
 	public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
-		if(settingsAdviceRuleList == null)
+		if(settingsAdviceRuleList == null) {
 			settingsAdviceRuleList = new ArrayList<>();
-
+		}
 		settingsAdviceRuleList.add(settingsAdviceRule);
 
 		addSettings(settingsAdviceRule.getSettings());
 	}
 
 	public void addBeforeAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if(beforeAdviceRuleList == null)
+		if(beforeAdviceRuleList == null) {
 			beforeAdviceRuleList = new ArrayList<>();
-
+		}
 		beforeAdviceRuleList.add(aspectAdviceRule);
 	}
 
 	public void addAfterAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if(afterAdviceRuleList == null)
+		if(afterAdviceRuleList == null) {
 			afterAdviceRuleList = new ArrayList<>();
-
+		}
 		afterAdviceRuleList.add(0, aspectAdviceRule);
 	}
 
 	public void addFinallyAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if(finallyAdviceRuleList == null)
+		if(finallyAdviceRuleList == null) {
 			finallyAdviceRuleList = new ArrayList<>();
-
+		}
 		finallyAdviceRuleList.add(0, aspectAdviceRule);
 	}
 
@@ -155,9 +156,9 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	}
 
 	public void addExceptionRule(ExceptionRule exceptionRule) {
-		if(exceptionRuleList == null)
+		if(exceptionRuleList == null) {
 			exceptionRuleList = new ArrayList<>();
-
+		}
 		exceptionRuleList.add(0, exceptionRule);
 	}
 

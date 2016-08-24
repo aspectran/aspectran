@@ -60,7 +60,7 @@ import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.assistant.DefaultSettings;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -197,10 +197,28 @@ public class RootAponAssembler {
 		Parameters aspectParameters = new AspectParameters();
 		aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
 		aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
-		aspectParameters.putValueNonNull(AspectParameters.useFor, aspectRule.getAspectTargetType());
+		aspectParameters.putValueNonNull(AspectParameters.usedFor, aspectRule.getAspectTargetType());
 		
 		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
 		joinpointParameters.putValueNonNull(JoinpointParameters.scope, aspectRule.getJoinpointScope());
+		
+		MethodType[] targetMethods = aspectRule.getTargetMethods();
+		if(targetMethods != null) {
+			for(MethodType targetMethod : targetMethods) {
+				joinpointParameters.putValue(JoinpointParameters.methods, targetMethod);
+			}
+		}
+		
+		MethodType[] targetHeaders = aspectRule.getTargetMethods();
+		if(targetHeaders != null) {
+			for(MethodType targetHeader : targetHeaders) {
+				joinpointParameters.putValue(JoinpointParameters.methods, targetHeader);
+			}
+		}
+		
+		joinpointParameters.putValueNonNull(JoinpointParameters.simpleTrigger, aspectRule.getSimpleTriggerParameters());
+		joinpointParameters.putValueNonNull(JoinpointParameters.cronTrigger, aspectRule.getCronTriggerParameters());
+
 		
 		PointcutRule pointcutRule = aspectRule.getPointcutRule();
 		if(pointcutRule != null) {
@@ -304,10 +322,10 @@ public class RootAponAssembler {
 			}
 		}
 		
-		List<AspectJobAdviceRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
+		List<JobRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
 		if(aspectJobAdviceRuleList != null) {
 			Parameters adviceParameters = aspectParameters.touchParameters(AspectParameters.advice);
-			for(AspectJobAdviceRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
+			for(JobRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
 				Parameters jobParameters = new JobParameters();
 				jobParameters.putValue(JobParameters.translet, aspectJobAdviceRule.getJobTransletName());
 				jobParameters.putValueNonNull(JobParameters.disabled, aspectJobAdviceRule.getDisabled());

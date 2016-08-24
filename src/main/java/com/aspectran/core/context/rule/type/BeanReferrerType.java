@@ -23,6 +23,7 @@ package com.aspectran.core.context.rule.type;
 public enum BeanReferrerType {
 
 	ASPECT_RULE("aspectRule"),
+	SCHEDULE_RULE("scheduleRule"),
 	BEAN_ACTION_RULE("beanActionRule"),
 	BEAN_RULE("beanRule"),
 	TOKEN("token"),

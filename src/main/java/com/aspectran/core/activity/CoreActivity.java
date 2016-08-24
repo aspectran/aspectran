@@ -804,9 +804,9 @@ public class CoreActivity extends AbstractActivity {
 								requestMethod.containsTo(aspectRule.getAllowedMethods())) {
 							Pointcut pointcut = aspectRule.getPointcut();
 							if(pointcut == null || pointcut.matches(transletRule.getName())) {
-								if(debugEnabled)
+								if(debugEnabled) {
 									log.debug("register AspectRule " + aspectRule);
-	
+								}
 								if(joinpointScope == JoinpointScopeType.REQUEST) {
 									requestAARPostRegister.register(aspectRule);
 								} else if(joinpointScope == JoinpointScopeType.CONTENT) {
@@ -839,7 +839,7 @@ public class CoreActivity extends AbstractActivity {
 		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 		/*
-		 * before-advice is excluded because it is already processed.
+		 * The before advice is excluded because it was already executed.
 		 */
 		if(joinpointScope == JoinpointScopeType.TRANSLET || joinpointScope == currentJoinpointScope) {
 			if(debugEnabled)

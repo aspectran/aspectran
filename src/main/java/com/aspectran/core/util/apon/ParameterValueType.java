@@ -59,25 +59,21 @@ public enum ParameterValueType {
 
 	public static ParameterValueType resolveByHint(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		
 		if(hintStartIndex > 0) {
 			int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
-			
 			if(hintEndIndex > hintStartIndex) {
 				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
 				return resolve(typeHint);
 			}
 		}
-
 		return null;
 	}
 	
 	public static String stripHintedValueType(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		
-		if(hintStartIndex > 0)
+		if(hintStartIndex > 0) {
 			return name.substring(0, hintStartIndex);
-		
+		}
 		return name;
 	}
 
@@ -85,10 +81,11 @@ public enum ParameterValueType {
 		ParameterValueType type;
 
 		if(value instanceof String) {
-			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
+			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
 				type = ParameterValueType.STRING;
-			else
+			} else {
 				type = ParameterValueType.TEXT;
+			}
 		} else if(value instanceof Integer) {
 			type = ParameterValueType.INT;
 		} else if(value instanceof Long) {

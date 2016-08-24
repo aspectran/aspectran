@@ -48,7 +48,7 @@ import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -209,7 +209,7 @@ public class RootAponDisassembler {
 	private void disassembleAspectRule(Parameters aspectParameters) {
 		String description = aspectParameters.getString(AspectParameters.description);
 		String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
-		String useFor = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.useFor));
+		String useFor = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.usedFor));
 
 		if(id == null) {
 			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
@@ -224,7 +224,7 @@ public class RootAponDisassembler {
 		String scope = joinpointParameters.getString(JoinpointParameters.scope);
 		String method = joinpointParameters.getString(JoinpointParameters.method);
 		AspectRule.updateJoinpointScope(aspectRule, scope);
-		AspectRule.updateAllowedMethods(aspectRule, method);
+		AspectRule.updateTargetMethods(aspectRule, method);
 		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
 		if(pointcutParameters != null) {
@@ -289,7 +289,7 @@ public class RootAponDisassembler {
 
 					translet = assistant.applyTransletNamePattern(translet);
 
-					AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
+					JobRule ajar = JobRule.newInstance(aspectRule, translet, disabled);
 					aspectRule.addAspectJobAdviceRule(ajar);
 				}
 			}

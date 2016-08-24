@@ -16,16 +16,16 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Type of AspectTarget.
+ * The enum TriggerType.
  */
-public enum AspectTargetType {
+public enum TriggerType {
 
-	TRANSLET("translet"),
-	SCHEDULER("scheduler");
+	CRON("cron"),
+	SIMPLE("simple");
 
 	private final String alias;
 
-	AspectTargetType(String alias) {
+	TriggerType(String alias) {
 		this.alias = alias;
 	}
 
@@ -35,14 +35,14 @@ public enum AspectTargetType {
 	}
 
 	/**
-	 * Returns an {@code AspectTargetType} with a value represented
+	 * Returns a {@code TriggerType} with a value represented
 	 * by the specified {@code String}.
 	 *
-	 * @param alias the aspect target type as a {@code String}
-	 * @return an {@code AspectTargetType}, may be {@code null}
+	 * @param alias the trigger type as a {@code String}
+	 * @return a {@code TriggerType}, may be {@code null}
 	 */
-	public static AspectTargetType resolve(String alias) {
-		for(AspectTargetType type : values()) {
+	public static TriggerType resolve(String alias) {
+		for(TriggerType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
 		}

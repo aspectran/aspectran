@@ -21,26 +21,21 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition targets;
-
-	// for scheduler
-	public static final ParameterDefinition simpleTrigger;
-	public static final ParameterDefinition cronTrigger;
+	public static final ParameterDefinition translet;
+	public static final ParameterDefinition bean;
+	public static final ParameterDefinition method;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		targets = new ParameterDefinition("target", TargetParameters.class, true, true);
-		simpleTrigger = new ParameterDefinition("simpleTrigger", SimpleTriggerParameters.class);
-		cronTrigger = new ParameterDefinition("cronTrigger", CronTriggerParameters.class);
+		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+		method = new ParameterDefinition("method", ParameterValueType.STRING);
 		
 		parameterDefinitions = new ParameterDefinition[] {
-			type,
-			targets,
-			simpleTrigger,
-			cronTrigger
+			translet,
+			bean,
+			method
 		};
 	}
 	

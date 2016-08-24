@@ -70,12 +70,6 @@
 <!ELEMENT around  (echo | action)>
 <!ELEMENT finally (echo | action)>
 
-<!ELEMENT job EMPTY>
-<!ATTLIST job
-  translet CDATA #REQUIRED
-  disabled (true | false) #IMPLIED
-  >
-
 <!ELEMENT exception (description?, action?, responseByContentType*)>
 
 <!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
@@ -266,6 +260,27 @@
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
   property  CDATA #IMPLIED
+  >
+
+<!ELEMENT schedule (description?, trigger, scheduler)>
+<!ATTLIST schedule
+  id      ID #IMPLIED
+  >
+
+<!ELEMENT trigger (#PCDATA)>
+<!ATTLIST trigger
+  type    CDATA #IMPLIED
+  >
+
+<!ELEMENT scheduler (job*)>
+<!ATTLIST scheduler
+  bean    CDATA #REQUIRED
+  >
+
+<!ELEMENT job EMPTY>
+<!ATTLIST job
+  translet CDATA #REQUIRED
+  disabled (true | false) #IMPLIED
   >
 
 <!ELEMENT null EMPTY>

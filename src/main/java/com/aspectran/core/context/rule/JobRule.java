@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -24,34 +23,18 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class AspectJobAdviceRule {
+public class JobRule {
 
-	private String aspectId;
-	
-	private final AspectAdviceType aspectAdviceType = AspectAdviceType.JOB;
-	
-	private String jobTransletName;
+	private String transletName;
 	
 	private Boolean disabled;
 
-	public String getAspectId() {
-		return aspectId;
+	public String getTransletName() {
+		return transletName;
 	}
 
-	public void setAspectId(String aspectId) {
-		this.aspectId = aspectId;
-	}
-
-	public AspectAdviceType getAspectAdviceType() {
-		return aspectAdviceType;
-	}
-
-	public String getJobTransletName() {
-		return jobTransletName;
-	}
-
-	public void setJobTransletName(String jobTransletName) {
-		this.jobTransletName = jobTransletName;
+	public void setTransletName(String transletName) {
+		this.transletName = transletName;
 	}
 
 	public Boolean getDisabled() {
@@ -69,20 +52,16 @@ public class AspectJobAdviceRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("aspectId", aspectId);
-		tsb.append("aspectAdviceType", aspectAdviceType);
-		tsb.append("jobTransletName", jobTransletName);
+		tsb.append("transletName", transletName);
 		tsb.append("disabled", disabled);
 		return tsb.toString();
 	}
 	
-	public static AspectJobAdviceRule newInstance(AspectRule aspectRule, String transletName, Boolean disabled) {
-		AspectJobAdviceRule ajar = new AspectJobAdviceRule();
-		ajar.setAspectId(aspectRule.getId());
-		ajar.setJobTransletName(transletName);
-		ajar.setDisabled(disabled);
-		
-		return ajar;
+	public static JobRule newInstance(String transletName, Boolean disabled) {
+		JobRule jobRule = new JobRule();
+		jobRule.setTransletName(transletName);
+		jobRule.setDisabled(disabled);
+		return jobRule;
 	}
 	
 }

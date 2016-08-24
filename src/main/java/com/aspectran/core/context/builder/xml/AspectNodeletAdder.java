@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -70,7 +70,7 @@ class AspectNodeletAdder implements NodeletAdder {
 
             AspectRule aspectRule = assistant.peekObject();
             AspectRule.updateJoinpointScope(aspectRule, scope);
-            AspectRule.updateAllowedMethods(aspectRule, method);
+            AspectRule.updateTargetMethods(aspectRule, method);
         });
 		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut", (node, attributes, text) -> {
             String type = StringUtils.emptyToNull(attributes.get("type"));
@@ -181,7 +181,7 @@ class AspectNodeletAdder implements NodeletAdder {
 
 			AspectRule ar = assistant.peekObject();
 
-            AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
+            JobRule ajar = JobRule.newInstance(ar, transletName, disabled);
             ar.addAspectJobAdviceRule(ajar);
         });
 		parser.addNodelet(xpath, "/aspect/end()", (node, attributes, text) -> {

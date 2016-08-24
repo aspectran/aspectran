@@ -42,7 +42,7 @@ public class ActivityLauncherJob implements Job {
 		try {
 			JobDetail jobDetail = jobExecutionContext.getJobDetail();
 			JobDataMap jobDataMap = jobDetail.getJobDataMap();
-			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ASPECTRAN_CONTEXT_DATA_KEY);
+			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ACTIVITY_CONTEXT_DATA_KEY);
 			String transletName = jobDataMap.getString(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY);
 			
 			runActivity(context, transletName, jobDetail);

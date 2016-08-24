@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
-import com.aspectran.core.context.builder.apon.params.TargetParameters;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -35,11 +33,9 @@ public class PointcutRule {
 	
 	private List<PointcutPatternRule> pointcutPatternRuleList;
 	
-	private List<Parameters> targetParametersList;
+	private List<Parameters> includePointcutParametersList;
 	
-	private Parameters simpleTriggerParameters;
-	
-	private Parameters cronTriggerParameters;
+	private List<Parameters> excludePointcutParametersList;
 	
 	public PointcutRule(PointcutType pointcutType) {
 		this.pointcutType = pointcutType;
@@ -57,7 +53,6 @@ public class PointcutRule {
 		for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 			ppr.setPointcutType(pointcutType);
 		}
-
 		this.pointcutPatternRuleList = pointcutPatternRuleList;
 	}
 	
@@ -65,7 +60,6 @@ public class PointcutRule {
 		for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 			ppr.setPointcutType(pointcutType);
 		}
-		
 		if(this.pointcutPatternRuleList == null) {
 			this.pointcutPatternRuleList = pointcutPatternRuleList;
 		} else {
@@ -75,9 +69,7 @@ public class PointcutRule {
 	
 	public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
 		pointcutPatternRule.setPointcutType(pointcutType);
-
 		touchPointcutPatternRuleList();
-
 		pointcutPatternRuleList.add(pointcutPatternRule);
 	}
 	
@@ -85,7 +77,6 @@ public class PointcutRule {
 		if(pointcutPatternRuleList == null) {
 			pointcutPatternRuleList = newPointcutPatternRuleList();
 		}
-		
 		return pointcutPatternRuleList;
 	}
 
@@ -93,44 +84,43 @@ public class PointcutRule {
 		return new ArrayList<PointcutPatternRule>();
 	}
 
-	public List<Parameters> touchTargetParametersList() {
-		if(targetParametersList == null)
-			targetParametersList = new ArrayList<Parameters>();
-		
-		return targetParametersList;
+	public List<Parameters> touchIncludeTargetParametersList() {
+		if(includePointcutParametersList == null) {
+			includePointcutParametersList = new ArrayList<Parameters>();
+		}
+		return includePointcutParametersList;
 	}
 
-	public List<Parameters> getTargetParametersList() {
-		return targetParametersList;
+	public List<Parameters> getIncludeTargetParametersList() {
+		return includePointcutParametersList;
 	}
 	
-	public void setTargetParametersList(List<Parameters> targetParametersList) {
-		this.targetParametersList = targetParametersList;
+	public void setIncludeTargetParametersList(List<Parameters> includeTargetParametersList) {
+		this.includePointcutParametersList = includeTargetParametersList;
 	}
 
-	public Parameters getSimpleTriggerParameters() {
-		return simpleTriggerParameters;
-	}
-
-	public void setSimpleTriggerParameters(Parameters simpleTriggerParameters) {
-		this.simpleTriggerParameters = simpleTriggerParameters;
+	public List<Parameters> touchExcludeTargetParametersList() {
+		if(excludePointcutParametersList == null) {
+			excludePointcutParametersList = new ArrayList<Parameters>();
+		}
+		return excludePointcutParametersList;
 	}
 	
-	public Parameters getCronTriggerParameters() {
-		return cronTriggerParameters;
+	public List<Parameters> getExcludeTargetParametersList() {
+		return excludePointcutParametersList;
 	}
-
-	public void setCronTriggerParameters(Parameters cronTriggerParameters) {
-		this.cronTriggerParameters = cronTriggerParameters;
+	
+	public void setExcludeTargetParametersList(List<Parameters> excludeTargetParametersList) {
+		this.excludePointcutParametersList = excludeTargetParametersList;
 	}
-
+	
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("pointcutType", pointcutType);
 		tsb.append("pointcutPatternRule", pointcutPatternRuleList);
-		tsb.append("simpleTriggerParameters", simpleTriggerParameters);
-		tsb.append("cronTriggerParameters", cronTriggerParameters);
+		tsb.append("includePointcutParametersList", includePointcutParametersList);
+		tsb.append("excludePointcutParametersList", excludePointcutParametersList);
 		return tsb.toString();
 	}
 	
@@ -146,6 +136,12 @@ public class PointcutRule {
 	public static PointcutRule newInstance(AspectRule aspectRule, String type, Parameters pointcutParameters) {
 		PointcutRule pointcutRule = null;
 
+		if(aspectRule.getSimpleTriggerParameters() != null || aspectRule.getCronTriggerParameters() != null) {
+			aspectRule.setAspectTargetType(AspectTargetType.SCHEDULER);
+		} else {
+			aspectRule.setAspectTargetType(AspectTargetType.TRANSLET);
+		}
+		
 		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
 			PointcutType pointcutType = null;
 			Parameters simpleTriggerParameters = null;
@@ -208,62 +204,6 @@ public class PointcutRule {
 		}
 
 		return pointcutRule;
-	}
-
-	private static List<PointcutPatternRule> addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, Parameters targetParameters) {
-		String translet = targetParameters.getString(TargetParameters.translet);
-		String bean = targetParameters.getString(TargetParameters.bean);
-		String method = targetParameters.getString(TargetParameters.method);
-		List<Parameters> excludeTargetParametersList = targetParameters.getParametersList(TargetParameters.excludeTargets);
-		
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method) || (excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty())) {
-			PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(translet, bean, method);
-			
-			if(excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty()) {
-				for(Parameters excludeTargetParameters : excludeTargetParametersList) {
-					addExcludePointcutPatternRule(pointcutPatternRule, excludeTargetParameters);
-				}
-			}
-			
-			pointcutPatternRuleList.add(pointcutPatternRule);
-		}
-		
-		List<String> plusPatternStringList = targetParameters.getStringList(TargetParameters.pluses);
-		List<String> minusPatternStringList = targetParameters.getStringList(TargetParameters.minuses);
-		
-		List<PointcutPatternRule> minusPointcutPatternRuleList = null;
-		
-		if(minusPatternStringList != null && !minusPatternStringList.isEmpty()) {
-			minusPointcutPatternRuleList = new ArrayList<PointcutPatternRule>(minusPatternStringList.size());
-			
-			for(String patternString : minusPatternStringList) {
-				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
-				minusPointcutPatternRuleList.add(pointcutPatternRule);
-			}
-		}
-		
-		if(plusPatternStringList != null && !plusPatternStringList.isEmpty()) {
-			for(String patternString : plusPatternStringList) {
-				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
-				if(minusPointcutPatternRuleList != null)
-					pointcutPatternRule.setExcludePointcutPatternRuleList(minusPointcutPatternRuleList);
-				
-				pointcutPatternRuleList.add(pointcutPatternRule);
-			}
-		}
-		
-		return pointcutPatternRuleList;
-	}
-
-	private static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, Parameters excludeTargetParameters) {
-		String translet = excludeTargetParameters.getString(TargetParameters.translet);
-		String bean = excludeTargetParameters.getString(TargetParameters.bean);
-		String method = excludeTargetParameters.getString(TargetParameters.method);
-
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-			PointcutPatternRule ppr = PointcutPatternRule.newInstance(translet, bean, method);
-			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
-		}
 	}
 
 }
