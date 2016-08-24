@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.request.parser;
+package com.aspectran.web.activity.request;
 
 import com.aspectran.core.activity.request.RequestException;
 
 /**
- * The Class RequestParseException.
- *
- * @since 2.3.0
+ * Exception thrown when request parse fails.
  */
 public class RequestParseException extends RequestException {
 
@@ -37,26 +35,17 @@ public class RequestParseException extends RequestException {
 	/**
 	 * Constructor to create exception with a message.
 	 *
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public RequestParseException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
-	 *
-	 * @param cause The real cause of the exception
-	 */
-	public RequestParseException(Throwable cause) {
-		super(cause);
-	}
-
-	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 *
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public RequestParseException(String msg, Throwable cause) {
 		super(msg, cause);

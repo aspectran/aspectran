@@ -71,7 +71,7 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class AspectRule implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.ASPECT_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.ASPECT_RULE;
 
 	private String id;
 
@@ -84,11 +84,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	private PointcutRule pointcutRule;
 	
 	private Pointcut pointcut;
-	
-	private Parameters simpleTriggerParameters;
-	
-	private Parameters cronTriggerParameters;
-	
+
 	private String adviceBeanId;
 
 	private Class<?> adviceBeanClass;
@@ -96,8 +92,6 @@ public class AspectRule implements BeanReferenceInspectable {
 	private SettingsAdviceRule settingsAdviceRule;
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
-	
-	private List<JobRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
 	private ExceptionRule exceptionRule;
 	
@@ -153,22 +147,6 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.pointcut = pointcut;
 	}
 
-	public Parameters getSimpleTriggerParameters() {
-		return simpleTriggerParameters;
-	}
-
-	public void setSimpleTriggerParameters(Parameters simpleTriggerParameters) {
-		this.simpleTriggerParameters = simpleTriggerParameters;
-	}
-	
-	public Parameters getCronTriggerParameters() {
-		return cronTriggerParameters;
-	}
-
-	public void setCronTriggerParameters(Parameters cronTriggerParameters) {
-		this.cronTriggerParameters = cronTriggerParameters;
-	}
-	
 	public String getAdviceBeanId() {
 		return adviceBeanId;
 	}
@@ -210,21 +188,6 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectAdviceRuleList.add(aspectAdviceRule);
 	}
 
-	public List<JobRule> getAspectJobAdviceRuleList() {
-		return aspectJobAdviceRuleList;
-	}
-
-	public void setAspectJobAdviceRuleList(List<JobRule> aspectJobAdviceRuleList) {
-		this.aspectJobAdviceRuleList = aspectJobAdviceRuleList;
-	}
-	
-	public void addAspectJobAdviceRule(JobRule aspectJobAdviceRule) {
-		if(aspectJobAdviceRuleList == null) {
-			aspectJobAdviceRuleList = new ArrayList<JobRule>();
-		}
-		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
-	}
-
 	public ExceptionRule getExceptionRule() {
 		return exceptionRule;
 	}
@@ -261,7 +224,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	@Override

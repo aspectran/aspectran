@@ -308,14 +308,22 @@ public interface Activity extends BeanRegistry {
 	 * @return the setting value
 	 */
 	<T> T getResponseSetting(String settingName);
-	
+
+	/**
+	 * Returns whether or not to accept aspect rule.
+	 *
+	 * @param aspectRule the aspect rule
+	 * @return true, if acceptable
+	 */
+	boolean isAcceptable(AspectRule aspectRule);
+
 	/**
 	 * Register an aspect rule.
 	 *
 	 * @param aspectRule an aspect rule
 	 */
 	void registerAspectRule(AspectRule aspectRule);
-	
+
 	/**
 	 * Gets the aspect advice bean.
 	 *

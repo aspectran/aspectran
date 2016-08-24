@@ -40,7 +40,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	private static final String DEFAULT_TEMPLATE_ENGINE_NAME = "builtin";
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TEMPLATE_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
 	private String id;
 
@@ -304,7 +304,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	@Override

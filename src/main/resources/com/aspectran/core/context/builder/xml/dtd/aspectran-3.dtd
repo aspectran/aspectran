@@ -18,7 +18,7 @@
 
 <!ELEMENT aspectran (
     description?,
-    (settings? | environment* | typeAliases* | aspect* | bean* | template* | translet* | import*)*
+    (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
   )>
 
 <!ELEMENT description (#PCDATA)>
@@ -57,10 +57,10 @@
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
-  type    (wildcard | regexp | simple-trigger | cron-trigger) #IMPLIED
+  type    (wildcard | regexp) #IMPLIED
   >
 
-<!ELEMENT advice ((before?, after?, around?, finally?) | job*)>
+<!ELEMENT advice (before?, after?, around?, finally?)>
 <!ATTLIST advice
   bean    CDATA #IMPLIED
   >
@@ -122,6 +122,27 @@
   url      CDATA #IMPLIED
   encoding CDATA #IMPLIED
   noCache  (true | false) #IMPLIED
+  >
+
+<!ELEMENT schedule (description?, trigger, scheduler)>
+<!ATTLIST schedule
+  id      ID #IMPLIED
+  >
+
+<!ELEMENT trigger (#PCDATA)>
+<!ATTLIST trigger
+  type    CDATA #IMPLIED
+  >
+
+<!ELEMENT scheduler (job*)>
+<!ATTLIST scheduler
+  bean    CDATA #REQUIRED
+  >
+
+<!ELEMENT job EMPTY>
+<!ATTLIST job
+  translet CDATA #REQUIRED
+  disabled (true | false) #IMPLIED
   >
 
 <!ELEMENT translet (
@@ -260,27 +281,6 @@
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
   property  CDATA #IMPLIED
-  >
-
-<!ELEMENT schedule (description?, trigger, scheduler)>
-<!ATTLIST schedule
-  id      ID #IMPLIED
-  >
-
-<!ELEMENT trigger (#PCDATA)>
-<!ATTLIST trigger
-  type    CDATA #IMPLIED
-  >
-
-<!ELEMENT scheduler (job*)>
-<!ATTLIST scheduler
-  bean    CDATA #REQUIRED
-  >
-
-<!ELEMENT job EMPTY>
-<!ATTLIST job
-  translet CDATA #REQUIRED
-  disabled (true | false) #IMPLIED
   >
 
 <!ELEMENT null EMPTY>

@@ -38,11 +38,9 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable {
 
-	public static final String CLASS_DIRECTIVE = "class";
-
 	public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_RULE;
 
 	private String id;
 
@@ -708,7 +706,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 	
 	@Override

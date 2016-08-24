@@ -60,6 +60,8 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import sun.font.TrueTypeFont;
+
 /**
  * The Class CoreActivity.
  *
@@ -120,7 +122,7 @@ public class CoreActivity extends AbstractActivity {
 	@Override
 	public void prepare(String transletName) {
 		this.transletName = transletName;
-		this.requestMethod = null;
+		this.requestMethod = MethodType.GET;
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
@@ -143,7 +145,7 @@ public class CoreActivity extends AbstractActivity {
 
 	private void prepare(String transletName, MethodType requestMethod, ProcessResult processResult) {
 		this.transletName = transletName;
-		this.requestMethod = requestMethod;
+		this.requestMethod = (requestMethod == null ? MethodType.GET : requestMethod;
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
@@ -793,29 +795,23 @@ public class CoreActivity extends AbstractActivity {
 			AspectAdviceRulePostRegister responseAARPostRegister = new AspectAdviceRulePostRegister();
 
 			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRuleMap().values()) {
-				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+				JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
-				if(aspectTargetType == AspectTargetType.TRANSLET) {
-					JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
-
-					if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
-						if(requestMethod == null ||
-								aspectRule.getAllowedMethods() == null ||
-								requestMethod.containsTo(aspectRule.getAllowedMethods())) {
-							Pointcut pointcut = aspectRule.getPointcut();
-							if(pointcut == null || pointcut.matches(transletRule.getName())) {
-								if(debugEnabled) {
-									log.debug("register AspectRule " + aspectRule);
-								}
-								if(joinpointScope == JoinpointScopeType.REQUEST) {
-									requestAARPostRegister.register(aspectRule);
-								} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-									contentAARPostRegister.register(aspectRule);
-								} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-									responseAARPostRegister.register(aspectRule);
-								} else {
-									transletAARPostRegister.register(aspectRule);
-								}
+				if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
+					if(isAcceptable(aspectRule)) {
+						Pointcut pointcut = aspectRule.getPointcut();
+						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+							if(debugEnabled) {
+								log.debug("register AspectRule " + aspectRule);
+							}
+							if(joinpointScope == JoinpointScopeType.REQUEST) {
+								requestAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointScopeType.CONTENT) {
+								contentAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
+								responseAARPostRegister.register(aspectRule);
+							} else {
+								transletAARPostRegister.register(aspectRule);
 							}
 						}
 					}
@@ -830,20 +826,31 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	@Override
+	public boolean isAcceptable(AspectRule aspectRule) {
+		if(aspectRule.getTargetMethods() != null) {
+			if(requestMethod == null || !requestMethod.containsTo(aspectRule.getTargetMethods()))
+				return false;
+		}
+
+		//TODO check headers
+
+		return true;
+	}
+
+	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
-		if(requestMethod != null &&
-				aspectRule.getAllowedMethods() != null &&
-				!requestMethod.containsTo(aspectRule.getAllowedMethods()))
+		if(!isAcceptable(aspectRule))
 			return;
-		
+
 		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 		/*
 		 * The before advice is excluded because it was already executed.
 		 */
 		if(joinpointScope == JoinpointScopeType.TRANSLET || joinpointScope == currentJoinpointScope) {
-			if(debugEnabled)
+			if(debugEnabled) {
 				log.debug("register AspectRule " + aspectRule);
+			}
 			
 			if(JoinpointScopeType.TRANSLET == joinpointScope) {
 				if(transletAspectAdviceRuleRegistry == null) {

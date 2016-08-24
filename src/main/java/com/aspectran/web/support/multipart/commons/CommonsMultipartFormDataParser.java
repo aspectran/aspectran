@@ -39,8 +39,8 @@ import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.request.multipart.MultipartRequestException;
+import com.aspectran.web.activity.request.MultipartFormDataParser;
+import com.aspectran.web.activity.request.MultipartRequestParseException;
 
 /**
  * Multi-part form data parser for Apache Commons FileUpload.
@@ -49,15 +49,13 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
 	private static final Log log = LogFactory.getLog(CommonsMultipartFormDataParser.class);
 
-	/** The constant DEFAULT_MAX_REQUEST_SIZE. */
-	private static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
-
-	/** The constant DEFAULT_SIZE_THRESHOLD. */
-	private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
-
 	private String tempDirectoryPath;
 
-	private long maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
+	private long maxRequestSize = -1L;
+
+	private long maxFileSize = -1L;
+
+	private int maxInMemorySize = -1;
 
 	private String allowedFileExtensions;
 
@@ -76,32 +74,31 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
 	@Override
 	public void setTempDirectoryPath(String tempDirectoryPath) {
+		File tempDirectory = new File(tempDirectoryPath);
+		if(!tempDirectory.exists() && !tempDirectory.mkdirs()) {
+			throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
+		}
 		this.tempDirectoryPath = tempDirectoryPath;
 	}
 
 	@Override
-	public long getMaxRequestSize() {
-		return maxRequestSize;
+	public void setMaxRequestSize(long maxRequestSize) {
+		this.maxRequestSize = maxRequestSize;
 	}
 
 	@Override
-	public void setMaxRequestSize(long maxSize) {
-		this.maxRequestSize = maxSize;
+	public void setMaxFileSize(long maxFileSize) {
+		this.maxFileSize = maxFileSize;
 	}
 
 	@Override
-	public String getAllowedFileExtensions() {
-		return allowedFileExtensions;
+	public void setMaxInMemorySize(int maxInMemorySize) {
+		this.maxInMemorySize = maxInMemorySize;
 	}
 
 	@Override
 	public void setAllowedFileExtensions(String allowedFileExtensions) {
 		this.allowedFileExtensions = allowedFileExtensions;
-	}
-
-	@Override
-	public String getDeniedFileExtensions() {
-		return deniedFileExtensions;
 	}
 
 	@Override
@@ -113,7 +110,9 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 	public void parse(RequestAdapter requestAdapter) {
 		try {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
-			factory.setSizeThreshold(DEFAULT_SIZE_THRESHOLD);
+			if(maxInMemorySize > -1) {
+				factory.setSizeThreshold(maxInMemorySize);
+			}
 
 			if(tempDirectoryPath != null) {
 				File repository = new File(tempDirectoryPath);
@@ -124,8 +123,13 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 			}
 
 			FileUpload upload = new ServletFileUpload(factory);
-			upload.setSizeMax(maxRequestSize);
 			upload.setHeaderEncoding(requestAdapter.getCharacterEncoding());
+			if(maxRequestSize > -1) {
+				upload.setSizeMax(maxRequestSize);
+			}
+			if(maxFileSize > -1){
+				upload.setFileSizeMax(maxFileSize);
+			}
 
 			Map<String, List<FileItem>> fileItemListMap;
 
@@ -140,7 +144,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
 			parseMultipart(fileItemListMap, requestAdapter);
 		} catch(Exception e) {
-			throw new MultipartRequestException("Could not parse multipart servlet request.", e);
+			throw new MultipartRequestParseException("Could not parse multipart servlet request.", e);
 		}
 	}
 
@@ -149,9 +153,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 	 *
 	 * @param fileItemListMap the file item list map
 	 * @param requestAdapter the request adapter
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) throws UnsupportedEncodingException {
+	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) {
 		String characterEncoding = requestAdapter.getCharacterEncoding();
 		MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
 		MultiValueMap<String, FileParameter> fileParameterMap = new LinkedMultiValueMap<>();
@@ -177,8 +180,14 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 						if(!valid)
 							continue;
 
-						FileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
+						CommonsMultipartFileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
 						fileParameterMap.add(fieldName, fileParameter);
+
+						if(log.isDebugEnabled()) {
+							log.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
+									fileParameter.getFileSize() + " bytes, stored " +
+									fileParameter.getStorageDescription());
+						}
 					}
 				}
 			}
@@ -203,12 +212,20 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 		}
 	}
 	
-	private String getString(FileItem fileItem, String characterEncoding) throws UnsupportedEncodingException {
+	private String getString(FileItem fileItem, String characterEncoding) {
+		String value;
 		if(characterEncoding != null) {
-			return fileItem.getString(characterEncoding);
+			try {
+				value = fileItem.getString(characterEncoding);
+			} catch(UnsupportedEncodingException ex) {
+				log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
+						"' with encoding '" + characterEncoding + "': using platform default.");
+				value = fileItem.getString();
+			}
 		} else {
-			return fileItem.getString();
+			value = fileItem.getString();
 		}
+		return value;
 	}
 
 	/**

@@ -75,8 +75,9 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 					log.trace(sb.toString());
 				}
 
-				if(aarr.getBeforeAdviceRuleList() != null)
+				if(aarr.getBeforeAdviceRuleList() != null) {
 					activity.execute(aarr.getBeforeAdviceRuleList());
+				}
 
 				Object result;
 
@@ -86,14 +87,15 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 					result = null;
 				}
 
-				if(aarr.getAfterAdviceRuleList() != null)
+				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
+				}
 
 				return result;
 			} finally {
-				if(aarr.getFinallyAdviceRuleList() != null)
+				if(aarr.getFinallyAdviceRuleList() != null) {
 					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
-
+				}
 				if(log.isTraceEnabled()) {
 					log.trace("end method " + methodName);
 				}

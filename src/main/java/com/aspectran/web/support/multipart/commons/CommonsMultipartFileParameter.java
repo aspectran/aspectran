@@ -203,4 +203,19 @@ public class CommonsMultipartFileParameter extends FileParameter {
 		return (this.fileItem.getSize() == this.fileSize);
 	}
 
+	/**
+	 * Return a description for the storage location of the multipart content.
+	 * Tries to be as specific as possible: mentions the file location in case
+	 * of a temporary file.
+	 */
+	public String getStorageDescription() {
+		if(this.fileItem.isInMemory()) {
+			return "in memory";
+		} else if(this.fileItem instanceof DiskFileItem) {
+			return "at [" + ((DiskFileItem)this.fileItem).getStoreLocation().getAbsolutePath() + "]";
+		} else {
+			return "on disk";
+		}
+	}
+
 }

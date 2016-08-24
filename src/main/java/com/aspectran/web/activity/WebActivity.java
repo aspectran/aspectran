@@ -31,9 +31,9 @@ import com.aspectran.core.context.locale.LocaleResolver;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.request.multipart.MultipartRequestException;
-import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
+import com.aspectran.web.activity.request.MultipartFormDataParser;
+import com.aspectran.web.activity.request.MultipartRequestParseException;
+import com.aspectran.web.activity.request.HttpPutFormContentParser;
 import com.aspectran.web.activity.response.GZipServletResponseWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -167,12 +167,12 @@ public class WebActivity extends CoreActivity {
 	private void parseMultipartFormData() {
 		String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
 		if(multipartFormDataParser == null) {
-			throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
+			throw new MultipartRequestParseException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
 		}
 
 		MultipartFormDataParser parser = getBean(multipartFormDataParser);
 		if(parser == null) {
-			throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
+			throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
 		}
 
 		parser.parse(getRequestAdapter());

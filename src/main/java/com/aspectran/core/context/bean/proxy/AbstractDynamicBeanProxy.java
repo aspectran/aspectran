@@ -27,7 +27,6 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -56,7 +55,9 @@ public abstract class AbstractDynamicBeanProxy {
 				activity.registerAspectRule(aspectRule);
 			}
 		}
-		
+
+		//TODO
+
 		return holder.getAspectAdviceRuleRegistry();
 	}
 	
@@ -84,17 +85,15 @@ public abstract class AbstractDynamicBeanProxy {
 		return holder;
 	}
 
-	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
+	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(
+			String transletName, String beanId, String className, String methodName) {
 		Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
 		List<AspectRule> activityAspectRuleList = new ArrayList<>();
 
 		for(AspectRule aspectRule : aspectRuleMap.values()) {
-			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
-			
-			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
+			if(aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
-
 				if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
 					if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
 						postRegister.register(aspectRule);

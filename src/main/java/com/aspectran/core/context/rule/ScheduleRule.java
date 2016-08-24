@@ -34,7 +34,7 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class ScheduleRule implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.SCHEDULE_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.SCHEDULE_RULE;
 
 	private String id;
 	
@@ -116,7 +116,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	@Override

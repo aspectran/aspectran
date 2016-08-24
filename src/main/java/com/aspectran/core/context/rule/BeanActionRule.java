@@ -32,7 +32,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
 	private String actionId;
 
@@ -219,7 +219,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 	
 	@Override

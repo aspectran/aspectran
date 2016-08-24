@@ -43,7 +43,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class Token implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TOKEN;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TOKEN;
 
 	public static final char PARAMETER_SYMBOL = '$';
 
@@ -187,7 +187,7 @@ public class Token implements BeanReferenceInspectable {
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	public String stringify() {
