@@ -29,6 +29,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -121,6 +122,20 @@ public interface Activity extends BeanRegistry {
 	void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
+	 * Execute the aspect advice.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 */
+	void execute(AspectAdviceRule aspectAdviceRule);
+	
+	/**
+	 * Execute the aspect advice without throw exceptions.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 */
+	void executeWithoutThrow(AspectAdviceRule aspectAdviceRule);
+	
+	/**
 	 * Returns the process result.
 	 *
 	 * @return the process result
@@ -141,7 +156,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the forwarding destination translet name
 	 */
-	String getForwardTransletName();
+	//String getForwardTransletName();
 	
 	/**
 	 * Returns whether the current activity is completed or terminated.
@@ -204,6 +219,13 @@ public interface Activity extends BeanRegistry {
 	 */
 	void setRaisedException(Throwable raisedException);
 
+	/**
+	 * Gets the current joinpoint type.
+	 *
+	 * @return the current joinpoint type
+	 */
+	JoinpointType getCurrentJoinpointType();
+	
 	/**
 	 * Gets the activity context.
 	 *
@@ -309,6 +331,15 @@ public interface Activity extends BeanRegistry {
 	 */
 	<T> T getResponseSetting(String settingName);
 
+	/**
+	 * Gets the setting value in the content scope.
+	 *
+	 * @param <T> the type of the value
+	 * @param settingName the setting name
+	 * @return the setting value
+	 */
+	<T> T getContentSetting(String settingName);
+	
 	/**
 	 * Returns whether or not to accept aspect rule.
 	 *

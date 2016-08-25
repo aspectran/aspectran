@@ -19,7 +19,8 @@
 <!ELEMENT aspectran (
     description?,
     (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
-  )>
+  )
+>
 
 <!ELEMENT description (#PCDATA)>
 
@@ -28,12 +29,12 @@
 <!ATTLIST setting
   name    CDATA #REQUIRED
   value   CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT environment (#PCDATA | properties)*>
 <!ATTLIST environment
   profile CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT typeAliases (typeAlias*)>
 
@@ -41,29 +42,29 @@
 <!ATTLIST typeAlias
   alias   CDATA #REQUIRED
   type    CDATA #REQUIRED
-  >
+>
 
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
 <!ATTLIST aspect
   id      ID #IMPLIED
   for     (translet | scheduler) #IMPLIED
-  >
+>
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
   scope   (session | translet | request | response | content | bean) #IMPLIED
   method  CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
   type    (wildcard | regexp) #IMPLIED
-  >
+>
 
 <!ELEMENT advice (before?, after?, around?, finally?)>
 <!ATTLIST advice
   bean    CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT before  (echo | action)>
 <!ELEMENT after   (echo | action)>
@@ -75,7 +76,7 @@
 <!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST responseByContentType
   exceptionType CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT bean (description?, filter?, features?, constructor?, properties?)>
 <!ATTLIST bean
@@ -92,12 +93,12 @@
   destroyMethod CDATA #IMPLIED
   lazyInit      (true | false) #IMPLIED
   important     (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT filter (#PCDATA)>
 <!ATTLIST filter
   class   CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT features (class?, scope?, offerBean?, offerMethod?, initMethod?, factoryMethod?, destroyMethod?, lazyInit?, important?)>
 
@@ -122,28 +123,28 @@
   url      CDATA #IMPLIED
   encoding CDATA #IMPLIED
   noCache  (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT schedule (description?, trigger, scheduler)>
 <!ATTLIST schedule
   id      ID #IMPLIED
-  >
+>
 
 <!ELEMENT trigger (#PCDATA)>
 <!ATTLIST trigger
   type    CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT scheduler (job*)>
 <!ATTLIST scheduler
   bean    CDATA #REQUIRED
-  >
+>
 
 <!ELEMENT job EMPTY>
 <!ATTLIST job
   translet CDATA #REQUIRED
   disabled (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT translet (
     (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
@@ -156,26 +157,26 @@
   scan    CDATA #IMPLIED
   mask    CDATA #IMPLIED
   method  CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT request (parameters?, attributes?)>
 <!ATTLIST request
   method            CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT contents (content*)>
 <!ATTLIST contents
   name      CDATA #IMPLIED
   omittable (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT content (action? | include? | echo? | headers?)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
   omittable (true | false) #IMPLIED
   hidden    (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT action (arguments?, properties?)>
 <!ATTLIST action
@@ -183,32 +184,32 @@
   bean    CDATA #IMPLIED
   method  CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT include (attributes?)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED
   hidden   (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT echo (#PCDATA | attributes | item | null)*>
 <!ATTLIST echo
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT headers (#PCDATA | item | null)*>
 <!ATTLIST headers
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
 <!ATTLIST response
   name              CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT transform ((action? | include? | echo? | headers?)*, template?)>
 <!ATTLIST transform
@@ -218,7 +219,7 @@
   characterEncoding CDATA #IMPLIED
   default           (true | false) #IMPLIED
   pretty            (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT dispatch (action? | include? | echo? | headers?)*>
 <!ATTLIST dispatch
@@ -227,7 +228,7 @@
   contentType       CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
   default           (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
@@ -235,7 +236,7 @@
   target                CDATA #REQUIRED
   excludeNullParameters CDATA #IMPLIED
   default               (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT url (#PCDATA)>
 
@@ -243,7 +244,7 @@
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT import EMPTY>
 <!ATTLIST import
@@ -252,12 +253,12 @@
   url      CDATA #IMPLIED
   fileType (xml | apon) #IMPLIED
   profile  CDATA #IMPLIED
-  >
+>
 
+<!ELEMENT parameters (#PCDATA | item)*>
 <!ELEMENT attributes (#PCDATA | item)*>
 <!ELEMENT properties (#PCDATA | item)*>
 <!ELEMENT arguments  (#PCDATA | item)*>
-<!ELEMENT parameters (#PCDATA | item)*>
 
 <!ELEMENT item (#PCDATA | value | reference | null)*>
 <!ATTLIST item
@@ -268,12 +269,12 @@
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
   mandatory    (true | false) #IMPLIED
-  >
+>
 
 <!ELEMENT value (#PCDATA | null)*>
 <!ATTLIST value
   name    CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT reference EMPTY>
 <!ATTLIST reference
@@ -281,6 +282,6 @@
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
   property  CDATA #IMPLIED
-  >
+>
 
 <!ELEMENT null EMPTY>

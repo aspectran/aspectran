@@ -16,9 +16,9 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum JoinpointScopeType.
+ * The enum JoinpointType.
  */
-public enum JoinpointScopeType {
+public enum JoinpointType {
 
 	SESSION("session"),
 	TRANSLET("translet"),
@@ -29,7 +29,7 @@ public enum JoinpointScopeType {
 
 	private final String alias;
 
-	JoinpointScopeType(String alias) {
+	JoinpointType(String alias) {
 		this.alias = alias;
 	}
 
@@ -39,14 +39,14 @@ public enum JoinpointScopeType {
 	}
 
 	/**
-	 * Returns a {@code JoinpointScopeType} with a value represented
+	 * Returns a {@code JoinpointType} with a value represented
 	 * by the specified {@code String}.
 	 *
-	 * @param alias the join-point scope type as a {@code String}
-	 * @return a {@code JoinpointScopeType}, may be {@code null}
+	 * @param alias the join-point type as a {@code String}
+	 * @return a {@code JoinpointType}, may be {@code null}
 	 */
-	public static JoinpointScopeType resolve(String alias) {
-		for(JoinpointScopeType type : values()) {
+	public static JoinpointType resolve(String alias) {
+		for(JoinpointType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
 		}

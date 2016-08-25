@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
@@ -160,6 +161,30 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 			exceptionRuleList = new ArrayList<>();
 		}
 		exceptionRuleList.add(0, exceptionRule);
+	}
+	
+	public void register(AspectRule aspectRule) {
+		register(aspectRule, null);
+	}
+	
+	public void register(AspectRule aspectRule, AspectAdviceType excludeAspectAdviceType) {
+		if(aspectRule.getSettingsAdviceRule() != null) {
+			addAspectAdviceRule(aspectRule.getSettingsAdviceRule());
+		}
+		
+		if(aspectRule.getAspectAdviceRuleList() != null) {
+			for(AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
+				if(excludeAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != excludeAspectAdviceType) {
+					addAspectAdviceRule(aspectAdviceRule);
+				}
+			}
+		}
+		
+		if(aspectRule.getExceptionRule() != null) {
+			addExceptionRule(aspectRule.getExceptionRule());
+		}
+		
+		increaseAspectRuleCount();
 	}
 
 	@Override

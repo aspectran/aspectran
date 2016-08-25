@@ -29,7 +29,7 @@ public class AspectAdviceRulePostRegister {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
 
-		AspectAdviceRuleRegister.register(aspectAdviceRuleRegistry, aspectRule);
+		aspectAdviceRuleRegistry.register(aspectRule);
 
 		return aspectAdviceRuleRegistry;
 	}

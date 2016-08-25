@@ -200,7 +200,7 @@ public class RootAponAssembler {
 		aspectParameters.putValueNonNull(AspectParameters.usedFor, aspectRule.getAspectTargetType());
 		
 		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
-		joinpointParameters.putValueNonNull(JoinpointParameters.scope, aspectRule.getJoinpointScope());
+		joinpointParameters.putValueNonNull(JoinpointParameters.scope, aspectRule.getJoinpointType());
 		
 		MethodType[] targetMethods = aspectRule.getTargetMethods();
 		if(targetMethods != null) {

@@ -22,7 +22,7 @@ import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.context.rule.type.TriggerType;
@@ -149,14 +149,14 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	}
 	
 	public static void updateJoinpointScope(ScheduleRule aspectRule, String scope) {
-		JoinpointScopeType joinpointScope;
+		JoinpointType joinpointScope;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.resolve(scope);
+			joinpointScope = JoinpointType.resolve(scope);
 			if(joinpointScope == null)
 				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {
-			joinpointScope = JoinpointScopeType.TRANSLET;
+			joinpointScope = JoinpointType.TRANSLET;
 		}
 		
 		aspectRule.setJoinpointScope(joinpointScope);

@@ -138,6 +138,13 @@ public class RequestRule {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return aspectAdviceRuleRegistry;
+	}
+
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;

@@ -41,11 +41,10 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
@@ -175,17 +174,15 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
-				PointcutRule pointcutRule = aspectRule.getPointcutRule();
-				
-				if(pointcutRule != null) {
-					Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
-					aspectRule.setPointcut(pointcut);
-				}
-				
-				if(aspectRule.getJoinpointScope() == JoinpointScopeType.SESSION) {
-					sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
-				}
+			PointcutRule pointcutRule = aspectRule.getPointcutRule();
+			
+			if(pointcutRule != null) {
+				Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
+				aspectRule.setPointcut(pointcut);
+			}
+			
+			if(aspectRule.getJoinpointType() == JoinpointType.SESSION) {
+				sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
 			}
 		}
 		
@@ -198,50 +195,46 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		int offendingPointcutPatterns = 0;
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+			Pointcut pointcut = aspectRule.getPointcut();
 
-			if(aspectTargetType == AspectTargetType.TRANSLET) {
-				Pointcut pointcut = aspectRule.getPointcut();
-
-				if(pointcut != null) {
-					List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-					
-					if(pointcutPatternRuleList != null) {
-						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-							/*
-							if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
-								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
-								if(pointcutPatternVerifiable)
-									log.error(msg);
-								else
-									log.warn(msg);
-							}
-							*/
-							if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
-								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
-								if(pointcutPatternVerifiable)
-									log.error(msg);
-								else
-									log.warn(msg);
-							}
-							if(ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
-								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
-								if(pointcutPatternVerifiable)
-									log.error(msg);
-								else
-									log.warn(msg);
-							}
-							if(ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
-								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
-								if(pointcutPatternVerifiable)
-									log.error(msg);
-								else
-									log.warn(msg);
-							}
+			if(pointcut != null) {
+				List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
+				
+				if(pointcutPatternRuleList != null) {
+					for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+						/*
+						if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
+							offendingPointcutPatterns++;
+							String msg = "Incorrect pointcut pattern of translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
+							if(pointcutPatternVerifiable)
+								log.error(msg);
+							else
+								log.warn(msg);
+						}
+						*/
+						if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
+							offendingPointcutPatterns++;
+							String msg = "Incorrect pointcut pattern of bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
+							if(pointcutPatternVerifiable)
+								log.error(msg);
+							else
+								log.warn(msg);
+						}
+						if(ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
+							offendingPointcutPatterns++;
+							String msg = "Incorrect pointcut pattern of class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
+							if(pointcutPatternVerifiable)
+								log.error(msg);
+							else
+								log.warn(msg);
+						}
+						if(ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
+							offendingPointcutPatterns++;
+							String msg = "Incorrect pointcut pattern of bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
+							if(pointcutPatternVerifiable)
+								log.error(msg);
+							else
+								log.warn(msg);
 						}
 					}
 				}

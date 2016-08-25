@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.logging.Log;
@@ -47,11 +47,11 @@ public class AspectAdviceRulePreRegister {
 		this.aspectRuleRegistry = aspectRuleRegistry;
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+			JoinpointType joinpointScope = aspectRule.getJoinpointType();
 
-			if(joinpointScope == JoinpointScopeType.BEAN) {
+			if(joinpointScope == JoinpointType.BEAN) {
 				aspectRule.setBeanRelevanted(true);
-			} else if(joinpointScope == JoinpointScopeType.SESSION) {
+			} else if(joinpointScope == JoinpointType.SESSION) {
 				aspectRule.setBeanRelevanted(false);
 			} else {
 				Pointcut pointcut = aspectRule.getPointcut();
@@ -104,8 +104,9 @@ public class AspectAdviceRulePreRegister {
 					if(existsMatchedBean(pointcut, beanRule)) {
 						beanRule.setProxied(true);
 	
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
+						}
 	
 						break;
 					}
@@ -113,8 +114,9 @@ public class AspectAdviceRulePreRegister {
 					if(pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
 						beanRule.setProxied(true);
 	
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
+						}
 	
 						break;
 					}
@@ -133,38 +135,39 @@ public class AspectAdviceRulePreRegister {
 	
 	private void register(TransletRule transletRule) {
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+			JoinpointType joinpointScope = aspectRule.getJoinpointType();
 			Pointcut pointcut = aspectRule.getPointcut();
 
-			if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
+			if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointType.SESSION) {
 				if(pointcut == null || pointcut.matches(transletRule.getName())) {
-					if(joinpointScope == JoinpointScopeType.REQUEST) {
+					if(joinpointScope == JoinpointType.REQUEST) {
 						RequestRule requestRule = transletRule.getRequestRule();
-						
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " requestRule " + requestRule);
+						requestRule.touchAspectAdviceRuleRegistry().register(aspectRule);
 
-						AspectAdviceRuleRegister.register(requestRule, aspectRule);
-					} else if(joinpointScope == JoinpointScopeType.CONTENT) {
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to requestRule " + requestRule + " of transletRule " + transletRule);
+						}
+					} else if(joinpointScope == JoinpointType.CONTENT) {
 						ContentList contentList = transletRule.touchContentList();
+						contentList.touchAspectAdviceRuleRegistry().register(aspectRule);
 
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " contentList " + contentList);
-
-						AspectAdviceRuleRegister.register(contentList, aspectRule);
-					} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to contentList " + contentList + " of transletRule " + transletRule);
+						}
+					} else if(joinpointScope == JoinpointType.RESPONSE) {
 						ResponseRule responseRule = transletRule.getResponseRule();
+						responseRule.touchAspectAdviceRuleRegistry().register(aspectRule);
 						
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " responseRule " + responseRule);
-
-						AspectAdviceRuleRegister.register(responseRule, aspectRule);
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to responseRule " + responseRule + " of transletRule " + transletRule);
+						}
 					} else {
 						// translet scope
-						if(log.isTraceEnabled())
-							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule);
-
-						AspectAdviceRuleRegister.register(transletRule, aspectRule);
+						transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
+						
+						if(log.isTraceEnabled()) {
+							log.trace("applied aspectRule " + aspectRule + " to transletRule " + transletRule);
+						}
 					}
 				}
 			}

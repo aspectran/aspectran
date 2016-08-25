@@ -16,19 +16,31 @@
 package com.aspectran.core.activity;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AbstractActivity.
@@ -37,10 +49,19 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
  */
 public abstract class AbstractActivity implements Activity {
 
+	private static final Log log = LogFactory.getLog(AbstractActivity.class);
+	
 	private final ActivityContext context;
 
 	private boolean included;
+
+	private Activity outerActivity;
 	
+	/** Whether the current activity is completed or interrupted. */
+	private boolean activityEnded;
+
+	private Throwable raisedException;
+
 	private SessionAdapter sessionAdapter;
 	
 	private RequestAdapter requestAdapter;
@@ -53,6 +74,14 @@ public abstract class AbstractActivity implements Activity {
 
 	private Scope requestScope;
 	
+	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry requestAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry responseAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
+	
 	/**
 	 * Instantiates a new abstract activity.
 	 *
@@ -61,23 +90,82 @@ public abstract class AbstractActivity implements Activity {
 	protected AbstractActivity(ActivityContext context) {
 		this.context = context;
 	}
+
+	@Override
+	public ActivityContext getActivityContext() {
+		return context;
+	}
+
+	/**
+	 * Gets the current activity.
+	 *
+	 * @return the current activity
+	 */
+	protected Activity getCurrentActivity() {
+		return context.getCurrentActivity();
+	}
 	
 	/**
-	 * Checks if the activity is an include.
+	 * Sets the current activity.
 	 *
-	 * @return true, if the activity is an include
+	 * @param activity the new current activity
+	 */
+	protected void setCurrentActivity(Activity activity) {
+		context.setCurrentActivity(activity);
+	}
+
+	protected void backupCurrentActivity() {
+		outerActivity = getCurrentActivity();
+		setCurrentActivity(this);
+	}
+
+	/**
+	 * Removes the current activity.
+	 */
+	protected void removeCurrentActivity() {
+		if(outerActivity != null) {
+			setCurrentActivity(outerActivity);
+		} else {
+			removeCurrentActivity();
+		}
+	}
+	
+	/**
+	 * Returns whether or not contained in other activity.
+	 *
+	 * @return true, if this activity is included in the other activity
 	 */
 	public boolean isIncluded() {
 		return included;
 	}
 
 	/**
-	 * Sets the included.
+	 * Sets whether this activity is included in other activity.
 	 *
-	 * @param included whether or not including an activity
+	 * @param included whether or not included in other activity
 	 */
 	public void setIncluded(boolean included) {
 		this.included = included;
+	}
+
+	public boolean isActivityEnded() {
+		return activityEnded;
+	}
+
+	public void activityEnd() {
+		this.activityEnded = true;
+	}
+	
+	protected void continueActivity() {
+		this.activityEnded = false;
+	}
+
+	public Throwable getRaisedException() {
+		return raisedException;
+	}
+
+	public void setRaisedException(Throwable raisedException) {
+		this.raisedException = raisedException;
 	}
 
 	/**
@@ -180,29 +268,35 @@ public abstract class AbstractActivity implements Activity {
 	}
 	
 	/**
-	 * Create a new translet.
+	 * Create a new {@code Translet} instance.
 	 *
-	 * @param activity the activity
-	 * @return the translet
+	 * @return the new {@code Translet} instance
 	 */
-	protected Translet newTranslet(Activity activity) {
+	protected Translet newTranslet() {
 		if(this.transletInterfaceClass == null)
 			this.transletInterfaceClass = Translet.class;
 		
 		if(this.transletImplementClass == null) {
 			this.transletImplementClass = CoreTranslet.class;
-			return new CoreTranslet(activity);
+			return new CoreTranslet(this);
 		}
 		
 		//create a custom translet instance
 		try {
 			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
-			Object[] args = new Object[] { activity };
+			Object[] args = new Object[] { this };
 			
 			return (Translet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
 			throw new TransletInstantiationException(transletImplementClass, e);
 		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Activity> T newActivity() {
+		Activity activity = new CoreActivity(context);
+		return (T)activity;
 	}
 
 	/**
@@ -237,6 +331,215 @@ public abstract class AbstractActivity implements Activity {
 		this.requestScope = requestScope;
 	}
 
+	protected void prepareAspectAdviceRule(TransletRule transletRule) {
+		if(transletRule.getNameTokens() == null) {
+			this.transletAspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
+			this.requestAspectAdviceRuleRegistry = transletRule.getRequestRule().replicateAspectAdviceRuleRegistry();
+			this.responseAspectAdviceRuleRegistry = transletRule.getResponseRule().replicateAspectAdviceRuleRegistry();
+			if(transletRule.getContentList() != null) {
+				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().replicateAspectAdviceRuleRegistry();
+			}
+		} else {
+			AspectAdviceRulePostRegister transletAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister requestAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister contentAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister responseAARPostRegister = new AspectAdviceRulePostRegister();
+
+			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
+				JoinpointType joinpointScope = aspectRule.getJoinpointType();
+
+				if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointType.SESSION) {
+					if(isAcceptable(aspectRule)) {
+						Pointcut pointcut = aspectRule.getPointcut();
+						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+							if(log.isDebugEnabled()) {
+								log.debug("register AspectRule " + aspectRule);
+							}
+							if(joinpointScope == JoinpointType.REQUEST) {
+								requestAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointType.CONTENT) {
+								contentAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointType.RESPONSE) {
+								responseAARPostRegister.register(aspectRule);
+							} else {
+								transletAARPostRegister.register(aspectRule);
+							}
+						}
+					}
+				}
+			}
+
+			this.transletAspectAdviceRuleRegistry = transletAARPostRegister.getAspectAdviceRuleRegistry();
+			this.requestAspectAdviceRuleRegistry = requestAARPostRegister.getAspectAdviceRuleRegistry();
+			this.contentAspectAdviceRuleRegistry = contentAARPostRegister.getAspectAdviceRuleRegistry();
+			this.responseAspectAdviceRuleRegistry = responseAARPostRegister.getAspectAdviceRuleRegistry();
+		}
+	}
+	
+	public AspectAdviceRuleRegistry touchTransletAspectAdviceRuleRegistry() {
+		if(transletAspectAdviceRuleRegistry == null) {
+			transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return transletAspectAdviceRuleRegistry;
+	}
+	
+	public AspectAdviceRuleRegistry touchRequestAspectAdviceRuleRegistry() {
+		if(requestAspectAdviceRuleRegistry == null) {
+			requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return requestAspectAdviceRuleRegistry;
+	}
+	
+	public AspectAdviceRuleRegistry touchResponseAspectAdviceRuleRegistry() {
+		if(responseAspectAdviceRuleRegistry == null) {
+			responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return responseAspectAdviceRuleRegistry;
+	}
+	
+	public AspectAdviceRuleRegistry touchContentAspectAdviceRuleRegistry() {
+		if(contentAspectAdviceRuleRegistry == null) {
+			contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return contentAspectAdviceRuleRegistry;
+	}
+	
+	protected List<AspectAdviceRule> getBeforeAdviceRuleListForTranslet() {
+		if(transletAspectAdviceRuleRegistry != null) {
+			return transletAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		}
+		return null;
+	}
+
+	protected List<AspectAdviceRule> getAfterAdviceRuleListForTranslet() {
+		if(transletAspectAdviceRuleRegistry != null) {
+			return transletAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getFinallyAdviceRuleListForTranslet() {
+		if(transletAspectAdviceRuleRegistry != null) {
+			return transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+		}
+		return null;
+	}
+
+	protected List<ExceptionRule> getExceptionRuleListForTranslet() {
+		if(transletAspectAdviceRuleRegistry != null) {
+			return transletAspectAdviceRuleRegistry.getExceptionRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getBeforeAdviceRuleListForRequest() {
+		if(requestAspectAdviceRuleRegistry != null) {
+			return requestAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getAfterAdviceRuleListForRequest() {
+		if(requestAspectAdviceRuleRegistry != null) {
+			return requestAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getFinallyAdviceRuleListForRequest() {
+		if(requestAspectAdviceRuleRegistry != null) {
+			return requestAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+		}
+		return null;
+	}
+
+	protected List<ExceptionRule> getExceptionRuleListForRequest() {
+		if(requestAspectAdviceRuleRegistry != null) {
+			return requestAspectAdviceRuleRegistry.getExceptionRuleList();
+		}
+		return null;
+	}
+
+	protected List<AspectAdviceRule> getBeforeAdviceRuleListForResponse() {
+		if(responseAspectAdviceRuleRegistry != null) {
+			return responseAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getAfterAdviceRuleListForResponse() {
+		if(responseAspectAdviceRuleRegistry != null) {
+			return responseAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getFinallyAdviceRuleListForResponse() {
+		if(responseAspectAdviceRuleRegistry != null) {
+			return responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+		}
+		return null;
+	}
+
+	protected List<ExceptionRule> getExceptionRuleListForResponse() {
+		if(responseAspectAdviceRuleRegistry != null) {
+			return responseAspectAdviceRuleRegistry.getExceptionRuleList();
+		}
+		return null;
+	}
+
+	protected List<AspectAdviceRule> getBeforeAdviceRuleListForContent() {
+		if(contentAspectAdviceRuleRegistry != null) {
+			return contentAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getAfterAdviceRuleListForContent() {
+		if(contentAspectAdviceRuleRegistry != null) {
+			return contentAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+		}
+		return null;
+	}
+	
+	protected List<AspectAdviceRule> getFinallyAdviceRuleListForContent() {
+		if(contentAspectAdviceRuleRegistry != null) {
+			return contentAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+		}
+		return null;
+	}
+
+	protected List<ExceptionRule> getExceptionRuleListForContent() {
+		if(contentAspectAdviceRuleRegistry != null) {
+			return contentAspectAdviceRuleRegistry.getExceptionRuleList();
+		}
+		return null;
+	}
+
+	@Override
+	public <T> T getTransletSetting(String settingName) {
+		return getSetting(transletAspectAdviceRuleRegistry, settingName);
+	}
+
+	@Override
+	public <T> T getRequestSetting(String settingName) {
+		return getSetting(requestAspectAdviceRuleRegistry, settingName);
+	}
+
+	@Override
+	public <T> T getResponseSetting(String settingName) {
+		return getSetting(responseAspectAdviceRuleRegistry, settingName);
+	}
+
+	@Override
+	public <T> T getContentSetting(String settingName) {
+		return getSetting(contentAspectAdviceRuleRegistry, settingName);
+	}
+	
+	private <T> T getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
+		return (aspectAdviceRuleRegistry != null) ? aspectAdviceRuleRegistry.getSetting(settingName) : null;
+	}
+	
 	/**
 	 * Gets the aspect rule registry.
 	 *
@@ -254,45 +557,15 @@ public abstract class AbstractActivity implements Activity {
 	protected TransletRuleRegistry getTransletRuleRegistry() {
 		return context.getTransletRuleRegistry();
 	}
-	
-	/**
-	 * Gets the current activity.
-	 *
-	 * @return the current activity
-	 */
-	protected Activity getCurrentActivity() {
-		return context.getCurrentActivity();
-	}
-	
-	/**
-	 * Sets the current activity.
-	 *
-	 * @param activity the new current activity
-	 */
-	protected void setCurrentActivity(Activity activity) {
-		context.setCurrentActivity(activity);
-	}
-	
-	/**
-	 * Removes the current activity.
-	 */
-	protected void removeCurrentActivity() {
-		context.removeCurrentActivity();
-	}
-	
-	@Override
-	public ActivityContext getActivityContext() {
-		return context;
-	}
-	
-	@Override
-	public BeanRegistry getBeanRegistry() {
-		return context.getBeanRegistry();
-	}
 
 	@Override
 	public TemplateProcessor getTemplateProcessor() {
 		return context.getTemplateProcessor();
+	}
+
+	@Override
+	public BeanRegistry getBeanRegistry() {
+		return context.getBeanRegistry();
 	}
 
 	@Override
@@ -328,6 +601,65 @@ public abstract class AbstractActivity implements Activity {
 	@Override
 	public boolean containsBean(Class<?> requiredType) {
 		return context.getBeanRegistry().containsBean(requiredType);
+	}
+	
+	@Override
+	public boolean isAcceptable(AspectRule aspectRule) {
+		if(aspectRule.getTargetMethods() != null) {
+			if(getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods()))
+				return false;
+		}
+
+		if(aspectRule.getTargetHeaders() != null) {
+			boolean contained = false;
+			for(String header : aspectRule.getTargetHeaders()) {
+				if(getRequestAdapter().containsHeader(header)) {
+					contained = true;
+					break;
+				}
+			}
+			if(!contained)
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public void registerAspectRule(AspectRule aspectRule) {
+		if(!isAcceptable(aspectRule))
+			return;
+
+		JoinpointType joinpointType = aspectRule.getJoinpointType();
+
+		/*
+		 * The before advice is excluded because it was already executed.
+		 */
+		if(joinpointType == JoinpointType.TRANSLET || joinpointType == getCurrentJoinpointType()) {
+			if(log.isDebugEnabled()) {
+				log.debug("register AspectRule " + aspectRule);
+			}
+			
+			if(JoinpointType.TRANSLET == joinpointType) {
+				touchTransletAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointType.REQUEST == joinpointType) {
+				touchRequestAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointType.RESPONSE == joinpointType) {
+				touchResponseAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointType.CONTENT == joinpointType) {
+				touchContentAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
+			}
+
+			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+
+			if(aspectAdviceRuleList != null) {
+				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+						execute(aspectAdviceRule);
+					}
+				}
+			}
+		}
 	}
 	
 }

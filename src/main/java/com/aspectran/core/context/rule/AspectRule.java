@@ -24,7 +24,7 @@ import com.aspectran.core.context.builder.apon.params.PointTargetParameters;
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
@@ -75,7 +75,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	private String id;
 
-	private JoinpointScopeType joinpointScope;
+	private JoinpointType joinpointType;
 	
 	private MethodType[] targetMethods;
 	
@@ -107,12 +107,12 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.id = id;
 	}
 
-	public JoinpointScopeType getJoinpointScope() {
-		return joinpointScope;
+	public JoinpointType getJoinpointType() {
+		return joinpointType;
 	}
 
-	public void setJoinpointScope(JoinpointScopeType joinpointScope) {
-		this.joinpointScope = joinpointScope;
+	public void setJoinpointScope(JoinpointType joinpointType) {
+		this.joinpointType = joinpointType;
 	}
 
 	public MethodType[] getTargetMethods() {
@@ -231,7 +231,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("joinpointScope", joinpointScope);
+		tsb.append("joinpointScope", joinpointType);
 		tsb.append("pointcutRule", pointcutRule);
 		if(aspectTargetType == AspectTargetType.TRANSLET) {
 			tsb.append("settingsAdviceRule", settingsAdviceRule);
@@ -263,14 +263,14 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
-		JoinpointScopeType joinpointScope;
+		JoinpointType joinpointScope;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.resolve(scope);
+			joinpointScope = JoinpointType.resolve(scope);
 			if(joinpointScope == null)
 				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {
-			joinpointScope = JoinpointScopeType.TRANSLET;
+			joinpointScope = JoinpointType.TRANSLET;
 		}
 		
 		aspectRule.setJoinpointScope(joinpointScope);

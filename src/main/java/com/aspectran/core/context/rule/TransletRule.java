@@ -442,11 +442,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return aspectAdviceRuleRegistry;
+	}
+	
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-
-		return aspectAdviceRuleRegistry.replicate();
+		return (aspectAdviceRuleRegistry == null) ? null : aspectAdviceRuleRegistry.replicate();
 	}
 
 	/**

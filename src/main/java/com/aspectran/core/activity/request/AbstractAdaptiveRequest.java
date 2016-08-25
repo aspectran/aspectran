@@ -142,7 +142,7 @@ public abstract class AbstractAdaptiveRequest {
 	 * 		has already been set; {@code false} otherwise
 	 */
 	public boolean containsHeader(String name) {
-		return (headers != null && headers.get(name) != null) && headers.get(name).isEmpty();
+		return (headers != null && headers.get(name) != null && !headers.get(name).isEmpty());
 	}
 
 	/**
