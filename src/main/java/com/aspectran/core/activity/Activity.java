@@ -156,7 +156,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the forwarding destination translet name
 	 */
-	//String getForwardTransletName();
+	String getForwardTransletName();
 	
 	/**
 	 * Returns whether the current activity is completed or terminated.

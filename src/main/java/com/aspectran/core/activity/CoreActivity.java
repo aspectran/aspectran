@@ -164,10 +164,11 @@ public class CoreActivity extends AbstractActivity {
 
 			prepareAspectAdviceRule(transletRule);
 
-			if(forwardTransletName != null) {
+			if(isIncluded()) {
 				backupCurrentActivity();
+			}
+			if(forwardTransletName == null) {
 				adapt();
-				forwardTransletName = null;
 			}
 		} catch(Exception e) {
 			throw new ActivityException("Failed to prepare activity.", e);
@@ -179,13 +180,13 @@ public class CoreActivity extends AbstractActivity {
 
 	@Override
 	public void perform() {
-		performActivity();
+		performTranslet();
 	}
 
 	@Override
 	public void performWithoutResponse() {
 		withoutResponse = true;
-		performActivity();
+		performTranslet();
 	}
 
 	@Override
@@ -196,7 +197,7 @@ public class CoreActivity extends AbstractActivity {
 	/**
 	 * Perform an activity.
 	 */
-	private void performActivity() {
+	private void performTranslet() {
 		if(isActivityEnded()) {
 			return;
 		}
@@ -219,7 +220,6 @@ public class CoreActivity extends AbstractActivity {
 							currentJoinpointType = JoinpointType.CONTENT;
 							performProduction();
 						}
-
 						if(!isActivityEnded() && !withoutResponse) {
 							currentJoinpointType = JoinpointType.RESPONSE;
 							performResponse();
@@ -523,6 +523,8 @@ public class CoreActivity extends AbstractActivity {
 		if(response.getResponseType() == ResponseType.FORWARD) {
 			ForwardResponse forwardResponse = (ForwardResponse)response;
 			this.forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
+		} else {
+			this.forwardTransletName = null;
 		}
 		
 		activityEnd();
@@ -541,6 +543,11 @@ public class CoreActivity extends AbstractActivity {
 		prepare(forwardTransletName, requestMethod, translet.getProcessResult());
 			
 		perform();
+	}
+
+	@Override
+	public String getForwardTransletName() {
+		return this.forwardTransletName =;
 	}
 
 	@Override
@@ -655,17 +662,17 @@ public class CoreActivity extends AbstractActivity {
 			execute(aspectAdviceRule, true);
 		}
 	}
-	
+
 	@Override
 	public void execute(AspectAdviceRule aspectAdviceRule) {
 		execute(aspectAdviceRule, false);
 	}
-	
+
 	@Override
 	public void executeWithoutThrow(AspectAdviceRule aspectAdviceRule) {
 		execute(aspectAdviceRule, true);
 	}
-	
+
 	private void execute(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
 		try {
 			Executable action = aspectAdviceRule.getExecutableAction();

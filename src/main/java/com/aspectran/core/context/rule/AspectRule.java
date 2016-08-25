@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointTargetParameters;
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
