@@ -109,8 +109,8 @@ public class WebActivity extends CoreActivity {
 				setGzipContentEncoded();
 			}
 
-			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+			String localeResolverId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
 			LocaleResolver localeResolver = null;
 			if(localeResolverId != null) {
 				localeResolver = getBean(localeResolverId, LocaleResolver.class);
@@ -138,7 +138,7 @@ public class WebActivity extends CoreActivity {
 	}
 
 	@Override
-	protected void request() {
+	protected void parseRequest() {
 		String contentType = request.getContentType();
 
 		MethodType requestMethod = getRequestAdapter().getRequestMethod();
@@ -158,14 +158,14 @@ public class WebActivity extends CoreActivity {
 			}
 		}
 
-		super.request();
+		super.parseRequest();
 	}
 
 	/**
 	 * Parse the multipart form data.
 	 */
 	private void parseMultipartFormData() {
-		String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+		String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
 		if(multipartFormDataParser == null) {
 			throw new MultipartRequestParseException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
 		}
@@ -194,7 +194,7 @@ public class WebActivity extends CoreActivity {
 	}
 
 	private boolean isGzipAccepted() {
-		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+		String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
 		if(contentEncoding != null) {
 			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
 			if(acceptEncoding != null) {
@@ -211,4 +211,5 @@ public class WebActivity extends CoreActivity {
 		// output depending on the "Accept-Encoding" header
 		getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
 	}
+
 }

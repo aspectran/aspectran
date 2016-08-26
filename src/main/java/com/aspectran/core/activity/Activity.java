@@ -311,34 +311,7 @@ public interface Activity extends BeanRegistry {
 	 * @param settingName the setting name
 	 * @return the setting value
 	 */
-	<T> T getTransletSetting(String settingName);
-	
-	/**
-	 * Gets the setting value in the request scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getRequestSetting(String settingName);
-	
-	/**
-	 * Gets the setting value in the response scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getResponseSetting(String settingName);
-
-	/**
-	 * Gets the setting value in the content scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getContentSetting(String settingName);
+	<T> T getSetting(String settingName);
 	
 	/**
 	 * Returns whether or not to accept aspect rule.

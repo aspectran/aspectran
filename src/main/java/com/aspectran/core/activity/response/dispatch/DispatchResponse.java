@@ -107,7 +107,7 @@ public class DispatchResponse implements Response {
 		if(dispatchResponseRule.getDispatcher() != null) {
 			viewDispatcherName = dispatchResponseRule.getDispatcher();
 		} else {
-			viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
+			viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
 			if(viewDispatcherName == null) {
 				throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
 			}

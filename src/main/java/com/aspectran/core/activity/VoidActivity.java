@@ -47,10 +47,6 @@ public final class VoidActivity extends CoreActivity {
 	}
 
 	@Override
-	protected void request() {
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		VoidActivity activity = new VoidActivity(getActivityContext());

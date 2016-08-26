@@ -49,10 +49,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 	@SuppressWarnings("unchecked")
 	public <T> T getSetting(String settingName) {
-		if(settings == null)
-			return null;
-
-		return (T)settings.get(settingName);
+		return (settings == null) ? null : (T)settings.get(settingName);
 	}
 
 	protected void setSettings(Map<String, Object> settings) {
@@ -75,7 +72,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 	protected void setSettingsAdviceRuleList(List<SettingsAdviceRule> settingsAdviceRuleList) {
 		this.settingsAdviceRuleList = settingsAdviceRuleList;
-
 		for(SettingsAdviceRule settingsAdviceRule : settingsAdviceRuleList) {
 			addSettings(settingsAdviceRule.getSettings());
 		}

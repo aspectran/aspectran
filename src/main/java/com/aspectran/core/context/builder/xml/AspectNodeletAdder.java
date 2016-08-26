@@ -49,12 +49,11 @@ class AspectNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/aspect", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
-            String useFor = StringUtils.emptyToNull(attributes.get("for"));
 
             if(id == null)
                 throw new IllegalArgumentException("The <aspect> element requires an 'id' attribute.");
 
-            AspectRule aspectRule = AspectRule.newInstance(id, useFor);
+            AspectRule aspectRule = AspectRule.newInstance(id);
 
             assistant.pushObject(aspectRule);
         });
@@ -65,12 +64,10 @@ class AspectNodeletAdder implements NodeletAdder {
             }
         });
 		parser.addNodelet(xpath, "/aspect/joinpoint", (node, attributes, text) -> {
-            String scope = StringUtils.emptyToNull(attributes.get("scope"));
-            String method = StringUtils.emptyToNull(attributes.get("method"));
+            String type = StringUtils.emptyToNull(attributes.get("type"));
 
             AspectRule aspectRule = assistant.peekObject();
-            AspectRule.updateJoinpointScope(aspectRule, scope);
-            AspectRule.updateTargetMethods(aspectRule, method);
+            AspectRule.updateJoinpoint(aspectRule, type);
         });
 		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut", (node, attributes, text) -> {
             String type = StringUtils.emptyToNull(attributes.get("type"));

@@ -176,6 +176,7 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	protected void adapt() throws AdapterException {
+		parseRequest();
 	}
 
 	@Override
@@ -194,219 +195,7 @@ public class CoreActivity extends AbstractActivity {
 		removeCurrentActivity();
 	}
 	
-	/**
-	 * Perform an activity.
-	 */
-	private void performTranslet() {
-		if(isActivityEnded()) {
-			return;
-		}
-
-		try {
-			try {
-				currentJoinpointType = JoinpointType.TRANSLET;
-
-				// execute Before Advice Action for Translet Joinpoint
-				if(getBeforeAdviceRuleListForTranslet() != null) {
-					execute(getBeforeAdviceRuleListForTranslet());
-				}
-				
-				if(!isActivityEnded()) {
-					currentJoinpointType = JoinpointType.REQUEST;
-					performRequest();
-
-					if(!isActivityEnded()) {
-						if(transletRule.getContentList() != null) {
-							currentJoinpointType = JoinpointType.CONTENT;
-							performProduction();
-						}
-						if(!isActivityEnded() && !withoutResponse) {
-							currentJoinpointType = JoinpointType.RESPONSE;
-							performResponse();
-						}
-					}
-				}
-
-				currentJoinpointType = JoinpointType.TRANSLET;
-				
-				// execute After Advice Action for Translet Joinpoint
-				if(getAfterAdviceRuleListForTranslet() != null) {
-					execute(getAfterAdviceRuleListForTranslet());
-				}
-			} finally {
-				if(getFinallyAdviceRuleListForTranslet() != null) {
-					executeWithoutThrow(getFinallyAdviceRuleListForTranslet());
-				}
-			}
-		} catch(RequestMethodNotAllowedException e) {
-			throw e;
-		} catch(Exception e) {
-			setRaisedException(e);
-			
-			ExceptionRule exceptionRule = transletRule.getExceptionRule();
-			if(exceptionRule != null) {
-				responseByContentType(exceptionRule);
-				if(isActivityEnded()) {
-					return;
-				}
-			}
-			
-			if(getExceptionRuleListForTranslet() != null) {
-				responseByContentType(getExceptionRuleListForTranslet());
-				if(isActivityEnded()) {
-					return;
-				}
-			}
-			
-			throw new ActivityException("Failed to perform an activity.", e);
-		} finally {
-			Scope requestScope = getRequestScope(false);
-			if(requestScope != null) {
-				requestScope.destroy();
-			}
-		}
-	}
-
-	/**
-	 * Perform the request produce.
-	 */
-	private void performRequest() {
-		try {
-			try {
-				// execute Before Advice Action for Request Joinpoint
-				if(getBeforeAdviceRuleListForRequest() != null) {
-					execute(getBeforeAdviceRuleListForRequest());
-				}
-				
-				if(!isActivityEnded()) {
-					request();
-				}
-
-				// execute After Advice Action for Request Joinpoint
-				if(getAfterAdviceRuleListForRequest() != null) {
-					execute(getAfterAdviceRuleListForRequest());
-				}
-			} finally {
-				if(getFinallyAdviceRuleListForRequest() != null) {
-					executeWithoutThrow(getFinallyAdviceRuleListForRequest());
-				}
-			}
-		} catch(RequestMethodNotAllowedException e) {
-			throw e;
-		} catch(Exception e) {
-			setRaisedException(e);
-			
-			if(getExceptionRuleListForRequest() != null) {
-				responseByContentType(getExceptionRuleListForRequest());
-				if(isActivityEnded()) {
-					return;
-				}
-			}
-				
-			throw new RequestException("An error occurred while attempting to perform a request activity.", e);
-		}
-	}
-	
-	/**
-	 * Perform the content production produce.
-	 */
-	private void performProduction() {
-		try {
-			try {
-				// execute Before Advice Action for Content Joinpoint
-				if(getBeforeAdviceRuleListForContent() != null) {
-					execute(getBeforeAdviceRuleListForContent());
-				}
-				
-				if(!isActivityEnded()) {
-					produce();
-				}
-				
-				// execute After Advice Action for Content Joinpoint
-				if(getAfterAdviceRuleListForContent() != null) {
-					execute(getAfterAdviceRuleListForContent());
-				}
-			} finally {
-				if(getFinallyAdviceRuleListForContent() != null) {
-					executeWithoutThrow(getFinallyAdviceRuleListForContent());
-				}
-			}
-		} catch(Exception e) {
-			setRaisedException(e);
-			
-			if(getExceptionRuleListForContent() != null) {
-				responseByContentType(getExceptionRuleListForContent());
-				if(isActivityEnded()) {
-					return;
-				}
-			}
-			
-			throw new ProcessException("An error occurred while attempting to perform a content production activity.", e);
-		}
-	}
-	
-	/**
-	 * Perform activity for the response.
-	 */
-	private void performResponse() {
-		try {
-			try {
-				// execute Before Advice Action for Request Joinpoint
-				if(getBeforeAdviceRuleListForResponse() != null) {
-					execute(getBeforeAdviceRuleListForResponse());
-				}
-				
-				if(!isActivityEnded()) {
-					response();
-				}
-				
-				// execute After Advice Action for Request Joinpoint
-				if(getAfterAdviceRuleListForResponse() != null) {
-					execute(getAfterAdviceRuleListForResponse());
-				}
-			} finally {
-				if(getFinallyAdviceRuleListForResponse() != null) {
-					executeWithoutThrow(getFinallyAdviceRuleListForResponse());
-				}
-			}
-		} catch(Exception e) {
-			setRaisedException(e);
-			
-			if(getExceptionRuleListForResponse() != null) {
-				responseByContentType(getExceptionRuleListForResponse());
-				if(isActivityEnded()) {
-					return;
-				}
-			}
-			
-			throw new ResponseException("An error occurred while attempting to perform a response activity.", e);
-		}
-	}
-
-	@Override
-	public String determineRequestCharacterEncoding() {
-		String characterEncoding = requestRule.getCharacterEncoding();
-
-		if(characterEncoding == null)
-			characterEncoding = getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-
-		return characterEncoding;
-	}
-
-	@Override
-	public String determineResponseCharacterEncoding() {
-		String characterEncoding = responseRule.getCharacterEncoding();
-
-		if(characterEncoding == null)
-			characterEncoding = getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-
-		if(characterEncoding == null)
-			characterEncoding = determineRequestCharacterEncoding();
-
-		return characterEncoding;
-	}
-
-	protected void request() {
+	protected void parseRequest() {
 		parseDeclaredParameters();
 		parseDeclaredAttributes();
 	}
@@ -460,6 +249,87 @@ public class CoreActivity extends AbstractActivity {
 				getRequestAdapter().setAttribute(itemRule.getName(), value);
 			}
 		}
+	}
+	
+	/**
+	 * Perform an activity.
+	 */
+	private void performTranslet() {
+		if(isActivityEnded()) {
+			return;
+		}
+
+		try {
+			try {
+				// execute Before Advice Action for Translet Joinpoint
+				if(getBeforeAdviceRuleList() != null) {
+					execute(getBeforeAdviceRuleList());
+				}
+				
+				if(!isActivityEnded()) {
+					if(transletRule.getContentList() != null) {
+						produce();
+					}
+					if(!isActivityEnded() && !withoutResponse) {
+						response();
+					}
+				}
+				
+				// execute After Advice Action for Translet Joinpoint
+				if(getAfterAdviceRuleList() != null) {
+					execute(getAfterAdviceRuleList());
+				}
+			} finally {
+				if(getFinallyAdviceRuleList() != null) {
+					executeWithoutThrow(getFinallyAdviceRuleList());
+				}
+			}
+		} catch(RequestMethodNotAllowedException e) {
+			throw e;
+		} catch(Exception e) {
+			setRaisedException(e);
+			
+			ExceptionRule exceptionRule = transletRule.getExceptionRule();
+			if(exceptionRule != null) {
+				responseByContentType(exceptionRule);
+				if(isActivityEnded()) {
+					return;
+				}
+			}
+			
+			if(getExceptionRuleList() != null) {
+				responseByContentType(getExceptionRuleList());
+				if(isActivityEnded()) {
+					return;
+				}
+			}
+			
+			//throw new ActivityException("Failed to perform an activity.", e);
+			throw new ActivityException("An error occurred while attempting to perform a translet activity.", e);
+		} finally {
+			Scope requestScope = getRequestScope(false);
+			if(requestScope != null) {
+				requestScope.destroy();
+			}
+		}
+	}
+
+	@Override
+	public String determineRequestCharacterEncoding() {
+		String characterEncoding = requestRule.getCharacterEncoding();
+		if(characterEncoding == null) {
+			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+		}
+		return characterEncoding;
+	}
+
+	@Override
+	public String determineResponseCharacterEncoding() {
+		String characterEncoding = responseRule.getCharacterEncoding();
+		if(characterEncoding == null) {
+			characterEncoding = determineRequestCharacterEncoding();
+		}
+		return characterEncoding;
 	}
 
 	/**
@@ -547,7 +417,7 @@ public class CoreActivity extends AbstractActivity {
 
 	@Override
 	public String getForwardTransletName() {
-		return this.forwardTransletName =;
+		return this.forwardTransletName;
 	}
 
 	@Override
@@ -720,17 +590,17 @@ public class CoreActivity extends AbstractActivity {
 
 	@Override
 	public boolean isExceptionRaised() {
-		return (raisedException != null);
+		return (getRaisedException() != null);
 	}
 
 	@Override
 	public Throwable getRaisedException() {
-		return raisedException;
+		return getRaisedException();
 	}
 
 	@Override
 	public Throwable getOriginRaisedException() {
-		Throwable t = raisedException;
+		Throwable t = getRaisedException();
 		while(t != null) {
 			t = t.getCause();
 		}
@@ -739,11 +609,11 @@ public class CoreActivity extends AbstractActivity {
 
 	@Override
 	public void setRaisedException(Throwable raisedException) {
-		if(this.raisedException == null) {
+		if(!isExceptionRaised()) {
 			if(log.isDebugEnabled()) {
 				log.error("Raised exception: ", raisedException);
 			}
-			this.raisedException = raisedException;
+			setRaisedException(raisedException);
 		}
 	}
 

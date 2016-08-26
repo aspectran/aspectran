@@ -33,6 +33,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointType;
@@ -74,13 +75,7 @@ public abstract class AbstractActivity implements Activity {
 
 	private Scope requestScope;
 	
-	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
-	
-	private AspectAdviceRuleRegistry requestAspectAdviceRuleRegistry;
-	
-	private AspectAdviceRuleRegistry responseAspectAdviceRuleRegistry;
-	
-	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Instantiates a new abstract activity.
@@ -330,20 +325,12 @@ public abstract class AbstractActivity implements Activity {
 	public void setRequestScope(Scope requestScope) {
 		this.requestScope = requestScope;
 	}
-
+	
 	protected void prepareAspectAdviceRule(TransletRule transletRule) {
 		if(transletRule.getNameTokens() == null) {
-			this.transletAspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
-			this.requestAspectAdviceRuleRegistry = transletRule.getRequestRule().replicateAspectAdviceRuleRegistry();
-			this.responseAspectAdviceRuleRegistry = transletRule.getResponseRule().replicateAspectAdviceRuleRegistry();
-			if(transletRule.getContentList() != null) {
-				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().replicateAspectAdviceRuleRegistry();
-			}
+			this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
 		} else {
-			AspectAdviceRulePostRegister transletAARPostRegister = new AspectAdviceRulePostRegister();
-			AspectAdviceRulePostRegister requestAARPostRegister = new AspectAdviceRulePostRegister();
-			AspectAdviceRulePostRegister contentAARPostRegister = new AspectAdviceRulePostRegister();
-			AspectAdviceRulePostRegister responseAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
 
 			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
 				JoinpointType joinpointScope = aspectRule.getJoinpointType();
@@ -352,191 +339,57 @@ public abstract class AbstractActivity implements Activity {
 					if(isAcceptable(aspectRule)) {
 						Pointcut pointcut = aspectRule.getPointcut();
 						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+							aarPostRegister.register(aspectRule);
+
 							if(log.isDebugEnabled()) {
-								log.debug("register AspectRule " + aspectRule);
-							}
-							if(joinpointScope == JoinpointType.REQUEST) {
-								requestAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointType.CONTENT) {
-								contentAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointType.RESPONSE) {
-								responseAARPostRegister.register(aspectRule);
-							} else {
-								transletAARPostRegister.register(aspectRule);
+								log.debug("registered AspectRule " + aspectRule);
 							}
 						}
 					}
 				}
 			}
 
-			this.transletAspectAdviceRuleRegistry = transletAARPostRegister.getAspectAdviceRuleRegistry();
-			this.requestAspectAdviceRuleRegistry = requestAARPostRegister.getAspectAdviceRuleRegistry();
-			this.contentAspectAdviceRuleRegistry = contentAARPostRegister.getAspectAdviceRuleRegistry();
-			this.responseAspectAdviceRuleRegistry = responseAARPostRegister.getAspectAdviceRuleRegistry();
+			this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
 		}
 	}
 	
-	public AspectAdviceRuleRegistry touchTransletAspectAdviceRuleRegistry() {
-		if(transletAspectAdviceRuleRegistry == null) {
-			transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
-		return transletAspectAdviceRuleRegistry;
+		return aspectAdviceRuleRegistry;
 	}
 	
-	public AspectAdviceRuleRegistry touchRequestAspectAdviceRuleRegistry() {
-		if(requestAspectAdviceRuleRegistry == null) {
-			requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return requestAspectAdviceRuleRegistry;
-	}
-	
-	public AspectAdviceRuleRegistry touchResponseAspectAdviceRuleRegistry() {
-		if(responseAspectAdviceRuleRegistry == null) {
-			responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return responseAspectAdviceRuleRegistry;
-	}
-	
-	public AspectAdviceRuleRegistry touchContentAspectAdviceRuleRegistry() {
-		if(contentAspectAdviceRuleRegistry == null) {
-			contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return contentAspectAdviceRuleRegistry;
-	}
-	
-	protected List<AspectAdviceRule> getBeforeAdviceRuleListForTranslet() {
-		if(transletAspectAdviceRuleRegistry != null) {
-			return transletAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+	protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRuleRegistry != null) {
+			return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		}
 		return null;
 	}
 
-	protected List<AspectAdviceRule> getAfterAdviceRuleListForTranslet() {
-		if(transletAspectAdviceRuleRegistry != null) {
-			return transletAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+	protected List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRuleRegistry != null) {
+			return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 		}
 		return null;
 	}
 	
-	protected List<AspectAdviceRule> getFinallyAdviceRuleListForTranslet() {
-		if(transletAspectAdviceRuleRegistry != null) {
-			return transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+	protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRuleRegistry != null) {
+			return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 		}
 		return null;
 	}
 
-	protected List<ExceptionRule> getExceptionRuleListForTranslet() {
-		if(transletAspectAdviceRuleRegistry != null) {
-			return transletAspectAdviceRuleRegistry.getExceptionRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getBeforeAdviceRuleListForRequest() {
-		if(requestAspectAdviceRuleRegistry != null) {
-			return requestAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getAfterAdviceRuleListForRequest() {
-		if(requestAspectAdviceRuleRegistry != null) {
-			return requestAspectAdviceRuleRegistry.getAfterAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getFinallyAdviceRuleListForRequest() {
-		if(requestAspectAdviceRuleRegistry != null) {
-			return requestAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-		}
-		return null;
-	}
-
-	protected List<ExceptionRule> getExceptionRuleListForRequest() {
-		if(requestAspectAdviceRuleRegistry != null) {
-			return requestAspectAdviceRuleRegistry.getExceptionRuleList();
-		}
-		return null;
-	}
-
-	protected List<AspectAdviceRule> getBeforeAdviceRuleListForResponse() {
-		if(responseAspectAdviceRuleRegistry != null) {
-			return responseAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getAfterAdviceRuleListForResponse() {
-		if(responseAspectAdviceRuleRegistry != null) {
-			return responseAspectAdviceRuleRegistry.getAfterAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getFinallyAdviceRuleListForResponse() {
-		if(responseAspectAdviceRuleRegistry != null) {
-			return responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-		}
-		return null;
-	}
-
-	protected List<ExceptionRule> getExceptionRuleListForResponse() {
-		if(responseAspectAdviceRuleRegistry != null) {
-			return responseAspectAdviceRuleRegistry.getExceptionRuleList();
-		}
-		return null;
-	}
-
-	protected List<AspectAdviceRule> getBeforeAdviceRuleListForContent() {
-		if(contentAspectAdviceRuleRegistry != null) {
-			return contentAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getAfterAdviceRuleListForContent() {
-		if(contentAspectAdviceRuleRegistry != null) {
-			return contentAspectAdviceRuleRegistry.getAfterAdviceRuleList();
-		}
-		return null;
-	}
-	
-	protected List<AspectAdviceRule> getFinallyAdviceRuleListForContent() {
-		if(contentAspectAdviceRuleRegistry != null) {
-			return contentAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-		}
-		return null;
-	}
-
-	protected List<ExceptionRule> getExceptionRuleListForContent() {
-		if(contentAspectAdviceRuleRegistry != null) {
-			return contentAspectAdviceRuleRegistry.getExceptionRuleList();
+	protected List<ExceptionRule> getExceptionRuleList() {
+		if(aspectAdviceRuleRegistry != null) {
+			return aspectAdviceRuleRegistry.getExceptionRuleList();
 		}
 		return null;
 	}
 
 	@Override
-	public <T> T getTransletSetting(String settingName) {
-		return getSetting(transletAspectAdviceRuleRegistry, settingName);
-	}
-
-	@Override
-	public <T> T getRequestSetting(String settingName) {
-		return getSetting(requestAspectAdviceRuleRegistry, settingName);
-	}
-
-	@Override
-	public <T> T getResponseSetting(String settingName) {
-		return getSetting(responseAspectAdviceRuleRegistry, settingName);
-	}
-
-	@Override
-	public <T> T getContentSetting(String settingName) {
-		return getSetting(contentAspectAdviceRuleRegistry, settingName);
-	}
-	
-	private <T> T getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
+	public <T> T getSetting(String settingName) {
 		return (aspectAdviceRuleRegistry != null) ? aspectAdviceRuleRegistry.getSetting(settingName) : null;
 	}
 	
@@ -635,23 +488,14 @@ public abstract class AbstractActivity implements Activity {
 		/*
 		 * The before advice is excluded because it was already executed.
 		 */
-		if(joinpointType == JoinpointType.TRANSLET || joinpointType == getCurrentJoinpointType()) {
+		if(joinpointType == JoinpointType.TRANSLET) {
 			if(log.isDebugEnabled()) {
 				log.debug("register AspectRule " + aspectRule);
 			}
 			
-			if(JoinpointType.TRANSLET == joinpointType) {
-				touchTransletAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointType.REQUEST == joinpointType) {
-				touchRequestAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointType.RESPONSE == joinpointType) {
-				touchResponseAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointType.CONTENT == joinpointType) {
-				touchContentAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
-			}
+			touchAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
 
 			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-
 			if(aspectAdviceRuleList != null) {
 				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {

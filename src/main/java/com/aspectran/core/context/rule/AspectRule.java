@@ -232,36 +232,21 @@ public class AspectRule implements BeanReferenceInspectable {
 		tsb.append("id", id);
 		tsb.append("joinpointScope", joinpointType);
 		tsb.append("pointcutRule", pointcutRule);
-		if(aspectTargetType == AspectTargetType.TRANSLET) {
-			tsb.append("settingsAdviceRule", settingsAdviceRule);
-			tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
-		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
-			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
-		}
+		tsb.append("settingsAdviceRule", settingsAdviceRule);
+		tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
 		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("beanRelevanted", beanRelevanted);
 		return tsb.toString();
 	}
 	
 	public static AspectRule newInstance(String id) {
-		AspectTargetType aspectTargetType;
-		
-		if(usedFor != null) {
-			aspectTargetType = AspectTargetType.resolve(usedFor);
-			if(aspectTargetType == null)
-				throw new IllegalArgumentException("No aspect target type registered for '" + usedFor + "'.");
-		} else {
-			aspectTargetType = AspectTargetType.TRANSLET;
-		}
-		
 		AspectRule aspectRule = new AspectRule();
 		aspectRule.setId(id);
-		aspectRule.setAspectTargetType(aspectTargetType);
 		
 		return aspectRule;
 	}
 	
-	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
+	public static void updateJoinpoint(AspectRule aspectRule, String scope) {
 		JoinpointType joinpointScope;
 		
 		if(scope != null) {

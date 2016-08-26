@@ -50,10 +50,6 @@ public final class SessionScopeActivity extends CoreActivity {
 	}
 
 	@Override
-	protected void request() {
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		SessionScopeActivity activity = new SessionScopeActivity(getActivityContext(), getSessionAdapter());

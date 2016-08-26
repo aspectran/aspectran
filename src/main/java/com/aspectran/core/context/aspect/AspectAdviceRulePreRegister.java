@@ -18,15 +18,12 @@ package com.aspectran.core.context.aspect;
 import java.util.List;
 import java.util.Set;
 
-import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -140,34 +137,11 @@ public class AspectAdviceRulePreRegister {
 
 			if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointType.SESSION) {
 				if(pointcut == null || pointcut.matches(transletRule.getName())) {
-					if(joinpointScope == JoinpointType.REQUEST) {
-						RequestRule requestRule = transletRule.getRequestRule();
-						requestRule.touchAspectAdviceRuleRegistry().register(aspectRule);
-
-						if(log.isTraceEnabled()) {
-							log.trace("applied aspectRule " + aspectRule + " to requestRule " + requestRule + " of transletRule " + transletRule);
-						}
-					} else if(joinpointScope == JoinpointType.CONTENT) {
-						ContentList contentList = transletRule.touchContentList();
-						contentList.touchAspectAdviceRuleRegistry().register(aspectRule);
-
-						if(log.isTraceEnabled()) {
-							log.trace("applied aspectRule " + aspectRule + " to contentList " + contentList + " of transletRule " + transletRule);
-						}
-					} else if(joinpointScope == JoinpointType.RESPONSE) {
-						ResponseRule responseRule = transletRule.getResponseRule();
-						responseRule.touchAspectAdviceRuleRegistry().register(aspectRule);
-						
-						if(log.isTraceEnabled()) {
-							log.trace("applied aspectRule " + aspectRule + " to responseRule " + responseRule + " of transletRule " + transletRule);
-						}
-					} else {
-						// translet scope
-						transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
-						
-						if(log.isTraceEnabled()) {
-							log.trace("applied aspectRule " + aspectRule + " to transletRule " + transletRule);
-						}
+					// translet scope
+					transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
+					
+					if(log.isTraceEnabled()) {
+						log.trace("applied aspectRule " + aspectRule + " to transletRule " + transletRule);
 					}
 				}
 			}

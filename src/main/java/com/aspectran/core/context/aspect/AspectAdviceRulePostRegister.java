@@ -28,7 +28,6 @@ public class AspectAdviceRulePostRegister {
 		if(aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
-
 		aspectAdviceRuleRegistry.register(aspectRule);
 
 		return aspectAdviceRuleRegistry;

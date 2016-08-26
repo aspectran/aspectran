@@ -104,10 +104,7 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ResponseByC
 	 * @return the action type
 	 */
 	public ActionType getActionType() {
-		if(action == null)
-			return null;
-		
-		return action.getActionType();
+		return (action == null) ? null : action.getActionType();
 	}
 
 	/**

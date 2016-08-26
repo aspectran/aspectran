@@ -223,7 +223,7 @@ public class RootAponDisassembler {
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		String scope = joinpointParameters.getString(JoinpointParameters.scope);
 		String method = joinpointParameters.getString(JoinpointParameters.method);
-		AspectRule.updateJoinpointScope(aspectRule, scope);
+		AspectRule.updateJoinpoint(aspectRule, scope);
 		AspectRule.updateTargetMethods(aspectRule, method);
 		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
