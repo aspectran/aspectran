@@ -61,18 +61,16 @@ public class ConsoleActivity extends CoreActivity {
 
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
 			setResponseAdapter(responseAdapter);
-
-			receiveRequiredParameters();
 		} catch(Exception e) {
 			throw new AdapterException("Failed to adapt for the Console Activity.", e);
 		}
 	}
 
 	@Override
-	protected void request() {
+	protected void parseRequest() {
 		receiveRequiredParameters();
 
-		super.request();
+		super.parseRequest();
 	}
 
 	/**

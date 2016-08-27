@@ -35,7 +35,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class BeanAction.
+ * The BeanAction that invoking method in the bean instance.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */

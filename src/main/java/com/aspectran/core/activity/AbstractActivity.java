@@ -155,12 +155,35 @@ public abstract class AbstractActivity implements Activity {
 		this.activityEnded = false;
 	}
 
+	@Override
 	public Throwable getRaisedException() {
 		return raisedException;
 	}
 
+	@Override
 	public void setRaisedException(Throwable raisedException) {
-		this.raisedException = raisedException;
+		if(this.raisedException == null) {
+			if(log.isDebugEnabled()) {
+				log.error("Raised exception: ", raisedException);
+			}
+			this.raisedException = raisedException;
+		}
+	}
+
+	@Override
+	public boolean isExceptionRaised() {
+		return (this.raisedException != null);
+	}
+
+	@Override
+	public Throwable getOriginRaisedException() {
+		if(raisedException != null) {
+			for(Throwable t = raisedException; t != null; t = t.getCause()) {
+				if(t.getCause() == null)
+					return t;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -268,9 +291,9 @@ public abstract class AbstractActivity implements Activity {
 	 * @return the new {@code Translet} instance
 	 */
 	protected Translet newTranslet() {
-		if(this.transletInterfaceClass == null)
+		if(this.transletInterfaceClass == null) {
 			this.transletInterfaceClass = Translet.class;
-		
+		}
 		if(this.transletImplementClass == null) {
 			this.transletImplementClass = CoreTranslet.class;
 			return new CoreTranslet(this);
@@ -290,8 +313,27 @@ public abstract class AbstractActivity implements Activity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		Activity activity = new CoreActivity(context);
+		CoreActivity activity = new CoreActivity(context);
+		activity.setIncluded(true);
 		return (T)activity;
+	}
+
+	@Override
+	public String determineRequestCharacterEncoding() {
+		String characterEncoding = getRequestRule().getCharacterEncoding();
+		if(characterEncoding == null) {
+			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+		}
+		return characterEncoding;
+	}
+
+	@Override
+	public String determineResponseCharacterEncoding() {
+		String characterEncoding = getResponseRule().getCharacterEncoding();
+		if(characterEncoding == null) {
+			characterEncoding = determineRequestCharacterEncoding();
+		}
+		return characterEncoding;
 	}
 
 	/**

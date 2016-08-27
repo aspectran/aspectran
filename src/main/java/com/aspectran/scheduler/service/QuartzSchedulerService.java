@@ -39,7 +39,6 @@ import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;

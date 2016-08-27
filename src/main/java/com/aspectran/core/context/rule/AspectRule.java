@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
@@ -74,6 +75,8 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	private String id;
 
+	private final Boolean isolated;
+
 	private JoinpointType joinpointType;
 	
 	private MethodType[] targetMethods;
@@ -104,6 +107,14 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getIsolated() {
+		return isolated;
+	}
+
+	public boolean isIsolated() {
+		return BooleanUtils.toBoolean(isolated, false);
 	}
 
 	public JoinpointType getJoinpointType() {

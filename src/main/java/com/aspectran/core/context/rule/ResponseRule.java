@@ -23,7 +23,6 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformFactory;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -36,8 +35,6 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ResponseRule implements ResponseRuleApplicable, Replicable<ResponseRule> {
 
-	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
-
 	public static final String CONTENT_ENCODING_SETTING_NAME = "contentEncoding";
 
 	private String name;
@@ -45,8 +42,6 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	private String characterEncoding;
 	
 	private Response response;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Instantiates a new ResponseRule.
@@ -123,35 +118,6 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 		Response response = new RedirectResponse(redirectResponseRule);
 		this.response = response;
 		return response;
-	}
-	
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-
-	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return aspectAdviceRuleRegistry;
-	}
-
-	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-
-		return aspectAdviceRuleRegistry.replicate();
-	}
-
-	public ResponseRule newUrgentResponseRule(Response response) {
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.setCharacterEncoding(characterEncoding);
-		responseRule.setResponse(response);
-		return responseRule;
 	}
 	
 	public ResponseRule replicate() {

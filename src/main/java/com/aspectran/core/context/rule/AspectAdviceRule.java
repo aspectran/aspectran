@@ -38,7 +38,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	private final Class<?> adviceBeanClass;
 
 	private final AspectAdviceType aspectAdviceType;
-	
+
 	private Executable action;
 	
 	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {

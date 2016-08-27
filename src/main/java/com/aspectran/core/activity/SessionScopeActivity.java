@@ -53,6 +53,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		SessionScopeActivity activity = new SessionScopeActivity(getActivityContext(), getSessionAdapter());
+		activity.setIncluded(true);
 		return (T)activity;
 	}
 
@@ -87,12 +88,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	}
 
 	@Override
-	public String getForwardTransletName() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void response(Response res) throws ResponseException {
+	public void setPenddedResponse(Response res) throws ResponseException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -102,7 +98,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	}
 
 	@Override
-	public Response getResponse() {
+	public Response getBaseResponse() {
 		throw new UnsupportedOperationException();
 	}
 

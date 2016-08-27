@@ -54,7 +54,7 @@ public class CoreTranslet implements Translet {
 	private ActivityDataMap activityDataMap;
 
 	/**
-	 * Instantiates a new GenericTranslet.
+	 * Instantiates a new CoreTranslet.
 	 *
 	 * @param activity the current Activity
 	 */
@@ -263,7 +263,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void response(Response response) {
-		activity.response(response);
+		activity.setPenddedResponse(response);
+		activity.activityEnd();
 	}
 
 	@Override
@@ -285,8 +286,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void redirect(String target, boolean immediately) {
-		if(!immediately && activity.getResponse() != null) {
-			Response res = activity.getResponse();
+		if(!immediately && activity.getBaseResponse() != null) {
+			Response res = activity.getBaseResponse();
 			if(res.getResponseType() == ResponseType.REDIRECT) {
 				Response r = res.replicate();
 				RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
@@ -320,8 +321,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void forward(String transletName, boolean immediately) {
-		if(!immediately && activity.getResponse() != null) {
-			Response res = activity.getResponse();
+		if(!immediately && activity.getBaseResponse() != null) {
+			Response res = activity.getBaseResponse();
 			if(res.getResponseType() == ResponseType.FORWARD) {
 				Response fr = res.replicate();
 				ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();

@@ -29,7 +29,9 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -150,14 +152,7 @@ public interface Activity extends BeanRegistry {
 	 * @return an action result
 	 */
 	Object getProcessResult(String actionId);
-	
-	/**
-	 * Returns the translet name will be forwarded.
-	 *
-	 * @return the forwarding destination translet name
-	 */
-	String getForwardTransletName();
-	
+
 	/**
 	 * Returns whether the current activity is completed or terminated.
 	 * 
@@ -175,7 +170,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @param response the response
 	 */
-	void response(Response response);
+	void setPenddedResponse(Response response);
 	
 	/**
 	 * Respond depending on the content type.
@@ -189,7 +184,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the response
 	 */
-	Response getResponse();
+	Response getBaseResponse();
 
 	/**
 	 * Returns whether the exception was thrown.
@@ -220,13 +215,6 @@ public interface Activity extends BeanRegistry {
 	void setRaisedException(Throwable raisedException);
 
 	/**
-	 * Gets the current joinpoint type.
-	 *
-	 * @return the current joinpoint type
-	 */
-	JoinpointType getCurrentJoinpointType();
-	
-	/**
 	 * Gets the activity context.
 	 *
 	 * @return the activity context
@@ -234,7 +222,7 @@ public interface Activity extends BeanRegistry {
 	ActivityContext getActivityContext();
 
 	/**
-	 * Create a new activity.
+	 * Create a new inner activity.
 	 *
 	 * @param <T> the type of the activity
 	 * @return the activity object
@@ -242,12 +230,12 @@ public interface Activity extends BeanRegistry {
 	<T extends Activity> T newActivity();
 
 	/**
-	 * Returns an instance of the current translet.
+	 * Gets the request http method.
 	 *
-	 * @return an instance of the current translet
+	 * @return the request method
 	 */
-	Translet getTranslet();
-	
+	MethodType getRequestMethod();
+
 	/**
 	 * Gets the name of the current translet.
 	 *
@@ -256,12 +244,18 @@ public interface Activity extends BeanRegistry {
 	String getTransletName();
 
 	/**
-	 * Gets the request http method.
+	 * Returns an instance of the current translet.
 	 *
-	 * @return the request method
+	 * @return an instance of the current translet
 	 */
-	MethodType getRequestMethod();
-	
+	Translet getTranslet();
+
+	TransletRule getTransletRule();
+
+	RequestRule getRequestRule();
+
+	ResponseRule getResponseRule();
+
 	/**
 	 * Gets the application adapter.
 	 *
