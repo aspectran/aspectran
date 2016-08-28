@@ -46,8 +46,9 @@
 
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
 <!ATTLIST aspect
-  id      ID #IMPLIED
-  for     (translet | scheduler) #IMPLIED
+  id       ID #IMPLIED
+  order    #IMPLIED
+  isolated (true | false) #IMPLIED
 >
 
 <!ELEMENT joinpoint (pointcut*)>

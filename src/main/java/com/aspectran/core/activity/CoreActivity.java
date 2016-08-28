@@ -548,13 +548,15 @@ public class CoreActivity extends AbstractActivity {
 				log.trace("adviceActionResult " + adviceActionResult);
 			}
 		} catch(Exception e) {
-			if(!aspectAdviceRule.getAspectRule().isIsolated()) {
-				setRaisedException(e);
-			}
-			if(!noThrow) {
-				throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
+			if(aspectAdviceRule.getAspectRule().isIsolated()) {
+				log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
 			} else {
-				log.error("Failed to execute advice action " + aspectAdviceRule, e);
+				setRaisedException(e);
+				if(noThrow) {
+					log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+				} else {
+					throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
+				}
 			}
 		}
 	}

@@ -15,18 +15,19 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class AspectJobAdviceRule.
- * 
- * <p>Created: 2008. 04. 01 PM 11:19:28</p>
+ * The Class JobRule.
  */
 public class JobRule {
 
 	private String transletName;
-	
+
+	MethodType requestMethod;
+
 	private Boolean disabled;
 
 	public String getTransletName() {
@@ -35,6 +36,14 @@ public class JobRule {
 
 	public void setTransletName(String transletName) {
 		this.transletName = transletName;
+	}
+
+	public MethodType getRequestMethod() {
+		return requestMethod;
+	}
+
+	public void setRequestMethod(MethodType requestMethod) {
+		this.requestMethod = requestMethod;
 	}
 
 	public Boolean getDisabled() {
@@ -53,14 +62,24 @@ public class JobRule {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("transletName", transletName);
+		tsb.append("method", requestMethod);
 		tsb.append("disabled", disabled);
 		return tsb.toString();
 	}
 	
-	public static JobRule newInstance(String transletName, Boolean disabled) {
+	public static JobRule newInstance(String transletName, String method, Boolean disabled) {
 		JobRule jobRule = new JobRule();
 		jobRule.setTransletName(transletName);
 		jobRule.setDisabled(disabled);
+
+		if(method != null) {
+			MethodType methodType = MethodType.resolve(method);
+			if(methodType == null)
+				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+
+			jobRule.setRequestMethod(methodType);
+		}
+
 		return jobRule;
 	}
 	

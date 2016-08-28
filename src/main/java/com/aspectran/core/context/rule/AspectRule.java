@@ -35,38 +35,46 @@ import com.aspectran.core.util.apon.Parameters;
  * The Class AspectRule.
  * 
  * <pre>
- * &lt;joinpoint scope="translet"&gt;
- *   methods: [
- *     "GET"
- *     "POST"
- *     "PATCH"
- *     "PUT"
- *     "DELETE"
- *   ]
- *   headers: [
- * 	   "Origin"
- *   ]
- *   pointcut: {
- * 	   type: "wildcard"
- * 	   +: "/a/b@sample.bean1^method1"
- * 	   +: "/x/y@sample.bean2^method1"
- * 	   -: "/a/b/c@sample.bean3^method1"
- * 	   -: "/x/y/z@sample.bean4^method1"
- *   }
- *   pointcut: {
- * 	   type: "regexp"
- * 	   include: {
- *       translet: "/a/b"
- *       bean: "sample.bean1"
- *       method: "method1"
+ * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
+ *   &lt;joinpoint scope="translet"&gt;
+ *     methods: [
+ *       "GET"
+ *       "POST"
+ *       "PATCH"
+ *       "PUT"
+ *       "DELETE"
+ *     ]
+ *     headers: [
+ * 	     "Origin"
+ *     ]
+ *     pointcut: {
+ * 	     type: "wildcard"
+ * 	     +: "/a/b@sample.bean1^method1"
+ * 	     +: "/x/y@sample.bean2^method1"
+ * 	     -: "/a/b/c@sample.bean3^method1"
+ * 	     -: "/x/y/z@sample.bean4^method1"
  *     }
- *     execlude: {
- * 	     translet: "/a/b/c"
- *       bean: "sample.bean3"
- *       method: "method1"
+ *     pointcut: {
+ * 	     type: "regexp"
+ * 	     include: {
+ *         translet: "/a/b"
+ *         bean: "sample.bean1"
+ *         method: "method1"
+ *       }
+ *       execlude: {
+ * 	       translet: "/a/b/c"
+ *         bean: "sample.bean3"
+ *         method: "method1"
+ *       }
  *     }
- *   }
- * &lt;/joinpoint&gt;
+ *   &lt;/joinpoint&gt;
+ *   &lt;settings&gt;
+ *   &lt;/settings&gt;
+ *   &lt;advice&gt;
+ *   &lt;/advice&gt;
+ *   &lt;exception&gt;
+ *   &lt;/exception&gt;
+ * &lt;aspect&gt;
  * </pre>
  */
 public class AspectRule implements BeanReferenceInspectable {
@@ -75,7 +83,16 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	private String id;
 
-	private final Boolean isolated;
+	/**
+	 * The lowest value has highest priority.
+	 * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
+	 *
+	 */
+	private Integer order;
+
+	private Boolean isolated;
+
+	private Parameters joinpointParameters;
 
 	private JoinpointType joinpointType;
 	
@@ -109,6 +126,14 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.id = id;
 	}
 
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public Boolean getIsolated() {
 		return isolated;
 	}
@@ -117,11 +142,23 @@ public class AspectRule implements BeanReferenceInspectable {
 		return BooleanUtils.toBoolean(isolated, false);
 	}
 
+	public void setIsolated(Boolean isolated) {
+		this.isolated = isolated;
+	}
+
+	public void setJoinpointParameters(Parameters joinpointParameters) {
+		this.joinpointParameters = joinpointParameters;
+
+		updateJoinpointType(this, joinpointParameters.getString(JoinpointParameters.type));
+		updateTargetMethods(this, joinpointParameters.getStringArray(JoinpointParameters.methods));
+		updateTargetHeaders(this, joinpointParameters.getStringArray(JoinpointParameters.headers));
+	}
+
 	public JoinpointType getJoinpointType() {
 		return joinpointType;
 	}
 
-	public void setJoinpointScope(JoinpointType joinpointType) {
+	public void setJoinpointType(JoinpointType joinpointType) {
 		this.joinpointType = joinpointType;
 	}
 
@@ -241,7 +278,9 @@ public class AspectRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("joinpointScope", joinpointType);
+		tsb.append("order", order);
+		tsb.append("isolated", isolated);
+		tsb.append("joinpointType", joinpointType);
 		tsb.append("pointcutRule", pointcutRule);
 		tsb.append("settingsAdviceRule", settingsAdviceRule);
 		tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
@@ -250,27 +289,43 @@ public class AspectRule implements BeanReferenceInspectable {
 		return tsb.toString();
 	}
 	
-	public static AspectRule newInstance(String id) {
+	public static AspectRule newInstance(String id, String order, Boolean isolated) {
 		AspectRule aspectRule = new AspectRule();
 		aspectRule.setId(id);
-		
+		aspectRule.setIsolated(isolated);
+
+		if(!StringUtils.isEmpty()) {
+			try {
+				aspectRule.setOrder(new Integer(order));
+			} catch(NumberFormatException e) {
+				throw new IllegalArgumentException("The 'order' attribute on an <aspect> element must be  a valid integer integer.");
+			}
+		}
+
 		return aspectRule;
 	}
 	
-	public static void updateJoinpoint(AspectRule aspectRule, String scope) {
-		JoinpointType joinpointScope;
-		
-		if(scope != null) {
-			joinpointScope = JoinpointType.resolve(scope);
-			if(joinpointScope == null)
-				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
-		} else {
-			joinpointScope = JoinpointType.TRANSLET;
+	public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
+		updateJoinpointType(aspectRule, type);
+
+		if(StringUtils.hasText(text)) {
+			Parameters joinpointParameters = new JoinpointParameters(text);
+
 		}
-		
-		aspectRule.setJoinpointScope(joinpointScope);
 	}
-	
+
+	public static void updateJoinpointType(AspectRule aspectRule, String type) {
+		JoinpointType joinpointType;
+		if(type != null) {
+			joinpointType = JoinpointType.resolve(type);
+			if(joinpointType == null)
+				throw new IllegalArgumentException("No joinpoint type registered for '" + type + "'.");
+		} else {
+			joinpointType = JoinpointType.TRANSLET;
+		}
+		aspectRule.setJoinpointType(joinpointType);
+	}
+
 	public static void updateTargetMethods(AspectRule aspectRule, String[] methods) {
 		MethodType[] targetMethods = null;
 		if(methods != null) {
