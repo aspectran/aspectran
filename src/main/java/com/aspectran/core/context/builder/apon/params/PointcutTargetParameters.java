@@ -19,34 +19,31 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class JoinpointParameters extends AbstractParameters {
+public class PointcutTargetParameters extends AbstractParameters {
 
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition methods;
-	public static final ParameterDefinition headers;
-	public static final ParameterDefinition pointcut;
+	public static final ParameterDefinition translet;
+	public static final ParameterDefinition bean;
+	public static final ParameterDefinition method;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		type = new ParameterDefinition("scope", ParameterValueType.STRING);
-		methods = new ParameterDefinition("methods", ParameterValueType.STRING, true);
-		headers = new ParameterDefinition("headers", ParameterValueType.STRING, true);
-		pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);
-	
+		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+		method = new ParameterDefinition("method", ParameterValueType.STRING);
+		
 		parameterDefinitions = new ParameterDefinition[] {
-			type,
-			methods,
-			headers,
-			pointcut
+			translet,
+			bean,
+			method
 		};
 	}
 	
-	public JoinpointParameters() {
+	public PointcutTargetParameters() {
 		super(parameterDefinitions);
 	}
 	
-	public JoinpointParameters(String text) {
+	public PointcutTargetParameters(String text) {
 		super(parameterDefinitions, text);
 	}
 	

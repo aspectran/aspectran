@@ -46,7 +46,7 @@ import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutParameters;
+import com.aspectran.core.context.builder.apon.params.PointcutTargetParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
@@ -226,11 +226,11 @@ public class RootAponAssembler {
 			List<Parameters> targetParametersList = pointcutRule.getTargetParametersList();
 			if(targetParametersList != null) {
 				for(Parameters targetParameters : targetParametersList) {
-					pointcutParameters.putValue(PointcutParameters.targets, targetParameters);
+					pointcutParameters.putValue(PointcutTargetParameters.targets, targetParameters);
 				}
 			}
-			pointcutParameters.putValueNonNull(PointcutParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
-			pointcutParameters.putValueNonNull(PointcutParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
+			pointcutParameters.putValueNonNull(PointcutTargetParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
+			pointcutParameters.putValueNonNull(PointcutTargetParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
 		}
 		
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();

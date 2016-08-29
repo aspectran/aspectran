@@ -21,21 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
-	public static final ParameterDefinition translet;
-	public static final ParameterDefinition bean;
-	public static final ParameterDefinition method;
+	public static final ParameterDefinition type;
+	public static final ParameterDefinition pluses;
+	public static final ParameterDefinition minuses;
+	public static final ParameterDefinition includes;
+	public static final ParameterDefinition execludes;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		method = new ParameterDefinition("method", ParameterValueType.STRING);
-		
+		type = new ParameterDefinition("scope", ParameterValueType.STRING);
+		pluses = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
+		minuses = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
+		includes = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);
+		execludes = new ParameterDefinition("execlude", PointcutTargetParameters.class, true, true);
+	
 		parameterDefinitions = new ParameterDefinition[] {
-			translet,
-			bean,
-			method
+			type,
+			pluses,
+			minuses,
+			includes,
+			execludes
 		};
 	}
 	

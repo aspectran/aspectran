@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutParameters;
+import com.aspectran.core.context.builder.apon.params.PointcutTargetParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointType;
@@ -215,7 +215,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 				PointcutType pointcutType = null;
 				
 				if(type == null)
-					type = pointcutParameters.getString(PointcutParameters.type);
+					type = pointcutParameters.getString(PointcutTargetParameters.type);
 				
 				if(type != null) {
 					pointcutType = PointcutType.resolve(type);
@@ -225,7 +225,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 				
 				pointcutRule = new PointcutRule(pointcutType);
 				
-				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
+				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutTargetParameters.targets);
 				if(targetParametersList != null) {
 					for(Parameters targetParameters : targetParametersList) {
 						addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);

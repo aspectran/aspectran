@@ -19,17 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
-import com.aspectran.core.context.rule.type.JoinpointType;
-import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class AspectRule.
@@ -92,16 +86,8 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	private Boolean isolated;
 
-	private Parameters joinpointParameters;
+	private JoinpointRule joinpointRule;
 
-	private JoinpointType joinpointType;
-	
-	private MethodType[] targetMethods;
-	
-	private String[] targetHeaders;
-	
-	private PointcutRule pointcutRule;
-	
 	private Pointcut pointcut;
 
 	private String adviceBeanId;
@@ -146,44 +132,12 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.isolated = isolated;
 	}
 
-	public void setJoinpointParameters(Parameters joinpointParameters) {
-		this.joinpointParameters = joinpointParameters;
-
-		updateJoinpointType(this, joinpointParameters.getString(JoinpointParameters.type));
-		updateTargetMethods(this, joinpointParameters.getStringArray(JoinpointParameters.methods));
-		updateTargetHeaders(this, joinpointParameters.getStringArray(JoinpointParameters.headers));
+	public JoinpointRule getJoinpointRule() {
+		return joinpointRule;
 	}
 
-	public JoinpointType getJoinpointType() {
-		return joinpointType;
-	}
-
-	public void setJoinpointType(JoinpointType joinpointType) {
-		this.joinpointType = joinpointType;
-	}
-
-	public MethodType[] getTargetMethods() {
-		return targetMethods;
-	}
-
-	public void setTargetMethods(MethodType[] targetMethods) {
-		this.targetMethods = targetMethods;
-	}
-
-	public String[] getTargetHeaders() {
-		return targetHeaders;
-	}
-
-	public void setTargetHeaders(String[] targetHeaders) {
-		this.targetHeaders = targetHeaders;
-	}
-
-	public PointcutRule getPointcutRule() {
-		return pointcutRule;
-	}
-
-	public void setPointcutRule(PointcutRule pointcutRule) {
-		this.pointcutRule = pointcutRule;
+	public void setJoinpointRule(JoinpointRule joinpointRule) {
+		this.joinpointRule = joinpointRule;
 	}
 
 	public Pointcut getPointcut() {
@@ -280,8 +234,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		tsb.append("id", id);
 		tsb.append("order", order);
 		tsb.append("isolated", isolated);
-		tsb.append("joinpointType", joinpointType);
-		tsb.append("pointcutRule", pointcutRule);
+		tsb.append("joinpointRule", joinpointRule);
 		tsb.append("settingsAdviceRule", settingsAdviceRule);
 		tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
 		tsb.append("exceptionRule", exceptionRule);
@@ -294,7 +247,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectRule.setId(id);
 		aspectRule.setIsolated(isolated);
 
-		if(!StringUtils.isEmpty()) {
+		if(!StringUtils.isEmpty(order)) {
 			try {
 				aspectRule.setOrder(new Integer(order));
 			} catch(NumberFormatException e) {
@@ -306,142 +259,8 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
-		updateJoinpointType(aspectRule, type);
-
-		if(StringUtils.hasText(text)) {
-			Parameters joinpointParameters = new JoinpointParameters(text);
-
-		}
-	}
-
-	public static void updateJoinpointType(AspectRule aspectRule, String type) {
-		JoinpointType joinpointType;
-		if(type != null) {
-			joinpointType = JoinpointType.resolve(type);
-			if(joinpointType == null)
-				throw new IllegalArgumentException("No joinpoint type registered for '" + type + "'.");
-		} else {
-			joinpointType = JoinpointType.TRANSLET;
-		}
-		aspectRule.setJoinpointType(joinpointType);
-	}
-
-	public static void updateTargetMethods(AspectRule aspectRule, String[] methods) {
-		MethodType[] targetMethods = null;
-		if(methods != null) {
-			List<MethodType> methodTypes = new ArrayList<>(methods.length);
-			for(String method : methods) {
-				MethodType methodType = MethodType.resolve(method);
-				if(methodType == null) {
-					throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
-				}
-				methodTypes.add(methodType);
-			}
-			targetMethods = methodTypes.toArray(new MethodType[methodTypes.size()]);
-		}
-		aspectRule.setTargetMethods(targetMethods);
+		JoinpointRule joinpointRule = JoinpointRule.newInstance(type, text);
+		aspectRule.setJoinpointRule(joinpointRule);
 	}
 	
-	public static void updateTargetHeaders(AspectRule aspectRule, String[] headers) {
-		String[] targetHeaders = null;
-		if(headers != null) {
-			List<String> headerList = new ArrayList<>(headers.length);
-			for(String header : headers) {
-				if(StringUtils.hasText(header)) {
-					headerList.add(header);
-				}
-			}
-			targetHeaders = headerList.toArray(new String[headerList.size()]);
-		}
-		aspectRule.setTargetHeaders(targetHeaders);
-	}
-	
-	public static PointcutRule updateJoinpoint(AspectRule aspectRule, String type, Parameters joinpointParameters) {
-		PointcutRule pointcutRule = null;
-		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
-		
-		if(pointcutParameters != null) {
-			PointcutType pointcutType = null;
-			
-			if(type == null) {
-				type = pointcutParameters.getString(PointcutParameters.type);
-			}
-			if(type != null) {
-				pointcutType = PointcutType.resolve(type);
-				if(pointcutType == null) {
-					throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
-				}
-			}
-			
-			pointcutRule = new PointcutRule(pointcutType);
-			
-			List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
-			if(targetParametersList != null) {
-				for(Parameters targetParameters : targetParametersList) {
-					addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);
-					pointcutRule.touchTargetParametersList().add(targetParameters);
-				}
-			}
-		}
-
-		return pointcutRule;
-	}
-
-
-	private static List<PointcutPatternRule> addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, Parameters targetParameters) {
-		String translet = targetParameters.getString(PointTargetParameters.translet);
-		String bean = targetParameters.getString(PointTargetParameters.bean);
-		String method = targetParameters.getString(PointTargetParameters.method);
-		List<Parameters> excludeTargetParametersList = targetParameters.getParametersList(PointTargetParameters.excludeTargets);
-		
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method) || (excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty())) {
-			PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(translet, bean, method);
-			
-			if(excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty()) {
-				for(Parameters excludeTargetParameters : excludeTargetParametersList) {
-					addExcludePointcutPatternRule(pointcutPatternRule, excludeTargetParameters);
-				}
-			}
-			
-			pointcutPatternRuleList.add(pointcutPatternRule);
-		}
-		
-		List<String> plusPatternStringList = targetParameters.getStringList(PointTargetParameters.pluses);
-		List<String> minusPatternStringList = targetParameters.getStringList(PointTargetParameters.minuses);
-		
-		List<PointcutPatternRule> minusPointcutPatternRuleList = null;
-		
-		if(minusPatternStringList != null && !minusPatternStringList.isEmpty()) {
-			minusPointcutPatternRuleList = new ArrayList<PointcutPatternRule>(minusPatternStringList.size());
-			
-			for(String patternString : minusPatternStringList) {
-				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
-				minusPointcutPatternRuleList.add(pointcutPatternRule);
-			}
-		}
-		
-		if(plusPatternStringList != null && !plusPatternStringList.isEmpty()) {
-			for(String patternString : plusPatternStringList) {
-				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
-				if(minusPointcutPatternRuleList != null)
-					pointcutPatternRule.setExcludePointcutPatternRuleList(minusPointcutPatternRuleList);
-				
-				pointcutPatternRuleList.add(pointcutPatternRule);
-			}
-		}
-		
-		return pointcutPatternRuleList;
-	}
-
-	private static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, Parameters excludeTargetParameters) {
-		String translet = excludeTargetParameters.getString(PointTargetParameters.translet);
-		String bean = excludeTargetParameters.getString(PointTargetParameters.bean);
-		String method = excludeTargetParameters.getString(PointTargetParameters.method);
-
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-			PointcutPatternRule ppr = PointcutPatternRule.newInstance(translet, bean, method);
-			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
-		}
-	}
-
 }
