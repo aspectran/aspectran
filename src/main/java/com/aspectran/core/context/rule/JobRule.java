@@ -26,7 +26,7 @@ public class JobRule {
 
 	private String transletName;
 
-	MethodType requestMethod;
+	private MethodType requestMethod;
 
 	private Boolean disabled;
 
@@ -74,9 +74,9 @@ public class JobRule {
 
 		if(method != null) {
 			MethodType methodType = MethodType.resolve(method);
-			if(methodType == null)
+			if(methodType == null) {
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
-
+			}
 			jobRule.setRequestMethod(methodType);
 		}
 

@@ -123,7 +123,11 @@ public class JoinpointRule {
 	public void setPointcutRule(PointcutRule pointcutRule) {
 		this.pointcutRule = pointcutRule;
 	}
-	
+
+	public Parameters getJoinpointParameters() {
+		return joinpointParameters;
+	}
+
 	public void setJoinpointParameters(Parameters joinpointParameters) {
 		this.joinpointParameters = joinpointParameters;
 
@@ -149,11 +153,20 @@ public class JoinpointRule {
 
 		if(StringUtils.hasText(text)) {
 			Parameters joinpointParameters = new JoinpointParameters(text);
-			updateJoinpointType(joinpointRule, joinpointParameters.getString(JoinpointParameters.type));
+			joinpointRule.setJoinpointParameters(joinpointParameters);
 			updateTargetMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));
 			updateTargetHeaders(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.headers));
 		}
 
+		return joinpointRule;
+	}
+
+	public static JoinpointRule newInstance(Parameters joinpointParameters) {
+		JoinpointRule joinpointRule = new JoinpointRule();
+		if(joinpointParameters != null) {
+			updateJoinpointType(joinpointRule, joinpointParameters.getString(JoinpointParameters.type));
+			joinpointRule.setJoinpointParameters(joinpointParameters);
+		}
 		return joinpointRule;
 	}
 	
@@ -229,6 +242,9 @@ public class JoinpointRule {
 						PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
 						pointcutRule.addPointcutPatternRule(pointcutPatternRule, minusPointcutPatternRuleList);
 					}
+
+					pointcutRule.setPlusPatternStringList(plusPatternStringList);
+					pointcutRule.setMinusPatternStringList(minusPatternStringList);
 				}
 				
 				if(targetParametersCount > 0) {
@@ -246,6 +262,9 @@ public class JoinpointRule {
 						PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeTargetParameters);
 						pointcutRule.addPointcutPatternRule(pointcutPatternRule, excludePointcutPatternRuleList);
 					}
+
+					pointcutRule.setIncludeTargetParametersList(includeTargetParametersList);
+					pointcutRule.setExecludeTargetParametersList(execludeTargetParametersList);
 				}
 			}
 		}

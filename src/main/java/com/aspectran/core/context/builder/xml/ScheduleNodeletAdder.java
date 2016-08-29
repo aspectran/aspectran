@@ -16,11 +16,8 @@
 package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.JobRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -29,7 +26,7 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class ScheduleNodeletAdder.
  * 
- * <p>Created: 2008. 06. 14 AM 6:56:29</p>
+ * <p>Created: 2016. 08. 29.</p>
  */
 class ScheduleNodeletAdder implements NodeletAdder {
 
@@ -66,21 +63,21 @@ class ScheduleNodeletAdder implements NodeletAdder {
             String type = StringUtils.emptyToNull(attributes.get("type"));
 
 			ScheduleRule scheduleRule = assistant.peekObject();
-			ScheduleRule.updateTrigger(scheduleRule, type);
+			ScheduleRule.updateTrigger(scheduleRule, type, text);
         });
 		parser.addNodelet(xpath, "/schedule/scheduler", (node, attributes, text) -> {
 			String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
 
 			if(beanIdOrClass != null) {
 				ScheduleRule scheduleRule = assistant.peekObject();
-				scheduleRule.setScheduleBeanId(beanIdOrClass);
+				scheduleRule.setSchedulerBeanId(beanIdOrClass);
 
 				assistant.resolveBeanClass(beanIdOrClass, scheduleRule);
 			}
         });
 		parser.addNodelet(xpath, "/schedule/scheduler/job", (node, attributes, text) -> {
             String transletName = StringUtils.emptyToNull(attributes.get("translet"));
-            Boolean method = BooleanUtils.toNullableBooleanObject(attributes.get("method"));
+			String method = StringUtils.emptyToNull(attributes.get("method"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
 			if(transletName == null)

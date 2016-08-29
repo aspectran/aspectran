@@ -18,14 +18,11 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutTargetParameters;
+import com.aspectran.core.context.builder.apon.params.TriggerParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
-import com.aspectran.core.context.rule.type.JoinpointType;
-import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.context.rule.type.TriggerType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -42,7 +39,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	
 	private String cronExpression;
 	
-	private Parameters simpleTriggerParameters;
+	private Parameters triggerParameters;
 
 	private String schedulerBeanId;
 
@@ -60,28 +57,44 @@ public class ScheduleRule implements BeanReferenceInspectable {
 		this.id = id;
 	}
 
-	public Parameters getSimpleTriggerParameters() {
-		return simpleTriggerParameters;
+	public TriggerType getTriggerType() {
+		return triggerType;
 	}
 
-	public void setSimpleTriggerParameters(Parameters simpleTriggerParameters) {
-		this.simpleTriggerParameters = simpleTriggerParameters;
+	public void setTriggerType(TriggerType triggerType) {
+		this.triggerType = triggerType;
 	}
-	
-	public String getAdviceBeanId() {
+
+	public String getCronExpression() {
+		return cronExpression;
+	}
+
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression;
+	}
+
+	public Parameters getTriggerParameters() {
+		return triggerParameters;
+	}
+
+	public void setTriggerParameters(Parameters triggerParameters) {
+		this.triggerParameters = triggerParameters;
+	}
+
+	public String getSchedulerBeanId() {
 		return schedulerBeanId;
 	}
 
-	public void setAdviceBeanId(String adviceBeanId) {
-		this.schedulerBeanId = adviceBeanId;
+	public void setSchedulerBeanId(String schedulerBeanId) {
+		this.schedulerBeanId = schedulerBeanId;
 	}
 
-	public Class<?> getAdviceBeanClass() {
+	public Class<?> getSchedulerBeanClass() {
 		return schedulerBeanClass;
 	}
 
-	public void setAdviceBeanClass(Class<?> adviceBeanClass) {
-		this.schedulerBeanClass = adviceBeanClass;
+	public void setSchedulerBeanClass(Class<?> schedulerBeanClass) {
+		this.schedulerBeanClass = schedulerBeanClass;
 	}
 
 	public List<JobRule> getJobRuleList() {
@@ -92,7 +105,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 		this.jobRuleList = jobRuleList;
 	}
 
-	public void addJobRuleList(JobRule jobRule) {
+	public void addJobRule(JobRule jobRule) {
 		jobRuleList.add(jobRule);
 	}
 
@@ -123,118 +136,48 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("triggerType", triggerType);
-		tsb.append("cronExpression", cronExpression);
-		tsb.append("simpleTriggerParameters", simpleTriggerParameters);
-		tsb.append("jobRuleList", jobRuleList);
+		tsb.append("trigger", triggerParameters);
+		tsb.append("scheduler", schedulerBeanId);
+		tsb.append("jobRules", jobRuleList);
 		return tsb.toString();
 	}
 	
-	public static ScheduleRule newInstance(String id, String usedFor) {
-		AspectTargetType aspectTargetType;
-		
-		if(usedFor != null) {
-			aspectTargetType = AspectTargetType.resolve(usedFor);
-			if(aspectTargetType == null)
-				throw new IllegalArgumentException("No aspect target type registered for '" + usedFor + "'.");
+	public static ScheduleRule newInstance(String id) {
+		ScheduleRule scheduleRule = new ScheduleRule();
+		scheduleRule.setId(id);
+		return scheduleRule;
+	}
+
+	public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) {
+		updateTriggerType(scheduleRule, type);
+		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+			if(StringUtils.hasText(text)) {
+				Parameters triggerParameters = new TriggerParameters(text);
+				scheduleRule.setTriggerParameters(triggerParameters);
+			}
 		} else {
-			aspectTargetType = AspectTargetType.TRANSLET;
+			String[] fields = StringUtils.tokenize(text, " ");
+			if(fields.length != 6) {
+				throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, text));
+			}
+			Parameters triggerParameters = new TriggerParameters();
+			triggerParameters.putValue(TriggerParameters.type, TriggerType.CRON.toString());
+			triggerParameters.putValue(TriggerParameters.expression, text);
+			scheduleRule.setTriggerParameters(triggerParameters);
 		}
-		
-		ScheduleRule aspectRule = new ScheduleRule();
-		aspectRule.setId(id);
-		aspectRule.setAspectTargetType(aspectTargetType);
-		
-		return aspectRule;
 	}
-	
-	public static void updateJoinpointScope(ScheduleRule aspectRule, String scope) {
-		JoinpointType joinpointScope;
-		
-		if(scope != null) {
-			joinpointScope = JoinpointType.resolve(scope);
-			if(joinpointScope == null)
-				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
+
+	public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
+		TriggerType triggerType;
+		if(type != null) {
+			triggerType = TriggerType.resolve(type);
+			if(triggerType == null) {
+				throw new IllegalArgumentException("Unknown trigger type '" + type + "'. Trigger type for Scheduler must be 'cron' or 'simple'.");
+			}
 		} else {
-			joinpointScope = JoinpointType.TRANSLET;
+			triggerType = TriggerType.CRON;
 		}
-		
-		aspectRule.setJoinpointScope(joinpointScope);
+		scheduleRule.setTriggerType(triggerType);
 	}
-	
-	public static void updateTargetMethods(ScheduleRule aspectRule, String method) {
-		MethodType[] allowedMethods = null;
-		if(method != null) {
-			allowedMethods = MethodType.parse(method);
-			if(allowedMethods == null)
-				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
-		}
 
-		aspectRule.setAllowedMethods(allowedMethods);
-	}
-	
-	public static PointcutRule updateJoinpoint(ScheduleRule aspectRule, String type, Parameters joinpointParameters) {
-		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
-			PointcutType pointcutType = null;
-			Parameters simpleTriggerParameters = null;
-			Parameters cronTriggerParameters = null;
-
-			if(joinpointParameters != null) {
-				simpleTriggerParameters = joinpointParameters.getParameters(JoinpointParameters.simpleTrigger);
-				cronTriggerParameters = joinpointParameters.getParameters(JoinpointParameters.cronTrigger);
-	
-				if(simpleTriggerParameters != null) {
-					pointcutType = PointcutType.SIMPLE_TRIGGER;
-				} else if(cronTriggerParameters != null) {
-					pointcutType = PointcutType.CRON_TRIGGER;
-				}
-			}
-			
-			if(pointcutType == null) {
-				pointcutType = PointcutType.resolve(type);
-				
-				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
-					throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Scheduler must be 'simpleTrigger' or 'cronTrigger'.");
-			}
-			
-			if(pointcutType == PointcutType.SIMPLE_TRIGGER && simpleTriggerParameters == null)
-				throw new IllegalArgumentException("Not specified 'simpleTrigger'.");
-			else if(pointcutType == PointcutType.CRON_TRIGGER && cronTriggerParameters == null)
-				throw new IllegalArgumentException("Not specified 'cronTrigger'.");
-			
-			pointcutRule = new PointcutRule(pointcutType);
-			
-			if(simpleTriggerParameters != null) {
-				pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
-			} else if(cronTriggerParameters != null) {
-				pointcutRule.setCronTriggerParameters(cronTriggerParameters);
-			}
-
-		} else {
-			if(pointcutParameters != null) {
-				PointcutType pointcutType = null;
-				
-				if(type == null)
-					type = pointcutParameters.getString(PointcutTargetParameters.type);
-				
-				if(type != null) {
-					pointcutType = PointcutType.resolve(type);
-					if(pointcutType == null)
-						throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
-				}
-				
-				pointcutRule = new PointcutRule(pointcutType);
-				
-				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutTargetParameters.targets);
-				if(targetParametersList != null) {
-					for(Parameters targetParameters : targetParametersList) {
-						addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);
-						pointcutRule.touchTargetParametersList().add(targetParameters);
-					}
-				}
-			}
-		}
-
-		return pointcutRule;
-	}
 }

@@ -44,9 +44,7 @@ import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
-import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutTargetParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
@@ -60,7 +58,6 @@ import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.assistant.DefaultSettings;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -73,7 +70,6 @@ import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
@@ -197,42 +193,15 @@ public class RootAponAssembler {
 		Parameters aspectParameters = new AspectParameters();
 		aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
 		aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
-		aspectParameters.putValueNonNull(AspectParameters.usedFor, aspectRule.getAspectTargetType());
-		
-		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
-		joinpointParameters.putValueNonNull(JoinpointParameters.type, aspectRule.getJoinpointType());
-		
-		MethodType[] targetMethods = aspectRule.getTargetMethods();
-		if(targetMethods != null) {
-			for(MethodType targetMethod : targetMethods) {
-				joinpointParameters.putValue(JoinpointParameters.methods, targetMethod);
-			}
-		}
-		
-		MethodType[] targetHeaders = aspectRule.getTargetMethods();
-		if(targetHeaders != null) {
-			for(MethodType targetHeader : targetHeaders) {
-				joinpointParameters.putValue(JoinpointParameters.methods, targetHeader);
-			}
-		}
-		
-		joinpointParameters.putValueNonNull(JoinpointParameters.simpleTrigger, aspectRule.getSimpleTriggerParameters());
-		joinpointParameters.putValueNonNull(JoinpointParameters.cronTrigger, aspectRule.getCronTriggerParameters());
+		aspectParameters.putValueNonNull(AspectParameters.order, aspectRule.getOrder());
+		aspectParameters.putValueNonNull(AspectParameters.isolated, aspectRule.getIsolated());
 
-		
-		PointcutRule pointcutRule = aspectRule.getPointcutRule();
-		if(pointcutRule != null) {
-			Parameters pointcutParameters = joinpointParameters.newParameters(JoinpointParameters.pointcut);
-			List<Parameters> targetParametersList = pointcutRule.getTargetParametersList();
-			if(targetParametersList != null) {
-				for(Parameters targetParameters : targetParametersList) {
-					pointcutParameters.putValue(PointcutTargetParameters.targets, targetParameters);
-				}
-			}
-			pointcutParameters.putValueNonNull(PointcutTargetParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
-			pointcutParameters.putValueNonNull(PointcutTargetParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
+		Parameters joinpointParameters = aspectRule.getJoinpointRule() != null ? aspectRule.getJoinpointRule().getJoinpointParameters() : null;
+		if(joinpointParameters != null) {
+			joinpointParameters.putValueNonNull(JoinpointParameters.type, aspectRule.getJoinpointType());
 		}
-		
+		aspectParameters.putValueNonNull(AspectParameters.jointpoint, joinpointParameters);
+
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		if(settingsAdviceRule != null) {
 			Map<String, Object> settings = settingsAdviceRule.getSettings();
@@ -321,18 +290,7 @@ public class RootAponAssembler {
 				exceptionParameters.putValue(ExceptionParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
 			}
 		}
-		
-		List<JobRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
-		if(aspectJobAdviceRuleList != null) {
-			Parameters adviceParameters = aspectParameters.touchParameters(AspectParameters.advice);
-			for(JobRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
-				Parameters jobParameters = new JobParameters();
-				jobParameters.putValue(JobParameters.translet, aspectJobAdviceRule.getJobTransletName());
-				jobParameters.putValueNonNull(JobParameters.disabled, aspectJobAdviceRule.getDisabled());
-				adviceParameters.putValue(AdviceParameters.jobs, jobParameters);
-			}
-		}
-		
+
 		return aspectParameters;
 	}
 

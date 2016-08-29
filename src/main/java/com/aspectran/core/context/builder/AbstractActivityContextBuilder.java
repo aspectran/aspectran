@@ -175,12 +175,10 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			PointcutRule pointcutRule = aspectRule.getPointcutRule();
-			
 			if(pointcutRule != null) {
 				Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
 				aspectRule.setPointcut(pointcut);
 			}
-			
 			if(aspectRule.getJoinpointType() == JoinpointType.SESSION) {
 				sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
 			}

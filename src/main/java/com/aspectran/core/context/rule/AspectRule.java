@@ -21,6 +21,8 @@ import java.util.List;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -138,6 +140,22 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	public void setJoinpointRule(JoinpointRule joinpointRule) {
 		this.joinpointRule = joinpointRule;
+	}
+
+	public JoinpointType getJoinpointType() {
+		return (joinpointRule != null) ? joinpointRule.getJoinpointType() : null;
+	}
+
+	public MethodType[] getTargetMethods() {
+		return (joinpointRule != null) ? joinpointRule.getTargetMethods() : null;
+	}
+
+	public String[] getTargetHeaders() {
+		return (joinpointRule != null) ? joinpointRule.getTargetHeaders() : null;
+	}
+
+	public PointcutRule getPointcutRule() {
+		return (joinpointRule != null) ? joinpointRule.getPointcutRule() : null;
 	}
 
 	public Pointcut getPointcut() {

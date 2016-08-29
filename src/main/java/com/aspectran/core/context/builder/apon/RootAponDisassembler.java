@@ -60,6 +60,7 @@ import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
@@ -75,6 +76,7 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
+import com.google.common.util.concurrent.CycleDetectingLockFactory;
 
 /**
  * The Class RootAponDisassembler.
@@ -111,8 +113,9 @@ public class RootAponDisassembler {
 		}
 		
 		Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
-		if(typeAliasParameters != null)
+		if(typeAliasParameters != null) {
 			disassembleTypeAlias(typeAliasParameters);
+		}
 		
 		List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
 		if(aspectParametersList != null) {
@@ -125,6 +128,13 @@ public class RootAponDisassembler {
 		if(beanParametersList != null) {
 			for(Parameters beanParameters : beanParametersList) {
 				disassembleBeanRule(beanParameters);
+			}
+		}
+
+		List<Parameters> scheduleParametersList = aspectranParameters.getParametersList(ScheduleParameters.schedules);
+		if(aspectParametersList != null) {
+			for(Parameters aspectParameters : aspectParametersList) {
+				disassembleAspectRule(aspectParameters);
 			}
 		}
 
@@ -209,29 +219,24 @@ public class RootAponDisassembler {
 	private void disassembleAspectRule(Parameters aspectParameters) {
 		String description = aspectParameters.getString(AspectParameters.description);
 		String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
-		String useFor = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.usedFor));
+		String order = aspectParameters.getString(AspectParameters.order);
+		Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
 
 		if(id == null) {
 			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
 		}
 
-		AspectRule aspectRule = AspectRule.newInstance(id, useFor);
-
-		if(description != null)
+		AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
+		if(description != null) {
 			aspectRule.setDescription(description);
-	
-		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
-		String scope = joinpointParameters.getString(JoinpointParameters.type);
-		String method = joinpointParameters.getString(JoinpointParameters.method);
-		AspectRule.updateJoinpoint(aspectRule, scope);
-		AspectRule.updateTargetMethods(aspectRule, method);
-		
-		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
-		if(pointcutParameters != null) {
-			PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
-			aspectRule.setPointcutRule(pointcutRule);
 		}
 	
+		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
+		if(joinpointParameters != null) {
+			JoinpointRule joinpointRule = JoinpointRule.newInstance(joinpointParameters);
+			aspectRule.setJoinpointRule(joinpointRule);
+		}
+
 		Parameters settingsParameters = aspectParameters.getParameters(AspectParameters.settings);
 		if(settingsParameters != null) {
 			SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingsParameters);
