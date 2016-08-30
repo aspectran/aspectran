@@ -109,6 +109,9 @@ public abstract class AbstractActivity implements Activity {
 		context.setCurrentActivity(activity);
 	}
 
+	/**
+	 * Backups the current activity.
+	 */
 	protected void backupCurrentActivity() {
 		outerActivity = getCurrentActivity();
 		setCurrentActivity(this);
@@ -143,10 +146,12 @@ public abstract class AbstractActivity implements Activity {
 		this.included = included;
 	}
 
+	@Override
 	public boolean isActivityEnded() {
 		return activityEnded;
 	}
 
+	@Override
 	public void activityEnd() {
 		this.activityEnded = true;
 	}
@@ -191,6 +196,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the application adapter
 	 */
+	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return context.getApplicationAdapter();
 	}
@@ -200,6 +206,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the session adapter
 	 */
+	@Override
 	public SessionAdapter getSessionAdapter() {
 		return sessionAdapter;
 	}
@@ -218,6 +225,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the request adapter
 	 */
+	@Override
 	public RequestAdapter getRequestAdapter() {
 		return requestAdapter;
 	}
@@ -236,6 +244,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the response adapter
 	 */
+	@Override
 	public ResponseAdapter getResponseAdapter() {
 		return responseAdapter;
 	}
@@ -254,6 +263,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the translet interface class
 	 */
+	@Override
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
@@ -272,6 +282,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the translet implement class
 	 */
+	@Override
 	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return transletImplementClass;
 	}
@@ -375,9 +386,9 @@ public abstract class AbstractActivity implements Activity {
 			AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
 
 			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
-				JoinpointType joinpointScope = aspectRule.getJoinpointType();
+				JoinpointType joinpointType = aspectRule.getJoinpointType();
 
-				if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointType.SESSION) {
+				if(!aspectRule.isBeanRelevanted() && joinpointType != JoinpointType.SESSION) {
 					if(isAcceptable(aspectRule)) {
 						Pointcut pointcut = aspectRule.getPointcut();
 						if(pointcut == null || pointcut.matches(transletRule.getName())) {
@@ -535,8 +546,6 @@ public abstract class AbstractActivity implements Activity {
 				log.debug("register AspectRule " + aspectRule);
 			}
 			
-			touchAspectAdviceRuleRegistry().register(aspectRule, AspectAdviceType.BEFORE);
-
 			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 			if(aspectAdviceRuleList != null) {
 				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
@@ -545,6 +554,8 @@ public abstract class AbstractActivity implements Activity {
 					}
 				}
 			}
+
+			touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
 		}
 	}
 	

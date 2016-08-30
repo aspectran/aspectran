@@ -50,11 +50,7 @@ class AspectNodeletAdder implements NodeletAdder {
             String order = StringUtils.emptyToNull(attributes.get("order"));
             Boolean isolated = BooleanUtils.toNullableBooleanObject(attributes.get("isolated"));
 
-            if(id == null)
-                throw new IllegalArgumentException("The <aspect> element requires an 'id' attribute.");
-
             AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
-
             assistant.pushObject(aspectRule);
         });
 		parser.addNodelet(xpath, "/aspect/description", (node, attributes, text) -> {
@@ -73,7 +69,6 @@ class AspectNodeletAdder implements NodeletAdder {
             AspectRule aspectRule = assistant.peekObject();
 
             SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule, text);
-
             assistant.pushObject(sar);
         });
 		parser.addNodelet(xpath, "/aspect/settings/setting", (node, attributes, text) -> {
@@ -96,7 +91,6 @@ class AspectNodeletAdder implements NodeletAdder {
             if(beanIdOrClass != null) {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
-
                 assistant.resolveBeanClass(beanIdOrClass, aspectRule);
             }
         });
@@ -106,9 +100,7 @@ class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/advice/finally", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.FINALLY));
 		parser.addNodelet(xpath, "/aspect/exception", (node, attributes, text) -> {
 			AspectRule aspectRule = assistant.peekObject();
-
 			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
-
 			assistant.pushObject(exceptionRule);
 		});
 		parser.addNodelet(xpath, "/aspect/exception", new ExceptionInnerNodeletAdder(assistant));

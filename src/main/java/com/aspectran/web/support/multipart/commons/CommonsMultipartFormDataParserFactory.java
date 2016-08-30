@@ -26,7 +26,7 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  */
 public class CommonsMultipartFormDataParserFactory {
 	
-	private String temporaryFilePath;
+	private String tempDirectoryPath;
 	
 	private long maxRequestSize = -1L;
 
@@ -45,17 +45,17 @@ public class CommonsMultipartFormDataParserFactory {
 	 *
 	 * @return the temporary file path
 	 */
-	public String getTemporaryFilePath() {
-		return temporaryFilePath;
+	public String getTempDirectoryPath() {
+		return tempDirectoryPath;
 	}
 
 	/**
-	 * Sets the temporary file path.
+	 * Sets the temporary directory path.
 	 *
-	 * @param temporaryFilePath the temporary file path
+	 * @param tempDirectoryPath the temporary directory path
 	 */
-	public void setTemporaryFilePath(String temporaryFilePath) {
-		this.temporaryFilePath = temporaryFilePath;
+	public void setTempDirectoryPath(String tempDirectoryPath) {
+		this.tempDirectoryPath = tempDirectoryPath;
 	}
 
 	/**
@@ -132,8 +132,8 @@ public class CommonsMultipartFormDataParserFactory {
 		if(maxRequestSize > -1)
 			parser.setMaxRequestSize(maxRequestSize);
 
-		if(temporaryFilePath != null)
-			parser.setTempDirectoryPath(temporaryFilePath);
+		if(tempDirectoryPath != null)
+			parser.setTempDirectoryPath(tempDirectoryPath);
 		else
 			parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
 

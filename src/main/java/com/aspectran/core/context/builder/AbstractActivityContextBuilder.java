@@ -45,6 +45,7 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
@@ -128,8 +129,9 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
 		beanRuleRegistry.postProcess(assistant);
 
-		TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
+		ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
 		TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
+		TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
 		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleRegistry);
@@ -145,8 +147,9 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		
 		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
 		activityContext.setContextBeanRegistry(contextBeanRegistry);
-		activityContext.setTransletRuleRegistry(transletRuleRegistry);
+		activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
 		activityContext.setTemplateProcessor(templateProcessor);
+		activityContext.setTransletRuleRegistry(transletRuleRegistry);
 		activityContext.initialize();
 
 		return activityContext;

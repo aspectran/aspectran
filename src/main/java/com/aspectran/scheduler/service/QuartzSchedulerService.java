@@ -54,7 +54,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
 	private ActivityContext context;
-	
+
 	private List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>();
 	
 	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<>();
@@ -95,8 +95,10 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public void startup() throws SchedulerServiceException {
+		if(context.getScheduleRuleRegistry() == null)
+			return;
+
 		Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
-		
 		if(scheduleRuleMap == null)
 			return;
 		

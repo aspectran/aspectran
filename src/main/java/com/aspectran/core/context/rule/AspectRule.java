@@ -82,9 +82,8 @@ public class AspectRule implements BeanReferenceInspectable {
 	/**
 	 * The lowest value has highest priority.
 	 * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
-	 *
 	 */
-	private Integer order;
+	private int order = Integer.MAX_VALUE;
 
 	private Boolean isolated;
 
@@ -114,11 +113,11 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.id = id;
 	}
 
-	public Integer getOrder() {
+	public int getOrder() {
 		return order;
 	}
 
-	public void setOrder(Integer order) {
+	public void setOrder(int order) {
 		this.order = order;
 	}
 
@@ -250,7 +249,8 @@ public class AspectRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("order", order);
+		if(order != Integer.MAX_VALUE)
+			tsb.append("order", order);
 		tsb.append("isolated", isolated);
 		tsb.append("joinpointRule", joinpointRule);
 		tsb.append("settingsAdviceRule", settingsAdviceRule);
@@ -261,15 +261,19 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static AspectRule newInstance(String id, String order, Boolean isolated) {
+		if(id == null) {
+			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
+		}
+
 		AspectRule aspectRule = new AspectRule();
 		aspectRule.setId(id);
 		aspectRule.setIsolated(isolated);
 
 		if(!StringUtils.isEmpty(order)) {
 			try {
-				aspectRule.setOrder(new Integer(order));
+				aspectRule.setOrder(Integer.parseInt(order));
 			} catch(NumberFormatException e) {
-				throw new IllegalArgumentException("The 'order' attribute on an <aspect> element must be  a valid integer integer.");
+				throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
 			}
 		}
 

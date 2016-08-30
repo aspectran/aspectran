@@ -222,10 +222,6 @@ public class RootAponDisassembler {
 		String order = aspectParameters.getString(AspectParameters.order);
 		Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
 
-		if(id == null) {
-			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
-		}
-
 		AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
 		if(description != null) {
 			aspectRule.setDescription(description);

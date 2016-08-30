@@ -316,9 +316,9 @@ public interface Activity extends BeanRegistry {
 	boolean isAcceptable(AspectRule aspectRule);
 
 	/**
-	 * Register an aspect rule.
+	 * Register an aspect rule dynamically.
 	 *
-	 * @param aspectRule an aspect rule
+	 * @param aspectRule the aspect rule
 	 */
 	void registerAspectRule(AspectRule aspectRule);
 

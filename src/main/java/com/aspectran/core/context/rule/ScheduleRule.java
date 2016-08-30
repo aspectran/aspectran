@@ -175,7 +175,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
 		String type = triggerParameters.getString(TriggerParameters.type);
-		if(type != null) {
+		if(scheduleRule.getTriggerType() == null) {
 			updateTriggerType(scheduleRule, type);
 		}
 		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {

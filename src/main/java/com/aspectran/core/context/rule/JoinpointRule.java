@@ -161,7 +161,7 @@ public class JoinpointRule {
 
 	public static void updateJoinpoint(JoinpointRule joinpointRule, Parameters joinpointParameters) {
 		String type = joinpointParameters.getString(JoinpointParameters.type);
-		if(type != null) {
+		if(joinpointRule.getJoinpointType() == null) {
 			updateJoinpointType(joinpointRule, type);
 		}
 		updateTargetMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));

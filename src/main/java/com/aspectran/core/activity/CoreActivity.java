@@ -159,10 +159,12 @@ public class CoreActivity extends AbstractActivity {
 
 			prepareAspectAdviceRule(transletRule);
 
-			if(isIncluded()) {
-				backupCurrentActivity();
-			}
 			if(forwardTransletName == null) {
+				if(isIncluded()) {
+					backupCurrentActivity();
+				} else {
+					setCurrentActivity(this);
+				}
 				adapt();
 				parseRequest();
 			}

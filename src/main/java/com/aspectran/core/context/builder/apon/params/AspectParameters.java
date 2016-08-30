@@ -37,7 +37,7 @@ public class AspectParameters extends AbstractParameters {
 		description = new ParameterDefinition("description", ParameterValueType.TEXT);
 		id = new ParameterDefinition("id", ParameterValueType.STRING);
 		order = new ParameterDefinition("order", ParameterValueType.INT);
-		isolated = new ParameterDefinition("order", ParameterValueType.BOOLEAN);
+		isolated = new ParameterDefinition("isolated", ParameterValueType.BOOLEAN);
 		jointpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
 		settings = new ParameterDefinition("settings", VariableParameters.class);
 		advice = new ParameterDefinition("advice", AdviceParameters.class);

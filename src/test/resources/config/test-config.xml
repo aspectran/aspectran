@@ -178,7 +178,7 @@
 		</description>
 	</bean>
 
-	<aspect id="simplestAdviceAspect">
+	<aspect id="simplestAdviceAspect" order="1">
 		<description>
 			simplestAction Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
 			해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,

@@ -193,7 +193,9 @@ public class RootAponAssembler {
 		Parameters aspectParameters = new AspectParameters();
 		aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
 		aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
-		aspectParameters.putValueNonNull(AspectParameters.order, aspectRule.getOrder());
+		if(aspectRule.getOrder() != Integer.MAX_VALUE) {
+			aspectParameters.putValueNonNull(AspectParameters.order, aspectRule.getOrder());
+		}
 		aspectParameters.putValueNonNull(AspectParameters.isolated, aspectRule.getIsolated());
 
 		Parameters joinpointParameters = aspectRule.getJoinpointRule() != null ? aspectRule.getJoinpointRule().getJoinpointParameters() : null;
