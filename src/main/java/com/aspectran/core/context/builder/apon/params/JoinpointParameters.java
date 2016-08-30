@@ -29,7 +29,7 @@ public class JoinpointParameters extends AbstractParameters {
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		type = new ParameterDefinition("scope", ParameterValueType.STRING);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
 		methods = new ParameterDefinition("methods", ParameterValueType.STRING, true);
 		headers = new ParameterDefinition("headers", ParameterValueType.STRING, true);
 		pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);

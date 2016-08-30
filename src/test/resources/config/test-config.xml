@@ -184,12 +184,10 @@
 			해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,
 			해당 Translet의 실행 후에는 simplestAdvice Bean의 goodbye 메쏘드를 실행합니다.
 		</description>
-		<joinpoint scope="translet">
-			<pointcut>
-                target: {
+		<joinpoint type="translet">
+			pointcut: {
                 +: "hello@class:sample.SimplestAction^helloWorld"
-                }
-            </pointcut>
+            }
 		</joinpoint>
 		<advice bean="simplestAdvice">
 			<before>

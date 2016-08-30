@@ -35,12 +35,13 @@ import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
-import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
+import com.aspectran.core.context.builder.apon.params.ScheduleParameters;
+import com.aspectran.core.context.builder.apon.params.SchedulerParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
@@ -48,7 +49,6 @@ import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -60,12 +60,13 @@ import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -76,7 +77,6 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
-import com.google.common.util.concurrent.CycleDetectingLockFactory;
 
 /**
  * The Class RootAponDisassembler.
@@ -131,10 +131,17 @@ public class RootAponDisassembler {
 			}
 		}
 
-		List<Parameters> scheduleParametersList = aspectranParameters.getParametersList(ScheduleParameters.schedules);
-		if(aspectParametersList != null) {
-			for(Parameters aspectParameters : aspectParametersList) {
-				disassembleAspectRule(aspectParameters);
+		List<Parameters> scheduleParametersList = aspectranParameters.getParametersList(AspectranParameters.schedules);
+		if(scheduleParametersList != null) {
+			for(Parameters scheduleParameters : scheduleParametersList) {
+				disassembleScheduleRule(scheduleParameters);
+			}
+		}
+
+		List<Parameters> templateParametersList = aspectranParameters.getParametersList(AspectranParameters.templates);
+		if(templateParametersList != null) {
+			for(Parameters templateParameters : templateParametersList) {
+				disassembleTemplateRule(templateParameters);
 			}
 		}
 
@@ -142,13 +149,6 @@ public class RootAponDisassembler {
 		if(transletParametersList != null) {
 			for(Parameters transletParameters : transletParametersList) {
 				disassembleTransletRule(transletParameters);
-			}
-		}
-		
-		List<Parameters> templateParametersList = aspectranParameters.getParametersList(AspectranParameters.templates);
-		if(templateParametersList != null) {
-			for(Parameters templateParameters : templateParametersList) {
-				disassembleTemplateRule(templateParameters);
 			}
 		}
 
@@ -233,7 +233,8 @@ public class RootAponDisassembler {
 	
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		if(joinpointParameters != null) {
-			JoinpointRule joinpointRule = JoinpointRule.newInstance(joinpointParameters);
+			JoinpointRule joinpointRule = JoinpointRule.newInstance();
+			JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
 			aspectRule.setJoinpointRule(joinpointRule);
 		}
 
@@ -281,22 +282,6 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
-		
-			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
-			if(jobParametersList != null) {
-				for(Parameters jobParameters : jobParametersList) {
-					String translet = StringUtils.emptyToNull(jobParameters.getString(JobParameters.translet));
-					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
-
-					if(translet == null)
-						throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
-
-					translet = assistant.applyTransletNamePattern(translet);
-
-					JobRule ajar = JobRule.newInstance(aspectRule, translet, disabled);
-					aspectRule.addAspectJobAdviceRule(ajar);
-				}
 			}
 		}
 		
@@ -381,6 +366,76 @@ public class RootAponDisassembler {
 		assistant.addBeanRule(beanRule);
 	}
 
+
+	private void disassembleScheduleRule(Parameters scheduleParameters) {
+		String description = scheduleParameters.getString(AspectParameters.description);
+		String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
+
+		if(id == null) {
+			throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+		}
+
+		ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
+		if(description != null) {
+			scheduleRule.setDescription(description);
+		}
+	
+		Parameters triggerParameters = scheduleParameters.getParameters(ScheduleParameters.trigger);
+		if(triggerParameters != null) {
+			ScheduleRule.updateTrigger(scheduleRule, triggerParameters);
+		}
+
+		Parameters schedulerParameters = scheduleParameters.getParameters(ScheduleParameters.scheduler);
+		if(schedulerParameters != null) {
+			String schedulerBeanId = schedulerParameters.getString(SchedulerParameters.bean);
+			if(!StringUtils.isEmpty(schedulerBeanId)) {
+				scheduleRule.setSchedulerBeanId(schedulerBeanId);
+				assistant.resolveBeanClass(schedulerBeanId, scheduleRule);
+			}
+			List<Parameters> jobParametersList = schedulerParameters.getParametersList(SchedulerParameters.jobs);
+			if(jobParametersList != null) {
+				for(Parameters jobParameters : jobParametersList) {
+					String translet = StringUtils.emptyToNull(jobParameters.getString(JobParameters.translet));
+					String method = StringUtils.emptyToNull(jobParameters.getString(JobParameters.method));
+					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+
+					if(translet == null)
+						throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+
+					translet = assistant.applyTransletNamePattern(translet);
+
+					JobRule jobRule = JobRule.newInstance(scheduleRule, translet, method, disabled);
+					scheduleRule.addJobRule(jobRule);
+				}
+			}
+		}
+
+		assistant.addScheduleRule(scheduleRule);
+	}
+	
+	private void disassembleTemplateRule(Parameters templateParameters) {
+		String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
+		String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
+		String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
+		String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
+		String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
+		String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
+		String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+		String encoding = templateParameters.getString(TemplateParameters.encoding);
+		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+
+		if(id == null)
+			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
+
+		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
+
+		if(engine != null) {
+			assistant.putBeanReference(engine, templateRule);
+		}
+
+		assistant.addTemplateRule(templateRule);
+	}
+	
 	private void disassembleTransletRule(Parameters transletParameters) {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.name));
@@ -789,29 +844,6 @@ public class RootAponDisassembler {
 		}
 		
 		return itemRuleMap;
-	}
-
-	private void disassembleTemplateRule(Parameters templateParameters) {
-		String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
-		String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
-		String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
-		String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
-		String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
-		String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
-		String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
-		String encoding = templateParameters.getString(TemplateParameters.encoding);
-		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-
-		if(id == null)
-			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
-
-		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
-
-		if(engine != null) {
-			assistant.putBeanReference(engine, templateRule);
-		}
-
-		assistant.addTemplateRule(templateRule);
 	}
 	
 }

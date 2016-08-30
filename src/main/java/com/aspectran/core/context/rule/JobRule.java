@@ -24,11 +24,21 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class JobRule {
 
+	private final ScheduleRule scheduleRule;
+	
 	private String transletName;
 
 	private MethodType requestMethod;
 
 	private Boolean disabled;
+
+	public JobRule(ScheduleRule scheduleRule) {
+		this.scheduleRule = scheduleRule;
+	}
+	
+	public ScheduleRule getScheduleRule() {
+		return scheduleRule;
+	}
 
 	public String getTransletName() {
 		return transletName;
@@ -67,8 +77,8 @@ public class JobRule {
 		return tsb.toString();
 	}
 	
-	public static JobRule newInstance(String transletName, String method, Boolean disabled) {
-		JobRule jobRule = new JobRule();
+	public static JobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
+		JobRule jobRule = new JobRule(scheduleRule);
 		jobRule.setTransletName(transletName);
 		jobRule.setDisabled(disabled);
 

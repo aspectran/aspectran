@@ -30,7 +30,7 @@ public class PointcutParameters extends AbstractParameters {
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		type = new ParameterDefinition("scope", ParameterValueType.STRING);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
 		pluses = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
 		minuses = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
 		includes = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);

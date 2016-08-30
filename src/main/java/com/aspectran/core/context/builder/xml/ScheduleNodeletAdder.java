@@ -87,12 +87,12 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
 			ScheduleRule scheduleRule = assistant.peekObject();
 
-            JobRule jobRule = JobRule.newInstance(transletName, method, disabled);
+            JobRule jobRule = JobRule.newInstance(scheduleRule, transletName, method, disabled);
 			scheduleRule.addJobRule(jobRule);
         });
 		parser.addNodelet(xpath, "/schedule/end()", (node, attributes, text) -> {
 			ScheduleRule scheduleRule = assistant.popObject();
-            assistant.addAspectRule(scheduleRule);
+            assistant.addScheduleRule(scheduleRule);
         });
 	}
 

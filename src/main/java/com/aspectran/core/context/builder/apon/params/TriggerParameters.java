@@ -23,11 +23,12 @@ public class TriggerParameters extends AbstractParameters {
 
 	public static final ParameterDefinition type;
 	public static final ParameterDefinition expression;
-	public static final ParameterDefinition withIntervalInMilliseconds;
-	public static final ParameterDefinition withIntervalInMinutes;
-	public static final ParameterDefinition withIntervalInSeconds;
-	public static final ParameterDefinition withIntervalInHours;
-	public static final ParameterDefinition withRepeatCount;
+	public static final ParameterDefinition startDelaySeconds;
+	public static final ParameterDefinition intervalInMilliseconds;
+	public static final ParameterDefinition intervalInMinutes;
+	public static final ParameterDefinition intervalInSeconds;
+	public static final ParameterDefinition intervalInHours;
+	public static final ParameterDefinition repeatCount;
 	public static final ParameterDefinition repeatForever;
 
 	private static final ParameterDefinition[] parameterDefinitions;
@@ -35,21 +36,23 @@ public class TriggerParameters extends AbstractParameters {
 	static {
 		type = new ParameterDefinition("type", ParameterValueType.STRING);
 		expression = new ParameterDefinition("expression", ParameterValueType.STRING);
-		withIntervalInMilliseconds = new ParameterDefinition("withIntervalInMilliseconds", ParameterValueType.INT);
-		withIntervalInMinutes = new ParameterDefinition("withIntervalInMinutes", ParameterValueType.INT);
-		withIntervalInSeconds = new ParameterDefinition("withIntervalInSeconds", ParameterValueType.INT);
-		withIntervalInHours = new ParameterDefinition("withIntervalInHours", ParameterValueType.INT);
-		withRepeatCount = new ParameterDefinition("withRepeatCount", ParameterValueType.INT);
+		startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+		intervalInMilliseconds = new ParameterDefinition("intervalInMilliseconds", ParameterValueType.LONG);
+		intervalInMinutes = new ParameterDefinition("intervalInMinutes", ParameterValueType.INT);
+		intervalInSeconds = new ParameterDefinition("intervalInSeconds", ParameterValueType.INT);
+		intervalInHours = new ParameterDefinition("intervalInHours", ParameterValueType.INT);
+		repeatCount = new ParameterDefinition("repeatCount", ParameterValueType.INT);
 		repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
 
 		parameterDefinitions = new ParameterDefinition[] {
 			type,
 			expression,
-			withIntervalInMilliseconds,
-			withIntervalInMinutes,
-			withIntervalInSeconds,
-			withIntervalInHours,
-			withRepeatCount,
+			startDelaySeconds,
+			intervalInMilliseconds,
+			intervalInMinutes,
+			intervalInSeconds,
+			intervalInHours,
+			repeatCount,
 			repeatForever
 		};
 	}

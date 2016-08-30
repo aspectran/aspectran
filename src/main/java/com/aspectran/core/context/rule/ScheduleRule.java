@@ -28,6 +28,19 @@ import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class ScheduleRule.
+ * 
+ * <pre>
+ * &lt;schedule id="schedule-1"&gt;
+ *   &lt;trigger type="simple"&gt;
+ *     startDelaySeconds: 10
+ *     intervalInSeconds: 10
+ *     repeatCount: 10
+ *   &lt;/trigger&gt;
+ *   &lt;scheduler bean="schedulerFactory"&gt;
+ *     &lt;job translet="/a/b/c/action"/&gt;
+ *   &lt;/scheduler&gt;
+ * &lt;schedule&gt;
+ * </pre>
  */
 public class ScheduleRule implements BeanReferenceInspectable {
 
@@ -150,19 +163,39 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) {
 		updateTriggerType(scheduleRule, type);
+		updateTrigger(scheduleRule, text);
+	}
+	
+	public static void updateTrigger(ScheduleRule scheduleRule, String text) {
+		if(StringUtils.hasText(text)) {
+			Parameters triggerParameters = new TriggerParameters(text);
+			updateTrigger(scheduleRule, triggerParameters);
+		}
+	}
+
+	public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
+		String type = triggerParameters.getString(TriggerParameters.type);
+		if(type != null) {
+			updateTriggerType(scheduleRule, type);
+		}
 		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-			if(StringUtils.hasText(text)) {
-				Parameters triggerParameters = new TriggerParameters(text);
-				scheduleRule.setTriggerParameters(triggerParameters);
+			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
+			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
+			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
+			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
+			if(intervalInMilliseconds == null || intervalInSeconds == null || intervalInMinutes == null || intervalInHours == null) {
+				throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
+						"Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
 			}
+			scheduleRule.setTriggerParameters(triggerParameters);
 		} else {
-			String[] fields = StringUtils.tokenize(text, " ");
+			String expression = triggerParameters.getString(TriggerParameters.expression);
+			
+			String[] fields = StringUtils.tokenize(expression, " ");
 			if(fields.length != 6) {
-				throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, text));
+				throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
 			}
-			Parameters triggerParameters = new TriggerParameters();
-			triggerParameters.putValue(TriggerParameters.type, TriggerType.CRON.toString());
-			triggerParameters.putValue(TriggerParameters.expression, text);
+			triggerParameters.putValue(TriggerParameters.expression, StringUtils.arrayToDelimitedString(fields, " "));
 			scheduleRule.setTriggerParameters(triggerParameters);
 		}
 	}

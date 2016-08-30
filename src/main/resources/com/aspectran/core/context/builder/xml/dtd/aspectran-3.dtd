@@ -47,19 +47,13 @@
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
 <!ATTLIST aspect
   id       ID #IMPLIED
-  order    #IMPLIED
+  order    CDATA #IMPLIED
   isolated (true | false) #IMPLIED
 >
 
-<!ELEMENT joinpoint (pointcut*)>
+<!ELEMENT joinpoint (#PCDATA)>
 <!ATTLIST joinpoint
-  scope   (session | translet | request | response | content | bean) #IMPLIED
-  method  CDATA #IMPLIED
->
-
-<!ELEMENT pointcut (#PCDATA)>
-<!ATTLIST pointcut
-  type    (wildcard | regexp) #IMPLIED
+  type   (session | translet | bean) #IMPLIED
 >
 
 <!ELEMENT advice (before?, after?, around?, finally?)>

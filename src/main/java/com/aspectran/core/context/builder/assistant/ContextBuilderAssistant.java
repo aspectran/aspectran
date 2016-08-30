@@ -41,6 +41,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -48,6 +49,7 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
@@ -84,6 +86,8 @@ public class ContextBuilderAssistant {
 	private BeanRuleRegistry beanRuleRegistry;
 
 	private TemplateRuleRegistry templateRuleRegistry;
+
+	private ScheduleRuleRegistry scheduleRuleRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 
@@ -149,8 +153,9 @@ public class ContextBuilderAssistant {
 		if(environment != null) {
 			aspectRuleRegistry = null;
 			beanRuleRegistry = null;
-			transletRuleRegistry = null;
 			templateRuleRegistry = null;
+			scheduleRuleRegistry = null;
+			transletRuleRegistry = null;
 
 			beanReferenceInspector = null;
 			
@@ -212,7 +217,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Put setting.
+	 * Puts the setting vlaue.
 	 *
 	 * @param settingType the setting type
 	 * @param value the value
@@ -222,7 +227,7 @@ public class ContextBuilderAssistant {
 	}
 	
 	/**
-	 * Gets the setting.
+	 * Gets the setting vlaue.
 	 *
 	 * @param settingType the setting type
 	 * @return the setting
@@ -261,10 +266,20 @@ public class ContextBuilderAssistant {
 		}
 	}
 	
+	/**
+	 * Gets the environment rules.
+	 *
+	 * @return the environment rules
+	 */
 	public List<EnvironmentRule> getEnvironmentRules() {
 		return environmentRules;
 	}
 
+	/**
+	 * Adds the environment rule.
+	 *
+	 * @param environmentRule the environment rule
+	 */
 	public void addEnvironmentRule(EnvironmentRule environmentRule) {
 		environmentRules.add(environmentRule);
 	}
@@ -384,7 +399,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Resolve bean class for aspect rule.
+	 * Resolve bean class for the aspect rule.
 	 *
 	 * @param beanId the bean id
 	 * @param aspectRule the aspect rule
@@ -399,6 +414,22 @@ public class ContextBuilderAssistant {
         }
 	}
 
+	/**
+	 * Resolve bean class for the aspect rule.
+	 *
+	 * @param beanId the bean id
+	 * @param scheduleRule the aspect rule
+	 */
+	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+		if(beanClass != null) {
+			scheduleRule.setSchedulerBeanClass(beanClass);
+			putBeanReference(beanClass, scheduleRule);
+		} else {
+			putBeanReference(beanId, scheduleRule);
+		}
+	}
+	
 	/**
 	 * Resolve bean class for bean action rule.
 	 *
@@ -507,16 +538,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Add translet rule.
-	 *
-	 * @param transletRule the translet rule
-	 */
-	public void addTransletRule(TransletRule transletRule) {
-		transletRuleRegistry.addTransletRule(transletRule);
-	}
-
-	/**
-	 * Add template rule.
+	 * Add the template rule.
 	 *
 	 * @param templateRule the template rule
 	 */
@@ -525,7 +547,25 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets aspect rule registry.
+	 * Adds the schedule rule.
+	 *
+	 * @param scheduleRule the aspect rule
+	 */
+	public void addScheduleRule(ScheduleRule scheduleRule) {
+		scheduleRuleRegistry.addScheduleRule(scheduleRule);
+	}
+
+	/**
+	 * Add the translet rule.
+	 *
+	 * @param transletRule the translet rule
+	 */
+	public void addTransletRule(TransletRule transletRule) {
+		transletRuleRegistry.addTransletRule(transletRule);
+	}
+
+	/**
+	 * Gets the aspect rule registry.
 	 *
 	 * @return the aspect rule registry
 	 */
@@ -534,30 +574,39 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets bean rule registry.
+	 * Gets the bean rule registry.
 	 *
 	 * @return the bean rule registry
 	 */
 	public BeanRuleRegistry getBeanRuleRegistry() {
 		return beanRuleRegistry;
 	}
-
+	
 	/**
-	 * Gets translet rule registry.
-	 *
-	 * @return the translet rule registry
-	 */
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
-	}
-
-	/**
-	 * Gets template rule registry.
+	 * Gets the template rule registry.
 	 *
 	 * @return the template rule registry
 	 */
 	public TemplateRuleRegistry getTemplateRuleRegistry() {
 		return templateRuleRegistry;
+	}
+
+	/**
+	 * Gets the schedule rule registry.
+	 *
+	 * @return the template rule registry
+	 */
+	public ScheduleRuleRegistry getScheduleRuleRegistry() {
+		return scheduleRuleRegistry;
+	}
+
+	/**
+	 * Gets the translet rule registry.
+	 *
+	 * @return the translet rule registry
+	 */
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
 	}
 
 	/**
@@ -592,6 +641,15 @@ public class ContextBuilderAssistant {
 	public Collection<TemplateRule> getTemplateRules() {
 		return templateRuleRegistry.getTemplateRuleMap().values();
 	}
+	
+	/**
+	 * Gets all schedule rules.
+	 *
+	 * @return the schedule rules
+	 */
+	public Collection<ScheduleRule> getScheduleRules() {
+		return scheduleRuleRegistry.getScheduleRuleMap().values();
+	}
 
 	/**
 	 * Gets all translet rules.
@@ -602,14 +660,34 @@ public class ContextBuilderAssistant {
 		return transletRuleRegistry.getTransletRuleMap().values();
 	}
 
+	/**
+	 * Gets the import handler.
+	 *
+	 * @return the import handler
+	 */
 	public ImportHandler getImportHandler() {
 		return importHandler;
 	}
 
+	/**
+	 * Sets the import handler.
+	 *
+	 * @param importHandler the new import handler
+	 */
 	public void setImportHandler(ImportHandler importHandler) {
 		this.importHandler = importHandler;
 	}
 
+	/**
+	 * Create a new importer.
+	 *
+	 * @param file the file to import
+	 * @param resource the resource to import
+	 * @param url the url to import
+	 * @param fileType the file type ('xml' or 'apon')
+	 * @param profile the environment profile name
+	 * @return an {@code Importer} object
+	 */
 	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
 		ImportFileType importFileType = ImportFileType.resolve(fileType);
 		Importer importer = null;

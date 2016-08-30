@@ -26,7 +26,6 @@ public class AdviceParameters extends AbstractParameters {
 	public static final ParameterDefinition afterAdvice;
 	public static final ParameterDefinition aroundAdvice;
 	public static final ParameterDefinition finallyAdvice;
-	public static final ParameterDefinition jobs;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
@@ -36,15 +35,13 @@ public class AdviceParameters extends AbstractParameters {
 		afterAdvice = new ParameterDefinition("after", AdviceActionParameters.class);
 		aroundAdvice = new ParameterDefinition("around", AdviceActionParameters.class);
 		finallyAdvice = new ParameterDefinition("finally", AdviceActionParameters.class);
-		jobs = new ParameterDefinition("job", JobParameters.class, true, true);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			bean,
 			beforeAdvice,
 			afterAdvice,
 			aroundAdvice,
-			finallyAdvice,
-			jobs
+			finallyAdvice
 		};
 	}
 	

@@ -22,9 +22,6 @@ public enum JoinpointType {
 
 	SESSION("session"),
 	TRANSLET("translet"),
-	REQUEST("request"),
-	RESPONSE("response"),
-	CONTENT("content"),
 	BEAN("bean");
 
 	private final String alias;

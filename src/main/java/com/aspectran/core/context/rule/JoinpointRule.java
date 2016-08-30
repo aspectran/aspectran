@@ -146,28 +146,27 @@ public class JoinpointRule {
 		tsb.append("pointcutRule", pointcutRule);
 		return tsb.toString();
 	}
-	
-	public static JoinpointRule newInstance(String type, String text) {
+
+	public static JoinpointRule newInstance() {
 		JoinpointRule joinpointRule = new JoinpointRule();
-		updateJoinpointType(joinpointRule, type);
-
-		if(StringUtils.hasText(text)) {
-			Parameters joinpointParameters = new JoinpointParameters(text);
-			joinpointRule.setJoinpointParameters(joinpointParameters);
-			updateTargetMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));
-			updateTargetHeaders(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.headers));
-		}
-
 		return joinpointRule;
 	}
-
-	public static JoinpointRule newInstance(Parameters joinpointParameters) {
-		JoinpointRule joinpointRule = new JoinpointRule();
-		if(joinpointParameters != null) {
-			updateJoinpointType(joinpointRule, joinpointParameters.getString(JoinpointParameters.type));
-			joinpointRule.setJoinpointParameters(joinpointParameters);
+	
+	public static void updateJoinpoint(JoinpointRule joinpointRule, String text) {
+		if(StringUtils.hasText(text)) {
+			Parameters joinpointParameters = new JoinpointParameters(text);
+			updateJoinpoint(joinpointRule, joinpointParameters);
 		}
-		return joinpointRule;
+	}
+
+	public static void updateJoinpoint(JoinpointRule joinpointRule, Parameters joinpointParameters) {
+		String type = joinpointParameters.getString(JoinpointParameters.type);
+		if(type != null) {
+			updateJoinpointType(joinpointRule, type);
+		}
+		updateTargetMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));
+		updateTargetHeaders(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.headers));
+		joinpointRule.setJoinpointParameters(joinpointParameters);
 	}
 	
 	public static void updateJoinpointType(JoinpointRule joinpointRule, String type) {
@@ -212,8 +211,7 @@ public class JoinpointRule {
 		joinpointRule.setTargetHeaders(targetHeaders);
 	}
 	
-	public static void updatePointcutRule(JoinpointRule joinpointRule, Parameters joinpointParameters) {
-		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
+	public static void updatePointcutRule(JoinpointRule joinpointRule, Parameters pointcutParameters) {
 		PointcutRule pointcutRule = null;
 		
 		if(pointcutParameters != null) {
