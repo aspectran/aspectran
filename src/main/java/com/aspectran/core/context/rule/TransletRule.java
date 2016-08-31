@@ -495,7 +495,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
 		if(name == null && scanPath == null)
-			throw new IllegalArgumentException("Translet name must not be null.");
+			throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
 
 		MethodType[] allowedMethods = null;
 		if(method != null) {

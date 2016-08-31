@@ -53,9 +53,6 @@ class TransletNodeletAdder implements NodeletAdder {
             String mask = attributes.get("mask");
             String method = attributes.get("method");
 
-            if(name == null && scan == null)
-                throw new IllegalArgumentException("The <translet> element requires a 'name' attribute.");
-
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
             assistant.pushObject(transletRule);
         });

@@ -173,9 +173,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String transletName = attributes.get("translet");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 
-			if(transletName == null)
-				throw new IllegalArgumentException("The <forward> element requires a 'translet' attribute.");
-
 			transletName = assistant.applyTransletNamePattern(transletName);
 
             ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);

@@ -104,7 +104,7 @@ public class JoinpointRule {
 		return targetMethods;
 	}
 
-	public void setTargetMethods(MethodType[] targetMethods) {
+	private void setTargetMethods(MethodType[] targetMethods) {
 		this.targetMethods = targetMethods;
 	}
 
@@ -112,7 +112,7 @@ public class JoinpointRule {
 		return targetHeaders;
 	}
 
-	public void setTargetHeaders(String[] targetHeaders) {
+	private void setTargetHeaders(String[] targetHeaders) {
 		this.targetHeaders = targetHeaders;
 	}
 
@@ -120,7 +120,7 @@ public class JoinpointRule {
 		return pointcutRule;
 	}
 
-	public void setPointcutRule(PointcutRule pointcutRule) {
+	private void setPointcutRule(PointcutRule pointcutRule) {
 		this.pointcutRule = pointcutRule;
 	}
 
@@ -128,13 +128,8 @@ public class JoinpointRule {
 		return joinpointParameters;
 	}
 
-	public void setJoinpointParameters(Parameters joinpointParameters) {
+	private void setJoinpointParameters(Parameters joinpointParameters) {
 		this.joinpointParameters = joinpointParameters;
-
-		updateJoinpointType(this, joinpointParameters.getString(JoinpointParameters.type));
-		updateTargetMethods(this, joinpointParameters.getStringArray(JoinpointParameters.methods));
-		updateTargetHeaders(this, joinpointParameters.getStringArray(JoinpointParameters.headers));
-		updatePointcutRule(this, joinpointParameters.getParameters(JoinpointParameters.pointcut));
 	}
 
 	@Override
@@ -160,12 +155,13 @@ public class JoinpointRule {
 	}
 
 	public static void updateJoinpoint(JoinpointRule joinpointRule, Parameters joinpointParameters) {
-		String type = joinpointParameters.getString(JoinpointParameters.type);
 		if(joinpointRule.getJoinpointType() == null) {
+			String type = joinpointParameters.getString(JoinpointParameters.type);
 			updateJoinpointType(joinpointRule, type);
 		}
 		updateTargetMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));
 		updateTargetHeaders(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.headers));
+		updatePointcutRule(joinpointRule, joinpointParameters.getParameters(JoinpointParameters.pointcut));
 		joinpointRule.setJoinpointParameters(joinpointParameters);
 	}
 	

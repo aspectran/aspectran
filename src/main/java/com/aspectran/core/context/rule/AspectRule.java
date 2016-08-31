@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class AspectRule.
@@ -117,7 +118,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		return order;
 	}
 
-	public void setOrder(int order) {
+	private void setOrder(int order) {
 		this.order = order;
 	}
 
@@ -129,7 +130,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		return BooleanUtils.toBoolean(isolated, false);
 	}
 
-	public void setIsolated(Boolean isolated) {
+	private void setIsolated(Boolean isolated) {
 		this.isolated = isolated;
 	}
 
@@ -137,7 +138,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		return joinpointRule;
 	}
 
-	public void setJoinpointRule(JoinpointRule joinpointRule) {
+	private void setJoinpointRule(JoinpointRule joinpointRule) {
 		this.joinpointRule = joinpointRule;
 	}
 
@@ -287,4 +288,10 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectRule.setJoinpointRule(joinpointRule);
 	}
 	
+	public static void updateJoinpoint(AspectRule aspectRule, Parameters joinpointParameters) {
+		JoinpointRule joinpointRule = JoinpointRule.newInstance();
+		JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
+		aspectRule.setJoinpointRule(joinpointRule);
+	}
+
 }

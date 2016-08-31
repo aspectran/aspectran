@@ -42,13 +42,15 @@ public class SessionScopeAdvisor {
 	}
 	
 	public void executeBeforeAdvice() {
-		if(beforeAdviceRuleList != null)
+		if(beforeAdviceRuleList != null) {
 			activity.execute(beforeAdviceRuleList);
+		}
 	}
 	
 	public void executeAfterAdvice() {
-		if(afterAdviceRuleList != null)
+		if(afterAdviceRuleList != null) {
 			activity.executeWithoutThrow(afterAdviceRuleList);
+		}
 	}
 	
 	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {

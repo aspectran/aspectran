@@ -69,6 +69,10 @@ public class AspectAdviceRulePreRegister {
 					aspectRule.setBeanRelevanted(beanRelevanted);
 				}
 			}
+			
+			if(log.isTraceEnabled()) {
+				log.trace("preregistered aspectRule " + aspectRule);
+			}
 		}
 	}
 	

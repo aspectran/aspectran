@@ -76,19 +76,24 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 					log.trace(sb.toString());
 				}
 
-				if(aarr.getBeforeAdviceRuleList() != null)
+				if(aarr.getBeforeAdviceRuleList() != null) {
 					activity.execute(aarr.getBeforeAdviceRuleList());
+				}
 
 				Object result;
 
 				if(!activity.isActivityEnded()) {
+					if(log.isDebugEnabled()) {
+						log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
+					}
 					result = method.invoke(bean, args);
 				} else {
 					result = null;
 				}
 
-				if(aarr.getAfterAdviceRuleList() != null)
+				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
+				}
 
 				return result;
 			} finally {

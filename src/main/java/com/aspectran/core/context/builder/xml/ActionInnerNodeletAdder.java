@@ -53,9 +53,6 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             String methodName = StringUtils.emptyToNull(attributes.get("method"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-            if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <action> element requires an 'id' attribute.");
-
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 
             // AspectAdviceRule may not have a bean id.
@@ -101,13 +98,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             String transletName = StringUtils.emptyToNull(attributes.get("translet"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-			if(transletName == null)
-				throw new IllegalArgumentException("The <include> element requires a 'translet' attribute.");
-
 			transletName = assistant.applyTransletNamePattern(transletName);
-
-            if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <include> element requires an 'id' attribute.");
 
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
             assistant.pushObject(includeActionRule);
@@ -133,9 +124,6 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/echo", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
-
-            if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <echo> element requires an 'id' attribute.");
 
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             assistant.pushObject(echoActionRule);

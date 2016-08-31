@@ -82,6 +82,9 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 				Object result;
 
 				if(!activity.isActivityEnded()) {
+					if(log.isDebugEnabled()) {
+						log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
+					}
 					result = methodProxy.invokeSuper(proxy, args);
 				} else {
 					result = null;

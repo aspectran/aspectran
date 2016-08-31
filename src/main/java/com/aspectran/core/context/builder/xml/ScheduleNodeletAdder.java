@@ -46,9 +46,6 @@ class ScheduleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/schedule", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
 
-            if(id == null)
-                throw new IllegalArgumentException("The <schedule> element requires an 'id' attribute.");
-
             ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
 
             assistant.pushObject(scheduleRule);
@@ -81,7 +78,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
 			if(transletName == null)
-				throw new IllegalArgumentException("The <job> element requires a 'translet' attribute.");
+				throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
 
 			transletName = assistant.applyTransletNamePattern(transletName);
 

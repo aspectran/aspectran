@@ -44,8 +44,6 @@ public class DefaultSettings {
 	
 	private Class<CoreTranslet> transletImplementationClass;
 	
-	private Boolean nullableActionId;
-	
 	private String beanProxifier;
 
 	private Boolean pointcutPatternVerifiable;
@@ -63,7 +61,6 @@ public class DefaultSettings {
 		this.transletInterfaceClass = ds.getTransletInterfaceClass();
 		this.transletImplementationClassName = ds.getTransletImplementationClassName();
 		this.transletImplementationClass = ds.getTransletImplementationClass();
-		this.nullableActionId = ds.getNullableActionId();
 		this.beanProxifier = ds.getBeanProxifier();
 		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
 		this.defaultTemplateEngine = ds.getDefaultTemplateEngine();
@@ -145,18 +142,6 @@ public class DefaultSettings {
 	public void setTransletImplementationClass(Class<CoreTranslet> transletImplementationClass) {
 		this.transletImplementationClass = transletImplementationClass;
 	}
-
-	public boolean isNullableActionId() {
-		return BooleanUtils.toBoolean(nullableActionId, true);
-	}
-
-	public Boolean getNullableActionId() {
-		return nullableActionId;
-	}
-
-	public void setNullableActionId(boolean nullableActionId) {
-		this.nullableActionId = nullableActionId;
-	}
 	
 	public String getBeanProxifier() {
 		return beanProxifier;
@@ -201,10 +186,6 @@ public class DefaultSettings {
 		
 		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null)
 			setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
-
-		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null ||
-								Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 		
 		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
 			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);

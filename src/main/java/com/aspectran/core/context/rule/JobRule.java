@@ -78,6 +78,9 @@ public class JobRule {
 	}
 	
 	public static JobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
+		if(transletName == null)
+			throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+
 		JobRule jobRule = new JobRule(scheduleRule);
 		jobRule.setTransletName(transletName);
 		jobRule.setDisabled(disabled);

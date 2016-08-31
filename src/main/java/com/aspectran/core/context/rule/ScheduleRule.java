@@ -156,6 +156,9 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	}
 	
 	public static ScheduleRule newInstance(String id) {
+        if(id == null)
+            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+
 		ScheduleRule scheduleRule = new ScheduleRule();
 		scheduleRule.setId(id);
 		return scheduleRule;
@@ -174,8 +177,8 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	}
 
 	public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
-		String type = triggerParameters.getString(TriggerParameters.type);
 		if(scheduleRule.getTriggerType() == null) {
+			String type = triggerParameters.getString(TriggerParameters.type);
 			updateTriggerType(scheduleRule, type);
 		}
 		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {

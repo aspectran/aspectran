@@ -19,7 +19,6 @@ import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -53,27 +52,20 @@ class BeanNodeletAdder implements NodeletAdder {
             String offerMethod = StringUtils.emptyToNull(attributes.get("offerMethod"));
             String scan = attributes.get("scan");
             String mask = attributes.get("mask");
-            String scope = attributes.get("scope");
-            Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
             String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
 			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
 			String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
+            String scope = attributes.get("scope");
+            Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
             Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
             Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
             BeanRule beanRule;
 
             if(className == null && scan == null && offerBean != null) {
-                if(offerMethod == null)
-                    throw new IllegalArgumentException("The <bean> element requires an 'offerMethod' attribute.");
-
                 beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
-
 				assistant.resolveBeanClass(offerBean, beanRule);
             } else {
-                if(className == null && scan == null)
-                    throw new IllegalArgumentException("The <bean> element requires a 'class' attribute.");
-
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
             }
 
@@ -100,68 +92,6 @@ class BeanNodeletAdder implements NodeletAdder {
             if(filterParameters != null) {
                 BeanRule beanRule = assistant.peekObject();
                 beanRule.setFilterParameters(filterParameters);
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/class", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setClassName(text.trim());
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/scope", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                ScopeType scopeType = ScopeType.resolve(text.trim());
-                if(scopeType == null)
-                    throw new IllegalArgumentException("No scope-type registered for scope '" + text + "'.");
-
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setScopeType(scopeType);
-                if(scopeType == ScopeType.SINGLETON)
-                    beanRule.setSingleton(Boolean.TRUE);
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/offerBean", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setOfferBeanId(text.trim());
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/offerMethod", (node, attributes, text) -> {
-			if(StringUtils.hasText(text)) {
-				BeanRule beanRule = assistant.peekObject();
-				beanRule.setOfferMethodName(text.trim());
-			}
-		});
-		parser.addNodelet(xpath, "/bean/features/initMethod", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setInitMethodName(text.trim());
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/factoryMethod", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setFactoryMethodName(text.trim());
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/destroyMethod", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setDestroyMethodName(text.trim());
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/lazyInit", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                Boolean lazyInit = BooleanUtils.toBooleanObject(text.trim());
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setLazyInit(lazyInit);
-            }
-        });
-		parser.addNodelet(xpath, "/bean/features/important", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
-                Boolean important = BooleanUtils.toBooleanObject(text.trim());
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setImportant(important);
             }
         });
 		parser.addNodelet(xpath, "/bean/constructor/arguments", (node, attributes, text) -> {

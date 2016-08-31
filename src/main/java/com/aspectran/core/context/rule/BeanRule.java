@@ -759,7 +759,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean important) {
 		
 		if(className == null && scanPath == null)
-			throw new IllegalArgumentException("Bean class must not be null.");
+			throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
 
 		ScopeType scopeType = ScopeType.resolve(scope);
 
@@ -799,7 +799,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
-		
+
+        if(offerBeanId == null || offerMethodName == null)
+            throw new IllegalArgumentException("The 'bean' element requires both 'offerBean' attribute and 'offerMethod' attribute.");
+
 		ScopeType scopeType = ScopeType.resolve(scope);
 		
 		if(scope != null && scopeType == null)

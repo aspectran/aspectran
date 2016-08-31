@@ -45,7 +45,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			Importer importer = resolveImporter(rootContext, ImportFileType.XML);
 			importHandler.handle(importer);
 
-			return makeActivityContext();
+			return createActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a XML Activity Context: " + rootContext, e);
 		}

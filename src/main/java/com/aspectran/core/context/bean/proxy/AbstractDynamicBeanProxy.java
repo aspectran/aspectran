@@ -52,6 +52,7 @@ public abstract class AbstractDynamicBeanProxy {
 		
 		if(holder.getRelevantAspectRuleList() != null) {
 			for(AspectRule aspectRule : holder.getRelevantAspectRuleList()) {
+				// register dynamically
 				activity.registerAspectRule(aspectRule);
 			}
 		}

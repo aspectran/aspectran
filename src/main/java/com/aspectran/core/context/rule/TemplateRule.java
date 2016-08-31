@@ -331,6 +331,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	public static TemplateRule newInstance(String id, String engine, String name, String file, 
 			String resource, String url, String content, String encoding, Boolean noCache) {
+		if(id == null)
+			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
+		
 		TemplateRule tr = new TemplateRule(engine);
 		tr.setId(id);
 		tr.setName(name);

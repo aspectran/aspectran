@@ -215,16 +215,6 @@ public class ContextBuilderAssistant {
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
-
-	/**
-	 * Puts the setting vlaue.
-	 *
-	 * @param settingType the setting type
-	 * @param value the value
-	 */
-	public void putSetting(DefaultSettingType settingType, String value) {
-		settings.put(settingType, value);
-	}
 	
 	/**
 	 * Gets the setting vlaue.
@@ -235,7 +225,22 @@ public class ContextBuilderAssistant {
 	public Object getSetting(DefaultSettingType settingType) {
 		return settings.get(settingType);
 	}
-	
+
+	/**
+	 * Puts the setting vlaue.
+	 *
+	 * @param name the name
+	 * @param value the value
+	 */
+	public void putSetting(String name, String value) {
+        DefaultSettingType settingType = null;
+        settingType = DefaultSettingType.resolve(name);
+        if(settingType == null) {
+            throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
+        }
+		settings.put(settingType, value);
+	}
+
 	/**
 	 * Apply settings.
 	 *
@@ -334,6 +339,8 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
+		if(transletName == null)
+			return null;
 		return transletRuleRegistry.applyTransletNamePattern(transletName, true);
 	}
 
@@ -376,16 +383,6 @@ public class ContextBuilderAssistant {
 	 */
 	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
 		setAssistantLocal(assistantLocal);
-	}
-
-	/**
-	 * Checks if is allow null action id.
-	 * 
-	 * @return true, if is allow null action id
-	 */
-	public boolean isNullableActionId() {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		return defaultSettings == null || defaultSettings.isNullableActionId();
 	}
 
 	/**
@@ -538,21 +535,21 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Add the template rule.
-	 *
-	 * @param templateRule the template rule
-	 */
-	public void addTemplateRule(TemplateRule templateRule) {
-		templateRuleRegistry.addTemplateRule(templateRule);
-	}
-
-	/**
 	 * Adds the schedule rule.
 	 *
 	 * @param scheduleRule the aspect rule
 	 */
 	public void addScheduleRule(ScheduleRule scheduleRule) {
 		scheduleRuleRegistry.addScheduleRule(scheduleRule);
+	}
+
+	/**
+	 * Add the template rule.
+	 *
+	 * @param templateRule the template rule
+	 */
+	public void addTemplateRule(TemplateRule templateRule) {
+		templateRuleRegistry.addTemplateRule(templateRule);
 	}
 
 	/**
@@ -707,6 +704,10 @@ public class ContextBuilderAssistant {
 					importer.setProfiles(arr);
 				}
 			}
+		}
+		
+		if(importer == null) {
+			throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
 		}
 
 		return importer;

@@ -50,8 +50,8 @@ public class ScheduleRuleRegistry {
 	public void addScheduleRule(ScheduleRule scheduleRule) {
 		scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
 		
-		if(log.isTraceEnabled())
-			log.trace("add ScheduleRule " + scheduleRule);
+		if(log.isDebugEnabled())
+			log.debug("add ScheduleRule " + scheduleRule);
 	}
 
 	public Collection<ScheduleRule> getScheduleRules() {

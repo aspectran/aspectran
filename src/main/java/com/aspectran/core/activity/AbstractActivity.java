@@ -124,7 +124,7 @@ public abstract class AbstractActivity implements Activity {
 		if(outerActivity != null) {
 			setCurrentActivity(outerActivity);
 		} else {
-			removeCurrentActivity();
+			context.removeCurrentActivity();
 		}
 	}
 	
