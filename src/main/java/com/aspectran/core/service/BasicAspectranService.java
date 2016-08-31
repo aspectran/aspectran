@@ -60,10 +60,10 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void startup() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				throw new AspectranServiceException("Cannot start AspectranService, because it was already destroyed.");
+				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already destroyed.");
 			}
 			if(this.active.get()) {
-				throw new AspectranServiceException("Cannot start AspectranService, because it was already started.");
+				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already started.");
 			}
 
 			loadActivityContext();
@@ -72,7 +72,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 			this.closed.set(false);
 			this.active.set(true);
 
-			log.info("AspectranService has been started successfully.");
+			log.info("Aspectran Service has been started successfully.");
 
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.started();
@@ -84,24 +84,24 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void restart() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				log.warn("Cannot restart AspectranService, because it was already destroyed.");
+				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
 			if(!this.active.get()) {
-				log.warn("Cannot restart AspectranService, because it is currently stopped.");
+				log.warn("Cannot restart Aspectran Service, because it is currently stopped.");
 				return;
 			}
 
 			doDestroy();
 
-			log.info("AspectranService has been stopped.");
+			log.info("Aspectran Service has been stopped.");
 
 			reloadActivityContext();
 
 			this.closed.set(false);
 			this.active.set(true);
 
-			log.info("AspectranService has been restarted.");
+			log.info("Aspectran Service has been restarted.");
 
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.restarted(isHardReload());
@@ -113,7 +113,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void pause() {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				log.warn("Cannot restart AspectranService, because it was already destroyed.");
+				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
@@ -121,7 +121,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 				aspectranServiceControllerListener.paused(-1L);
 			}
 
-			log.info("AspectranService has been paused.");
+			log.info("Aspectran Service has been paused.");
 		}
 	}
 
@@ -129,7 +129,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void pause(long timeout) {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				log.warn("Cannot restart AspectranService, because it was already destroyed.");
+				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
@@ -143,7 +143,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void resume() {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				log.warn("Cannot resume AspectranService, because it was already destroyed.");
+					log.warn("Cannot resume Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
@@ -151,7 +151,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 				aspectranServiceControllerListener.resumed();
 			}
 
-			log.info("AspectranService has been resumed.");
+			log.info("Aspectran Service has been resumed.");
 		}
 	}
 
@@ -161,12 +161,12 @@ public class BasicAspectranService extends AbstractAspectranService {
 			doDestroy();
 			removeShutdownHook();
 
-			log.info("AspectranService has been shut down successfully.");
+			log.info("Aspectran Service has been shut down successfully.");
 		}
 	}
 
 	/**
-	 * Actually performs destroys the singletons in the bean factory.
+	 * Actually performs destroys the singletons in the bean registry.
 	 * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
 	 */
 	private void doDestroy() {

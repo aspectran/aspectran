@@ -186,7 +186,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
 			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
 			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-			if(intervalInMilliseconds == null || intervalInSeconds == null || intervalInMinutes == null || intervalInHours == null) {
+			if(intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
 				throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
 						"Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
 			}

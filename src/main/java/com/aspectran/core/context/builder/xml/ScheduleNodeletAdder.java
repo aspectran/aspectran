@@ -89,6 +89,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/schedule/end()", (node, attributes, text) -> {
 			ScheduleRule scheduleRule = assistant.popObject();
+
             assistant.addScheduleRule(scheduleRule);
         });
 	}

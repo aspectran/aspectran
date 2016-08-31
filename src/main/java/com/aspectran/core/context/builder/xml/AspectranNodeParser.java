@@ -70,8 +70,8 @@ public class AspectranNodeParser {
 		addTypeAliasNodelets();
 		addAspectNodelets();
 		addBeanNodelets();
-		addTemplateNodelets();
 		addScheduleNodelets();
+		addTemplateNodelets();
 		addTransletNodelets();
 		addImportNodelets();
 	}
@@ -203,18 +203,17 @@ public class AspectranNodeParser {
 	}
 
 	/**
+	 * Adds the schedule rule nodelets.
+	 */
+	private void addScheduleNodelets() {
+		parser.addNodelet("/aspectran", new ScheduleNodeletAdder(assistant));
+	}
+
+	/**
 	 * Adds the template nodelets.
 	 */
 	private void addTemplateNodelets() {
 		parser.addNodelet("/aspectran", new TemplateNodeletAdder(assistant));
-	}
-
-	/**
-	 * Adds the schedule rule nodelets.
-	 */
-	private void addScheduleNodelets() {
-		parser.addNodelet("/schedule", new ScheduleNodeletAdder(assistant));
-
 	}
 
 	/**

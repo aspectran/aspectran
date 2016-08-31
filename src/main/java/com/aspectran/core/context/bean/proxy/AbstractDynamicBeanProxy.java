@@ -40,6 +40,8 @@ public abstract class AbstractDynamicBeanProxy {
 
 	private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
 
+	private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
+
 	private final AspectRuleRegistry aspectRuleRegistry;
 
 	public AbstractDynamicBeanProxy(AspectRuleRegistry aspectRuleRegistry) {
@@ -56,8 +58,6 @@ public abstract class AbstractDynamicBeanProxy {
 				activity.registerAspectRule(aspectRule);
 			}
 		}
-
-		//TODO
 
 		return holder.getAspectAdviceRuleRegistry();
 	}
@@ -107,17 +107,18 @@ public abstract class AbstractDynamicBeanProxy {
 
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
 
-		RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-
-		if(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0) {
-			holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		if(!relevantAspectRuleList.isEmpty() ||
+				(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)) {
+			RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
+			if(!relevantAspectRuleList.isEmpty()) {
+				holder.setRelevantAspectRuleList(relevantAspectRuleList);
+			} else {
+				holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+			}
+			return holder;
+		} else {
+			return EMPTY_HOLDER;
 		}
-
-		if(!relevantAspectRuleList.isEmpty()) {
-			holder.setRelevantAspectRuleList(relevantAspectRuleList);
-		}
-
-		return holder;
 	}
 
 }

@@ -95,6 +95,7 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public void startup() throws SchedulerServiceException {
+		System.out.println("==" + context.getScheduleRuleRegistry());
 		if(context.getScheduleRuleRegistry() == null)
 			return;
 
@@ -204,10 +205,11 @@ public class QuartzSchedulerService implements SchedulerService {
 
 		Parameters triggerParameters = scheduleRule.getTriggerParameters();
 		Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
+		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds.intValue() : 0;
 
 		Date firstFireTime;
 		if(startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
-			firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + triggerStartDelaySeconds) * 1000L));
+			firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
 		} else {
 			firstFireTime = new Date();
 		}

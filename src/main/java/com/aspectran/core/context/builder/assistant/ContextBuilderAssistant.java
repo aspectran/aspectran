@@ -131,7 +131,9 @@ public class ContextBuilderAssistant {
 			transletRuleRegistry.setAssistantLocal(assistantLocal);
 			
 			beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
-			
+
+			scheduleRuleRegistry = new ScheduleRuleRegistry();
+
 			templateRuleRegistry = new TemplateRuleRegistry();
 			templateRuleRegistry.setAssistantLocal(assistantLocal);
 			

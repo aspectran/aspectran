@@ -52,7 +52,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	@Override
 	public void init() throws ServletException {
-		log.info("Initializing WebActivityServlet...");
+		log.info("Initializing the WebActivityServlet...");
 
 		try {
 			ServletContext servletContext = getServletContext();
@@ -67,7 +67,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 				standalone = (rootAspectranService != aspectranService);
 			} else {
-				log.info("Running AspectranService in standalone mode inside a servlet.");
+				log.info("Running Aspectran Service in standalone mode inside a servlet.");
 
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
@@ -91,7 +91,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 			aspectranService.shutdown();
 
-			log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
+			log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
 		}
 	}
 	
