@@ -17,6 +17,7 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -189,11 +190,13 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(!shutdownSchedulerService())
 			cleanlyDestoryed = false;
 
+		destroyApplicationScope();
+
 		if(activityContext != null) {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Aspectran Context has been destroyed successfully.");
+				log.info("Aspectran Context has been destroyed.");
 			} catch(Exception e) {
 				log.error("Failed to destroy Aspectran Context " + activityContext, e);
 				cleanlyDestoryed = false;
@@ -201,6 +204,20 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 		
 		return cleanlyDestoryed;
+	}
+
+
+	/**
+	 * Destroys an application scope.
+	 */
+	private void destroyApplicationScope() {
+		ApplicationAdapter applicationAdapter = getApplicationAdapter();
+		if(applicationAdapter != null) {
+			Scope scope = applicationAdapter.getApplicationScope();
+			if(scope != null) {
+				scope.destroy();
+			}
+		}
 	}
 
 	protected synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
@@ -242,7 +259,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			schedulerService.startup(startDelaySeconds);
 			this.schedulerService = schedulerService;
 
-			log.info("Scheduler Service has been started successfully.");
+			log.info("Scheduler Service has been started.");
 		}
 	}
 	
@@ -251,7 +268,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				schedulerService.shutdown();
 				schedulerService = null;
-				log.info("Scheduler Service has been shutdown successfully.");
+				log.info("Scheduler Service has been paused.");
 			} catch(Exception e) {
 				log.error("Scheduler Service did not shutdown cleanly.", e);
 				return false;
@@ -260,7 +277,35 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		return true;
 	}
-	
+
+	protected boolean pauseSchedulerService() {
+		if(schedulerService != null) {
+			try {
+				schedulerService.pause();
+				log.info("Scheduler Service has been paused.");
+			} catch(Exception e) {
+				log.error("Scheduler Service pause failed.", e);
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	protected boolean resumeSchedulerService() {
+		if(schedulerService != null) {
+			try {
+				schedulerService.resume();
+				log.info("Scheduler Service has been paused.");
+			} catch(Exception e) {
+				log.error("Scheduler Service pause failed.", e);
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void startReloadingTimer() {
 		if(autoReloadingStartup) {
 			AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();

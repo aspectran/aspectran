@@ -43,7 +43,7 @@ public class ActivityContextReloadingTimer {
 	}
 	
 	private void init() {
-		log.debug("ActivityContextRefreshTimer is initialized successfully.");
+		log.debug("ActivityContextRefreshTimer is initialized.");
 	}
 	
 	public void start(int observationInterval) {

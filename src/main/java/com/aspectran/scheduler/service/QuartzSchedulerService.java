@@ -17,7 +17,7 @@ package com.aspectran.scheduler.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
@@ -55,9 +54,9 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	private ActivityContext context;
 
-	private List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>();
+	private final List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>(5);
 	
-	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<>();
+	private Map<String, Scheduler> schedulerMap = new HashMap<>();
 	
 	private int startDelaySeconds = 0;
 	
@@ -94,7 +93,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void startup() throws SchedulerServiceException {
+	public synchronized void startup() throws SchedulerServiceException {
 		if(context.getScheduleRuleRegistry() == null)
 			return;
 
@@ -108,8 +107,7 @@ public class QuartzSchedulerService implements SchedulerService {
 			for(ScheduleRule scheduleRule : scheduleRuleMap.values()) {
 				String schedulerBeanId = scheduleRule.getSchedulerBeanId();
 				
-				SchedulerFactory schedulerFactory = context.getBeanRegistry().getBean(schedulerBeanId);
-				Scheduler scheduler = schedulerFactory.getScheduler();
+				Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
 				JobDetail[] jobDetails = buildJobDetails(scheduleRule.getJobRuleList());
 				
 				if(jobDetails.length > 0) {
@@ -124,17 +122,17 @@ public class QuartzSchedulerService implements SchedulerService {
 
 				if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
 					log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
-					
+
 					if(startDelaySeconds > 0) {
 						scheduler.startDelayed(startDelaySeconds);
 					} else {
 						scheduler.start();
 					}
-					
+
 					startedSchedulerList.add(scheduler);
 				}
 
-				eachAspectSchedulerMap.put(scheduleRule.getId(), scheduler);
+				schedulerMap.put(scheduleRule.getId(), scheduler);
 			}
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
@@ -148,8 +146,8 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void shutdown() throws SchedulerServiceException {
-		log.info("Now try to shuting down Quartz Scheduler.");
+	public synchronized void shutdown() throws SchedulerServiceException {
+		log.info("Now try to shutting down Quartz Scheduler.");
 
 		try {
 			for(Scheduler scheduler : startedSchedulerList) {
@@ -159,6 +157,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				}
 			}
 			startedSchedulerList.clear();
+			schedulerMap.clear();
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
 		}
@@ -172,12 +171,10 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void pause(String aspectId) throws SchedulerServiceException {
+	public synchronized void pause() throws SchedulerServiceException {
 		try {
-			Scheduler scheduler = getScheduler(aspectId);
-
-			if(scheduler != null && scheduler.isStarted()) {
-				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+			for(Scheduler scheduler : startedSchedulerList) {
+				scheduler.pauseAll();
 			}
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
@@ -185,20 +182,42 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void resume(String aspectId) throws SchedulerServiceException {
+	public synchronized void pause(String scheduleId) throws SchedulerServiceException {
 		try {
-			Scheduler scheduler = getScheduler(aspectId);
-
+			Scheduler scheduler = getScheduler(scheduleId);
 			if(scheduler != null && scheduler.isStarted()) {
-				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
+		}
+	}
+
+	@Override
+	public synchronized void resume() throws SchedulerServiceException {
+		try {
+			for(Scheduler scheduler : startedSchedulerList) {
+				scheduler.resumeAll();
 			}
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
 		}
 	}
 
-	private Scheduler getScheduler(String aspectId) throws SchedulerException {
-		return eachAspectSchedulerMap.get(aspectId);
+	@Override
+	public synchronized void resume(String scheduleId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(scheduleId);
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
+		}
+	}
+
+	private Scheduler getScheduler(String scheduleId) throws SchedulerException {
+		return schedulerMap.get(scheduleId);
 	}
 	
 	private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
@@ -206,7 +225,7 @@ public class QuartzSchedulerService implements SchedulerService {
 
 		Parameters triggerParameters = scheduleRule.getTriggerParameters();
 		Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
-		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds.intValue() : 0;
+		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
 
 		Date firstFireTime;
 		if(startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {

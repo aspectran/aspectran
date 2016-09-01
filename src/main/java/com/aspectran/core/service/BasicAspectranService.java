@@ -18,7 +18,6 @@ package com.aspectran.core.service;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.scope.Scope;
 
 /**
  * The Class BasicAspectranService.
@@ -101,7 +100,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 			this.closed.set(false);
 			this.active.set(true);
 
-			log.info("Aspectran Service has been restarted.");
+			log.info("Aspectran Service has been restarted successfully.");
 
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.restarted(isHardReload());
@@ -116,6 +115,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
+
+			pauseSchedulerService();
 
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(-1L);
@@ -147,6 +148,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
+			resumeSchedulerService();
+
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.resumed();
 			}
@@ -175,26 +178,12 @@ public class BasicAspectranService extends AbstractAspectranService {
 				aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
 			}
 
-			destroyApplicationScope();
 			destroyActivityContext();
 
 			this.active.set(false);
 
 			if(aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.stopped();
-			}
-		}
-	}
-
-	/**
-	 * Destroys an application scope.
-	 */
-	private void destroyApplicationScope() {
-		ApplicationAdapter applicationAdapter = getApplicationAdapter();
-		if(applicationAdapter != null) {
-			Scope scope = applicationAdapter.getApplicationScope();
-			if(scope != null) {
-				scope.destroy();
 			}
 		}
 	}

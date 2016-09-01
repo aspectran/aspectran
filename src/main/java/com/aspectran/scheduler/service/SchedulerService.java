@@ -40,7 +40,11 @@ public interface SchedulerService {
 
 	void refresh(ActivityContext context) throws SchedulerServiceException;
 
+	void pause() throws SchedulerServiceException;
+
 	void pause(String schedulerId) throws SchedulerServiceException;
+
+	void resume() throws SchedulerServiceException;
 
 	void resume(String schedulerId) throws SchedulerServiceException;
 

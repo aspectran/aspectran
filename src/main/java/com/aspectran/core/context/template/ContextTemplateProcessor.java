@@ -152,7 +152,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         this.closed = false;
         this.active = true;
 
-        log.info("Template Processor has been initialized successfully.");
+        log.info("Template Processor has been initialized.");
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             this.closed = true;
             this.active = false;
 
-            log.info("Template Processor has been destroyed successfully.");
+            log.info("Template Processor has been destroyed.");
         }
     }
 
