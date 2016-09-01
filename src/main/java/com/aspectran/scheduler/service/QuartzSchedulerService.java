@@ -102,6 +102,8 @@ public class QuartzSchedulerService implements SchedulerService {
 		if(scheduleRuleMap == null)
 			return;
 		
+		log.info("Now try to starting Quartz Scheduler.");
+		
 		try {
 			for(ScheduleRule scheduleRule : scheduleRuleMap.values()) {
 				String schedulerBeanId = scheduleRule.getSchedulerBeanId();
@@ -121,7 +123,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				}
 
 				if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
-					log.info("Now try to start scheduler '" + scheduler.getSchedulerName() + "'.");
+					log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
 					
 					if(startDelaySeconds > 0) {
 						scheduler.startDelayed(startDelaySeconds);
@@ -134,10 +136,8 @@ public class QuartzSchedulerService implements SchedulerService {
 
 				eachAspectSchedulerMap.put(scheduleRule.getId(), scheduler);
 			}
-
-			log.info("Scheduler Service has beeb started successfully.");
 		} catch(Exception e) {
-			throw new SchedulerServiceException("Scheduler Service startup failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
 		}
 	}
 
@@ -149,16 +149,18 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public void shutdown() throws SchedulerServiceException {
+		log.info("Now try to shuting down Quartz Scheduler.");
+
 		try {
 			for(Scheduler scheduler : startedSchedulerList) {
 				if(!scheduler.isShutdown()) {
-					log.info("Shuting down Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
 					scheduler.shutdown(waitOnShutdown);
 				}
 			}
 			startedSchedulerList.clear();
 		} catch(Exception e) {
-			throw new SchedulerServiceException("Scheduler Service shutdown failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
 		}
 	}
 
@@ -178,7 +180,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
 			}
 		} catch(Exception e) {
-			throw new SchedulerServiceException("Scheduler Service pause failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
 		}
 	}
 
@@ -191,7 +193,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
 			}
 		} catch(Exception e) {
-			throw new SchedulerServiceException("Scheduler Service resume failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
 		}
 	}
 

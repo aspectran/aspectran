@@ -45,7 +45,7 @@ public class Application {
             while(true) {
                 String command = System.console().readLine("Aspectran> ");
 
-                if(command.isEmpty())
+                if(command == null || command.isEmpty())
                     continue;
 
                 switch(command) {

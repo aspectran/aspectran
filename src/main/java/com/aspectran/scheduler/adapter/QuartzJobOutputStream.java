@@ -26,7 +26,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 
 /**
- * The Class QuartzJobResponseOutputStream.
+ * The Class QuartzJobOutputStream.
  */
 public class QuartzJobOutputStream extends OutputStream {
 
@@ -38,12 +38,18 @@ public class QuartzJobOutputStream extends OutputStream {
 
 	public QuartzJobOutputStream(JobDetail jobDetail) {
 		this.jobDetail = jobDetail;
-		this.buffer = new StringBuilder();
+		if(log.isDebugEnabled()) {
+			this.buffer = new StringBuilder();
+		} else {
+			this.buffer = null;
+		}
 	}
 
 	@Override
 	public void write(int b) throws IOException {
-		buffer.append(b);
+		if(buffer != null) {
+			buffer.append(b);
+		}
 	}
 
 	@Override
@@ -53,9 +59,9 @@ public class QuartzJobOutputStream extends OutputStream {
 
 	@Override
 	public void write(byte b[], int off, int len) throws IOException {
-		if((off | len | (b.length - (len + off)) | (off + len)) < 0)
+		if((off | len | (b.length - (len + off)) | (off + len)) < 0) {
 			throw new IndexOutOfBoundsException();
-
+		}
 		for(int i = 0 ; i < len ; i++) {
 			write(b[off + i]);
 		}
@@ -63,13 +69,13 @@ public class QuartzJobOutputStream extends OutputStream {
 
 	@Override
 	public void flush() {
-		if(buffer.length() > 0) {
+		if(buffer != null && buffer.length() > 0) {
 			String msg = "results of job [" +
 					jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY) + "]" +
 					ActivityContext.LINE_SEPARATOR +
-					buffer;
+					buffer + ActivityContext.LINE_SEPARATOR;
 
-			log.info(msg);
+			log.debug(msg);
 
 			buffer.setLength(0);
 		}

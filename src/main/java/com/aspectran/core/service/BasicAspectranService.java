@@ -63,7 +63,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already destroyed.");
 			}
 			if(this.active.get()) {
-				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already started.");
+				throw new AspectranServiceException("Cannot start Aspectran Service, because it has already been started.");
 			}
 
 			loadActivityContext();

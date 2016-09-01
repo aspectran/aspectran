@@ -103,7 +103,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(activityContext != null)
 			throw new AspectranServiceException("Aspectran Context has already been loaded. Must destroy the old Aspectran Context before reloading.");
 
-		log.info("Initializing the Aspectran Service...");
+		log.info("Initializing Aspectran Service...");
 
 		try {
 			this.aspectranConfig = aspectranConfig;
@@ -154,7 +154,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to initialize the Aspectran Service " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to initialize Aspectran Service.", e);
 		}
 	}
 	
@@ -177,7 +177,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to load the Activity Context.", e);
+			throw new AspectranServiceException("Failed to load Activity Context.", e);
 		}
 	}
 
@@ -193,7 +193,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Successfully destroyed Aspectran Context.");
+				log.info("Aspectran Context has been destroyed successfully.");
 			} catch(Exception e) {
 				log.error("Failed to destroy Aspectran Context " + activityContext, e);
 				cleanlyDestoryed = false;
@@ -229,10 +229,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
 
 		if(startup) {
-			if(log.isDebugEnabled()) {
-				log.debug("Starting the Scheduler Service " + this.aspectranSchedulerConfig.describe(true));
-			}
-
 			SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
 			
 			if(waitOnShutdown)
@@ -245,6 +241,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			
 			schedulerService.startup(startDelaySeconds);
 			this.schedulerService = schedulerService;
+
+			log.info("Scheduler Service has been started successfully.");
 		}
 	}
 	

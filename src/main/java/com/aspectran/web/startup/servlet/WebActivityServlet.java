@@ -52,7 +52,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	@Override
 	public void init() throws ServletException {
-		log.info("Initializing the WebActivityServlet...");
+		log.info("Initializing WebActivityServlet...");
 
 		try {
 			ServletContext servletContext = getServletContext();
