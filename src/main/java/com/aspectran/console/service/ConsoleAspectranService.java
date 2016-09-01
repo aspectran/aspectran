@@ -60,7 +60,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	public void service(String command) {
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("Aspectran service has been paused, did not respond to the command: " + command);
+				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + command + "\"");
 				return;
 			} else {
 				pauseTimeout = 0L;

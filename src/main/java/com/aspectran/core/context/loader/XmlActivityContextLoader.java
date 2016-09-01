@@ -39,7 +39,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
 
-		log.info("Build ActivityContext: " + rootContext);
+		log.info("Now try to build an Activity Context \"" + rootContext + "\"");
 
 		long startTime = System.currentTimeMillis();
 
@@ -52,7 +52,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;
 
-		log.info("ActivityContext build completed in " + elapsedTime + " ms.");
+		log.info("Activity Context build completed in " + elapsedTime + " ms.");
 		
 		return activityContext;
 	}

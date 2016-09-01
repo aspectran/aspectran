@@ -112,13 +112,13 @@ public class WebAspectranService extends BasicAspectranService {
 			requestUri = URLDecoder.decode(requestUri, uriDecoding);
 		}
 
-		if(super.log.isDebugEnabled()) {
-			super.log.debug("Request URI: " + requestUri);
+		if(log.isDebugEnabled()) {
+			log.debug("Request URI: " + requestUri);
 		}
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				super.log.info("Aspectran Service has been paused, so did not respond to the request URI " + requestUri);
+				log.info("Aspectran Service has been paused, so did not respond to the request URI \"" + requestUri + "\"");
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -133,8 +133,8 @@ public class WebAspectranService extends BasicAspectranService {
 			activity.prepare(requestUri, request.getMethod());
 			activity.perform();
 		} catch(TransletNotFoundException e) {
-			if(super.log.isTraceEnabled()) {
-				super.log.trace("Translet is not found: " + requestUri);
+			if(log.isTraceEnabled()) {
+				log.trace("Translet is not found: " + requestUri);
 			}
 			try {
 				if(!defaultServletHttpRequestHandler.handle(request, response)) {
@@ -142,15 +142,15 @@ public class WebAspectranService extends BasicAspectranService {
 				}
 			} catch(Exception e2) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				super.log.error(e.getMessage(), e2);
+				log.error(e.getMessage(), e2);
 			}
 		} catch(RequestMethodNotAllowedException e) {
-			if(super.log.isDebugEnabled()) {
-				super.log.debug(e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		} catch(Exception e) {
-			super.log.error("Web Activity service failed.", e);
+			log.error("Web Activity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
 			if(activity != null) {

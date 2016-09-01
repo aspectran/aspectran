@@ -143,7 +143,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     @Override
     public synchronized void initialize(ActivityContext context) {
         if(this.active) {
-            log.warn("TemplateProcessor has already been initialized.");
+            log.warn("Template Processor has already been initialized.");
             return;
         }
 
@@ -152,7 +152,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         this.closed = false;
         this.active = true;
 
-        log.info("TemplateProcessor has been initialized successfully.");
+        log.info("Template Processor has been initialized successfully.");
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             this.closed = true;
             this.active = false;
 
-            log.info("TemplateProcessor has been destroyed successfully.");
+            log.info("Template Processor has been destroyed successfully.");
         }
     }
 
