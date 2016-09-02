@@ -365,10 +365,10 @@ public class CoreActivity extends AbstractActivity {
 			} else {
 				this.forwardTransletName = null;
 			}
-		}
-		
-		if(forwardTransletName != null) {
-			forward();
+			
+			if(forwardTransletName != null) {
+				forward();
+			}
 		}
 	}
 
