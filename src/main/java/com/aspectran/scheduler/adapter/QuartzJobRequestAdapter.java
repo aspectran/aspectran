@@ -15,7 +15,7 @@
  */
 package com.aspectran.scheduler.adapter;
 
-import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
@@ -29,10 +29,10 @@ public class QuartzJobRequestAdapter extends BasicRequestAdapter {
 	/**
 	 * Instantiates a new QuartzJobRequestAdapter.
 	 *
-	 * @param jobDetail the job detail
+	 * @param jobExecutionContext the job detail
 	 */
-	public QuartzJobRequestAdapter(JobDetail jobDetail) {
-		super(jobDetail);
+	public QuartzJobRequestAdapter(JobExecutionContext jobExecutionContext) {
+		super(jobExecutionContext);
 	}
 
 }

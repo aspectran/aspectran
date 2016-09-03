@@ -18,13 +18,16 @@ package com.aspectran.scheduler.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -48,13 +51,11 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
-	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
-	
 	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
 	private ActivityContext context;
 
-	private final List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>(5);
+	private final Set<Scheduler> schedulerSet = new HashSet<Scheduler>();
 	
 	private Map<String, Scheduler> schedulerMap = new HashMap<>();
 	
@@ -120,19 +121,22 @@ public class QuartzSchedulerService implements SchedulerService {
 					}
 				}
 
-				if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
-					log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
-
-					if(startDelaySeconds > 0) {
-						scheduler.startDelayed(startDelaySeconds);
-					} else {
-						scheduler.start();
-					}
-
-					startedSchedulerList.add(scheduler);
-				}
-
+				schedulerSet.add(scheduler);
 				schedulerMap.put(scheduleRule.getId(), scheduler);
+			}
+
+			for(Scheduler scheduler : schedulerSet) {
+				log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
+
+				//Listener attached to jobKey
+				JobListener defaultJobListener = new QuartzJobListener();
+				scheduler.getListenerManager().addJobListener(defaultJobListener);
+
+				if(startDelaySeconds > 0) {
+					scheduler.startDelayed(startDelaySeconds);
+				} else {
+					scheduler.start();
+				}
 			}
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
@@ -150,13 +154,13 @@ public class QuartzSchedulerService implements SchedulerService {
 		log.info("Now try to shutting down Quartz Scheduler.");
 
 		try {
-			for(Scheduler scheduler : startedSchedulerList) {
+			for(Scheduler scheduler : schedulerSet) {
 				if(!scheduler.isShutdown()) {
 					log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
 					scheduler.shutdown(waitOnShutdown);
 				}
 			}
-			startedSchedulerList.clear();
+			schedulerSet.clear();
 			schedulerMap.clear();
 		} catch(Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
@@ -173,7 +177,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	@Override
 	public synchronized void pause() throws SchedulerServiceException {
 		try {
-			for(Scheduler scheduler : startedSchedulerList) {
+			for(Scheduler scheduler : schedulerSet) {
 				scheduler.pauseAll();
 			}
 		} catch(Exception e) {
@@ -196,7 +200,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	@Override
 	public synchronized void resume() throws SchedulerServiceException {
 		try {
-			for(Scheduler scheduler : startedSchedulerList) {
+			for(Scheduler scheduler : schedulerSet) {
 				scheduler.resumeAll();
 			}
 		} catch(Exception e) {
@@ -278,28 +282,26 @@ public class QuartzSchedulerService implements SchedulerService {
 	
 	private JobDetail[] buildJobDetails(List<JobRule> jobRuleList) {
 		List<JobDetail> jobDetailList = new ArrayList<>(jobRuleList.size());
-		
-		for(int i = 0; i < jobRuleList.size(); i++) {
-			JobRule jobRule = jobRuleList.get(i);
-			JobDetail jobDetail = buildJobDetail(jobRule, i);
+
+		for(JobRule jobRule : jobRuleList) {
+			JobDetail jobDetail = buildJobDetail(jobRule);
 			if(jobDetail != null) {
 				jobDetailList.add(jobDetail);
 			}
 		}
-		
+
 		return jobDetailList.toArray(new JobDetail[jobDetailList.size()]);
 	}
 
-	private JobDetail buildJobDetail(JobRule jobRule, int index) {
+	private JobDetail buildJobDetail(JobRule jobRule) {
 		if(jobRule.isDisabled())
 			return null;
 		
-		String jobName = index + (ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR + jobRule.getTransletName());
+		String jobName = jobRule.getTransletName();
 		String jobGroup = jobRule.getScheduleRule().getId();
 		
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
-		jobDataMap.put(TRANSLET_NAME_DATA_KEY, jobRule.getTransletName());
 
 		return JobBuilder.newJob(ActivityLauncherJob.class)
 				.withIdentity(jobName, jobGroup)

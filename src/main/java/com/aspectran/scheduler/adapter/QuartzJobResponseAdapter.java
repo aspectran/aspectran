@@ -17,10 +17,7 @@ package com.aspectran.scheduler.adapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-
-import org.quartz.JobDetail;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -33,31 +30,23 @@ import com.aspectran.core.context.rule.type.ContentType;
  */
 public class QuartzJobResponseAdapter extends BasicResponseAdapter {
 
-	private JobDetail jobDetail;
+	private QuartzJobOutputWriter writer;
 	
-	public QuartzJobResponseAdapter(JobDetail jobDetail) {
+	public QuartzJobResponseAdapter() {
 		super(null);
-		this.jobDetail = jobDetail;
 		setContentType(ContentType.TEXT_PLAIN.toString());
 	}
 
 	@Override
 	public OutputStream getOutputStream() throws IOException {
-		return new QuartzJobOutputStream(jobDetail);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Writer getWriter() throws IOException {
-		String characterEncoding = getCharacterEncoding();
-
-		OutputStream os = getOutputStream();
-		Writer writer;
-
-		if(characterEncoding != null)
-			writer = new OutputStreamWriter(os, characterEncoding);
-		else
-			writer = new OutputStreamWriter(os);
-
+		if(writer == null) {
+			writer = new QuartzJobOutputWriter();
+		}
 		return writer;
 	}
 
