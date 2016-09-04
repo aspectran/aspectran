@@ -460,12 +460,12 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public String getMessage(String code, Object args[], String defaultMessage) {
-		return getMessage(code, args, defaultMessage, activity.getRequestAdapter().getLocale());
+		return getMessage(code, args, defaultMessage, getRequestAdapter().getLocale());
 	}
 
 	@Override
 	public String getMessage(String code, Object args[]) throws NoSuchMessageException {
-		return getMessage(code, args, activity.getRequestAdapter().getLocale());
+		return getMessage(code, args, getRequestAdapter().getLocale());
 	}
 
 }

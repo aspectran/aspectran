@@ -52,10 +52,9 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if(sessionAdapter != null) {
             Locale locale = sessionAdapter.getAttribute(LOCALE_SESSION_ATTRIBUTE_NAME);
-            if(locale == null) {
-                locale = determineDefaultLocale(translet);
+            if(locale != null) {
+                return locale;
             }
-            return locale;
         }
         return determineDefaultLocale(translet);
     }
@@ -65,10 +64,9 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if(sessionAdapter != null) {
             TimeZone timeZone = sessionAdapter.getAttribute(TIME_ZONE_SESSION_ATTRIBUTE_NAME);
-            if(timeZone == null) {
-                timeZone = determineDefaultTimeZone(translet);
+            if(timeZone != null) {
+                return timeZone;
             }
-            return timeZone;
         }
         return determineDefaultTimeZone(translet);
     }
@@ -83,7 +81,12 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return locale;
             }
         }
-        return null;
+        Locale defaultLocale = getDefaultLocale();
+        if(defaultLocale != null) {
+            super.setLocale(translet, defaultLocale);
+            return defaultLocale;
+        }
+        return translet.getRequestAdapter().getLocale();
     }
 
     @Override
@@ -96,7 +99,12 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return timeZone;
             }
         }
-        return null;
+        TimeZone defaultTimeZone = getDefaultTimeZone();
+        if(defaultTimeZone != null) {
+            super.setTimeZone(translet, defaultTimeZone);
+            return defaultTimeZone;
+        }
+        return translet.getRequestAdapter().getTimeZone();
     }
 
     @Override
@@ -126,7 +134,6 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
      * @param translet the translet to resolve the locale for
      * @return the default locale (never {@code null})
      * @see #setDefaultLocale
-     * @see javax.servlet.http.HttpServletRequest#getLocale()
      */
     protected Locale determineDefaultLocale(Translet translet) {
         Locale defaultLocale = getDefaultLocale();
@@ -147,7 +154,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
      * @see #setDefaultTimeZone
      */
     protected TimeZone determineDefaultTimeZone(Translet translet) {
-        return getDefaultTimeZone();
+        TimeZone defaultTimeZone = getDefaultTimeZone();
+        if(defaultTimeZone == null) {
+            defaultTimeZone = translet.getRequestAdapter().getTimeZone();
+        }
+        return defaultTimeZone;
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * Abstract base class for {@link LocaleResolver} implementations.
@@ -33,6 +34,15 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     private TimeZone defaultTimeZone;
 
     /**
+     * Return the default Locale that this resolver is supposed to fall back to, if any.
+     *
+     * @return the default locale
+     */
+    protected Locale getDefaultLocale() {
+        return this.defaultLocale;
+    }
+
+    /**
      * Set a default Locale that this resolver will return if no other locale found.
      *
      * @param defaultLocale the default locale
@@ -42,12 +52,21 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Return the default Locale that this resolver is supposed to fall back to, if any.
+     * Set a default Locale that this resolver will return if no other locale found.
      *
-     * @return the default locale
+     * @param defaultLocale the default locale
      */
-    protected Locale getDefaultLocale() {
-        return this.defaultLocale;
+    public void setDefaultLocale(String defaultLocale) {
+        setDefaultLocale(StringUtils.parseLocaleString(defaultLocale));
+    }
+
+    /**
+     * Return the default TimeZone that this resolver is supposed to fall back to, if any.
+     *
+     * @return the default time zone
+     */
+    public TimeZone getDefaultTimeZone() {
+        return this.defaultTimeZone;
     }
 
     /**
@@ -60,12 +79,12 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Return the default TimeZone that this resolver is supposed to fall back to, if any.
+     * Set a default TimeZone that this resolver will return if no other time zone found.
      *
-     * @return the default time zone
+     * @param defaultTimeZone the default time zone
      */
-    public TimeZone getDefaultTimeZone() {
-        return this.defaultTimeZone;
+    public void setDefaultTimeZone(String defaultTimeZone) {
+        setDefaultTimeZone(StringUtils.parseTimeZoneString(defaultTimeZone));
     }
 
     @Override

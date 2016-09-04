@@ -28,8 +28,8 @@ import com.aspectran.core.activity.Translet;
 public interface LocaleResolver {
 
     /**
-     * Resolve the current locale via the given translet. Can return a default locale as
-     * fallback in any case.
+     * Resolve the current locale via the given translet.
+     * Can return a default locale as fallback in any case.
      *
      * @param translet the translet to resolve the locale for
      * @return the current locale (never {@code null})
@@ -37,16 +37,28 @@ public interface LocaleResolver {
     Locale resolveLocale(Translet translet);
 
     /**
-     * Resolve the current timezone via the given translet. Can return a default timezone as
-     * fallback in any case.
+     * Resolve the current timezone via the given translet.
+     * Can return a default timezone as fallback in any case.
      *
      * @param translet the translet to resolve the timezone for
      * @return the current timezone (never {@code null})
      */
     TimeZone resolveTimeZone(Translet translet);
 
+    /**
+     * Determine current locale via the given translet.
+     *
+     * @param translet the translet to determine the locale for
+     * @return the current locale
+     */
     Locale determineLocale(Translet translet);
 
+    /**
+     * Determine current timezone via the given translet.
+     *
+     * @param translet the translet to determine the timezone for
+     * @return the current timezone
+     */
     TimeZone determineTimeZone(Translet translet);
 
     /**
