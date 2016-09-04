@@ -207,6 +207,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 * Return a description for the storage location of the multipart content.
 	 * Tries to be as specific as possible: mentions the file location in case
 	 * of a temporary file.
+	 *
+	 * @reuturn a description for the storage location of the multipart content
 	 */
 	public String getStorageDescription() {
 		if(this.fileItem.isInMemory()) {
