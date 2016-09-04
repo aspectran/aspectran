@@ -81,12 +81,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return locale;
             }
         }
-        Locale defaultLocale = getDefaultLocale();
-        if(defaultLocale != null) {
-            super.setLocale(translet, defaultLocale);
-            return defaultLocale;
-        }
-        return translet.getRequestAdapter().getLocale();
+        return super.determineLocale(translet);
     }
 
     @Override
@@ -99,12 +94,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return timeZone;
             }
         }
-        TimeZone defaultTimeZone = getDefaultTimeZone();
-        if(defaultTimeZone != null) {
-            super.setTimeZone(translet, defaultTimeZone);
-            return defaultTimeZone;
-        }
-        return translet.getRequestAdapter().getTimeZone();
+        return super.determineTimeZone(translet);
     }
 
     @Override
@@ -123,42 +113,6 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         if(sessionAdapter != null) {
             sessionAdapter.setAttribute(TIME_ZONE_SESSION_ATTRIBUTE_NAME, timeZone);
         }
-    }
-
-    /**
-     * Determine the default locale for the given translet,
-     * Called if no Locale session attribute has been found.
-     * <p>The default implementation returns the specified default locale,
-     * if any, else falls back to the request's accept-header locale.
-     *
-     * @param translet the translet to resolve the locale for
-     * @return the default locale (never {@code null})
-     * @see #setDefaultLocale
-     */
-    protected Locale determineDefaultLocale(Translet translet) {
-        Locale defaultLocale = getDefaultLocale();
-        if(defaultLocale == null) {
-            defaultLocale = translet.getRequestAdapter().getLocale();
-        }
-        return defaultLocale;
-    }
-
-    /**
-     * Determine the default time zone for the given translet,
-     * Called if no TimeZone session attribute has been found.
-     * <p>The default implementation returns the specified default time zone,
-     * if any, or {@code null} otherwise.
-     *
-     * @param translet the translet to resolve the time zone for
-     * @return the default time zone (or {@code null} if none defined)
-     * @see #setDefaultTimeZone
-     */
-    protected TimeZone determineDefaultTimeZone(Translet translet) {
-        TimeZone defaultTimeZone = getDefaultTimeZone();
-        if(defaultTimeZone == null) {
-            defaultTimeZone = translet.getRequestAdapter().getTimeZone();
-        }
-        return defaultTimeZone;
     }
 
 }
