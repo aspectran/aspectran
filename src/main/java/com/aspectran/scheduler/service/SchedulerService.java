@@ -38,7 +38,7 @@ public interface SchedulerService {
 	
 	void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
 
-	void refresh(ActivityContext context) throws SchedulerServiceException;
+	void restart(ActivityContext context) throws SchedulerServiceException;
 
 	void pause() throws SchedulerServiceException;
 

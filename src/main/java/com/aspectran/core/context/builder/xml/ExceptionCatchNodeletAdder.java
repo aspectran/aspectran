@@ -17,25 +17,25 @@ package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * The Class ExceptionInnerNodeletAdder.
+ * The Class ExceptionCatchNodeletAdder.
  *
  * @since 2013. 8. 11.
  */
-class ExceptionInnerNodeletAdder implements NodeletAdder {
+class ExceptionCatchNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new ExceptionInnerNodeletAdder.
+	 * Instantiates a new ExceptionCatchNodeletAdder.
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	ExceptionInnerNodeletAdder(ContextBuilderAssistant assistant) {
+	ExceptionCatchNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -48,17 +48,17 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
             }
         });
 		parser.addNodelet(xpath, new ActionInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/responseByContentType", (node, attributes, text) -> {
-            String exceptionType = attributes.get("exceptionType");
+		parser.addNodelet(xpath, "/catch", (node, attributes, text) -> {
+            String exceptionType = attributes.get("exception");
 
-            ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
+            ExceptionCatchRule rbctr = ExceptionCatchRule.newInstance(exceptionType);
             assistant.pushObject(rbctr);
         });
-		parser.addNodelet(xpath, "/responseByContentType", new ResponseInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/responseByContentType/end()", (node, attributes, text) -> {
-            ResponseByContentTypeRule rbctr = assistant.popObject();
+		parser.addNodelet(xpath, "/catch", new ResponseInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/catch/end()", (node, attributes, text) -> {
+            ExceptionCatchRule rbctr = assistant.popObject();
             ExceptionRule exceptionRule = assistant.peekObject();
-            exceptionRule.putResponseByContentTypeRule(rbctr);
+            exceptionRule.putExceptionCatchRule(rbctr);
         });
 	}
 

@@ -37,7 +37,7 @@ import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
-import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.ScheduleParameters;
@@ -63,7 +63,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
@@ -277,11 +277,11 @@ public class RootAponDisassembler {
 				disassembleActionRule(actionParameters, exceptionRule);
 			}
 	
-			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
+			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
 			if(rbctParametersList != null) {
 				for(Parameters rrtrParameters : rbctParametersList) {
-					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rrtrParameters);
-					exceptionRule.putResponseByContentTypeRule(rbctr);
+					ExceptionCatchRule rbctr = disassembleExceptionCatchRule(rrtrParameters);
+					exceptionRule.putExceptionCatchRule(rbctr);
 				}
 			}
 			
@@ -452,11 +452,11 @@ public class RootAponDisassembler {
 				disassembleActionRule(actionParameters, exceptionRule);
 			}
 
-			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
+			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
 			if(rbctParametersList != null) {
 				for(Parameters rrtrParameters : rbctParametersList) {
-					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rrtrParameters);
-					exceptionRule.putResponseByContentTypeRule(rbctr);
+					ExceptionCatchRule rbctr = disassembleExceptionCatchRule(rrtrParameters);
+					exceptionRule.putExceptionCatchRule(rbctr);
 				}
 			}
 
@@ -622,33 +622,33 @@ public class RootAponDisassembler {
 		}
 	}
 
-	private ResponseByContentTypeRule disassembleResponseByContentTypeRule(Parameters responseByContentTypeParameters) {
-		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+	private ExceptionCatchRule disassembleExceptionCatchRule(Parameters exceptionCatchParameters) {
+		ExceptionCatchRule exceptionCatchRule = new ExceptionCatchRule();
 		
-		String exceptionType = responseByContentTypeParameters.getString(ResponseByContentTypeParameters.exceptionType);
-		rbctr.setExceptionType(exceptionType);
+		String exceptionType = exceptionCatchParameters.getString(ExceptionCatchParameters.exception);
+		exceptionCatchRule.setExceptionType(exceptionType);
 		
-		List<Parameters> transformParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
+		List<Parameters> transformParametersList = exceptionCatchParameters.getParametersList(ExceptionCatchParameters.transforms);
 		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			disassembleTransformRule(transformParametersList, rbctr);
+			disassembleTransformRule(transformParametersList, exceptionCatchRule);
 		}
 		
-		List<Parameters> dispatchParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.dispatchs);
+		List<Parameters> dispatchParametersList = exceptionCatchParameters.getParametersList(ExceptionCatchParameters.dispatchs);
 		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			disassembleDispatchResponseRule(dispatchParametersList, rbctr);
+			disassembleDispatchResponseRule(dispatchParametersList, exceptionCatchRule);
 		}
 
-		List<Parameters> redirectParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.redirects);
+		List<Parameters> redirectParametersList = exceptionCatchParameters.getParametersList(ExceptionCatchParameters.redirects);
 		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			disassembleRedirectResponseRule(redirectParametersList, rbctr);
+			disassembleRedirectResponseRule(redirectParametersList, exceptionCatchRule);
 		}
 		
-		List<Parameters> forwardParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.forwards);
+		List<Parameters> forwardParametersList = exceptionCatchParameters.getParametersList(ExceptionCatchParameters.forwards);
 		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			disassembleForwardResponseRule(forwardParametersList, rbctr);
+			disassembleForwardResponseRule(forwardParametersList, exceptionCatchRule);
 		}
 		
-		return rbctr;
+		return exceptionCatchRule;
 	}
 	
 	private void disassembleTransformRule(List<Parameters> transformParametersList, ResponseRuleApplicable responseRuleApplicable) {

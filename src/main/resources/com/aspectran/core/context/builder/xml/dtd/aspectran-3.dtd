@@ -66,11 +66,11 @@
 <!ELEMENT around  (echo | action)>
 <!ELEMENT finally (echo | action)>
 
-<!ELEMENT exception (description?, action?, responseByContentType*)>
+<!ELEMENT exception (description?, action?, catch*)>
 
-<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
-<!ATTLIST responseByContentType
-  exceptionType CDATA #IMPLIED
+<!ELEMENT catch (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST catch
+  exception CDATA #IMPLIED
 >
 
 <!ELEMENT bean (description?, filter?, constructor?, properties?)>

@@ -74,7 +74,7 @@ public class ConsoleActivity extends CoreActivity {
 	}
 
 	/**
-	 * Receive required input parameters..
+	 * Receive required input parameters.
 	 */
 	private void receiveRequiredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();

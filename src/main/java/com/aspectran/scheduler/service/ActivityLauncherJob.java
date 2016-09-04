@@ -35,6 +35,7 @@ import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
  */
 public class ActivityLauncherJob implements Job {
 	
+	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			JobDetail jobDetail = jobExecutionContext.getJobDetail();
@@ -44,7 +45,7 @@ public class ActivityLauncherJob implements Job {
 			String transletName = jobDetail.getKey().getName();
 
 			Activity activity = runActivity(context, transletName, jobExecutionContext);
-			jobExecutionContext.put("activity", activity);
+			jobExecutionContext.put(QuartzSchedulerService.ACTIVITY_DATA_KEY, activity);
 		} catch(Exception e) {
 			throw new JobExecutionException(e);
 		}

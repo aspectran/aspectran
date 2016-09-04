@@ -31,15 +31,15 @@ import com.aspectran.core.context.rule.type.ActionType;
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ExceptionRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
+public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCatchRule> {
 
 	private final AspectRule aspectRule;
 
 	private Executable action;
 	
-	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
+	private ExceptionCatchRule defaultExceptionCatchRule;
 	
-	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<>();
+	private Map<String, ExceptionCatchRule> exceptionCatchRuleMap = new LinkedHashMap<>();
 	
 	private String description;
 
@@ -112,52 +112,52 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ResponseByC
 	 *
 	 * @return the response by content type rule
 	 */
-	public ResponseByContentTypeRule getResponseByContentTypeRule() {
-		return defaultResponseByContentTypeRule;
+	public ExceptionCatchRule getExceptionCatchRule() {
+		return defaultExceptionCatchRule;
 	}
 
 	/**
-	 * Put response by content type rule.
+	 * Puts the exception catch rule.
 	 *
-	 * @param responseByContentTypeRule the response by content type rule
-	 * @return the response by content type rule
+	 * @param exceptionCatchRule the exception catch rule
+	 * @return the exception catch rule
 	 */
-	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		String exceptionType = responseByContentTypeRule.getExceptionType();
+	public ExceptionCatchRule putExceptionCatchRule(ExceptionCatchRule exceptionCatchRule) {
+		String exceptionType = exceptionCatchRule.getExceptionType();
 		
 		if(exceptionType != null) {
-			responseByContentTypeRuleMap.put(exceptionType, responseByContentTypeRule);
+			exceptionCatchRuleMap.put(exceptionType, exceptionCatchRule);
 		} else { 
-			this.defaultResponseByContentTypeRule = responseByContentTypeRule;
+			this.defaultExceptionCatchRule = exceptionCatchRule;
 		}
 		
-		return responseByContentTypeRule;
+		return exceptionCatchRule;
 	}
 	
 	/**
-	 * Gets the rule for the response by content type as specified exception.
+	 * Gets the exception catch rule as specified exception.
 	 *
 	 * @param ex the exception
 	 * @return the rule for the response by content type
 	 */
-	public ResponseByContentTypeRule getResponseByContentTypeRule(Throwable ex) {
-		ResponseByContentTypeRule responseByContentTypeRule = null;
+	public ExceptionCatchRule getExceptionCatchRule(Throwable ex) {
+		ExceptionCatchRule exceptionCatchRule = null;
 		int deepest = Integer.MAX_VALUE;
 
-		for(ResponseByContentTypeRule rbctr : responseByContentTypeRuleMap.values()) {
+		for(ExceptionCatchRule rbctr : exceptionCatchRuleMap.values()) {
 			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
 
 			if(depth >= 0 && depth < deepest) {
 				deepest = depth;
-				responseByContentTypeRule = rbctr;
+				exceptionCatchRule = rbctr;
 			}
 		}
 
-		if(responseByContentTypeRule == null) {
-			return this.defaultResponseByContentTypeRule;
+		if(exceptionCatchRule == null) {
+			return this.defaultExceptionCatchRule;
 		}
 
-		return responseByContentTypeRule;
+		return exceptionCatchRule;
 	}
 	
 	/**
@@ -195,8 +195,8 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ResponseByC
 	}
 
 	@Override
-	public Iterator<ResponseByContentTypeRule> iterator() {
-		return responseByContentTypeRuleMap.values().iterator();
+	public Iterator<ExceptionCatchRule> iterator() {
+		return exceptionCatchRuleMap.values().iterator();
 	}
 
 	/**

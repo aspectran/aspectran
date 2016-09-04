@@ -38,7 +38,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -299,8 +299,7 @@ public class CoreActivity extends AbstractActivity {
 				response();
 			}
 		} catch(Exception e) {
-			//throw new ActivityException("Failed to perform an activity.", e);
-			throw new ActivityException("An error occurred while attempting to perform a translet activity.", e);
+			throw new ActivityException("Failed to perform an activity.", e);
 		} finally {
 			Scope requestScope = getRequestScope(false);
 			if(requestScope != null) {
@@ -402,21 +401,21 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	private void responseByContentType(ExceptionRule exceptionRule) {
-		ResponseByContentTypeRule rbctr = exceptionRule.getResponseByContentTypeRule(getRaisedException());
-		if(rbctr != null) {
+		ExceptionCatchRule exceptionCatchRule = exceptionRule.getExceptionCatchRule(getRaisedException());
+		if(exceptionCatchRule != null) {
 			log.info("Raised exception: " + getRaisedException());
-			responseByContentType(rbctr);
+			responseByContentType(exceptionCatchRule);
 		}
 	}
 
-	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) {
+	private void responseByContentType(ExceptionCatchRule exceptionCatchRule) {
 		Response response = getBaseResponse();
 		Response targetResponse;
 
 		if(response != null && response.getContentType() != null)
-			targetResponse = responseByContentTypeRule.getResponse(response.getContentType());
+			targetResponse = exceptionCatchRule.getResponse(response.getContentType());
 		else
-			targetResponse = responseByContentTypeRule.getDefaultResponse();
+			targetResponse = exceptionCatchRule.getDefaultResponse();
 
 		if(targetResponse != null) {
 			ResponseRule responseRule = new ResponseRule();

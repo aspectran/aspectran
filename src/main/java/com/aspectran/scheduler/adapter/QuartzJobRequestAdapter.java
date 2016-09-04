@@ -29,7 +29,7 @@ public class QuartzJobRequestAdapter extends BasicRequestAdapter {
 	/**
 	 * Instantiates a new QuartzJobRequestAdapter.
 	 *
-	 * @param jobExecutionContext the job detail
+	 * @param jobExecutionContext the job execution context
 	 */
 	public QuartzJobRequestAdapter(JobExecutionContext jobExecutionContext) {
 		super(jobExecutionContext);

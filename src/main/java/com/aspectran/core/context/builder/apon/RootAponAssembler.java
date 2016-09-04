@@ -47,7 +47,7 @@ import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
-import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
@@ -72,7 +72,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -287,8 +287,8 @@ public class RootAponAssembler {
 				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
 			}
-			for(ResponseByContentTypeRule rbctr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
+			for(ExceptionCatchRule rbctr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(rbctr));
 			}
 		}
 
@@ -434,8 +434,8 @@ public class RootAponAssembler {
 				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
 			}
-			for(ResponseByContentTypeRule rbctr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
+			for(ExceptionCatchRule rbctr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(rbctr));
 			}
 		}
 
@@ -462,28 +462,28 @@ public class RootAponAssembler {
 		return importParameters;
 	}
 	
-	private Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
-		ResponseByContentTypeParameters rbctp = new ResponseByContentTypeParameters();
-		rbctp.putValue(ResponseByContentTypeParameters.exceptionType, responseByContentTypeRule.getExceptionType());
+	private Parameters assembleExceptionCatchParameters(ExceptionCatchRule exceptionCatchRule) {
+		ExceptionCatchParameters exceptionCatchParameters = new ExceptionCatchParameters();
+		exceptionCatchParameters.putValue(ExceptionCatchParameters.exception, exceptionCatchRule.getExceptionType());
 		
-		ResponseMap responseMap = responseByContentTypeRule.getResponseMap();
+		ResponseMap responseMap = exceptionCatchRule.getResponseMap();
 		for(Response response : responseMap) {
 			if(response.getResponseType() == ResponseType.TRANSFORM) {
 				TransformResponse transformResponse = (TransformResponse)response;
-				rbctp.putValue(ResponseByContentTypeParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
+				exceptionCatchParameters.putValue(ExceptionCatchParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
 			} else if(response.getResponseType() == ResponseType.DISPATCH) {
 				DispatchResponse dispatchResponse = (DispatchResponse)response;
-				rbctp.putValue(ResponseByContentTypeParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+				exceptionCatchParameters.putValue(ExceptionCatchParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
 			} else if(response.getResponseType() == ResponseType.FORWARD) {
 				ForwardResponse forwardResponse = (ForwardResponse)response;
-				rbctp.putValue(ResponseByContentTypeParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+				exceptionCatchParameters.putValue(ExceptionCatchParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
 			} else if(response.getResponseType() == ResponseType.REDIRECT) {
 				RedirectResponse redirectResponse = (RedirectResponse)response;
-				rbctp.putValue(ResponseByContentTypeParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+				exceptionCatchParameters.putValue(ExceptionCatchParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
 			}
 		}
 		
-		return rbctp;
+		return exceptionCatchParameters;
 	}
 	
 	private Parameters assembleResponseParameters(ResponseRule responseRule) {

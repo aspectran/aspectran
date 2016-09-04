@@ -51,6 +51,8 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
+	public final static String ACTIVITY_DATA_KEY = "ACTIVITY";
+
 	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
 	private ActivityContext context;
@@ -168,7 +170,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void refresh(ActivityContext context) throws SchedulerServiceException {
+	public void restart(ActivityContext context) throws SchedulerServiceException {
 		this.context = context;
 		shutdown();
 		startup();

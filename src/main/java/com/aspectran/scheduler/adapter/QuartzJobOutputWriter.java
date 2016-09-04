@@ -84,10 +84,12 @@ public class QuartzJobOutputWriter extends Writer {
 
 	@Override
 	public void flush() {
+		// nothing to do
 	}
 
 	@Override
 	public void close() throws IOException {
+		// nothing to do
 	}
 
 }
