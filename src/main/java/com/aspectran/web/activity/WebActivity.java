@@ -15,25 +15,28 @@
  */
 package com.aspectran.web.activity;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.locale.LocaleChangeInterceptor;
-import com.aspectran.core.context.locale.LocaleResolver;
+import com.aspectran.core.context.i18n.LocaleChangeInterceptor;
+import com.aspectran.core.context.i18n.LocaleResolver;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.web.activity.request.HttpPutFormContentParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
-import com.aspectran.web.activity.request.HttpPutFormContentParser;
 import com.aspectran.web.activity.response.GZipServletResponseWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -93,7 +96,6 @@ public class WebActivity extends CoreActivity {
 	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
 			boolean contentEncoding = false;
@@ -108,28 +110,13 @@ public class WebActivity extends CoreActivity {
 			if(contentEncoding) {
 				setGzipContentEncoded();
 			}
-
-			String localeResolverId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-			LocaleResolver localeResolver = null;
-			if(localeResolverId != null) {
-				localeResolver = getBean(localeResolverId, LocaleResolver.class);
-				if(localeChangeInterceptorId != null) {
-					localeResolver.determineLocale(getTranslet());
-					localeResolver.determineTimeZone(getTranslet());
-				}
-			}
-			if(localeChangeInterceptorId != null) {
-				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
-				localeChangeInterceptor.handle(getTranslet(), localeResolver);
-			}
 		} catch(Exception e) {
 			throw new AdapterException("Failed to adapt to the Web Activity.", e);
 		}
 	}
-
+	
 	@Override
-	public synchronized SessionAdapter getSessionAdapter() {
+	public SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
 			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
 			super.setSessionAdapter(sessionAdapter);
@@ -139,6 +126,13 @@ public class WebActivity extends CoreActivity {
 
 	@Override
 	protected void parseRequest() {
+		String characterEncoding = resolveRequestCharacterEncoding();
+		try {
+			getRequestAdapter().setCharacterEncoding(characterEncoding);
+		} catch(UnsupportedEncodingException e) {
+			throw new RequestException("Unable to set request character encoding to " + characterEncoding, e);
+		}
+		
 		String contentType = request.getContentType();
 
 		MethodType requestMethod = getRequestAdapter().getRequestMethod();
@@ -185,6 +179,19 @@ public class WebActivity extends CoreActivity {
 		HttpPutFormContentParser.parse(getRequestAdapter());
 	}
 
+	@Override
+	protected LocaleResolver resolveLocale() {
+		LocaleResolver localeResolver = super.resolveLocale();
+		if(localeResolver != null) {
+			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+			if(localeChangeInterceptorId != null) {
+				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+				localeChangeInterceptor.handle(getTranslet(), localeResolver);
+			}
+		}
+		return localeResolver;
+	}
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {

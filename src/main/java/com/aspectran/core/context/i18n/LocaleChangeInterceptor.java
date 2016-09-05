@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.locale;
+package com.aspectran.core.context.i18n;
 
 import java.util.Locale;
 import java.util.TimeZone;

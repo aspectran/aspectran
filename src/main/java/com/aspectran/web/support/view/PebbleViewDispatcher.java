@@ -96,7 +96,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
-				characterEncoding = activity.determineResponseCharacterEncoding();
+				characterEncoding = activity.resolveResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}

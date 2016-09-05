@@ -56,7 +56,7 @@ public class ConsoleActivity extends CoreActivity {
 	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
-			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
+			requestAdapter.setCharacterEncoding(resolveRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);

@@ -100,14 +100,14 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the request character encoding
 	 */
-	String determineRequestCharacterEncoding();
+	String resolveRequestCharacterEncoding();
 
 	/**
 	 * Determine the response character encoding.
 	 *
 	 * @return the response character encoding
 	 */
-	String determineResponseCharacterEncoding();
+	String resolveResponseCharacterEncoding();
 	
 	/**
 	 * Execute the aspect advices.
@@ -306,14 +306,6 @@ public interface Activity extends BeanRegistry {
 	 * @return the setting value
 	 */
 	<T> T getSetting(String settingName);
-	
-	/**
-	 * Returns whether or not to accept aspect rule.
-	 *
-	 * @param aspectRule the aspect rule
-	 * @return true, if acceptable
-	 */
-	boolean isAcceptable(AspectRule aspectRule);
 
 	/**
 	 * Register an aspect rule dynamically.

@@ -21,7 +21,7 @@ import java.io.Writer;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.utils.Key;
+import org.quartz.JobKey;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
@@ -53,7 +53,7 @@ public class JobActivityReport {
 			return;
 
 		JobDetail jobDetail = jobExecutionContext.getJobDetail();
-		Key key = jobDetail.getKey();
+		JobKey key = jobDetail.getKey();
 
 		String jobName = key.getName();
 		String jobGroup = key.getGroup();
@@ -74,7 +74,7 @@ public class JobActivityReport {
 		if(jobException != null) {
 			sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 			sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
-			sb.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").append(ActivityContext.LINE_SEPARATOR);
+			sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
 		} else {
 			sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 		}
@@ -85,7 +85,7 @@ public class JobActivityReport {
 
 			if(!output.isEmpty()) {
 				sb.append(output).append(ActivityContext.LINE_SEPARATOR);
-				sb.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").append(ActivityContext.LINE_SEPARATOR);
+				sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
 			}
 		}
 

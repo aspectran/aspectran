@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.locale;
+package com.aspectran.core.context.i18n;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -44,22 +44,6 @@ public interface LocaleResolver {
      * @return the current timezone (never {@code null})
      */
     TimeZone resolveTimeZone(Translet translet);
-
-    /**
-     * Determine current locale via the given translet.
-     *
-     * @param translet the translet to determine the locale for
-     * @return the current locale
-     */
-    Locale determineLocale(Translet translet);
-
-    /**
-     * Determine current timezone via the given translet.
-     *
-     * @param translet the translet to determine the timezone for
-     * @return the current timezone
-     */
-    TimeZone determineTimeZone(Translet translet);
 
     /**
      * Set the current locale to the given one.

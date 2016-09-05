@@ -268,7 +268,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				schedulerService.shutdown();
 				schedulerService = null;
-				log.info("Scheduler Service has been paused.");
+				log.info("Scheduler Service has been shut down.");
 			} catch(Exception e) {
 				log.error("Scheduler Service did not shutdown cleanly.", e);
 				return false;
@@ -296,7 +296,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(schedulerService != null) {
 			try {
 				schedulerService.resume();
-				log.info("Scheduler Service has been paused.");
+				log.info("Scheduler Service has been resumed.");
 			} catch(Exception e) {
 				log.error("Scheduler Service pause failed.", e);
 				return false;

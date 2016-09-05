@@ -32,13 +32,14 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.i18n.LocaleResolver;
 import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -157,8 +158,6 @@ public class CoreActivity extends AbstractActivity {
 			this.requestRule = transletRule.getRequestRule();
 			this.responseRule = transletRule.getResponseRule();
 
-			prepareAspectAdviceRule(transletRule);
-
 			if(forwardTransletName == null) {
 				if(isIncluded()) {
 					backupCurrentActivity();
@@ -166,7 +165,13 @@ public class CoreActivity extends AbstractActivity {
 					setCurrentActivity(this);
 				}
 				adapt();
-				parseRequest();
+			}
+			
+			prepareAspectAdviceRule(transletRule);
+			parseRequest();
+			
+			if(forwardTransletName == null) {
+				resolveLocale();
 			}
 		} catch(Exception e) {
 			throw new ActivityException("Failed to prepare activity.", e);
@@ -174,6 +179,22 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	protected void adapt() throws AdapterException {
+	}
+	
+	/**
+	 * Resolve the current locale.
+	 * 
+	 * @return the current locale
+	 */
+	protected LocaleResolver resolveLocale() {
+		LocaleResolver localeResolver = null;
+		String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+		if(localeResolverBeanId != null) {
+			localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
+			localeResolver.resolveLocale(getTranslet());
+			localeResolver.resolveTimeZone(getTranslet());
+		}
+		return localeResolver;
 	}
 
 	@Override

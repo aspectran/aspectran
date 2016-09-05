@@ -76,7 +76,7 @@ public class AponTransform extends TransformResponse {
 			if(this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
-				String characterEncoding = activity.determineResponseCharacterEncoding();
+				String characterEncoding = activity.resolveResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
