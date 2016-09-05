@@ -15,7 +15,7 @@
 
 	<name>aspectran</name>
 	<description>
-		Aspectran is a lightweight and extensible framework for building enterprise-ready Java web applications.
+		Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web and Console-based applications.
 	</description>
 	<url>http://www.aspectran.com/</url>
 
@@ -29,22 +29,22 @@
 	</contributors>
 
 	<scm>
-		<url>https://github.com/aspectran/aspectran</url>
-		<connection>scm:git:ssh://github.com/aspectran/aspectran.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
+		<url>https://github.com/aspectran-projects/aspectran</url>
+		<connection>scm:git:ssh://github.com/aspectran-projects/aspectran.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/aspectran-projects/aspectran.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issue Management</system>
-		<url>https://github.com/aspectran/aspectran/issues</url>
+		<url>https://github.com/aspectran-projects/aspectran/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Travis CI</system>
-		<url>https://travis-ci.org/aspectran/aspectran</url>
+		<url>https://travis-ci.org/aspectran-projects/aspectran</url>
 	</ciManagement>
 
 	<properties>
-		<clirr.comparisonVersion>2.4.1</clirr.comparisonVersion>
+		<clirr.comparisonVersion>3.0.0</clirr.comparisonVersion>
 		<findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 	</properties>
 
