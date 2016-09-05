@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -27,7 +28,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.LinkedMultiValueMap;
+import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 
 /**
@@ -40,8 +41,6 @@ public abstract class AbstractAdaptiveRequest {
 	private MethodType requestMethod;
 
 	private MultiValueMap<String, String> headers;
-
-	private boolean headersInstantiated;
 
 	private ParameterMap parameterMap;
 
@@ -77,15 +76,14 @@ public abstract class AbstractAdaptiveRequest {
 	 * @return an {@code MultiValueMap} object, may not be {@code null}
 	 */
 	protected MultiValueMap<String, String> touchHeaders() {
-		if(!headersInstantiated && headers == null) {
-			headersInstantiated = true;
-			headers = new LinkedMultiValueMap<String, String>(8);
+		if(headers == null) {
+			headers = new LinkedCaseInsensitiveMultiValueMap<String>(12);
 		}
 		return headers;
 	}
 
 	protected boolean isHeadersInstantiated() {
-		return headersInstantiated;
+		return (headers != null);
 	}
 
 	/**
@@ -109,7 +107,7 @@ public abstract class AbstractAdaptiveRequest {
 	 * 		on this response
 	 */
 	public String getHeader(String name) {
-		return (headers != null) ? headers.getFirst(name) : null;
+		return touchHeaders().getFirst(name);
 	}
 
 	/**
@@ -120,7 +118,7 @@ public abstract class AbstractAdaptiveRequest {
 	 * 		of the response header with the given name
 	 */
 	public Collection<String> getHeaders(String name) {
-		return (headers != null) ? headers.get(name) : null;
+		return touchHeaders().get(name);
 	}
 
 	/**
@@ -130,7 +128,7 @@ public abstract class AbstractAdaptiveRequest {
 	 * 		of the headers of this response
 	 */
 	public Collection<String> getHeaderNames() {
-		return (headers == null) ? null : headers.keySet();
+		return touchHeaders().keySet();
 	}
 
 	/**
@@ -142,7 +140,8 @@ public abstract class AbstractAdaptiveRequest {
 	 * 		has already been set; {@code false} otherwise
 	 */
 	public boolean containsHeader(String name) {
-		return (headers != null && headers.get(name) != null && !headers.get(name).isEmpty());
+		List<String> values = touchHeaders().get(name);
+		return (values != null && !values.isEmpty());
 	}
 
 	/**

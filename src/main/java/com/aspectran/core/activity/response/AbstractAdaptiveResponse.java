@@ -17,7 +17,7 @@ package com.aspectran.core.activity.response;
 
 import java.util.Collection;
 
-import com.aspectran.core.util.LinkedMultiValueMap;
+import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.web.support.http.HttpStatus;
 
@@ -42,7 +42,7 @@ public abstract class AbstractAdaptiveResponse {
 	 */
 	public MultiValueMap<String, String> touchHeaders() {
 		if(headers == null) {
-			headers = new LinkedMultiValueMap<String, String>(8);
+			headers = new LinkedCaseInsensitiveMultiValueMap<String>(6);
 		}
 		return headers;
 	}

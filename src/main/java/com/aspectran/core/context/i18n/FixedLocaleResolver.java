@@ -21,7 +21,7 @@ import java.util.TimeZone;
 import com.aspectran.core.activity.Translet;
 
 /**
- * {@link org.springframework.web.servlet.LocaleResolver} implementation
+ * {@link LocaleResolver} implementation
  * that always returns a fixed default locale and optionally time zone.
  * Default is the current JVM's default locale.
  * 

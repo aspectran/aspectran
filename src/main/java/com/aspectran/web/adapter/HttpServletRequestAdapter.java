@@ -73,7 +73,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 		return headers;
 	}
 
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {

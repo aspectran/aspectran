@@ -130,7 +130,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 	
 	public boolean containsMethod(String method) {
-		return (allowedMethods != null ? allowedMethods.contains(method) : false);
+		return (allowedMethods != null && allowedMethods.contains(method));
 	}
 
 	public String getAllowedMethodsString() {

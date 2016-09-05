@@ -155,7 +155,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 					((HttpServletResponse)adaptee).setHeader(entry.getKey(), values.get(0));
 					if(values.size() > 1) {
 						for(int i = 1; i < values.size(); i++) {
-							((HttpServletResponse)adaptee).setHeader(entry.getKey(), values.get(i));
+							((HttpServletResponse)adaptee).addHeader(entry.getKey(), values.get(i));
 						}
 					}
 

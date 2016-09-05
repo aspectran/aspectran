@@ -29,7 +29,7 @@ import java.util.Map;
  * <p>This Map implementation is generally not thread-safe. It is primarily designed
  * for data structures exposed from request objects, for use in a single thread only.
  *
- * @since 3.0
+ * @since 3.0.0
  */
 public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> implements MultiValueMap<K, V>, Serializable {
 
