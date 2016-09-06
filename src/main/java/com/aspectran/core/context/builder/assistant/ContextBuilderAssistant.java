@@ -235,11 +235,11 @@ public class ContextBuilderAssistant {
 	 * @param value the value
 	 */
 	public void putSetting(String name, String value) {
-        DefaultSettingType settingType = null;
-        settingType = DefaultSettingType.resolve(name);
-        if(settingType == null) {
-            throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
-        }
+		DefaultSettingType settingType = null;
+		settingType = DefaultSettingType.resolve(name);
+		if(settingType == null) {
+		    throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
+		}
 		settings.put(settingType, value);
 	}
 
@@ -405,12 +405,12 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			aspectRule.setAdviceBeanClass(beanClass);
-            reserveBeanReference(beanClass, aspectRule);
-        } else {
-            reserveBeanReference(beanId, aspectRule);
-        }
+		    reserveBeanReference(beanClass, aspectRule);
+		} else {
+		    reserveBeanReference(beanId, aspectRule);
+		}
 	}
 
 	/**
@@ -421,12 +421,12 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			beanActionRule.setBeanClass(beanClass);
-            reserveBeanReference(beanClass, beanActionRule);
-        } else {
-            reserveBeanReference(beanId, beanActionRule);
-        }
+		    reserveBeanReference(beanClass, beanActionRule);
+		} else {
+		    reserveBeanReference(beanId, beanActionRule);
+		}
 	}
 
 	/**
@@ -437,12 +437,12 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanRule beanRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			beanRule.setOfferBeanClass(beanClass);
-            reserveBeanReference(beanClass, beanRule);
-        } else {
-            reserveBeanReference(beanId, beanRule);
-        }
+		    reserveBeanReference(beanClass, beanRule);
+		} else {
+		    reserveBeanReference(beanId, beanRule);
+		}
 	}
 
 	/**
