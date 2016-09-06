@@ -206,84 +206,82 @@ public class AponReaderTest3 {
 				} else {
 					if(vlen == 0) {
 						value = null;
-						
-						if(parameterValueType == null)
+						if(parameterValueType == null) {
 							parameterValueType = ParameterValueType.STRING;
-					} else {
-						if(value.charAt(0) == DOUBLE_QUOTE_CHAR) {
+						}
+					} else if(parameterValueType == null) {
+						if(NULL.equals(value)) {
+							value = null;
+							parameterValueType = ParameterValueType.STRING;
+						} else if(TRUE.equals(value) || FALSE.equals(value)) {
+							parameterValueType = ParameterValueType.BOOLEAN;
+						} else if(value.charAt(0) == DOUBLE_QUOTE_CHAR) {
 							if(vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
 								throw new InvalidParameterException(lineNumber, line, trim,
-										"Unclosed quotation mark after the character string " + value);						
+										"Unclosed quotation mark after the character string " + value);
 							}
-							value = value.substring(1, vlen - 1);
-							if(parameterValueType == null) {
-								parameterValueType = ParameterValueType.STRING;
-							}
+							parameterValueType = ParameterValueType.STRING;
 						} else if(value.charAt(0) == SINGLE_QUOTE_CHAR) {
 							if(vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
 								throw new InvalidParameterException(lineNumber, line, trim,
-										"Unclosed quotation mark after the character string " + value);						
+										"Unclosed quotation mark after the character string " + value);
 							}
-							value = value.substring(1, vlen - 1);
-							if(parameterValueType == null) {
-								parameterValueType = ParameterValueType.STRING;
-							}
-						} else if(parameterValueType == null) {
-							if(NULL.equals(value)) {
-								value = null;
-							} else if(TRUE.equals(value) || FALSE.equals(value)) {
-								parameterValueType = ParameterValueType.BOOLEAN;
-							} else {
+							parameterValueType = ParameterValueType.STRING;
+						} else {
+							try {
+								Integer.parseInt(value);
+								parameterValueType = ParameterValueType.INT;
+							} catch(NumberFormatException e1) {
 								try {
-									Integer.parseInt(value);
-									parameterValueType = ParameterValueType.INT;
-								} catch(NumberFormatException e1) {
+									Long.parseLong(value);
+									parameterValueType = ParameterValueType.LONG;
+								} catch(NumberFormatException e2) {
 									try {
-										Long.parseLong(value);
-										parameterValueType = ParameterValueType.LONG;
-									} catch(NumberFormatException e2) {
+										Float.parseFloat(value);
+										parameterValueType = ParameterValueType.FLOAT;
+									} catch(NumberFormatException e3) {
 										try {
-											Float.parseFloat(value);
-											parameterValueType = ParameterValueType.FLOAT;
-										} catch(NumberFormatException e3) {
-											try {
-												Double.parseDouble(value);
-												parameterValueType = ParameterValueType.DOUBLE;
-											} catch(NumberFormatException e4) {
-												parameterValueType = ParameterValueType.STRING;
-												//throw new InvalidParameterException(lineNumber, line, trim,
-												//		"Unknown value type. Strings must be enclosed between double quotation marks.");
-											}
+											Double.parseDouble(value);
+											parameterValueType = ParameterValueType.DOUBLE;
+										} catch(NumberFormatException e4) {
+											parameterValueType = ParameterValueType.STRING;
 										}
 									}
 								}
 							}
 						}
 					}
-					
+
 					if(parameterValue == null) {
 						parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-						//parameterValueMap.put(name, parameterValue);
 					} else {
 						if(parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
 							parameterValue.setParameterValueType(parameterValueType);
 						} else if(parameterValue.getParameterValueType() != parameterValueType) {
-							throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());
+							throw new IncompatibleParameterValueTypeException(
+									lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());
 						}
 					}
-					
-					if(parameterValueType == ParameterValueType.STRING) {
-						parameterValue.putValue(unescape(value, lineNumber, line, trim));
-					} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-						parameterValue.putValue(Boolean.valueOf(value));
-					} else if(parameterValueType == ParameterValueType.INT) {
-						parameterValue.putValue(new Integer(value));
-					} else if(parameterValueType == ParameterValueType.LONG) {
-						parameterValue.putValue(new Long(value));
-					} else if(parameterValueType == ParameterValueType.FLOAT) {
-						parameterValue.putValue(new Float(value));
-					} else if(parameterValueType == ParameterValueType.DOUBLE) {
-						parameterValue.putValue(new Double(value));
+
+					if(value == null) {
+						parameterValue.putValue(null);
+					} else {
+						if(parameterValueType == ParameterValueType.STRING) {
+							if(value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
+								value = unescape(value.substring(1, vlen - 1), lineNumber, line, trim);
+							}
+							parameterValue.putValue(value);
+						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
+							parameterValue.putValue(Boolean.valueOf(value));
+						} else if(parameterValueType == ParameterValueType.INT) {
+							parameterValue.putValue(new Integer(value));
+						} else if(parameterValueType == ParameterValueType.LONG) {
+							parameterValue.putValue(new Long(value));
+						} else if(parameterValueType == ParameterValueType.FLOAT) {
+							parameterValue.putValue(new Float(value));
+						} else if(parameterValueType == ParameterValueType.DOUBLE) {
+							parameterValue.putValue(new Double(value));
+						}
 					}
 				}
 				

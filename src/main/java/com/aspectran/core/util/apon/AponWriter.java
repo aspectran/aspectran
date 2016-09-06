@@ -133,7 +133,8 @@ public class AponWriter extends AponFormat implements Flushable {
 					closeCurlyBracket();
 				}
 			}
-		} else if(parameter.getParameterValueType() == ParameterValueType.STRING || parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
+		} else if(parameter.getParameterValueType() == ParameterValueType.STRING ||
+				parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
 			if(parameter.isArray()) {
 				if(parameter.getValueAsStringList() != null) {
 					if(parameter.isBracketed()) {

@@ -116,14 +116,16 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 			file = new File(uri);
 		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			URL url = getClassLoader().getResource(filePath);
-			if(url == null)
+			if(url == null) {
 				throw new IOException("Could not find the resource with the given name: " + filePath);
+			}
 			file = new File(url.getFile());
 		} else {
-			if(applicationBasePath != null)
+			if(applicationBasePath != null) {
 				file = new File(applicationBasePath, filePath);
-			else
+			} else {
 				file = new File(filePath);
+			}
 		}
 		
 		return file;

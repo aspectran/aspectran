@@ -154,7 +154,7 @@ public class ParameterValue implements Parameter {
 	
 	@Override
 	public void putValue(Object value) {
-		if(!predefined) {
+		if(!predefined && value != null) {
 			if(parameterValueType == ParameterValueType.STRING) {
 				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 					parameterValueType = ParameterValueType.TEXT;
@@ -196,7 +196,6 @@ public class ParameterValue implements Parameter {
 			list = new ArrayList<Object>();
 			assigned = true;
 		}
-		
 		list.add(value);
 	}
 
@@ -282,7 +281,6 @@ public class ParameterValue implements Parameter {
 	@SuppressWarnings("unchecked")
 	public List<Integer> getValueAsIntList() {
 		checkParameterValueType(ParameterValueType.INT);
-
 		return (List<Integer>)getValueList();
 	}
 	

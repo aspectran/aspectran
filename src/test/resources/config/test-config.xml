@@ -165,18 +165,8 @@
 		<transform type="transform/text" template="sampleSql"/>
 	</translet>
 
-	<bean class="sample.SimplestAction">
-		<description>
-			Action Method를 가지고 있는 singleton 스코프를 가지는 Bean을 정의합니다.
-		</description>
-	</bean>
-
-	<bean id="simplestAdvice" class="sample.SimplestAdvice">
-		<description>
-			Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
-			singleton 스코프를 가지는 Bean을 정의합니다.
-		</description>
-	</bean>
+	<bean id="*" scan="test.**.*Advice" mask="test.**.*"/>
+	<bean id="*" scan="test.**.*Action" mask="test.**.*"/>
 
 	<aspect id="simplestAdviceAspect" order="1">
 		<description>
@@ -186,10 +176,10 @@
 		</description>
 		<joinpoint type="translet">
 			pointcut: {
-                +: "hello@class:sample.SimplestAction^helloWorld"
+                +: "hello@class:test.TestAction^helloWorld"
             }
 		</joinpoint>
-		<advice bean="simplestAdvice">
+		<advice bean="class:test.TestAdvice">
 			<before>
 				<action method="welcome"/>
 			</before>
@@ -205,8 +195,10 @@
 			helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
 		</description>
 		<transform type="transform/text">
-			<action id="helloData" bean="class:sample.SimplestAction" method="helloWorld"/>
+			<action id="helloData" bean="class:test.TestAction" method="helloWorld"/>
 		</transform>
 	</translet>
+
+	<import file="/config/scheduler-config.xml"/>
 
 </aspectran>
