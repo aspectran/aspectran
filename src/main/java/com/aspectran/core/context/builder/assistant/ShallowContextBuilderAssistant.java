@@ -24,6 +24,8 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -39,10 +41,12 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	
 	private List<BeanRule> beanRules;
 
-	private List<TemplateRule> templateRules;
-
+	private List<ScheduleRule> scheduleRules;
+	
 	private List<TransletRule> transletRules;
 	
+	private List<TemplateRule> templateRules;
+
 	public ShallowContextBuilderAssistant() {
 		super();
 	}
@@ -53,8 +57,9 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 		aspectRules = new ArrayList<>();
 		beanRules = new ArrayList<>();
-		templateRules = new ArrayList<>();
+		scheduleRules = new ArrayList<>();
 		transletRules = new ArrayList<>();
+		templateRules = new ArrayList<>();
 		
 		setImportHandler(new ShallowImportHandler());
 	}
@@ -65,8 +70,9 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 		
 		aspectRules = null;
 		beanRules = null;
-		templateRules = null;
+		scheduleRules = null;
 		transletRules = null;
+		templateRules = null;
 	}
 	
 	@Override
@@ -95,6 +101,11 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 
 	@Override
+	public void addScheduleRule(ScheduleRule scheduleRule) {
+		scheduleRules.add(scheduleRule);
+	}
+
+	@Override
 	public void addTransletRule(TransletRule transletRule) {
 		transletRules.add(transletRule);
 	}
@@ -115,13 +126,18 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 
 	@Override
-	public Collection<TemplateRule> getTemplateRules() {
-		return templateRules;
+	public Collection<ScheduleRule> getScheduleRules() {
+		return scheduleRules;
 	}
-
+	
 	@Override
 	public Collection<TransletRule> getTransletRules() {
 		return transletRules;
+	}
+
+	@Override
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRules;
 	}
 	
 	@Override
@@ -138,6 +154,11 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	public void resolveBeanClass(String beanId, BeanRule beanRule) {
 		// shallow
 	}
+	
+	@Override
+	public void resolveBeanClass(ItemRule itemRule) {
+		// shallow
+	}
 
 	@Override
 	public void resolveBeanClass(Token token) {
@@ -145,12 +166,17 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 
 	@Override
-	public void putBeanReference(String beanId, BeanReferenceInspectable someRule) {
+	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
 		// shallow
 	}
 
 	@Override
-	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+	public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
+		// shallow
+	}
+
+	@Override
+	public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
 		// shallow
 	}
 

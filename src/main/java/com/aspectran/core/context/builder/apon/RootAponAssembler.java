@@ -39,20 +39,24 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
+import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
+import com.aspectran.core.context.builder.apon.params.ScheduleParameters;
+import com.aspectran.core.context.builder.apon.params.SchedulerParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
+import com.aspectran.core.context.builder.apon.params.TriggerParameters;
 import com.aspectran.core.context.builder.assistant.AssistantLocal;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.assistant.DefaultSettings;
@@ -64,16 +68,18 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -113,8 +119,7 @@ public class RootAponAssembler {
 		Parameters aspectranParameters = new AspectranParameters();
 		
 		AssistantLocal assistantLocal = assistant.getAssistantLocal();
-		if(assistantLocal.getDescription() != null)
-			aspectranParameters.putValue(AspectranParameters.description, assistantLocal.getDescription());
+		aspectranParameters.putValueNonNull(AspectranParameters.description, assistantLocal.getDescription());
 		
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
@@ -156,6 +161,11 @@ public class RootAponAssembler {
 		for(BeanRule beanRule : assistant.getBeanRules()) {
 			Parameters p = assembleBeanParameters(beanRule);
 			aspectranParameters.putValue(AspectranParameters.beans, p);
+		}
+		
+		for(ScheduleRule scheduleRule : assistant.getScheduleRules()) {
+			Parameters p = assembleScheduleParameters(scheduleRule);
+			aspectranParameters.putValue(AspectranParameters.schedules, p);
 		}
 		
 		for(TransletRule transletRule : assistant.getTransletRules()) {
@@ -274,9 +284,7 @@ public class RootAponAssembler {
 		ExceptionRule exceptionRule = aspectRule.getExceptionRule();
 		if(exceptionRule != null) {
 			Parameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
-			if(exceptionRule.getDescription() != null) {
-				exceptionParameters.putValue(ExceptionParameters.description, exceptionRule.getDescription());
-			}
+			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
 			if(exceptionRule.getActionType() == ActionType.BEAN) {
 				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
@@ -331,15 +339,44 @@ public class RootAponAssembler {
 		return beanParameters;
 	}
 	
+	private Parameters assembleScheduleParameters(ScheduleRule scheduleRule) {
+		ScheduleParameters scheduleParameters = new ScheduleParameters();
+		scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
+		scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
+		
+		Parameters triggerParameters = scheduleRule.getTriggerParameters();
+		if(triggerParameters != null && scheduleRule.getTriggerType() != null) {
+			triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
+			scheduleParameters.putValue(ScheduleParameters.trigger, scheduleRule.getTriggerParameters());
+		}
+		
+		SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
+		schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
+		
+		List<JobRule> jobRuleList = scheduleRule.getJobRuleList();
+		if(jobRuleList != null) {
+			for(JobRule jobRule : jobRuleList) {
+				JobParameters jobParameters = schedulerParameters.newParameters(SchedulerParameters.jobs);
+				jobParameters.putValue(JobParameters.translet, jobRule.getTransletName());
+				if(jobRule.getRequestMethod() != null) {
+					jobParameters.putValue(JobParameters.method, jobRule.getRequestMethod().toString());
+				}
+				jobParameters.putValueNonNull(JobParameters.disabled, jobRule.getDisabled());
+			}
+		}
+		
+		return scheduleParameters;
+	}
+	
 	private Parameters assembleTransletParameters(TransletRule transletRule) {
 		Parameters transletParameters = new TransletParameters();
 		transletParameters.putValueNonNull(TransletParameters.description, transletRule.getDescription());
 		transletParameters.putValueNonNull(TransletParameters.name, transletRule.getName());
 		transletParameters.putValueNonNull(TransletParameters.scan, transletRule.getScanPath());
 		transletParameters.putValueNonNull(TransletParameters.mask, transletRule.getMaskPattern());
-		
-		if(transletRule.getAllowedMethods() != null)
+		if(transletRule.getAllowedMethods() != null) {
 			transletParameters.putValue(TransletParameters.method, MethodType.stringify(transletRule.getAllowedMethods()));
+		}
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {
@@ -421,9 +458,7 @@ public class RootAponAssembler {
 		ExceptionRule exceptionRule = transletRule.getExceptionRule();
 		if(exceptionRule != null) {
 			Parameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
-			if(exceptionRule.getDescription() != null) {
-				exceptionParameters.putValue(ExceptionParameters.description, exceptionRule.getDescription());
-			}
+			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
 			if(exceptionRule.getActionType() == ActionType.BEAN) {
 				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
@@ -510,26 +545,21 @@ public class RootAponAssembler {
 	
 	private Parameters assembleTransformParameters(TransformRule transformRule) {
 		TransformParameters transformParameters = new TransformParameters();
-
-		if(transformRule.getTransformType() != null)
+		if(transformRule.getTransformType() != null) {
 			transformParameters.putValue(TransformParameters.type, transformRule.getTransformType().toString());
-
-		if(transformRule.getContentType() != null)
-			transformParameters.putValue(TransformParameters.contentType, transformRule.getContentType());
-		
+		}
+		transformParameters.putValueNonNull(TransformParameters.contentType, transformRule.getContentType());
 		transformParameters.putValueNonNull(TransformParameters.template, transformRule.getTemplateId());
 		transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
 		transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
 		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
-
-		if(transformRule.getTemplateRule() != null)
+		if(transformRule.getTemplateRule() != null) {
 			transformParameters.putValue(TransformParameters.builtin, assembleTemplateParameters(transformRule.getTemplateRule()));
-
+		}
 		ActionList actionList = transformRule.getActionList();
 		if(actionList != null) {
 			assembleActionList(actionList, transformParameters, TransformParameters.actions);
 		}
-
 		return transformParameters;
 	}
 	

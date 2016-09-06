@@ -114,7 +114,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 	}
 	
 	private void saveAsAponFormat(FileImporter fileImporter) throws Exception {
-		log.info("Save as Apon Format: " + fileImporter);
+		log.info("Save as Apon Format " + fileImporter);
 		
 		File aponFile = null;
 		

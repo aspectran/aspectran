@@ -85,11 +85,11 @@ public class ContextBuilderAssistant {
 	
 	private BeanRuleRegistry beanRuleRegistry;
 
-	private TemplateRuleRegistry templateRuleRegistry;
-
 	private ScheduleRuleRegistry scheduleRuleRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
+
+	private TemplateRuleRegistry templateRuleRegistry;
 
 	private BeanReferenceInspector beanReferenceInspector;
 
@@ -155,9 +155,9 @@ public class ContextBuilderAssistant {
 		if(environment != null) {
 			aspectRuleRegistry = null;
 			beanRuleRegistry = null;
-			templateRuleRegistry = null;
 			scheduleRuleRegistry = null;
 			transletRuleRegistry = null;
+			templateRuleRegistry = null;
 
 			beanReferenceInspector = null;
 			
@@ -407,28 +407,12 @@ public class ContextBuilderAssistant {
 		Class<?> beanClass = resolveBeanClass(beanId);
         if(beanClass != null) {
 			aspectRule.setAdviceBeanClass(beanClass);
-            putBeanReference(beanClass, aspectRule);
+            reserveBeanReference(beanClass, aspectRule);
         } else {
-            putBeanReference(beanId, aspectRule);
+            reserveBeanReference(beanId, aspectRule);
         }
 	}
 
-	/**
-	 * Resolve bean class for the aspect rule.
-	 *
-	 * @param beanId the bean id
-	 * @param scheduleRule the aspect rule
-	 */
-	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
-		Class<?> beanClass = resolveBeanClass(beanId);
-		if(beanClass != null) {
-			scheduleRule.setSchedulerBeanClass(beanClass);
-			putBeanReference(beanClass, scheduleRule);
-		} else {
-			putBeanReference(beanId, scheduleRule);
-		}
-	}
-	
 	/**
 	 * Resolve bean class for bean action rule.
 	 *
@@ -439,9 +423,9 @@ public class ContextBuilderAssistant {
 		Class<?> beanClass = resolveBeanClass(beanId);
         if(beanClass != null) {
 			beanActionRule.setBeanClass(beanClass);
-            putBeanReference(beanClass, beanActionRule);
+            reserveBeanReference(beanClass, beanActionRule);
         } else {
-            putBeanReference(beanId, beanActionRule);
+            reserveBeanReference(beanId, beanActionRule);
         }
 	}
 
@@ -455,12 +439,17 @@ public class ContextBuilderAssistant {
 		Class<?> beanClass = resolveBeanClass(beanId);
         if(beanClass != null) {
 			beanRule.setOfferBeanClass(beanClass);
-            putBeanReference(beanClass, beanRule);
+            reserveBeanReference(beanClass, beanRule);
         } else {
-            putBeanReference(beanId, beanRule);
+            reserveBeanReference(beanId, beanRule);
         }
 	}
 
+	/**
+	 * Resolve bean class.
+	 *
+	 * @param itemRule the item rule
+	 */
 	public void resolveBeanClass(ItemRule itemRule) {
 		Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 		if(iter != null) {
@@ -483,12 +472,28 @@ public class ContextBuilderAssistant {
 		if(token.getDirectiveType() == TokenDirectiveType.CLASS) {
 			Class<?> beanClass = loadClass(token.getValue());
 			token.setAlternativeValue(beanClass);
-			putBeanReference(beanClass, token);
+			reserveBeanReference(beanClass, token);
 		} else {
-			putBeanReference(token.getName(), token);
+			reserveBeanReference(token.getName(), token);
 		}
 	}
 
+	/**
+	 * Resolve bean class for the schedule rule.
+	 *
+	 * @param beanId the bean id
+	 * @param scheduleRule the schedule rule
+	 */
+	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+		if(beanClass != null) {
+			scheduleRule.setSchedulerBeanClass(beanClass);
+			reserveBeanReference(beanClass, scheduleRule);
+		} else {
+			reserveBeanReference(beanId, scheduleRule);
+		}
+	}
+	
 	private Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
@@ -505,12 +510,12 @@ public class ContextBuilderAssistant {
 		}
 	}
 
-	public void putBeanReference(String beanId, BeanReferenceInspectable someRule) {
-		beanReferenceInspector.putRelation(beanId, someRule);
+	public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.reserve(beanId, someRule);
 	}
 
-	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
-		beanReferenceInspector.putRelation(beanClass, someRule);
+	public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.reserve(beanClass, someRule);
 	}
 
 	public BeanReferenceInspector getBeanReferenceInspector() {
@@ -546,21 +551,21 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Add the template rule.
-	 *
-	 * @param templateRule the template rule
-	 */
-	public void addTemplateRule(TemplateRule templateRule) {
-		templateRuleRegistry.addTemplateRule(templateRule);
-	}
-
-	/**
 	 * Add the translet rule.
 	 *
 	 * @param transletRule the translet rule
 	 */
 	public void addTransletRule(TransletRule transletRule) {
 		transletRuleRegistry.addTransletRule(transletRule);
+	}
+
+	/**
+	 * Add the template rule.
+	 *
+	 * @param templateRule the template rule
+	 */
+	public void addTemplateRule(TemplateRule templateRule) {
+		templateRuleRegistry.addTemplateRule(templateRule);
 	}
 
 	/**
@@ -580,15 +585,6 @@ public class ContextBuilderAssistant {
 	public BeanRuleRegistry getBeanRuleRegistry() {
 		return beanRuleRegistry;
 	}
-	
-	/**
-	 * Gets the template rule registry.
-	 *
-	 * @return the template rule registry
-	 */
-	public TemplateRuleRegistry getTemplateRuleRegistry() {
-		return templateRuleRegistry;
-	}
 
 	/**
 	 * Gets the schedule rule registry.
@@ -606,6 +602,15 @@ public class ContextBuilderAssistant {
 	 */
 	public TransletRuleRegistry getTransletRuleRegistry() {
 		return transletRuleRegistry;
+	}
+	
+	/**
+	 * Gets the template rule registry.
+	 *
+	 * @return the template rule registry
+	 */
+	public TemplateRuleRegistry getTemplateRuleRegistry() {
+		return templateRuleRegistry;
 	}
 
 	/**
@@ -631,15 +636,6 @@ public class ContextBuilderAssistant {
 		beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRuleMap().values());
 		return beanRuleSet;
 	}
-
-	/**
-	 * Gets all template rules.
-	 *
-	 * @return the template rules
-	 */
-	public Collection<TemplateRule> getTemplateRules() {
-		return templateRuleRegistry.getTemplateRuleMap().values();
-	}
 	
 	/**
 	 * Gets all schedule rules.
@@ -657,6 +653,15 @@ public class ContextBuilderAssistant {
 	 */
 	public Collection<TransletRule> getTransletRules() {
 		return transletRuleRegistry.getTransletRuleMap().values();
+	}
+
+	/**
+	 * Gets all template rules.
+	 *
+	 * @return the template rules
+	 */
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRuleRegistry.getTemplateRuleMap().values();
 	}
 
 	/**

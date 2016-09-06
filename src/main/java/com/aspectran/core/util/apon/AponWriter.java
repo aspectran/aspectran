@@ -248,9 +248,9 @@ public class AponWriter extends AponFormat implements Flushable {
 	}
 	
 	private void writeString(String value) throws IOException {
-		writer.write(QUOTE_CHAR);
+		writer.write(DOUBLE_QUOTE_CHAR);
 		writer.write(escape(value));
-		writer.write(QUOTE_CHAR);
+		writer.write(DOUBLE_QUOTE_CHAR);
 		nextLine();
 	}
 	

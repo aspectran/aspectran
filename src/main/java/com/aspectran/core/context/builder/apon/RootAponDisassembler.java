@@ -136,17 +136,17 @@ public class RootAponDisassembler {
 			}
 		}
 
-		List<Parameters> templateParametersList = aspectranParameters.getParametersList(AspectranParameters.templates);
-		if(templateParametersList != null) {
-			for(Parameters templateParameters : templateParametersList) {
-				disassembleTemplateRule(templateParameters);
-			}
-		}
-
 		List<Parameters> transletParametersList = aspectranParameters.getParametersList(AspectranParameters.translets);
 		if(transletParametersList != null) {
 			for(Parameters transletParameters : transletParametersList) {
 				disassembleTransletRule(transletParameters);
+			}
+		}
+
+		List<Parameters> templateParametersList = aspectranParameters.getParametersList(AspectranParameters.templates);
+		if(templateParametersList != null) {
+			for(Parameters templateParameters : templateParametersList) {
+				disassembleTemplateRule(templateParameters);
 			}
 		}
 
@@ -341,7 +341,6 @@ public class RootAponDisassembler {
 		assistant.addBeanRule(beanRule);
 	}
 
-
 	private void disassembleScheduleRule(Parameters scheduleParameters) {
 		String description = scheduleParameters.getString(AspectParameters.description);
 		String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
@@ -379,26 +378,6 @@ public class RootAponDisassembler {
 		}
 
 		assistant.addScheduleRule(scheduleRule);
-	}
-	
-	private void disassembleTemplateRule(Parameters templateParameters) {
-		String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
-		String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
-		String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
-		String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
-		String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
-		String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
-		String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
-		String encoding = templateParameters.getString(TemplateParameters.encoding);
-		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-
-		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
-
-		if(engine != null) {
-			assistant.putBeanReference(engine, templateRule);
-		}
-
-		assistant.addTemplateRule(templateRule);
 	}
 	
 	private void disassembleTransletRule(Parameters transletParameters) {
@@ -801,5 +780,26 @@ public class RootAponDisassembler {
 		
 		return itemRuleMap;
 	}
+	
+	private void disassembleTemplateRule(Parameters templateParameters) {
+		String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
+		String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
+		String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
+		String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
+		String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
+		String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
+		String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+		String encoding = templateParameters.getString(TemplateParameters.encoding);
+		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+
+		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
+
+		if(engine != null) {
+			assistant.reserveBeanReference(engine, templateRule);
+		}
+
+		assistant.addTemplateRule(templateRule);
+	}
+
 	
 }

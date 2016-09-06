@@ -55,7 +55,7 @@ class TemplateNodeletAdder implements NodeletAdder {
 			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
 
             if(engine != null) {
-                assistant.putBeanReference(engine, templateRule);
+                assistant.reserveBeanReference(engine, templateRule);
             }
 
             assistant.addTemplateRule(templateRule);

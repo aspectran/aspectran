@@ -70,7 +70,8 @@ public class AponReaderTest3 {
 		 * @return the int
 		 * @throws IOException if an I/O error has occurred
 		 */
-		private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+		private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
+				ParameterValueType parameterValueType) throws IOException {
 			Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 			
 			String line;
@@ -121,9 +122,10 @@ public class AponReaderTest3 {
 					if(parameterValue != null) {
 						parameterValueType = parameterValue.getParameterValueType();
 					} else {
-						if(!addable)
-							throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
-
+						if(!addable) {
+							throw new InvalidParameterException(lineNumber, line, trim,
+									"Only acceptable pre-defined parameters. Undefined parameter name: " + name);
+						}
 						parameterValueType = ParameterValueType.resolveByHint(name);
 						if(parameterValueType != null) {
 							name = ParameterValueType.stripHintedValueType(name);
@@ -135,12 +137,12 @@ public class AponReaderTest3 {
 						
 					}
 					
-					if(parameterValueType == ParameterValueType.VARIABLE)
+					if(parameterValueType == ParameterValueType.VARIABLE) {
 						parameterValueType = null;
-					
+					}
 					if(parameterValueType != null) {
 						if(parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar)
-							throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not array type.");
+							throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type.");
 						if(parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar)
 							throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 						if(parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar)
@@ -208,14 +210,24 @@ public class AponReaderTest3 {
 						if(parameterValueType == null)
 							parameterValueType = ParameterValueType.STRING;
 					} else {
-						if(value.charAt(0) == QUOTE_CHAR) {
-							if(vlen == 1 || value.charAt(vlen - 1) != QUOTE_CHAR)
-								throw new InvalidParameterException(lineNumber, line, trim, "Unclosed quotation mark.");						
-								
+						if(value.charAt(0) == DOUBLE_QUOTE_CHAR) {
+							if(vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
+								throw new InvalidParameterException(lineNumber, line, trim,
+										"Unclosed quotation mark after the character string " + value);						
+							}
 							value = value.substring(1, vlen - 1);
-							
-							if(parameterValueType == null)
+							if(parameterValueType == null) {
 								parameterValueType = ParameterValueType.STRING;
+							}
+						} else if(value.charAt(0) == SINGLE_QUOTE_CHAR) {
+							if(vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
+								throw new InvalidParameterException(lineNumber, line, trim,
+										"Unclosed quotation mark after the character string " + value);						
+							}
+							value = value.substring(1, vlen - 1);
+							if(parameterValueType == null) {
+								parameterValueType = ParameterValueType.STRING;
+							}
 						} else if(parameterValueType == null) {
 							if(NULL.equals(value)) {
 								value = null;
@@ -238,7 +250,9 @@ public class AponReaderTest3 {
 												Double.parseDouble(value);
 												parameterValueType = ParameterValueType.DOUBLE;
 											} catch(NumberFormatException e4) {
-												throw new InvalidParameterException(lineNumber, line, trim, "Unknown value type. Strings must be enclosed between double quotation marks.");
+												parameterValueType = ParameterValueType.STRING;
+												//throw new InvalidParameterException(lineNumber, line, trim,
+												//		"Unknown value type. Strings must be enclosed between double quotation marks.");
 											}
 										}
 									}
@@ -260,6 +274,8 @@ public class AponReaderTest3 {
 					
 					if(parameterValueType == ParameterValueType.STRING) {
 						parameterValue.putValue(unescape(value, lineNumber, line, trim));
+					} else if(parameterValueType == ParameterValueType.BOOLEAN) {
+						parameterValue.putValue(Boolean.valueOf(value));
 					} else if(parameterValueType == ParameterValueType.INT) {
 						parameterValue.putValue(new Integer(value));
 					} else if(parameterValueType == ParameterValueType.LONG) {
@@ -268,8 +284,6 @@ public class AponReaderTest3 {
 						parameterValue.putValue(new Float(value));
 					} else if(parameterValueType == ParameterValueType.DOUBLE) {
 						parameterValue.putValue(new Double(value));
-					} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-						parameterValue.putValue(Boolean.valueOf(value));
 					}
 				}
 				
@@ -309,7 +323,7 @@ public class AponReaderTest3 {
 						sb.append(NEXT_LINE_CHAR);
 					sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
 				} else if(tlen > 0) {
-					throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a ';' character.");
+					throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a '|' character.");
 				}
 			}
 
