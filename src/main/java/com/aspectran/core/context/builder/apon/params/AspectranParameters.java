@@ -28,6 +28,7 @@ public class AspectranParameters extends AbstractParameters {
 	public static final ParameterDefinition typeAlias;
 	public static final ParameterDefinition aspects;
 	public static final ParameterDefinition beans;
+	public static final ParameterDefinition schedules;
 	public static final ParameterDefinition translets;
 	public static final ParameterDefinition templates;
 	public static final ParameterDefinition imports;
@@ -41,6 +42,7 @@ public class AspectranParameters extends AbstractParameters {
 		typeAlias = new ParameterDefinition("typeAlias", VariableParameters.class);
 		aspects = new ParameterDefinition("aspect", AspectParameters.class, true, true);
 		beans = new ParameterDefinition("bean", BeanParameters.class, true, true);
+		schedules = new ParameterDefinition("schedules", ScheduleParameters.class, true, true);
 		translets = new ParameterDefinition("translet", TransletParameters.class, true, true);
 		templates = new ParameterDefinition("template", TemplateParameters.class, true, true);
 		imports = new ParameterDefinition("import", ImportParameters.class, true, true);
@@ -52,6 +54,7 @@ public class AspectranParameters extends AbstractParameters {
 			typeAlias,
 			aspects,
 			beans,
+			schedules,
 			translets,
 			templates,
 			imports

@@ -51,7 +51,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			Importer importer = resolveImporter(rootContext);
 			importHandler.handle(importer);
 
-			return makeActivityContext();
+			return createActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a Hybrid Activity Context: " + rootContext, e);
 		}

@@ -28,7 +28,7 @@ public class RelevantAspectRuleHolder {
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
-	private List<AspectRule> activityAspectRuleList;
+	private List<AspectRule> relevantAspectRuleList;
 
 	/**
 	 * Gets the aspect advice rule registry.
@@ -49,28 +49,28 @@ public class RelevantAspectRuleHolder {
 	}
 
 	/**
-	 * Gets the activity aspect rule list.
+	 * Gets the relevant aspect rule list.
 	 *
-	 * @return the activity aspect rule list
+	 * @return the relevant aspect rule list
 	 */
-	public List<AspectRule> getActivityAspectRuleList() {
-		return activityAspectRuleList;
+	public List<AspectRule> getRelevantAspectRuleList() {
+		return relevantAspectRuleList;
 	}
 
 	/**
-	 * Sets the activity aspect rule list.
+	 * Sets the relevant aspect rule list.
 	 *
-	 * @param activityAspectRuleList the new activity aspect rule list
+	 * @param relevantAspectRuleList the new relevant aspect rule list
 	 */
-	public void setActivityAspectRuleList(List<AspectRule> activityAspectRuleList) {
-		this.activityAspectRuleList = activityAspectRuleList;
+	public void setRelevantAspectRuleList(List<AspectRule> relevantAspectRuleList) {
+		this.relevantAspectRuleList = relevantAspectRuleList;
 	}
 	
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-		tsb.append("activityAspectRuleList", activityAspectRuleList);
+		tsb.append("relevantAspectRuleList", relevantAspectRuleList);
 		return tsb.toString();
 	}
 	

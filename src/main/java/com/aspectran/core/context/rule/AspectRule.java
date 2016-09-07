@@ -20,31 +20,78 @@ import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class AspectRule.
+ * 
+ * <pre>
+ * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
+ *   &lt;joinpoint type="translet"&gt;
+ *     methods: [
+ *       "GET"
+ *       "POST"
+ *       "PATCH"
+ *       "PUT"
+ *       "DELETE"
+ *     ]
+ *     headers: [
+ *       "Origin"
+ *     ]
+ *     pointcut: {
+ *       type: "wildcard"
+ *       +: "/a/b@sample.bean1^method1"
+ *       +: "/x/y@sample.bean2^method1"
+ *       -: "/a/b/c@sample.bean3^method1"
+ *       -: "/x/y/z@sample.bean4^method1"
+ *     }
+ *     pointcut: {
+ *       type: "regexp"
+ *       include: {
+ *         translet: "/a/b"
+ *         bean: "sample.bean1"
+ *         method: "method1"
+ *       }
+ *       execlude: {
+ *         translet: "/a/b/c"
+ *         bean: "sample.bean3"
+ *         method: "method1"
+ *       }
+ *     }
+ *   &lt;/joinpoint&gt;
+ *   &lt;settings&gt;
+ *   &lt;/settings&gt;
+ *   &lt;advice&gt;
+ *   &lt;/advice&gt;
+ *   &lt;exception&gt;
+ *   &lt;/exception&gt;
+ * &lt;aspect&gt;
+ * </pre>
  */
 public class AspectRule implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.ASPECT_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.ASPECT_RULE;
 
 	private String id;
 
-	private AspectTargetType aspectTargetType;
-	
-	private JoinpointScopeType joinpointScope;
-	
-	private MethodType[] allowedMethods;
-	
-	private PointcutRule pointcutRule;
-	
+	/**
+	 * The lowest value has highest priority.
+	 * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
+	 */
+	private int order = Integer.MAX_VALUE;
+
+	private Boolean isolated;
+
+	private JoinpointRule joinpointRule;
+
 	private Pointcut pointcut;
-	
+
 	private String adviceBeanId;
 
 	private Class<?> adviceBeanClass;
@@ -52,8 +99,6 @@ public class AspectRule implements BeanReferenceInspectable {
 	private SettingsAdviceRule settingsAdviceRule;
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
-	
-	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
 	private ExceptionRule exceptionRule;
 	
@@ -69,36 +114,48 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.id = id;
 	}
 
-	public AspectTargetType getAspectTargetType() {
-		return aspectTargetType;
+	public int getOrder() {
+		return order;
 	}
 
-	public void setAspectTargetType(AspectTargetType aspectTargetType) {
-		this.aspectTargetType = aspectTargetType;
+	private void setOrder(int order) {
+		this.order = order;
 	}
 
-	public JoinpointScopeType getJoinpointScope() {
-		return joinpointScope;
+	public Boolean getIsolated() {
+		return isolated;
 	}
 
-	public void setJoinpointScope(JoinpointScopeType joinpointScope) {
-		this.joinpointScope = joinpointScope;
+	public boolean isIsolated() {
+		return BooleanUtils.toBoolean(isolated, false);
 	}
 
-	public MethodType[] getAllowedMethods() {
-		return allowedMethods;
+	private void setIsolated(Boolean isolated) {
+		this.isolated = isolated;
 	}
 
-	public void setAllowedMethods(MethodType[] allowedMethods) {
-		this.allowedMethods = allowedMethods;
+	public JoinpointRule getJoinpointRule() {
+		return joinpointRule;
+	}
+
+	private void setJoinpointRule(JoinpointRule joinpointRule) {
+		this.joinpointRule = joinpointRule;
+	}
+
+	public JoinpointType getJoinpointType() {
+		return (joinpointRule != null) ? joinpointRule.getJoinpointType() : null;
+	}
+
+	public MethodType[] getTargetMethods() {
+		return (joinpointRule != null) ? joinpointRule.getTargetMethods() : null;
+	}
+
+	public String[] getTargetHeaders() {
+		return (joinpointRule != null) ? joinpointRule.getTargetHeaders() : null;
 	}
 
 	public PointcutRule getPointcutRule() {
-		return pointcutRule;
-	}
-
-	public void setPointcutRule(PointcutRule pointcutRule) {
-		this.pointcutRule = pointcutRule;
+		return (joinpointRule != null) ? joinpointRule.getPointcutRule() : null;
 	}
 
 	public Pointcut getPointcut() {
@@ -147,23 +204,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		if(aspectAdviceRuleList == null) {
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		}
-
 		aspectAdviceRuleList.add(aspectAdviceRule);
-	}
-
-	public List<AspectJobAdviceRule> getAspectJobAdviceRuleList() {
-		return aspectJobAdviceRuleList;
-	}
-
-	public void setAspectJobAdviceRuleList(List<AspectJobAdviceRule> aspectJobAdviceRuleList) {
-		this.aspectJobAdviceRuleList = aspectJobAdviceRuleList;
-	}
-	
-	public void addAspectJobAdviceRule(AspectJobAdviceRule aspectJobAdviceRule) {
-		if(aspectJobAdviceRuleList == null)
-			aspectJobAdviceRuleList = new ArrayList<AspectJobAdviceRule>();
-		
-		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
 	}
 
 	public ExceptionRule getExceptionRule() {
@@ -202,68 +243,55 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("for", aspectTargetType);
-		tsb.append("joinpointScope", joinpointScope);
-		tsb.append("pointcutRule", pointcutRule);
-		if(aspectTargetType == AspectTargetType.TRANSLET) {
-			tsb.append("settingsAdviceRule", settingsAdviceRule);
-			tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
-		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
-			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
-		}
+		if(order != Integer.MAX_VALUE)
+			tsb.append("order", order);
+		tsb.append("isolated", isolated);
+		tsb.append("joinpointRule", joinpointRule);
+		tsb.append("settingsAdviceRule", settingsAdviceRule);
+		tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
 		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("beanRelevanted", beanRelevanted);
 		return tsb.toString();
 	}
 	
-	public static AspectRule newInstance(String id, String useFor) {
-		AspectTargetType aspectTargetType;
-		
-		if(useFor != null) {
-			aspectTargetType = AspectTargetType.resolve(useFor);
-			if(aspectTargetType == null)
-				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
-		} else {
-			aspectTargetType = AspectTargetType.TRANSLET;
+	public static AspectRule newInstance(String id, String order, Boolean isolated) {
+		if(id == null) {
+			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
 		}
-		
+
 		AspectRule aspectRule = new AspectRule();
 		aspectRule.setId(id);
-		aspectRule.setAspectTargetType(aspectTargetType);
-		
+		aspectRule.setIsolated(isolated);
+
+		if(!StringUtils.isEmpty(order)) {
+			try {
+				aspectRule.setOrder(Integer.parseInt(order));
+			} catch(NumberFormatException e) {
+				throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
+			}
+		}
+
 		return aspectRule;
 	}
 	
-	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
-		JoinpointScopeType joinpointScope;
-		
-		if(scope != null) {
-			joinpointScope = JoinpointScopeType.resolve(scope);
-			if(joinpointScope == null)
-				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
-		} else {
-			joinpointScope = JoinpointScopeType.TRANSLET;
-		}
-		
-		aspectRule.setJoinpointScope(joinpointScope);
+	public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
+		JoinpointRule joinpointRule = JoinpointRule.newInstance();
+		JoinpointRule.updateJoinpointType(joinpointRule, type);
+		JoinpointRule.updateJoinpoint(joinpointRule, text);
+		aspectRule.setJoinpointRule(joinpointRule);
 	}
 	
-	public static void updateAllowedMethods(AspectRule aspectRule, String method) {
-		MethodType[] allowedMethods = null;
-		if(method != null) {
-			allowedMethods = MethodType.parse(method);
-			if(allowedMethods == null)
-				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
-		}
+	public static void updateJoinpoint(AspectRule aspectRule, Parameters joinpointParameters) {
+		JoinpointRule joinpointRule = JoinpointRule.newInstance();
+		JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
+		aspectRule.setJoinpointRule(joinpointRule);
+	}
 
-		aspectRule.setAllowedMethods(allowedMethods);
-	}
-	
 }

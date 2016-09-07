@@ -40,7 +40,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	private static final String DEFAULT_TEMPLATE_ENGINE_NAME = "builtin";
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TEMPLATE_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
 	private String id;
 
@@ -304,7 +304,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 
 	@Override
@@ -329,7 +329,11 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		return tsb.toString();
 	}
 
-	public static TemplateRule newInstance(String id, String engine, String name, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+	public static TemplateRule newInstance(String id, String engine, String name, String file, 
+			String resource, String url, String content, String encoding, Boolean noCache) {
+		if(id == null)
+			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
+		
 		TemplateRule tr = new TemplateRule(engine);
 		tr.setId(id);
 		tr.setName(name);
@@ -343,7 +347,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		return tr;
 	}
 
-	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, 
+			String resource, String url, String content, String encoding, Boolean noCache) {
 		TemplateRule tr = new TemplateRule(engine);
 		tr.setName(name);
 		tr.setFile(file);

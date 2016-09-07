@@ -72,7 +72,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 			rejectRequest(translet, CorsException.ORIGIN_DENIED);
 		}
 
-		if(getAllowCredentials()) {
+		if(isAllowCredentials()) {
 			// Must be exact origin (not '*') in case of credentials
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
@@ -119,7 +119,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		
 		String origin = req.getHeader(HttpHeaders.ORIGIN);
 		if(origin != null) {
-			if(getAllowCredentials()) {
+			if(isAllowCredentials()) {
 				// Must be exact origin (not '*') in case of credentials
 				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");

@@ -53,9 +53,6 @@ class TransletNodeletAdder implements NodeletAdder {
             String mask = attributes.get("mask");
             String method = attributes.get("method");
 
-            if(name == null && scan == null)
-                throw new IllegalArgumentException("The <translet> element requires a 'name' attribute.");
-
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
             assistant.pushObject(transletRule);
         });
@@ -172,7 +169,7 @@ class TransletNodeletAdder implements NodeletAdder {
 			ExceptionRule exceptionRule = new ExceptionRule();
 			assistant.pushObject(exceptionRule);
 		});
-		parser.addNodelet(xpath, "/translet/exception", new ExceptionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/exception", new ExceptionCatchNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/exception/end()", (node, attributes, text) -> {
 			ExceptionRule exceptionRule = assistant.popObject();
 			TransletRule transletRule = assistant.peekObject();

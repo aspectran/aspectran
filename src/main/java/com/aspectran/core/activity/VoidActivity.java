@@ -47,13 +47,10 @@ public final class VoidActivity extends CoreActivity {
 	}
 
 	@Override
-	protected void request() {
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		VoidActivity activity = new VoidActivity(getActivityContext());
+		activity.setIncluded(true);
 		return (T)activity;
 	}
 
@@ -93,12 +90,7 @@ public final class VoidActivity extends CoreActivity {
 	}
 
 	@Override
-	public String getForwardTransletName() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void response(Response res) {
+	public void setPenddedResponse(Response res) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -108,7 +100,7 @@ public final class VoidActivity extends CoreActivity {
 	}
 
 	@Override
-	public Response getResponse() {
+	public Response getBaseResponse() {
 		throw new UnsupportedOperationException();
 	}
 

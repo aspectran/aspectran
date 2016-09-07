@@ -38,11 +38,9 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable {
 
-	public static final String CLASS_DIRECTIVE = "class";
-
 	public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_RULE;
+	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_RULE;
 
 	private String id;
 
@@ -708,7 +706,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
+		return BEAN_REFERRER_TYPE;
 	}
 	
 	@Override
@@ -761,7 +759,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean important) {
 		
 		if(className == null && scanPath == null)
-			throw new IllegalArgumentException("Bean class must not be null.");
+			throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
 
 		ScopeType scopeType = ScopeType.resolve(scope);
 
@@ -801,7 +799,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
-		
+
+        if(offerBeanId == null || offerMethodName == null)
+            throw new IllegalArgumentException("The 'bean' element requires both 'offerBean' attribute and 'offerMethod' attribute.");
+
 		ScopeType scopeType = ScopeType.resolve(scope);
 		
 		if(scope != null && scopeType == null)

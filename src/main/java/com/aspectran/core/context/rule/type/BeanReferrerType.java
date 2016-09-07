@@ -23,6 +23,7 @@ package com.aspectran.core.context.rule.type;
 public enum BeanReferrerType {
 
 	ASPECT_RULE("aspectRule"),
+	SCHEDULE_RULE("scheduleRule"),
 	BEAN_ACTION_RULE("beanActionRule"),
 	BEAN_RULE("beanRule"),
 	TOKEN("token"),
@@ -40,10 +41,11 @@ public enum BeanReferrerType {
 	}
 
 	/**
-	 * Returns a {@code BeanReferrerType} with a value represented by the specified String.
+	 * Returns a {@code BeanReferrerType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the bean referrer type as a String
-	 * @return the bean referable rule type
+	 * @param alias the bean referrer type as a {@code String}
+	 * @return a {@code BeanReferrerType}, may be {@code null}
 	 */
 	public static BeanReferrerType resolve(String alias) {
 		for(BeanReferrerType type : values()) {

@@ -21,6 +21,7 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.MessageSource;
+import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
@@ -81,11 +82,11 @@ public interface ActivityContext extends MessageSource {
 	BeanRegistry getBeanRegistry();
 
 	/**
-	 * Gets the translet rule registry.
+	 * Gets the schedule rule registry.
 	 *
-	 * @return the translet rule registry
+	 * @return the schedule rule registry
 	 */
-	TransletRuleRegistry getTransletRuleRegistry();
+	ScheduleRuleRegistry getScheduleRuleRegistry();
 
 	/**
 	 * Gets the template processor.
@@ -93,6 +94,13 @@ public interface ActivityContext extends MessageSource {
 	 * @return the template processor
 	 */
 	TemplateProcessor getTemplateProcessor();
+
+	/**
+	 * Gets the translet rule registry.
+	 *
+	 * @return the translet rule registry
+	 */
+	TransletRuleRegistry getTransletRuleRegistry();
 
 	/**
 	 * Gets the message source.

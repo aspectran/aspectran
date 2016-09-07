@@ -369,9 +369,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			instantiateSingletons();
 
-			log.info("BeanFactory has been initialized successfully.");
+			log.info("Bean Factory has been initialized.");
 		} else {
-			log.warn("BeanFactory has already been initialized.");
+			log.warn("Bean Factory has already been initialized.");
 		}
 	}
 
@@ -380,9 +380,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if(this.active.compareAndSet(true, false)) {
 			destroySingletons();
 
-			log.info("BeanFactory has been destroyed successfully.");
+			log.info("Bean Factory has been destroyed.");
 		} else {
-			log.warn("BeanFactory has been destroyed already.");
+			log.warn("Bean Factory has already been destroyed.");
 		}
 	}
 
@@ -445,7 +445,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if(failedDestroyes > 0)
 			log.warn("Singletons has not been destroyed cleanly. Failure Count: " + failedDestroyes);
 		else
-			log.info("Singletons has been destroyed successfully.");
+			log.info("Singletons has been destroyed.");
 	}
 
 	private int destroySingleton(BeanRule beanRule) {

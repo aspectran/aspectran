@@ -27,8 +27,7 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.type.AspectTargetType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -41,22 +40,25 @@ public abstract class AbstractDynamicBeanProxy {
 
 	private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
 
+	private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
+
 	private final AspectRuleRegistry aspectRuleRegistry;
 
 	public AbstractDynamicBeanProxy(AspectRuleRegistry aspectRuleRegistry) {
 		this.aspectRuleRegistry = aspectRuleRegistry;
 	}
 
-	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(
-			Activity activity, String transletName, String beanId, String className, String methodName) throws Throwable {
+	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity,
+			String transletName, String beanId, String className, String methodName) throws Throwable {
 		RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 		
-		if(holder.getActivityAspectRuleList() != null) {
-			for(AspectRule aspectRule : holder.getActivityAspectRuleList()) {
+		if(holder.getRelevantAspectRuleList() != null) {
+			for(AspectRule aspectRule : holder.getRelevantAspectRuleList()) {
+				// register dynamically
 				activity.registerAspectRule(aspectRule);
 			}
 		}
-		
+
 		return holder.getAspectAdviceRuleRegistry();
 	}
 	
@@ -84,22 +86,20 @@ public abstract class AbstractDynamicBeanProxy {
 		return holder;
 	}
 
-	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
+	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(
+			String transletName, String beanId, String className, String methodName) {
 		Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
-		List<AspectRule> activityAspectRuleList = new ArrayList<>();
+		List<AspectRule> relevantAspectRuleList = new ArrayList<>();
 
 		for(AspectRule aspectRule : aspectRuleMap.values()) {
-			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
-			
-			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
+			if(aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
-
 				if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
-					if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
+					if(aspectRule.getJoinpointType() == JoinpointType.BEAN) {
 						postRegister.register(aspectRule);
 					} else {
-						activityAspectRuleList.add(aspectRule);
+						relevantAspectRuleList.add(aspectRule);
 					}
 				}
 			}
@@ -107,15 +107,18 @@ public abstract class AbstractDynamicBeanProxy {
 
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
 
-		RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-
-		if(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)
-			holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-
-		if(!activityAspectRuleList.isEmpty())
-			holder.setActivityAspectRuleList(activityAspectRuleList);
-
-		return holder;
+		if(!relevantAspectRuleList.isEmpty() ||
+				(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)) {
+			RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
+			if(!relevantAspectRuleList.isEmpty()) {
+				holder.setRelevantAspectRuleList(relevantAspectRuleList);
+			} else {
+				holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+			}
+			return holder;
+		} else {
+			return EMPTY_HOLDER;
+		}
 	}
 
 }

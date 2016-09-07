@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.HeadingAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -37,7 +38,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	private final Class<?> adviceBeanClass;
 
 	private final AspectAdviceType aspectAdviceType;
-	
+
 	private Executable action;
 	
 	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
@@ -68,11 +69,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	}
 
 	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		action = new EchoAction(echoActionRule, null);
-	}
-
-	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
@@ -81,13 +77,25 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	@Override
 	public void applyActionRule(MethodActionRule methodActionRule) {
 		throw new UnsupportedOperationException(
-				"Cannot apply Method Action Rule to Aspect Advice Rule. AspecetAdvice is not support MethodAction.");
+				"Cannot apply the Method Action Rule to the Aspect Advice Rule. " +
+				"AspecetAdvice is not support MethodAction.");
 	}
 
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException(
-				"Cannot apply Include Action Rule to Aspect Advice Rule. AspecetAdvice is not support IncludeAction.");
+				"Cannot apply the Include Action Rule to the Aspect Advice Rule. " +
+				"AspecetAdvice is not support IncludeAction.");
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		action = new EchoAction(echoActionRule, null);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		action = new HeadingAction(headingActionRule, null);
 	}
 	
 	public Executable getExecutableAction() {

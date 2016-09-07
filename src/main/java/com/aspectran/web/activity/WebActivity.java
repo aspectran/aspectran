@@ -15,27 +15,28 @@
  */
 package com.aspectran.web.activity;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.locale.LocaleChangeInterceptor;
-import com.aspectran.core.context.locale.LocaleResolver;
+import com.aspectran.core.context.i18n.LocaleChangeInterceptor;
+import com.aspectran.core.context.i18n.LocaleResolver;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.request.multipart.MultipartRequestException;
-import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
+import com.aspectran.web.activity.request.HttpPutFormContentParser;
+import com.aspectran.web.activity.request.MultipartFormDataParser;
+import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.response.GZipServletResponseWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -59,8 +60,6 @@ public class WebActivity extends CoreActivity {
 	
 	private HttpServletResponse response;
 	
-	private boolean contentEncoding;
-	
 	/**
 	 * Instantiates a new WebActivity.
 	 *
@@ -79,7 +78,7 @@ public class WebActivity extends CoreActivity {
 	public void prepare(String transletName, MethodType requestMethod) {
 		// Check for HTTP POST with the X-HTTP-Method-Override header
 		if(requestMethod == MethodType.POST) {
-			String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+			String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
 			if(method != null) {
 				// Check if the header value is in our methods list
 				MethodType hiddenRequestMethod = MethodType.resolve(method);
@@ -97,38 +96,27 @@ public class WebActivity extends CoreActivity {
 	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
+			boolean contentEncoding = false;
 			if(!isIncluded() && isGzipAccepted()) {
 				response = new GZipServletResponseWrapper(response);
 				contentEncoding = true;
 			}
-			
+
 			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
 			setResponseAdapter(responseAdapter);
-			
-			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-			LocaleResolver localeResolver = null;
-			if(localeResolverId != null) {
-				localeResolver = getBean(localeResolverId, LocaleResolver.class);
-				if(localeChangeInterceptorId != null) {
-					localeResolver.determineLocale(getTranslet());
-					localeResolver.determineTimeZone(getTranslet());
-				}
-			}
-			if(localeChangeInterceptorId != null) {
-				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
-				localeChangeInterceptor.handle(getTranslet(), localeResolver);
+
+			if(contentEncoding) {
+				setGzipContentEncoded();
 			}
 		} catch(Exception e) {
 			throw new AdapterException("Failed to adapt to the Web Activity.", e);
 		}
 	}
-
+	
 	@Override
-	public synchronized SessionAdapter getSessionAdapter() {
+	public SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
 			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
 			super.setSessionAdapter(sessionAdapter);
@@ -137,7 +125,14 @@ public class WebActivity extends CoreActivity {
 	}
 
 	@Override
-	protected void request() {
+	protected void parseRequest() {
+		String characterEncoding = resolveRequestCharacterEncoding();
+		try {
+			getRequestAdapter().setCharacterEncoding(characterEncoding);
+		} catch(UnsupportedEncodingException e) {
+			throw new RequestException("Unable to set request character encoding to " + characterEncoding, e);
+		}
+		
 		String contentType = request.getContentType();
 
 		MethodType requestMethod = getRequestAdapter().getRequestMethod();
@@ -157,30 +152,21 @@ public class WebActivity extends CoreActivity {
 			}
 		}
 
-		super.request();
+		super.parseRequest();
 	}
-	
-	@Override
-	public void response(Response response) {
-		if(contentEncoding && response.getResponseType() != ResponseType.FORWARD) {
-			setGzipContentEncoded();
-		}
-		
-		super.response(response);
-	}
-	
+
 	/**
 	 * Parse the multipart form data.
 	 */
 	private void parseMultipartFormData() {
-		String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+		String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
 		if(multipartFormDataParser == null) {
-			throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
+			throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings.");
 		}
 
 		MultipartFormDataParser parser = getBean(multipartFormDataParser);
 		if(parser == null) {
-			throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
+			throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
 		}
 
 		parser.parse(getRequestAdapter());
@@ -194,6 +180,19 @@ public class WebActivity extends CoreActivity {
 	}
 
 	@Override
+	protected LocaleResolver resolveLocale() {
+		LocaleResolver localeResolver = super.resolveLocale();
+		if(localeResolver != null) {
+			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+			if(localeChangeInterceptorId != null) {
+				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+				localeChangeInterceptor.handle(getTranslet(), localeResolver);
+			}
+		}
+		return localeResolver;
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		WebActivity activity = new WebActivity(getActivityContext(), request, response);
@@ -202,7 +201,7 @@ public class WebActivity extends CoreActivity {
 	}
 
 	private boolean isGzipAccepted() {
-		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+		String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
 		if(contentEncoding != null) {
 			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
 			if(acceptEncoding != null) {
@@ -213,10 +212,11 @@ public class WebActivity extends CoreActivity {
 	}
 	
 	private void setGzipContentEncoded() {
-		response.setHeader("Content-Encoding", "gzip");
+		getResponseAdapter().setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
 		
 		// indicate to the client that the servlet varies it's
 		// output depending on the "Accept-Encoding" header
-		response.setHeader("Vary", "Accept-Encoding");
+		getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
 	}
+
 }

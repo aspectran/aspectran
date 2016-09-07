@@ -35,7 +35,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class BeanAction.
+ * The BeanAction that invoking method in the bean instance.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
@@ -120,7 +120,7 @@ public class BeanAction extends AbstractAction {
 				if(argumentItemRuleMap == null) {
 					return MethodAction.invokeMethod(activity, bean, method, requiresTranslet);
 				} else {
-					Object[] args = makeArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
+					Object[] args = createArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
 					return method.invoke(bean, args);
 				}
 			} else {
@@ -132,7 +132,9 @@ public class BeanAction extends AbstractAction {
 						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
 						needTranslet = Boolean.TRUE;
 					} catch(NoSuchMethodException e) {
-						log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
+						log.info("Cannot find a method that requires a argument translet. " +
+								"So in the future will continue to call a method with no argument " +
+								"translet. beanActionRule " + beanActionRule);
 
 						needTranslet = Boolean.FALSE;
 						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
@@ -144,12 +146,12 @@ public class BeanAction extends AbstractAction {
 				return result;
 			}
 		} catch(Exception e) {
-			log.error("Failed to execute action: beanActionRule " + beanActionRule);
+			log.error("Failed to execute action that invoking method in the bean instance. beanActionRule " + beanActionRule);
 			throw e;
 		}
 	}
 
-	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
+	private static Object[] createArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
 		Object[] args = null;
 
 		if(argumentItemRuleMap != null) {

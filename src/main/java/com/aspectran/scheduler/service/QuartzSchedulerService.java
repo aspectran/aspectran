@@ -17,30 +17,29 @@ package com.aspectran.scheduler.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
-import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.AspectTargetType;
-import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.context.builder.apon.params.TriggerParameters;
+import com.aspectran.core.context.rule.JobRule;
+import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -50,17 +49,17 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class QuartzSchedulerService implements SchedulerService {
 
-	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "ASPECTRAN_CONTEXT";
+	public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
-	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
-	
+	public final static String ACTIVITY_DATA_KEY = "ACTIVITY";
+
 	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
 	private ActivityContext context;
+
+	private final Set<Scheduler> schedulerSet = new HashSet<Scheduler>();
 	
-	private List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>();
-	
-	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<String, Scheduler>();
+	private Map<String, Scheduler> schedulerMap = new HashMap<>();
 	
 	private int startDelaySeconds = 0;
 	
@@ -97,58 +96,52 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void startup() throws SchedulerServiceException {
-		Map<String, AspectRule> aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
-		
-		if(aspectRuleMap == null)
+	public synchronized void startup() throws SchedulerServiceException {
+		if(context.getScheduleRuleRegistry() == null)
+			return;
+
+		Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
+		if(scheduleRuleMap == null)
 			return;
 		
+		log.info("Now try to starting Quartz Scheduler.");
+		
 		try {
-			Date startDate = new Date();
-			
-			if(startDelaySeconds > 0) {
-				startDate = new Date(startDate.getTime() + (startDelaySeconds * 1000L));
-			}
-			
-			for(AspectRule aspectRule : aspectRuleMap.values()) {
-				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+			for(ScheduleRule scheduleRule : scheduleRuleMap.values()) {
+				String schedulerBeanId = scheduleRule.getSchedulerBeanId();
 				
-				if(aspectTargetType == AspectTargetType.SCHEDULER) {
-					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
-					PointcutRule pointcutRule = aspectRule.getPointcutRule();
-					
-					SchedulerFactory schedulerFactory = context.getBeanRegistry().getBean(schedulerFactoryBeanId);
-					Scheduler scheduler = schedulerFactory.getScheduler();
-					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
-					
-					if(jobDetails.length > 0) {
-						for(JobDetail jobDetail : jobDetails) {
-							String triggerName = jobDetail.getKey().getName();
-							String triggerGroup = aspectRule.getId();
-							Trigger trigger = buildTrigger(triggerName, triggerGroup, pointcutRule, startDate);
-	
-							scheduler.scheduleJob(jobDetail, trigger);
-						}
+				Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
+				JobDetail[] jobDetails = buildJobDetails(scheduleRule.getJobRuleList());
+				
+				if(jobDetails.length > 0) {
+					for(JobDetail jobDetail : jobDetails) {
+						String triggerName = jobDetail.getKey().getName();
+						String triggerGroup = scheduleRule.getId();
+						Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
+
+						scheduler.scheduleJob(jobDetail, trigger);
 					}
-	
-					if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
-						log.info("Now try to start scheduler '" + scheduler.getSchedulerName() + "'.");
-						
-						if(startDelaySeconds > 0)
-							scheduler.startDelayed(startDelaySeconds);
-						else
-							scheduler.start();
-						
-						startedSchedulerList.add(scheduler);
-					}
-	
-					eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
 				}
+
+				schedulerSet.add(scheduler);
+				schedulerMap.put(scheduleRule.getId(), scheduler);
 			}
 
-			log.info("SchedulerService was started successfully.");
+			for(Scheduler scheduler : schedulerSet) {
+				log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
+
+				//Listener attached to jobKey
+				JobListener defaultJobListener = new QuartzJobListener();
+				scheduler.getListenerManager().addJobListener(defaultJobListener);
+
+				if(startDelaySeconds > 0) {
+					scheduler.startDelayed(startDelaySeconds);
+				} else {
+					scheduler.start();
+				}
+			}
 		} catch(Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
 		}
 	}
 
@@ -159,130 +152,158 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	@Override
-	public void shutdown() throws SchedulerServiceException {
+	public synchronized void shutdown() throws SchedulerServiceException {
+		log.info("Now try to shutting down Quartz Scheduler.");
+
 		try {
-			for(Scheduler scheduler : startedSchedulerList) {
+			for(Scheduler scheduler : schedulerSet) {
 				if(!scheduler.isShutdown()) {
-					//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-					log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
 					scheduler.shutdown(waitOnShutdown);
 				}
 			}
+			schedulerSet.clear();
+			schedulerMap.clear();
 		} catch(Exception e) {
-			throw new SchedulerServiceException("SchedulerService shutdown failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
 		}
 	}
 
 	@Override
-	public void refresh(ActivityContext context) throws SchedulerServiceException {
+	public void restart(ActivityContext context) throws SchedulerServiceException {
 		this.context = context;
 		shutdown();
 		startup();
 	}
 
 	@Override
-	public void pause(String aspectId) throws SchedulerServiceException {
+	public synchronized void pause() throws SchedulerServiceException {
 		try {
-			Scheduler scheduler = getScheduler(aspectId);
-
-			if(scheduler != null && scheduler.isStarted()) {
-				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+			for(Scheduler scheduler : schedulerSet) {
+				scheduler.pauseAll();
 			}
 		} catch(Exception e) {
-			throw new SchedulerServiceException("SchedulerService pause failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
 		}
 	}
 
 	@Override
-	public void resume(String aspectId) throws SchedulerServiceException {
+	public synchronized void pause(String scheduleId) throws SchedulerServiceException {
 		try {
-			Scheduler scheduler = getScheduler(aspectId);
-
+			Scheduler scheduler = getScheduler(scheduleId);
 			if(scheduler != null && scheduler.isStarted()) {
-				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
 		} catch(Exception e) {
-			throw new SchedulerServiceException("SchedulerService resume failed.", e);
+			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
 		}
 	}
 
-	private Scheduler getScheduler(String aspectId) throws SchedulerException {
-		return eachAspectSchedulerMap.get(aspectId);
+	@Override
+	public synchronized void resume() throws SchedulerServiceException {
+		try {
+			for(Scheduler scheduler : schedulerSet) {
+				scheduler.resumeAll();
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
+		}
+	}
+
+	@Override
+	public synchronized void resume(String scheduleId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(scheduleId);
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
+		}
+	}
+
+	private Scheduler getScheduler(String scheduleId) throws SchedulerException {
+		return schedulerMap.get(scheduleId);
 	}
 	
-	private Trigger buildTrigger(String name, String group, PointcutRule pointcutRule, Date startDate) {
+	private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
 		Trigger trigger;
 
-		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
-			Parameters simpleTriggerParameters = pointcutRule.getSimpleTriggerParameters();
-			Integer withIntervalInMilliseconds = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInMilliseconds);
-			Integer withIntervalInMinutes = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInMinutes);
-			Integer withIntervalInSeconds = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInSeconds);
-			Integer withIntervalInHours = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInHours);
-			Integer withRepeatCount = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withRepeatCount);
-			Boolean repeatForever = (Boolean)simpleTriggerParameters.getValue(SimpleTriggerParameters.repeatForever);
+		Parameters triggerParameters = scheduleRule.getTriggerParameters();
+		Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
+		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
 
-			SimpleScheduleBuilder simpleSchedule = SimpleScheduleBuilder.simpleSchedule();
+		Date firstFireTime;
+		if(startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
+			firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
+		} else {
+			firstFireTime = new Date();
+		}
+		
+		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
+			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
+			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
+			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
+			Integer repeatCount = triggerParameters.getInt(TriggerParameters.repeatCount);
+			Boolean repeatForever = triggerParameters.getBoolean(TriggerParameters.repeatForever);
 
-			if(withIntervalInMilliseconds != null)
-				simpleSchedule.withIntervalInMilliseconds(withIntervalInMilliseconds);
-			if(withIntervalInMinutes != null)
-				simpleSchedule.withIntervalInMinutes(withIntervalInMinutes);
-			if(withIntervalInSeconds != null)
-				simpleSchedule.withIntervalInSeconds(withIntervalInSeconds);
-			if(withIntervalInHours != null)
-				simpleSchedule.withIntervalInHours(withIntervalInHours);
-			if(withRepeatCount != null)
-				simpleSchedule.withRepeatCount(withRepeatCount);
+			SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
+
+			if(intervalInMilliseconds != null)
+				builder.withIntervalInMilliseconds(intervalInMilliseconds);
+			if(intervalInMinutes != null)
+				builder.withIntervalInMinutes(intervalInMinutes);
+			if(intervalInSeconds != null)
+				builder.withIntervalInSeconds(intervalInSeconds);
+			if(intervalInHours != null)
+				builder.withIntervalInHours(intervalInHours);
+			if(repeatCount != null)
+				builder.withRepeatCount(repeatCount);
 			if(Boolean.TRUE.equals(repeatForever))
-				simpleSchedule.repeatForever();
+				builder.repeatForever();
 				
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
-					.startAt(startDate)
-					.withSchedule(simpleSchedule)
+					.startAt(firstFireTime)
+					.withSchedule(builder)
 					.build();
 		} else {
-			Parameters cronTriggerParameters = pointcutRule.getCronTriggerParameters();
-			String expression = cronTriggerParameters.getString(CronTriggerParameters.expression);
-			
+			String expression = triggerParameters.getString(TriggerParameters.expression);
 			CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
 			
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
-					.startAt(startDate)
+					.startAt(firstFireTime)
 					.withSchedule(cronSchedule)
 					.build();
-			
 		}
 		
 		return trigger;
 	}
 	
-	private JobDetail[] buildJobDetails(List<AspectJobAdviceRule> aspectJobAdviceRuleList) {
-		List<JobDetail> jobDetailList = new ArrayList<JobDetail>();
-		
-		for(int i = 0; i < aspectJobAdviceRuleList.size(); i++) {
-			AspectJobAdviceRule aspectJobAdviceRule = aspectJobAdviceRuleList.get(i);
-			JobDetail jobDetail = buildJobDetail(aspectJobAdviceRule, i);
-			
-			if(jobDetail != null)
+	private JobDetail[] buildJobDetails(List<JobRule> jobRuleList) {
+		List<JobDetail> jobDetailList = new ArrayList<>(jobRuleList.size());
+
+		for(JobRule jobRule : jobRuleList) {
+			JobDetail jobDetail = buildJobDetail(jobRule);
+			if(jobDetail != null) {
 				jobDetailList.add(jobDetail);
+			}
 		}
-		
+
 		return jobDetailList.toArray(new JobDetail[jobDetailList.size()]);
 	}
 
-	private JobDetail buildJobDetail(AspectJobAdviceRule aspectJobAdviceRule, int index) {
-		if(aspectJobAdviceRule.isDisabled())
+	private JobDetail buildJobDetail(JobRule jobRule) {
+		if(jobRule.isDisabled())
 			return null;
 		
-		String jobName = index + (ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR + aspectJobAdviceRule.getJobTransletName());
-		String jobGroup = aspectJobAdviceRule.getAspectId();
+		String jobName = jobRule.getTransletName();
+		String jobGroup = jobRule.getScheduleRule().getId();
 		
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
-		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
+		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
 
 		return JobBuilder.newJob(ActivityLauncherJob.class)
 				.withIdentity(jobName, jobGroup)

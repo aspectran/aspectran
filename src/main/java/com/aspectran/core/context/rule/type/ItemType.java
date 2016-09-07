@@ -41,10 +41,11 @@ public enum ItemType {
 	}
 
 	/**
-	 * Returns a {@code ItemType} with a value represented by the specified String.
+	 * Returns an {@code ItemType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the item type as a String
-	 * @return the import type
+	 * @param alias the item type as a {@code String}
+	 * @return an {@code ItemType}, may be {@code null}
 	 */
 	public static ItemType resolve(String alias) {
 		for(ItemType type : values()) {

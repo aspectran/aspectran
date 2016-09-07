@@ -198,11 +198,11 @@ public abstract class ClassUtils {
 	 * @see #wrapperToPrimitive(Class)
 	 */
 	public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
-		if (classes == null) {
+		if(classes == null) {
 			return null;
 		}
 
-		if (classes.length == 0) {
+		if(classes.length == 0) {
 			return classes;
 		}
 

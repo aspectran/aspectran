@@ -34,12 +34,12 @@ public class AspectranServiceListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		log.info("Initializing AspectranServiceListener...");
+		log.info("Initializing Aspectran Service Listener...");
 		
 		try {
 			aspectranService = WebAspectranService.newInstance(event.getServletContext());
 		} catch(Exception e) {
-			log.error("Failed to initialize AspectranServiceListener.", e);
+			log.error("Aspectran Service Listener initialization failed.", e);
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class AspectranServiceListener implements ServletContextListener {
 			aspectranService.shutdown();
 			aspectranService = null;
 
-			log.info("Successfully destroyed AspectranServiceListener: " + this);
+			log.info("Successfully destroyed Aspectran Service Listener: " + this);
 		}
 	}
 	

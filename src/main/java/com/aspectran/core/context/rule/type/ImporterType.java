@@ -38,10 +38,11 @@ public enum ImporterType {
 	}
 
 	/**
-	 * Returns a {@code ImporterType} with a value represented by the specified String.
+	 * Returns an {@code ImporterType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the importer type as a String
-	 * @return the importer type
+	 * @param alias the importer type as a {@code String}
+	 * @return an {@code ImporterType}, may be {@code null}
 	 */
 	public static ImporterType resolve(String alias) {
 		for(ImporterType type : values()) {

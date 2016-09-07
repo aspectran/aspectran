@@ -27,10 +27,7 @@ public class BooleanUtils {
 	}
 	
 	public static Boolean toNullableBooleanObject(String booleanString) {
-		if(booleanString == null)
-			return null;
-		
-		return Boolean.valueOf(booleanString);
+		return (booleanString == null) ? null : Boolean.valueOf(booleanString);
 	}
 	
 	public static boolean toBoolean(Boolean bool) {
@@ -38,10 +35,7 @@ public class BooleanUtils {
 	}
 	
 	public static boolean toBoolean(Boolean bool, boolean defaultValue) {
-		if(bool == null)
-			return defaultValue;
-		
-		return bool;
+		return (bool == null) ? defaultValue : bool;
 	}
 
 }

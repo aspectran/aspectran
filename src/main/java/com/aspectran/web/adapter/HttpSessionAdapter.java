@@ -147,16 +147,16 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
 	@Override
 	public SessionScope getSessionScope() {
-		if(scope == null) {
+		if(this.scope == null) {
 			synchronized(this) {
-				scope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-				if(scope == null) {
+				this.scope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+				if(this.scope == null) {
 					newHttpSessionScope(true);
 				}
 			}
 		}
 		
-		return scope;
+		return this.scope;
 	}
 	
 	/**
@@ -169,11 +169,11 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
 		
 		if(advisor != null || force) {
-			scope = new HttpSessionScope(this, advisor);
-			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, scope);
+			this.scope = new HttpSessionScope(this, advisor);
+			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.scope);
 		}
 		
-		return scope;
+		return this.scope;
 	}
 
 }

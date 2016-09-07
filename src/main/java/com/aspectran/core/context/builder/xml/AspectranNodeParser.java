@@ -24,10 +24,9 @@ import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
@@ -71,6 +70,7 @@ public class AspectranNodeParser {
 		addTypeAliasNodelets();
 		addAspectNodelets();
 		addBeanNodelets();
+		addScheduleNodelets();
 		addTemplateNodelets();
 		addTransletNodelets();
 		addImportNodelets();
@@ -117,30 +117,14 @@ public class AspectranNodeParser {
             if(StringUtils.hasText(text)) {
                 Parameters parameters = new VariableParameters(text);
                 for(String name : parameters.getParameterNameSet()) {
-                    DefaultSettingType settingType = null;
-                    if(name != null) {
-                        settingType = DefaultSettingType.resolve(name);
-                        if(settingType == null)
-                            throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
-                    }
-
-                    assistant.putSetting(settingType, parameters.getString(name));
+                    assistant.putSetting(name, parameters.getString(name));
                 }
             }
         });
 		parser.addNodelet("/aspectran/settings/setting", (node, attributes, text) -> {
             String name = attributes.get("name");
             String value = attributes.get("value");
-
-            DefaultSettingType settingType = null;
-
-            if(name != null) {
-                settingType = DefaultSettingType.resolve(name);
-                if(settingType == null)
-                    throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
-            }
-
-            assistant.putSetting(settingType, (text == null) ? value : text);
+            assistant.putSetting(name, (text == null) ? value : text);
         });
 		parser.addNodelet("/aspectran/settings/end()", (node, attributes, text) -> {
             assistant.applySettings();
@@ -219,6 +203,13 @@ public class AspectranNodeParser {
 	}
 
 	/**
+	 * Adds the schedule rule nodelets.
+	 */
+	private void addScheduleNodelets() {
+		parser.addNodelet("/aspectran", new ScheduleNodeletAdder(assistant));
+	}
+
+	/**
 	 * Adds the template nodelets.
 	 */
 	private void addTemplateNodelets() {
@@ -246,9 +237,6 @@ public class AspectranNodeParser {
 			ImportHandler importHandler = assistant.getImportHandler();
 			if(importHandler != null) {
 				Importer importer = assistant.newImporter(file, resource, url, fileType, profile);
-				if(importer == null) {
-					throw new IllegalArgumentException("The <import> element requires either a 'file' or a 'resource' or a 'url' attribute.");
-				}
 				importHandler.pending(importer);
 			}
 		});

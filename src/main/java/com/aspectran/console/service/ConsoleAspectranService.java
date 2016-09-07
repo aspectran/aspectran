@@ -60,18 +60,19 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	public void service(String command) {
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("Aspectran service has been paused, did not respond to the command: " + command);
+				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + command + "\"");
 				return;
 			} else {
 				pauseTimeout = 0L;
 			}
 		}
-		
+
+		CommandParser commandParser = CommandParser.parseCommand(command);
 		Activity activity = null;
 
 		try {
 			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
-			activity.prepare(command);
+			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");
@@ -94,16 +95,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	/**
 	 * Returns a new instance of ConsoleAspectranService.
 	 *
-	 * @param aspectranConfigFile the root configuration file
-	 * @return the web aspectran service
+	 * @param aspectranConfigText the aspectran configuration text
+	 * @return the console aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
+	public static ConsoleAspectranService newInstance(String aspectranConfigText) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 
-		if(aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
-			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
+		if(aspectranConfigText != null && !aspectranConfigText.isEmpty()) {
+			AponReader.parse(new File(aspectranConfigText), aspectranConfig);
 		}
 
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);

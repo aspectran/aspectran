@@ -68,4 +68,8 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 		return null;
 	}
 
+	@Override
+	public void flush() {
+	}
+
 }

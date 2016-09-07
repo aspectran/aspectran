@@ -75,10 +75,10 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	@Override
 	public <T> T getBean(Class<T> requiredType, String id) {
 		BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
-
-		if(beanRules == null)
+		if(beanRules == null) {
 			throw new RequiredTypeBeanNotFoundException(requiredType);
-
+		}
+	
 		if(beanRules.length == 1) {
 			return getBean(beanRules[0]);
 		} else if(id != null) {
@@ -95,10 +95,9 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	@Override
 	public <T> T getConfigBean(Class<T> requiredType) {
 		BeanRule beanRule = beanRuleRegistry.getConfigBeanRule(requiredType);
-
-		if(beanRule == null)
+		if(beanRule == null) {
 			throw new RequiredTypeBeanNotFoundException(requiredType);
-
+		}
 		return getBean(beanRule);
 	}
 
@@ -158,25 +157,25 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
 		Scope scope = getRequestScope();
-		if(scope == null)
+		if(scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
-
+		}
 		return getScopedBean(scope, beanRule);
 	}
 	
 	private Object getSessionScopeBean(BeanRule beanRule) {
 		Scope scope = getSessionScope();
-		if(scope == null)
+		if(scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
-
+		}
 		return getScopedBean(scope, beanRule);
 	}
 
 	private Object getApplicationScopeBean(BeanRule beanRule) {
 		Scope scope = getApplicationScope();
-		if(scope == null)
+		if(scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
-
+		}
 		return getScopedBean(scope, beanRule);
 	}
 	

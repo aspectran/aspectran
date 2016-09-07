@@ -45,24 +45,24 @@ public class Application {
             while(true) {
                 String command = System.console().readLine("Aspectran> ");
 
-                if(command.isEmpty())
+                if(command == null || command.isEmpty())
                     continue;
 
                 switch(command) {
                     case "restart":
-                        System.out.println("Restart the Aspectran Service.");
+                        System.out.println("Restart Aspectran Service.");
                         aspectranService.restart();
                         break;
                     case "pause":
-                        System.out.println("Pause the Aspectran Service.");
+                        System.out.println("Pause Aspectran Service.");
                         aspectranService.pause();
                         break;
                     case "resume":
-                        System.out.println("Resume the Aspectran Service.");
+                        System.out.println("Resume Aspectran Service.");
                         aspectranService.resume();
                         break;
                     case "quit":
-                    	System.out.println("Goodbye.");
+                        System.out.println("Goodbye.");
                         break loop;
                     default:
                         aspectranService.service(command);
@@ -76,7 +76,7 @@ public class Application {
             exitStatus = 1;
         } finally {
             if(aspectranService != null) {
-                System.out.println("Do not terminate the server while the all scoped bean destroying.");
+                System.out.println("Do not terminate this application while destroying all beans.");
 
                 aspectranService.shutdown();
             }

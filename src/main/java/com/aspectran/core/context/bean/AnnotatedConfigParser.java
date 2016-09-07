@@ -326,10 +326,11 @@ public class AnnotatedConfigParser {
 
 			if(method.isAnnotationPresent(Dispatch.class)) {
 				Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-				String dispatchName = StringUtils.emptyToNull(dispatchAnno.name());
+				String name = StringUtils.emptyToNull(dispatchAnno.name());
+				String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
 				String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
 				String characterEncoding = StringUtils.emptyToNull(dispatchAnno.characterEncoding());
-				DispatchResponseRule drr = DispatchResponseRule.newInstance(dispatchName, contentType, characterEncoding);
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding);
 				transletRule.setResponseRule(ResponseRule.newInstance(drr));
 			} else if(method.isAnnotationPresent(Transform.class)) {
 				Transform transformAnno = method.getAnnotation(Transform.class);

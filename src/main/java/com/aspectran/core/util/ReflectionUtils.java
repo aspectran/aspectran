@@ -34,7 +34,7 @@ public class ReflectionUtils {
 	 * specified {@link Object target object} to the specified {@code value}.
 	 * In accordance with {@link Field#set(Object, Object)} semantics, the new value
 	 * is automatically unwrapped if the underlying field has a primitive type.
-	 * 
+	 *
 	 * @param field the field to set
 	 * @param target the target object on which to set the field
 	 * @param value the value to set (may be {@code null})
@@ -106,14 +106,23 @@ public class ReflectionUtils {
 		return false;
 	}
 
-	public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Object[] destArgs) {
-		if(srcArgs.length != destArgs.length)
+	/**
+	 * Algorithm that judges the match between the declared parameter types of
+	 * a candidate method and a specific list of arguments that this method is
+	 * supposed to be invoked with.
+	 *
+	 * @param paramTypes the parameter types to match
+	 * @param destArgs the arguments to match
+	 * @return the accumulated weight for all arguments
+	 */
+	public static float getTypeDifferenceWeight(Class<?>[] paramTypes, Object[] destArgs) {
+		if(paramTypes.length != destArgs.length)
 			return Float.MAX_VALUE;
 
 		float weight = 0.0f;
 
-		for(int i = 0; i < srcArgs.length; i++) {
-			Class<?> srcClass = srcArgs[i];
+		for(int i = 0; i < paramTypes.length; i++) {
+			Class<?> srcClass = paramTypes[i];
 			Object destObject = destArgs[i];
 			weight += getTypeDifferenceWeight(srcClass, destObject);
 
@@ -124,18 +133,28 @@ public class ReflectionUtils {
 		return weight;
 	}
 
-	public static float getTypeDifferenceWeight(Class<?> srcClass, Object destObject) {
-		if(!ClassUtils.isAssignableValue(srcClass, destObject))
+	/**
+	 * Algorithm that judges the match between the declared parameter types of
+	 * a candidate method and a specific list of arguments that this method is
+	 * supposed to be invoked with.
+	 *
+	 * @param paramType the parameter type to match
+	 * @param destArg the argument to match
+	 * @return the type difference weight
+	 */
+	public static float getTypeDifferenceWeight(Class<?> paramType, Object destArg) {
+		if(!ClassUtils.isAssignableValue(paramType, destArg))
 			return Float.MAX_VALUE;
 
-		return getTypeDifferenceWeight(srcClass, destObject.getClass());
+		return getTypeDifferenceWeight(paramType, destArg.getClass());
 	}
 
 	/**
 	 * Returns the sum of the object transformation cost for each class in the source
 	 * argument list.
-	 * @param srcArgs The source arguments
-	 * @param destArgs The destination arguments
+	 *
+	 * @param srcArgs the source arguments
+	 * @param destArgs the destination arguments
 	 * @return the accumulated weight for all arguments
 	 */
 	public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Class<?>[] destArgs) {
@@ -154,8 +173,9 @@ public class ReflectionUtils {
 	 * Gets the number of steps required needed to turn the source class into the
 	 * destination class. This represents the number of steps in the object hierarchy
 	 * graph.
-	 * @param srcClass The source class
-	 * @param destClass The destination class
+	 *
+	 * @param srcClass the source class
+	 * @param destClass the destination class
 	 * @return The cost of transforming an object
 	 */
 	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
@@ -198,6 +218,12 @@ public class ReflectionUtils {
 		return weight;
 	}
 
+	/**
+	 * Converts an array of objects to an array of their primitive types.
+	 *
+	 * @param val an array of objects to be converted, may be {@code null}
+	 * @return an array of their primitive types
+	 */
 	public static Object toPrimitiveArray(Object val) {
 		int len = Array.getLength(val);
 

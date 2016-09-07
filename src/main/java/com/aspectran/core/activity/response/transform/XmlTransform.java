@@ -90,7 +90,7 @@ public class XmlTransform extends TransformResponse {
 			if(this.characterEncoding != null) {
 				characterEncoding = this.characterEncoding;
 			} else {
-				characterEncoding = activity.determineResponseCharacterEncoding();
+				characterEncoding = activity.resolveResponseCharacterEncoding();
 			}
 
 			if(characterEncoding != null)

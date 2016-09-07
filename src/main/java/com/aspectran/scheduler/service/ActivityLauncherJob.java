@@ -35,25 +35,25 @@ import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
  */
 public class ActivityLauncherJob implements Job {
 	
-	public ActivityLauncherJob() {
-	}
-	
+	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			JobDetail jobDetail = jobExecutionContext.getJobDetail();
 			JobDataMap jobDataMap = jobDetail.getJobDataMap();
-			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ASPECTRAN_CONTEXT_DATA_KEY);
-			String transletName = jobDataMap.getString(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY);
-			
-			runActivity(context, transletName, jobDetail);
-		} catch(ActivityException e) {
+
+			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ACTIVITY_CONTEXT_DATA_KEY);
+			String transletName = jobDetail.getKey().getName();
+
+			Activity activity = runActivity(context, transletName, jobExecutionContext);
+			jobExecutionContext.put(QuartzSchedulerService.ACTIVITY_DATA_KEY, activity);
+		} catch(Exception e) {
 			throw new JobExecutionException(e);
 		}
 	}
 	
-	private void runActivity(ActivityContext context, String transletName, JobDetail jobDetail) throws ActivityException {
-		RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobDetail);
-		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter(jobDetail);
+	private Activity runActivity(ActivityContext context, String transletName, JobExecutionContext jobExecutionContext) throws ActivityException {
+		RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
+		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
 
 		Activity activity = null;
 
@@ -65,6 +65,8 @@ public class ActivityLauncherJob implements Job {
 			if(activity != null)
 				activity.finish();
 		}
+
+		return activity;
 	}
 	
 }

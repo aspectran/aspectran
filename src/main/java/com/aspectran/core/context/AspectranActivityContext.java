@@ -26,6 +26,7 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.DelegatingMessageSource;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
+import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ToStringBuilder;
@@ -51,9 +52,11 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private ContextBeanRegistry contextBeanRegistry;
 
-	private TransletRuleRegistry transletRuleRegistry;
+	private ScheduleRuleRegistry scheduleRuleRegistry;
 
 	private TemplateProcessor templateProcessor;
+	
+	private TransletRuleRegistry transletRuleRegistry;
 
 	private MessageSource messageSource;
 	
@@ -106,17 +109,12 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	@Override
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
+	public ScheduleRuleRegistry getScheduleRuleRegistry() {
+		return scheduleRuleRegistry;
 	}
 
-	/**
-	 * Sets the translet rule registry.
-	 *
-	 * @param transletRuleRegistry the new translet rule registry
-	 */
-	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
-		this.transletRuleRegistry = transletRuleRegistry;
+	public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
+		this.scheduleRuleRegistry = scheduleRuleRegistry;
 	}
 
 	@Override
@@ -131,6 +129,20 @@ public class AspectranActivityContext implements ActivityContext {
 	 */
 	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
 		this.templateProcessor = templateProcessor;
+	}
+
+	@Override
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
+	}
+
+	/**
+	 * Sets the translet rule registry.
+	 *
+	 * @param transletRuleRegistry the new translet rule registry
+	 */
+	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
+		this.transletRuleRegistry = transletRuleRegistry;
 	}
 
 	@Override

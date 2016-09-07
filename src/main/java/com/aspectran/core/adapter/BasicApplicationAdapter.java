@@ -39,7 +39,7 @@ public class BasicApplicationAdapter extends AbstractApplicationAdapter {
 	/**
 	 * Instantiates a new BasicApplicationAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public BasicApplicationAdapter(Object adaptee) {
 		super(adaptee);
@@ -52,8 +52,8 @@ public class BasicApplicationAdapter extends AbstractApplicationAdapter {
 	}
 
 	@Override
-	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
+	public void setAttribute(String name, Object value) {
+		attributes.put(name, value);
 	}
 
 	@Override

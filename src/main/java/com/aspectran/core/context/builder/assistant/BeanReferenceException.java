@@ -77,7 +77,7 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 		
 		for(int i = 0; i < unknownBeanIdList.size(); i++) {
 			if(i > 0)
-				sb.append(",");
+				sb.append(", ");
 			sb.append(unknownBeanIdList.get(i));
 		}
 		

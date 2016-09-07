@@ -30,8 +30,6 @@ public class PointcutPatternRule {
 	
 	private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
-	//private static final char JOINPOINT_SCOPE_DELIMITER = '$';
-
 	private PointcutType pointcutType;
 	
 	private String patternString;
@@ -114,9 +112,9 @@ public class PointcutPatternRule {
 	}
 	
 	public void addExcludePointcutPatternRule(PointcutPatternRule excludePointcutPatternRule) {
-		if(excludePointcutPatternRuleList == null)
+		if(excludePointcutPatternRuleList == null) {
 			excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
-		
+		}
 		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
 	}
 
@@ -195,36 +193,6 @@ public class PointcutPatternRule {
 		return sb.toString();
 	}
 
-	/*
-	public static String combinePatternString(JoinpointScopeType joinpointScope, String transletName, String beanId, String className, String methodName) {
-		StringBuilder sb = new StringBuilder();
-		
-		if(joinpointScope != null) {
-			sb.append(joinpointScope);
-			sb.append(JOINPOINT_SCOPE_DELIMITER);
-		}
-		
-		if(transletName != null)
-			sb.append(transletName);
-
-		if(beanId != null) {
-			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
-			sb.append(beanId);
-		} else if(className != null) {
-			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
-			sb.append(BeanRule.CLASS_DIRECTIVE_PREFIX);
-			sb.append(className);
-		}
-
-		if(methodName != null) {
-			sb.append(POINTCUT_METHOD_NAME_DELIMITER);
-			sb.append(methodName);
-		}
-		
-		return sb.toString();
-	}
-	*/
-	
 	public static PointcutPatternRule parsePatternString(String patternString) {
 		PointcutPatternRule ppr = new PointcutPatternRule();
 		ppr.setPatternString(patternString);
@@ -235,11 +203,11 @@ public class PointcutPatternRule {
 
 		int beanClassDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_CLASS_DELIMITER);
 		
-		if(beanClassDelimiterIndex == -1)
+		if(beanClassDelimiterIndex == -1) {
 			transletNamePattern = patternString;
-		else if(beanClassDelimiterIndex == 0)
+		} else if(beanClassDelimiterIndex == 0) {
 			beanClassPattern = patternString.substring(1);
-		else {
+		} else {
 			transletNamePattern = patternString.substring(0, beanClassDelimiterIndex);
 			beanClassPattern = patternString.substring(beanClassDelimiterIndex + 1);
 		}

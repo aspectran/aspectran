@@ -96,26 +96,24 @@ public class TransletRuleRegistry {
 	}
 
 	public TransletRule getRestfulTransletRule(String requestTransletName, MethodType requestMethod) {
-		if(restfulTransletRuleSet.isEmpty())
-			return null;
-
-		for(TransletRule transletRule : restfulTransletRuleSet) {
-			WildcardPattern namePattern = transletRule.getNamePattern();
-			if(namePattern != null) {
-				if(namePattern.matches(requestTransletName)) {
-					if(transletRule.getAllowedMethods() == null ||
-							requestMethod.containsTo(transletRule.getAllowedMethods()))
-						return transletRule;
-				}
-			} else {
-				if(requestTransletName.equals(transletRule.getName())) {
-					if(transletRule.getAllowedMethods() == null ||
-							requestMethod.containsTo(transletRule.getAllowedMethods()))
-						return transletRule;
+		if(!restfulTransletRuleSet.isEmpty()) {
+			for(TransletRule transletRule : restfulTransletRuleSet) {
+				WildcardPattern namePattern = transletRule.getNamePattern();
+				if(namePattern != null) {
+					if(namePattern.matches(requestTransletName)) {
+						if(transletRule.getAllowedMethods() == null ||
+								requestMethod.containsTo(transletRule.getAllowedMethods()))
+							return transletRule;
+					}
+				} else {
+					if(requestTransletName.equals(transletRule.getName())) {
+						if(transletRule.getAllowedMethods() == null ||
+								requestMethod.containsTo(transletRule.getAllowedMethods()))
+							return transletRule;
+					}
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -281,9 +279,8 @@ public class TransletRuleRegistry {
 		if(StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
 			if(absolutely) {
 				return transletName;
-			} else {
-				transletName = transletName.substring(1);
 			}
+			transletName = transletName.substring(1);
 		}
 
 		if(defaultSettings.getTransletNamePrefix() == null &&

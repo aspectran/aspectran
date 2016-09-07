@@ -178,10 +178,9 @@ public class BeanRuleAnalyzer {
 				beanActionRule.setRequiresTranslet(true);
 			} else {
 				Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
-
-				if(m2 == null)
+				if(m2 == null) {
 					throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
-
+				}
 				beanActionRule.setMethod(m2);
 			}
 		}

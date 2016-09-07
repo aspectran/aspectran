@@ -40,10 +40,11 @@ public enum AutowireTargetType {
 	}
 
 	/**
-	 * Returns a {@code AutowireTargetType} with a value represented by the specified String.
+	 * Returns an {@code AutowireTargetType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the autowire target type as a String
-	 * @return the action type
+	 * @param alias the autowire target type as a {@code String}
+	 * @return an {@code AutowireTargetType}, may be {@code null}
 	 */
 	public static AutowireTargetType resolve(String alias) {
 		for(AutowireTargetType type : values()) {

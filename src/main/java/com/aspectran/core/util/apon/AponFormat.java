@@ -37,7 +37,9 @@ public class AponFormat {
 	
 	protected static final char NO_CONTROL_CHAR = 0;
 	
-	protected static final char QUOTE_CHAR = '"';
+	protected static final char DOUBLE_QUOTE_CHAR = '"';
+	
+	protected static final char SINGLE_QUOTE_CHAR = '\'';
 	
 	protected static final char ESCAPE_CHAR = '\\';
 
@@ -53,7 +55,7 @@ public class AponFormat {
 	
 	protected static final String FALSE = "false";
 	
-	public static String escape(String value) {
+	public static String escape(String value, boolean noQuote) {
 		if(value == null)
 			return null;
 		
@@ -72,7 +74,9 @@ public class AponFormat {
 			switch(c) {
 			case '\\':
 			case '"':
-				sb.append('\\');
+				if(!noQuote) {
+					sb.append('\\');
+				}
 				sb.append(c);
 				break;
 			case '\b':
@@ -126,7 +130,8 @@ public class AponFormat {
 
 				switch(c) {
 				case ESCAPE_CHAR:
-				case QUOTE_CHAR:
+				case DOUBLE_QUOTE_CHAR:
+				case SINGLE_QUOTE_CHAR:
 					sb.append(c);
 					break;
 				case 'b':

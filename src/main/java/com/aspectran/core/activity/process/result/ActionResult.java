@@ -34,6 +34,11 @@ public class ActionResult {
 
 	private boolean hidden;
 
+	/**
+	 * Instantiates a new Action result.
+	 *
+	 * @param parent the parent
+	 */
 	public ActionResult(ContentResult parent) {
 		this.parent = parent;
 		
@@ -70,27 +75,37 @@ public class ActionResult {
 	}
 
 	/**
-	 * Gets the result value.
+	 * Gets the result value of an action.
 	 * 
-	 * @return the result value
+	 * @return the result value of an action
 	 */
 	public Object getResultValue() {
 		return resultValue;
 	}
 
 	/**
-	 * Sets the result value.
+	 * Sets the result value of an action.
 	 * 
-	 * @param resultValue the new result value
+	 * @param resultValue the new result value of an action
 	 */
 	public void setResultValue(Object resultValue) {
 		this.resultValue = resultValue;
 	}
 
+	/**
+	 * Returns whether or not to hide this action result.
+	 *
+	 * @return true if hide this action result, otherwise false
+	 */
 	public boolean isHidden() {
 		return hidden;
 	}
 
+	/**
+	 * Sets whether or not to hide this action result.
+	 *
+	 * @param hidden whether to hide this action result
+	 */
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}

@@ -75,25 +75,30 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 					log.trace(sb.toString());
 				}
 
-				if(aarr.getBeforeAdviceRuleList() != null)
+				if(aarr.getBeforeAdviceRuleList() != null) {
 					activity.execute(aarr.getBeforeAdviceRuleList());
+				}
 
 				Object result;
 
 				if(!activity.isActivityEnded()) {
+					if(log.isDebugEnabled()) {
+						log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
+					}
 					result = methodProxy.invokeSuper(proxy, args);
 				} else {
 					result = null;
 				}
 
-				if(aarr.getAfterAdviceRuleList() != null)
+				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
+				}
 
 				return result;
 			} finally {
-				if(aarr.getFinallyAdviceRuleList() != null)
-					activity.forceExecute(aarr.getFinallyAdviceRuleList());
-
+				if(aarr.getFinallyAdviceRuleList() != null) {
+					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
+				}
 				if(log.isTraceEnabled()) {
 					log.trace("end method " + methodName);
 				}

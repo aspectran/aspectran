@@ -29,6 +29,9 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -97,14 +100,14 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the request character encoding
 	 */
-	String determineRequestCharacterEncoding();
+	String resolveRequestCharacterEncoding();
 
 	/**
 	 * Determine the response character encoding.
 	 *
 	 * @return the response character encoding
 	 */
-	String determineResponseCharacterEncoding();
+	String resolveResponseCharacterEncoding();
 	
 	/**
 	 * Execute the aspect advices.
@@ -114,11 +117,25 @@ public interface Activity extends BeanRegistry {
 	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
-	 * Execute the aspect advices to force.
+	 * Execute the aspect advices without throw exceptions.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
+	void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
+	
+	/**
+	 * Execute the aspect advice.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 */
+	void execute(AspectAdviceRule aspectAdviceRule);
+	
+	/**
+	 * Execute the aspect advice without throw exceptions.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 */
+	void executeWithoutThrow(AspectAdviceRule aspectAdviceRule);
 	
 	/**
 	 * Returns the process result.
@@ -128,21 +145,14 @@ public interface Activity extends BeanRegistry {
 	ProcessResult getProcessResult();
 	
 	/**
-	 * Returns a action result for the specified action id from the process result,
+	 * Returns an action result for the specified action id from the process result,
 	 * or {@code null} if the action does not exist.
 	 *
 	 * @param actionId the specified action id
-	 * @return the action result
+	 * @return an action result
 	 */
 	Object getProcessResult(String actionId);
-	
-	/**
-	 * Returns the translet name will be forwarded.
-	 *
-	 * @return the forwarding destination translet name
-	 */
-	String getForwardTransletName();
-	
+
 	/**
 	 * Returns whether the current activity is completed or terminated.
 	 * 
@@ -160,7 +170,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @param response the response
 	 */
-	void response(Response response);
+	void setPenddedResponse(Response response);
 	
 	/**
 	 * Respond depending on the content type.
@@ -174,7 +184,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the response
 	 */
-	Response getResponse();
+	Response getBaseResponse();
 
 	/**
 	 * Returns whether the exception was thrown.
@@ -184,23 +194,23 @@ public interface Activity extends BeanRegistry {
 	boolean isExceptionRaised();
 
 	/**
-	 * Returns the raised exception instance.
+	 * Returns an instance of the currently raised exception.
 	 *
-	 * @return the raised exception instance
+	 * @return an instance of the currently raised exception
 	 */
 	Throwable getRaisedException();
 
 	/**
-	 * Returns the origin raised exception instance.
+	 * Returns an instance of the originally raised exception.
 	 *
-	 * @return the origin raised exception instance
+	 * @return an instance of the originally raised exception
 	 */
 	Throwable getOriginRaisedException();
 
 	/**
-	 * Sets the raised exception.
+	 * Sets an instance of the currently raised exception.
 	 *
-	 * @param raisedException the new raised exception
+	 * @param raisedException an instance of the currently raised exception
 	 */
 	void setRaisedException(Throwable raisedException);
 
@@ -212,7 +222,7 @@ public interface Activity extends BeanRegistry {
 	ActivityContext getActivityContext();
 
 	/**
-	 * Create a new activity.
+	 * Create a new inner activity.
 	 *
 	 * @param <T> the type of the activity
 	 * @return the activity object
@@ -220,26 +230,32 @@ public interface Activity extends BeanRegistry {
 	<T extends Activity> T newActivity();
 
 	/**
-	 * Gets the translet.
+	 * Gets the request http method.
 	 *
-	 * @return the translet
+	 * @return the request method
 	 */
-	Translet getTranslet();
-	
+	MethodType getRequestMethod();
+
 	/**
-	 * Returns the name of the translet.
+	 * Gets the name of the current translet.
 	 *
 	 * @return the translet name
 	 */
 	String getTransletName();
 
 	/**
-	 * Gets the request http method.
+	 * Returns an instance of the current translet.
 	 *
-	 * @return the request method
+	 * @return an instance of the current translet
 	 */
-	MethodType getRequestMethod();
-	
+	Translet getTranslet();
+
+	TransletRule getTransletRule();
+
+	RequestRule getRequestRule();
+
+	ResponseRule getResponseRule();
+
 	/**
 	 * Gets the application adapter.
 	 *
@@ -289,33 +305,15 @@ public interface Activity extends BeanRegistry {
 	 * @param settingName the setting name
 	 * @return the setting value
 	 */
-	<T> T getTransletSetting(String settingName);
-	
+	<T> T getSetting(String settingName);
+
 	/**
-	 * Gets the setting value in the request scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getRequestSetting(String settingName);
-	
-	/**
-	 * Gets the setting value in the response scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getResponseSetting(String settingName);
-	
-	/**
-	 * Register the aspect rule.
+	 * Register an aspect rule dynamically.
 	 *
 	 * @param aspectRule the aspect rule
 	 */
 	void registerAspectRule(AspectRule aspectRule);
-	
+
 	/**
 	 * Gets the aspect advice bean.
 	 *

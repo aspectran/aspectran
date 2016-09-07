@@ -15,25 +15,23 @@
  */
 package com.aspectran.core.adapter;
 
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.activity.request.AbstractRequest;
+import com.aspectran.core.activity.request.AbstractAdaptiveRequest;
 
 /**
  * The Class AbstractRequestAdapter.
   *
  * @since 2011. 3. 13.
 */
-public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
+public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest implements RequestAdapter {
 
 	protected final Object adaptee;
 
 	/**
 	 * Instantiates a new AbstractRequestAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public AbstractRequestAdapter(Object adaptee) {
 		super();
@@ -43,7 +41,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	/**
 	 * Instantiates a new AbstractRequestAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 * @param parameterMap the parameter map
 	 */
 	public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
@@ -57,25 +55,4 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 		return (T)adaptee;
 	}
 
-	@Override
-	public Map<String, Object> getAttributeMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		fillAttributeMap(params);
-		return params;
-	}
-	
-	@Override
-	public void fillAttributeMap(Map<String, Object> attributeMap) {
-		if(attributeMap == null)
-			return;
-		
-		Enumeration<String> enm = getAttributeNames();
-		
-		while(enm.hasMoreElements()) {
-			String name = enm.nextElement();
-			Object value = getAttribute(name);
-			attributeMap.put(name, value);
-		}
-	}
-	
 }

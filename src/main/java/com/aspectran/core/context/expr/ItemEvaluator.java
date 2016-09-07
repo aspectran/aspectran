@@ -19,11 +19,12 @@ import java.util.Map;
 
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.util.MultiValueMap;
 
 /**
  * Evaluates expression for the Item Rule.
  *
- * @since 2010. 5. 6
+ * @since 2010. 5. 6.
  */
 public interface ItemEvaluator {
 	
@@ -33,6 +34,8 @@ public interface ItemEvaluator {
 	
 	<T> T evaluate(ItemRule itemRule);
 
+	MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
+	
 	String[] evaluateAsStringArray(ItemRule itemRule);
 	
 }

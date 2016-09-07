@@ -41,6 +41,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -48,6 +49,7 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
@@ -83,9 +85,11 @@ public class ContextBuilderAssistant {
 	
 	private BeanRuleRegistry beanRuleRegistry;
 
-	private TemplateRuleRegistry templateRuleRegistry;
+	private ScheduleRuleRegistry scheduleRuleRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
+
+	private TemplateRuleRegistry templateRuleRegistry;
 
 	private BeanReferenceInspector beanReferenceInspector;
 
@@ -127,7 +131,9 @@ public class ContextBuilderAssistant {
 			transletRuleRegistry.setAssistantLocal(assistantLocal);
 			
 			beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
-			
+
+			scheduleRuleRegistry = new ScheduleRuleRegistry();
+
 			templateRuleRegistry = new TemplateRuleRegistry();
 			templateRuleRegistry.setAssistantLocal(assistantLocal);
 			
@@ -149,6 +155,7 @@ public class ContextBuilderAssistant {
 		if(environment != null) {
 			aspectRuleRegistry = null;
 			beanRuleRegistry = null;
+			scheduleRuleRegistry = null;
 			transletRuleRegistry = null;
 			templateRuleRegistry = null;
 
@@ -210,19 +217,9 @@ public class ContextBuilderAssistant {
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
-
-	/**
-	 * Put setting.
-	 *
-	 * @param settingType the setting type
-	 * @param value the value
-	 */
-	public void putSetting(DefaultSettingType settingType, String value) {
-		settings.put(settingType, value);
-	}
 	
 	/**
-	 * Gets the setting.
+	 * Gets the setting vlaue.
 	 *
 	 * @param settingType the setting type
 	 * @return the setting
@@ -230,7 +227,22 @@ public class ContextBuilderAssistant {
 	public Object getSetting(DefaultSettingType settingType) {
 		return settings.get(settingType);
 	}
-	
+
+	/**
+	 * Puts the setting vlaue.
+	 *
+	 * @param name the name
+	 * @param value the value
+	 */
+	public void putSetting(String name, String value) {
+		DefaultSettingType settingType = null;
+		settingType = DefaultSettingType.resolve(name);
+		if(settingType == null) {
+		    throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
+		}
+		settings.put(settingType, value);
+	}
+
 	/**
 	 * Apply settings.
 	 *
@@ -261,10 +273,20 @@ public class ContextBuilderAssistant {
 		}
 	}
 	
+	/**
+	 * Gets the environment rules.
+	 *
+	 * @return the environment rules
+	 */
 	public List<EnvironmentRule> getEnvironmentRules() {
 		return environmentRules;
 	}
 
+	/**
+	 * Adds the environment rule.
+	 *
+	 * @param environmentRule the environment rule
+	 */
 	public void addEnvironmentRule(EnvironmentRule environmentRule) {
 		environmentRules.add(environmentRule);
 	}
@@ -279,37 +301,36 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Adds a type alias.
+	 * Adds a type alias to use for simplifying complex type signatures.
+	 * A type alias is defined by assigning the type to the alias.
 	 * 
-	 * @param alias the alias
-	 * @param type the type
+	 * @param alias the name of the alias
+	 * @param type the type identifier that you are creating an alias for
 	 */
 	public void addTypeAlias(String alias, String type) {
 		typeAliases.put(alias, type);
 	}
 	
 	/**
-	 * Gets the alias type.
+	 * Returns a type of an aliased type that is defined by assigning the type to the alias.
 	 * 
-	 * @param alias the alias
-	 * @return the alias type
+	 * @param alias the name of the alias
+	 * @return the aliased type
 	 */
-	public String getAliasType(String alias) {
+	public String getAliasedType(String alias) {
 		return typeAliases.get(alias);
 	}
 	
 	/**
-	 * Returns the resolve alias type.
+	 * Returns a type of an aliased type that is defined by assigning the type to the alias.
+	 * If aliased type is not found, it returns alias.
 	 * 
-	 * @param alias the alias
-	 * @return the string
+	 * @param alias the name of the alias
+	 * @return the aliased type
 	 */
 	public String resolveAliasType(String alias) {
-		String type = getAliasType(alias);
-		if(type == null)
-			return alias;
-
-		return type;
+		String type = getAliasedType(alias);
+		return (type == null ? alias: type);
 	}
 	
 	/**
@@ -319,6 +340,8 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
+		if(transletName == null)
+			return null;
 		return transletRuleRegistry.applyTransletNamePattern(transletName, true);
 	}
 
@@ -364,16 +387,6 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Checks if is allow null action id.
-	 * 
-	 * @return true, if is allow null action id
-	 */
-	public boolean isNullableActionId() {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		return defaultSettings == null || defaultSettings.isNullableActionId();
-	}
-
-	/**
 	 * Checks if is pointcut pattern verifiable.
 	 *
 	 * @return true, if is pointcut pattern verifiable
@@ -384,19 +397,19 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Resolve bean class for aspect rule.
+	 * Resolve bean class for the aspect rule.
 	 *
 	 * @param beanId the bean id
 	 * @param aspectRule the aspect rule
 	 */
 	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			aspectRule.setAdviceBeanClass(beanClass);
-            putBeanReference(beanClass, aspectRule);
-        } else {
-            putBeanReference(beanId, aspectRule);
-        }
+		    reserveBeanReference(beanClass, aspectRule);
+		} else {
+		    reserveBeanReference(beanId, aspectRule);
+		}
 	}
 
 	/**
@@ -407,12 +420,12 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			beanActionRule.setBeanClass(beanClass);
-            putBeanReference(beanClass, beanActionRule);
-        } else {
-            putBeanReference(beanId, beanActionRule);
-        }
+		    reserveBeanReference(beanClass, beanActionRule);
+		} else {
+		    reserveBeanReference(beanId, beanActionRule);
+		}
 	}
 
 	/**
@@ -423,14 +436,19 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanRule beanRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-        if(beanClass != null) {
+		if(beanClass != null) {
 			beanRule.setOfferBeanClass(beanClass);
-            putBeanReference(beanClass, beanRule);
-        } else {
-            putBeanReference(beanId, beanRule);
-        }
+		    reserveBeanReference(beanClass, beanRule);
+		} else {
+		    reserveBeanReference(beanId, beanRule);
+		}
 	}
 
+	/**
+	 * Resolve bean class.
+	 *
+	 * @param itemRule the item rule
+	 */
 	public void resolveBeanClass(ItemRule itemRule) {
 		Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 		if(iter != null) {
@@ -453,12 +471,28 @@ public class ContextBuilderAssistant {
 		if(token.getDirectiveType() == TokenDirectiveType.CLASS) {
 			Class<?> beanClass = loadClass(token.getValue());
 			token.setAlternativeValue(beanClass);
-			putBeanReference(beanClass, token);
+			reserveBeanReference(beanClass, token);
 		} else {
-			putBeanReference(token.getName(), token);
+			reserveBeanReference(token.getName(), token);
 		}
 	}
 
+	/**
+	 * Resolve bean class for the schedule rule.
+	 *
+	 * @param beanId the bean id
+	 * @param scheduleRule the schedule rule
+	 */
+	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+		if(beanClass != null) {
+			scheduleRule.setSchedulerBeanClass(beanClass);
+			reserveBeanReference(beanClass, scheduleRule);
+		} else {
+			reserveBeanReference(beanId, scheduleRule);
+		}
+	}
+	
 	private Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
@@ -475,12 +509,12 @@ public class ContextBuilderAssistant {
 		}
 	}
 
-	public void putBeanReference(String beanId, BeanReferenceInspectable someRule) {
-		beanReferenceInspector.putRelation(beanId, someRule);
+	public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.reserve(beanId, someRule);
 	}
 
-	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
-		beanReferenceInspector.putRelation(beanClass, someRule);
+	public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.reserve(beanClass, someRule);
 	}
 
 	public BeanReferenceInspector getBeanReferenceInspector() {
@@ -507,7 +541,16 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Add translet rule.
+	 * Adds the schedule rule.
+	 *
+	 * @param scheduleRule the aspect rule
+	 */
+	public void addScheduleRule(ScheduleRule scheduleRule) {
+		scheduleRuleRegistry.addScheduleRule(scheduleRule);
+	}
+
+	/**
+	 * Add the translet rule.
 	 *
 	 * @param transletRule the translet rule
 	 */
@@ -516,7 +559,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Add template rule.
+	 * Add the template rule.
 	 *
 	 * @param templateRule the template rule
 	 */
@@ -525,7 +568,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets aspect rule registry.
+	 * Gets the aspect rule registry.
 	 *
 	 * @return the aspect rule registry
 	 */
@@ -534,7 +577,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets bean rule registry.
+	 * Gets the bean rule registry.
 	 *
 	 * @return the bean rule registry
 	 */
@@ -543,16 +586,25 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets translet rule registry.
+	 * Gets the schedule rule registry.
+	 *
+	 * @return the template rule registry
+	 */
+	public ScheduleRuleRegistry getScheduleRuleRegistry() {
+		return scheduleRuleRegistry;
+	}
+
+	/**
+	 * Gets the translet rule registry.
 	 *
 	 * @return the translet rule registry
 	 */
 	public TransletRuleRegistry getTransletRuleRegistry() {
 		return transletRuleRegistry;
 	}
-
+	
 	/**
-	 * Gets template rule registry.
+	 * Gets the template rule registry.
 	 *
 	 * @return the template rule registry
 	 */
@@ -583,14 +635,14 @@ public class ContextBuilderAssistant {
 		beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRuleMap().values());
 		return beanRuleSet;
 	}
-
+	
 	/**
-	 * Gets all template rules.
+	 * Gets all schedule rules.
 	 *
-	 * @return the template rules
+	 * @return the schedule rules
 	 */
-	public Collection<TemplateRule> getTemplateRules() {
-		return templateRuleRegistry.getTemplateRuleMap().values();
+	public Collection<ScheduleRule> getScheduleRules() {
+		return scheduleRuleRegistry.getScheduleRuleMap().values();
 	}
 
 	/**
@@ -602,14 +654,43 @@ public class ContextBuilderAssistant {
 		return transletRuleRegistry.getTransletRuleMap().values();
 	}
 
+	/**
+	 * Gets all template rules.
+	 *
+	 * @return the template rules
+	 */
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRuleRegistry.getTemplateRuleMap().values();
+	}
+
+	/**
+	 * Gets the import handler.
+	 *
+	 * @return the import handler
+	 */
 	public ImportHandler getImportHandler() {
 		return importHandler;
 	}
 
+	/**
+	 * Sets the import handler.
+	 *
+	 * @param importHandler the new import handler
+	 */
 	public void setImportHandler(ImportHandler importHandler) {
 		this.importHandler = importHandler;
 	}
 
+	/**
+	 * Create a new importer.
+	 *
+	 * @param file the file to import
+	 * @param resource the resource to import
+	 * @param url the url to import
+	 * @param fileType the file type ('xml' or 'apon')
+	 * @param profile the environment profile name
+	 * @return an {@code Importer} object
+	 */
 	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
 		ImportFileType importFileType = ImportFileType.resolve(fileType);
 		Importer importer = null;
@@ -629,6 +710,10 @@ public class ContextBuilderAssistant {
 					importer.setProfiles(arr);
 				}
 			}
+		}
+		
+		if(importer == null) {
+			throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
 		}
 
 		return importer;

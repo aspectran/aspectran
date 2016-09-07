@@ -24,7 +24,8 @@ public class AspectParameters extends AbstractParameters {
 
 	public static final ParameterDefinition description;
 	public static final ParameterDefinition id;
-	public static final ParameterDefinition useFor;
+	public static final ParameterDefinition order;
+	public static final ParameterDefinition isolated;
 	public static final ParameterDefinition jointpoint;
 	public static final ParameterDefinition settings;
 	public static final ParameterDefinition advice;
@@ -35,7 +36,8 @@ public class AspectParameters extends AbstractParameters {
 	static {
 		description = new ParameterDefinition("description", ParameterValueType.TEXT);
 		id = new ParameterDefinition("id", ParameterValueType.STRING);
-		useFor = new ParameterDefinition("for", ParameterValueType.STRING);
+		order = new ParameterDefinition("order", ParameterValueType.INT);
+		isolated = new ParameterDefinition("isolated", ParameterValueType.BOOLEAN);
 		jointpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
 		settings = new ParameterDefinition("settings", VariableParameters.class);
 		advice = new ParameterDefinition("advice", AdviceParameters.class);
@@ -44,7 +46,8 @@ public class AspectParameters extends AbstractParameters {
 		parameterDefinitions = new ParameterDefinition[] {
 			description,
 			id,
-			useFor,
+			order,
+			isolated,
 			jointpoint,
 			settings,
 			advice,

@@ -27,8 +27,10 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class ConsoleActivity.
@@ -54,69 +56,98 @@ public class ConsoleActivity extends CoreActivity {
 	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
-			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
+			requestAdapter.setCharacterEncoding(resolveRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
 			setResponseAdapter(responseAdapter);
 		} catch(Exception e) {
-			throw new AdapterException("Failed to adapt for the Console Activity.", e);
+			throw new AdapterException("Failed to adapt for Console Activity.", e);
 		}
 	}
 
 	@Override
-	protected void request() {
+	protected void parseRequest() {
 		receiveRequiredParameters();
 
-		super.request();
+		super.parseRequest();
 	}
 
 	/**
-	 * Receive required input parameters..
+	 * Receive required input parameters.
 	 */
 	private void receiveRequiredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
 		if(parameterItemRuleMap != null) {
-			System.out.println("Required Parameters:");
+			ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
 
-			for(ItemRule itemRule : parameterItemRuleMap.values()) {
+			System.out.println("Required parameters:");
+
+			for(ItemRule itemRule : parameterItemRules) {
 				Token[] tokens = itemRule.getTokens();
 				if(tokens == null) {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
 				}
 
-				System.out.printf("    %s: %s", itemRule.getName(), TokenParser.toString(tokens));
+				String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
+				System.out.printf("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
 				System.out.println();
 			}
 
-			System.out.println("Input Parameters:");
+			System.out.println("Enter value of each parameter:");
 
-			for(ItemRule itemRule : parameterItemRuleMap.values()) {
-				Token[] tokens = itemRule.getTokens();
+			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
-				if(tokens != null && tokens.length > 0) {
-					for(Token token : tokens) {
-						if(token.getType() == TokenType.PARAMETER) {
-							System.out.printf("    %s: ", token.getName());
-							if(token.getValue() != null) {
-								System.out.printf("(%s)", token.getValue());
-							}
-							String input = System.console().readLine();
-							if(input != null && !input.isEmpty()) {
-								getRequestAdapter().setParameter(token.getName(), input);
-							}
-						}
-					}
-				} else {
-					System.out.printf("    $%s: ", itemRule.getName());
-					String input = System.console().readLine();
-					if(input != null && !input.isEmpty()) {
-						getRequestAdapter().setParameter(itemRule.getName(), input);
-					}
+			if(missingItemRules != null) {
+				System.out.println("Enter missing value of each parameter:");
+
+				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
+
+				if(missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
+					String[] itemNames = missingItemRules2.getItemNames();
+					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
+					System.out.printf("Missing mandatory parameters: %s", missingParamNames).println();
+
+					activityEnd();
 				}
 			}
 		}
+	}
+
+	private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
+		ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
+
+		for(ItemRule itemRule : parameterItemRules) {
+			Token[] tokens = itemRule.getTokens();
+			int inputCount = 0;
+
+			if(tokens != null && tokens.length > 0) {
+				for(Token token : tokens) {
+					if(token.getType() == TokenType.PARAMETER) {
+						System.out.printf("    %s: ", token.stringify());
+						String input = System.console().readLine();
+						if(input != null && !input.isEmpty()) {
+							getRequestAdapter().setParameter(token.getName(), input);
+							inputCount++;
+						}
+					}
+				}
+			} else {
+				System.out.printf("  $%s: ", itemRule.getName());
+				String input = System.console().readLine();
+				if(input != null && !input.isEmpty()) {
+					getRequestAdapter().setParameter(itemRule.getName(), input);
+					inputCount++;
+				}
+			}
+
+			if(itemRule.isMandatory() && inputCount == 0) {
+				missingItemRules.add(itemRule);
+			}
+		}
+
+		return (missingItemRules.isEmpty() ? null : missingItemRules);
 	}
 
 	@Override

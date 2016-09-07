@@ -100,6 +100,13 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return aspectAdviceRuleRegistry;
+	}
+
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;

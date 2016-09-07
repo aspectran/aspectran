@@ -19,13 +19,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Collection;
 
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.web.support.http.HttpStatus;
 
 /**
  * The Interface ResponseAdapter.
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ResponseAdapter {
@@ -33,7 +35,7 @@ public interface ResponseAdapter {
 	/**
 	 * Returns the adaptee object to provide response information.
 	 *
-	 * @param <T> the type of the adaptee
+	 * @param <T> the type of the adaptee object
 	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
@@ -43,7 +45,7 @@ public interface ResponseAdapter {
 	 * sent in this response.
 	 *
 	 * @return a {@code String} specifying the name of the character encoding,
-	 * 			for example, UTF-8
+	 * 		for example, UTF-8
 	 */
 	String getCharacterEncoding();
 	
@@ -51,7 +53,7 @@ public interface ResponseAdapter {
 	 * Sets the character encoding of the response being sent to the client.
 	 *
 	 * @param characterEncoding a {@code String} specifying only the character set
-	 * 			defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
+	 * 		defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
@@ -60,7 +62,7 @@ public interface ResponseAdapter {
 	 * Returns the content type used for the MIME body sent in this response.
 	 *
 	 * @return a {@code String} specifying the content type,
-	 * 			for example, {@code text/html}, or null
+	 * 		for example, {@code text/html}, or null
 	 */
 	String getContentType();
 
@@ -104,5 +106,101 @@ public interface ResponseAdapter {
 	 * @throws IOException if an input or output exception occurs
 	 */
 	String redirect(RedirectResponseRule redirectResponseRule) throws IOException;
-	
+
+	/**
+	 * Returns a map of the request headers that can be modified.
+	 * If not yet instantiated then create a new one.
+	 *
+	 * @return an {@code MultiValueMap} object, may not be {@code null}
+	 */
+	MultiValueMap<String, String> touchHeaders();
+
+	/**
+	 * Returns a map of the request headers that can be modified.
+	 *
+	 * @return an {@code MultiValueMap} object, may be {@code null}
+	 */
+	MultiValueMap<String, String> getHeaders();
+
+	/**
+	 * Returns the value of the response header with the given name.
+	 *
+	 * <p>If a response header with the given name exists and contains
+	 * multiple values, the value that was added first will be returned.
+	 *
+	 * @param name the name of the response header whose value to return
+	 * @return the value of the response header with the given name,
+	 * 		or {@code null} if no header with the given name has been set
+	 * 		on this response
+	 */
+	String getHeader(String name);
+
+	/**
+	 * Returns the values of the response header with the given name.
+	 *
+	 * @param name the name of the response header whose values to return
+	 * @return a (possibly empty) {@code Collection} of the values
+	 * 		of the response header with the given name
+	 */
+	Collection<String> getHeaders(String name);
+
+	/**
+	 * Returns the names of the headers of this response.
+	 *
+	 * @return a (possibly empty) {@code Collection} of the names
+	 * 		of the headers of this response
+	 */
+	Collection<String> getHeaderNames();
+
+	/**
+	 * Returns a boolean indicating whether the named response header
+	 * has already been set.
+	 *
+	 * @param name the header name
+	 * @return {@code true} if the named response header
+	 * 		has already been set; {@code false} otherwise
+	 */
+	boolean containsHeader(String name);
+
+	/**
+	 * Set the given single header value under the given header name.
+	 *
+	 * @param name the header name
+	 * @param value the header value to set
+	 */
+	void setHeader(String name, String value);
+
+	/**
+	 * Add the given single header value to the current list of values
+	 * for the given header.
+	 *
+	 * @param name the header name
+	 * @param value the header value to be added
+	 */
+	void addHeader(String name, String value);
+
+	/**
+	 * Returns the status code.
+	 *
+	 * @return the status
+	 */
+	int getStatus();
+
+	/**
+	 * Sets the status code.
+	 *
+	 * @param status the status code
+	 */
+	void setStatus(int status);
+
+	/**
+	 * Sets the status code.
+	 * Status code is compatible with HTTP status code.
+	 *
+	 * @param status the status code
+	 */
+	void setStatus(HttpStatus status);
+
+	void flush();
+
 }

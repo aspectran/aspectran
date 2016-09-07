@@ -26,6 +26,11 @@ public abstract class BasicResponseAdapter extends AbstractResponseAdapter imple
 
 	private String contentType;
 
+	/**
+	 * Instantiates a new Basic response adapter.
+	 *
+	 * @param adaptee the adaptee object
+	 */
 	public BasicResponseAdapter(Object adaptee) {
 		super(adaptee);
 	}

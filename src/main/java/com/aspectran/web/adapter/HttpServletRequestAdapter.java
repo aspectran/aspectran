@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.MultiValueMap;
 
 /**
  * The Class HttpServletRequestAdapter.
@@ -50,6 +51,26 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 	@Override
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
+	}
+
+	@Override
+	protected MultiValueMap<String, String> touchHeaders() {
+		boolean headersInstantiated = isHeadersInstantiated();
+		MultiValueMap<String, String> headers = super.touchHeaders();
+
+		if(!headersInstantiated) {
+			HttpServletRequest request = ((HttpServletRequest)adaptee);
+
+			for(Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
+				String name = names.nextElement();
+				for(Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
+					String value = values.nextElement();
+					headers.add(name, value);
+				}
+			}
+		}
+
+		return headers;
 	}
 
 	@Override

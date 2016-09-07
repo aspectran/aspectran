@@ -38,12 +38,19 @@ public class BeanReferenceInspector {
 
 	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 	
-	private final Map<Object, Set<BeanReferenceInspectable>> relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
+	private final Map<Object, Set<BeanReferenceInspectable>> relationMap;
 	
 	public BeanReferenceInspector() {
+		relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
 	}
 	
-	public void putRelation(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+	/**
+	 * Reserves to bean reference inspection.
+	 *
+	 * @param beanIdOrClass the bean id or class
+	 * @param someRule the some rule
+	 */
+	public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
 		Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
 		
 		if(ruleSet == null) {
@@ -55,6 +62,12 @@ public class BeanReferenceInspector {
 		}
 	}
 	
+	/**
+	 * Inspect bean reference.
+	 *
+	 * @param beanRuleRegistry the bean rule registry
+	 * @throws BeanReferenceException the bean reference exception
+	 */
 	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
 		List<Object> unknownBeanIdList = new ArrayList<Object>();
 		
@@ -71,7 +84,8 @@ public class BeanReferenceInspector {
 				unknownBeanIdList.add(beanIdOrClass);
 
 				for(BeanReferenceInspectable o : set) {
-					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() + "' on " + o.getBeanReferrerType() + " " + o);
+					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
+							"' on " + o.getBeanReferrerType() + " " + o);
 				}
 			} else {
 				for(BeanReferenceInspectable o : set) {

@@ -23,6 +23,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 
 /**
  * The Class ActivityDataMap.
+ *
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
  */
 public class ActivityDataMap extends HashMap<String, Object> {
 
@@ -46,7 +48,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	 * Instantiates a new activity data map.
 	 *
 	 * @param activity the activity
-	 * @param prefill whether the data pre-fill
+	 * @param prefill whether or not to pre-fill the data.
 	 */
 	public ActivityDataMap(Activity activity, boolean prefill) {
 		this.activity = activity;

@@ -35,6 +35,7 @@ public class ActionParameters extends AbstractParameters {
 
 	public static final ParameterDefinition echo;
 	
+	public static final ParameterDefinition headers;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 
@@ -48,6 +49,7 @@ public class ActionParameters extends AbstractParameters {
 		include = new ParameterDefinition("include", ParameterValueType.STRING);
 		attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
 		echo = new ParameterDefinition("echo", ItemHolderParameters.class);
+		headers = new ParameterDefinition("headers", ItemHolderParameters.class);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			id,
@@ -58,7 +60,8 @@ public class ActionParameters extends AbstractParameters {
 			properties,
 			include,
 			attributes,
-			echo
+			echo,
+			headers
 		};
 	}
 	

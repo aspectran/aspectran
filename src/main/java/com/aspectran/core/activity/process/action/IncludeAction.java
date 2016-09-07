@@ -52,7 +52,7 @@ public class IncludeAction extends AbstractAction {
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
-		Activity newActivity = null;
+		Activity innerActivity = null;
 		
 		try {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -66,18 +66,17 @@ public class IncludeAction extends AbstractAction {
 				}
 			}
 			
-			newActivity = activity.newActivity();
-			newActivity.prepare(includeActionRule.getTransletName());
-			newActivity.performWithoutResponse();
+			innerActivity = activity.newActivity();
+			innerActivity.prepare(includeActionRule.getTransletName());
+			innerActivity.performWithoutResponse();
 			
-			return newActivity.getProcessResult();
-			
+			return innerActivity.getProcessResult();
 		} catch(Exception e) {
-			log.error("Failed to execute action: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			log.error("Failed to execute action that include other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		} finally {
-			if(newActivity != null) {
-				newActivity.finish();
+			if(innerActivity != null) {
+				innerActivity.finish();
 			}
 		}
 	}

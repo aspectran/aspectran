@@ -33,6 +33,8 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
+import com.aspectran.core.util.LinkedMultiValueMap;
+import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -92,6 +94,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		return (T)value;
 	}
 
+	@Override
+	public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
+		MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>(itemRuleMap.size());
+		
+		for(ItemRule itemRule : itemRuleMap.values()) {
+			String[] values = evaluateAsStringArray(itemRule);
+			valueMap.put(itemRule.getName(), values);
+		}
+		
+		return valueMap;
+	}
+	
 	@Override
 	public String[] evaluateAsStringArray(ItemRule itemRule) {
 		ItemType itemType = itemRule.getType();

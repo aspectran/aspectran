@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.util.MultiValueMap;
 
 /**
  * The Class HttpServletResponseAdapter.
@@ -141,6 +143,29 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 		redirect(target);
 		
 		return target;
+	}
+
+	@Override
+	public void flush() {
+		MultiValueMap<String, String> headers = getHeaders();
+		if(headers != null && !headers.isEmpty()) {
+			for(Map.Entry<String, List<String>> entry : headers.entrySet()) {
+				List<String> values = entry.getValue();
+				if(values.size() > 0) {
+					((HttpServletResponse)adaptee).setHeader(entry.getKey(), values.get(0));
+					if(values.size() > 1) {
+						for(int i = 1; i < values.size(); i++) {
+							((HttpServletResponse)adaptee).addHeader(entry.getKey(), values.get(i));
+						}
+					}
+
+				}
+			}
+		}
+
+		if(getStatus() != 0) {
+			((HttpServletResponse)adaptee).setStatus(getStatus());
+		}
 	}
 
 }

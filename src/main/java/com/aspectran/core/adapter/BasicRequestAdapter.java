@@ -15,67 +15,64 @@
  */
 package com.aspectran.core.adapter;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.aspectran.core.activity.request.AbstractBasicRequest;
 
 /**
  * The Class BasicRequestAdapter.
   *
  * @since 2016. 2. 13.
 */
-public abstract class BasicRequestAdapter extends AbstractBasicRequest implements RequestAdapter {
+public abstract class BasicRequestAdapter extends AbstractRequestAdapter {
 
-	protected final Object adaptee;
+	private String characterEncoding;
+
+	private Map<String, Object> attributeMap = new HashMap<>();
 
 	/**
 	 * Instantiates a new BasicRequestAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public BasicRequestAdapter(Object adaptee) {
-		super();
-		this.adaptee = adaptee;
+		super(adaptee);
 	}
 
 	/**
 	 * Instantiates a new BasicRequestAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 * @param parameterMap the parameter map
 	 */
 	public BasicRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
-		super(parameterMap);
-		this.adaptee = adaptee;
+		super(adaptee, parameterMap);
 	}
 
-	@Override
+	public String getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T> T getAdaptee() {
-		return (T)adaptee;
+	public <T> T getAttribute(String name) {
+		return (T)attributeMap.get(name);
 	}
 
-	@Override
-	public Map<String, Object> getAttributeMap() {
-		Map<String, Object> attributeMap = new HashMap<>();
-		fillAttributeMap(attributeMap);
-		return attributeMap;
+	public void setAttribute(String name, Object value) {
+		attributeMap.put(name, value);
 	}
 
-	@Override
-	public void fillAttributeMap(Map<String, Object> attributeMap) {
-		if(attributeMap == null)
-			return;
-		
-		Enumeration<String> enm = getAttributeNames();
-		
-		while(enm.hasMoreElements()) {
-			String name = enm.nextElement();
-			Object value = getAttribute(name);
-			attributeMap.put(name, value);
-		}
+	public Enumeration<String> getAttributeNames() {
+		return Collections.enumeration(attributeMap.keySet());
 	}
-	
+
+	public void removeAttribute(String name) {
+		attributeMap.remove(name);
+	}
+
 }

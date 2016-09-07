@@ -22,7 +22,6 @@ package com.aspectran.core.context.rule.type;
  * After advice: Advice to be executed after a join point completes normally.
  * Finally advice: Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
  * Around advice: Before advice + After advice
- * Job advice: Only used for Scheduler.
  * </pre>
  */
 public enum AspectAdviceType {
@@ -31,8 +30,7 @@ public enum AspectAdviceType {
 	BEFORE("before"),
 	AFTER("after"),
 	AROUND("around"),
-	FINALLY("finally"),
-	JOB("job");
+	FINALLY("finally");
 
 	private final String alias;
 
@@ -46,10 +44,11 @@ public enum AspectAdviceType {
 	}
 
 	/**
-	 * Returns a {@code AspectAdviceType} with a value represented by the specified String.
+	 * Returns an {@code AspectAdviceType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the aspect adive type as a String
-	 * @return the aspect advice type
+	 * @param alias the aspect advice type as a {@code String}
+	 * @return an {@code AspectAdviceType}, may be {@code null}
 	 */
 	public static AspectAdviceType resolve(String alias) {
 		for(AspectAdviceType type : values()) {

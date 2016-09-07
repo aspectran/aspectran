@@ -40,10 +40,11 @@ public enum TransformType {
 	}
 
 	/**
-	 * Returns a {@code TransformType} with a value represented by the specified String.
+	 * Returns a {@code TransformType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the transform type as a String
-	 * @return the transform type
+	 * @param alias the transform type as a {@code String}
+	 * @return a {@code TransformType}, may be {@code null}
 	 */
 	public static TransformType resolve(String alias) {
 		for(TransformType type : values()) {
@@ -54,10 +55,11 @@ public enum TransformType {
 	}
 
 	/**
-	 * Returns a {@code TransformType} with a value corresponding to the specified {@code ContentType}.
+	 * Returns a {@code TransformType} with a value corresponding
+	 * to the specified {@code ContentType}.
 	 *
-	 * @param contentType the content type
-	 * @return the transform type
+	 * @param contentType the content type as a {@code ContentType}
+	 * @return a {@code TransformType}, may be {@code null}
 	 */
 	public static TransformType resolve(ContentType contentType) {
 		if(contentType == ContentType.TEXT_PLAIN)
@@ -68,8 +70,8 @@ public enum TransformType {
 			return JSON;
 		else if(contentType == ContentType.TEXT_APON)
 			return APON;
-		
-		return null;
+		else
+			return null;
 	}
 
 }

@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.HeadingAction;
 import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -95,12 +97,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	}
 
 	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		EchoAction echoAction = new EchoAction(echoActionRule, this);
-		add(echoAction);
-	}
-
-	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
 		add(beanAction);
@@ -116,6 +112,18 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		IncludeAction includeAction = new IncludeAction(includeActionRule, this);
 		add(includeAction);
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		EchoAction echoAction = new EchoAction(echoActionRule, this);
+		add(echoAction);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		HeadingAction headingAction = new HeadingAction(headingActionRule, this);
+		add(headingAction);
 	}
 
 	@Override

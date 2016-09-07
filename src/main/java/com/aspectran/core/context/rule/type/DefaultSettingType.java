@@ -43,10 +43,11 @@ public enum DefaultSettingType {
 	}
 
 	/**
-	 * Returns a {@code DefaultSettingType} with a value represented by the specified String.
+	 * Returns a {@code DefaultSettingType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the default setting type as a String
-	 * @return the default setting type
+	 * @param alias the default setting type as a {@code String}
+	 * @return a {@code DefaultSettingType}, may be {@code null}
 	 */
 	public static DefaultSettingType resolve(String alias) {
 		for(DefaultSettingType type : values()) {

@@ -37,10 +37,11 @@ public enum TokenDirectiveType {
 	}
 
 	/**
-	 * Returns a {@code TokenDirectiveType} with a value represented by the specified String.
+	 * Returns a {@code TokenDirectiveType} with a value represented
+	 * by the specified {@code String}.
 	 *
-	 * @param alias the token directive type as a String
-	 * @return the token directive type
+	 * @param alias the token directive type as a {@code String}
+	 * @return a {@code TokenDirectiveType}, may be {@code null}
 	 */
 	public static TokenDirectiveType resolve(String alias) {
 		for(TokenDirectiveType type : values()) {

@@ -145,6 +145,9 @@ public class IncludeActionRule {
 	 * @return the include action rule
 	 */
 	public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
+		if(transletName == null)
+			throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute.");
+
 		IncludeActionRule includeActionRule = new IncludeActionRule();
 		includeActionRule.setActionId(id);
 		includeActionRule.setTransletName(transletName);

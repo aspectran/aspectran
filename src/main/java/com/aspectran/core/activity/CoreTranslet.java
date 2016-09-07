@@ -40,6 +40,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * The Class CoreTranslet.
+ *
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
  */
 public class CoreTranslet implements Translet {
 
@@ -50,9 +52,9 @@ public class CoreTranslet implements Translet {
 	private AspectAdviceResult aspectAdviceResult;
 
 	private ActivityDataMap activityDataMap;
-	
+
 	/**
-	 * Instantiates a new GenericTranslet.
+	 * Instantiates a new CoreTranslet.
 	 *
 	 * @param activity the current Activity
 	 */
@@ -61,7 +63,7 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public String getTransletName() {
+	public String getName() {
 		return activity.getTransletName();
 	}
 
@@ -261,7 +263,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void response(Response response) {
-		activity.response(response);
+		activity.setPenddedResponse(response);
+		activity.activityEnd();
 	}
 
 	@Override
@@ -283,8 +286,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void redirect(String target, boolean immediately) {
-		if(!immediately && activity.getResponse() != null) {
-			Response res = activity.getResponse();
+		if(!immediately && activity.getBaseResponse() != null) {
+			Response res = activity.getBaseResponse();
 			if(res.getResponseType() == ResponseType.REDIRECT) {
 				Response r = res.replicate();
 				RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
@@ -318,8 +321,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void forward(String transletName, boolean immediately) {
-		if(!immediately && activity.getResponse() != null) {
-			Response res = activity.getResponse();
+		if(!immediately && activity.getBaseResponse() != null) {
+			Response res = activity.getBaseResponse();
 			if(res.getResponseType() == ResponseType.FORWARD) {
 				Response fr = res.replicate();
 				ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();
@@ -345,6 +348,21 @@ public class CoreTranslet implements Translet {
 	@Override
 	public Throwable getOriginRaisedException() {
 		return activity.getOriginRaisedException();
+	}
+
+	@Override
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return activity.getTransletInterfaceClass();
+	}
+
+	@Override
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return activity.getTransletImplementationClass();
+	}
+
+	@Override
+	public boolean acceptsProfiles(String... profiles) {
+		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
 	}
 
 	@Override
@@ -385,21 +403,6 @@ public class CoreTranslet implements Translet {
 			aspectAdviceResult = new AspectAdviceResult();
 		}
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
-	}
-
-	@Override
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return activity.getTransletInterfaceClass();
-	}
-
-	@Override
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return activity.getTransletImplementationClass();
-	}
-
-	@Override
-	public boolean acceptsProfiles(String... profiles) {
-		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
 	}
 
 	//---------------------------------------------------------------------
@@ -457,12 +460,12 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public String getMessage(String code, Object args[], String defaultMessage) {
-		return getMessage(code, args, defaultMessage, activity.getRequestAdapter().getLocale());
+		return getMessage(code, args, defaultMessage, getRequestAdapter().getLocale());
 	}
 
 	@Override
 	public String getMessage(String code, Object args[]) throws NoSuchMessageException {
-		return getMessage(code, args, activity.getRequestAdapter().getLocale());
+		return getMessage(code, args, getRequestAdapter().getLocale());
 	}
 
 }

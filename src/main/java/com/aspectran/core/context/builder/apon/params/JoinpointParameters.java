@@ -21,20 +21,23 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class JoinpointParameters extends AbstractParameters {
 
-	public static final ParameterDefinition scope;
-	public static final ParameterDefinition method;
+	public static final ParameterDefinition type;
+	public static final ParameterDefinition methods;
+	public static final ParameterDefinition headers;
 	public static final ParameterDefinition pointcut;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		scope = new ParameterDefinition("scope", ParameterValueType.STRING);
-		method = new ParameterDefinition("method", ParameterValueType.STRING);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
+		methods = new ParameterDefinition("methods", ParameterValueType.STRING, true);
+		headers = new ParameterDefinition("headers", ParameterValueType.STRING, true);
 		pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);
-		
+	
 		parameterDefinitions = new ParameterDefinition[] {
-			scope,
-			method,
+			type,
+			methods,
+			headers,
 			pointcut
 		};
 	}

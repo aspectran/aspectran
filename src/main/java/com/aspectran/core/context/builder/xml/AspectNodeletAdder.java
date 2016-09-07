@@ -16,10 +16,8 @@
 package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.BooleanUtils;
@@ -49,13 +47,10 @@ class AspectNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/aspect", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
-            String useFor = StringUtils.emptyToNull(attributes.get("for"));
+            String order = StringUtils.emptyToNull(attributes.get("order"));
+            Boolean isolated = BooleanUtils.toNullableBooleanObject(attributes.get("isolated"));
 
-            if(id == null)
-                throw new IllegalArgumentException("The <aspect> element requires an 'id' attribute.");
-
-            AspectRule aspectRule = AspectRule.newInstance(id, useFor);
-
+            AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
             assistant.pushObject(aspectRule);
         });
 		parser.addNodelet(xpath, "/aspect/description", (node, attributes, text) -> {
@@ -65,68 +60,15 @@ class AspectNodeletAdder implements NodeletAdder {
             }
         });
 		parser.addNodelet(xpath, "/aspect/joinpoint", (node, attributes, text) -> {
-            String scope = StringUtils.emptyToNull(attributes.get("scope"));
-            String method = StringUtils.emptyToNull(attributes.get("method"));
-
-            AspectRule aspectRule = assistant.peekObject();
-            AspectRule.updateJoinpointScope(aspectRule, scope);
-            AspectRule.updateAllowedMethods(aspectRule, method);
-        });
-		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut", (node, attributes, text) -> {
             String type = StringUtils.emptyToNull(attributes.get("type"));
 
             AspectRule aspectRule = assistant.peekObject();
-            PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, type, text);
-            aspectRule.setPointcutRule(pointcutRule);
+            AspectRule.updateJoinpoint(aspectRule, type, text);
         });
-/*
-		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut/target", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String translet = attributes.get("translet");
-				String bean = attributes.get("bean");
-				String method = attributes.get("method");
-				
-				AspectRule aspectRule = assistant.peekObject();
-				
-				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
-					List<PointcutPatternRule> pointcutPatternRuleList = PointcutRule.newPointcutPatternRuleList();
-					PointcutRule.addPointcutPatternRule(pointcutPatternRuleList, translet, bean, method, text);
-					
-					assistant.pushObject(pointcutPatternRuleList);
-				} else {
-					assistant.pushObject(null);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut/target/exclude", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String translet = attributes.get("translet");
-				String bean = attributes.get("bean");
-				String method = attributes.get("method");
-				
-				List<PointcutPatternRule> pointcutPatternRuleList = assistant.peekObject();
-				
-				if(pointcutPatternRuleList != null) {
-					PointcutRule.addExcludePointcutPatternRule(pointcutPatternRuleList, translet, bean, method);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut/target/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				List<PointcutPatternRule> pointcutPatternRuleList = assistant.popObject();
-				
-				if(pointcutPatternRuleList != null) {
-					AspectRule aspectRule = assistant.peekObject();
-					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRuleList);
-				}
-			}
-		});
-*/
 		parser.addNodelet(xpath, "/aspect/settings", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.peekObject();
 
             SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule, text);
-
             assistant.pushObject(sar);
         });
 		parser.addNodelet(xpath, "/aspect/settings/setting", (node, attributes, text) -> {
@@ -149,7 +91,6 @@ class AspectNodeletAdder implements NodeletAdder {
             if(beanIdOrClass != null) {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
-
                 assistant.resolveBeanClass(beanIdOrClass, aspectRule);
             }
         });
@@ -159,31 +100,15 @@ class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/advice/finally", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.FINALLY));
 		parser.addNodelet(xpath, "/aspect/exception", (node, attributes, text) -> {
 			AspectRule aspectRule = assistant.peekObject();
-
 			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
-
 			assistant.pushObject(exceptionRule);
 		});
-		parser.addNodelet(xpath, "/aspect/exception", new ExceptionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/aspect/exception", new ExceptionCatchNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/aspect/exception/end()", (node, attributes, text) -> {
 			ExceptionRule exceptionRule = assistant.popObject();
 			AspectRule aspectRule = assistant.peekObject();
 			aspectRule.setExceptionRule(exceptionRule);
 		});
-		parser.addNodelet(xpath, "/aspect/advice/job", (node, attributes, text) -> {
-            String transletName = StringUtils.emptyToNull(attributes.get("translet"));
-            Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
-
-			if(transletName == null)
-				throw new IllegalArgumentException("The <job> element requires a translet attribute.");
-
-			transletName = assistant.applyTransletNamePattern(transletName);
-
-			AspectRule ar = assistant.peekObject();
-
-            AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
-            ar.addAspectJobAdviceRule(ajar);
-        });
 		parser.addNodelet(xpath, "/aspect/end()", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.popObject();
             assistant.addAspectRule(aspectRule);

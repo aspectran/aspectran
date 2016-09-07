@@ -22,25 +22,26 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class PointcutParameters extends AbstractParameters {
 
 	public static final ParameterDefinition type;
-	public static final ParameterDefinition targets;
-
-	// for scheduler
-	public static final ParameterDefinition simpleTrigger;
-	public static final ParameterDefinition cronTrigger;
+	public static final ParameterDefinition pluses;
+	public static final ParameterDefinition minuses;
+	public static final ParameterDefinition includes;
+	public static final ParameterDefinition execludes;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
 		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		targets = new ParameterDefinition("target", TargetParameters.class, true, true);
-		simpleTrigger = new ParameterDefinition("simpleTrigger", SimpleTriggerParameters.class);
-		cronTrigger = new ParameterDefinition("cronTrigger", CronTriggerParameters.class);
-		
+		pluses = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
+		minuses = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
+		includes = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);
+		execludes = new ParameterDefinition("execlude", PointcutTargetParameters.class, true, true);
+	
 		parameterDefinitions = new ParameterDefinition[] {
 			type,
-			targets,
-			simpleTrigger,
-			cronTrigger
+			pluses,
+			minuses,
+			includes,
+			execludes
 		};
 	}
 	

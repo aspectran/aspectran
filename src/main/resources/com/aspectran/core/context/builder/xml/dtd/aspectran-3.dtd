@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  XML DTD for the Aspectran Configuration File, Version 3.0
+
+  Copyright 2008-2016 Juho Jeong
+
+  This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
+  SYSTEM "http://aspectran.github.io/dtd/aspectran-3.dtd">
+
+  XML documents that conform to this DTD should declare the following doctype:
+
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
+                             "http://aspectran.github.io/dtd/aspectran-3.dtd">
+-->
+
+<!ELEMENT aspectran (
+    description?,
+    (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
+  )
+>
+
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT settings (#PCDATA | setting)*>
+<!ELEMENT setting (#PCDATA)>
+<!ATTLIST setting
+  name    CDATA #REQUIRED
+  value   CDATA #IMPLIED
+>
+
+<!ELEMENT environment (#PCDATA | properties)*>
+<!ATTLIST environment
+  profile CDATA #IMPLIED
+>
+
+<!ELEMENT typeAliases (typeAlias*)>
+
+<!ELEMENT typeAlias EMPTY>
+<!ATTLIST typeAlias
+  alias   CDATA #REQUIRED
+  type    CDATA #REQUIRED
+>
+
+<!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
+<!ATTLIST aspect
+  id       ID #IMPLIED
+  order    CDATA #IMPLIED
+  isolated (true | false) #IMPLIED
+>
+
+<!ELEMENT joinpoint (#PCDATA)>
+<!ATTLIST joinpoint
+  type   (session | translet | bean) #IMPLIED
+>
+
+<!ELEMENT advice (before?, after?, around?, finally?)>
+<!ATTLIST advice
+  bean    CDATA #IMPLIED
+>
+
+<!ELEMENT before  (echo | action)>
+<!ELEMENT after   (echo | action)>
+<!ELEMENT around  (echo | action)>
+<!ELEMENT finally (echo | action)>
+
+<!ELEMENT exception (description?, action?, catch*)>
+
+<!ELEMENT catch (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST catch
+  exception CDATA #IMPLIED
+>
+
+<!ELEMENT bean (description?, filter?, constructor?, properties?)>
+<!ATTLIST bean
+  id            CDATA #IMPLIED
+  class         CDATA #IMPLIED
+  scan          CDATA #IMPLIED
+  mask          CDATA #IMPLIED
+  offerBean     CDATA #IMPLIED
+  offerMethod   CDATA #IMPLIED
+  initMethod    CDATA #IMPLIED
+  factoryMethod CDATA #IMPLIED
+  destroyMethod CDATA #IMPLIED
+  scope         (singleton | prototype | request | session | application) #IMPLIED
+  singleton     (true | false) #IMPLIED
+  lazyInit      (true | false) #IMPLIED
+  important     (true | false) #IMPLIED
+>
+
+<!ELEMENT filter (#PCDATA)>
+<!ATTLIST filter
+  class   CDATA #IMPLIED
+>
+
+<!ELEMENT constructor (arguments?)>
+
+<!ELEMENT template (#PCDATA)>
+<!ATTLIST template
+  id       CDATA #IMPLIED
+  engine   CDATA #IMPLIED
+  name     CDATA #IMPLIED
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  encoding CDATA #IMPLIED
+  noCache  (true | false) #IMPLIED
+>
+
+<!ELEMENT schedule (description?, trigger, scheduler)>
+<!ATTLIST schedule
+  id      ID #IMPLIED
+>
+
+<!ELEMENT trigger (#PCDATA)>
+<!ATTLIST trigger
+  type    CDATA #IMPLIED
+>
+
+<!ELEMENT scheduler (job*)>
+<!ATTLIST scheduler
+  bean    CDATA #REQUIRED
+>
+
+<!ELEMENT job EMPTY>
+<!ATTLIST job
+  translet CDATA #REQUIRED
+  method   CDATA #IMPLIED
+  disabled (true | false) #IMPLIED
+>
+
+<!ELEMENT translet (
+    (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
+    (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
+    (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
+    (description?, request?, content*, contents?, response*, exception?)
+  )>
+<!ATTLIST translet
+  name    CDATA #REQUIRED
+  scan    CDATA #IMPLIED
+  mask    CDATA #IMPLIED
+  method  CDATA #IMPLIED
+>
+
+<!ELEMENT request (parameters?, attributes?)>
+<!ATTLIST request
+  method            CDATA #IMPLIED
+  characterEncoding CDATA #IMPLIED
+>
+
+<!ELEMENT contents (content*)>
+<!ATTLIST contents
+  name      CDATA #IMPLIED
+  omittable (true | false) #IMPLIED
+>
+
+<!ELEMENT content (action? | include? | echo? | headers?)*>
+<!ATTLIST content
+  name      CDATA #IMPLIED
+  omittable (true | false) #IMPLIED
+  hidden    (true | false) #IMPLIED
+>
+
+<!ELEMENT action (arguments?, properties?)>
+<!ATTLIST action
+  id      CDATA #IMPLIED
+  bean    CDATA #IMPLIED
+  method  CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT include (attributes?)>
+<!ATTLIST include
+  id       CDATA #IMPLIED
+  translet CDATA #REQUIRED
+  hidden   (true | false) #IMPLIED
+>
+
+<!ELEMENT echo (#PCDATA | attributes | item | null)*>
+<!ATTLIST echo
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT headers (#PCDATA | item | null)*>
+<!ATTLIST headers
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
+<!ATTLIST response
+  name              CDATA #IMPLIED
+  characterEncoding CDATA #IMPLIED
+>
+
+<!ELEMENT transform ((action? | include? | echo? | headers?)*, template?)>
+<!ATTLIST transform
+  type              CDATA #IMPLIED
+  contentType       CDATA #IMPLIED
+  template          CDATA #IMPLIED
+  characterEncoding CDATA #IMPLIED
+  default           (true | false) #IMPLIED
+  pretty            (true | false) #IMPLIED
+>
+
+<!ELEMENT dispatch (action? | include? | echo? | headers?)*>
+<!ATTLIST dispatch
+  name              CDATA #REQUIRED
+  dispatcher        CDATA #IMPLIED
+  contentType       CDATA #IMPLIED
+  characterEncoding CDATA #IMPLIED
+  default           (true | false) #IMPLIED
+>
+
+<!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
+<!ATTLIST redirect
+  contentType           CDATA #IMPLIED
+  target                CDATA #REQUIRED
+  excludeNullParameters CDATA #IMPLIED
+  default               (true | false) #IMPLIED
+>
+
+<!ELEMENT url (#PCDATA)>
+
+<!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
+<!ATTLIST forward
+  contentType CDATA #IMPLIED
+  translet    CDATA #IMPLIED
+>
+
+<!ELEMENT import EMPTY>
+<!ATTLIST import
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  fileType (xml | apon) #IMPLIED
+  profile  CDATA #IMPLIED
+>
+
+<!ELEMENT parameters (#PCDATA | item)*>
+<!ELEMENT attributes (#PCDATA | item)*>
+<!ELEMENT properties (#PCDATA | item)*>
+<!ELEMENT arguments  (#PCDATA | item)*>
+
+<!ELEMENT item (#PCDATA | value | reference | null)*>
+<!ATTLIST item
+  name         CDATA #IMPLIED
+  value        CDATA #IMPLIED
+  type         (single | array | list | map | set | properties) #IMPLIED
+  valueType    (string | int | long | float | double | boolean | parameters | file | multipartFile) #IMPLIED
+  defaultValue CDATA #IMPLIED
+  tokenize     (true | false) #IMPLIED
+  mandatory    (true | false) #IMPLIED
+>
+
+<!ELEMENT value (#PCDATA | null)*>
+<!ATTLIST value
+  name    CDATA #IMPLIED
+>
+
+<!ELEMENT reference EMPTY>
+<!ATTLIST reference
+  bean      CDATA #IMPLIED
+  parameter CDATA #IMPLIED
+  attribute CDATA #IMPLIED
+  property  CDATA #IMPLIED
+>
+
+<!ELEMENT null EMPTY>

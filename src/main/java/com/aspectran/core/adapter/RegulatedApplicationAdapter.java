@@ -31,6 +31,11 @@ public class RegulatedApplicationAdapter implements ApplicationAdapter {
 
 	private ApplicationAdapter applicationAdapter;
 
+	/**
+	 * Instantiates a new Regulated application adapter.
+	 *
+	 * @param applicationAdapter the application adapter
+	 */
 	public RegulatedApplicationAdapter(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}

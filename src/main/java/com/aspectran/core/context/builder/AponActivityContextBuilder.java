@@ -52,7 +52,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 			Importer importer = resolveImporter(rootContext, ImportFileType.APON);
 			importHandler.handle(importer);
 
-			return makeActivityContext();
+			return createActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a APON Activity Context: " + rootContext, e);
 		}

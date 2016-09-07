@@ -273,11 +273,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		touchActionList().applyActionRule(echoActionRule);
-	}
-
-	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		touchActionList().applyActionRule(beanActionRule);
 	}
@@ -290,6 +285,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		touchActionList().applyActionRule(includeActionRule);
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		touchActionList().applyActionRule(echoActionRule);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		touchActionList().applyActionRule(headingActionRule);
 	}
 	
 	private ActionList touchActionList() {
@@ -331,9 +336,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	public void addResponseRule(ResponseRule responseRule) {
-		if(responseRuleList == null)
+		if(responseRuleList == null) {
 			responseRuleList = new ArrayList<ResponseRule>();
-		
+		}
 		responseRuleList.add(responseRule);
 		implicitResponse = false;
 	}
@@ -344,9 +349,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
-		if(responseRule == null)
+		if(responseRule == null) {
 			responseRule = new ResponseRule();
-		
+		}
 		implicitResponse = true;
 
 		return responseRule.applyResponseRule(transformRule);
@@ -354,9 +359,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		if(responseRule == null)
+		if(responseRule == null) {
 			responseRule = new ResponseRule();
-
+		}
 		implicitResponse = true;
 
 		return responseRule.applyResponseRule(dispatchResponseRule);
@@ -364,9 +369,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		if(responseRule == null)
+		if(responseRule == null) {
 			responseRule = new ResponseRule();
-		
+		}
 		implicitResponse = true;
 		
 		return responseRule.applyResponseRule(redirectResponseRule);
@@ -374,9 +379,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		if(responseRule == null)
+		if(responseRule == null) {
 			responseRule = new ResponseRule();
-		
+		}
 		implicitResponse = true;
 
 		return responseRule.applyResponseRule(forwardResponseRule);
@@ -437,11 +442,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+		}
+		return aspectAdviceRuleRegistry;
+	}
+	
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-
-		return aspectAdviceRuleRegistry.replicate();
+		return (aspectAdviceRuleRegistry == null) ? null : aspectAdviceRuleRegistry.replicate();
 	}
 
 	/**
@@ -486,7 +495,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
 		if(name == null && scanPath == null)
-			throw new IllegalArgumentException("Translet name must not be null.");
+			throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
 
 		MethodType[] allowedMethods = null;
 		if(method != null) {
