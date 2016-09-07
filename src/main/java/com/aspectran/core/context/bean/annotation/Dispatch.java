@@ -28,7 +28,7 @@ public @interface Dispatch {
 
 	String name();
 
-	String dispatcher();
+	String dispatcher() default "";
 	
 	String contentType() default "";
 	
