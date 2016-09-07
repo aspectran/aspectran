@@ -1,9 +1,9 @@
 # [Aspectran](http://www.aspectran.com)
-[![Build Status](https://travis-ci.org/aspectran-projects/aspectran.svg)](https://travis-ci.org/aspectran-projects/aspectran)
+[![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
 [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
-[![Apache 2](http://img.shields.io/badge/license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran-projects/aspectran-readme?pixel)](https://github.com/aspectran-projects/aspectran)
+[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
@@ -69,7 +69,7 @@ Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 
 ## [API Reference](http://www.aspectran.com/docs/api/)
 Aspectran API 문서를 제공합니다.
-* [http://api.aspectran.com/2.4.0/](http://api.aspectran.com/2.4.0/)
+* [http://api.aspectran.com/2.4.1/](http://api.aspectran.com/)
 
 ## [FAQ](http://www.aspectran.com/docs/faq/)
 Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
