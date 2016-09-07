@@ -22,8 +22,8 @@ echo "Java detected: ${VER}"
 
 if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
   if [ $VER == "18" ]; then
-    # mvn clean deploy -Dmaven.test.skip=true -q --settings ./travis/settings.xml
-    # echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
+    mvn clean deploy -Dmaven.test.skip=true -q --settings ./travis/settings.xml
+    echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
     mvn clean test jacoco:report coveralls:report -q
     echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
     # various issues exist currently in building this so comment for now
