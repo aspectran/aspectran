@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.apon;
+package com.aspectran.core.util.apon.test;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -27,6 +27,15 @@ import java.io.StringReader;
 import java.util.Map;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.util.apon.AponFormat;
+import com.aspectran.core.util.apon.AponReadFailedException;
+import com.aspectran.core.util.apon.IncompatibleParameterValueTypeException;
+import com.aspectran.core.util.apon.InvalidParameterException;
+import com.aspectran.core.util.apon.MissingClosingBracketException;
+import com.aspectran.core.util.apon.ParameterValue;
+import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 public class AponReaderTest3 {
 

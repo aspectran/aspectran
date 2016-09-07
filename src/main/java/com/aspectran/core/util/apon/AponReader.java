@@ -75,9 +75,7 @@ public class AponReader extends AponFormat {
 	 */
 	public <T extends Parameters> T read(T parameters) throws IOException {
 		addable = parameters.isAddable();
-		
 		valuelize(parameters, NO_CONTROL_CHAR, null, null, null);
-		
 		return parameters;
 	}
 	
@@ -151,8 +149,9 @@ public class AponReader extends AponFormat {
 					if(parameterValueType != null) {
 						name = ParameterValueType.stripHintedValueType(name);
 						parameterValue = parameterValueMap.get(name);
-						if(parameterValue != null)
+						if(parameterValue != null) {
 							parameterValueType = parameterValue.getParameterValueType();
+						}
 					}
 				}
 				
@@ -175,7 +174,8 @@ public class AponReader extends AponFormat {
 				if(parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar)
 					throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 			}
-			if(parameterValueType == null || (parameterValue != null && parameterValue.isArray())) {
+
+			if(parameterValue == null || parameterValue.isArray()) {
 				if(SQUARE_BRACKET_OPEN == cchar) {
 					valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
@@ -200,9 +200,15 @@ public class AponReader extends AponFormat {
 				if(parameterValue == null) {
 					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
 				}
-				StringBuilder sb = new StringBuilder();
-				valuelizeText(sb);
-				parameterValue.putValue(sb.toString());
+				if(ROUND_BRACKET_OPEN == cchar) {
+					StringBuilder sb = new StringBuilder();
+					valuelizeText(sb);
+					parameterValue.putValue(sb.toString());
+				} else if(NULL.equals(value)) {
+					parameterValue.putValue(null);
+				} else {
+					parameterValue.putValue(value);
+				}
 			} else {
 				if(vlen == 0) {
 					value = null;
@@ -250,6 +256,8 @@ public class AponReader extends AponFormat {
 							}
 						}
 					}
+				} else if(NULL.equals(value)) {
+					value = null;
 				}
 
 				if(parameterValue == null) {
@@ -317,8 +325,9 @@ public class AponReader extends AponFormat {
 				return lineNumber;
 				
 			if(TEXT_LINE_START == tchar) {
-				if(sb.length() > 0)
+				if(sb.length() > 0) {
 					sb.append(NEXT_LINE_CHAR);
+				}
 				sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
 			} else if(tlen > 0) {
 				throw new InvalidParameterException(lineNumber, line, trim,
@@ -388,33 +397,32 @@ public class AponReader extends AponFormat {
 	/**
 	 * Converts to a Parameters object from a file.
 	 *
-	 * @param <T> the generic type
-	 * @param file the file
+	 * @param file the file to parse
 	 * @return the parameters object
 	 * @throws IOException an I/O error occurs.
 	 */
-	public static <T extends Parameters> T parse(File file) throws IOException {
-		return parse(file, null, null);
+	public static Parameters parse(File file) throws IOException {
+		return parse(file, (String)null);
 	}
 	
 	/**
 	 * Converts to a Parameters object from a file.
 	 *
-	 * @param <T> the generic type
-	 * @param file the file
+	 * @param file the file to parse
 	 * @param encoding the character encoding
 	 * @return the parameters object
 	 * @throws IOException an I/O error occurs.
 	 */
-	public static <T extends Parameters> T parse(File file, String encoding) throws IOException {
-		return parse(file, encoding, null);
+	public static Parameters parse(File file, String encoding) throws IOException {
+		Parameters parameters = new VariableParameters();
+		return parse(file, encoding, parameters);
 	}
 	
 	/**
 	 * Converts into a given Parameters object from a file.
 	 *
 	 * @param <T> the generic type
-	 * @param file the file
+	 * @param file the file to parse
 	 * @param parameters the parameters object
 	 * @return the parameters object
 	 * @throws IOException an I/O error occurs.
@@ -427,7 +435,7 @@ public class AponReader extends AponFormat {
 	 * Converts into a given Parameters object from a file.
 	 *
 	 * @param <T> the generic type
-	 * @param file the file
+	 * @param file the file to parse
 	 * @param encoding the character encoding
 	 * @param parameters the parameters object
 	 * @return the parameters object
@@ -444,8 +452,9 @@ public class AponReader extends AponFormat {
 			}
 			return aponReader.read(parameters);
 		} finally {
-			if(aponReader != null)
+			if(aponReader != null) {
 				aponReader.close();
+			}
 		}
 	}
 	

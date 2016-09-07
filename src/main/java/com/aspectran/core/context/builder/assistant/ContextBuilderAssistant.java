@@ -301,37 +301,36 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Adds a type alias.
+	 * Adds a type alias to use for simplifying complex type signatures.
+	 * A type alias is defined by assigning the type to the alias.
 	 * 
-	 * @param alias the alias
-	 * @param type the type
+	 * @param alias the name of the alias
+	 * @param type the type identifier that you are creating an alias for
 	 */
 	public void addTypeAlias(String alias, String type) {
 		typeAliases.put(alias, type);
 	}
 	
 	/**
-	 * Gets the alias type.
+	 * Returns a type of an aliased type that is defined by assigning the type to the alias.
 	 * 
-	 * @param alias the alias
-	 * @return the alias type
+	 * @param alias the name of the alias
+	 * @return the aliased type
 	 */
-	public String getAliasType(String alias) {
+	public String getAliasedType(String alias) {
 		return typeAliases.get(alias);
 	}
 	
 	/**
-	 * Returns the resolve alias type.
+	 * Returns a type of an aliased type that is defined by assigning the type to the alias.
+	 * If aliased type is not found, it returns alias.
 	 * 
-	 * @param alias the alias
-	 * @return the string
+	 * @param alias the name of the alias
+	 * @return the aliased type
 	 */
 	public String resolveAliasType(String alias) {
-		String type = getAliasType(alias);
-		if(type == null)
-			return alias;
-
-		return type;
+		String type = getAliasedType(alias);
+		return (type == null ? alias: type);
 	}
 	
 	/**

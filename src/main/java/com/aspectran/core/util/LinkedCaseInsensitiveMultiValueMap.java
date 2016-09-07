@@ -174,8 +174,8 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 		if(!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
 			return false;
 		}
-		LinkedCaseInsensitiveMultiValueMap otherHeaders = (LinkedCaseInsensitiveMultiValueMap)other;
-		return this.values.equals(otherHeaders.values);
+		LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;
+		return this.values.equals(otherValues.values);
 	}
 
 	@Override

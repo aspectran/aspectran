@@ -17,7 +17,6 @@ package com.aspectran.core.context.loader;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,19 +42,20 @@ public class ActivityContextLoaderTest {
 	public void test1HybridLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
 		System.out.println("================ HybridActivityContextLoading ===============");
 
-		File file = new File("./target/test-classes");
+		File base = new File("./target/test-classes");
 		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-		applicationAdapter.setApplicationBasePath(file.getCanonicalPath());
+		applicationAdapter.setApplicationBasePath(base.getCanonicalPath());
 
 		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
 		activityContextLoader.setHybridLoad(true);
 		activityContextLoader.setActiveProfiles("dev", "local");
 
-		ClassLoader classLoader = activityContextLoader.getAspectranClassLoader();
+		File apon1 = new File(base, "config/test-config.xml.apon");
+		File apon2 = new File(base, "config/scheduler-config.xml.apon");
 
-		deleteResource(classLoader, "config/test-config.xml.apon");
-		deleteResource(classLoader, "config/scheduler-config.xml.apon");
-
+		apon1.delete();
+		apon2.delete();
+		
 		System.out.println("================ load ===============");
 
 		activityContextLoader.load("/config/test-config.xml");
@@ -107,18 +107,18 @@ public class ActivityContextLoaderTest {
 	public void finish() {
 	}
 
-	private File getResource(ClassLoader classLoader, String resouceName) {
-		URL url = classLoader.getResource(resouceName);
-		assert url != null;
-		return new File(url.getFile());
-	}
-
-	private void deleteResource(ClassLoader classLoader, String resouceName) {
-		URL url = classLoader.getResource(resouceName);
-		if(url != null) {
-			File file = new File(url.getFile());
-			file.delete();
-		}
-	}
+//	private File getResource(ClassLoader classLoader, String resouceName) {
+//		URL url = classLoader.getResource(resouceName);
+//		assert url != null;
+//		return new File(url.getFile());
+//	}
+//
+//	private void deleteResource(ClassLoader classLoader, String resouceName) {
+//		URL url = classLoader.getResource(resouceName);
+//		if(url != null) {
+//			File file = new File(url.getFile());
+//			file.delete();
+//		}
+//	}
 
 }

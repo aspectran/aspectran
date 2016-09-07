@@ -22,15 +22,15 @@ public class VariableParameters extends AbstractParameters implements Parameters
 	private static final long serialVersionUID = 4492298345259110525L;
 
 	public VariableParameters() {
-		super(null);
+		this(null, null);
 	}
 	
 	public VariableParameters(String text) {
-		super(null, text);
+		this(null, text);
 	}
 
 	public VariableParameters(ParameterDefinition[] parameterDefinitions) {
-		super(parameterDefinitions);
+		this(parameterDefinitions, null);
 	}
 	
 	public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {

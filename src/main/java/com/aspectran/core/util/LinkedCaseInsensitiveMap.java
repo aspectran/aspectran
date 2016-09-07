@@ -34,6 +34,8 @@ import java.util.Map;
  */
 public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
 
+	private static final long serialVersionUID = 4431694618621892446L;
+
 	private Map<String, String> caseInsensitiveKeys;
 
 	private final Locale locale;

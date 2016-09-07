@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.apon;
+package com.aspectran.core.util.apon.test;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.Parameters;
 
 public class AponReaderTest {
 
