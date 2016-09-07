@@ -98,7 +98,7 @@ public class AponWriter extends AponFormat implements Flushable {
 	/**
 	 * Sets whether wrap a string in quotes.
 	 *
-	 * @param true, wrap a string in quotes
+	 * @param noQuotes true, wrap a string in quotes
 	 */
 	public void setNoQuotes(boolean noQuotes) {
 		this.noQuotes = noQuotes;

@@ -467,8 +467,7 @@ public class AponReader extends AponFormat {
 	 */
 	public static Parameters parse(Reader reader) throws IOException {
 		AponReader aponReader = new AponReader(reader);
-		Parameters p = aponReader.read();
-		return p;
+		return aponReader.read();
 	}
 
 	/**
