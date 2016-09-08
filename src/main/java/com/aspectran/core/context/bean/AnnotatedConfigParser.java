@@ -56,6 +56,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
@@ -99,6 +100,17 @@ public class AnnotatedConfigParser {
 		this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
 	}
 	
+	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
+		this.assistant = null;
+		this.beanRuleRegistry = beanRuleRegistry;
+		this.relater = relater;
+		this.environment = null;
+		
+		this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
+		this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
+		this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
+	}
+	
 	public void parse() {
 		if(log.isDebugEnabled())
 			log.debug("Parsed bean rules for configuring: " + configBeanRuleMap.size());
@@ -137,19 +149,23 @@ public class AnnotatedConfigParser {
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
 
 		if(configAnno != null) {
-			if(beanClass.isAnnotationPresent(Profile.class)) {
-				Profile profileAnno = beanClass.getAnnotation(Profile.class);
-				if(!environment.acceptsProfiles(profileAnno.value()))
-					return;
+			if(environment != null) {
+				if(beanClass.isAnnotationPresent(Profile.class)) {
+					Profile profileAnno = beanClass.getAnnotation(Profile.class);
+					if(!environment.acceptsProfiles(profileAnno.value()))
+						return;
+				}
 			}
 
 			String[] nameArray = splitNamespace(configAnno.namespace());
 
 			for(Method method : beanClass.getMethods()) {
-				if(method.isAnnotationPresent(Profile.class)) {
-					Profile profileAnno = method.getAnnotation(Profile.class);
-					if(!environment.acceptsProfiles(profileAnno.value()))
-						continue;
+				if(environment != null) {
+					if(method.isAnnotationPresent(Profile.class)) {
+						Profile profileAnno = method.getAnnotation(Profile.class);
+						if(!environment.acceptsProfiles(profileAnno.value()))
+							continue;
+					}
 				}
 				if(method.isAnnotationPresent(Bean.class)) {
 					parseBeanRule(beanClass, method, nameArray);
@@ -199,7 +215,7 @@ public class AnnotatedConfigParser {
 
 							if(tokens != null && tokens.length > 0) {
 								Token token = tokens[0];
-								if(token.getType() == TokenType.BEAN) {
+								if(assistant != null && token.getType() == TokenType.BEAN) {
 									assistant.resolveBeanClass(token);
 								}
 								
@@ -288,12 +304,15 @@ public class AnnotatedConfigParser {
 		try {
 			Bean beanAnno = method.getAnnotation(Bean.class);
 			String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
+			ScopeType scopeType = beanAnno.scope();
 			String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
 			String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
 			String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
-
+			boolean lazyInit = beanAnno.lazyInit();
+			boolean important = beanAnno.important();
 			BeanRule beanRule = new BeanRule();
 			beanRule.setId(beanId);
+			beanRule.setScopeType(scopeType);
 			beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
 			beanRule.setOfferBeanClass(beanClass);
 			beanRule.setOfferMethodName(method.getName());
@@ -302,6 +321,12 @@ public class AnnotatedConfigParser {
 			beanRule.setInitMethodName(initMethodName);
 			beanRule.setDestroyMethodName(destroyMethodName);
 			beanRule.setFactoryMethodName(factoryMethodName);
+			if(lazyInit) {
+				beanRule.setLazyInit(lazyInit);
+			}
+			if(important) {
+				beanRule.setImportant(important);
+			}
 
 			Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
 			relater.relay(targetBeanClass, beanRule);

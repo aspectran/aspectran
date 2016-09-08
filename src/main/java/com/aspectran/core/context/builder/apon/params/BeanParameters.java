@@ -35,6 +35,7 @@ public class BeanParameters extends AbstractParameters {
 	public static final ParameterDefinition factoryMethod;
 	public static final ParameterDefinition lazyInit;
 	public static final ParameterDefinition important;
+	public static final ParameterDefinition camelCase;
 	public static final ParameterDefinition constructor;
 	public static final ParameterDefinition properties;
 	public static final ParameterDefinition filter;
@@ -56,6 +57,7 @@ public class BeanParameters extends AbstractParameters {
 		factoryMethod = new ParameterDefinition("factoryMethod", ParameterValueType.STRING);
 		lazyInit = new ParameterDefinition("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefinition("important", ParameterValueType.BOOLEAN);
+		camelCase = new ParameterDefinition("camelCase", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefinition("constructor", ConstructorParameters.class);
 		properties = new ParameterDefinition("properties", ItemHolderParameters.class);
 		filter = new ParameterDefinition("filter", FilterParameters.class);
@@ -75,6 +77,7 @@ public class BeanParameters extends AbstractParameters {
 			factoryMethod,
 			lazyInit,
 			important,
+			camelCase,
 			constructor,
 			properties,
 			filter

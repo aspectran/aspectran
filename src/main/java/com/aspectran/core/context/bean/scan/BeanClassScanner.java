@@ -29,6 +29,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+/**
+ * The Class BeanClassScanner.
+ */
 public class BeanClassScanner extends ClassScanner {
 
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);

@@ -48,7 +48,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private Class<?> beanClass;
 
-	private String scanPath;
+	private String scanPattern;
 	
 	private String maskPattern;
 	
@@ -95,7 +95,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	private Boolean lazyInit;
 
 	private Boolean important;
-
+	
 	private String description;
 
 	private boolean factoryBean;
@@ -180,21 +180,21 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Gets the scan path.
+	 * Gets the scan pattern.
 	 *
-	 * @return the scan path
+	 * @return the scan pattern
 	 */
-	public String getScanPath() {
-		return scanPath;
+	public String getScanPattern() {
+		return scanPattern;
 	}
 
 	/**
-	 * Sets the scan path.
+	 * Sets the scan pattern.
 	 *
-	 * @param scanPath the new scan path
+	 * @param scanPattern the new scan pattern
 	 */
-	public void setScanPath(String scanPath) {
-		this.scanPath = scanPath;
+	public void setScanPattern(String scanPattern) {
+		this.scanPattern = scanPattern;
 	}
 
 	/**
@@ -468,42 +468,57 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether the lazy initialization mode.
+	 * Returns whether this bean is to be lazily initialized.
 	 *
-	 * @return true, if is lazy initialization mode
+	 * @return true, if this bean is to be lazily initialized
 	 */
 	public Boolean getLazyInit() {
 		return lazyInit;
 	}
 
 	/**
-	 * Returns whether the lazy initialization mode.
+	 * Sets whether this bean is to be lazily initialized.
 	 *
-	 * @return true, if is lazy initialization mode
+	 * @param lazyInit whether this bean is to be lazily initialized
+	 */
+	public void setLazyInit(Boolean lazyInit) {
+		this.lazyInit = lazyInit;
+	}
+
+	/**
+	 * Returns whether this bean is to be lazily initialized.
+	 *
+	 * @return true, if this bean is to be lazily initialized
 	 */
 	public boolean isLazyInit() {
 		return BooleanUtils.toBoolean(lazyInit);
 	}
 
 	/**
-	 * Sets whether the lazy initialization mode.
+	 * Returns whether this bean is important.
 	 *
-	 * @param lazyInit whether the lazy initialization mode
+	 * @return whether this bean is important
 	 */
-	public void setLazyInit(Boolean lazyInit) {
-		this.lazyInit = lazyInit;
-	}
-
 	public Boolean getImportant() {
 		return important;
 	}
-
-	public boolean isImportant() {
-		return BooleanUtils.toBoolean(important);
-	}
 	
+	/**
+	 * Sets whether important bean.
+	 * 
+	 * @param important whether important bean
+	 */
 	public void setImportant(Boolean important) {
 		this.important = important;
+	}
+
+	/**
+	 * Returns whether this bean is important.
+	 *
+	 * @return whether this bean is important
+	 */
+	public boolean isImportant() {
+		return BooleanUtils.toBoolean(important);
 	}
 
 	/**
@@ -543,7 +558,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 	
 	/**
-	 * Returns whether bean implements FactoryBean.
+	 * Returns whether this bean implements FactoryBean.
 	 *
 	 * @return the boolean
 	 */
@@ -552,7 +567,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether bean implements DisposableBean.
+	 * Returns whether this bean implements DisposableBean.
 	 *
 	 * @return the boolean
 	 */
@@ -561,7 +576,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether bean implements InitializableBean.
+	 * Returns whether this bean implements InitializableBean.
 	 *
 	 * @return the boolean
 	 */
@@ -570,7 +585,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether bean implements InitializableTransletBean.
+	 * Returns whether this bean implements InitializableTransletBean.
 	 *
 	 * @return the boolean
 	 */
@@ -579,36 +594,36 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether bean is replicated.
+	 * Returns whether this bean is replicated.
 	 *
-	 * @return true, if is replicated
+	 * @return whether this bean is replicated
 	 */
 	public boolean isReplicated() {
 		return replicated;
 	}
 
 	/**
-	 * Sets whether bean is replicated.
+	 * Sets whether this bean is replicated.
 	 *
-	 * @param replicated true, if is replicated
+	 * @param replicated true, if this bean is replicated
 	 */
 	public void setReplicated(boolean replicated) {
 		this.replicated = replicated;
 	}
 
 	/**
-	 * Returns whether bean is proxied.
+	 * Returns whether this bean is proxied.
 	 *
-	 * @return the boolean
+	 * @return whether this bean is proxied
 	 */
 	public boolean isProxied() {
 		return proxied;
 	}
 
 	/**
-	 * Sets whether bean is proxied.
+	 * Sets whether this bean is proxied.
 	 *
-	 * @param proxied true, if is proxied
+	 * @param proxied true, if this bean is proxied
 	 */
 	public void setProxied(boolean proxied) {
 		this.proxied = proxied;
@@ -646,43 +661,43 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Gets the bean.
+	 * Returns an instantiated bean.
 	 *
-	 * @return the bean
+	 * @return an instantiated bean object
 	 */
 	public Object getBean() {
 		return bean;
 	}
 
 	/**
-	 * Sets the bean.
+	 * Returns an instantiated bean.
 	 *
-	 * @param bean the new bean
+	 * @param bean an instantiated bean object
 	 */
 	public void setBean(Object bean) {
 		this.bean = bean;
 	}
 
 	/**
-	 * Returns whether bean is registered.
+	 * Returns whether this bean is registered.
 	 *
-	 * @return true, if bean is registered
+	 * @return whether this bean is registered
 	 */
 	public boolean isRegistered() {
 		return registered;
 	}
 
 	/**
-	 * Sets whether bean is registered.
+	 * Sets whether this bean is registered.
 	 *
-	 * @param registered the new registered
+	 * @param whether this bean is registered
 	 */
 	public void setRegistered(boolean registered) {
 		this.registered = registered;
 	}
 
 	/**
-	 * Gets the description.
+	 * Gets the description of this bean.
 	 *
 	 * @return the description
 	 */
@@ -691,7 +706,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Sets the description.
+	 * Sets the description of this bean.
 	 *
 	 * @param description the new description
 	 */
@@ -748,7 +763,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	public static BeanRule newInstance(
 			String id,
 			String className,
-			String scanPath,
+			String scanPattern,
 			String maskPattern,
 			String initMethodName,
 			String destroyMethodName,
@@ -758,7 +773,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean lazyInit,
 			Boolean important) {
 		
-		if(className == null && scanPath == null)
+		if(className == null && scanPattern == null)
 			throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
 
 		ScopeType scopeType = ScopeType.resolve(scope);
@@ -771,10 +786,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
-		if(scanPath == null) {
+		if(scanPattern == null) {
 			beanRule.setClassName(className);
 		} else {
-			beanRule.setScanPath(scanPath);
+			beanRule.setScanPattern(scanPattern);
 			beanRule.setMaskPattern(maskPattern);
 		}
 		beanRule.setScopeType(scopeType);
@@ -830,7 +845,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	public static BeanRule replicate(BeanRule beanRule) {
 		BeanRule br = new BeanRule();
 		br.setId(beanRule.getId());
-		if(beanRule.getScanPath() == null) {
+		if(beanRule.getScanPattern() == null) {
 			br.setBeanClass(beanRule.getBeanClass());
 		}
 		br.setScopeType(beanRule.getScopeType());

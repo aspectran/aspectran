@@ -13,33 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean.annotation;
+package com.aspectran.core.context.bean;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import com.aspectran.core.context.bean.annotation.Autowired;
+import com.aspectran.core.context.bean.annotation.Bean;
+import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.rule.type.ScopeType;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Bean {
+@Configuration
+public class TestConfiguration {
 
-    String id() default "";
-
-    ScopeType scope() default ScopeType.SINGLETON;
-
-    String initMethod() default "";
-
-    String destroyMethod() default "";
-
-    String factoryMethod() default "";
-
-    boolean lazyInit() default false;
-    
-    boolean important() default false;
-    
+	@Autowired
+	private FirstBean firstBean;
+	
+	@Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
+	public FirstBean getThirdBean() {
+		return firstBean;
+	}
+	
 }

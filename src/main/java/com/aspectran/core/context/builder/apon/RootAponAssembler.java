@@ -308,12 +308,13 @@ public class RootAponAssembler {
 		beanParameters.putValueNonNull(BeanParameters.description, beanRule.getDescription());
 		beanParameters.putValueNonNull(BeanParameters.id, beanRule.getId());
 		beanParameters.putValueNonNull(BeanParameters.className, beanRule.getClassName());
-		beanParameters.putValueNonNull(BeanParameters.scan, beanRule.getScanPath());
+		beanParameters.putValueNonNull(BeanParameters.scan, beanRule.getScanPattern());
 		beanParameters.putValueNonNull(BeanParameters.mask, beanRule.getMaskPattern());
-		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
+		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON) {
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());
-		else if(beanRule.getScopeType() != null)
+		} else if(beanRule.getScopeType() != null) {
 			beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
+		}
 		beanParameters.putValueNonNull(BeanParameters.offerBean, beanRule.getOfferBeanId());
 		beanParameters.putValueNonNull(BeanParameters.offerMethod, beanRule.getOfferMethodName());
 		beanParameters.putValueNonNull(BeanParameters.initMethod, beanRule.getInitMethodName());

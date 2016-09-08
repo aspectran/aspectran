@@ -77,18 +77,17 @@ public class BeanRuleRegistry {
 	}
 	
 	public BeanRule getBeanRule(Object idOrRequiredType) {
-		if(idOrRequiredType == null)
+		if(idOrRequiredType == null) {
 			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
-
+		}
 		if(idOrRequiredType instanceof Class<?>) {
 			BeanRule[] beanRules = getBeanRules((Class<?>)idOrRequiredType);
-
-			if(beanRules == null)
+			if(beanRules == null) {
 				return null;
-			
-			if(beanRules.length > 1)
+			}
+			if(beanRules.length > 1) {
 				throw new NoUniqueBeanException((Class<?>)idOrRequiredType, beanRules);
-			
+			}
 			return beanRules[0];
 		} else {
 			return getBeanRule(idOrRequiredType.toString());
@@ -101,9 +100,9 @@ public class BeanRuleRegistry {
 	
 	public BeanRule[] getBeanRules(Class<?> requiredType) {
 		Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
-		if(list == null || list.isEmpty())
+		if(list == null || list.isEmpty()) {
 			return null;
-		
+		}
 		return list.toArray(new BeanRule[list.size()]);
 	}
 
@@ -112,13 +111,14 @@ public class BeanRuleRegistry {
 	}
 
 	public boolean containsBeanRule(Object idOrRequiredType) {
-		if(idOrRequiredType == null)
+		if(idOrRequiredType == null) {
 			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
-
-		if(idOrRequiredType instanceof Class<?>)
+		}
+		if(idOrRequiredType instanceof Class<?>) {
 			return containsBeanRule((Class<?>)idOrRequiredType);
-		else
+		} else {
 			return containsBeanRule(idOrRequiredType.toString());
+		}
 	}
 
 	public boolean containsBeanRule(String id) {
@@ -149,9 +149,9 @@ public class BeanRuleRegistry {
 	 */
 	public void addBeanRule(final BeanRule beanRule) throws ClassNotFoundException {
 		final PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
-		String scanPath = beanRule.getScanPath();
+		String scanPattern = beanRule.getScanPattern();
 
-		if(scanPath != null) {
+		if(scanPattern != null) {
 			BeanClassScanner scanner = new BeanClassScanner(classLoader);
 			if(beanRule.getFilterParameters() != null)
 				scanner.setFilterParameters(beanRule.getFilterParameters());
@@ -159,7 +159,7 @@ public class BeanRuleRegistry {
 				scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
 
 			try {
-				scanner.scan(scanPath, (resourceName, scannedClass) -> {
+				scanner.scan(scanPattern, (resourceName, scannedClass) -> {
 					BeanRule beanRule2 = beanRule.replicate();
 					if(prefixSuffixPattern != null) {
 						beanRule2.setId(prefixSuffixPattern.join(resourceName));
@@ -172,7 +172,7 @@ public class BeanRuleRegistry {
 					dissectBeanRule(beanRule2);
 				});
 			} catch(IOException e) {
-				throw new BeanClassScanFailedException("Failed to scan bean class. scanPath: " + scanPath, e);
+				throw new BeanClassScanFailedException("Failed to scan bean class. scanPattern: " + scanPattern, e);
 			}
 		} else {
 			if(!beanRule.isOffered()) {
@@ -210,28 +210,29 @@ public class BeanRuleRegistry {
 				}
 			}
 
-			if(log.isTraceEnabled())
+			if(log.isTraceEnabled()) {
 				log.trace("add BeanRule " + beanRule);
+			}
 		}
 	}
 	
 	private void saveBeanRule(String beanId, BeanRule beanRule) {
-		if(importantBeanIdSet.contains(beanId))
+		if(importantBeanIdSet.contains(beanId)) {
 			throw new BeanRuleException("Already exists the id based named bean", beanRule);
-
-		if(beanRule.isImportant())
+		}
+		if(beanRule.isImportant()) {
 			importantBeanIdSet.add(beanRule.getId());
-		
+		}
 		idBasedBeanRuleMap.put(beanId, beanRule);
 	}
 	
 	private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) {
-		if(importantBeanTypeSet.contains(beanClass))
+		if(importantBeanTypeSet.contains(beanClass)) {
 			throw new BeanRuleException("Already exists the type based named bean", beanRule);
-
-		if(beanRule.isImportant())
+		}
+		if(beanRule.isImportant()) {
 			importantBeanTypeSet.add(beanClass);
-
+		}
 		Set<BeanRule> list = typeBasedBeanRuleMap.get(beanClass);
 		if(list == null) {
 			list = new HashSet<BeanRule>();
@@ -244,6 +245,10 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
+	public void postProcess() {
+		postProcess(null);
+	}
+	
 	public void postProcess(ContextBuilderAssistant assistant) {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
@@ -308,7 +313,12 @@ public class BeanRuleRegistry {
 			}
 		};
 
-		AnnotatedConfigParser parser = new AnnotatedConfigParser(assistant, relater);
+		AnnotatedConfigParser parser;
+		if(assistant != null) {
+			parser = new AnnotatedConfigParser(assistant, relater);
+		} else {
+			parser = new AnnotatedConfigParser(this, relater);
+		}
 		parser.parse();
 	}
 
