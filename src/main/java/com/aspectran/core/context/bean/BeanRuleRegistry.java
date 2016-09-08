@@ -245,10 +245,6 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	public void postProcess() {
-		postProcess(null);
-	}
-	
 	public void postProcess(ContextBuilderAssistant assistant) {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
@@ -313,12 +309,7 @@ public class BeanRuleRegistry {
 			}
 		};
 
-		AnnotatedConfigParser parser;
-		if(assistant != null) {
-			parser = new AnnotatedConfigParser(assistant, relater);
-		} else {
-			parser = new AnnotatedConfigParser(this, relater);
-		}
+		AnnotatedConfigParser parser = new AnnotatedConfigParser(assistant, relater);
 		parser.parse();
 	}
 

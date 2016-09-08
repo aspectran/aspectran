@@ -16,7 +16,6 @@
 package com.aspectran.core.context.bean;
 
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 /**
@@ -25,16 +24,16 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AnnotatedConfigurationTest {
 
-	//@Test
-	public void configurationTest() throws ClassNotFoundException {
-		NonContextBeanRegistryFactory factory = new NonContextBeanRegistryFactory();
-		factory.addScanPattern("com.aspectran.core.context.bean.*Bean", "com.aspectran.core.context.bean.*");
-		factory.addScanPattern("com.aspectran.core.context.bean.*Configuration", "com.aspectran.core.context.bean.*");
-		
-		BeanRegistry beanRegistry = factory.createNonContextBeanRegistry();
-		FirstBean firstBean = beanRegistry.getBean("thirdBean");
-		
-		System.out.println(firstBean.getMessage());
-	}
+//	@Test
+//	public void configurationTest() throws ClassNotFoundException {
+//		NonContextBeanRegistryFactory factory = new NonContextBeanRegistryFactory();
+//		factory.addScanPattern("com.aspectran.core.context.bean.*Bean", "com.aspectran.core.context.bean.*");
+//		factory.addScanPattern("com.aspectran.core.context.bean.*Configuration", "com.aspectran.core.context.bean.*");
+//
+//		BeanRegistry beanRegistry = factory.createNonContextBeanRegistry();
+//		FirstBean firstBean = beanRegistry.getBean("thirdBean");
+//
+//		System.out.println(firstBean.getMessage());
+//	}
 
 }
