@@ -101,31 +101,44 @@ public class AnnotatedConfigParser {
 	}
 
 	public void parse() {
-		if(log.isDebugEnabled())
-			log.debug("Parsed bean rules for configuring: " + configBeanRuleMap.size());
+		if(log.isDebugEnabled()) {
+			log.debug("Now try to parse annotated configurations.");
+			log.debug("Parsing bean rules for configuring: " + configBeanRuleMap.size());
+		}
 
 		for(BeanRule beanRule : configBeanRuleMap.values()) {
+			//if(log.isTraceEnabled()) {
+				log.debug("configBeanRule " + beanRule);
+			//}
 			if(!beanRule.isOffered()) {
 				parseConfigBean(beanRule);
 			}
 		}
 
-		if(log.isDebugEnabled())
+		if(log.isDebugEnabled()) {
 			log.debug("Parsed id based bean rules: " + idBasedBeanRuleMap.size());
+		}
 
 		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
+			//if(log.isTraceEnabled()) {
+				log.debug("idBasedBeanRule " + beanRule);
+			//}
 			if(!beanRule.isOffered()) {
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
 			}
 		}
 
-		if(log.isDebugEnabled())
+		if(log.isDebugEnabled()) {
 			log.debug("Parsed type based bean rules: " + typeBasedBeanRuleMap.size());
+		}
 
 		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
 			for(BeanRule beanRule : set) {
 				if(!beanRule.isOffered()) {
+					//if(log.isTraceEnabled()) {
+						log.debug("typeBasedBeanRule " + beanRule);
+					//}
 					parseFieldAutowire(beanRule);
 					parseMethodAutowire(beanRule);
 				}

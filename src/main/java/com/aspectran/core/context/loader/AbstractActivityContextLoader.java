@@ -53,7 +53,9 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	@Override
 	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-		aspectranClassLoader.setResourceLocations(resourceLocations);
+		if(resourceLocations != null) {
+			aspectranClassLoader.setResourceLocations(resourceLocations);
+		}
 	}
 
 	@Override
@@ -91,7 +93,8 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 				"com.aspectran.core",
 				"com.aspectran.scheduler",
 				"com.aspectran.web",
-				"com.aspectran.console"
+				"com.aspectran.console",
+				"com.aspectran.embedded"
 		};
 
 		AspectranClassLoader acl = new AspectranClassLoader();

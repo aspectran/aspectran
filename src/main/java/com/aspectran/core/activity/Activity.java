@@ -18,7 +18,6 @@ package com.aspectran.core.activity;
 import java.util.List;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -29,9 +28,6 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -166,25 +162,11 @@ public interface Activity extends BeanRegistry {
 	void activityEnd();
 	
 	/**
-	 * Respond immediately, and the remaining jobs will be canceled.
-	 *
-	 * @param response the response
-	 */
-	void setPenddedResponse(Response response);
-	
-	/**
 	 * Respond depending on the content type.
 	 *
 	 * @param exceptionRuleList the exception rule list
 	 */
 	void responseByContentType(List<ExceptionRule> exceptionRuleList);
-
-	/**
-	 * Gets the response.
-	 *
-	 * @return the response
-	 */
-	Response getBaseResponse();
 
 	/**
 	 * Returns whether the exception was thrown.
@@ -249,12 +231,6 @@ public interface Activity extends BeanRegistry {
 	 * @return an instance of the current translet
 	 */
 	Translet getTranslet();
-
-	TransletRule getTransletRule();
-
-	RequestRule getRequestRule();
-
-	ResponseRule getResponseRule();
 
 	/**
 	 * Gets the application adapter.

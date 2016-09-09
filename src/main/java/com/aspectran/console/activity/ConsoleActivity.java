@@ -48,7 +48,6 @@ public class ConsoleActivity extends CoreActivity {
 	 */
 	public ConsoleActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
-		
 		setSessionAdapter(sessionAdapter);
 	}
 

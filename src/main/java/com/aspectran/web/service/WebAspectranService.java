@@ -69,33 +69,24 @@ public class WebAspectranService extends BasicAspectranService {
 		super(new WebApplicationAdapter(servletContext));
 	}
 
-	private void initialize(String aspectranConfigText) throws AspectranServiceException {
-		AspectranConfig aspectranConfig;
-		
-		if(aspectranConfigText != null) {
-			aspectranConfig = new AspectranConfig(aspectranConfigText);
-		} else {
-			aspectranConfig = new AspectranConfig();
-		}
-
+	@Override
+	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-
 		if(contextParameters == null) {
 			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
 		}
-
+		
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-
-		if(rootContext == null || rootContext.length() == 0) {
+		if(rootContext == null || rootContext.isEmpty()) {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
-
+		
 		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
 		if(webParameters != null) {
 			this.uriDecoding = webParameters.getString(AspectranWebConfig.uriDecoding);
 		}
-
-		initialize(aspectranConfig);
+		
+		super.initialize(aspectranConfig);
 	}
 	
 	/**
@@ -116,9 +107,9 @@ public class WebAspectranService extends BasicAspectranService {
 			log.debug("Request URI: " + requestUri);
 		}
 
-		if(pauseTimeout > 0L) {
-			if(pauseTimeout >= System.currentTimeMillis()) {
-				log.info("Aspectran Service has been paused, so did not respond to the request URI \"" + requestUri + "\"");
+		if(pauseTimeout != 0L) {
+			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+				log.info("Aspectran Service has been paused, so did not respond to the request URI \"" + requestUri + "\".");
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -188,7 +179,8 @@ public class WebAspectranService extends BasicAspectranService {
 		servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
 		if(log.isDebugEnabled()) {
-			log.debug("Web Aspectran Service Attribute in ServletContext has been created. " + ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
+			log.debug("Web Aspectran Service Attribute in ServletContext has been created. " +
+					ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
 		}
 		
 		return aspectranService;
@@ -257,8 +249,15 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) throws AspectranServiceException {
+		AspectranConfig aspectranConfig;
+		if(aspectranConfigParam != null) {
+			aspectranConfig = new AspectranConfig(aspectranConfigParam);
+		} else {
+			aspectranConfig = new AspectranConfig();
+		}
+		
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
-		aspectranService.initialize(aspectranConfigParam);
+		aspectranService.initialize(aspectranConfig);
 		
 		setAspectranServiceControllerListener(aspectranService);
 		
@@ -271,7 +270,7 @@ public class WebAspectranService extends BasicAspectranService {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			@Override
 			public void started() {
-				aspectranService.pauseTimeout = 0;
+				aspectranService.pauseTimeout = 0L;
 			}
 
 			@Override
@@ -280,21 +279,26 @@ public class WebAspectranService extends BasicAspectranService {
 			}
 
 			@Override
-			public void paused(long timeout) {
-				if(timeout <= 0)
-					timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
-				
-				aspectranService.pauseTimeout = System.currentTimeMillis() + timeout;
+			public void paused(long millis) {
+				if(millis < 0L) {
+					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
+				}
+				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
+			}
+			
+			@Override
+			public void paused() {
+				aspectranService.pauseTimeout = -1L;
 			}
 
 			@Override
 			public void resumed() {
-				aspectranService.pauseTimeout = 0;
+				started();
 			}
 
 			@Override
 			public void stopped() {
-				paused(-1L);
+				paused();
 			}
 		});
 	}

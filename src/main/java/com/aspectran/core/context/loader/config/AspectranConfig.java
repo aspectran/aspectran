@@ -17,6 +17,7 @@ package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranConfig extends AbstractParameters {
 
@@ -44,6 +45,14 @@ public class AspectranConfig extends AbstractParameters {
 	
 	public AspectranConfig(String text) {
 		super(parameterDefinitions, text);
+	}
+	
+	public void updateRootContextLocation(String rootContextLocation) {
+		Parameters contextParameters = getParameters(context);
+		if(contextParameters == null) {
+			contextParameters = newParameters(context);
+		}
+		contextParameters.putValue(AspectranContextConfig.root, rootContextLocation);
 	}
 	
 }

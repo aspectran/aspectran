@@ -39,7 +39,7 @@ public final class VoidActivity extends CoreActivity {
 	 */
 	public VoidActivity(ActivityContext context) {
 		super(context);
-		newTranslet();
+		newTranslet(this);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public final class VoidActivity extends CoreActivity {
 	}
 
 	@Override
-	public void setPenddedResponse(Response res) {
+	public void reserveResponse(Response res) {
 		throw new UnsupportedOperationException();
 	}
 

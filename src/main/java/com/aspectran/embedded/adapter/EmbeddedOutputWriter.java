@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.embedded.adapter;
 
 import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class QuartzJobOutputWriter.
  */
-public class QuartzJobOutputWriter extends StringOutputWriter {
+public class EmbeddedOutputWriter extends StringOutputWriter {
 
-	public QuartzJobOutputWriter() {
+	public EmbeddedOutputWriter() {
 		super(128);
 	}
 

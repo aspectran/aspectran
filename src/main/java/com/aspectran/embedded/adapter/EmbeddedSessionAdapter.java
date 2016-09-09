@@ -13,36 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.adapter;
+package com.aspectran.embedded.adapter;
 
 import java.util.Random;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
 
 /**
- * The Class ConsoleSessionAdapter.
+ * The Class EmbeddedSessionAdapter.
  * 
  * @since 2.3.0
  */
-public class ConsoleSessionAdapter extends BasicSessionAdapter {
+public class EmbeddedSessionAdapter extends BasicSessionAdapter {
 	
 	private final long creationTime = System.currentTimeMillis();
 
 	private final String id = generateSessionId();
 	
 	/**
-	 * Instantiates a new ConsoleSessionAdapter.
+	 * Instantiates a new EmbeddedSessionAdapter.
 	 */
-	public ConsoleSessionAdapter() {
+	public EmbeddedSessionAdapter() {
 		super(null);
 	}
 	
 	/**
-	 * Instantiates a new ConsoleSessionAdapter.
+	 * Instantiates a new EmbeddedSessionAdapter.
 	 *
 	 * @param adaptee the adaptee object
 	 */
-	public ConsoleSessionAdapter(Object adaptee) {
+	public EmbeddedSessionAdapter(Object adaptee) {
 		super(adaptee);
 	}
 

@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.core.embedded;
 
-import com.aspectran.core.util.StringOutputWriter;
+public class SecondBean {
 
-/**
- * The Class QuartzJobOutputWriter.
- */
-public class QuartzJobOutputWriter extends StringOutputWriter {
+	private String message = "This is the second bean.";
+	
+	public SecondBean() {
+		System.out.println("1111111111");
+	}
 
-	public QuartzJobOutputWriter() {
-		super(128);
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

@@ -1,0 +1,14 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-3.dtd">
+
+<aspectran>
+	
+	<description>
+		This is the configuration for Embedded Service Testing.
+	</description>
+
+	<bean scan="com.aspectran.core.embedded.*Bean" mask="com.aspectran.core.embedded.*"/>
+	
+	<bean scan="com.aspectran.core.embedded.*Configuration" mask="com.aspectran.core.embedded.*"/>
+
+</aspectran>

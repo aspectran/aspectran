@@ -42,7 +42,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
 		setSessionAdapter(sessionAdapter);
-		newTranslet();
+		newTranslet(this);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	}
 
 	@Override
-	public void setPenddedResponse(Response res) throws ResponseException {
+	public void reserveResponse(Response res) throws ResponseException {
 		throw new UnsupportedOperationException();
 	}
 

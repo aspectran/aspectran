@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.core.embedded;
 
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.context.bean.annotation.Autowired;
 
-/**
- * The Class QuartzJobOutputWriter.
- */
-public class QuartzJobOutputWriter extends StringOutputWriter {
+public class FirstBean {
 
-	public QuartzJobOutputWriter() {
-		super(128);
+	@Autowired
+	private SecondBean secondBean;
+
+	public String getMessage() {
+		return secondBean.getMessage();
 	}
-
+	
 }

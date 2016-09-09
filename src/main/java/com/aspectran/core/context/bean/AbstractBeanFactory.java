@@ -82,6 +82,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	protected Object createBean(BeanRule beanRule) {
 		Activity activity = context.getCurrentActivity();
+		if(activity == null) {
+			throw new BeanException("Cannot create a bean because An active activity is not found.");
+		}
 		return createBean(beanRule, activity);
 	}
 	
@@ -100,6 +103,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			if(offerBeanClass != null) {
 				if(offerBeanClass.isAnnotationPresent(Configuration.class)) {
+					System.out.println("activity: " + activity);
 					bean = activity.getConfigBean(offerBeanClass);
 				} else {
 					bean = activity.getBean(offerBeanClass);

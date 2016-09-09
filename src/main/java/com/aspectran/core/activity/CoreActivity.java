@@ -76,7 +76,7 @@ public class CoreActivity extends AbstractActivity {
 
 	private Translet translet;
 
-	private Response penddedResponse;
+	private Response reservedResponse;
 
 	/**
 	 * Instantiates a new CoreActivity.
@@ -148,7 +148,7 @@ public class CoreActivity extends AbstractActivity {
 			if(transletRule.getTransletImplementationClass() != null)
 				setTransletImplementationClass(transletRule.getTransletImplementationClass());
 
-			translet = newTranslet();
+			translet = newTranslet(this);
 
 			if(processResult != null) {
 				translet.setProcessResult(processResult);
@@ -364,13 +364,12 @@ public class CoreActivity extends AbstractActivity {
 		return translet.getProcessResult().getResultValue(actionId);
 	}
 
-	@Override
-	public Response getBaseResponse() {
+	protected Response getBaseResponse() {
 		return (responseRule == null) ? null : responseRule.getResponse();
 	}
 	
 	private void response() {
-		Response res = (this.penddedResponse != null) ? this.penddedResponse : getBaseResponse();
+		Response res = (this.reservedResponse != null) ? this.reservedResponse : getBaseResponse();
 		
 		if(res != null) {
 			if(res.getResponseType() != ResponseType.FORWARD) {
@@ -392,9 +391,13 @@ public class CoreActivity extends AbstractActivity {
 		}
 	}
 
-	@Override
-	public void setPenddedResponse(Response response) {
-		this.penddedResponse = response;
+	/**
+	 * Respond immediately, and the remaining jobs will be canceled.
+	 *
+	 * @param response the response
+	 */
+	protected void reserveResponse(Response response) {
+		this.reservedResponse = response;
 	}
 	
 	/**
@@ -458,7 +461,7 @@ public class CoreActivity extends AbstractActivity {
 				execute(actionList);
 			}
 
-			setPenddedResponse(targetResponse);
+			reserveResponse(targetResponse);
 		}
 	}
 
@@ -604,17 +607,12 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	@Override
-	public TransletRule getTransletRule() {
-		return transletRule;
-	}
-
-	@Override
-	public RequestRule getRequestRule() {
+	protected RequestRule getRequestRule() {
 		return requestRule;
 	}
 
 	@Override
-	public ResponseRule getResponseRule() {
+	protected ResponseRule getResponseRule() {
 		return responseRule;
 	}
 

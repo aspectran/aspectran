@@ -45,7 +45,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
  */
 public class CoreTranslet implements Translet {
 
-	private final Activity activity;
+	private final CoreActivity activity;
 
 	private ProcessResult processResult;
 	
@@ -58,7 +58,7 @@ public class CoreTranslet implements Translet {
 	 *
 	 * @param activity the current Activity
 	 */
-	protected CoreTranslet(Activity activity) {
+	protected CoreTranslet(CoreActivity activity) {
 		this.activity = activity;
 	}
 
@@ -162,6 +162,16 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
+	public String getRequestCharacterEncoding() {
+		return activity.resolveRequestCharacterEncoding();
+	}
+
+	@Override
+	public String getResponseCharacterEncoding() {
+		return activity.resolveResponseCharacterEncoding();
+	}
+	
+	@Override
 	public String getParameter(String name) {
 		return getRequestAdapter().getParameter(name);
 	}
@@ -263,7 +273,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void response(Response response) {
-		activity.setPenddedResponse(response);
+		activity.reserveResponse(response);
 		activity.activityEnd();
 	}
 

@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointType;
@@ -299,15 +300,16 @@ public abstract class AbstractActivity implements Activity {
 	/**
 	 * Create a new {@code Translet} instance.
 	 *
+	 * @param activity the core activity
 	 * @return the new {@code Translet} instance
 	 */
-	protected Translet newTranslet() {
+	protected Translet newTranslet(CoreActivity activity) {
 		if(this.transletInterfaceClass == null) {
 			this.transletInterfaceClass = Translet.class;
 		}
 		if(this.transletImplementClass == null) {
 			this.transletImplementClass = CoreTranslet.class;
-			return new CoreTranslet(this);
+			return new CoreTranslet(activity);
 		}
 		
 		//create a custom translet instance
@@ -329,7 +331,11 @@ public abstract class AbstractActivity implements Activity {
 		return (T)activity;
 	}
 
-	@Override
+	/**
+	 * Determine the request character encoding.
+	 *
+	 * @return the request character encoding
+	 */
 	public String resolveRequestCharacterEncoding() {
 		String characterEncoding = getRequestRule().getCharacterEncoding();
 		if(characterEncoding == null) {
@@ -338,7 +344,11 @@ public abstract class AbstractActivity implements Activity {
 		return characterEncoding;
 	}
 
-	@Override
+	/**
+	 * Determine the response character encoding.
+	 *
+	 * @return the response character encoding
+	 */
 	public String resolveResponseCharacterEncoding() {
 		String characterEncoding = getResponseRule().getCharacterEncoding();
 		if(characterEncoding == null) {
@@ -346,7 +356,11 @@ public abstract class AbstractActivity implements Activity {
 		}
 		return characterEncoding;
 	}
+	
+	abstract protected RequestRule getRequestRule();
 
+	abstract protected ResponseRule getResponseRule();
+	
 	/**
 	 * Gets the request scope.
 	 *

@@ -144,9 +144,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			activityContextLoader.setDefaultProfiles(defaultProfiles);
 			activityContextLoader.setHybridLoad(hybridLoad);
 
-			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
+			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0)) {
 				autoReloadingStartup = false;
-
+			}
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
@@ -187,8 +187,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		boolean cleanlyDestoryed = true;
 
-		if(!shutdownSchedulerService())
+		if(!shutdownSchedulerService()) {
 			cleanlyDestoryed = false;
+		}
 
 		destroyApplicationScope();
 

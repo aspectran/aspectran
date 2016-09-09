@@ -13,43 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.service;
+package com.aspectran.embedded.service;
 
-import java.io.File;
 import java.io.IOException;
 
-import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.console.adapter.ConsoleApplicationAdapter;
-import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
-import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.embedded.activity.EmbeddedActivity;
+import com.aspectran.embedded.adapter.EmbeddedApplicationAdapter;
+import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
 
 /**
  * The Class ConsoleAspectranService.
- *
- * @since 2016. 1. 18.
- * @author Juho Jeong
  */
-public class ConsoleAspectranService extends BasicAspectranService {
+public class EmbeddedAspectranService extends BasicAspectranService {
 
-	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
+	private static final String DEFAULT_ROOT_CONTEXT = "classpath:embedded-aspectran-config.xml";
 
 	private final SessionAdapter sessionAdapter;
 	
 	private long pauseTimeout;
 
-	private ConsoleAspectranService() {
-		super(new ConsoleApplicationAdapter());
-		this.sessionAdapter = new ConsoleSessionAdapter();
+	private EmbeddedAspectranService() {
+		super(new EmbeddedApplicationAdapter());
+		this.sessionAdapter = new EmbeddedSessionAdapter();
 	}
 	
 	@Override
@@ -60,7 +56,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		}
 
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if(rootContext == null || rootContext.length() == 0) {
+		if(rootContext == null || rootContext.isEmpty()) {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 		
@@ -70,29 +66,26 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	/**
 	 * Process the actual dispatching to the activity. 
 	 *
-	 * @param command the translet name
+	 * @param transletName the translet name
 	 */
-	public void service(String command) {
+	public void translet(String transletName, MethodType method) {
 		if(pauseTimeout != 0L) {
 			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + command + "\".");
+				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + transletName + "\".");
 				return;
 			} else {
 				pauseTimeout = 0L;
 			}
 		}
 
-		CommandParser commandParser = CommandParser.parseCommand(command);
 		Activity activity = null;
 
 		try {
-			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
-			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
+			activity = new EmbeddedActivity(getActivityContext(), sessionAdapter);
+			activity.prepare(transletName, method);
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");
-		} catch(Exception e) {
-			e.printStackTrace();
 		} finally {
 			if(activity != null) {
 				activity.finish();
@@ -109,20 +102,29 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	}
 	
 	/**
-	 * Returns a new instance of ConsoleAspectranService.
+	 * Returns a new instance of EmbeddedAspectranService.
 	 *
-	 * @param aspectranConfigFile the aspectran configuration file
-	 * @return the console aspectran service
+	 * @param rootContextLocation the root context location
+	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
+	public static EmbeddedAspectranService newInstance(String rootContextLocation) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
-		if(aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
-			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
-		}
-
-		ConsoleAspectranService aspectranService = new ConsoleAspectranService();
+		aspectranConfig.updateRootContextLocation(rootContextLocation);
+		return newInstance(aspectranConfig);
+	}
+	
+	/**
+	 * Returns a new instance of EmbeddedAspectranService.
+	 *
+	 * @param aspectranConfigText the aspectran configuration text
+	 * @return the embedded aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
+	 * @throws IOException if an I/O error has occurred
+	 */
+	public static EmbeddedAspectranService newInstance(AspectranConfig aspectranConfig) throws AspectranServiceException, IOException {
+		EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		
 		setAspectranServiceControllerListener(aspectranService);
@@ -132,7 +134,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		return aspectranService;
 	}
 
-	private static void setAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
+	private static void setAspectranServiceControllerListener(final EmbeddedAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			@Override
 			public void started() {

@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.embedded.adapter;
 
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
- * The Class QuartzJobOutputWriter.
+ * The Class EmbeddedRequestAdapter.
  */
-public class QuartzJobOutputWriter extends StringOutputWriter {
-
-	public QuartzJobOutputWriter() {
-		super(128);
+public class EmbeddedRequestAdapter extends BasicRequestAdapter {
+	
+	/**
+	 * Instantiates a new EmbeddedRequestAdapter.
+	 */
+	public EmbeddedRequestAdapter() {
+		super(null);
 	}
 
 }

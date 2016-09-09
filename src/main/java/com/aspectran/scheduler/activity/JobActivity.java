@@ -28,6 +28,13 @@ import com.aspectran.core.context.ActivityContext;
  */
 public class JobActivity extends CoreActivity {
 
+	/**
+	 * Instantiates a new job activity.
+	 *
+	 * @param context the current ActivityContext
+	 * @param requestAdapter the request adapter
+	 * @param responseAdapter the response adapter
+	 */
 	public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
 
