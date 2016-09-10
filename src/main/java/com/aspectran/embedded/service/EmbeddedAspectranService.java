@@ -18,6 +18,8 @@ package com.aspectran.embedded.service;
 import java.io.IOException;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
@@ -29,14 +31,18 @@ import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embedded.activity.EmbeddedActivity;
 import com.aspectran.embedded.adapter.EmbeddedApplicationAdapter;
 import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
 
 /**
- * The Class ConsoleAspectranService.
+ * The Class EmbeddedAspectranService.
  */
 public class EmbeddedAspectranService extends BasicAspectranService {
+
+	private static final Log log = LogFactory.getLog(EmbeddedAspectranService.class);
 
 	private static final String DEFAULT_ROOT_CONTEXT = "classpath:embedded-aspectran-config.xml";
 
@@ -104,8 +110,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 			activity = new EmbeddedActivity(getActivityContext(), sessionAdapter);
 			activity.prepare(transletName, method);
 			activity.perform();
-		} catch(TransletNotFoundException e) {
-			System.out.println("Translet is not found.");
+		} catch(ActivityTerminatedException e) {
+			if(log.isDebugEnabled()) {
+				log.debug("Translet activity was terminated.");
+			}
 		} finally {
 			if(activity != null) {
 				activity.finish();

@@ -19,7 +19,6 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
@@ -31,7 +30,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.message.NoSuchMessageException;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -49,8 +47,6 @@ public class CoreTranslet implements Translet {
 
 	private ProcessResult processResult;
 	
-	private AspectAdviceResult aspectAdviceResult;
-
 	private ActivityDataMap activityDataMap;
 
 	/**
@@ -268,13 +264,12 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void response() {
-		activity.activityEnd();
+		activity.reserveResponse();
 	}
 
 	@Override
 	public void response(Response response) {
 		activity.reserveResponse(response);
-		activity.activityEnd();
 	}
 
 	@Override
@@ -296,8 +291,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void redirect(String target, boolean immediately) {
-		if(!immediately && activity.getBaseResponse() != null) {
-			Response res = activity.getBaseResponse();
+		if(!immediately && activity.getDeclaredResponse() != null) {
+			Response res = activity.getDeclaredResponse();
 			if(res.getResponseType() == ResponseType.REDIRECT) {
 				Response r = res.replicate();
 				RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
@@ -331,8 +326,8 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void forward(String transletName, boolean immediately) {
-		if(!immediately && activity.getBaseResponse() != null) {
-			Response res = activity.getBaseResponse();
+		if(!immediately && activity.getDeclaredResponse() != null) {
+			Response res = activity.getDeclaredResponse();
 			if(res.getResponseType() == ResponseType.FORWARD) {
 				Response fr = res.replicate();
 				ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();
@@ -378,41 +373,25 @@ public class CoreTranslet implements Translet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null;
-	}
-
-	@Override
-	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
-		if(aspectAdviceResult == null) {
-			aspectAdviceResult = new AspectAdviceResult();
-		}
-		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
+		return activity.getAspectAdviceBean(aspectId);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getBeforeAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null;
+		return activity.getBeforeAdviceResult(aspectId);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAfterAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null;
+		return activity.getAfterAdviceResult(aspectId);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getFinallyAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null;
-	}
-
-	@Override
-	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-		if(aspectAdviceResult == null) {
-			aspectAdviceResult = new AspectAdviceResult();
-		}
-		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
+		return activity.getFinallyAdviceResult(aspectId);
 	}
 
 	//---------------------------------------------------------------------

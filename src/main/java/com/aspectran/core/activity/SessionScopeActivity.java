@@ -15,87 +15,25 @@
  */
 package com.aspectran.core.activity;
 
-import java.util.List;
-
-import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.ExceptionRule;
 
 /**
  * The Class SessionScopeActivity.
  *
  * @since 1.5.0
  */
-public final class SessionScopeActivity extends CoreActivity {
+public final class SessionScopeActivity extends DefaultActivity {
 
 	/**
 	 * Instantiates a new session scope activity.
 	 *
-	 * @param context the context
+	 * @param context the activity context
 	 * @param sessionAdapter the session adapter
 	 */
 	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
 		setSessionAdapter(sessionAdapter);
-	}
-
-	@Override
-	public void prepare(String transletName) {
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public RequestAdapter getRequestAdapter() {
-		return null;
-	}
-
-	@Override
-	public ResponseAdapter getResponseAdapter() {
-		return null;
-	}
-
-	@Override
-	public String getTransletName() {
-		return null;
-	}
-
-	@Override
-	public void perform() throws ActivityException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void performWithoutResponse() throws ActivityException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void finish() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void reserveResponse(Response res) throws ResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void responseByContentType(List<ExceptionRule> exceptionRuleList) throws ActivityException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Response getBaseResponse() {
-		throw new UnsupportedOperationException();
 	}
 
 }

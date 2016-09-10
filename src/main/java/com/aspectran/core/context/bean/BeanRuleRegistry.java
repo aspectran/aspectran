@@ -166,6 +166,8 @@ public class BeanRuleRegistry {
 					} else {
 						if(beanRule.getId() != null) {
 							beanRule2.setId(beanRule.getId() + resourceName);
+						} else if(beanRule.getMaskPattern() != null) {
+							beanRule2.setId(resourceName);
 						}
 					}
 					beanRule2.setBeanClass(scannedClass);

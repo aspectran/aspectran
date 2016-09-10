@@ -79,16 +79,11 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 					activity.execute(aarr.getBeforeAdviceRuleList());
 				}
 
-				Object result;
-
-				if(!activity.isActivityEnded()) {
-					if(log.isDebugEnabled()) {
-						log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
-					}
-					result = methodProxy.invokeSuper(proxy, args);
-				} else {
-					result = null;
+				if(log.isDebugEnabled()) {
+					log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
 				}
+
+				Object result = methodProxy.invokeSuper(proxy, args);
 
 				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
@@ -108,8 +103,8 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 
 			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
 			if(exceptionRuleList != null) {
-				activity.responseByContentType(exceptionRuleList);
-				if(activity.isActivityEnded()) {
+				activity.exceptionHandling(exceptionRuleList);
+				if(activity.isResponseReserved()) {
 					return null;
 				}
 			}

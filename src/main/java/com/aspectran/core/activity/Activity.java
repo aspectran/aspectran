@@ -91,6 +91,12 @@ public interface Activity extends BeanRegistry {
 	void finish();
 
 	/**
+	 * Throws an Activity Terminated Exception in order to end the current activity.
+	 * @throws ActivityTerminatedException if an activity is terminated during processing
+	 */
+	void terminate();
+
+	/**
 	 * Gets the request http method.
 	 *
 	 * @return the request method
@@ -170,23 +176,18 @@ public interface Activity extends BeanRegistry {
 	void executeWithoutThrow(AspectAdviceRule aspectAdviceRule);
 	
 	/**
-	 * Returns whether the current activity is completed or terminated.
+	 * Returns whether the response is reserved.
 	 * 
-	 * @return true, if the current activity is completed or terminated
+	 * @return true, if the response is reserved
 	 */
-	boolean isActivityEnded();
+	boolean isResponseReserved();
 
 	/**
-	 * Stop the activity and responds immediately.
-	 */
-	void activityEnd();
-	
-	/**
-	 * Respond depending on the content type.
+	 * Exception handling.
 	 *
 	 * @param exceptionRuleList the exception rule list
 	 */
-	void responseByContentType(List<ExceptionRule> exceptionRuleList);
+	void exceptionHandling(List<ExceptionRule> exceptionRuleList);
 
 	/**
 	 * Returns whether the exception was thrown.

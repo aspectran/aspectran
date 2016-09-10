@@ -110,6 +110,13 @@ public interface ActivityContext extends MessageSource {
 	MessageSource getMessageSource();
 
 	/**
+	 * Gets the default activity.
+	 *
+	 * @return the default activity
+	 */
+	Activity getDefaultActivity();
+
+	/**
 	 * Gets the current activity.
 	 *
 	 * @return the current activity

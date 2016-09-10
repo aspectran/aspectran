@@ -108,7 +108,7 @@ public class ConsoleActivity extends CoreActivity {
 					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
 					System.out.printf("Missing mandatory parameters: %s", missingParamNames).println();
 
-					activityEnd();
+					terminate();
 				}
 			}
 		}

@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.BasicActivity;
 import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
@@ -83,7 +82,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	protected Object createBean(BeanRule beanRule) {
 		Activity activity = context.getCurrentActivity();
 		if(activity == null) {
-			throw new BeanException("Cannot create a bean because An active activity is not found.");
+			throw new BeanException("Cannot create a bean because an active activity is not found.");
 		}
 		return createBean(beanRule, activity);
 	}
@@ -103,7 +102,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			if(offerBeanClass != null) {
 				if(offerBeanClass.isAnnotationPresent(Configuration.class)) {
-					System.out.println("activity: " + activity);
 					bean = activity.getConfigBean(offerBeanClass);
 				} else {
 					bean = activity.getBean(offerBeanClass);
@@ -111,7 +109,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			} else {
 				bean = activity.getBean(offerBeanId);
 			}
+
 			bean = invokeOfferMethod(beanRule, bean, activity);
+			if(bean == null) {
+				throw new NumberFormatException("Offer Method [" + beanRule.getOfferMethod() + "] has returned null.");
+			}
 		} catch(Exception e) {
 			throw new BeanCreationException(
 					"An exception occurred during the execution of a offer method from the referenced offer bean",
@@ -371,6 +373,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if(this.active.compareAndSet(false, true)) {
 			this.context = context;
 
+			if(log.isDebugEnabled()) {
+				log.debug("Initializing singletons...");
+			}
+
 			instantiateSingletons();
 
 			log.info("Bean Factory has been initialized.");
@@ -394,10 +400,12 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	 * Instantiate all singletons(non-lazy-init).
 	 */
 	private void instantiateSingletons() {
-		Activity activity = new BasicActivity(context);
-		context.setCurrentActivity(activity);
+		//Activity activity = new DefaultActivity(context);
+		//context.setCurrentActivity(activity);
 
-		try {
+		Activity activity = context.getDefaultActivity();
+
+		//try {
 			for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
 				instantiateSingleton(beanRule, activity);
 			}
@@ -409,9 +417,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			for(BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
 				instantiateSingleton(beanRule, activity);
 			}
-		} finally {
-			context.removeCurrentActivity();
-		}
+		//} finally {
+		//	context.removeCurrentActivity();
+		//}
 	}
 	
 	private void instantiateSingleton(BeanRule beanRule, Activity activity) {

@@ -80,16 +80,11 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 					activity.execute(aarr.getBeforeAdviceRuleList());
 				}
 
-				Object result;
-
-				if(!activity.isActivityEnded()) {
-					if(log.isDebugEnabled()) {
-						log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
-					}
-					result = method.invoke(bean, args);
-				} else {
-					result = null;
+				if(log.isDebugEnabled()) {
+					log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
 				}
+
+				Object result = method.invoke(bean, args);
 
 				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
@@ -97,9 +92,9 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 
 				return result;
 			} finally {
-				if(aarr.getFinallyAdviceRuleList() != null)
+				if(aarr.getFinallyAdviceRuleList() != null) {
 					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
-
+				}
 				if(log.isTraceEnabled()) {
 					log.trace("end method " + methodName);
 				}
@@ -109,8 +104,8 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 
 			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
 			if(exceptionRuleList != null) {
-				activity.responseByContentType(exceptionRuleList);
-				if(activity.isActivityEnded()) {
+				activity.exceptionHandling(exceptionRuleList);
+				if(activity.isResponseReserved()) {
 					return null;
 				}
 			}

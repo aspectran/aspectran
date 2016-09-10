@@ -295,8 +295,8 @@ public class RootAponAssembler {
 				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
 			}
-			for(ExceptionCatchRule rbctr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(rbctr));
+			for(ExceptionCatchRule ecr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
 			}
 		}
 
@@ -470,8 +470,8 @@ public class RootAponAssembler {
 				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
 				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
 			}
-			for(ExceptionCatchRule rbctr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(rbctr));
+			for(ExceptionCatchRule ecr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
 			}
 		}
 

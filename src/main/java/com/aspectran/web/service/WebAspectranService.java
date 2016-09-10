@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -140,6 +141,10 @@ public class WebAspectranService extends BasicAspectranService {
 				log.debug(e.getMessage());
 			}
 			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		} catch(ActivityTerminatedException e) {
+			if(log.isDebugEnabled()) {
+				log.debug("Translet activity was terminated.");
+			}
 		} catch(Exception e) {
 			log.error("Web Activity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

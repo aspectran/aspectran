@@ -46,7 +46,7 @@ public class MethodAction extends AbstractAction {
 	 * Instantiates a new MethodAction.
 	 *
 	 * @param methodActionRule the method action rule
-	 * @param parent the parent
+	 * @param parent the parent of this action
 	 */
 	public MethodAction(MethodActionRule methodActionRule, ActionList parent) {
 		super(parent);

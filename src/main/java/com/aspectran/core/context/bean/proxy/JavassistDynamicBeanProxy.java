@@ -79,16 +79,10 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 					activity.execute(aarr.getBeforeAdviceRuleList());
 				}
 
-				Object result;
-
-				if(!activity.isActivityEnded()) {
-					if(log.isDebugEnabled()) {
-						log.debug("invoke a proxied method [" + overridden + "] within the bean " + beanRule);
-					}
-					result = proceed.invoke(self, args);
-				} else {
-					result = null;
+				if(log.isDebugEnabled()) {
+					log.debug("invoke a proxied method [" + overridden + "] within the bean " + beanRule);
 				}
+				Object result = proceed.invoke(self, args);
 
 				if(aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
@@ -96,9 +90,9 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
 				return result;
 			} finally {
-				if(aarr.getFinallyAdviceRuleList() != null)
+				if(aarr.getFinallyAdviceRuleList() != null) {
 					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
-
+				}
 				if(log.isTraceEnabled()) {
 					log.trace("end method " + methodName);
 				}
@@ -108,8 +102,8 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
 			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
 			if(exceptionRuleList != null) {
-				activity.responseByContentType(exceptionRuleList);
-				if(activity.isActivityEnded()) {
+				activity.exceptionHandling(exceptionRuleList);
+				if(activity.isResponseReserved()) {
 					return null;
 				}
 			}

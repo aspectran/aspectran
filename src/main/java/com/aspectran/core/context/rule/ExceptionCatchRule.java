@@ -50,7 +50,6 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 			if(response != null)
 				return response;
 		}
-		
 		return getDefaultResponse();
 	}
 	
@@ -158,10 +157,9 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 	
 	public static ExceptionCatchRule newInstance(String exceptionType) {
 		ExceptionCatchRule rbctr = new ExceptionCatchRule();
-		
-		if(exceptionType != null)
+		if(exceptionType != null) {
 			rbctr.setExceptionType(exceptionType);
-		
+		}
 		return rbctr;
 	}
 	

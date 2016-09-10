@@ -112,6 +112,8 @@ public class AnnotatedConfigParser {
 			//}
 			if(!beanRule.isOffered()) {
 				parseConfigBean(beanRule);
+				parseFieldAutowire(beanRule);
+				//parseMethodAutowire(beanRule);
 			}
 		}
 
@@ -320,10 +322,10 @@ public class AnnotatedConfigParser {
 			beanRule.setDestroyMethodName(destroyMethodName);
 			beanRule.setFactoryMethodName(factoryMethodName);
 			if(lazyInit) {
-				beanRule.setLazyInit(lazyInit);
+				beanRule.setLazyInit(Boolean.TRUE);
 			}
 			if(important) {
-				beanRule.setImportant(important);
+				beanRule.setImportant(Boolean.TRUE);
 			}
 
 			Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
@@ -474,6 +476,7 @@ public class AnnotatedConfigParser {
 				}
 			}
 		}
+
 		if(required)
 			throw new NoUniqueBeanException(requiredType, beanRules);
 		else

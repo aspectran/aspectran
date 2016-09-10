@@ -22,6 +22,7 @@ import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
@@ -33,6 +34,8 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ConsoleAspectranService.
@@ -41,6 +44,8 @@ import com.aspectran.core.util.apon.Parameters;
  * @author Juho Jeong
  */
 public class ConsoleAspectranService extends BasicAspectranService {
+
+	private static final Log log = LogFactory.getLog(ConsoleAspectranService.class);
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
@@ -112,6 +117,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");
+		} catch(ActivityTerminatedException e) {
+			if(log.isDebugEnabled()) {
+				log.debug("Translet activity was terminated.");
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

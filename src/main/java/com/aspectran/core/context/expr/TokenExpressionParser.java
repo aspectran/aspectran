@@ -407,7 +407,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 			Properties props;
 
 			try {
-				props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getActivityContext().getClassLoader());
+				props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
 			} catch(IOException e) {
 				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
 			}

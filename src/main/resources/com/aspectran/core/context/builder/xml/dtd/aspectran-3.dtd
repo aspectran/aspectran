@@ -167,7 +167,7 @@
 <!ATTLIST action
   id      CDATA #IMPLIED
   bean    CDATA #IMPLIED
-  method  CDATA #IMPLIED
+  method  CDATA #REQUIRED
   hidden  (true | false) #IMPLIED
 >
 

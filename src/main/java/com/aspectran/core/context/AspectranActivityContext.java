@@ -18,6 +18,7 @@ package com.aspectran.core.context;
 import java.util.Locale;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
@@ -41,6 +42,8 @@ import com.aspectran.core.util.logging.LogFactory;
 public class AspectranActivityContext implements ActivityContext {
 
 	private final Log log = LogFactory.getLog(AspectranActivityContext.class);
+
+	private final ThreadLocal<Activity> defaultActivityHolder = new ThreadLocal<>();
 
 	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
@@ -165,8 +168,22 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	@Override
+	public Activity getDefaultActivity() {
+		return defaultActivityHolder.get();
+	}
+
+	private void setDefaultActivity(Activity activity) {
+		defaultActivityHolder.set(activity);
+	}
+
+	private void removeDefaultActivity() {
+		defaultActivityHolder.remove();
+	}
+
+	@Override
 	public Activity getCurrentActivity() {
-		return currentActivityHolder.get();
+		Activity activity = currentActivityHolder.get();
+		return (activity != null) ? activity : getDefaultActivity();
 	}
 
 	@Override
@@ -180,6 +197,9 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	public void initialize() {
+		Activity activity = new DefaultActivity(this);
+		setDefaultActivity(activity);
+
 		if(contextBeanRegistry != null)
 			contextBeanRegistry.initialize(this);
 
@@ -208,6 +228,8 @@ public class AspectranActivityContext implements ActivityContext {
 			contextBeanRegistry.destroy();
 			contextBeanRegistry = null;
 		}
+
+		removeDefaultActivity();
 	}
 
 	/**

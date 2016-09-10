@@ -55,33 +55,81 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		
 		throw new BeanException();
 	}
-	
+
 	private Object getSingletonScopeBean(BeanRule beanRule) {
-		long stamp = singletonScopeLock.readLock();
+		long stamp = singletonScopeLock.tryOptimisticRead();
 
-		try {
-			if(beanRule.isRegistered())
-				return beanRule.getBean();
+		if(!beanRule.isRegistered() || !singletonScopeLock.validate(stamp)) {
+			stamp = singletonScopeLock.readLock();
 
-			long tryStamp = singletonScopeLock.tryConvertToWriteLock(stamp);
+			try {
+				while(!beanRule.isRegistered()) {
+					long writeStamp = singletonScopeLock.tryConvertToWriteLock(stamp);
 
-			if(tryStamp != 0L) {
-				stamp = tryStamp;
-			} else {
-				singletonScopeLock.unlockRead(stamp);
-				stamp = singletonScopeLock.writeLock();
+					if(writeStamp != 0L) {
+						stamp = writeStamp;
+
+						beanRule.setBean(createBean(beanRule));
+						beanRule.setRegistered(true);
+
+						break;
+					} else {
+						singletonScopeLock.unlockRead(stamp);
+						stamp = singletonScopeLock.writeLock();
+					}
+				}
+			} finally {
+				singletonScopeLock.unlock(stamp);
 			}
-
-			Object bean = createBean(beanRule);
-
-			beanRule.setBean(bean);
-			beanRule.setRegistered(true);
-
-			return bean;
-		} finally {
-			singletonScopeLock.unlock(stamp);
 		}
+
+		return beanRule.getBean();
 	}
+
+//	private Object getSingletonScopeBean(BeanRule beanRule) {
+//		System.out.println("getSingletonScopeBean " + beanRule);
+//		System.out.println("***isReadLocked: " + singletonScopeLock.isReadLocked());
+//		System.out.println("***isWriteLocked: " + singletonScopeLock.isWriteLocked());
+//		//singletonScopeLock.tryReadLock();
+//		long stamp = singletonScopeLock.readLock();
+//		System.out.println("**tryReadLock " + stamp);
+//
+//		try {
+//			if(beanRule.isRegistered()) {
+//				System.out.println("***return " + beanRule.getBean());
+//				return beanRule.getBean();
+//			}
+//
+//			System.out.println("***tryConvertToWriteLock " + stamp);
+//			long writeStamp = singletonScopeLock.tryConvertToWriteLock(stamp);
+//			System.out.println("***writeStamp " + writeStamp);
+//
+//			if(writeStamp != 0L) {
+//				stamp = writeStamp;
+//			} else {
+//				System.out.println("***unlockRead " + stamp);
+//				singletonScopeLock.unlockRead(stamp);
+//				stamp = singletonScopeLock.writeLock();
+//				System.out.println("***unlockRead writeLock " + stamp);
+//			}
+//
+//			System.out.println("***stamp " + stamp);
+//
+//			Object bean = createBean(beanRule);
+//			System.out.println("***createBean " + bean);
+//
+//			beanRule.setBean(bean);
+//			beanRule.setRegistered(true);
+//
+//			return bean;
+//		} finally {
+//			System.out.println("***unlock " + stamp);
+//			if(stamp != 0L) {
+//				singletonScopeLock.unlock(stamp);
+//			}
+//			System.out.println("**unlock " + stamp + " beanRule " + beanRule);
+//		}
+//	}
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
 		Scope scope = getRequestScope();

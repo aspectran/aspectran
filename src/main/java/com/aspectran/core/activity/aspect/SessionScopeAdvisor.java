@@ -17,7 +17,6 @@ package com.aspectran.core.activity.aspect;
 
 import java.util.List;
 
-import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.SessionScopeActivity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -30,7 +29,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
  */
 public class SessionScopeAdvisor {
 
-	private final CoreActivity activity;
+	private final SessionScopeActivity activity;
 	
 	private final List<AspectAdviceRule> beforeAdviceRuleList;
 	

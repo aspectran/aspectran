@@ -28,7 +28,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -512,14 +511,6 @@ public interface Translet extends BeanRegistry, MessageSource {
 	<T> T getAspectAdviceBean(String aspectId);
 
 	/**
-	 * Put aspect advice bean.
-	 *
-	 * @param aspectId the aspect id
-	 * @param adviceBean the advice bean
-	 */
-	void putAspectAdviceBean(String aspectId, Object adviceBean);
-
-	/**
 	 * Gets the before advice result.
 	 *
 	 * @param <T> the generic type
@@ -545,14 +536,6 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * @return the finally advice result
 	 */
 	<T> T getFinallyAdviceResult(String aspectId);
-
-	/**
-	 * Put advice result.
-	 *
-	 * @param aspectAdviceRule the aspect advice rule
-	 * @param adviceActionResult the advice action result
-	 */
-	void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 
 	/**
 	 * Try to resolve the message. Return default message if no message was found.

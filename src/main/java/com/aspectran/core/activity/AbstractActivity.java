@@ -18,6 +18,7 @@ package com.aspectran.core.activity;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -57,9 +58,6 @@ public abstract class AbstractActivity implements Activity {
 
 	private Activity outerActivity;
 	
-	/** Whether the current activity is completed or interrupted. */
-	private boolean activityEnded;
-
 	private Throwable raisedException;
 
 	private SessionAdapter sessionAdapter;
@@ -73,6 +71,8 @@ public abstract class AbstractActivity implements Activity {
 	private Class<? extends CoreTranslet> transletImplementClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+	private AspectAdviceResult aspectAdviceResult;
 
 	private TransletRule transletRule;
 
@@ -152,20 +152,6 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	public void setIncluded(boolean included) {
 		this.included = included;
-	}
-
-	@Override
-	public boolean isActivityEnded() {
-		return activityEnded;
-	}
-
-	@Override
-	public void activityEnd() {
-		this.activityEnded = true;
-	}
-	
-	protected void continueActivity() {
-		this.activityEnded = false;
 	}
 
 	@Override
@@ -386,7 +372,7 @@ public abstract class AbstractActivity implements Activity {
 		return characterEncoding;
 	}
 	
-	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+	protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
 		if(aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
@@ -425,7 +411,81 @@ public abstract class AbstractActivity implements Activity {
 	public <T> T getSetting(String settingName) {
 		return (aspectAdviceRuleRegistry != null) ? aspectAdviceRuleRegistry.getSetting(settingName) : null;
 	}
-	
+
+	/**
+	 * Gets the aspect advice bean.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the aspect advice bean
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getAspectAdviceBean(String aspectId) {
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null;
+	}
+
+	/**
+	 * Put aspect advice bean.
+	 *
+	 * @param aspectId the aspect id
+	 * @param adviceBean the advice bean
+	 */
+	protected void putAspectAdviceBean(String aspectId, Object adviceBean) {
+		if(aspectAdviceResult == null) {
+			aspectAdviceResult = new AspectAdviceResult();
+		}
+		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
+	}
+
+	/**
+	 * Gets the before advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the before advice result
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getBeforeAdviceResult(String aspectId) {
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null;
+	}
+
+	/**
+	 * Gets the after advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the after advice result
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getAfterAdviceResult(String aspectId) {
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null;
+	}
+
+	/**
+	 * Gets the finally advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the finally advice result
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getFinallyAdviceResult(String aspectId) {
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null;
+	}
+
+	/**
+	 * Put advice result.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 * @param adviceActionResult the advice action result
+	 */
+	protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+		if(aspectAdviceResult == null) {
+			aspectAdviceResult = new AspectAdviceResult();
+		}
+		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
+	}
+
 	/**
 	 * Gets the aspect rule registry.
 	 *
@@ -539,7 +599,7 @@ public abstract class AbstractActivity implements Activity {
 		}
 	}
 	
-	public boolean isAcceptable(AspectRule aspectRule) {
+	private boolean isAcceptable(AspectRule aspectRule) {
 		if(aspectRule.getTargetMethods() != null) {
 			if(getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods()))
 				return false;
@@ -559,5 +619,10 @@ public abstract class AbstractActivity implements Activity {
 
 		return true;
 	}
-	
+
+	@Override
+	public void terminate() {
+		throw new ActivityTerminatedException();
+	}
+
 }

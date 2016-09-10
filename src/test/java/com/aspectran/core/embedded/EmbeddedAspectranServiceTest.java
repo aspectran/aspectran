@@ -15,16 +15,8 @@
  */
 package com.aspectran.core.embedded;
 
-import java.io.IOException;
-
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
@@ -40,6 +32,7 @@ public class EmbeddedAspectranServiceTest {
 //		BeanRegistry beanRegistry = activityContext.getBeanRegistry();
 //		FirstBean firstBean = beanRegistry.getBean("thirdBean");
 //
+//		System.out.println(firstBean);
 //		System.out.println(firstBean.getMessage());
 //	}
 
