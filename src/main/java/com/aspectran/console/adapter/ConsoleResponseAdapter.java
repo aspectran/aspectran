@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
 
-import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.util.SystemUtils;
@@ -37,11 +36,9 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 	
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
-	 *
-	 * @param activity the console activity
 	 */
-	public ConsoleResponseAdapter(ConsoleActivity activity) {
-		super(activity);
+	public ConsoleResponseAdapter() {
+		super(null);
 		printStream = System.out;
 		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
 	}

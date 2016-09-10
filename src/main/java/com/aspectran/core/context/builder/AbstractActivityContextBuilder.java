@@ -173,7 +173,8 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	 * @param beanRuleRegistry the bean rule registry
 	 * @param transletRuleRegistry the translet rule registry
 	 */
-	private void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry, TransletRuleRegistry transletRuleRegistry) {
+	private void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry,
+										TransletRuleRegistry transletRuleRegistry) {
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {

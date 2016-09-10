@@ -31,18 +31,12 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(HttpSessionScope.class);
 	
 	private SessionAdapter sessionAdapter;
 	
 	private SessionScopeAdvisor advisor;
 	
-	/**
-	 * Instantiates a new HttpSessionScope.
-	 */
-	public HttpSessionScope() {
-	}
-
 	/**
 	 * Instantiates a new HttpSessionScope.
 	 *

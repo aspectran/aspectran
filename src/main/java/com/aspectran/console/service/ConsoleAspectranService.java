@@ -22,6 +22,7 @@ import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -44,14 +45,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
 	private final SessionAdapter sessionAdapter;
+
+	private SessionScopeAdvisor sessionScopeAdvisor;
 	
 	private long pauseTimeout;
 
-	private ConsoleAspectranService() {
+	private ConsoleAspectranService() throws IOException {
 		super(new ConsoleApplicationAdapter());
 		this.sessionAdapter = new ConsoleSessionAdapter();
 	}
-	
+
 	@Override
 	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
@@ -66,6 +69,24 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		
 		super.initialize(aspectranConfig);
 	}
+
+	@Override
+	public void afterStartup() {
+		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
+		if(sessionScopeAdvisor != null) {
+			sessionScopeAdvisor.executeBeforeAdvice();
+		}
+	}
+
+	@Override
+	public void beforeShutdown() {
+		if(sessionScopeAdvisor != null) {
+			sessionScopeAdvisor.executeAfterAdvice();
+		}
+		Scope sessionScope = sessionAdapter.getSessionScope();
+		sessionScope.destroy();
+	}
+
 	
 	/**
 	 * Process the actual dispatching to the activity. 
@@ -100,14 +121,6 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		}
 	}
 
-	@Override
-	public void shutdown() {
-		Scope scope = sessionAdapter.getSessionScope();
-		scope.destroy();
-		
-		super.shutdown();
-	}
-	
 	/**
 	 * Returns a new instance of ConsoleAspectranService.
 	 *
@@ -128,7 +141,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		setAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();
-		
+
 		return aspectranService;
 	}
 

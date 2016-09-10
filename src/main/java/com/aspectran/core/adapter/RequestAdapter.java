@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 
@@ -32,6 +33,37 @@ import com.aspectran.core.util.MultiValueMap;
  * @since 2011. 3. 13.
  */
 public interface RequestAdapter {
+
+	/**
+	 * Returns the adaptee object to provide request information.
+	 *
+	 * @param <T> the type of the adaptee object
+	 * @return the adaptee object
+	 */
+	<T> T getAdaptee();
+
+	/**
+	 * Gets the request scope.
+	 *
+	 * @return the request scope
+	 */
+	RequestScope getRequestScope();
+
+	/**
+	 * Gets the request scope.
+	 *
+	 * @param create {@code true} to create a new reqeust scope for this
+	 * 		request if necessary; {@code false} to return {@code null}
+	 * @return the request scope
+	 */
+	RequestScope getRequestScope(boolean create);
+
+	/**
+	 * Sets the request scope.
+	 *
+	 * @param requestScope the new request scope
+	 */
+	void setRequestScope(RequestScope requestScope);
 
 	/**
 	 * Returns the name of the character encoding used in the body of this request.
@@ -50,14 +82,6 @@ public interface RequestAdapter {
 	 * @throws UnsupportedEncodingException if the specified encoding is invalid
 	 */
 	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
-
-	/**
-	 * Returns the adaptee object to provide request information.
-	 *
-	 * @param <T> the type of the adaptee object
-	 * @return the adaptee object
-	 */
-	<T> T getAdaptee();
 
 	/**
 	 * Returns the method used for the request.

@@ -16,6 +16,7 @@
 package com.aspectran.console.adapter;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.util.SystemUtils;
@@ -33,12 +34,12 @@ public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.
 	 */
-	public ConsoleApplicationAdapter() {
+	public ConsoleApplicationAdapter() throws IOException {
 		super(null);
 		
 		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
 		if(applicationBasePath == null)
-			applicationBasePath = new File(".").getAbsolutePath();
+			applicationBasePath = new File(".").getCanonicalPath();
 		
 		super.setApplicationBasePath(applicationBasePath);
 	}

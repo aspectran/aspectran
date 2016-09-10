@@ -48,7 +48,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 	/**
 	 * Instantiates a new token expression parser.
 	 *
-	 * @param activity the activity
+	 * @param activity the current Activity
 	 */
 	public TokenExpressionParser(Activity activity) {
 		this.activity = activity;
@@ -421,9 +421,8 @@ public class TokenExpressionParser implements TokenEvaluator {
 		} else {
 			Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
 
-			if(value != null && token.getGetterName() != null) {
+			if(value != null && token.getGetterName() != null)
 				value = getBeanProperty(value, token.getGetterName());
-			}
 
 			if(value == null)
 				value = token.getValue();

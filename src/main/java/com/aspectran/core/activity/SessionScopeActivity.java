@@ -23,7 +23,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.ExceptionRule;
 
 /**
@@ -42,7 +41,6 @@ public final class SessionScopeActivity extends CoreActivity {
 	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
 		setSessionAdapter(sessionAdapter);
-		newTranslet(this);
 	}
 
 	@Override
@@ -52,9 +50,7 @@ public final class SessionScopeActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		SessionScopeActivity activity = new SessionScopeActivity(getActivityContext(), getSessionAdapter());
-		activity.setIncluded(true);
-		return (T)activity;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -99,16 +95,6 @@ public final class SessionScopeActivity extends CoreActivity {
 
 	@Override
 	public Response getBaseResponse() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Scope getRequestScope() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
 	}
 

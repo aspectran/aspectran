@@ -18,6 +18,7 @@ package com.aspectran.embedded.service;
 import java.io.IOException;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -40,7 +41,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	private static final String DEFAULT_ROOT_CONTEXT = "classpath:embedded-aspectran-config.xml";
 
 	private final SessionAdapter sessionAdapter;
-	
+
+	private SessionScopeAdvisor sessionScopeAdvisor;
+
 	private long pauseTimeout;
 
 	private EmbeddedAspectranService() {
@@ -62,7 +65,24 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 		
 		super.initialize(aspectranConfig);
 	}
-	
+
+	@Override
+	public void afterStartup() {
+		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
+		if(sessionScopeAdvisor != null) {
+			sessionScopeAdvisor.executeBeforeAdvice();
+		}
+	}
+
+	@Override
+	public void beforeShutdown() {
+		if(sessionScopeAdvisor != null) {
+			sessionScopeAdvisor.executeAfterAdvice();
+		}
+		Scope sessionScope = sessionAdapter.getSessionScope();
+		sessionScope.destroy();
+	}
+
 	/**
 	 * Process the actual dispatching to the activity. 
 	 *

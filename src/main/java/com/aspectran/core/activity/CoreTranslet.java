@@ -162,15 +162,15 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public String getRequestCharacterEncoding() {
-		return activity.resolveRequestCharacterEncoding();
+	public ClassLoader getClassLoader() {
+		return activity.getClassLoader();
 	}
 
 	@Override
-	public String getResponseCharacterEncoding() {
-		return activity.resolveResponseCharacterEncoding();
+	public <T> T getSetting(String settingName) {
+		return activity.getSetting(settingName);
 	}
-	
+
 	@Override
 	public String getParameter(String name) {
 		return getRequestAdapter().getParameter(name);

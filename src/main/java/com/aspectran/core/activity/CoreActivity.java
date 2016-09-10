@@ -17,6 +17,7 @@ package com.aspectran.core.activity;
 
 import java.util.List;
 
+import com.aspectran.core.activity.aspect.AspectAdviceException;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
@@ -60,12 +61,6 @@ public class CoreActivity extends AbstractActivity {
 
 	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
-	private TransletRule transletRule;
-	
-	private RequestRule requestRule;
-	
-	private ResponseRule responseRule;
-
 	private MethodType requestMethod;
 
 	private String transletName;
@@ -142,21 +137,18 @@ public class CoreActivity extends AbstractActivity {
 				log.debug("translet " + transletRule);
 			}
 
-			if(transletRule.getTransletInterfaceClass() != null)
+			if(transletRule.getTransletInterfaceClass() != null) {
 				setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-
-			if(transletRule.getTransletImplementationClass() != null)
+			}
+			if(transletRule.getTransletImplementationClass() != null) {
 				setTransletImplementationClass(transletRule.getTransletImplementationClass());
+			}
 
-			translet = newTranslet(this);
+			translet = newTranslet(this, transletRule);
 
 			if(processResult != null) {
 				translet.setProcessResult(processResult);
 			}
-
-			this.transletRule = transletRule;
-			this.requestRule = transletRule.getRequestRule();
-			this.responseRule = transletRule.getResponseRule();
 
 			if(forwardTransletName == null) {
 				if(isIncluded()) {
@@ -225,7 +217,7 @@ public class CoreActivity extends AbstractActivity {
 	 * Parse the declared parameters.
 	 */
 	protected void parseDeclaredParameters() {
-		ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
+		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 		if(parameterItemRuleMap != null) {
 			ItemEvaluator evaluator = null;
 			ItemRuleList missingItemRules = null;
@@ -262,7 +254,7 @@ public class CoreActivity extends AbstractActivity {
 	 * Parse the declared attributes.
 	 */
 	protected void parseDeclaredAttributes() {
-		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
 			ItemEvaluator evaluator = new ItemExpressionParser(this);
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
@@ -288,7 +280,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 
 				if(!isActivityEnded()) {
-					if(transletRule.getContentList() != null) {
+					if(getTransletRule().getContentList() != null) {
 						produce();
 					}
 				}
@@ -308,8 +300,8 @@ public class CoreActivity extends AbstractActivity {
 			if(isExceptionRaised()) {
 				continueActivity();
 
-				if(transletRule.getExceptionRule() != null) {
-					responseByContentType(transletRule.getExceptionRule());
+				if(getTransletRule().getExceptionRule() != null) {
+					responseByContentType(getTransletRule().getExceptionRule());
 				}
 				if(!isActivityEnded() && getExceptionRuleList() != null) {
 					responseByContentType(getExceptionRuleList());
@@ -322,7 +314,7 @@ public class CoreActivity extends AbstractActivity {
 		} catch(Exception e) {
 			throw new ActivityException("Failed to perform an activity.", e);
 		} finally {
-			Scope requestScope = getRequestScope(false);
+			Scope requestScope = getRequestAdapter().getRequestScope(false);
 			if(requestScope != null) {
 				requestScope.destroy();
 			}
@@ -333,12 +325,12 @@ public class CoreActivity extends AbstractActivity {
 	 * Produce content.
 	 */
 	private void produce() {
-		ContentList contentList = transletRule.getContentList();
+		ContentList contentList = getTransletRule().getContentList();
 
 		if(contentList != null) {
 			ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
 
-			if(transletRule.isExplicitContent()) {
+			if(getTransletRule().isExplicitContent()) {
 				processResult.setOmittable(contentList.isOmittable());
 			} else {
 				if(contentList.getVisibleCount() < 2) {
@@ -354,18 +346,8 @@ public class CoreActivity extends AbstractActivity {
 		}
 	}
 
-	@Override
-	public ProcessResult getProcessResult() {
-		return translet.getProcessResult();
-	}
-
-	@Override
-	public Object getProcessResult(String actionId) {
-		return translet.getProcessResult().getResultValue(actionId);
-	}
-
 	protected Response getBaseResponse() {
-		return (responseRule == null) ? null : responseRule.getResponse();
+		return (getResponseRule() != null) ? getResponseRule().getResponse() : null;
 	}
 	
 	private void response() {
@@ -444,11 +426,11 @@ public class CoreActivity extends AbstractActivity {
 		if(targetResponse != null) {
 			ResponseRule responseRule = new ResponseRule();
 			responseRule.setResponse(targetResponse);
-			if(this.responseRule != null) {
-				responseRule.setCharacterEncoding(this.responseRule.getCharacterEncoding());
+			if(getResponseRule() != null) {
+				responseRule.setCharacterEncoding(getResponseRule().getCharacterEncoding());
 			}
 
-			this.responseRule = responseRule;
+			setResponseRule(responseRule);
 
 			log.info("Response by Content Type " + responseRule);
 
@@ -476,7 +458,7 @@ public class CoreActivity extends AbstractActivity {
 		if(translet.getProcessResult() != null) {
 			contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
 			contentResult.setName(actionList.getName());
-			if(transletRule.isExplicitContent()) {
+			if(getTransletRule().isExplicitContent()) {
 				contentResult.setOmittable(actionList.isOmittable());
 			} else if(actionList.getName() == null && actionList.getVisibleCount() < 2) {
 				contentResult.setOmittable(true);
@@ -543,6 +525,12 @@ public class CoreActivity extends AbstractActivity {
 		execute(aspectAdviceRule, true);
 	}
 
+	/**
+	 * Execute advice action.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 * @param noThrow whether or not throw exception
+	 */
 	private void execute(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
 		try {
 			Executable action = aspectAdviceRule.getExecutableAction();
@@ -580,7 +568,7 @@ public class CoreActivity extends AbstractActivity {
 				if(noThrow) {
 					log.error("Failed to execute an advice action " + aspectAdviceRule, e);
 				} else {
-					throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
+					throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);
 				}
 			}
 		}
@@ -589,11 +577,6 @@ public class CoreActivity extends AbstractActivity {
 	@Override
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
-	}
-
-	@Override
-	public Translet getTranslet() {
-		return translet;
 	}
 
 	@Override
@@ -607,13 +590,18 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	@Override
-	protected RequestRule getRequestRule() {
-		return requestRule;
+	public Translet getTranslet() {
+		return translet;
 	}
 
 	@Override
-	protected ResponseRule getResponseRule() {
-		return responseRule;
+	public ProcessResult getProcessResult() {
+		return translet.getProcessResult();
+	}
+
+	@Override
+	public Object getProcessResult(String actionId) {
+		return translet.getProcessResult().getResultValue(actionId);
 	}
 
 }

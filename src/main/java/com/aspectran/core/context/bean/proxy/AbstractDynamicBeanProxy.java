@@ -52,8 +52,8 @@ public abstract class AbstractDynamicBeanProxy {
 			String transletName, String beanId, String className, String methodName) throws Throwable {
 		RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 		
-		if(holder.getRelevantAspectRuleList() != null) {
-			for(AspectRule aspectRule : holder.getRelevantAspectRuleList()) {
+		if(holder.getDynamicAspectRuleList() != null) {
+			for(AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
 				// register dynamically
 				activity.registerAspectRule(aspectRule);
 			}
@@ -90,7 +90,7 @@ public abstract class AbstractDynamicBeanProxy {
 			String transletName, String beanId, String className, String methodName) {
 		Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
-		List<AspectRule> relevantAspectRuleList = new ArrayList<>();
+		List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
 
 		for(AspectRule aspectRule : aspectRuleMap.values()) {
 			if(aspectRule.isBeanRelevanted()) {
@@ -98,8 +98,8 @@ public abstract class AbstractDynamicBeanProxy {
 				if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
 					if(aspectRule.getJoinpointType() == JoinpointType.BEAN) {
 						postRegister.register(aspectRule);
-					} else {
-						relevantAspectRuleList.add(aspectRule);
+					} else if(aspectRule.getJoinpointType() == JoinpointType.TRANSLET) {
+						dynamicAspectRuleList.add(aspectRule);
 					}
 				}
 			}
@@ -107,11 +107,11 @@ public abstract class AbstractDynamicBeanProxy {
 
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
 
-		if(!relevantAspectRuleList.isEmpty() ||
+		if(!dynamicAspectRuleList.isEmpty() ||
 				(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)) {
 			RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-			if(!relevantAspectRuleList.isEmpty()) {
-				holder.setRelevantAspectRuleList(relevantAspectRuleList);
+			if(!dynamicAspectRuleList.isEmpty()) {
+				holder.setDynamicAspectRuleList(dynamicAspectRuleList);
 			} else {
 				holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 			}

@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.VoidActivity;
+import com.aspectran.core.activity.BasicActivity;
 import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
@@ -394,7 +394,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	 * Instantiate all singletons(non-lazy-init).
 	 */
 	private void instantiateSingletons() {
-		Activity activity = new VoidActivity(context);
+		Activity activity = new BasicActivity(context);
 		context.setCurrentActivity(activity);
 
 		try {

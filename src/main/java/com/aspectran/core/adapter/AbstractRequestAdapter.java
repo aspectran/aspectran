@@ -18,6 +18,7 @@ package com.aspectran.core.adapter;
 import java.util.Map;
 
 import com.aspectran.core.activity.request.AbstractAdaptiveRequest;
+import com.aspectran.core.context.bean.scope.RequestScope;
 
 /**
  * The Class AbstractRequestAdapter.
@@ -27,6 +28,8 @@ import com.aspectran.core.activity.request.AbstractAdaptiveRequest;
 public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest implements RequestAdapter {
 
 	protected final Object adaptee;
+
+	private RequestScope requestScope;
 
 	/**
 	 * Instantiates a new AbstractRequestAdapter.
@@ -53,6 +56,24 @@ public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest imp
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
+	}
+
+	@Override
+	public RequestScope getRequestScope() {
+		return getRequestScope(true);
+	}
+
+	@Override
+	public RequestScope getRequestScope(boolean create) {
+		if(requestScope == null && create) {
+			requestScope = new RequestScope();
+		}
+		return requestScope;
+	}
+
+	@Override
+	public void setRequestScope(RequestScope requestScope) {
+		this.requestScope = requestScope;
 	}
 
 }

@@ -35,7 +35,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	
 	private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
 	
-	private volatile SessionScope scope;
+	private volatile SessionScope sessionScope;
 	
 	private ActivityContext context;
 	
@@ -138,7 +138,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 		}
 	}
 
-	public HttpSession getSession(boolean create) {
+	protected HttpSession getSession(boolean create) {
 		if(adaptee == null) {
 			throw new IllegalStateException("Session has been expired or not yet initialized.");
 		}
@@ -147,16 +147,15 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
 	@Override
 	public SessionScope getSessionScope() {
-		if(this.scope == null) {
+		if(this.sessionScope == null) {
 			synchronized(this) {
-				this.scope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-				if(this.scope == null) {
+				this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+				if(this.sessionScope == null) {
 					newHttpSessionScope(true);
 				}
 			}
 		}
-		
-		return this.scope;
+		return this.sessionScope;
 	}
 	
 	/**
@@ -169,11 +168,11 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
 		
 		if(advisor != null || force) {
-			this.scope = new HttpSessionScope(this, advisor);
-			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.scope);
+			this.sessionScope = new HttpSessionScope(this, advisor);
+			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
 		}
 		
-		return this.scope;
+		return this.sessionScope;
 	}
 
 }

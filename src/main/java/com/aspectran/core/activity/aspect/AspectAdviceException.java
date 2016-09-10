@@ -16,41 +16,17 @@
 package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.context.aspect.AspectException;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**
  * The Class AspectAdviceException.
- * 
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class AspectAdviceException extends AspectException {
 	
 	/** @serial */
 	private static final long serialVersionUID = 6813516429436576091L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public AspectAdviceException() {
-		super();
-	}
-
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public AspectAdviceException(String msg) {
-		super(msg);
-	}
-
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AspectAdviceException(Throwable cause) {
-		super(cause);
-	}
+	private AspectAdviceRule aspectAdviceRule;
 
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
@@ -58,8 +34,17 @@ public class AspectAdviceException extends AspectException {
 	 * @param msg a message to associate with the exception
 	 * @param cause the real cause of the exception
 	 */
-	public AspectAdviceException(String msg, Throwable cause) {
+	public AspectAdviceException(String msg, AspectAdviceRule aspectAdviceRule, Throwable cause) {
 		super(msg, cause);
+		this.aspectAdviceRule = aspectAdviceRule;
 	}
 
+	/**
+	 * Returns the aspect advice rule.
+	 *
+	 * @return the aspect advice rule
+	 */
+	public AspectAdviceRule getAspectAdviceRule() {
+		return aspectAdviceRule;
+	}
 }

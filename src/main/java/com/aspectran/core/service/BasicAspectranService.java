@@ -55,6 +55,12 @@ public class BasicAspectranService extends AbstractAspectranService {
 		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
 	}
 
+	protected void afterStartup() {
+	}
+
+	protected void beforeShutdown() {
+	}
+
 	@Override
 	public void startup() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
@@ -67,6 +73,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			loadActivityContext();
 			registerShutdownHook();
+			afterStartup();
 
 			this.closed.set(false);
 			this.active.set(true);
@@ -91,11 +98,13 @@ public class BasicAspectranService extends AbstractAspectranService {
 				return;
 			}
 
+			beforeShutdown();
 			doDestroy();
 
 			log.info("Aspectran Service has been stopped.");
 
 			reloadActivityContext();
+			afterStartup();
 
 			this.closed.set(false);
 			this.active.set(true);
@@ -161,6 +170,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void shutdown() {
 		synchronized(this.startupShutdownMonitor) {
+			beforeShutdown();
 			doDestroy();
 			removeShutdownHook();
 

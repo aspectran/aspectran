@@ -15,7 +15,6 @@
  */
 package com.aspectran.console.adapter;
 
-import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.util.SystemUtils;
 
@@ -29,11 +28,9 @@ public class ConsoleRequestAdapter extends BasicRequestAdapter {
 
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
-	 *
-	 * @param activity the console activity
 	 */
-	public ConsoleRequestAdapter(ConsoleActivity activity) {
-		super(activity);
+	public ConsoleRequestAdapter() {
+		super(null);
 		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
 	}
 

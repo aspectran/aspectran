@@ -181,19 +181,21 @@ public interface Translet extends BeanRegistry, MessageSource {
 	ActivityDataMap getActivityDataMap(boolean prefill);
 
 	/**
-	 * Returns the request character encoding.
+	 * Returns the class loader.
 	 *
-	 * @return the request character encoding
+	 * @return the class loader
 	 */
-	String getRequestCharacterEncoding();
+	ClassLoader getClassLoader();
 
 	/**
-	 * Returns the response character encoding.
+	 * Gets the setting value in the translet scope.
 	 *
-	 * @return the response character encoding
+	 * @param <T> the type of the value
+	 * @param settingName the setting name
+	 * @return the setting value
 	 */
-	String getResponseCharacterEncoding();
-	
+	<T> T getSetting(String settingName);
+
 	/**
 	 * Returns the value of an activity's request parameter as a {@code String},
 	 * or {@code null} if the parameter does not exist.

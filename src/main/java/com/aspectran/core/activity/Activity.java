@@ -24,7 +24,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -92,6 +91,43 @@ public interface Activity extends BeanRegistry {
 	void finish();
 
 	/**
+	 * Gets the request http method.
+	 *
+	 * @return the request method
+	 */
+	MethodType getRequestMethod();
+
+	/**
+	 * Gets the name of the current translet.
+	 *
+	 * @return the translet name
+	 */
+	String getTransletName();
+
+	/**
+	 * Returns an instance of the current translet.
+	 *
+	 * @return an instance of the current translet
+	 */
+	Translet getTranslet();
+
+	/**
+	 * Returns the process result.
+	 *
+	 * @return the process result
+	 */
+	ProcessResult getProcessResult();
+
+	/**
+	 * Returns an action result for the specified action id from the process result,
+	 * or {@code null} if the action does not exist.
+	 *
+	 * @param actionId the specified action id
+	 * @return an action result
+	 */
+	Object getProcessResult(String actionId);
+
+	/**
 	 * Determine the request character encoding.
 	 *
 	 * @return the request character encoding
@@ -133,22 +169,6 @@ public interface Activity extends BeanRegistry {
 	 */
 	void executeWithoutThrow(AspectAdviceRule aspectAdviceRule);
 	
-	/**
-	 * Returns the process result.
-	 *
-	 * @return the process result
-	 */
-	ProcessResult getProcessResult();
-	
-	/**
-	 * Returns an action result for the specified action id from the process result,
-	 * or {@code null} if the action does not exist.
-	 *
-	 * @param actionId the specified action id
-	 * @return an action result
-	 */
-	Object getProcessResult(String actionId);
-
 	/**
 	 * Returns whether the current activity is completed or terminated.
 	 * 
@@ -204,33 +224,19 @@ public interface Activity extends BeanRegistry {
 	ActivityContext getActivityContext();
 
 	/**
+	 * Returns the class loader.
+	 *
+	 * @return the class loader
+	 */
+	ClassLoader getClassLoader();
+
+	/**
 	 * Create a new inner activity.
 	 *
 	 * @param <T> the type of the activity
 	 * @return the activity object
 	 */
 	<T extends Activity> T newActivity();
-
-	/**
-	 * Gets the request http method.
-	 *
-	 * @return the request method
-	 */
-	MethodType getRequestMethod();
-
-	/**
-	 * Gets the name of the current translet.
-	 *
-	 * @return the translet name
-	 */
-	String getTransletName();
-
-	/**
-	 * Returns an instance of the current translet.
-	 *
-	 * @return an instance of the current translet
-	 */
-	Translet getTranslet();
 
 	/**
 	 * Gets the application adapter.
@@ -299,18 +305,4 @@ public interface Activity extends BeanRegistry {
 	 */
 	<T> T getAspectAdviceBean(String aspectId);
 	
-	/**
-	 * Gets the request scope.
-	 *
-	 * @return the request scope
-	 */
-	Scope getRequestScope();
-
-	/**
-	 * Sets the request scope.
-	 *
-	 * @param requestScope the new request scope
-	 */
-	void setRequestScope(Scope requestScope);
-
 }

@@ -16,7 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.VoidActivity;
+import com.aspectran.core.activity.BasicActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -66,7 +66,7 @@ public class ContextEnvironment extends AbstractEnvironment {
 
 		Activity activity = context.getCurrentActivity();
 		if(activity == null)
-			activity = new VoidActivity(context);
+			activity = new BasicActivity(context);
 
 		ItemEvaluator evaluator = new ItemExpressionParser(activity);
 		return evaluator.evaluate(itemRule);

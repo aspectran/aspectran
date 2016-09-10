@@ -15,8 +15,6 @@
  */
 package com.aspectran.embedded.adapter;
 
-import java.io.File;
-
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.util.SystemUtils;
 
@@ -25,18 +23,16 @@ import com.aspectran.core.util.SystemUtils;
  */
 public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
 	
-	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.console.workingDir";
+	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embedded.workingDir";
 	
 	/**
-	 * Instantiates a new ConsoleApplicationAdapter.
+	 * Instantiates a new EmbeddedApplicationAdapter.
 	 */
 	public EmbeddedApplicationAdapter() {
 		super(null);
 		
 		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-		if(applicationBasePath == null)
-			applicationBasePath = new File(".").getAbsolutePath();
-		
+
 		super.setApplicationBasePath(applicationBasePath);
 	}
 

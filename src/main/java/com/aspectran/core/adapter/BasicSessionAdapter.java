@@ -29,29 +29,17 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  */
 public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
 	
-	private final SessionScope scope = new SessionScope();
-
 	private final Map<String, Object> attributes = new HashMap<>();
 
+	private final SessionScope sessionScope = new SessionScope();
+
 	/**
-	 * Instantiates a new BasicApplicationAdapter.
-	 */
-	public BasicSessionAdapter() {
-		super(null);
-	}
-	
-	/**
-	 * Instantiates a new BasicApplicationAdapter.
+	 * Instantiates a new BasicSessionAdapter.
 	 *
 	 * @param adaptee the adaptee object
 	 */
 	public BasicSessionAdapter(Object adaptee) {
 		super(adaptee);
-	}
-
-	@Override
-	public SessionScope getSessionScope() {
-		return scope;
 	}
 
 	@Override
@@ -73,6 +61,11 @@ public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
 	@Override
 	public void removeAttribute(String name) {
 		attributes.remove(name);
+	}
+
+	@Override
+	public SessionScope getSessionScope() {
+		return sessionScope;
 	}
 
 }

@@ -54,11 +54,11 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	protected void adapt() throws AdapterException {
 		try {
-			RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
+			RequestAdapter requestAdapter = new ConsoleRequestAdapter();
 			requestAdapter.setCharacterEncoding(resolveRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
+			ResponseAdapter responseAdapter = new ConsoleResponseAdapter();
 			setResponseAdapter(responseAdapter);
 		} catch(Exception e) {
 			throw new AdapterException("Failed to adapt for Console Activity.", e);

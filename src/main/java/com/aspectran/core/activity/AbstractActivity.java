@@ -28,8 +28,6 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -74,10 +72,14 @@ public abstract class AbstractActivity implements Activity {
 	
 	private Class<? extends CoreTranslet> transletImplementClass;
 
-	private Scope requestScope;
-	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
+
+	private TransletRule transletRule;
+
+	private RequestRule requestRule;
+
+	private ResponseRule responseRule;
+
 	/**
 	 * Instantiates a new abstract activity.
 	 *
@@ -90,6 +92,11 @@ public abstract class AbstractActivity implements Activity {
 	@Override
 	public ActivityContext getActivityContext() {
 		return context;
+	}
+
+	@Override
+	public ClassLoader getClassLoader() {
+		return context.getClassLoader();
 	}
 
 	/**
@@ -303,7 +310,13 @@ public abstract class AbstractActivity implements Activity {
 	 * @param activity the core activity
 	 * @return the new {@code Translet} instance
 	 */
-	protected Translet newTranslet(CoreActivity activity) {
+	protected Translet newTranslet(CoreActivity activity, TransletRule transletRule) {
+		if(transletRule != null) {
+			this.transletRule = transletRule;
+			this.requestRule = transletRule.getRequestRule();
+			this.responseRule = transletRule.getResponseRule();
+		}
+
 		if(this.transletInterfaceClass == null) {
 			this.transletInterfaceClass = Translet.class;
 		}
@@ -315,7 +328,7 @@ public abstract class AbstractActivity implements Activity {
 		//create a custom translet instance
 		try {
 			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
-			Object[] args = new Object[] { this };
+			Object[] args = new Object[] { activity };
 			
 			return (Translet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
@@ -331,13 +344,29 @@ public abstract class AbstractActivity implements Activity {
 		return (T)activity;
 	}
 
+	protected TransletRule getTransletRule() {
+		return transletRule;
+	}
+
+	protected RequestRule getRequestRule() {
+		return requestRule;
+	}
+
+	protected ResponseRule getResponseRule() {
+		return responseRule;
+	}
+
+	protected void setResponseRule(ResponseRule responseRule) {
+		this.responseRule = responseRule;
+	}
+
 	/**
 	 * Determine the request character encoding.
 	 *
 	 * @return the request character encoding
 	 */
 	public String resolveRequestCharacterEncoding() {
-		String characterEncoding = getRequestRule().getCharacterEncoding();
+		String characterEncoding = requestRule.getCharacterEncoding();
 		if(characterEncoding == null) {
 			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
 		}
@@ -350,47 +379,11 @@ public abstract class AbstractActivity implements Activity {
 	 * @return the response character encoding
 	 */
 	public String resolveResponseCharacterEncoding() {
-		String characterEncoding = getResponseRule().getCharacterEncoding();
+		String characterEncoding = requestRule.getCharacterEncoding();
 		if(characterEncoding == null) {
 			characterEncoding = resolveRequestCharacterEncoding();
 		}
 		return characterEncoding;
-	}
-	
-	abstract protected RequestRule getRequestRule();
-
-	abstract protected ResponseRule getResponseRule();
-	
-	/**
-	 * Gets the request scope.
-	 *
-	 * @return the request scope
-	 */
-	public Scope getRequestScope() {
-		return getRequestScope(true);
-	}
-
-	/**
-	 * Gets the request scope.
-	 *
-	 * @param create {@code true} to create a new reqeust scope for this
-	 * 		request if necessary; {@code false} to return {@code null}
-	 * @return the request scope
-	 */
-	public Scope getRequestScope(boolean create) {
-		if(requestScope == null && create) {
-			requestScope = new RequestScope();
-		}
-		return requestScope;
-	}
-
-	/**
-	 * Sets the request scope.
-	 *
-	 * @param requestScope the new request scope
-	 */
-	public void setRequestScope(Scope requestScope) {
-		this.requestScope = requestScope;
 	}
 	
 	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
@@ -501,27 +494,23 @@ public abstract class AbstractActivity implements Activity {
 		if(!isAcceptable(aspectRule))
 			return;
 
-		JoinpointType joinpointType = aspectRule.getJoinpointType();
+		if(log.isDebugEnabled()) {
+			log.debug("register AspectRule " + aspectRule);
+		}
+
+		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+		if(aspectAdviceRuleList != null) {
+			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+					execute(aspectAdviceRule);
+				}
+			}
+		}
 
 		/*
 		 * The before advice is excluded because it was already executed.
 		 */
-		if(joinpointType == JoinpointType.TRANSLET) {
-			if(log.isDebugEnabled()) {
-				log.debug("register AspectRule " + aspectRule);
-			}
-			
-			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-			if(aspectAdviceRuleList != null) {
-				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-						execute(aspectAdviceRule);
-					}
-				}
-			}
-
-			touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
-		}
+		touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
 	}
 	
 	protected void prepareAspectAdviceRule(TransletRule transletRule) {
@@ -533,15 +522,14 @@ public abstract class AbstractActivity implements Activity {
 			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
 				JoinpointType joinpointType = aspectRule.getJoinpointType();
 
-				if(!aspectRule.isBeanRelevanted() && joinpointType != JoinpointType.SESSION) {
+				if(!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
 					if(isAcceptable(aspectRule)) {
 						Pointcut pointcut = aspectRule.getPointcut();
 						if(pointcut == null || pointcut.matches(transletRule.getName())) {
-							aarPostRegister.register(aspectRule);
-
 							if(log.isDebugEnabled()) {
-								log.debug("registered AspectRule " + aspectRule);
+								log.debug("register AspectRule " + aspectRule);
 							}
+							aarPostRegister.register(aspectRule);
 						}
 					}
 				}

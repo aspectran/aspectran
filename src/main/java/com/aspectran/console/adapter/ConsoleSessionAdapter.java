@@ -36,15 +36,6 @@ public class ConsoleSessionAdapter extends BasicSessionAdapter {
 	public ConsoleSessionAdapter() {
 		super(null);
 	}
-	
-	/**
-	 * Instantiates a new ConsoleSessionAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public ConsoleSessionAdapter(Object adaptee) {
-		super(adaptee);
-	}
 
 	@Override
 	public String getId() {

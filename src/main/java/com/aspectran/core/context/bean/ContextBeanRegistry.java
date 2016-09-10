@@ -18,6 +18,8 @@ package com.aspectran.core.context.bean;
 import java.util.concurrent.locks.StampedLock;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
@@ -134,18 +136,24 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Scope getRequestScope() {
 		Activity activity = context.getCurrentActivity();
-		if(activity == null) {
-			return null;
+		if(activity != null) {
+			RequestAdapter requestAdapter = activity.getRequestAdapter();
+			if(requestAdapter != null) {
+				return requestAdapter.getRequestScope();
+			}
 		}
-		return activity.getRequestScope();
+		return null;
 	}
 
 	private Scope getSessionScope() {
 		Activity activity = context.getCurrentActivity();
-		if(activity == null || activity.getSessionAdapter() == null) {
-			return null;
+		if(activity != null) {
+			SessionAdapter sessionAdapter = activity.getSessionAdapter();
+			if(sessionAdapter != null) {
+				return sessionAdapter.getSessionScope();
+			}
 		}
-		return activity.getSessionAdapter().getSessionScope();
+		return null;
 	}
 	
 	private Scope getApplicationScope() {

@@ -37,15 +37,6 @@ public class EmbeddedSessionAdapter extends BasicSessionAdapter {
 		super(null);
 	}
 	
-	/**
-	 * Instantiates a new EmbeddedSessionAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public EmbeddedSessionAdapter(Object adaptee) {
-		super(adaptee);
-	}
-
 	@Override
 	public String getId() {
 		return id;
