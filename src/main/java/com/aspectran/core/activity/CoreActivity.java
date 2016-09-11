@@ -201,7 +201,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	/**
-	 * Parse the declared parameters and attributes.
+	 * Parses the declared parameters and attributes.
 	 */
 	protected void parseRequest() {
 		parseDeclaredParameters();
@@ -209,7 +209,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	/**
-	 * Parse the declared parameters.
+	 * Parses the declared parameters.
 	 */
 	protected void parseDeclaredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
@@ -246,7 +246,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	/**
-	 * Parse the declared attributes.
+	 * Parses the declared attributes.
 	 */
 	protected void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
@@ -260,7 +260,7 @@ public class CoreActivity extends BasicActivity {
 	}
 	
 	/**
-	 * Perform an activity.
+	 * Performs an activity.
 	 */
 	private void performTranslet() {
 		try {
@@ -313,7 +313,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	/**
-	 * Produce content.
+	 * Produces content.
 	 */
 	private void produce() {
 		ContentList contentList = getTransletRule().getContentList();
@@ -365,7 +365,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	/**
-	 * Respond immediately, and the remaining jobs will be canceled.
+	 * Responds immediately, and the remaining jobs will be canceled.
 	 *
 	 * @param response the response
 	 */

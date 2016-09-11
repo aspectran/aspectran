@@ -18,7 +18,8 @@ package com.aspectran.core.context.bean.scope;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.StampedLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
@@ -37,7 +38,7 @@ public class AbstractScope implements Scope {
 
 	private static final Log log = LogFactory.getLog(AbstractScope.class);
 
-	private final StampedLock scopeLock = new StampedLock();
+	private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
 	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<>();
 	
@@ -48,7 +49,7 @@ public class AbstractScope implements Scope {
 	}
 
 	@Override
-	public StampedLock getScopeStampedLock() {
+	public ReadWriteLock getScopeLock() {
 		return scopeLock;
 	}
 

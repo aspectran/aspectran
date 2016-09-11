@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-import java.util.concurrent.locks.StampedLock;
+import java.util.concurrent.locks.ReadWriteLock;
 
 import com.aspectran.core.context.rule.BeanRule;
 
@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public interface Scope {
 
-	StampedLock getScopeStampedLock();
+	ReadWriteLock getScopeLock();
 
 	Object getBean(BeanRule beanRule);
 
