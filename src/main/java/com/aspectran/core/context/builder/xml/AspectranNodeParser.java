@@ -85,13 +85,13 @@ public class AspectranNodeParser {
 	public void parse(InputStream inputStream) throws Exception {
 		try {
 			parser.parse(inputStream);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new Exception("Error parsing aspectran configuration.", e);
 		} finally {
-			if(inputStream != null) {
+			if (inputStream != null) {
 				try {
 					inputStream.close();
-				} catch(IOException e) {
+				} catch (IOException e) {
 					// ignore
 				}
 			}
@@ -103,7 +103,7 @@ public class AspectranNodeParser {
 	 */
 	private void addDescriptionNodelets() {
 		parser.addNodelet("/aspectran/description", (node, attributes, text) -> {
-            if(text != null) {
+            if (text != null) {
                 assistant.getAssistantLocal().setDescription(text);
             }
         });
@@ -114,9 +114,9 @@ public class AspectranNodeParser {
 	 */
 	private void addSettingsNodelets() {
 		parser.addNodelet("/aspectran/settings", (node, attributes, text) -> {
-            if(StringUtils.hasText(text)) {
+            if (StringUtils.hasText(text)) {
                 Parameters parameters = new VariableParameters(text);
-                for(String name : parameters.getParameterNameSet()) {
+                for (String name : parameters.getParameterNameSet()) {
                     assistant.putSetting(name, parameters.getString(name));
                 }
             }
@@ -144,7 +144,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/environment/properties", (node, attributes, text) -> {
 			EnvironmentRule environmentRule = assistant.peekObject();
 
-			if(StringUtils.hasLength(text)) {
+			if (StringUtils.hasLength(text)) {
 				ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
 				environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
@@ -156,7 +156,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/environment/properties/end()", (node, attributes, text) -> {
 			ItemRuleMap irm = assistant.popObject();
 
-			if(!irm.isEmpty()) {
+			if (!irm.isEmpty()) {
 				EnvironmentRule environmentRule = assistant.peekObject();
 				environmentRule.setPropertyItemRuleMap(irm);
 			}
@@ -172,9 +172,9 @@ public class AspectranNodeParser {
 	 */
 	private void addTypeAliasNodelets() {
 		parser.addNodelet("/aspectran/typeAliases", (node, attributes, text) -> {
-            if(StringUtils.hasLength(text)) {
+            if (StringUtils.hasLength(text)) {
                 Parameters parameters = new VariableParameters(text);
-                for(String alias : parameters.getParameterNameSet()) {
+                for (String alias : parameters.getParameterNameSet()) {
                     assistant.addTypeAlias(alias, parameters.getString(alias));
                 }
             }
@@ -235,7 +235,7 @@ public class AspectranNodeParser {
 			String profile = attributes.get("profile");
 
 			ImportHandler importHandler = assistant.getImportHandler();
-			if(importHandler != null) {
+			if (importHandler != null) {
 				Importer importer = assistant.newImporter(file, resource, url, fileType, profile);
 				importHandler.pending(importer);
 			}

@@ -67,7 +67,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
 	@Override
 	public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
-		if(hardReload) {
+		if (hardReload) {
 			newAspectranClassLoader();
 		}
 

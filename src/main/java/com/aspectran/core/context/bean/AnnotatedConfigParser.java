@@ -101,44 +101,44 @@ public class AnnotatedConfigParser {
 	}
 
 	public void parse() {
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Now try to parse annotated configurations.");
 			log.debug("Parsing bean rules for configuring: " + configBeanRuleMap.size());
 		}
 
-		for(BeanRule beanRule : configBeanRuleMap.values()) {
-			if(log.isTraceEnabled()) {
+		for (BeanRule beanRule : configBeanRuleMap.values()) {
+			if (log.isTraceEnabled()) {
 				log.trace("configBeanRule " + beanRule);
 			}
-			if(!beanRule.isOffered()) {
+			if (!beanRule.isOffered()) {
 				parseConfigBean(beanRule);
-				parseFieldAutowire(beanRule);
-				//parseMethodAutowire(beanRule);
-			}
-		}
-
-		if(log.isDebugEnabled()) {
-			log.debug("Parsed id based bean rules: " + idBasedBeanRuleMap.size());
-		}
-
-		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
-			if(log.isTraceEnabled()) {
-				log.trace("idBasedBeanRule " + beanRule);
-			}
-			if(!beanRule.isOffered()) {
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
 			}
 		}
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
+			log.debug("Parsed id based bean rules: " + idBasedBeanRuleMap.size());
+		}
+
+		for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
+			if (log.isTraceEnabled()) {
+				log.trace("idBasedBeanRule " + beanRule);
+			}
+			if (!beanRule.isOffered()) {
+				parseFieldAutowire(beanRule);
+				parseMethodAutowire(beanRule);
+			}
+		}
+
+		if (log.isDebugEnabled()) {
 			log.debug("Parsed type based bean rules: " + typeBasedBeanRuleMap.size());
 		}
 
-		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
-			for(BeanRule beanRule : set) {
-				if(!beanRule.isOffered()) {
-					if(log.isTraceEnabled()) {
+		for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
+			for (BeanRule beanRule : set) {
+				if (!beanRule.isOffered()) {
+					if (log.isTraceEnabled()) {
 						log.trace("typeBasedBeanRule " + beanRule);
 					}
 					parseFieldAutowire(beanRule);
@@ -152,24 +152,26 @@ public class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
 
-		if(configAnno != null) {
-			if(beanClass.isAnnotationPresent(Profile.class)) {
+		if (configAnno != null) {
+			if (beanClass.isAnnotationPresent(Profile.class)) {
 				Profile profileAnno = beanClass.getAnnotation(Profile.class);
-				if(!environment.acceptsProfiles(profileAnno.value()))
+				if (!environment.acceptsProfiles(profileAnno.value())) {
 					return;
+				}
 			}
 
 			String[] nameArray = splitNamespace(configAnno.namespace());
 
-			for(Method method : beanClass.getMethods()) {
-				if(method.isAnnotationPresent(Profile.class)) {
+			for (Method method : beanClass.getMethods()) {
+				if (method.isAnnotationPresent(Profile.class)) {
 					Profile profileAnno = method.getAnnotation(Profile.class);
-					if(!environment.acceptsProfiles(profileAnno.value()))
+					if (!environment.acceptsProfiles(profileAnno.value())) {
 						continue;
+					}
 				}
-				if(method.isAnnotationPresent(Bean.class)) {
+				if (method.isAnnotationPresent(Bean.class)) {
 					parseBeanRule(beanClass, method, nameArray);
-				} else if(method.isAnnotationPresent(Request.class)) {
+				} else if (method.isAnnotationPresent(Request.class)) {
 					parseTransletRule(beanClass, method, nameArray);
 				}
 			}
@@ -177,7 +179,7 @@ public class AnnotatedConfigParser {
 	}
 
 	private void parseFieldAutowire(BeanRule beanRule) {
-		if(beanRule.isFieldAutowireParsed()) {
+		if (beanRule.isFieldAutowireParsed()) {
 			return;
 		} else {
 			beanRule.setFieldAutowireParsed(true);
@@ -186,9 +188,9 @@ public class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		try {
-			while(beanClass != null) {
-				for(Field field : beanClass.getDeclaredFields()) {
-					if(field.isAnnotationPresent(Autowired.class)) {
+			while (beanClass != null) {
+				for (Field field : beanClass.getDeclaredFields()) {
+					if (field.isAnnotationPresent(Autowired.class)) {
 						Autowired autowiredAnno = field.getAnnotation(Autowired.class);
 						boolean required = autowiredAnno.required();
 						Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
@@ -206,16 +208,16 @@ public class AnnotatedConfigParser {
 						autowireTargetRule.setRequired(required);
 
 						beanRule.addAutowireTargetRule(autowireTargetRule);
-					} else if(field.isAnnotationPresent(Value.class)) {
+					} else if (field.isAnnotationPresent(Value.class)) {
 						Value valueAnno = field.getAnnotation(Value.class);
 						String value = (valueAnno != null) ? StringUtils.emptyToNull(valueAnno.value()) : null;
 
-						if(value != null) {
+						if (value != null) {
 							Token[] tokens = TokenParser.parse(value);
 
-							if(tokens != null && tokens.length > 0) {
+							if (tokens != null && tokens.length > 0) {
 								Token token = tokens[0];
-								if(token.getType() == TokenType.BEAN) {
+								if (token.getType() == TokenType.BEAN) {
 									assistant.resolveBeanClass(token);
 								}
 								
@@ -232,13 +234,13 @@ public class AnnotatedConfigParser {
 
 				beanClass = beanClass.getSuperclass();
 			}
-		} catch(Throwable ex) {
+		} catch (Throwable ex) {
 			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
 
 	private void parseMethodAutowire(BeanRule beanRule) {
-		if(beanRule.isMethodAutowireParsed()) {
+		if (beanRule.isMethodAutowireParsed()) {
 			return;
 		} else {
 			beanRule.setMethodAutowireParsed(true);
@@ -247,9 +249,9 @@ public class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		try {
-			while(beanClass != null) {
-				for(Method method : beanClass.getDeclaredMethods()) {
-					if(method.isAnnotationPresent(Autowired.class)) {
+			while (beanClass != null) {
+				for (Method method : beanClass.getDeclaredMethods()) {
+					if (method.isAnnotationPresent(Autowired.class)) {
 						Autowired autowiredAnno = method.getAnnotation(Autowired.class);
 						boolean required = autowiredAnno.required();
 						Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
@@ -258,10 +260,10 @@ public class AnnotatedConfigParser {
 						Parameter[] params = method.getParameters();
 						Class<?>[] paramTypes = new Class<?>[params.length];
 						String[] paramQualifiers = new String[params.length];
-						for(int i = 0; i < params.length; i++) {
+						for (int i = 0; i < params.length; i++) {
 							Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
 							String paramQualifier;
-							if(paramQualifierAnno != null) {
+							if (paramQualifierAnno != null) {
 								paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
 							} else {
 								paramQualifier = qualifier;
@@ -279,15 +281,15 @@ public class AnnotatedConfigParser {
 						autowireTargetRule.setQualifiers(paramQualifiers);
 						autowireTargetRule.setRequired(required);
 						beanRule.addAutowireTargetRule(autowireTargetRule);
-					} else if(method.isAnnotationPresent(Required.class)) {
+					} else if (method.isAnnotationPresent(Required.class)) {
 						BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
-					} else if(method.isAnnotationPresent(Initialize.class)) {
-						if(!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
+					} else if (method.isAnnotationPresent(Initialize.class)) {
+						if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
 							beanRule.setInitMethod(method);
 							beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
 						}
-					} else if(method.isAnnotationPresent(Destroy.class)) {
-						if(!beanRule.isDisposableBean() && beanRule.getDestroyMethod() != null) {
+					} else if (method.isAnnotationPresent(Destroy.class)) {
+						if (!beanRule.isDisposableBean() && beanRule.getDestroyMethod() != null) {
 							beanRule.setDestroyMethod(method);
 						}
 					}
@@ -295,7 +297,7 @@ public class AnnotatedConfigParser {
 
 				beanClass = beanClass.getSuperclass();
 			}
-		} catch(Throwable ex) {
+		} catch (Throwable ex) {
 			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
@@ -321,16 +323,16 @@ public class AnnotatedConfigParser {
 			beanRule.setInitMethodName(initMethodName);
 			beanRule.setDestroyMethodName(destroyMethodName);
 			beanRule.setFactoryMethodName(factoryMethodName);
-			if(lazyInit) {
+			if (lazyInit) {
 				beanRule.setLazyInit(Boolean.TRUE);
 			}
-			if(important) {
+			if (important) {
 				beanRule.setImportant(Boolean.TRUE);
 			}
 
 			Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
 			relater.relay(targetBeanClass, beanRule);
-		} catch(Throwable ex) {
+		} catch (Throwable ex) {
 			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
@@ -343,13 +345,13 @@ public class AnnotatedConfigParser {
 
 			String actionId = null;
 			Action actionAnno = method.getAnnotation(Action.class);
-			if(actionAnno != null) {
+			if (actionAnno != null) {
 				actionId = StringUtils.emptyToNull(actionAnno.id());
 			}
 
 			TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
-			if(method.isAnnotationPresent(Dispatch.class)) {
+			if (method.isAnnotationPresent(Dispatch.class)) {
 				Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
 				String name = StringUtils.emptyToNull(dispatchAnno.name());
 				String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
@@ -357,7 +359,7 @@ public class AnnotatedConfigParser {
 				String characterEncoding = StringUtils.emptyToNull(dispatchAnno.characterEncoding());
 				DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding);
 				transletRule.setResponseRule(ResponseRule.newInstance(drr));
-			} else if(method.isAnnotationPresent(Transform.class)) {
+			} else if (method.isAnnotationPresent(Transform.class)) {
 				Transform transformAnno = method.getAnnotation(Transform.class);
 				TransformType transformType = transformAnno.transformType();
 				String contentType = StringUtils.emptyToNull(transformAnno.contentType());
@@ -366,12 +368,12 @@ public class AnnotatedConfigParser {
 				boolean pretty = transformAnno.pretty();
 				TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, null, pretty);
 				transletRule.setResponseRule(ResponseRule.newInstance(tr));
-			} else if(method.isAnnotationPresent(Forward.class)) {
+			} else if (method.isAnnotationPresent(Forward.class)) {
 				Forward forwardAnno = method.getAnnotation(Forward.class);
 				String translet = StringUtils.emptyToNull(forwardAnno.translet());
 				ForwardResponseRule frr = ForwardResponseRule.newInstance(translet);
 				transletRule.setResponseRule(ResponseRule.newInstance(frr));
-			} else if(method.isAnnotationPresent(Redirect.class)) {
+			} else if (method.isAnnotationPresent(Redirect.class)) {
 				Redirect redirectAnno = method.getAnnotation(Redirect.class);
 				String target = StringUtils.emptyToNull(redirectAnno.target());
 				RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
@@ -385,20 +387,20 @@ public class AnnotatedConfigParser {
 
 			transletRule.applyActionRule(methodActionRule);
 			relater.relay(transletRule);
-		} catch(Throwable ex) {
+		} catch (Throwable ex) {
 			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
 
 	private String[] splitNamespace(String namespace) {
-		if(StringUtils.isEmpty(namespace)) {
+		if (StringUtils.isEmpty(namespace)) {
             return null;
         }
 
 		namespace = namespace.replace(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
 
         int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
-        if(cnt == 0) {
+        if (cnt == 0) {
             String[] arr = new String[2];
             arr[1] = namespace;
             return arr;
@@ -406,7 +408,7 @@ public class AnnotatedConfigParser {
 
         StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
         List<String> list = new ArrayList<>();
-        while(st.hasMoreTokens()) {
+        while (st.hasMoreTokens()) {
             list.add(st.nextToken());
         }
         list.add(null);
@@ -416,10 +418,11 @@ public class AnnotatedConfigParser {
 	}
 	
 	private String applyNamespaceForBean(String[] nameArray, String name) {
-		if(nameArray == null)
+		if (nameArray == null) {
 			return name;
+		}
 		
-		if(StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
+		if (StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
 			nameArray[0] = name.substring(1);
 		} else {
 			nameArray[0] = name;
@@ -427,20 +430,22 @@ public class AnnotatedConfigParser {
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i = nameArray.length - 1; i >= 0; i--) {
+        for (int i = nameArray.length - 1; i >= 0; i--) {
             sb.append(nameArray[i]);
-            if(i > 0)
-                sb.append(ActivityContext.ID_SEPARATOR_CHAR);
+            if (i > 0) {
+				sb.append(ActivityContext.ID_SEPARATOR_CHAR);
+			}
         }
 
         return sb.toString();
 	}
 
 	private String applyNamespaceForTranslet(String[] nameArray, String name) {
-		if(nameArray == null)
+		if (nameArray == null) {
 			return name;
+		}
 
-		if(StringUtils.startsWith(name, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+		if (StringUtils.startsWith(name, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
 			nameArray[0] = name.substring(1);
 		} else {
 			nameArray[0] = name;
@@ -448,7 +453,7 @@ public class AnnotatedConfigParser {
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i = nameArray.length - 1; i >= 0; i--) {
+        for (int i = nameArray.length - 1; i >= 0; i--) {
 			sb.append(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 			sb.append(nameArray[i]);
         }
@@ -459,28 +464,31 @@ public class AnnotatedConfigParser {
 	private boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
 		BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
 
-		if(beanRules == null || beanRules.length == 0) {
-			if(required)
+		if (beanRules == null || beanRules.length == 0) {
+			if (required) {
 				throw new RequiredTypeBeanNotFoundException(requiredType);
-			else
+			} else {
 				return false;
+			}
 		}
 
-		if(beanRules.length == 1)
+		if (beanRules.length == 1) {
 			return true;
+		}
 		
-		if(beanId != null) {
-			for(BeanRule beanRule : beanRules) {
-				if(beanId.equals(beanRule.getId())) {
+		if (beanId != null) {
+			for (BeanRule beanRule : beanRules) {
+				if (beanId.equals(beanRule.getId())) {
 					return true;
 				}
 			}
 		}
 
-		if(required)
+		if (required) {
 			throw new NoUniqueBeanException(requiredType, beanRules);
-		else
+		} else {
 			return false;
+		}
 	}
 
 }

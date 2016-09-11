@@ -50,22 +50,26 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
 	@Override
 	public void valueBound(HttpSessionBindingEvent event) {
-		if(log.isDebugEnabled())
+		if (log.isDebugEnabled()) {
 			log.debug("New HttpSessionScope bound in session " + sessionAdapter);
+		}
 		
-		if(advisor != null)
+		if (advisor != null) {
 			advisor.executeBeforeAdvice();
+		}
 	}
 
 	@Override
 	public void valueUnbound(HttpSessionBindingEvent event) {
 		sessionAdapter.release();
 
-		if(log.isDebugEnabled())
+		if (log.isDebugEnabled()) {
 			log.debug("HttpSessionScope removed from session " + sessionAdapter);
+		}
 		
-		if(advisor != null)
+		if (advisor != null) {
 			advisor.executeAfterAdvice();
+		}
 		
 		this.destroy();
 	}

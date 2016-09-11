@@ -41,7 +41,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * @return an {@code MultiValueMap} object, may not be {@code null}
 	 */
 	public MultiValueMap<String, String> touchHeaders() {
-		if(headers == null) {
+		if (headers == null) {
 			headers = new LinkedCaseInsensitiveMultiValueMap<String>(6);
 		}
 		return headers;
@@ -68,7 +68,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * 		on this response
 	 */
 	public String getHeader(String name) {
-		return (headers != null) ? headers.getFirst(name) : null;
+		return (headers != null ? headers.getFirst(name) : null);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * 		of the response header with the given name
 	 */
 	public Collection<String> getHeaders(String name) {
-		return (headers != null) ? headers.get(name) : null;
+		return (headers != null ? headers.get(name) : null);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * 		of the headers of this response
 	 */
 	public Collection<String> getHeaderNames() {
-		return (headers == null) ? null : headers.keySet();
+		return (headers == null ? null : headers.keySet());
 	}
 
 	/**

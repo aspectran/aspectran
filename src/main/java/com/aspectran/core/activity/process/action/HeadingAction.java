@@ -53,20 +53,21 @@ public class HeadingAction extends AbstractAction {
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
-		if(headingActionRule.getHeaderItemRuleMap() == null)
+		if (headingActionRule.getHeaderItemRuleMap() == null) {
 			return null;
+		}
 		
 		try {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
 			
-			if(!valueMap.isEmpty()) {
+			if (!valueMap.isEmpty()) {
 				ResponseAdapter responseAdapter = activity.getResponseAdapter();
 				responseAdapter.touchHeaders().putAll(valueMap);
 			}
 			
 			return valueMap;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Failed to execute heading action " + headingActionRule + " Cause: " + e.toString());
 			throw e;
 		}

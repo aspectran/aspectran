@@ -110,25 +110,25 @@ public class MessageSourceSupport {
      * @return the formatted message (with resolved arguments)
      */
     protected String formatMessage(String msg, Object[] args, Locale locale) {
-        if(msg == null || (!this.alwaysUseMessageFormat && (args == null || args.length == 0))) {
+        if (msg == null || (!this.alwaysUseMessageFormat && (args == null || args.length == 0))) {
             return msg;
         }
         MessageFormat messageFormat = null;
         synchronized (this.messageFormatsPerMessage) {
             Map<Locale, MessageFormat> messageFormatsPerLocale = this.messageFormatsPerMessage.get(msg);
-            if(messageFormatsPerLocale != null) {
+            if (messageFormatsPerLocale != null) {
                 messageFormat = messageFormatsPerLocale.get(locale);
             } else {
                 messageFormatsPerLocale = new HashMap<Locale, MessageFormat>();
                 this.messageFormatsPerMessage.put(msg, messageFormatsPerLocale);
             }
-            if(messageFormat == null) {
+            if (messageFormat == null) {
                 try {
                     messageFormat = createMessageFormat(msg, locale);
-                } catch(IllegalArgumentException ex) {
+                } catch (IllegalArgumentException ex) {
                     // invalid message format - probably not intended for formatting,
                     // rather using a message structure with no arguments involved
-                    if(this.alwaysUseMessageFormat) {
+                    if (this.alwaysUseMessageFormat) {
                         throw ex;
                     }
                     // silently proceed with raw message if format not enforced
@@ -137,7 +137,7 @@ public class MessageSourceSupport {
                 messageFormatsPerLocale.put(locale, messageFormat);
             }
         }
-        if(messageFormat == INVALID_MESSAGE_FORMAT) {
+        if (messageFormat == INVALID_MESSAGE_FORMAT) {
             return msg;
         }
         synchronized(messageFormat) {

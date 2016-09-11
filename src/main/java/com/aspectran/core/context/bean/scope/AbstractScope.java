@@ -65,12 +65,13 @@ public class AbstractScope implements Scope {
 
 	@Override
 	public void destroy() {
-		if(log.isDebugEnabled()) {
-			if(scopedBeanMap.size() > 0)
+		if (log.isDebugEnabled()) {
+			if (scopedBeanMap.size() > 0) {
 				log.debug("Destroy scoped beans in the " + this);
+			}
 		}
 
-		for(Map.Entry<BeanRule, Object> entry : scopedBeanMap.entrySet()) {
+		for (Map.Entry<BeanRule, Object> entry : scopedBeanMap.entrySet()) {
 			BeanRule beanRule = entry.getKey();
 			Object bean = entry.getValue();
 			doDestroy(beanRule, bean);
@@ -80,15 +81,15 @@ public class AbstractScope implements Scope {
 	}
 
 	private void doDestroy(BeanRule beanRule, Object bean) {
-		if(bean != null) {
+		if (bean != null) {
 			try {
-				if(beanRule.isDisposableBean()) {
+				if (beanRule.isDisposableBean()) {
 					((DisposableBean)bean).destroy();
-				} else if(beanRule.getDestroyMethodName() != null) {
+				} else if (beanRule.getDestroyMethodName() != null) {
 					Method destroyMethod = beanRule.getDestroyMethod();
 					destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				log.error("Cannot destroy " + scopeType + " scoped bean " + beanRule, e);
 			}
 		}

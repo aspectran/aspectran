@@ -78,55 +78,61 @@ public class XmlTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 
 		try {
 			String characterEncoding;
-			if(this.characterEncoding != null) {
+			if (this.characterEncoding != null) {
 				characterEncoding = this.characterEncoding;
 			} else {
 				characterEncoding = activity.resolveResponseCharacterEncoding();
 			}
 
-			if(characterEncoding != null)
+			if (characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 
-			if(contentType != null)
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-			if(pretty)
+			if (pretty) {
 				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
+			}
 
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 
-			if(characterEncoding != null)
+			if (characterEncoding != null) {
 				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+			}
 
-			if(pretty)
+			if (pretty) {
 				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
+			}
 
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 
-			if(traceEnabled) {
+			if (traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
 				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}

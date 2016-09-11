@@ -57,11 +57,11 @@ public class IncludeAction extends AbstractAction {
 		try {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			
-			if(includeActionRule.getAttributeItemRuleMap() != null) {
+			if (includeActionRule.getAttributeItemRuleMap() != null) {
 				ItemEvaluator evaluator = new ItemExpressionParser(activity);
 				Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
 
-				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 				}
 			}
@@ -71,11 +71,11 @@ public class IncludeAction extends AbstractAction {
 			innerActivity.performWithoutResponse();
 			
 			return innerActivity.getProcessResult();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Failed to execute action that include other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		} finally {
-			if(innerActivity != null) {
+			if (innerActivity != null) {
 				innerActivity.finish();
 			}
 		}

@@ -73,7 +73,7 @@ public class EchoActionRule {
 	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addItemRule(ItemRule attributeItemRule) {
-		if(attributeItemRuleMap == null) 
+		if (attributeItemRuleMap == null) 
 			attributeItemRuleMap = new ItemRuleMap();
 		
 		attributeItemRuleMap.putItemRule(attributeItemRule);
@@ -110,7 +110,7 @@ public class EchoActionRule {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", actionId);
-		if(attributeItemRuleMap != null)
+		if (attributeItemRuleMap != null)
 			tsb.append("attributes", attributeItemRuleMap.keySet());
 		tsb.append("hidden", hidden);
 		return tsb.toString();

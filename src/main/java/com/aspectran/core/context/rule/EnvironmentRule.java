@@ -51,8 +51,9 @@ public class EnvironmentRule implements PropertyPossessable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("profile", profile);
-		if(propertyItemRuleMap != null)
+		if (propertyItemRuleMap != null) {
 			tsb.append("properties", propertyItemRuleMap.keySet());
+		}
 		return tsb.toString();
 	}
 	
@@ -67,7 +68,6 @@ public class EnvironmentRule implements PropertyPossessable {
 		EnvironmentRule environmentRule = new EnvironmentRule();
 		environmentRule.setProfile(profile);
 		environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
-
 		return environmentRule;
 	}
 	

@@ -54,13 +54,13 @@ public class DispatchResponse implements Response {
 	@Override
 	public void response(Activity activity) {
 		try {
-			if(debugEnabled) {
+			if (debugEnabled) {
 				log.debug("response " + dispatchResponseRule);
 			}
 
 			ViewDispatcher viewDispatcher = getViewDispatcher(activity);
 			viewDispatcher.dispatch(activity, dispatchResponseRule);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new DispatchResponseException(dispatchResponseRule, e);
 		}
 	}
@@ -104,11 +104,11 @@ public class DispatchResponse implements Response {
 	private ViewDispatcher getViewDispatcher(Activity activity) throws ClassNotFoundException {
 		String viewDispatcherName;
 		
-		if(dispatchResponseRule.getDispatcher() != null) {
+		if (dispatchResponseRule.getDispatcher() != null) {
 			viewDispatcherName = dispatchResponseRule.getDispatcher();
 		} else {
 			viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-			if(viewDispatcherName == null) {
+			if (viewDispatcherName == null) {
 				throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
 			}
 		}
@@ -117,8 +117,8 @@ public class DispatchResponse implements Response {
 
 		synchronized(viewDispatcherCache) {
 			viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
-			if(viewDispatcher == null) {
-				if(viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+			if (viewDispatcher == null) {
+				if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 					String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 					Class<?> viewDispatcherClass = activity.getClassLoader().loadClass(viewDispatcherClassName);
 					viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
@@ -126,14 +126,14 @@ public class DispatchResponse implements Response {
 					viewDispatcher = activity.getBean(viewDispatcherName);
 				}
 
-				if(viewDispatcher == null) {
+				if (viewDispatcher == null) {
 					throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
 				}
 
-				if(viewDispatcher.isSingleton()) {
+				if (viewDispatcher.isSingleton()) {
 					viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
 
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("Cached a View Dispatcher " + viewDispatcher);
 					}
 				}

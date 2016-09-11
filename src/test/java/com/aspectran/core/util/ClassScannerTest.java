@@ -64,7 +64,7 @@ public class ClassScannerTest {
 	
 			String subPattern;
 			
-			if(classNamePattern.length() > basePackageName.length())
+			if (classNamePattern.length() > basePackageName.length())
 				subPattern = classNamePattern.substring(basePackageName.length());
 			else
 				subPattern = StringUtils.EMPTY;
@@ -76,23 +76,23 @@ public class ClassScannerTest {
 			
 			Enumeration<URL> resources = classLoader.getResources(basePackageName);
 			
-			if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.PATH_SPEPARATOR))
+			if (basePackageName != null && !basePackageName.endsWith(ResourceUtils.PATH_SPEPARATOR))
 				basePackageName += ResourceUtils.PATH_SPEPARATOR;
 			
-			while(resources.hasMoreElements()) {
+			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
 				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
-				if(log.isDebugEnabled())
+				if (log.isDebugEnabled())
 					log.debug("bean scanning: " + classNamePattern + " at " + resource.getFile());
 				
-				if(isJarResource(resource)) {
+				if (isJarResource(resource)) {
 					scanClassesFromJarResource(resource, matcher, scannedClasses);
 				} else {
 					scanClasses(resource.getFile(), basePackageName, null,  matcher, scannedClasses);
 				}
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new BeanClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
@@ -113,14 +113,14 @@ public class ClassScannerTest {
 		//System.out.println("@relativePackageName: " + relativePackageName);
 		//System.out.println("@basePath: " + basePath);
 		final File target = new File(targetPath);
-		if(!target.exists())
+		if (!target.exists())
 			return;
 
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
-				if(file.isDirectory()) {
+				if (file.isDirectory()) {
 					String relativePackageName2;
-					if(relativePackageName == null)
+					if (relativePackageName == null)
 						relativePackageName2 = file.getName() + ResourceUtils.PATH_SPEPARATOR;
 					else
 						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.PATH_SPEPARATOR;
@@ -128,21 +128,21 @@ public class ClassScannerTest {
 					String basePath2 = targetPath + file.getName() + ResourceUtils.PATH_SPEPARATOR;
 					//System.out.println("-relativePackageName2: " + relativePackageName2);
 					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
-				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+				} else if (file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
-					if(relativePackageName != null)
+					if (relativePackageName != null)
 						className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					else
 						className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					String relativePath = className.substring(basePackageName.length(), className.length());
 					//System.out.println("  -file.getName(): " + file.getName());
 					//System.out.println("  -relativePath: " + relativePath);
-					if(matcher.matches(relativePath)) {
+					if (matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(relativePath);
 						//System.out.println("scaned  [clazz] " + className);
 						//System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
-						if(log.isTraceEnabled())
+						if (log.isTraceEnabled())
 							log.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 						scannedClasses.put(beanId, classType);
 					}
@@ -159,7 +159,7 @@ public class ClassScannerTest {
 		String entryNamePrefix = null;
 		boolean newJarFile = false;
 
-		if(conn instanceof JarURLConnection) {
+		if (conn instanceof JarURLConnection) {
 			// Should usually be the case for traditional JAR files.
 			JarURLConnection jarCon = (JarURLConnection)conn;
 			jarCon.setUseCaches(false);
@@ -175,7 +175,7 @@ public class ClassScannerTest {
 			// We'll also handle paths with and without leading "file:" prefix.
 			String urlFile = resource.getFile();
 			int separatorIndex = urlFile.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
-			if(separatorIndex != -1) {
+			if (separatorIndex != -1) {
 				jarFileUrl = urlFile.substring(0, separatorIndex);
 				entryNamePrefix = urlFile.substring(separatorIndex + ResourceUtils.JAR_URL_SEPARATOR.length());
 				jarFile = getJarFile(jarFileUrl);
@@ -189,22 +189,22 @@ public class ClassScannerTest {
 		
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
+			if (!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
 				entryNamePrefix = entryNamePrefix + ResourceUtils.PATH_SPEPARATOR;
 			}
 			
-			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+			for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryName = entry.getName();
 				//System.out.println("entryName: " + entryName);
 				//System.out.println("  entryNamePrefix: " + entryNamePrefix);
-				if(entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+				if (entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 					
-					if(matcher.matches(entryNameSuffix)) {
+					if (matcher.matches(entryNameSuffix)) {
 						//System.out.println("entryName: " + entryName);
 						//System.out.println("  entryNamePrefix: " + entryNamePrefix);
 						//System.out.println("  entryNameSuffix: " + entryNameSuffix);
@@ -221,18 +221,18 @@ public class ClassScannerTest {
 		} finally {
 			// Close jar file, but only if freshly obtained -
 			// not from JarURLConnection, which might cache the file reference.
-			if(newJarFile) {
-				if(jarFile != null)
+			if (newJarFile) {
+				if (jarFile != null)
 					jarFile.close();
 			}
 		}
 	}
 
 	protected JarFile getJarFile(String jarFileUrl) throws IOException {
-		if(jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+		if (jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			try {
 				return new JarFile(ResourceUtils.toURI(jarFileUrl).getSchemeSpecificPart());
-			} catch(URISyntaxException ex) {
+			} catch (URISyntaxException ex) {
 				// Fallback for URLs that are not valid URIs (should hardly ever happen).
 				return new JarFile(jarFileUrl.substring(ResourceUtils.FILE_URL_PREFIX.length()));
 			}
@@ -252,15 +252,15 @@ public class ClassScannerTest {
 
 		boolean matched = matcher.matches(classNamePattern);
 
-		if(!matched)
+		if (!matched)
 			return null;
 		
 		StringBuilder sb = new StringBuilder();
 
-		while(matcher.hasNext()) {
+		while (matcher.hasNext()) {
 			String str = matcher.next();
 
-			if(WildcardPattern.hasWildcards(str))
+			if (WildcardPattern.hasWildcards(str))
 				break;
 
 			sb.append(str).append(ResourceUtils.PATH_SPEPARATOR_CHAR);
@@ -290,7 +290,7 @@ public class ClassScannerTest {
 			loader.scanClasses("com.i*");
 			loader.scanClasses("com.aspectran.*");
 			System.out.println(loader.getClass().getName());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -304,11 +304,11 @@ public class ClassScannerTest {
 		try {
 			Enumeration<URL> resources = classLoader.getResources("com");
 			System.out.println("resources:");
-			while(resources.hasMoreElements()) {
+			while (resources.hasMoreElements()) {
 				URL nextElement = resources.nextElement();
 				System.out.println(nextElement);
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 */

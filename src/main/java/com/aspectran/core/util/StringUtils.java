@@ -83,12 +83,12 @@ public class StringUtils {
 	 * @see Character#isWhitespace
 	 */
 	public static boolean hasText(CharSequence str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return false;
 		}
 		int strLen = str.length();
-		for(int i = 0; i < strLen; i++) {
-			if(!Character.isWhitespace(str.charAt(i))) {
+		for (int i = 0; i < strLen; i++) {
+			if (!Character.isWhitespace(str.charAt(i))) {
 				return true;
 			}
 		}
@@ -119,12 +119,12 @@ public class StringUtils {
 	 * @see Character#isWhitespace
 	 */
 	public static boolean containsWhitespace(CharSequence str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return false;
 		}
 		int strLen = str.length();
-		for(int i = 0; i < strLen; i++) {
-			if(Character.isWhitespace(str.charAt(i))) {
+		for (int i = 0; i < strLen; i++) {
+			if (Character.isWhitespace(str.charAt(i))) {
 				return true;
 			}
 		}
@@ -151,14 +151,14 @@ public class StringUtils {
 	 * @see java.lang.Character#isWhitespace
 	 */
 	public static String trimWhitespace(String str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
-		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
+		while (buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
 			buf.deleteCharAt(0);
 		}
-		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
+		while (buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
 		return buf.toString();
@@ -173,13 +173,13 @@ public class StringUtils {
 	 * @see java.lang.Character#isWhitespace
 	 */
 	public static String trimAllWhitespace(String str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
 		int index = 0;
-		while(buf.length() > index) {
-			if(Character.isWhitespace(buf.charAt(index))) {
+		while (buf.length() > index) {
+			if (Character.isWhitespace(buf.charAt(index))) {
 				buf.deleteCharAt(index);
 			} else {
 				index++;
@@ -196,11 +196,11 @@ public class StringUtils {
 	 * @see java.lang.Character#isWhitespace
 	 */
 	public static String trimLeadingWhitespace(String str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
-		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
+		while (buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
 			buf.deleteCharAt(0);
 		}
 		return buf.toString();
@@ -214,11 +214,11 @@ public class StringUtils {
 	 * @see java.lang.Character#isWhitespace
 	 */
 	public static String trimTrailingWhitespace(String str) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
-		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
+		while (buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
 		return buf.toString();
@@ -232,11 +232,11 @@ public class StringUtils {
 	 * @return the trimmed {@code String}
 	 */
 	public static String trimLeadingCharacter(String str, char leadingCharacter) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
-		while(buf.length() > 0 && buf.charAt(0) == leadingCharacter) {
+		while (buf.length() > 0 && buf.charAt(0) == leadingCharacter) {
 			buf.deleteCharAt(0);
 		}
 		return buf.toString();
@@ -250,11 +250,11 @@ public class StringUtils {
 	 * @return the trimmed {@code String}
 	 */
 	public static String trimTrailingCharacter(String str, char trailingCharacter) {
-		if(!hasLength(str)) {
+		if (!hasLength(str)) {
 			return str;
 		}
 		StringBuilder buf = new StringBuilder(str);
-		while(buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingCharacter) {
+		while (buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingCharacter) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
 		return buf.toString();
@@ -270,13 +270,13 @@ public class StringUtils {
 	 * @see java.lang.String#startsWith
 	 */
 	public static boolean startsWithIgnoreCase(String str, String prefix) {
-		if(str == null || prefix == null) {
+		if (str == null || prefix == null) {
 			return false;
 		}
-		if(str.startsWith(prefix)) {
+		if (str.startsWith(prefix)) {
 			return true;
 		}
-		if(str.length() < prefix.length()) {
+		if (str.length() < prefix.length()) {
 			return false;
 		}
 		String lcStr = str.substring(0, prefix.length()).toLowerCase();
@@ -294,13 +294,13 @@ public class StringUtils {
 	 * @see java.lang.String#endsWith
 	 */
 	public static boolean endsWithIgnoreCase(String str, String suffix) {
-		if(str == null || suffix == null) {
+		if (str == null || suffix == null) {
 			return false;
 		}
-		if(str.endsWith(suffix)) {
+		if (str.endsWith(suffix)) {
 			return true;
 		}
-		if(str.length() < suffix.length()) {
+		if (str.length() < suffix.length()) {
 			return false;
 		}
 
@@ -340,14 +340,16 @@ public class StringUtils {
 	}
 
 	public static boolean startsWith(String str, char prefix) {
-		if(str == null || str.isEmpty())
+		if (str == null || str.isEmpty()) {
 			return false;
+		}
 		return (str.charAt(0) == prefix);
 	}
 	
 	public static boolean endsWith(String str, char suffix) {
-		if(str == null || str.isEmpty())
+		if (str == null || str.isEmpty()) {
 			return false;
+		}
 		return (str.charAt(str.length() - 1) == suffix);
 	}
 
@@ -360,8 +362,9 @@ public class StringUtils {
 	 * @return a {@code String} with the replacements
 	 */
 	public static String replace(String str, String search, String replace) {
-		if(str == null || search == null || replace == null)
+		if (str == null || search == null || replace == null) {
 			return str;
+		}
 
 		StringBuilder sb = new StringBuilder();
 
@@ -370,14 +373,15 @@ public class StringUtils {
 		int oldIndex = 0;
 		int index;
 
-		while((index = str.indexOf(search, oldIndex)) >= 0) {
+		while ((index = str.indexOf(search, oldIndex)) >= 0) {
 			sb.append(str.substring(oldIndex, index));
 			sb.append(replace);
 			oldIndex = index + searchLen;
 		}
 
-		if(oldIndex < stringLen)
+		if (oldIndex < stringLen) {
 			sb.append(str.substring(oldIndex, stringLen));
+		}
 
 		return sb.toString();
 	}
@@ -391,8 +395,9 @@ public class StringUtils {
 	 * @return a {@code String} with the replacements
 	 */
 	public static String replace(String str, String[] search, String[] replace) {
-		if(str == null || search == null || replace == null)
+		if (str == null || search == null || replace == null) {
 			return str;
+		}
 
 		StringBuilder sb = new StringBuilder(str);
 
@@ -402,21 +407,24 @@ public class StringUtils {
 		int searchLen;
 		int replaceLen;
 
-		for(int i = 0; i < loop; i++) {
-			if(search[i] == null || replace[i] == null)
+		for (int i = 0; i < loop; i++) {
+			if (search[i] == null || replace[i] == null) {
 				continue;
+			}
 
 			searchLen = search[i].length();
 			replaceLen = replace[i].length();
 
-			while(true) {
-				if(sb.length() == 0)
+			while (true) {
+				if (sb.length() == 0) {
 					break;
+				}
 
 				start = sb.indexOf(search[i], start + replaceLen);
 
-				if(start == -1)
+				if (start == -1) {
 					break;
+				}
 
 				end = start + searchLen;
 
@@ -436,13 +444,14 @@ public class StringUtils {
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
 	public static String[] split(String str, String delim) {
-		if(isEmpty(str))
+		if (isEmpty(str)) {
 			return new String[0];
+		}
 
 		int cnt = search(str, delim);
 		String[] item = new String[cnt + 1];
 
-		if(cnt == 0) {
+		if (cnt == 0) {
 			item[0] = str;
 			return item;
 		}
@@ -452,18 +461,20 @@ public class StringUtils {
 		int pos2 = str.indexOf(delim);
 		int delimLen = delim.length();
 
-		while(pos2 >= 0) {
+		while (pos2 >= 0) {
 			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
 			pos1 = pos2 + delimLen;
 			pos2 = str.indexOf(delim, pos1);
 		}
 
-		if(pos1 < str.length())
+		if (pos1 < str.length()) {
 			item[idx] = str.substring(pos1);
+		}
 
-		if(item[cnt] == null)
+		if (item[cnt] == null) {
 			item[cnt] = EMPTY;
+		}
 
 		return item;
 	}
@@ -482,11 +493,12 @@ public class StringUtils {
 		String[] arr1 = new String[size];
 		String[] arr2 = split(str, delim);
 
-		for(int i = 0; i < arr1.length; i++) {
-			if(i < arr2.length)
+		for (int i = 0; i < arr1.length; i++) {
+			if (i < arr2.length) {
 				arr1[i] = arr2[i];
-			else
+			} else {
 				arr1[i] = EMPTY;
+			}
 		}
 
 		return arr1;
@@ -503,13 +515,14 @@ public class StringUtils {
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
 	public static String[] split(String str, char delim) {
-		if(isEmpty(str))
+		if (isEmpty(str)) {
 			return new String[0];
+		}
 
 		int cnt = search(str, delim);
 		String[] item = new String[cnt + 1];
 
-		if(cnt == 0) {
+		if (cnt == 0) {
 			item[0] = str;
 			return item;
 		}
@@ -518,18 +531,20 @@ public class StringUtils {
 		int pos1 = 0;
 		int pos2 = str.indexOf(delim);
 
-		while(pos2 >= 0) {
+		while (pos2 >= 0) {
 			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
 			pos1 = pos2 + 1;
 			pos2 = str.indexOf(delim, pos1);
 		}
 
-		if(pos1 < str.length())
+		if (pos1 < str.length()) {
 			item[idx] = str.substring(pos1);
+		}
 
-		if(item[cnt] == null)
+		if (item[cnt] == null) {
 			item[cnt] = EMPTY;
+		}
 
 		return item;
 	}
@@ -548,11 +563,12 @@ public class StringUtils {
 		String[] arr1 = new String[size];
 		String[] arr2 = split(str, delim);
 
-		for(int i = 0; i < arr1.length; i++) {
-			if(i < arr2.length)
+		for (int i = 0; i < arr1.length; i++) {
+			if (i < arr2.length) {
 				arr1[i] = arr2[i];
-			else
+			} else {
 				arr1[i] = EMPTY;
+			}
 		}
 
 		return arr1;
@@ -572,15 +588,17 @@ public class StringUtils {
 		int pos = 0;
 		int cnt = 0;
 
-		if(keywLen == 0)
+		if (keywLen == 0) {
 			return 0;
+		}
 
-		while((pos = str.indexOf(keyw, pos)) != -1) {
+		while ((pos = str.indexOf(keyw, pos)) != -1) {
 			pos += keywLen;
 			cnt++;
 
-			if(pos >= strLen)
+			if (pos >= strLen) {
 				break;
+			}
 		}
 
 		return cnt;
@@ -608,8 +626,8 @@ public class StringUtils {
 	 */
 	public static int search(CharSequence chars, char c) {
 		int count = 0;
-		for(int i = 0; i < chars.length(); i++) {
-			if(chars.charAt(i) == c) {
+		for (int i = 0; i < chars.length(); i++) {
+			if (chars.charAt(i) == c) {
 				count++;
 			}
 		}
@@ -627,8 +645,8 @@ public class StringUtils {
 	public static int searchIgnoreCase(CharSequence chars, char c) {
 		int count = 0;
 		char cl = Character.toLowerCase(c);
-		for(int i = 0; i < chars.length(); i++) {
-			if(Character.toLowerCase(chars.charAt(i)) == cl) {
+		for (int i = 0; i < chars.length(); i++) {
+			if (Character.toLowerCase(chars.charAt(i)) == cl) {
 				count++;
 			}
 		}
@@ -655,13 +673,14 @@ public class StringUtils {
 	 * @return an array of the tokens
 	 */
 	public static String[] tokenize(String str, String delimiters, boolean trim) {
-		if(str == null)
+		if (str == null) {
 			return new String[0];
+		}
 
 		StringTokenizer st = new StringTokenizer(str, delimiters);
 		List<String> tokens = new ArrayList<String>();
 
-		while(st.hasMoreTokens()) {
+		while (st.hasMoreTokens()) {
 			tokens.add(trim ? st.nextToken().trim() : st.nextToken());
 		}
 
@@ -677,15 +696,15 @@ public class StringUtils {
 	 * @return the delimited {@code String}
 	 */
 	public static String arrayToDelimitedString(Object[] arr, String delim) {
-		if(arr == null || arr.length == 0) {
+		if (arr == null || arr.length == 0) {
 			return EMPTY;
 		}
-		if(arr.length == 1) {
+		if (arr.length == 1) {
 			return (arr[0] == null) ? EMPTY : arr[0].toString();
 		}
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < arr.length; i++) {
-			if(i > 0) {
+		for (int i = 0; i < arr.length; i++) {
+			if (i > 0) {
 				sb.append(delim);
 			}
 			sb.append(arr[i]);
@@ -723,13 +742,13 @@ public class StringUtils {
 	 * @return the delimited {@code String}
 	 */
 	public static String joinCommaDelimitedList(Collection<?> list) {
-		if(list == null || list.isEmpty()) {
+		if (list == null || list.isEmpty()) {
 			return EMPTY;
 		}
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
-		for(Object o : list) {
-			if(!first) {
+		for (Object o : list) {
+			if (!first) {
 				sb.append(", ");
 			}
 			sb.append(o);
@@ -755,13 +774,13 @@ public class StringUtils {
 		validateLocalePart(language);
 		validateLocalePart(country);
 		String variant = EMPTY;
-		if(parts.length > 2) {
+		if (parts.length > 2) {
 			// There is definitely a variant, and it is everything after the country
 			// code sans the separator between the country code and the variant.
 			int endIndexOfCountryCode = localeString.indexOf(country, language.length()) + country.length();
 			// Strip off any leading '_' and whitespace, what's left is the variant.
 			variant = trimLeadingWhitespace(localeString.substring(endIndexOfCountryCode));
-			if(variant.startsWith("_")) {
+			if (variant.startsWith("_")) {
 				variant = trimLeadingCharacter(variant, '_');
 			}
 		}
@@ -769,9 +788,9 @@ public class StringUtils {
 	}
 
 	private static void validateLocalePart(String localePart) {
-		for(int i = 0; i < localePart.length(); i++) {
+		for (int i = 0; i < localePart.length(); i++) {
 			char ch = localePart.charAt(i);
-			if(ch != '_' && ch != ' ' && !Character.isLetterOrDigit(ch)) {
+			if (ch != '_' && ch != ' ' && !Character.isLetterOrDigit(ch)) {
 				throw new IllegalArgumentException(
 						"Locale part \"" + localePart + "\" contains invalid characters");
 			}
@@ -797,7 +816,7 @@ public class StringUtils {
 	 */
 	public static TimeZone parseTimeZoneString(String timeZoneString) {
 		TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
-		if("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
+		if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
 			// We don't want that GMT fallback...
 			throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
 		}
@@ -811,8 +830,9 @@ public class StringUtils {
 	 * @return a human friendly byte size (includes units)
 	 */
 	public static String convertToHumanFriendlyByteSize(long size) {
-		if(size < 1024)
+		if (size < 1024) {
 			return size + " B";
+		}
 		int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
 		double d = (double)size / (1L << (z * 10));
 		String format = (d % 1.0 == 0) ? "%.0f %sB" : "%.1f %sB";
@@ -830,7 +850,7 @@ public class StringUtils {
 		double d;
 		try {
 			d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", ""));
-		} catch(NumberFormatException e)  {
+		} catch (NumberFormatException e)  {
 			String msg = "Size must be specified as bytes (B), " +
 					"kibibytes (KB), mebibytes (MB), gibibytes (GB). " +
 					"E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB.";
@@ -838,7 +858,7 @@ public class StringUtils {
 		}
 		long l = Math.round(d * 1024 * 1024 * 1024L);
 		int index = Math.max(0, size.length() - (size.endsWith("B") ? 2 : 1));
-		switch(size.charAt(index)) {
+		switch (size.charAt(index)) {
 			default:  l /= 1024;
 			case 'K': l /= 1024;
 			case 'M': l /= 1024;

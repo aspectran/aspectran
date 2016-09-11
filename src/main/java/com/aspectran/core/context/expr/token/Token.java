@@ -83,11 +83,11 @@ public class Token implements BeanReferenceInspectable {
 	public Token(TokenType type, String nameOrValue) {
 		this.type = type;
 
-		if(type == TokenType.TEXT) {
+		if (type == TokenType.TEXT) {
 			this.name = null;
 			this.value = nameOrValue;
 		} else {
-			if(nameOrValue == null) {
+			if (nameOrValue == null) {
 				throw new IllegalArgumentException("'nameOrValue' must not be null.");
 			}
 			this.name = nameOrValue;
@@ -191,71 +191,71 @@ public class Token implements BeanReferenceInspectable {
 	}
 
 	public String stringify() {
-		if(type == TokenType.TEXT) {
+		if (type == TokenType.TEXT) {
 			return value;
-		} else if(type == TokenType.PARAMETER) {
+		} else if (type == TokenType.PARAMETER) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PARAMETER_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) {
+			if (name != null) {
 				sb.append(name);
 			}
-			if(value != null) {
+			if (value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
-		} else if(type == TokenType.ATTRIBUTE) {
+		} else if (type == TokenType.ATTRIBUTE) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ATTRIBUTE_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) {
+			if (name != null) {
 				sb.append(name);
 			}
-			if(getterName != null) {
+			if (getterName != null) {
 				sb.append(GETTER_SEPARATOR);
 				sb.append(getterName);
 			}
-			if(value != null) {
+			if (value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
-		} else if(type == TokenType.BEAN) {
+		} else if (type == TokenType.BEAN) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(BEAN_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) {
+			if (name != null) {
 				sb.append(name);
 			}
-			if(value != null) {
+			if (value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
 			}
-			if(getterName != null) {
+			if (getterName != null) {
 				sb.append(GETTER_SEPARATOR);
 				sb.append(getterName);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
-		} else if(type == TokenType.PROPERTY) {
+		} else if (type == TokenType.PROPERTY) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PROPERTY_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) {
+			if (name != null) {
 				sb.append(name);
 			}
-			if(value != null) {
+			if (value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
 			}
-			if(getterName != null) {
+			if (getterName != null) {
 				sb.append(GETTER_SEPARATOR);
 				sb.append(getterName);
 			}
-			if(alternativeValue != null) {
+			if (alternativeValue != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(alternativeValue);
 			}
@@ -299,11 +299,11 @@ public class Token implements BeanReferenceInspectable {
 	public static TokenType resolveTypeAsSymbol(char symbol) {
 		TokenType type;
 
-		if(symbol == Token.ATTRIBUTE_SYMBOL)
+		if (symbol == Token.ATTRIBUTE_SYMBOL)
 			type = TokenType.ATTRIBUTE;
-		else if(symbol == Token.BEAN_SYMBOL)
+		else if (symbol == Token.BEAN_SYMBOL)
 			type = TokenType.BEAN;
-		else if(symbol == Token.PROPERTY_SYMBOL)
+		else if (symbol == Token.PROPERTY_SYMBOL)
 			type = TokenType.PROPERTY;
 		else
 			type = TokenType.PARAMETER;

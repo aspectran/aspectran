@@ -49,8 +49,9 @@ public class JobActivityReport {
 	}
 
 	public void reporting(Activity activity) throws IOException {
-		if(!log.isDebugEnabled())
+		if (!log.isDebugEnabled()) {
 			return;
+		}
 
 		JobDetail jobDetail = jobExecutionContext.getJobDetail();
 		JobKey key = jobDetail.getKey();
@@ -71,7 +72,7 @@ public class JobActivityReport {
 		sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
 		sb.append("- Refire Count        : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
 
-		if(jobException != null) {
+		if (jobException != null) {
 			sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 			sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
 			sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
@@ -79,11 +80,11 @@ public class JobActivityReport {
 			sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 		}
 
-		if(activity != null) {
+		if (activity != null) {
 			Writer writer = activity.getResponseAdapter().getWriter();
 			String output = writer.toString();
 
-			if(!output.isEmpty()) {
+			if (!output.isEmpty()) {
 				sb.append(output).append(ActivityContext.LINE_SEPARATOR);
 				sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
 			}

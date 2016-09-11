@@ -101,7 +101,7 @@ public class CoreTranslet implements Translet {
 	@Override
 	public <T> T getSessionAdaptee() {
 		SessionAdapter sessionAdapter = getSessionAdapter();
-		return (sessionAdapter != null) ? sessionAdapter.getAdaptee() : null;
+		return (sessionAdapter != null ? sessionAdapter.getAdaptee() : null);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public Object getProcessResult(String actionId) {
-		return (processResult != null) ? processResult.getResultValue(actionId) : null;
+		return (processResult != null ? processResult.getResultValue(actionId) : null);
 	}
 
 	@Override
@@ -136,10 +136,11 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public ProcessResult touchProcessResult(String contentsName, int initialCapacity) {
-		if(processResult == null) {
+		if (processResult == null) {
 			processResult = new ProcessResult(initialCapacity);
-			if(contentsName != null)
+			if (contentsName != null) {
 				processResult.setName(contentsName);
+			}
 		}
 		return processResult;
 	}
@@ -151,7 +152,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public ActivityDataMap getActivityDataMap(boolean prefill) {
-		if(activityDataMap == null) {
+		if (activityDataMap == null) {
 			activityDataMap = new ActivityDataMap(activity, prefill);
 		}
 		return activityDataMap;
@@ -291,9 +292,9 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void redirect(String target, boolean immediately) {
-		if(!immediately && activity.getDeclaredResponse() != null) {
+		if (!immediately && activity.getDeclaredResponse() != null) {
 			Response res = activity.getDeclaredResponse();
-			if(res.getResponseType() == ResponseType.REDIRECT) {
+			if (res.getResponseType() == ResponseType.REDIRECT) {
 				Response r = res.replicate();
 				RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
 				rrr.setTarget(target);
@@ -326,9 +327,9 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void forward(String transletName, boolean immediately) {
-		if(!immediately && activity.getDeclaredResponse() != null) {
+		if (!immediately && activity.getDeclaredResponse() != null) {
 			Response res = activity.getDeclaredResponse();
-			if(res.getResponseType() == ResponseType.FORWARD) {
+			if (res.getResponseType() == ResponseType.FORWARD) {
 				Response fr = res.replicate();
 				ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();
 				frr.setTransletName(transletName);

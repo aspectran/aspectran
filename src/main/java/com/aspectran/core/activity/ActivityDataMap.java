@@ -54,20 +54,20 @@ public class ActivityDataMap extends HashMap<String, Object> {
 		this.activity = activity;
 		this.requestAdapter = activity.getRequestAdapter();
 		
-		if(prefill)
+		if (prefill)
 			prefillData();
 	}
 	
 	private void prefillData() {
-		if(requestAdapter != null) {
+		if (requestAdapter != null) {
 			requestAdapter.fillPrameterMap(this);
 			requestAdapter.fillAttributeMap(this);
 		}
 		
-		if(activity.getProcessResult() != null) {
-			for(ContentResult cr : activity.getProcessResult()) {
-				for(ActionResult ar : cr) {
-					if(ar.getActionId() != null) {
+		if (activity.getProcessResult() != null) {
+			for (ContentResult cr : activity.getProcessResult()) {
+				for (ActionResult ar : cr) {
+					if (ar.getActionId() != null) {
 						put(ar.getActionId(), ar.getResultValue());
 					}
 				}
@@ -78,26 +78,26 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	@Override
 	public Object get(Object key) {
 		Object value = super.get(key);
-		if(value != null)
+		if (value != null) {
 			return value;
-
-		if(key != null) {
+		}
+		if (key != null) {
 			String name = key.toString();
 
 			value = getActionResultWithoutCache(name);
-			if(value != null) {
+			if (value != null) {
 				put(name, value);
 				return value;
 			}
 
 			value = getAttributeWithoutCache(name);
-			if(value != null) {
+			if (value != null) {
 				put(name, value);
 				return value;
 			}
 
 			value = getParameterWithoutCache(name);
-			if(value != null) {
+			if (value != null) {
 				put(name, value);
 				return value;
 			}
@@ -107,28 +107,30 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	}
 
 	public Object getParameterWithoutCache(String name) {
-		if(requestAdapter != null) {
+		if (requestAdapter != null) {
 			String[] values = requestAdapter.getParameterValues(name);
-			if(values != null) {
-				if(values.length == 1)
+			if (values != null) {
+				if (values.length == 1) {
 					return values[0];
-				else
+				} else {
 					return values;
+				}
 			}
 		}
 		return null;
 	}
 
 	public Object getAttributeWithoutCache(String name) {
-		if(requestAdapter != null) {
+		if (requestAdapter != null) {
 			return requestAdapter.getAttribute(name);
 		}
 		return null;
 	}
 
 	public Object getActionResultWithoutCache(String name) {
-		if(activity.getProcessResult() == null)
+		if (activity.getProcessResult() == null) {
 			return null;
+		}
 		return activity.getProcessResult().getResultValue(name);
 	}
 

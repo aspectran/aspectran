@@ -42,15 +42,15 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(BeanRule beanRule) {
-		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+		if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
 			return (T)createBean(beanRule);
-		} else if(beanRule.getScopeType() == ScopeType.SINGLETON) {
+		} else if (beanRule.getScopeType() == ScopeType.SINGLETON) {
 			return (T)getSingletonScopeBean(beanRule);
-		} else if(beanRule.getScopeType() == ScopeType.REQUEST) {
+		} else if (beanRule.getScopeType() == ScopeType.REQUEST) {
 			return (T)getRequestScopeBean(beanRule);
-		} else if(beanRule.getScopeType() == ScopeType.SESSION) {
+		} else if (beanRule.getScopeType() == ScopeType.SESSION) {
 			return (T)getSessionScopeBean(beanRule);
-		} else if(beanRule.getScopeType() == ScopeType.APPLICATION) {
+		} else if (beanRule.getScopeType() == ScopeType.APPLICATION) {
 			return (T)getApplicationScopeBean(beanRule);
 		}
 		
@@ -62,13 +62,13 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		singletonScopeLock.readLock().lock();
 
 		try {
-			if(!beanRule.isRegistered()) {
+			if (!beanRule.isRegistered()) {
 				readLocked = false;
 				singletonScopeLock.readLock().unlock();
 				singletonScopeLock.writeLock().lock();
 
 				try {
-					if(!beanRule.isRegistered()) {
+					if (!beanRule.isRegistered()) {
 						beanRule.setBean(createBean(beanRule));
 						beanRule.setRegistered(true);
 					}
@@ -77,7 +77,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 				}
 			}
 		} finally {
-			if(readLocked) {
+			if (readLocked) {
 				singletonScopeLock.readLock().unlock();
 			}
 		}
@@ -87,7 +87,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
 		Scope scope = getRequestScope();
-		if(scope == null) {
+		if (scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
 		}
 		return getScopedBean(scope, beanRule);
@@ -95,7 +95,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 	
 	private Object getSessionScopeBean(BeanRule beanRule) {
 		Scope scope = getSessionScope();
-		if(scope == null) {
+		if (scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
 		}
 		return getScopedBean(scope, beanRule);
@@ -103,7 +103,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Object getApplicationScopeBean(BeanRule beanRule) {
 		Scope scope = getApplicationScope();
-		if(scope == null) {
+		if (scope == null) {
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
 		}
 		return getScopedBean(scope, beanRule);
@@ -116,13 +116,13 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		scopeLock.readLock().lock();
 
 		try {
-			if(!beanRule.isRegistered()) {
+			if (!beanRule.isRegistered()) {
 				readLocked = false;
 				scopeLock.readLock().unlock();
 				scopeLock.writeLock().lock();
 
 				try {
-					if(!beanRule.isRegistered()) {
+					if (!beanRule.isRegistered()) {
 						beanRule.setBean(createBean(beanRule));
 						beanRule.setRegistered(true);
 					}
@@ -131,7 +131,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 				}
 			}
 		} finally {
-			if(readLocked) {
+			if (readLocked) {
 				scopeLock.readLock().unlock();
 			}
 		}
@@ -141,9 +141,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Scope getRequestScope() {
 		Activity activity = context.getCurrentActivity();
-		if(activity != null) {
+		if (activity != null) {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
-			if(requestAdapter != null) {
+			if (requestAdapter != null) {
 				return requestAdapter.getRequestScope();
 			}
 		}
@@ -152,9 +152,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Scope getSessionScope() {
 		Activity activity = context.getCurrentActivity();
-		if(activity != null) {
+		if (activity != null) {
 			SessionAdapter sessionAdapter = activity.getSessionAdapter();
-			if(sessionAdapter != null) {
+			if (sessionAdapter != null) {
 				return sessionAdapter.getSessionScope();
 			}
 		}

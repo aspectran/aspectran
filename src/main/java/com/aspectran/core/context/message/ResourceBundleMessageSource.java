@@ -138,7 +138,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     }
 
     public ClassLoader getClassLoader() {
-        if(classLoader == null) {
+        if (classLoader == null) {
             return AspectranClassLoader.getDefaultClassLoader();
         }
         return classLoader;
@@ -189,11 +189,11 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
      */
     public void setBasenames(String... basenames) {
-        if(basenames != null) {
+        if (basenames != null) {
             this.basenames = new String[basenames.length];
-            for(int i = 0; i < basenames.length; i++) {
+            for (int i = 0; i < basenames.length; i++) {
                 String basename = basenames[i];
-                if(!StringUtils.hasText(basename))
+                if (!StringUtils.hasText(basename))
                     throw new IllegalArgumentException("Basename must not be empty.");
                 this.basenames[i] = basename.trim();
             }
@@ -209,9 +209,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     @Override
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
         String result = null;
-        for(int i = 0; result == null && i < this.basenames.length; i++) {
+        for (int i = 0; result == null && i < this.basenames.length; i++) {
             ResourceBundle bundle = getResourceBundle(this.basenames[i], locale);
-            if(bundle != null) {
+            if (bundle != null) {
                 result = getStringOrNull(bundle, code);
             }
         }
@@ -225,9 +225,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
         MessageFormat messageFormat = null;
-        for(int i = 0; messageFormat == null && i < this.basenames.length; i++) {
+        for (int i = 0; messageFormat == null && i < this.basenames.length; i++) {
             ResourceBundle bundle = getResourceBundle(this.basenames[i], locale);
-            if(bundle != null) {
+            if (bundle != null) {
                 messageFormat = getMessageFormat(bundle, code, locale);
             }
         }
@@ -243,7 +243,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @return the resulting ResourceBundle, or {@code null} if none found for the given basename and Locale
      */
     protected ResourceBundle getResourceBundle(String basename, Locale locale) {
-        if(this.cacheMillis >= 0) {
+        if (this.cacheMillis >= 0) {
             // Fresh ResourceBundle.getBundle call in order to let ResourceBundle
             // do its native caching, at the expense of more extensive lookup steps.
             return doGetBundle(basename, locale);
@@ -251,21 +251,21 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             // Cache forever: prefer locale cache over repeated getBundle calls.
             synchronized(this.cachedResourceBundles) {
                 Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
-                if(localeMap != null) {
+                if (localeMap != null) {
                     ResourceBundle bundle = localeMap.get(locale);
-                    if(bundle != null) {
+                    if (bundle != null) {
                         return bundle;
                     }
                 }
                 try {
                     ResourceBundle bundle = doGetBundle(basename, locale);
-                    if(localeMap == null) {
+                    if (localeMap == null) {
                         localeMap = new HashMap<Locale, ResourceBundle>();
                         this.cachedResourceBundles.put(basename, localeMap);
                     }
                     localeMap.put(locale, bundle);
                     return bundle;
-                } catch(MissingResourceException ex) {
+                } catch (MissingResourceException ex) {
                     log.warn("ResourceBundle [" + basename + "] not found for MessageSource: " + ex.getMessage());
 
                     // Assume bundle not found
@@ -318,23 +318,23 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
         synchronized(this.cachedBundleMessageFormats) {
             Map<String, Map<Locale, MessageFormat>> codeMap = this.cachedBundleMessageFormats.get(bundle);
             Map<Locale, MessageFormat> localeMap = null;
-            if(codeMap != null) {
+            if (codeMap != null) {
                 localeMap = codeMap.get(code);
-                if(localeMap != null) {
+                if (localeMap != null) {
                     MessageFormat result = localeMap.get(locale);
-                    if(result != null) {
+                    if (result != null) {
                         return result;
                     }
                 }
             }
 
             String msg = getStringOrNull(bundle, code);
-            if(msg != null) {
-                if(codeMap == null) {
+            if (msg != null) {
+                if (codeMap == null) {
                     codeMap = new HashMap<String, Map<Locale, MessageFormat>>();
                     this.cachedBundleMessageFormats.put(bundle, codeMap);
                 }
-                if(localeMap == null) {
+                if (localeMap == null) {
                     localeMap = new HashMap<Locale, MessageFormat>();
                     codeMap.put(code, localeMap);
                 }
@@ -358,10 +358,10 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @see ResourceBundle#containsKey(String) ResourceBundle#containsKey(String)
      */
     protected String getStringOrNull(ResourceBundle bundle, String key) {
-        if(bundle.containsKey(key)) {
+        if (bundle.containsKey(key)) {
             try {
                 return bundle.getString(key);
-            } catch(MissingResourceException ex){
+            } catch (MissingResourceException ex){
                 // Assume key not found for some other reason
                 // -> do NOT throw the exception to allow for checking parent message source.
             }
@@ -387,7 +387,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
         public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
             // Special handling of default encoding
-            if(format.equals("java.properties")) {
+            if (format.equals("java.properties")) {
                 String bundleName = toBundleName(baseName, locale);
                 final String resourceName = toResourceName(bundleName, "properties");
                 final ClassLoader classLoader = loader;
@@ -396,11 +396,11 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
                 try {
                     stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
                         InputStream is = null;
-                        if(reloadFlag) {
+                        if (reloadFlag) {
                             URL url = classLoader.getResource(resourceName);
-                            if(url != null) {
+                            if (url != null) {
                                 URLConnection connection = url.openConnection();
-                                if(connection != null) {
+                                if (connection != null) {
                                     connection.setUseCaches(false);
                                     is = connection.getInputStream();
                                 }
@@ -410,10 +410,10 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
                         }
                         return is;
                     });
-                } catch(PrivilegedActionException ex) {
+                } catch (PrivilegedActionException ex) {
                     throw (IOException)ex.getException();
                 }
-                if(stream != null) {
+                if (stream != null) {
                     try {
                         return loadBundle(new InputStreamReader(stream, defaultEncoding));
                     } finally {
@@ -440,7 +440,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
         @Override
         public boolean needsReload(String baseName, Locale locale, String format, ClassLoader loader, ResourceBundle bundle, long loadTime) {
-            if(super.needsReload(baseName, locale, format, loader, bundle, loadTime)) {
+            if (super.needsReload(baseName, locale, format, loader, bundle, loadTime)) {
                 cachedBundleMessageFormats.remove(bundle);
                 return true;
             } else {

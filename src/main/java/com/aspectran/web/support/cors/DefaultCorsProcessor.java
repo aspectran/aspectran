@@ -54,25 +54,25 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		HttpServletRequest req = translet.getRequestAdaptee();
 		HttpServletResponse res = translet.getResponseAdaptee();
 		
-		if(!isCorsRequest(req)) {
+		if (!isCorsRequest(req)) {
 			return;
 		}
 		
-		if(!checkProcessable(res)) {
+		if (!checkProcessable(res)) {
 			return;
 		}
 		
-		if(!isAllowedMethod(req.getMethod())) {
+		if (!isAllowedMethod(req.getMethod())) {
 			rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
 		}
 
 		String origin = req.getHeader(HttpHeaders.ORIGIN);
 
-		if(!isAllowedOrigin(origin)) {
+		if (!isAllowedOrigin(origin)) {
 			rejectRequest(translet, CorsException.ORIGIN_DENIED);
 		}
 
-		if(isAllowCredentials()) {
+		if (isAllowCredentials()) {
 			// Must be exact origin (not '*') in case of credentials
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
@@ -82,7 +82,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 			res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
 		}
 
-		if(getExposedHeadersString() != null) {
+		if (getExposedHeadersString() != null) {
 			res.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, getExposedHeadersString());
 		}
 	}
@@ -92,25 +92,25 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		HttpServletRequest req = translet.getRequestAdaptee();
 		HttpServletResponse res = translet.getResponseAdaptee();
 
-		if(!isPreFlightRequest(req)) {
+		if (!isPreFlightRequest(req)) {
 			rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
 		}
 
-		if(!checkProcessable(res)) {
+		if (!checkProcessable(res)) {
 			return;
 		}
 		
 		String requestedMethod = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
-		if(!isAllowedMethod(requestedMethod)) {
+		if (!isAllowedMethod(requestedMethod)) {
 			rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
 		}
 		
 		String rawRequestHeadersString = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
-		if(rawRequestHeadersString != null) {
+		if (rawRequestHeadersString != null) {
 			String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
-			if(hasAllowedHeaders() && requestHeaders.length > 0) {
-				for(String requestHeader : requestHeaders) {
-					if(!isAllowedHeader(requestHeader)) {
+			if (hasAllowedHeaders() && requestHeaders.length > 0) {
+				for (String requestHeader : requestHeaders) {
+					if (!isAllowedHeader(requestHeader)) {
 						rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);
 					}
 				}
@@ -118,8 +118,8 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		}
 		
 		String origin = req.getHeader(HttpHeaders.ORIGIN);
-		if(origin != null) {
-			if(isAllowCredentials()) {
+		if (origin != null) {
+			if (isAllowCredentials()) {
 				// Must be exact origin (not '*') in case of credentials
 				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
@@ -130,17 +130,17 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 			}
 		}
 
-		if(getAllowedMethodsString() != null) {
+		if (getAllowedMethodsString() != null) {
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
 		}
 
-		if(getAllowedHeadersString() != null) {
+		if (getAllowedHeadersString() != null) {
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
-		} else if(rawRequestHeadersString != null) {
+		} else if (rawRequestHeadersString != null) {
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
 		}
 
-		if(getMaxAgeSeconds() > 0) {
+		if (getMaxAgeSeconds() > 0) {
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
 		}
 	}
@@ -149,7 +149,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 	public void sendError(Translet translet) throws IOException {
 		Throwable t = translet.getOriginRaisedException();
 
-		if(t instanceof CorsException) {
+		if (t instanceof CorsException) {
 			CorsException corsException = (CorsException)t;
 
 			HttpServletResponse res = translet.getResponseAdaptee();
@@ -176,7 +176,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 	}
 	
 	protected boolean checkProcessable(HttpServletResponse res) {
-		if(res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
+		if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
 			log.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
 			return false;
 		}

@@ -50,9 +50,10 @@ public enum DefaultSettingType {
 	 * @return a {@code DefaultSettingType}, may be {@code null}
 	 */
 	public static DefaultSettingType resolve(String alias) {
-		for(DefaultSettingType type : values()) {
-			if(type.alias.equals(alias))
+		for (DefaultSettingType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

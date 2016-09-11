@@ -90,19 +90,17 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 
 	@Override
 	public void setActiveProfiles(String... activeProfiles) {
-		if(activeProfiles != null) {
+		if (activeProfiles != null) {
 			log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
 		}
-		
 		environment.setActiveProfiles(activeProfiles);
 	}
 	
 	@Override
 	public void setDefaultProfiles(String... defaultProfiles) {
-		if(defaultProfiles != null) {
+		if (defaultProfiles != null) {
 			log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
 		}
-
 		environment.setDefaultProfiles(defaultProfiles);
 	}
 
@@ -156,10 +154,10 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	}
 	
 	private void initContextEnvironment() {
-		for(EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
-			if(environmentRule.getPropertyItemRuleMap() != null) {
+		for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
+			if (environmentRule.getPropertyItemRuleMap() != null) {
 				String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-				if(environment.acceptsProfiles(profiles)) {
+				if (environment.acceptsProfiles(profiles)) {
 					environment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
 				}
 			}
@@ -177,13 +175,13 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 										TransletRuleRegistry transletRuleRegistry) {
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
-		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
+		for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			PointcutRule pointcutRule = aspectRule.getPointcutRule();
-			if(pointcutRule != null) {
+			if (pointcutRule != null) {
 				Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
 				aspectRule.setPointcut(pointcut);
 			}
-			if(aspectRule.getJoinpointType() == JoinpointType.SESSION) {
+			if (aspectRule.getJoinpointType() == JoinpointType.SESSION) {
 				sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
 			}
 		}
@@ -196,56 +194,59 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
 		int offendingPointcutPatterns = 0;
 		
-		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
+		for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			Pointcut pointcut = aspectRule.getPointcut();
 
-			if(pointcut != null) {
+			if (pointcut != null) {
 				List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 				
-				if(pointcutPatternRuleList != null) {
-					for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if (pointcutPatternRuleList != null) {
+					for (PointcutPatternRule ppr : pointcutPatternRuleList) {
 						/*
-						if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
+						if (ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
 							offendingPointcutPatterns++;
 							String msg = "Incorrect pointcut pattern of translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
-							if(pointcutPatternVerifiable)
+							if (pointcutPatternVerifiable)
 								log.error(msg);
 							else
 								log.warn(msg);
 						}
 						*/
-						if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
+						if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
 							offendingPointcutPatterns++;
 							String msg = "Incorrect pointcut pattern of bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
-							if(pointcutPatternVerifiable)
+							if (pointcutPatternVerifiable) {
 								log.error(msg);
-							else
+							} else {
 								log.warn(msg);
+							}
 						}
-						if(ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
+						if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
 							offendingPointcutPatterns++;
 							String msg = "Incorrect pointcut pattern of class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
-							if(pointcutPatternVerifiable)
+							if (pointcutPatternVerifiable) {
 								log.error(msg);
-							else
+							} else {
 								log.warn(msg);
+							}
 						}
-						if(ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
+						if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
 							offendingPointcutPatterns++;
 							String msg = "Incorrect pointcut pattern of bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
-							if(pointcutPatternVerifiable)
+							if (pointcutPatternVerifiable) {
 								log.error(msg);
-							else
+							} else {
 								log.warn(msg);
+							}
 						}
 					}
 				}
 			}
 		}
 		
-		if(offendingPointcutPatterns > 0) {
+		if (offendingPointcutPatterns > 0) {
 			String msg = offendingPointcutPatterns + " Offending pointcut patterns. Please check the logs for more information.";
-			if(pointcutPatternVerifiable) {
+			if (pointcutPatternVerifiable) {
 				log.error(msg);
 				throw new InvalidPointcutPatternException(msg);
 			} else {
@@ -254,7 +255,7 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		}
 		
 		AspectAdviceRuleRegistry sessionScopeAspectAdviceRuleRegistry = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
-		if(sessionScopeAspectAdviceRuleRegistry != null)
+		if (sessionScopeAspectAdviceRuleRegistry != null)
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
 	}
 
@@ -266,10 +267,10 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	Importer resolveImporter(String rootContext, ImportFileType importFileType) {
 		Importer importer;
 
-		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+		if (rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 			importer = new ResourceImporter(assistant.getClassLoader(), resource, importFileType);
-		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+		} else if (rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
 			importer = new FileImporter(filePath, importFileType);
 		} else {

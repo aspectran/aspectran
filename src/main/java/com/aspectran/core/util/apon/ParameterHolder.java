@@ -28,11 +28,12 @@ public class ParameterHolder {
 			new ParameterDefinition(PARAMETER_NAME, parametersClass, array)
 		};
 		
-		if(text != null) {
-			if(array)
+		if (text != null) {
+			if (array) {
 				text = PARAMETER_NAME + ": [\n\t{\n" + text + "\n\t}\n]";
-			else
+			} else {
 				text = PARAMETER_NAME + ": {\n" + text + "\n}";
+			}
 		}
 		
 		this.parameters = new VariableParameters(parameterDefinitions, text);

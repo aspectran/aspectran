@@ -114,12 +114,12 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     @Override
     public final String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
         String msg = getMessageInternal(code, args, locale);
-        if(msg != null) {
+        if (msg != null) {
             return msg;
         }
-        if(defaultMessage == null) {
+        if (defaultMessage == null) {
             String fallback = getDefaultMessage(code);
-            if(fallback != null) {
+            if (fallback != null) {
                 return fallback;
             }
         }
@@ -129,11 +129,11 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     @Override
     public final String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
         String msg = getMessageInternal(code, args, locale);
-        if(msg != null) {
+        if (msg != null) {
             return msg;
         }
         String fallback = getDefaultMessage(code);
-        if(fallback != null) {
+        if (fallback != null) {
             return fallback;
         }
         throw new NoSuchMessageException(code, locale);
@@ -153,27 +153,27 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * @see #setUseCodeAsDefaultMessage #setUseCodeAsDefaultMessage
      */
     protected String getMessageInternal(String code, Object[] args, Locale locale) {
-        if(code == null) {
+        if (code == null) {
             return null;
         }
-        if(locale == null) {
+        if (locale == null) {
             locale = Locale.getDefault();
         }
-        if(!isAlwaysUseMessageFormat() && (args == null || args.length == 0)) {
+        if (!isAlwaysUseMessageFormat() && (args == null || args.length == 0)) {
             // Optimized resolution: no arguments to apply,
             // therefore no MessageFormat needs to be involved.
             // Note that the default implementation still uses MessageFormat;
             // this can be overridden in specific subclasses.
             String message = resolveCodeWithoutArguments(code, locale);
-            if(message != null) {
+            if (message != null) {
                 return message;
             }
         } else {
-            if(args == null)
+            if (args == null)
                 args = new Object[0];
 
             MessageFormat messageFormat = resolveCode(code, locale);
-            if(messageFormat != null) {
+            if (messageFormat != null) {
                 synchronized(messageFormat) {
                     return messageFormat.format(args);
                 }
@@ -182,9 +182,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
         // Check locale-independent common messages for the given message code.
         Properties commonMessages = getCommonMessages();
-        if(commonMessages != null) {
+        if (commonMessages != null) {
             String commonMessage = commonMessages.getProperty(code);
-            if(commonMessage != null) {
+            if (commonMessage != null) {
                 return formatMessage(commonMessage, args, locale);
             }
         }
@@ -204,8 +204,8 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      */
     protected String getMessageFromParent(String code, Object[] args, Locale locale) {
         MessageSource parent = getParentMessageSource();
-        if(parent != null) {
-            if(parent instanceof AbstractMessageSource) {
+        if (parent != null) {
+            if (parent instanceof AbstractMessageSource) {
                 // Call internal method to avoid getting the default code back
                 // in case of "useCodeAsDefaultMessage" being activated.
                 return ((AbstractMessageSource) parent).getMessageInternal(code, args, locale);
@@ -229,7 +229,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * @see #setUseCodeAsDefaultMessage #setUseCodeAsDefaultMessage
      */
     protected String getDefaultMessage(String code) {
-        if(isUseCodeAsDefaultMessage()) {
+        if (isUseCodeAsDefaultMessage()) {
             return code;
         }
         return null;
@@ -254,7 +254,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      */
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
         MessageFormat messageFormat = resolveCode(code, locale);
-        if(messageFormat != null) {
+        if (messageFormat != null) {
             synchronized(messageFormat) {
                 return messageFormat.format(new Object[0]);
             }

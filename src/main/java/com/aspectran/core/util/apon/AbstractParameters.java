@@ -35,8 +35,8 @@ public abstract class AbstractParameters implements Parameters {
 	protected AbstractParameters(ParameterDefinition[] parameterDefinitions) {
 		this.parameterValueMap = new LinkedHashMap<>();
 		
-		if(parameterDefinitions != null) {
-			for(ParameterDefinition pd : parameterDefinitions) {
+		if (parameterDefinitions != null) {
+			for (ParameterDefinition pd : parameterDefinitions) {
 				ParameterValue pv = pd.newParameterValue();
 				pv.setContainer(this);
 				parameterValueMap.put(pd.getName(), pv);
@@ -50,12 +50,12 @@ public abstract class AbstractParameters implements Parameters {
 	protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text) {
 		this(parameterDefinitions);
 		
-		if(text != null) {
+		if (text != null) {
 			try {
 				AponReader aponReader = new AponReader(text);
 				aponReader.read(this);
 				aponReader.close();
-			} catch(IOException e) {
+			} catch (IOException e) {
 				throw new AponReadFailedException(e);
 			}
 		}
@@ -73,18 +73,21 @@ public abstract class AbstractParameters implements Parameters {
 
 	@Override
 	public String getQualifiedName() {
-		if(prototype != null)
+		if (prototype != null) {
 			return prototype.getQualifiedName();
-		
+		}
 		return this.getClass().getName();
 	}
 
 	@Override
 	public Parameter getParent() {
-		if(prototype != null)
-			if(prototype.getContainer() != null)
-				if(prototype.getContainer().getPrototype() != null)
+		if (prototype != null) {
+			if(prototype.getContainer() != null) {
+				if(prototype.getContainer().getPrototype() != null) {
 					return prototype.getContainer().getPrototype();
+				}
+			}
+		}
 		return null;
 	}
 
@@ -116,7 +119,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Parameter getParameter(String name) {
 		Parameter p = parameterValueMap.get(name);
-		if(!addable && p == null) {
+		if (!addable && p == null) {
 			throw new UnknownParameterException(name, this);
 		}
 		return p;
@@ -141,7 +144,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public void putValue(String name, Object value) {
 		Parameter p = getParameter(name);
-		if(p == null) {
+		if (p == null) {
 			p = newParameterValue(name, ParameterValueType.determineType(value));
 		}
 		p.putValue(value);
@@ -154,14 +157,14 @@ public abstract class AbstractParameters implements Parameters {
 	
 	@Override
 	public void putValueNonNull(String name, Object value) {
-		if(value != null) {
+		if (value != null) {
 			putValue(name, value);
 		}
 	}
 
 	@Override
 	public void putValueNonNull(ParameterDefinition parameterDefinition, Object value) {
-		if(value != null) {
+		if (value != null) {
 			putValue(parameterDefinition.getName(), value);
 		}
 	}
@@ -484,7 +487,7 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T newParameters(String name) {
 		Parameter p = getParameter(name);
-		if(p == null) {
+		if (p == null) {
 			throw new UnknownParameterException(name, this);
 		}
 		Parameters parameters = p.newParameters(p);
@@ -500,7 +503,7 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T touchParameters(String name) {
 		Parameters parameters = getParameters(name);
-		if(parameters == null) {
+		if (parameters == null) {
 			parameters = newParameters(name);
 		}
 		return (T)parameters;
@@ -524,7 +527,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public String describe(boolean details) {
 		ToStringBuilder tsb = new ToStringBuilder();
-		if(details) {
+		if (details) {
 			tsb.append("qualifiedName", getQualifiedName());
 			tsb.append("parameters", parameterValueMap);
 			tsb.append("parent", getParent());

@@ -49,7 +49,7 @@ public class AponWriterTest {
 			
 			System.out.println(writer.toString());
 			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

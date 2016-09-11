@@ -64,12 +64,12 @@ public class WildcardPattern {
 		int ptype = SKIP_TYPE;
 		int pindex = 0;
 
-		for(int i = 0; i < tokens.length; i++) {
-			if(tokens[i] == STAR_CHAR) {
-				if(esc) {
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i] == STAR_CHAR) {
+				if (esc) {
 					esc = false;
 				} else {
-					if(star) {
+					if (star) {
 						types[i - 1] = SKIP_TYPE;
 						types[i] = STAR_STAR_TYPE; // type 2: double star
 						star = false;
@@ -78,66 +78,68 @@ public class WildcardPattern {
 						star = true;
 					}
 				}
-				if(ptype == QUESTION_TYPE && types[i] == STAR_TYPE) {
+				if (ptype == QUESTION_TYPE && types[i] == STAR_TYPE) {
 					types[pindex] = SKIP_TYPE;
 				}
-			} else if(tokens[i] == QUESTION_CHAR) {
-				if(esc) {
+			} else if (tokens[i] == QUESTION_CHAR) {
+				if (esc) {
 					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
 					types[i] = QUESTION_TYPE; // type 3: question
 				}
-				if(ptype == STAR_TYPE && types[i] == QUESTION_TYPE) {
+				if (ptype == STAR_TYPE && types[i] == QUESTION_TYPE) {
 					types[i] = SKIP_TYPE;
 				}
-			} else if(tokens[i] == PLUS_CHAR) {
-				if(esc) {
+			} else if (tokens[i] == PLUS_CHAR) {
+				if (esc) {
 					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
 					types[i] = PLUS_TYPE; // type 4: plus
 				}
-				if(ptype == STAR_TYPE && types[i] == PLUS_CHAR) {
+				if (ptype == STAR_TYPE && types[i] == PLUS_CHAR) {
 					types[i] = SKIP_TYPE;
 				}
-			} else if(tokens[i] == separator) {
+			} else if (tokens[i] == separator) {
 				//separator character does not escape.
 				esc = false;
 				types[i] = SEPARATOR_TYPE; // type 9: separator
 				/*
-				if(esc) {
+				if (esc) {
 					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
 					types[i] = SEPARATOR_TYPE; // type 9: separator
 				}
 				*/
-			} else if(tokens[i] == ESCAPE_CHAR) {
+			} else if (tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;
 			} else {
-				if(esc)
+				if (esc) {
 					types[i - 1] = LITERAL_TYPE;
-				else
+				} else {
 					types[i] = LITERAL_TYPE;
+				}
 			}
 
-			if(tokens[i] != STAR_CHAR && star)
+			if (tokens[i] != STAR_CHAR && star) {
 				star = false;
+			}
 
-			if(types[i] != SKIP_TYPE) {
+			if (types[i] != SKIP_TYPE) {
 				ptype = types[i];
 				pindex = i;
 			}
 		}
 
-		for(int i = 0, s = 0; i < tokens.length; i++) {
-			if(types[i] == SKIP_TYPE) {
+		for (int i = 0, s = 0; i < tokens.length; i++) {
+			if (types[i] == SKIP_TYPE) {
 				s++;
 				tokens[i] = SPACE_CHAR;
 				types[i] = EOT_TYPE;
-			} else if(s > 0) {
+			} else if (s > 0) {
 				tokens[i - s] = tokens[i];
 				types[i - s] = types[i];
 				tokens[i] = SPACE_CHAR;
@@ -195,11 +197,12 @@ public class WildcardPattern {
 	public static boolean hasWildcards(String str) {
 		char[] ca = str.toCharArray();
 
-		for(char c : ca) {
-			if(c == STAR_CHAR ||
-					c == QUESTION_CHAR ||
-					c == PLUS_CHAR)
+		for (char c : ca) {
+			if (c == STAR_CHAR
+					|| c == QUESTION_CHAR
+					|| c == PLUS_CHAR) {
 				return true;
+			}
 		}
 		
 		return false;

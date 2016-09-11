@@ -62,7 +62,7 @@ public class FilenameUtils {
 	 * @return the name of the file without the path, or an empty string if none exists
 	 */
 	public static String getName(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return null;
 		}
 		int index = indexOfLastSeparator(filename);
@@ -108,11 +108,11 @@ public class FilenameUtils {
 	 * @return the extension of the file or an empty string if none exists.
 	 */
 	public static String getExtension(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return null;
 		}
 		int index = indexOfExtension(filename);
-		if(index == -1) {
+		if (index == -1) {
 			return StringUtils.EMPTY;
 		} else {
 			return filename.substring(index + 1);
@@ -137,11 +137,11 @@ public class FilenameUtils {
 	 * @return the filename minus the extension
 	 */
 	public static String removeExtension(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return null;
 		}
 		int index = indexOfExtension(filename);
-		if(index == -1) {
+		if (index == -1) {
 			return filename;
 		} else {
 			return filename.substring(0, index);
@@ -161,7 +161,7 @@ public class FilenameUtils {
 	 * is no such character
 	 */
 	public static int indexOfLastSeparator(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return -1;
 		}
 		int lastUnixPos = filename.lastIndexOf(UNIX_SEPARATOR);
@@ -183,7 +183,7 @@ public class FilenameUtils {
 	 * is no such character
 	 */
 	public static int indexOfExtension(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return -1;
 		}
 		int extensionPos = filename.lastIndexOf(EXTENSION_SEPARATOR);
@@ -198,11 +198,11 @@ public class FilenameUtils {
 	 * @return the path
 	 */
 	public static String getFullPath(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return null;
 		}
 		int index = indexOfLastSeparator(filename);
-		if(index < 0) {
+		if (index < 0) {
 			return StringUtils.EMPTY;
 		}
 		return filename.substring(0, index);
@@ -215,11 +215,11 @@ public class FilenameUtils {
 	 * @return the path
 	 */
 	public static String getFullPathWithEndSeprator(String filename) {
-		if(filename == null) {
+		if (filename == null) {
 			return null;
 		}
 		int index = indexOfLastSeparator(filename);
-		if(index < 0) {
+		if (index < 0) {
 			return StringUtils.EMPTY;
 		}
 		return filename.substring(0, index + 1);
@@ -235,34 +235,39 @@ public class FilenameUtils {
 	 * @return true, if is valid file extention
 	 */
 	public static boolean isValidFileExtension(String filename, String allowedFileExtensions, String deniedFileExtensions) {
-		if(filename == null)
+		if (filename == null) {
 			return false;
+		}
 
 		String ext = getExtension(filename);
 
-		if(allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
-			if(ext.length() == 0)
+		if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
+			if (ext.length() == 0) {
 				return false;
+			}
 
 			StringTokenizer st = new StringTokenizer(allowedFileExtensions, EXTENSIONS_SEPARATORS);
-			while(st.hasMoreTokens()) {
+			while (st.hasMoreTokens()) {
 				String ext2 = st.nextToken();
-				if(ext.equals(ext2))
+				if (ext.equals(ext2)) {
 					return true;
+				}
 			}
 
 			return false;
 		}
 
-		if(deniedFileExtensions != null && !deniedFileExtensions.isEmpty()) {
-			if(ext.length() == 0)
+		if (deniedFileExtensions != null && !deniedFileExtensions.isEmpty()) {
+			if (ext.length() == 0) {
 				return true;
+			}
 
 			StringTokenizer st = new StringTokenizer(deniedFileExtensions, EXTENSIONS_SEPARATORS);
-			while(st.hasMoreTokens()) {
+			while (st.hasMoreTokens()) {
 				String ext2 = st.nextToken();
-				if(ext.equals(ext2))
+				if (ext.equals(ext2)) {
 					return false;
+				}
 			}
 
 			return true;
@@ -297,7 +302,7 @@ public class FilenameUtils {
 	 * @throws IOException if failed to obtain an unique file
 	 */
 	public static File seekUniqueFile(File srcFile, char extSeparator) throws IOException {
-		if(srcFile == null) {
+		if (srcFile == null) {
 			throw new IllegalArgumentException("'srcFile' must not be null.");
 		}
 
@@ -306,7 +311,7 @@ public class FilenameUtils {
 		String ext = getExtension(name);
 
 		String newName;
-		if(ext != null && !ext.isEmpty()) {
+		if (ext != null && !ext.isEmpty()) {
 			newName = name + extSeparator + ext;
 		} else {
 			newName = name;
@@ -315,9 +320,9 @@ public class FilenameUtils {
 		int count = 0;
 		File destFile = new File(path, newName);
 
-		while(destFile.exists()) {
+		while (destFile.exists()) {
 			count++;
-			if(ext != null && !ext.isEmpty()) {
+			if (ext != null && !ext.isEmpty()) {
 				newName = name + count + extSeparator + ext;
 			} else {
 				newName = name + count;
@@ -325,7 +330,7 @@ public class FilenameUtils {
 			destFile = new File(path, newName);
 		}
 
-		return (count == 0) ? srcFile : destFile;
+		return (count == 0 ? srcFile : destFile);
 	}
 
 	/**
@@ -348,7 +353,7 @@ public class FilenameUtils {
 		String name2 = Integer.toString(rnd.nextInt(9999));
 
 		String fullName;
-		if(ext != null && !ext.isEmpty()) {
+		if (ext != null && !ext.isEmpty()) {
 			fullName = name1 + separator + name2 + separator + ext;
 		} else {
 			fullName = name1 + separator + name2;

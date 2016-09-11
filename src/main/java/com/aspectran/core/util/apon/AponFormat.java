@@ -56,25 +56,26 @@ public class AponFormat {
 	protected static final String FALSE = "false";
 	
 	public static String escape(String value, boolean noQuote) {
-		if(value == null)
+		if (value == null) {
 			return null;
-		
+		}
+
 		int vlen = value.length();
 
-		if(vlen == 0)
+		if (vlen == 0)
 			return value;
 
 		StringBuilder sb = new StringBuilder(vlen);
 		char c;
 		String t;
 
-		for(int i = 0; i < vlen; i++) {
+		for (int i = 0; i < vlen; i++) {
 			c = value.charAt(i);
 
-			switch(c) {
+			switch (c) {
 			case '\\':
 			case '"':
-				if(!noQuote) {
+				if (!noQuote) {
 					sb.append('\\');
 				}
 				sb.append(c);
@@ -95,7 +96,7 @@ public class AponFormat {
 				sb.append("\\r");
 				break;
 			default:
-				if(c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+				if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 					t = "000" + Integer.toHexString(c);
 					sb.append("\\u").append(t.substring(t.length() - 4));
 				} else {
@@ -108,27 +109,29 @@ public class AponFormat {
 	}
 	
 	public static String unescape(String value) {
-		if(value == null)
+		if (value == null) {
 			return null;
+		}
 		
 		int vlen = value.length();
 
-		if(vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)
+		if (vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1) {
 			return value;
+		}
 
 		StringBuilder sb = new StringBuilder(vlen);
 		char c;
 		
-		for(int i = 0; i < vlen; i++) {
+		for (int i = 0; i < vlen; i++) {
 			c = value.charAt(i);
 			
-			if(c == ESCAPE_CHAR) {
-				if(++i < vlen)
+			if (c == ESCAPE_CHAR) {
+				if (++i < vlen)
 					c = value.charAt(i);
 				else
 					c = 0;
 
-				switch(c) {
+				switch (c) {
 				case ESCAPE_CHAR:
 				case DOUBLE_QUOTE_CHAR:
 				case SINGLE_QUOTE_CHAR:

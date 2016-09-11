@@ -110,7 +110,7 @@ public abstract class TransformResponse implements Response {
 	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
 		Reader reader;
 		
-		if(encoding != null) {
+		if (encoding != null) {
 			InputStream inputStream = getTemplateAsStream(file);
 			reader = new InputStreamReader(inputStream, encoding);
 		} else {
@@ -132,7 +132,7 @@ public abstract class TransformResponse implements Response {
 		InputStream inputStream = getTemplateAsStream(url);
 		Reader reader;
 		
-		if(encoding != null) {
+		if (encoding != null) {
 			reader = new InputStreamReader(inputStream, encoding);
 		} else {
 			reader = new InputStreamReader(inputStream);

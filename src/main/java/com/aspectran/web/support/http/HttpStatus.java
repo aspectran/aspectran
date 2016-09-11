@@ -394,8 +394,8 @@ public enum HttpStatus {
 	 * @throws IllegalArgumentException if this enum has no constant for the specified numeric value
 	 */
 	public static HttpStatus valueOf(int statusCode) {
-		for(HttpStatus status : values()) {
-			if(status.value == statusCode) {
+		for (HttpStatus status : values()) {
+			if (status.value == statusCode) {
 				return status;
 			}
 		}

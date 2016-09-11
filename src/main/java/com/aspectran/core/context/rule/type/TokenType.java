@@ -47,9 +47,10 @@ public enum TokenType {
 	 * @return a {@code TokenType}, may be {@code null}
 	 */
 	public static TokenType resolve(String alias) {
-		for(TokenType type : values()) {
-			if(type.alias.equals(alias))
+		for (TokenType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

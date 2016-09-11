@@ -151,7 +151,7 @@ public class ContentsXMLReader implements XMLReader {
 
 	@Override
 	public void parse(InputSource is) throws IOException, SAXException {
-		if(handler == null)
+		if (handler == null)
 			throw new SAXException("No XML ContentHandler");
 
 		try {
@@ -160,23 +160,25 @@ public class ContentsXMLReader implements XMLReader {
 
 			handler.startDocument();
 
-			if(processResult != null && !processResult.isEmpty()) {
+			if (processResult != null && !processResult.isEmpty()) {
 				String contentsName = processResult.getName();
 				
-				if(!processResult.isOmittable()) {
-					if(contentsName != null)
+				if (!processResult.isOmittable()) {
+					if (contentsName != null) {
 						handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
-					else
+					} else {
 						handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
+					}
 				}
 				
 				parse(processResult);
 
-				if(!processResult.isOmittable()) {
-					if(contentsName != null)
+				if (!processResult.isOmittable()) {
+					if (contentsName != null) {
 						handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
-					else
+					} else {
 						handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
+					}
 				}
 			} else {
 				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
@@ -184,9 +186,9 @@ public class ContentsXMLReader implements XMLReader {
 			}
 
 			handler.endDocument();
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
-		} catch(IOException | SAXException e) {
+		} catch (IOException | SAXException e) {
 			throw e;
 		}
 	}
@@ -200,38 +202,42 @@ public class ContentsXMLReader implements XMLReader {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
-		for(ContentResult contentResult : processResult) {
+		for (ContentResult contentResult : processResult) {
 			String contentName = contentResult.getName();
 			
-			if(!contentResult.isOmittable()) {
-				if(contentName != null)
+			if (!contentResult.isOmittable()) {
+				if (contentName != null) {
 					handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
-				else
-					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
-			}
-
-			for(ActionResult actionResult : contentResult) {
-				String actionId = actionResult.getActionId();
-				Object resultValue = actionResult.getResultValue();
-
-				if(resultValue instanceof ProcessResult) {
-					parse((ProcessResult)resultValue);
 				} else {
-					if(actionId != null)
-						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-
-					parse(resultValue);
-
-					if(actionId != null)
-						handler.endElement(StringUtils.EMPTY, actionId, actionId);
+					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
 				}
 			}
 
-			if(!contentResult.isOmittable()) {
-				if(contentResult.getName() != null)
+			for (ActionResult actionResult : contentResult) {
+				String actionId = actionResult.getActionId();
+				Object resultValue = actionResult.getResultValue();
+
+				if (resultValue instanceof ProcessResult) {
+					parse((ProcessResult)resultValue);
+				} else {
+					if (actionId != null) {
+						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
+					}
+
+					parse(resultValue);
+
+					if (actionId != null) {
+						handler.endElement(StringUtils.EMPTY, actionId, actionId);
+					}
+				}
+			}
+
+			if (!contentResult.isOmittable()) {
+				if (contentResult.getName() != null) {
 					handler.endElement(StringUtils.EMPTY, contentName, contentName);
-				else
+				} else {
 					handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+				}
 			}
 		}
 	}
@@ -246,18 +252,18 @@ public class ContentsXMLReader implements XMLReader {
 	 */
 	@SuppressWarnings("unchecked")
 	private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
-		if(object == null) {
+		if (object == null) {
 			return;
-		} else if(object instanceof ProcessResult) {
+		} else if (object instanceof ProcessResult) {
 			parse((ProcessResult)object);
-		} else if(object instanceof String ||
-					object instanceof Number ||
-					object instanceof Boolean ||
-					object instanceof Date) {
+		} else if (object instanceof String
+				|| object instanceof Number
+				|| object instanceof Boolean
+				|| object instanceof Date) {
 			outputString(object.toString());
-		} else if(object instanceof Parameters) {
+		} else if (object instanceof Parameters) {
 			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
-			for(Parameter p: params.values()) {
+			for (Parameter p: params.values()) {
 				String name = p.getName();
 				Object value = p.getValue();
 				checkCircularReference(object, value);
@@ -266,8 +272,8 @@ public class ContentsXMLReader implements XMLReader {
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
-		} else if(object instanceof Map<?, ?>) {
-			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+		} else if (object instanceof Map<?, ?>) {
+			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
 				String name = entry.getKey().toString();
 				Object value = entry.getValue();
 				checkCircularReference(object, value);
@@ -276,10 +282,10 @@ public class ContentsXMLReader implements XMLReader {
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
-		} else if(object instanceof Collection<?>) {
+		} else if (object instanceof Collection<?>) {
 			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
-			for(Object value : ((Collection<Object>) object)) {
+			for (Object value : ((Collection<Object>) object)) {
 				checkCircularReference(object, value);
 
 				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
@@ -288,11 +294,11 @@ public class ContentsXMLReader implements XMLReader {
 			}
 
 			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
-		} else if(object.getClass().isArray()) {
+		} else if (object.getClass().isArray()) {
 			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
 			int len = Array.getLength(object);
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				Object value = Array.get(object, i);
 				checkCircularReference(object, value);
 
@@ -304,8 +310,8 @@ public class ContentsXMLReader implements XMLReader {
 			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
 		} else {
 			String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
-			if(readableProperyNames != null && readableProperyNames.length > 0) {
-				for(String name : readableProperyNames) {
+			if (readableProperyNames != null && readableProperyNames.length > 0) {
+				for (String name : readableProperyNames) {
 					Object value = BeanUtils.getObject(object, name);
 					checkCircularReference(object, value);
 
@@ -318,7 +324,7 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	private void checkCircularReference(Object wrapper, Object member) {
-		if(wrapper.equals(member)) {
+		if (wrapper.equals(member)) {
 			throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}

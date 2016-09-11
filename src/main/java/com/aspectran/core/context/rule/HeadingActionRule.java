@@ -75,9 +75,9 @@ public class HeadingActionRule {
 	 * @param headerItemRule the header item rule
 	 */
 	public void addItemRule(ItemRule headerItemRule) {
-		if(headerItemRuleMap == null) 
+		if (headerItemRuleMap == null) {
 			headerItemRuleMap = new ItemRuleMap();
-		
+		}
 		headerItemRuleMap.putItemRule(headerItemRule);
 	}
 	
@@ -112,8 +112,9 @@ public class HeadingActionRule {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", actionId);
-		if(headerItemRuleMap != null)
+		if (headerItemRuleMap != null) {
 			tsb.append("headers", headerItemRuleMap.keySet());
+		}
 		tsb.append("hidden", hidden);
 		return tsb.toString();
 	}

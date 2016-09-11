@@ -74,15 +74,15 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
 		try {
 			dispatchName = dispatchResponseRule.getName(activity);
-			if(dispatchName == null) {
+			if (dispatchName == null) {
 				throw new IllegalArgumentException("No specified dispatch name.");
 			}
 
-			if(prefix != null && suffix != null) {
+			if (prefix != null && suffix != null) {
 				dispatchName = prefix + dispatchName + suffix;
-			} else if(prefix != null) {
+			} else if (prefix != null) {
 				dispatchName = prefix + dispatchName;
-			} else if(suffix != null) {
+			} else if (suffix != null) {
 				dispatchName = dispatchName + suffix;
 			}
 			
@@ -91,15 +91,15 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			}
 
-			if(characterEncoding != null) {
+			if (characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
 				characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
@@ -108,10 +108,10 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 			Template template = configuration.getTemplate(dispatchName);
 			template.process(model, responseAdapter.getWriter());
 
-			if(debugEnabled) {
+			if (debugEnabled) {
 				log.debug("Dispatch to a FreeMarker template page [" + dispatchName + "]");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this, dispatchName), e);
 		}
 	}

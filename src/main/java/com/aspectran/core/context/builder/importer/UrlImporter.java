@@ -38,9 +38,10 @@ public class UrlImporter extends AbstractImporter {
 	public UrlImporter(String urlString, ImportFileType importFileType) {
 		super(URL_IMPORTER);
 
-		if(importFileType == null)
+		if (importFileType == null) {
 			importFileType = urlString.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
-		
+		}
+
 		setImportFileType(importFileType);
 		
 		this.urlString = urlString;

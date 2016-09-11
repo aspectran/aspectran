@@ -36,20 +36,20 @@ public class TransformResponseFactory {
 	 * @return the transform response
 	 */
 	public static Response createTransformResponse(TransformRule transformRule) {
-		if(transformRule == null) {
+		if (transformRule == null) {
 			throw new IllegalArgumentException("transformRule must not be null.");
 		}
 		
 		TransformType type = transformRule.getTransformType();
 		Response res;
 		
-		if(type == TransformType.XML) {
+		if (type == TransformType.XML) {
 			res = new XmlTransform(transformRule);
-		} else if(type == TransformType.XSL) {
+		} else if (type == TransformType.XSL) {
 			res = new XmlTransform(transformRule);
-		} else if(type == TransformType.JSON) {
+		} else if (type == TransformType.JSON) {
 			res = new JsonTransform(transformRule);
-		} else if(type == TransformType.TEXT) {
+		} else if (type == TransformType.TEXT) {
 			res = new TextTransform(transformRule);
 		} else {
 			throw new IllegalArgumentException("The specified tranform-type is not valid. transformRule " + transformRule);

@@ -32,10 +32,10 @@ public abstract class AbstractPointcut implements Pointcut {
 	public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		this.pointcutPatternRuleList = pointcutPatternRuleList;
 		
-		if(pointcutPatternRuleList != null) {
+		if (pointcutPatternRuleList != null) {
 			boolean existsBeanMethodNamePattern = false;
-			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if(ppr.getMethodNamePattern() != null) {
+			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if (ppr.getMethodNamePattern() != null) {
 					existsBeanMethodNamePattern = true;
 					break;
 				}
@@ -68,14 +68,14 @@ public abstract class AbstractPointcut implements Pointcut {
 
 	@Override
 	public boolean matches(String transletName, String beanId, String className, String methodName) {
-		if(pointcutPatternRuleList != null) {
-			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if(matches(ppr, transletName, beanId, className, methodName)) {
+		if (pointcutPatternRuleList != null) {
+			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if (matches(ppr, transletName, beanId, className, methodName)) {
 					List<PointcutPatternRule> epprList = ppr.getExcludePointcutPatternRuleList();
 					
-					if(epprList != null) {
-						for(PointcutPatternRule eppr : epprList) {
-							if(matches(eppr, transletName, beanId, className, methodName)) {
+					if (epprList != null) {
+						for (PointcutPatternRule eppr : epprList) {
+							if (matches(eppr, transletName, beanId, className, methodName)) {
 								return false;
 							}
 						}
@@ -100,7 +100,7 @@ public abstract class AbstractPointcut implements Pointcut {
 	 * @return true, if exists matched
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
-		if((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
+		if ((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
 				(beanId == null && pointcutPatternRule.getBeanIdPattern() != null) ||
 				(className == null && pointcutPatternRule.getClassNamePattern() != null) ||
 				(methodName == null && pointcutPatternRule.getMethodNamePattern() != null)) {
@@ -122,9 +122,9 @@ public abstract class AbstractPointcut implements Pointcut {
 
 	@Override
 	public boolean exists(String transletName, String beanId, String className, String methodName) {
-		if(pointcutPatternRuleList != null) {
-			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if(exists(ppr, transletName, beanId, className, methodName)) {
+		if (pointcutPatternRuleList != null) {
+			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if (exists(ppr, transletName, beanId, className, methodName)) {
 					return true;
 				}
 			}
@@ -146,19 +146,16 @@ public abstract class AbstractPointcut implements Pointcut {
 	protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
 		boolean matched = true;
 		
-		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
+		if (transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
-		
-		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
+		if (matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);
 		}
-		
-		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
+		if (matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR);
 		}
-
-		if(matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {
+		if (matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getMethodNamePattern(), methodName);
 		}
 		

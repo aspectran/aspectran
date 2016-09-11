@@ -49,7 +49,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 		super(request);
 		this.context = context;
 		
-		if(getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME) == null) {
+		if (getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME) == null) {
 			newHttpSessionScope(false);
 		}
 	}
@@ -57,45 +57,45 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	@Override
 	public String getId() {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return null;
-
+		}
 		return session.getId();
 	}
 
 	@Override
 	public long getCreationTime() {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return -1L;
-		
+		}
 		return session.getCreationTime();
 	}
 
 	@Override
 	public long getLastAccessedTime() {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return -1L;
-		
+		}
 		return session.getLastAccessedTime();
 	}
 
 	@Override
 	public int getMaxInactiveInterval() {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return 0;
-		
+		}
 		return session.getMaxInactiveInterval();
 	}
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return null;
-		
+		}
 		return session.getAttributeNames();
 	}
 
@@ -103,20 +103,20 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		HttpSession session = getSession(false);
-		if(session == null)
+		if (session == null) {
 			return null;
-		
+		}
 		return (T)session.getAttribute(name);
 	}
 
 	@Override
 	public void setAttribute(String name, Object value) {
-		if(value != null) {
+		if (value != null) {
 			HttpSession session = getSession(true);
 			session.setAttribute(name, value);
 		} else {
 			HttpSession session = getSession(false);
-			if(session != null) {
+			if (session != null) {
 				session.removeAttribute(name);
 			}
 		}
@@ -125,7 +125,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	@Override
 	public void removeAttribute(String name) {
 		HttpSession session = getSession(false);
-		if(session != null) {
+		if (session != null) {
 			session.removeAttribute(name);
 		}
 	}
@@ -133,13 +133,13 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	@Override
 	public void invalidate() {
 		HttpSession session = getSession(false);
-		if(session != null) {
+		if (session != null) {
 			session.invalidate();
 		}
 	}
 
 	protected HttpSession getSession(boolean create) {
-		if(adaptee == null) {
+		if (adaptee == null) {
 			throw new IllegalStateException("Session has been expired or not yet initialized.");
 		}
 		return ((HttpServletRequest)adaptee).getSession(create);
@@ -147,10 +147,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
 	@Override
 	public SessionScope getSessionScope() {
-		if(this.sessionScope == null) {
+		if (this.sessionScope == null) {
 			synchronized(this) {
 				this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-				if(this.sessionScope == null) {
+				if (this.sessionScope == null) {
 					newHttpSessionScope(true);
 				}
 			}
@@ -167,7 +167,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	private SessionScope newHttpSessionScope(boolean force) {
 		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
 		
-		if(advisor != null || force) {
+		if (advisor != null || force) {
 			this.sessionScope = new HttpSessionScope(this, advisor);
 			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
 		}

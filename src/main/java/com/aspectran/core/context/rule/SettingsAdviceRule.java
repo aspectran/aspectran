@@ -66,15 +66,14 @@ public class SettingsAdviceRule {
 	}
 
 	public void putSetting(String name, Object value) {
-		if(settings == null) {
+		if (settings == null) {
 			settings = new HashMap<String, Object>(5);
 		}
-		
 		settings.put(name, value);
 	}
 
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
-		if(StringUtils.hasText(text)) {
+		if (StringUtils.hasText(text)) {
 			Parameters settingsParameters = new VariableParameters(text);
 			return newInstance(aspectRule, settingsParameters);
 		} else {
@@ -85,11 +84,11 @@ public class SettingsAdviceRule {
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
 		SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
 
-		if(settingsParameters != null) {
+		if (settingsParameters != null) {
 			Set<String> parametersNames = settingsParameters.getParameterNameSet();
 			
-			if(parametersNames != null) {
-				for(String name : parametersNames) {
+			if (parametersNames != null) {
+				for (String name : parametersNames) {
 					sar.putSetting(name, settingsParameters.getString(name));
 				}
 			}
@@ -101,8 +100,9 @@ public class SettingsAdviceRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		if(aspectRule != null)
+		if (aspectRule != null) {
 			tsb.append("aspectId", aspectRule.getId());
+		}
 		tsb.append("aspectAdviceType", aspectAdviceType);
 		tsb.append("settings", settings);
 		return tsb.toString();

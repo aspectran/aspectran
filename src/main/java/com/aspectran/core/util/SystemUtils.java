@@ -30,7 +30,7 @@ public class SystemUtils {
 	public static String getProperty(String name) {
 		try {
 			return System.getProperty(name);
-		} catch(AccessControlException ex) {
+		} catch (AccessControlException ex) {
 			log.info(String.format(
 					"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
 					name, ex.getMessage()));

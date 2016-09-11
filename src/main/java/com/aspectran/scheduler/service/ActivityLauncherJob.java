@@ -46,7 +46,7 @@ public class ActivityLauncherJob implements Job {
 
 			Activity activity = runActivity(context, transletName, jobExecutionContext);
 			jobExecutionContext.put(QuartzSchedulerService.ACTIVITY_DATA_KEY, activity);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
 	}
@@ -62,8 +62,9 @@ public class ActivityLauncherJob implements Job {
 			activity.prepare(transletName);
 			activity.perform();
 		} finally {
-			if(activity != null)
+			if (activity != null) {
 				activity.finish();
+			}
 		}
 
 		return activity;

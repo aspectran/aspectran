@@ -32,7 +32,7 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
 	@Override
 	public <T> T getBean(String id) {
 		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
-		if(beanRule == null) {
+		if (beanRule == null) {
 			throw new BeanNotFoundException(id);
 		}
 		return getBean(beanRule);
@@ -41,10 +41,10 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
 	@Override
 	public <T> T getBean(Class<T> requiredType) {
 		BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
-		if(beanRules == null || beanRules.length == 0) {
+		if (beanRules == null || beanRules.length == 0) {
 			throw new RequiredTypeBeanNotFoundException(requiredType);
 		}
-		if(beanRules.length > 1) {
+		if (beanRules.length > 1) {
 			throw new NoUniqueBeanException(requiredType, beanRules);
 		}
 		return getBean(beanRules[0]);
@@ -53,10 +53,10 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
 	@Override
 	public <T> T getBean(String id, Class<T> requiredType) {
 		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
-		if(beanRule == null) {
+		if (beanRule == null) {
 			throw new BeanNotFoundException(id);
 		}
-		if(requiredType != null && !requiredType.isAssignableFrom(beanRule.getTargetBeanClass())) {
+		if (requiredType != null && !requiredType.isAssignableFrom(beanRule.getTargetBeanClass())) {
 			throw new BeanNotOfRequiredTypeException(requiredType, beanRule);
 		}
 		return getBean(beanRule);
@@ -65,14 +65,14 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
 	@Override
 	public <T> T getBean(Class<T> requiredType, String id) {
 		BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
-		if(beanRules == null) {
+		if (beanRules == null) {
 			throw new RequiredTypeBeanNotFoundException(requiredType);
 		}
-		if(beanRules.length == 1) {
+		if (beanRules.length == 1) {
 			return getBean(beanRules[0]);
-		} else if(id != null) {
-			for(BeanRule beanRule : beanRules) {
-				if(id.equals(beanRule.getId())) {
+		} else if (id != null) {
+			for (BeanRule beanRule : beanRules) {
+				if (id.equals(beanRule.getId())) {
 					return getBean(beanRule);
 				}
 			}
@@ -83,7 +83,7 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
 	@Override
 	public <T> T getConfigBean(Class<T> requiredType) {
 		BeanRule beanRule = beanRuleRegistry.getConfigBeanRule(requiredType);
-		if(beanRule == null) {
+		if (beanRule == null) {
 			throw new RequiredTypeBeanNotFoundException(requiredType);
 		}
 		return getBean(beanRule);

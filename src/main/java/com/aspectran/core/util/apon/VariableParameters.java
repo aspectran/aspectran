@@ -45,13 +45,12 @@ public class VariableParameters extends AbstractParameters implements Parameters
 	
 	private Parameter touchParameterValue(String name, Object value) {
 		Parameter p = getParameterValueMap().get(name);
-		
-		if(p == null && isAddable())
+		if (p == null && isAddable()) {
 			p = newParameterValue(name, ParameterValueType.determineType(value));
-		
-		if(p == null)
+		}
+		if (p == null) {
 			throw new UnknownParameterException(name, this);
-		
+		}
 		return p;
 	}
 

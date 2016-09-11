@@ -38,7 +38,7 @@ public class QuartzSchedulerFactoryBean implements FactoryBean<Scheduler> {
 	}
 
 	public Scheduler getObject() throws SchedulerException {
-		if(props == null) {
+		if (props == null) {
 			return StdSchedulerFactory.getDefaultScheduler();
 		} else {
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory(props);

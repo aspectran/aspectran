@@ -44,7 +44,7 @@ public class StampedLockTestThread implements Runnable {
 		try {
 			long tryStamp = lock.tryConvertToWriteLock(stamp);
 
-			if(tryStamp != 0L) {
+			if (tryStamp != 0L) {
 				stamp = tryStamp;
 				printMessage("3. tryConvertToWriteLock: " + stamp);
 			} else {
@@ -90,7 +90,7 @@ public class StampedLockTestThread implements Runnable {
 
 		Monitor monitor = new Monitor();
 
-		for(String threadName : myThreads) {
+		for (String threadName : myThreads) {
 			new Thread(new StampedLockTestThread(monitor), threadName).start();
 		}
 	}

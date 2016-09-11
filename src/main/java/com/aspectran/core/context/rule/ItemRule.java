@@ -200,15 +200,17 @@ public class ItemRule {
 	 * @return the value list
 	 */
 	public List<String> getValueList() {
-		if(tokensList == null)
+		if (tokensList == null) {
 			return null;
+		}
 		
 		List<String> list = new ArrayList<>();
 		
-		if(tokensList.isEmpty())
+		if (tokensList.isEmpty()) {
 			return list;
+		}
 		
-		for(Token[] tokens : tokensList) {
+		for (Token[] tokens : tokensList) {
 			list.add(TokenParser.toString(tokens));
 		}
 		
@@ -225,15 +227,17 @@ public class ItemRule {
 	}
 
 	public Map<String, String> getValueMap() {
-		if(tokensMap == null)
+		if (tokensMap == null) {
 			return null;
-		
+		}
+
 		Map<String, String> map = new LinkedHashMap<>();
 		
-		if(tokensMap.size() == 0)
+		if (tokensMap.size() == 0) {
 			return map;
+		}
 		
-		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			map.put(entry.getKey(), TokenParser.toString(entry.getValue()));
 		}
 		
@@ -282,16 +286,17 @@ public class ItemRule {
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		if(name.endsWith(ARRAY_SUFFIX)) {
+		if (name.endsWith(ARRAY_SUFFIX)) {
 			this.name = name.substring(0, name.length() - 2);
 			type = ItemType.ARRAY;
-		} else if(name.endsWith(MAP_SUFFIX)) {
+		} else if (name.endsWith(MAP_SUFFIX)) {
 			this.name = name.substring(0, name.length() - 2);
 			type = ItemType.MAP;
 		} else {
 			this.name = name;
-			if(type == null)
+			if (type == null) {
 				type = ItemType.SINGLE;
+			}
 		}
 	}
 
@@ -303,9 +308,9 @@ public class ItemRule {
 	public void setValue(String value) {
 		Token[] tokens;
 		
-		if(isTokenize())
+		if (isTokenize()) {
 			tokens = TokenParser.parse(value);
-		else {
+		} else {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, value);
 		}
@@ -319,12 +324,12 @@ public class ItemRule {
 	 * @param tokens the new value
 	 */
 	public void setValue(Token[] tokens) {
-		if(type == null)
+		if (type == null) {
 			throw new IllegalArgumentException("Item type is must not be null.");
-
-		if(type != ItemType.SINGLE)
+		}
+		if (type != ItemType.SINGLE) {
 			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
-
+		}
 		this.tokens = tokens;
 	}
 	
@@ -334,12 +339,12 @@ public class ItemRule {
 	 * @param tokensList the new value
 	 */
 	public void setValue(List<Token[]> tokensList) {
-		if(type == null)
+		if (type == null) {
 			throw new IllegalArgumentException("Item type is must not be null.");
-
-		if(!isListableType())
+		}
+		if (!isListableType()) {
 			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
-
+		}
 		this.tokensList = tokensList;
 	}
 	
@@ -349,12 +354,12 @@ public class ItemRule {
 	 * @param tokensMap the tokens map
 	 */
 	public void setValue(Map<String, Token[]> tokensMap) {
-		if(type == null)
+		if (type == null) {
 			throw new IllegalArgumentException("Item type is must not be null.");
-
-		if(!isMappableType())
+		}
+		if (!isMappableType()) {
 			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
-
+		}
 		this.tokensMap = tokensMap;
 	}
 
@@ -391,11 +396,11 @@ public class ItemRule {
 		tsb.append("type", type);
 		tsb.append("name", name);
 		tsb.append("valueType", valueType);
-		if(type == ItemType.SINGLE) {
+		if (type == ItemType.SINGLE) {
 			tsb.append("value", tokens);
-		} else if(isListableType()) {
+		} else if (isListableType()) {
 			tsb.append("value", tokensList);
-		} else if(isMappableType()) {
+		} else if (isMappableType()) {
 			tsb.append("value", tokensMap);
 		}
 		tsb.append("tokenize", tokenize);
@@ -414,29 +419,29 @@ public class ItemRule {
 	public static Class<?> getClassOfValue(ItemRule ir, Object value) {
 		ItemValueType valueType = ir.getValueType();
 		
-		if(ir.getType() == ItemType.ARRAY) {
-			if(valueType == ItemValueType.STRING) {
+		if (ir.getType() == ItemType.ARRAY) {
+			if (valueType == ItemValueType.STRING) {
 				return String[].class;
-			} else if(valueType == ItemValueType.INT) {
+			} else if (valueType == ItemValueType.INT) {
 				return Integer[].class;
-			} else if(valueType == ItemValueType.LONG) {
+			} else if (valueType == ItemValueType.LONG) {
 				return Long[].class;
-			} else if(valueType == ItemValueType.FLOAT) {
+			} else if (valueType == ItemValueType.FLOAT) {
 				return Float[].class;
-			} else if(valueType == ItemValueType.DOUBLE) {
+			} else if (valueType == ItemValueType.DOUBLE) {
 				return Double[].class;
-			} else if(valueType == ItemValueType.BOOLEAN) {
+			} else if (valueType == ItemValueType.BOOLEAN) {
 				return Boolean[].class;
-			} else if(valueType == ItemValueType.PARAMETERS) {
+			} else if (valueType == ItemValueType.PARAMETERS) {
 				return Parameters[].class;
-			} else if(valueType == ItemValueType.FILE) {
+			} else if (valueType == ItemValueType.FILE) {
 				return File[].class;
-			} else if(valueType == ItemValueType.MULTIPART_FILE) {
+			} else if (valueType == ItemValueType.MULTIPART_FILE) {
 				return FileParameter[].class;
 			}
 		}
 		
-		return (value != null) ? value.getClass() : Object.class;
+		return (value != null ? value.getClass() : Object.class);
 	}
 	
 	/**
@@ -455,39 +460,40 @@ public class ItemRule {
 		ItemRule itemRule = new ItemRule();
 		
 		ItemType itemType = ItemType.resolve(type);
-
-		if(type != null && itemType == null)
+		if (type != null && itemType == null) {
 			throw new IllegalArgumentException("No item type registered for '" + type + "'.");
-		
-		if(itemType != null)
+		}
+		if (itemType != null) {
 			itemRule.setType(itemType);
-		else
+		} else {
 			itemRule.setType(ItemType.SINGLE); //default
+		}
 
-		if(!StringUtils.isEmpty(name)) {
+		if (!StringUtils.isEmpty(name)) {
 			itemRule.setName(name);
 		} else {
 			itemRule.setAutoGeneratedName(true);
 		}
 
-		if(value != null)
+		if (value != null) {
 			itemRule.setValue(value);
+		}
 		
 		ItemValueType itemValueType = ItemValueType.resolve(valueType);
-		
-		if(valueType != null && itemValueType == null)
+		if (valueType != null && itemValueType == null) {
 			throw new IllegalArgumentException("No item value type registered for '" + valueType + "'.");
-		
+		}
 		itemRule.setValueType(itemValueType);
 
-		if(defaultValue != null)
+		if (defaultValue != null) {
 			itemRule.setDefaultValue(defaultValue);
-		
-		if(tokenize != null)
+		}
+		if (tokenize != null) {
 			itemRule.setTokenize(tokenize);
-		
-		if(mandatory != null)
+		}
+		if (mandatory != null) {
 			itemRule.setMandatory(mandatory);
+		}
 
 		return itemRule;
 	}
@@ -503,7 +509,7 @@ public class ItemRule {
 	 */
 	public static void updateReference(ItemRule itemRule, String parameter, String attribute, String bean, String property) {
 		Token token = makeReferenceToken(parameter, attribute, bean, property);
-		if(token != null) {
+		if (token != null) {
 			itemRule.setValue(new Token[] {token});
 		}
 	}
@@ -520,13 +526,13 @@ public class ItemRule {
 	public static Token makeReferenceToken(String parameter, String attribute, String bean, String property) {
 		Token token;
 		
-		if(parameter != null) {
+		if (parameter != null) {
 			token = new Token(TokenType.PARAMETER, parameter);
-		} else if(attribute != null) {
+		} else if (attribute != null) {
 			token = new Token(TokenType.ATTRIBUTE, attribute);
-		} else if(bean != null) {
+		} else if (bean != null) {
 			token = new Token(TokenType.BEAN, bean);
-		} else if(property != null) {
+		} else if (property != null) {
 			token = new Token(TokenType.PROPERTY, property);
 		} else {
 			token = null;
@@ -544,13 +550,14 @@ public class ItemRule {
 	public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
 		Iterator<Token[]> iter = null;
 		
-		if(itemRule.isListableType()) {
+		if (itemRule.isListableType()) {
 			List<Token[]> list = itemRule.getTokensList();
 			iter = list.iterator();
-		} else if(itemRule.isMappableType()) {
+		} else if (itemRule.isMappableType()) {
 			Map<String, Token[]> map = itemRule.getTokensMap();
-			if(map != null)
+			if (map != null) {
 				iter = map.values().iterator();
+			}
 		}
 		
 		return iter;
@@ -564,23 +571,20 @@ public class ItemRule {
 	 * @return the token[]
 	 */
 	public static Token[] parseValue(ItemRule itemRule, String valueText) {
-		if(itemRule.getType() == ItemType.SINGLE) {
-			if(valueText != null) {
+		if (itemRule.getType() == ItemType.SINGLE) {
+			if (valueText != null) {
 				itemRule.setValue(valueText);
 			}
-			
 			return null;
 		} else {
 			Token[] tokens = null;
-			
-			if(itemRule.isListableType()) {
+			if (itemRule.isListableType()) {
 				tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
-			} else if(itemRule.isMappableType()) {
-				if(!StringUtils.isEmpty(valueText)) {
+			} else if (itemRule.isMappableType()) {
+				if (!StringUtils.isEmpty(valueText)) {
 					tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
 				}
 			}
-			
 			return tokens;
 		}
 	}
@@ -591,7 +595,7 @@ public class ItemRule {
 	 * @param itemRule the item rule
 	 */
 	public static void beginValueCollection(ItemRule itemRule) {
-		if(itemRule.isListableType()) {
+		if (itemRule.isListableType()) {
 			List<Token[]> tokensList = new ArrayList<>();
 			itemRule.setValue(tokensList);
 		} else {
@@ -610,11 +614,11 @@ public class ItemRule {
 	 * @param tokens the tokens
 	 */
 	public static void flushValueCollection(ItemRule itemRule, String name, Token[] tokens) {
-		if(itemRule.isListableType()) {
+		if (itemRule.isListableType()) {
 			List<Token[]> list = itemRule.getTokensList();
 			list.add(tokens);
-		} else if(itemRule.isMappableType()) {
-			if(!StringUtils.isEmpty(name)) {
+		} else if (itemRule.isMappableType()) {
+			if (!StringUtils.isEmpty(name)) {
 				Map<String, Token[]> map = itemRule.getTokensMap();
 				map.put(name, tokens);
 			}
@@ -629,10 +633,9 @@ public class ItemRule {
 	 */
 	public static void addItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		// auto-naming if did not specify the name of the item.
-		if(itemRule.isAutoGeneratedName()) {
+		if (itemRule.isAutoGeneratedName()) {
 			generateItemName(itemRule, itemRuleMap);
 		}
-		
 		itemRuleMap.putItemRule(itemRule);
 	}
 
@@ -647,20 +650,21 @@ public class ItemRule {
 	private static void generateItemName(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		int count = 1;
 		
-		for(ItemRule ir : itemRuleMap.values()) {
-			if(ir.isAutoGeneratedName() && ir.getType() == itemRule.getType()) {
+		for (ItemRule ir : itemRuleMap.values()) {
+			if (ir.isAutoGeneratedName() && ir.getType() == itemRule.getType()) {
 				count++;
 				
-				if(itemRule == ir)
+				if (itemRule == ir) {
 					break;
+				}
 			}
 		}
 		
-		if(itemRule.getType() != ItemType.SINGLE || itemRule.getValueType() == null) {
+		if (itemRule.getType() != ItemType.SINGLE || itemRule.getValueType() == null) {
 			String name = itemRule.getType().toString() + count;
 			itemRule.setName(name);
 		} else {
-			if(itemRule.getValueType() != null) {
+			if (itemRule.getValueType() != null) {
 				String name = itemRule.getValueType().toString() + count;
 				itemRule.setName(name);
 			}
@@ -674,16 +678,17 @@ public class ItemRule {
 	 * @return the item rule map
 	 */
 	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
-		if(itemParametersList == null || itemParametersList.isEmpty())
+		if (itemParametersList == null || itemParametersList.isEmpty()) {
 			return null;
+		}
 		
 		ItemRuleMap itemRuleMap = new ItemRuleMap();
 		
-		for(Parameters parameters : itemParametersList) {
+		for (Parameters parameters : itemParametersList) {
 			ItemRule itemRule = toItemRule(parameters);
 
 			// auto-naming if did not specify the name of the item.
-			if(StringUtils.isEmpty(itemRule.getName())) {
+			if (StringUtils.isEmpty(itemRule.getName())) {
 				itemRule.setAutoGeneratedName(true);
 				generateItemName(itemRule, itemRuleMap);
 			}
@@ -736,7 +741,7 @@ public class ItemRule {
 		
 		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize, mandatory);
 		
-		if(referenceParameters != null) {
+		if (referenceParameters != null) {
 			String parameter = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.parameter));
 			String attribute = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.attribute));
 			String bean = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.bean));
@@ -744,28 +749,28 @@ public class ItemRule {
 			
 			updateReference(itemRule, parameter, attribute, bean, property);
 		} else {
-			if(itemRule.getType() == ItemType.SINGLE) {
+			if (itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);
 				parseValue(itemRule, value);
-			} else if(itemRule.isListableType()) {
+			} else if (itemRule.isListableType()) {
 				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
 				
-				if(stringList != null) {
+				if (stringList != null) {
 					beginValueCollection(itemRule);
-					for(String value : stringList) {
+					for (String value : stringList) {
 						Token[] tokens = parseValue(itemRule, value);
 						flushValueCollection(itemRule, name, tokens);
 					}
 				}
-			} else if(itemRule.isMappableType()) {
+			} else if (itemRule.isMappableType()) {
 				Parameters parameters = itemParameters.getParameters(ItemParameters.value);
 
-				if(parameters != null) {
+				if (parameters != null) {
 					Set<String> parametersNames = parameters.getParameterNameSet();
 					
-					if(parametersNames != null) {
+					if (parametersNames != null) {
 						beginValueCollection(itemRule);
-						for(String valueName : parametersNames) {
+						for (String valueName : parametersNames) {
 							Token[] tokens = parseValue(itemRule, parameters.getString(valueName));
 							flushValueCollection(itemRule, valueName, tokens);
 						}

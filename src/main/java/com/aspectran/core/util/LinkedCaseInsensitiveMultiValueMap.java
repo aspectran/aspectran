@@ -67,7 +67,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 	@Override
 	public void add(String key, V value) {
 		List<V> headerValues = this.values.get(key);
-		if(headerValues == null) {
+		if (headerValues == null) {
 			headerValues = new LinkedList<>();
 			this.values.put(key, headerValues);
 		}
@@ -83,7 +83,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 
 	@Override
 	public void setAll(Map<String, V> values) {
-		for(Entry<String, V> entry : values.entrySet()) {
+		for (Entry<String, V> entry : values.entrySet()) {
 			set(entry.getKey(), entry.getValue());
 		}
 	}
@@ -98,7 +98,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 	@Override
 	public Map<String, V> toSingleValueMap() {
 		LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.values.size());
-		for(Entry<String, List<V>> entry : this.values.entrySet()) {
+		for (Entry<String, List<V>> entry : this.values.entrySet()) {
 			singleValueMap.put(entry.getKey(), entry.getValue().get(0));
 		}
 		return singleValueMap;
@@ -168,10 +168,10 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 
 	@Override
 	public boolean equals(Object other) {
-		if(this == other) {
+		if (this == other) {
 			return true;
 		}
-		if(!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
+		if (!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
 			return false;
 		}
 		LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;

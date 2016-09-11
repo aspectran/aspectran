@@ -84,7 +84,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	}
 
 	public ResponseType getResponseType() {
-		return (response == null) ? null : response.getResponseType();
+		return (response != null ? response.getResponseType() : null);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -134,13 +134,13 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	}
 	
 	public static ResponseRule newInstance(String name, String characterEncoding) {
-		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
+		if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
 			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+		}
 		
 		ResponseRule responseRule = new ResponseRule();
 		responseRule.setName(name);
 		responseRule.setCharacterEncoding(characterEncoding);
-		
 		return responseRule;
 	}
 	
@@ -172,13 +172,11 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 		ResponseRule newResponseRule = new ResponseRule();
 		newResponseRule.setName(responseRule.getName());
 		newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
-		
 		Response response = responseRule.getResponse();
-		if(response != null) {
+		if (response != null) {
 			Response newResponse = response.replicate();
 			newResponseRule.setResponse(newResponse);
 		}
-		
 		return newResponseRule;
 	}
 	

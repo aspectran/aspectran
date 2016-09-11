@@ -61,17 +61,18 @@ public class TemplateRuleRegistry {
     }
 
     public void addTemplateRule(TemplateRule templateRule) {
-        if(templateRule.getEngine() == null && assistantLocal != null) {
+        if (templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-            if(defaultSettings != null && defaultSettings.getDefaultTemplateEngine() != null) {
+            if (defaultSettings != null && defaultSettings.getDefaultTemplateEngine() != null) {
             	templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
             }
         }
     	
         templateRuleMap.put(templateRule.getId(), templateRule);
 
-        if(log.isTraceEnabled())
-            log.trace("add TemplateRule " + templateRule);
+        if (log.isTraceEnabled()) {
+			log.trace("add TemplateRule " + templateRule);
+		}
     }
 
     public void clear() {

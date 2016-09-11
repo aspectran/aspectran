@@ -39,32 +39,34 @@ abstract class AbstractImportHandler implements ImportHandler {
 
 	@Override
 	public void pending(Importer importer) {
-		if(pendingList == null)
+		if (pendingList == null) {
 			pendingList = new ArrayList<>();
+		}
 		
 		pendingList.add(importer);
 		
-		if(log.isDebugEnabled())
+		if (log.isDebugEnabled()) {
 			log.debug("Import pending " + importer);
+		}
 	}
 	
 	protected void handle() throws Exception {
-		if(pendingList != null) {
+		if (pendingList != null) {
 			List<Importer> pendedList = pendingList;
 			pendingList = null;
 			
-			if(environment != null) {
-				for(Importer importer : pendedList) {
-					if(environment.acceptsProfiles(importer.getProfiles())) {
-						if(log.isDebugEnabled()) {
+			if (environment != null) {
+				for (Importer importer : pendedList) {
+					if (environment.acceptsProfiles(importer.getProfiles())) {
+						if (log.isDebugEnabled()) {
 							log.debug("Import " + importer);
 						}
 						handle(importer);
 					}
 				}
 			} else {
-				for(Importer importer : pendedList) {
-					if(log.isDebugEnabled()) {
+				for (Importer importer : pendedList) {
+					if (log.isDebugEnabled()) {
 						log.debug("Import " + importer);
 					}
 					handle(importer);

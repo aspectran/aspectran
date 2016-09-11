@@ -90,21 +90,24 @@ class XslTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 
 		try {
 			loadTemplate(activity.getApplicationAdapter());
 			
-			if(outputEncoding != null)
+			if (outputEncoding != null) {
 				responseAdapter.setCharacterEncoding(outputEncoding);
+			}
 
-			if(contentType != null)
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
@@ -115,7 +118,7 @@ class XslTransform extends TransformResponse {
 			Transformer transformer = templates.newTransformer();
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 
-			if(traceEnabled) {
+			if (traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				transformer = transformerFactory.newTransformer();
@@ -125,7 +128,7 @@ class XslTransform extends TransformResponse {
 				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}
@@ -147,18 +150,18 @@ class XslTransform extends TransformResponse {
 		String templateUrl = templateRule.getUrl();
 		boolean noCache = templateRule.isNoCache();
 
-		if(templateFile != null) {
-			if(noCache) {
+		if (templateFile != null) {
+			if (noCache) {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
 				this.templates = createTemplates(file);
 				determineOutoutStyle();
 			} else {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
 				long lastModifiedTime = file.lastModified();
-				if(lastModifiedTime > this.templateLastModifiedTime) {
+				if (lastModifiedTime > this.templateLastModifiedTime) {
 					synchronized(this) {
 						lastModifiedTime = file.lastModified();
-						if(lastModifiedTime > this.templateLastModifiedTime) {
+						if (lastModifiedTime > this.templateLastModifiedTime) {
 							this.templates = createTemplates(file);
 							determineOutoutStyle();
 							this.templateLastModifiedTime = lastModifiedTime;
@@ -166,15 +169,15 @@ class XslTransform extends TransformResponse {
 					}
 				}
 			}
-		} else if(templateResource != null) {
-			if(noCache) {
+		} else if (templateResource != null) {
+			if (noCache) {
 				ClassLoader classLoader = applicationAdapter.getClassLoader();
 				this.templates = createTemplates(classLoader.getResource(templateResource));
 				determineOutoutStyle();
 			} else {
-				if(!this.templateLoaded) {
+				if (!this.templateLoaded) {
 					synchronized(this) {
-						if(!this.templateLoaded) {
+						if (!this.templateLoaded) {
 							ClassLoader classLoader = applicationAdapter.getClassLoader();
 							this.templates = createTemplates(classLoader.getResource(templateResource));
 							determineOutoutStyle();
@@ -183,14 +186,14 @@ class XslTransform extends TransformResponse {
 					}
 				}
 			}
-		} else if(templateUrl != null) {
-			if(noCache) {
+		} else if (templateUrl != null) {
+			if (noCache) {
 				this.templates = createTemplates(new URL(templateUrl));
 				determineOutoutStyle();
 			} else {
-				if(!this.templateLoaded) {
+				if (!this.templateLoaded) {
 					synchronized(this) {
-						if(!this.templateLoaded) {
+						if (!this.templateLoaded) {
 							this.templates = createTemplates(new URL(templateUrl));
 							determineOutoutStyle();
 							this.templateLoaded = true;
@@ -207,11 +210,13 @@ class XslTransform extends TransformResponse {
     	contentType = transformRule.getContentType();
 		outputEncoding = getOutputEncoding(templates);
 		
-		if(contentType == null)
+		if (contentType == null) {
 			contentType = getContentType(templates);
+		}
 		
-		if(outputEncoding == null)
+		if (outputEncoding == null) {
 			outputEncoding = transformRule.getCharacterEncoding();
+		}
 	}
 	
     private Templates createTemplates(File templateFile) throws TransformerConfigurationException {
@@ -235,13 +240,14 @@ class XslTransform extends TransformResponse {
 		String outputMethod = outputProperties.getProperty(OutputKeys.METHOD);
 		String contentType = null;
 
-		if(outputMethod != null) {
-			if(outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_XML))
+		if (outputMethod != null) {
+			if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_XML)) {
 				contentType = ContentType.TEXT_XML.toString();
-			else if(outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_HTML))
+			} else if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_HTML)) {
 				contentType = ContentType.TEXT_HTML.toString();
-			else if(outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_TEXT))
+			} else if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_TEXT)) {
 				contentType = ContentType.TEXT_PLAIN.toString();
+			}
 		}
 		
 		return contentType;

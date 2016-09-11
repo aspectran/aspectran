@@ -51,9 +51,9 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 	}
 
 	public DefaultSettings touchDefaultSettings() {
-		if(defaultSettings == null)
+		if (defaultSettings == null) {
 			defaultSettings = new DefaultSettings();
-		
+		}
 		return defaultSettings;
 	}
 	
@@ -70,7 +70,7 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 		AssistantLocal al = new AssistantLocal(replicatedCount + 1);
 		al.setDescription(getDescription());
 		DefaultSettings ds = getDefaultSettings();
-		if(ds != null) {
+		if (ds != null) {
 			al.setDefaultSettings(new DefaultSettings(ds));
 		}
 		return al;

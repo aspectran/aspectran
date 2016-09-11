@@ -38,18 +38,18 @@ import com.aspectran.core.util.apon.Parameters;
 public class ContentsAponAssembler {
 	
 	public static Parameters assemble(ProcessResult processResult) throws InvocationTargetException {
-		if(processResult == null || processResult.isEmpty()) {
+		if (processResult == null || processResult.isEmpty()) {
 			return null;
 		}
 
-		if(processResult.size() == 1) {
+		if (processResult.size() == 1) {
 			ContentResult contentResult = processResult.get(0);
-			if(contentResult.getName() == null && contentResult.size() == 1) {
+			if (contentResult.getName() == null && contentResult.size() == 1) {
 				ActionResult actionResult = contentResult.get(0);
 				Object resultValue = actionResult.getResultValue();
 				
-				if(actionResult.getActionId() == null) {
-					if(resultValue instanceof Parameters) {
+				if (actionResult.getActionId() == null) {
+					if (resultValue instanceof Parameters) {
 						return (Parameters)resultValue;
 					} else {
 						return null;
@@ -63,7 +63,7 @@ public class ContentsAponAssembler {
 		}
 		
 		Parameters container = new VariableParameters();
-		for(ContentResult contentResult : processResult) {
+		for (ContentResult contentResult : processResult) {
 			assemble(contentResult, container);
 		}
 	
@@ -71,19 +71,19 @@ public class ContentsAponAssembler {
 	}
 
 	private static void assemble(ContentResult contentResult, Parameters container) throws InvocationTargetException {
-		if(contentResult.isEmpty()) {
+		if (contentResult.isEmpty()) {
 			return;
 		}
 		
-		if(contentResult.getName() != null) {
+		if (contentResult.getName() != null) {
 			Parameters p = new VariableParameters();
 			container.putValue(contentResult.getName(), p);
 			container = p;
 		}
 
-		for(ActionResult actionResult : contentResult) {
+		for (ActionResult actionResult : contentResult) {
 			String actionId = actionResult.getActionId();
-			if(actionId != null) {
+			if (actionId != null) {
 				Object resultValue = actionResult.getResultValue();
 				putValue(container, actionId, resultValue);
 			}
@@ -91,19 +91,19 @@ public class ContentsAponAssembler {
 	}
 	
 	private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
-		if(value != null) {
-			if(value instanceof Collection<?>) {
-				for(Object o : ((Collection<?>)value)) {
-					if(o != null) {
+		if (value != null) {
+			if (value instanceof Collection<?>) {
+				for (Object o : ((Collection<?>)value)) {
+					if (o != null) {
 						container.putValue(name, assemble(o));
 					}
 				}
-			} else if(value.getClass().isArray()) {
+			} else if (value.getClass().isArray()) {
 				int len = Array.getLength(value);
 
-				for(int i = 0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					Object o = Array.get(value, i);
-					if(o != null) {
+					if (o != null) {
 						container.putValue(name, assemble(o));
 					}
 				}
@@ -115,30 +115,30 @@ public class ContentsAponAssembler {
 	
 	@SuppressWarnings("unchecked")
 	private static Object assemble(Object object) throws InvocationTargetException {
-		if(object instanceof Parameters ||
-				object instanceof String ||
-				object instanceof Number ||
-				object instanceof Boolean ||
-				object instanceof Date) {
+		if (object instanceof Parameters
+				|| object instanceof String
+				|| object instanceof Number
+				|| object instanceof Boolean
+				|| object instanceof Date) {
 			return object;
-		} else if(object instanceof Map<?, ?>) {
+		} else if (object instanceof Map<?, ?>) {
 			Parameters p = new VariableParameters();
-			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
 				String name = entry.getKey().toString();
 				Object value = entry.getValue();
 				checkCircularReference(object, value);
 				p.putValue(name, assemble(value));
 			}
 			return p;
-		} else if(object instanceof Collection<?>) {
+		} else if (object instanceof Collection<?>) {
 			return object.toString();
-		} else if(object.getClass().isArray()) {
+		} else if (object.getClass().isArray()) {
 			return object.toString();
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
-			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
+			if (readablePropertyNames != null && readablePropertyNames.length > 0) {
 				Parameters p = new VariableParameters();
-				for(String name : readablePropertyNames) {
+				for (String name : readablePropertyNames) {
 					Object value = BeanUtils.getObject(object, name);
 					checkCircularReference(object, value);
 					p.putValue(name, assemble(value));
@@ -151,7 +151,7 @@ public class ContentsAponAssembler {
 	}
 
 	private static void checkCircularReference(Object wrapper, Object member) {
-		if(wrapper.equals(member)) {
+		if (wrapper.equals(member)) {
 			throw new IllegalArgumentException("APON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}

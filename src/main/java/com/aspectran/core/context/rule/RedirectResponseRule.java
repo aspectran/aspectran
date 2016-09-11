@@ -87,7 +87,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	 * @return the redirect target
 	 */
 	public String getTarget(Activity activity) {
-		if(targetTokens != null && targetTokens.length > 0) {
+		if (targetTokens != null && targetTokens.length > 0) {
 			TokenEvaluator evaluator = new TokenExpressionParser(activity);
 			return evaluator.evaluateAsString(targetTokens);
 		} else {
@@ -106,15 +106,17 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 		List<Token> tokens = Tokenizer.tokenize(target, true);
 		int tokenCount = 0;
 		
-		for(Token t : tokens) {
-			if(t.getType() != TokenType.TEXT)
+		for (Token t : tokens) {
+			if (t.getType() != TokenType.TEXT) {
 				tokenCount++;
+			}
 		}
 		
-		if(tokenCount > 0)
+		if (tokenCount > 0) {
 			this.targetTokens = tokens.toArray(new Token[tokens.size()]);
-		else
+		} else {
 			this.targetTokens = null;
+		}
 	}
 	
 	public void setTarget(String target, Token[] targetTokens) {
@@ -195,9 +197,9 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	 * @param parameterItemRule the parameter rule
 	 */
 	public void addParameterItemRule(ItemRule parameterItemRule) {
-		if(parameterItemRuleMap == null) 
+		if (parameterItemRuleMap == null) {
 			parameterItemRuleMap = new ItemRuleMap();
-		
+		}
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
 
@@ -207,13 +209,13 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	 * @param parameterMap the parameter map
 	 */
 	public void setParameterMap(Map<String, String> parameterMap) {
-		if(parameterMap == null) {
+		if (parameterMap == null) {
 			this.parameterItemRuleMap = null;
 			return;
 		}
 
 		ItemRuleMap params = new ItemRuleMap();
-		for(Map.Entry<String, String> entry : parameterMap.entrySet()) {
+		for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
 			ItemRule ir = new ItemRule();
 			ir.setName(entry.getKey());
 			ir.setValue(entry.getValue());
@@ -269,23 +271,21 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	public static RedirectResponseRule newInstance(String contentType, String target, Boolean excludeNullParameters, Boolean defaultResponse) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(contentType);
-		
-		if(target != null && target.length() > 0)
+		if (target != null && target.length() > 0) {
 			rrr.setTarget(target);
-		
+		}
 		rrr.setExcludeNullParameter(excludeNullParameters);
 		rrr.setDefaultResponse(defaultResponse);
-
 		return rrr;
 	}
 	
 	public static RedirectResponseRule newInstance(String redirectName) {
-		if(redirectName == null)
+		if (redirectName == null) {
 			throw new IllegalArgumentException("redirectName must not be null");
+		}
 		
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setTarget(redirectName);
-
 		return rrr;
 	}
 	
@@ -298,7 +298,6 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 		rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
 		rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
 		rrr.setActionList(redirectResponseRule.getActionList());
-
 		return rrr;
 	}
 	

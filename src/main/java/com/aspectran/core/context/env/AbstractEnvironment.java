@@ -38,7 +38,7 @@ public abstract class AbstractEnvironment implements Environment {
 
 	private Set<String> doGetActiveProfiles() {
 		synchronized(activeProfiles) {
-			if(activeProfiles.isEmpty()) {
+			if (activeProfiles.isEmpty()) {
 				setActiveProfiles(getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME));
 			}
 			return activeProfiles;
@@ -51,12 +51,12 @@ public abstract class AbstractEnvironment implements Environment {
 	
 	public void setActiveProfiles(String[] profiles) {
 		synchronized(activeProfiles) {
-			if(!activeProfiles.isEmpty()) {
+			if (!activeProfiles.isEmpty()) {
 				activeProfiles.clear();
 			}
-			if(profiles != null) {
-				for(String profile : profiles) {
-					if(profile.contains(",")) {
+			if (profiles != null) {
+				for (String profile : profiles) {
+					if (profile.contains(",")) {
 						addActiveProfile(profile);
 					} else {
 						addProfile(activeProfiles, profile);
@@ -69,9 +69,9 @@ public abstract class AbstractEnvironment implements Environment {
 	public void addActiveProfile(String profile) {
 		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetActiveProfiles();
-		if(profiles.length > 0) {
+		if (profiles.length > 0) {
 			synchronized(activeProfiles) {
-				for(String p : profiles) {
+				for (String p : profiles) {
 					addProfile(activeProfiles, p);
 				}
 			}
@@ -85,7 +85,7 @@ public abstract class AbstractEnvironment implements Environment {
 
 	private Set<String> doGetDefaultProfiles() {
 		synchronized(defaultProfiles) {
-			if(defaultProfiles.isEmpty()) {
+			if (defaultProfiles.isEmpty()) {
 				setActiveProfiles(getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME));
 			}
 			return defaultProfiles;
@@ -98,11 +98,11 @@ public abstract class AbstractEnvironment implements Environment {
 
 	public void setDefaultProfiles(String[] profiles) {
 		synchronized(defaultProfiles) {
-			if(!defaultProfiles.isEmpty()) {
+			if (!defaultProfiles.isEmpty()) {
 				defaultProfiles.clear();
 			}
-			if(profiles != null) {
-				for(String profile : profiles) {
+			if (profiles != null) {
+				for (String profile : profiles) {
 					addProfile(defaultProfiles, profile);
 				}
 			}
@@ -112,9 +112,9 @@ public abstract class AbstractEnvironment implements Environment {
 	public void addDefaultProfile(String profile) {
 		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetDefaultProfiles();
-		if(profiles.length > 0) {
+		if (profiles.length > 0) {
 			synchronized(defaultProfiles) {
-				for(String p : profiles) {
+				for (String p : profiles) {
 					addProfile(defaultProfiles, p);
 				}
 			}
@@ -123,10 +123,10 @@ public abstract class AbstractEnvironment implements Environment {
 	
 	private void addProfile(Set<String> profiles, String profile) {
 		profile = StringUtils.trimWhitespace(profile);
-		if(profile.isEmpty()) {
+		if (profile.isEmpty()) {
 			throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
 		}
-		if(profile.charAt(0) == '!') {
+		if (profile.charAt(0) == '!') {
 			throw new IllegalArgumentException("Invalid profile [" + profile + "]: must not begin with ! operator");
 		}
 		profiles.add(profile);
@@ -134,16 +134,19 @@ public abstract class AbstractEnvironment implements Environment {
 
 	@Override
 	public boolean acceptsProfiles(String... profiles) {
-		if(profiles == null || profiles.length == 0)
+		if (profiles == null || profiles.length == 0) {
 			return true;
+		}
 
-		for(String profile : profiles) {
-			if(StringUtils.hasLength(profile) && profile.charAt(0) == '!') {
-				if(!isActiveProfile(profile))
+		for (String profile : profiles) {
+			if (StringUtils.hasLength(profile) && profile.charAt(0) == '!') {
+				if (!isActiveProfile(profile)) {
 					return true;
+				}
 			} else {
-				if(isActiveProfile(profile))
+				if (isActiveProfile(profile)) {
 					return true;
+				}
 			}
 		}
 
@@ -152,15 +155,15 @@ public abstract class AbstractEnvironment implements Environment {
 	
 	private boolean isActiveProfile(String profile) {
 		Set<String> currentActiveProfiles = doGetActiveProfiles();
-		return (currentActiveProfiles.contains(profile) ||
-				(currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
+		return (currentActiveProfiles.contains(profile)
+				|| (currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
 	}
 	
 	private String[] getProfilesFromSystemProperty(String propName) {
 		String profilesProp = SystemUtils.getProperty(propName);
-		if(profilesProp != null) {
+		if (profilesProp != null) {
 			String[] profiles = StringUtils.splitCommaDelimitedString(profilesProp);
-			if(profiles != null && profiles.length > 0) {
+			if (profiles != null && profiles.length > 0) {
 				return profiles;
 			}
 		}

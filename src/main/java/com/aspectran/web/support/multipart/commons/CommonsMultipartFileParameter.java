@@ -93,7 +93,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 */
 	@Override
 	public InputStream getInputStream() throws IOException {
-		if(!isAvailable()) {
+		if (!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
 		}
 		InputStream inputStream = fileItem.getInputStream();
@@ -107,7 +107,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 */
 	@Override
 	public byte[] getBytes() {
-		if(!isAvailable()) {
+		if (!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
 		}
 		byte[] bytes = fileItem.get();
@@ -124,30 +124,30 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 */
 	@Override
 	public File saveAs(File destFile, boolean overwrite) throws IOException {
-		if(destFile == null) {
+		if (destFile == null) {
 			throw new IllegalArgumentException("'destFile' must not be null.");
 		}
-		if(!isAvailable()) {
+		if (!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
 		}
-		if(!overwrite) {
+		if (!overwrite) {
 			File newFile = FilenameUtils.seekUniqueFile(destFile);
-			if(destFile != newFile) {
+			if (destFile != newFile) {
 				destFile = newFile;
 			}
 		} else {
-			if(destFile.exists() && !destFile.delete()) {
+			if (destFile.exists() && !destFile.delete()) {
 				throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted.");
 			}
 		}
 		
 		try {
 			fileItem.write(destFile);
-		} catch(FileUploadException e) {
+		} catch (FileUploadException e) {
 			throw new IllegalStateException(e.getMessage());
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw e;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new IOException("Could not save file. Cause: " + e);
 		}
 
@@ -165,10 +165,10 @@ public class CommonsMultipartFileParameter extends FileParameter {
 
 	@Override
 	public void release() {
-		if(fileItem != null) {
+		if (fileItem != null) {
 			fileItem = null;
 		}
-		if(savedFile != null) {
+		if (savedFile != null) {
 			savedFile.setWritable(true);
 			savedFile = null;
 		}
@@ -192,11 +192,11 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 */
 	private boolean isAvailable() {
 		// If in memory, it's available.
-		if(this.fileItem.isInMemory()) {
+		if (this.fileItem.isInMemory()) {
 			return true;
 		}
 		// Check actual existence of temporary file.
-		if(this.fileItem instanceof DiskFileItem) {
+		if (this.fileItem instanceof DiskFileItem) {
 			return ((DiskFileItem)this.fileItem).getStoreLocation().exists();
 		}
 		// Check whether current file size is different than original one.
@@ -211,9 +211,9 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	 * @return a description for the storage location of the multipart content
 	 */
 	public String getStorageDescription() {
-		if(this.fileItem.isInMemory()) {
+		if (this.fileItem.isInMemory()) {
 			return "in memory";
-		} else if(this.fileItem instanceof DiskFileItem) {
+		} else if (this.fileItem instanceof DiskFileItem) {
 			return "at [" + ((DiskFileItem)this.fileItem).getStoreLocation().getAbsolutePath() + "]";
 		} else {
 			return "on disk";

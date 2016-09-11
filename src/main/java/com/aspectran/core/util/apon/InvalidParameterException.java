@@ -85,19 +85,21 @@ public class InvalidParameterException extends AponException {
 		int column = (trim != null) ? line.indexOf(trim) : 0;
 		
 		StringBuilder sb = new StringBuilder();
-		if(msg != null)
+		if (msg != null) {
 			sb.append(msg);
+		}
 		sb.append(" Line number: ").append(lineNumber);
-		if(column != -1) {
+		if (column != -1) {
 			String lspace = line.substring(0, column);
 			int tabCnt = StringUtils.search(lspace, "\t");
 			
-			if(trim != null && trim.length() > 33)
+			if (trim != null && trim.length() > 33) {
 				trim = trim.substring(0, 30) + "...";
+			}
 			
 			sb.append(", Column: ").append(column + 1);
 			
-			if(tabCnt == 0) {
+			if (tabCnt == 0) {
 				sb.append(column);
 			} else {
 				sb.append(" (");

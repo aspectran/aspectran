@@ -51,15 +51,16 @@ public class ResourceManager {
 			private URL current;
 
 			private boolean hasNext() {
-				while(true) {
-					if(values == null) {
-						if(!owners.hasNext())
+				while (true) {
+					if (values == null) {
+						if (!owners.hasNext()) {
 							return false;
+						}
 						
 						values = owners.next().getResourceManager().getResourceEntries().values().iterator();
 					}
 					
-					if(values.hasNext()) {
+					if (values.hasNext()) {
 						next = values.next();
 						return true;
 					}
@@ -75,9 +76,10 @@ public class ResourceManager {
 
 			@Override
 			public synchronized URL nextElement() {
-				if(next == null) {
-					if(!hasNext())
+				if (next == null) {
+					if (!hasNext()) {
 						throw new NoSuchElementException();
+					}
 				}
 
 				current = next;
@@ -93,8 +95,9 @@ public class ResourceManager {
 	}
 	
 	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
+		if (StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
 			name = name.substring(0, name.length() - 1);
+		}
 		
 		final String filterName = name;
 		
@@ -105,37 +108,41 @@ public class ResourceManager {
 			
 			private boolean hasNext() {
 				do {
-					if(!owners.hasNext())
+					if (!owners.hasNext()) {
 						return false;
+					}
 					
 					next = owners.next().getResourceManager().getResource(filterName);
-				} while(next == null);
+				} while (next == null);
 				
 				return true;
 			}
 			
 			@Override
 			public synchronized boolean hasMoreElements() {
-				if(!nomore) {
-					if(inherited != null && inherited.hasMoreElements())
+				if (!nomore) {
+					if (inherited != null && inherited.hasMoreElements()) {
 						return true;
-					else
+					} else {
 						nomore = true;
+					}
 				}
 
-				return next != null || hasNext();
+				return (next != null || hasNext());
 			}
 
 			@Override
 			public synchronized URL nextElement() {
-				if(!nomore) {
-					if(inherited != null && inherited.hasMoreElements())
+				if (!nomore) {
+					if (inherited != null && inherited.hasMoreElements()) {
 						return inherited.nextElement();
+					}
 				}
 				
-				if(next == null) {
-					if(!hasNext())
+				if (next == null) {
+					if (!hasNext()) {
 						throw new NoSuchElementException();
+					}
 				}
 				
 				current = next;
@@ -151,8 +158,9 @@ public class ResourceManager {
 	}
 
 	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
+		if (StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
 			name = name.substring(0, name.length() - 1);
+		}
 
 		final String filterName = name;
 		
@@ -162,18 +170,19 @@ public class ResourceManager {
 			private boolean nomore; //for parent
 			
 			private boolean hasNext() {
-				while(true) {
-					if(current == null) {
-						if(!owners.hasNext())
+				while (true) {
+					if (current == null) {
+						if (!owners.hasNext()) {
 							return false;
+						}
 						
 						current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
 					}
 					
-					while(current.hasNext()) {
+					while (current.hasNext()) {
 						Map.Entry<String, URL> entry2 = current.next();
 
-						if(entry2.getKey().equals(filterName)) {
+						if (entry2.getKey().equals(filterName)) {
 							entry = entry2;
 							return true;
 						}
@@ -185,14 +194,16 @@ public class ResourceManager {
 			
 			@Override
 			public synchronized boolean hasMoreElements() {
-				if(entry != null)
+				if (entry != null) {
 					return true;
+				}
 				
-				if(!nomore) {
-					if(inherited != null && inherited.hasMoreElements())
+				if (!nomore) {
+					if (inherited != null && inherited.hasMoreElements()) {
 						return true;
-					else
+					} else {
 						nomore = true;
+					}
 				}
 
 				return hasNext();
@@ -200,14 +211,16 @@ public class ResourceManager {
 
 			@Override
 			public synchronized URL nextElement() {
-				if(entry == null) {
-					if(!nomore) {
-						if(inherited != null && inherited.hasMoreElements())
+				if (entry == null) {
+					if (!nomore) {
+						if (inherited != null && inherited.hasMoreElements()) {
 							return inherited.nextElement();
+						}
 					}
 
-					if(!hasNext())
+					if (!hasNext()) {
 						throw new NoSuchElementException();
+					}
 				}
 
 				URL url = entry.getValue();

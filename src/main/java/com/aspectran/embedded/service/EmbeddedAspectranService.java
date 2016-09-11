@@ -61,12 +61,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	@Override
 	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if(contextParameters == null) {
+		if (contextParameters == null) {
 			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
 		}
 
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if(rootContext == null || rootContext.isEmpty()) {
+		if (rootContext == null || rootContext.isEmpty()) {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 		
@@ -76,14 +76,14 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	@Override
 	public void afterStartup() {
 		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
-		if(sessionScopeAdvisor != null) {
+		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeBeforeAdvice();
 		}
 	}
 
 	@Override
 	public void beforeShutdown() {
-		if(sessionScopeAdvisor != null) {
+		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
 		Scope sessionScope = sessionAdapter.getSessionScope();
@@ -108,8 +108,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @return the {@code Translet} object
 	 */
 	public Translet translet(String name, MethodType method) {
-		if(pauseTimeout != 0L) {
-			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+		if (pauseTimeout != 0L) {
+			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
 				log.warn("Aspectran Service has been paused, so did not run the translet \"" + name + "\".");
 				return null;
 			} else {
@@ -125,12 +125,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 			activity.prepare(name, method);
 			activity.perform();
 			translet = activity.getTranslet();
-		} catch(ActivityTerminatedException e) {
-			if(log.isDebugEnabled()) {
+		} catch (ActivityTerminatedException e) {
+			if (log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
 			}
 		} finally {
-			if(activity != null) {
+			if (activity != null) {
 				activity.finish();
 			}
 		}
@@ -193,7 +193,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 			
 			@Override
 			public void paused(long millis) {
-				if(millis < 0L) {
+				if (millis < 0L) {
 					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
 				}
 				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;

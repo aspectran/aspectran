@@ -72,15 +72,15 @@ public class JspViewDispatcher implements ViewDispatcher {
 
 		try {
 			dispatchName = dispatchResponseRule.getName(activity);
-			if(dispatchName == null) {
+			if (dispatchName == null) {
 				throw new IllegalArgumentException("No specified dispatch name.");
 			}
 
-			if(prefix != null && suffix != null) {
+			if (prefix != null && suffix != null) {
 				dispatchName = prefix + dispatchName + suffix;
-			} else if(prefix != null) {
+			} else if (prefix != null) {
 				dispatchName = prefix + dispatchName;
-			} else if(suffix != null) {
+			} else if (suffix != null) {
 				dispatchName = dispatchName + suffix;
 			}
 			
@@ -90,23 +90,23 @@ public class JspViewDispatcher implements ViewDispatcher {
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			} else {
 				responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
 			}
 
-			if(characterEncoding != null) {
+			if (characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
 				characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
 			ProcessResult processResult = activity.getProcessResult();
 
-			if(processResult != null) {
+			if (processResult != null) {
 				setAttribute(requestAdapter, processResult);
 			}
 
@@ -116,10 +116,10 @@ public class JspViewDispatcher implements ViewDispatcher {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
 			requestDispatcher.forward(request, response);
 
-			if(debugEnabled) {
+			if (debugEnabled) {
 				log.debug("Dispatch to a JSP [" + dispatchName + "]");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
 		}
 	}
@@ -131,16 +131,17 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 * @param processResult the process result
 	 */
 	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
-		for(ContentResult contentResult : processResult) {
-			for(ActionResult actionResult : contentResult) {
+		for (ContentResult contentResult : processResult) {
+			for (ActionResult actionResult : contentResult) {
 				Object actionResultValue = actionResult.getResultValue();
 
-				if(actionResultValue instanceof ProcessResult) {
+				if (actionResultValue instanceof ProcessResult) {
 					setAttribute(requestAdapter, (ProcessResult)actionResultValue);
 				} else {
 					String actionId = actionResult.getActionId();
-					if(actionId != null)
+					if (actionId != null) {
 						requestAdapter.setAttribute(actionId, actionResultValue);
+					}
 				}
 			}
 		}

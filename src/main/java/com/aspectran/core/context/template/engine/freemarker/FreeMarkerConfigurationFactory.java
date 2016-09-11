@@ -134,10 +134,10 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         String[] directiveGroupNames = parameters.getParameterNames();
         List<TrimDirective> list = new ArrayList<TrimDirective>();
 
-        for(String groupName : directiveGroupNames) {
+        for (String groupName : directiveGroupNames) {
             List<Parameters> paramsList = parameters.getParametersList(groupName);
-            for(Parameters p : paramsList) {
-                if(p != null) {
+            for (Parameters p : paramsList) {
+                if (p != null) {
                     String directiveName = p.getString(DIRECTIVE_NAME_PARAM_NAME);
                     String prefix = p.getString(TrimDirective.PREFIX_PARAM_NAME);
                     String suffix = p.getString(TrimDirective.SUFFIX_PARAM_NAME);
@@ -145,9 +145,9 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                     String[] desuffixes = p.getStringArray(TrimDirective.DESUFFIXES_PARAM_NAME);
                     Boolean caseSensitive = Boolean.valueOf(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
 
-                    if(directiveName != null) {
+                    if (directiveName != null) {
                         Trimmer trimmer;
-                        if(prefix != null || suffix != null || deprefixes != null || desuffixes != null) {
+                        if (prefix != null || suffix != null || deprefixes != null || desuffixes != null) {
                             trimmer = new Trimmer();
                             trimmer.setPrefix(prefix);
                             trimmer.setSuffix(suffix);
@@ -161,7 +161,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                         TrimDirective ctd = new CustomTrimDirective(groupName, directiveName, trimmer);
                         list.add(ctd);
 
-                        if(log.isDebugEnabled()) {
+                        if (log.isDebugEnabled()) {
                             log.debug("CustomTrimDirective " + ctd);
                         }
                     }
@@ -169,7 +169,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             }
         }
 
-        if(!list.isEmpty()) {
+        if (!list.isEmpty()) {
             trimDirectives = list.toArray(new TrimDirective[list.size()]);
         } else {
             trimDirectives = null;
@@ -188,43 +188,43 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         Properties props = new Properties();
 
         // Merge local properties if specified.
-        if(this.freemarkerSettings != null) {
+        if (this.freemarkerSettings != null) {
             props.putAll(this.freemarkerSettings);
         }
 
         // FreeMarker will only accept known keys in its setSettings and
         // setAllSharedVariables methods.
-        if(!props.isEmpty()) {
+        if (!props.isEmpty()) {
             config.setSettings(props);
         }
 
-        if(this.freemarkerVariables != null && freemarkerVariables.size() > 0) {
+        if (this.freemarkerVariables != null && freemarkerVariables.size() > 0) {
             config.setAllSharedVariables(new SimpleHash(this.freemarkerVariables, config.getObjectWrapper()));
         }
 
-        if(this.defaultEncoding != null) {
+        if (this.defaultEncoding != null) {
             config.setDefaultEncoding(this.defaultEncoding);
         }
 
         // determine FreeMarker TemplateLoader
-        if(templateLoaders == null) {
-            if(templateLoaderPaths != null && templateLoaderPaths.length > 0) {
+        if (templateLoaders == null) {
+            if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
                 List<TemplateLoader> templateLoaderList = new ArrayList<TemplateLoader>();
-                for(String path : templateLoaderPaths) {
+                for (String path : templateLoaderPaths) {
                     templateLoaderList.add(getTemplateLoaderForPath(path));
                 }
                 setTemplateLoader(templateLoaderList);
             }
         }
         TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
-        if(templateLoader != null) {
+        if (templateLoader != null) {
             config.setTemplateLoader(templateLoader);
         }
 
         // determine CustomTrimDirectives.
-        if(trimDirectives != null && trimDirectives.length > 0) {
+        if (trimDirectives != null && trimDirectives.length > 0) {
             TrimDirectiveGroup group = new TrimDirectiveGroup(trimDirectives);
-            for(Map.Entry<String, Map<String, TrimDirective>> directives : group.entrySet()) {
+            for (Map.Entry<String, Map<String, TrimDirective>> directives : group.entrySet()) {
                 config.setSharedVariable(directives.getKey(), directives.getValue());
             }
         }
@@ -256,20 +256,20 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      */
     protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
     	int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
-        switch(loaderCount) {
+        switch (loaderCount) {
             case 0:
-            	if(log.isDebugEnabled()) {
+            	if (log.isDebugEnabled()) {
                     log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
                 }
                 return null;
             case 1:
-            	if(log.isDebugEnabled()) {
+            	if (log.isDebugEnabled()) {
             		log.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
             	}
                 return templateLoaders[0];
             default:
             	TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
-            	if(log.isDebugEnabled()) {
+            	if (log.isDebugEnabled()) {
             		log.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
         		}
                 return loader;
@@ -285,21 +285,21 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @see freemarker.cache.FileTemplateLoader
      */
     protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
-        if(templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+        if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
             }
             return new ClassTemplateLoader(applicationAdapter.getClassLoader(), basePackagePath);
-        } else if(templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+        } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         } else {
             File file = new File(applicationAdapter.getApplicationBasePath(), templateLoaderPath);
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);

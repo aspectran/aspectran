@@ -103,7 +103,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	}
 	
 	public ActionType getActionType() {
-		return (action != null) ? action.getActionType() : null;
+		return (action != null ? action.getActionType() : null);
 	}
 
 	@Override
@@ -113,11 +113,13 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	public String toString(boolean preventRecursive) {
 		ToStringBuilder tsb = new ToStringBuilder();
-		if(aspectRule != null)
+		if (aspectRule != null) {
 			tsb.append("aspectId", aspectRule.getId());
+		}
 		tsb.append("aspectAdviceType", aspectAdviceType);
-		if(!preventRecursive)
+		if (!preventRecursive) {
 			tsb.append("action", action);
+		}
 		return tsb.toString();
 	}
 
@@ -126,10 +128,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	}
 
 	public static void updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
-		if(aspectAdviceRule.getAdviceBeanId() != null && aspectAdviceRule.getActionType() == ActionType.BEAN) {
+		if (aspectAdviceRule.getAdviceBeanId() != null && aspectAdviceRule.getActionType() == ActionType.BEAN) {
 			BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
 			BeanActionRule beanActionRule = beanAction.getBeanActionRule();
-			if(beanActionRule.getBeanId() == null) {
+			if (beanActionRule.getBeanId() == null) {
 				// already resolved bean class at aspect rule
 				beanActionRule.setBeanId(aspectAdviceRule.getAdviceBeanId());
 				beanActionRule.setBeanClass(aspectAdviceRule.getAdviceBeanClass());

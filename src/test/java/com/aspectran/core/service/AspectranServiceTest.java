@@ -46,7 +46,7 @@ public class AspectranServiceTest {
 		AponReader.parse(file, aspectranConfig);
 		
 		File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
-		if(outputFile.exists()) {
+		if (outputFile.exists()) {
 			outputFile.delete();
 		}
 		

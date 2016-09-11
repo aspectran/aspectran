@@ -65,20 +65,20 @@ public class BeanUtils {
 	public static Class<?> getPropertyTypeForSetter(Object object, String name) throws NoSuchMethodException {
 		Class<?> type = object.getClass();
 
-		if(object instanceof Class<?>) {
+		if (object instanceof Class<?>) {
 			type = getClassPropertyTypeForSetter((Class<?>)object, name);
-		} else if(object instanceof Map<?, ?>) {
+		} else if (object instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>)object;
 			Object value = map.get(name);
-			if(value == null) {
+			if (value == null) {
 				type = Object.class;
 			} else {
 				type = value.getClass();
 			}
 		} else {
-			if(name.contains(".")) {
+			if (name.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(name, ".");
-				while(parser.hasMoreTokens()) {
+				while (parser.hasMoreTokens()) {
 					name = parser.nextToken();
 					type = getBeanDescriptor(type).getSetterType(name);
 				}
@@ -101,20 +101,20 @@ public class BeanUtils {
 	public static Class<?> getPropertyTypeForGetter(Object object, String name) throws NoSuchMethodException {
 		Class<?> type = object.getClass();
 
-		if(object instanceof Class<?>) {
+		if (object instanceof Class<?>) {
 			type = getClassPropertyTypeForGetter((Class<?>)object, name);
-		} else if(object instanceof Map<?, ?>) {
+		} else if (object instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>)object;
 			Object value = map.get(name);
-			if(value == null) {
+			if (value == null) {
 				type = Object.class;
 			} else {
 				type = value.getClass();
 			}
 		} else {
-			if(name.contains(".")) {
+			if (name.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(name, ".");
-				while(parser.hasMoreTokens()) {
+				while (parser.hasMoreTokens()) {
 					name = parser.nextToken();
 					type = getBeanDescriptor(type).getGetterType(name);
 				}
@@ -135,9 +135,9 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
-		if(name.contains(".")) {
+		if (name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				name = parser.nextToken();
 				type = getBeanDescriptor(type).getGetterType(name);
 			}
@@ -158,9 +158,9 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
-		if(name.contains(".")) {
+		if (name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				name = parser.nextToken();
 				type = getBeanDescriptor(type).getSetterType(name);
 			}
@@ -180,12 +180,12 @@ public class BeanUtils {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public static Object getObject(Object object, String name) throws InvocationTargetException {
-		if(name.contains(".")) {
+		if (name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			Object value = object;
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				value = getProperty(value, parser.nextToken());
-				if(value == null) {
+				if (value == null) {
 					break;
 				}
 			}
@@ -205,24 +205,24 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static void setObject(Object object, String name, Object value) throws InvocationTargetException, NoSuchMethodException {
-		if(name.contains(".")) {
+		if (name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			String property = parser.nextToken();
 			Object child = object;
 			
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				Class<?> type = getPropertyTypeForSetter(child, property);
 				Object parent = child;
 				child = getProperty(parent, property);
 				
-				if(child == null) {
-					if(value == null) {
+				if (child == null) {
+					if (value == null) {
 						return; // don't instantiate child path if value is null
 					} else {
 						try {
 							child = type.newInstance();
 							setObject(parent, property, child);
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new InvocationTargetException(e, "Cannot set value of property '" + name
 									+ "' because '" + property + "' is null and cannot be instantiated on instance of "
 									+ type.getName() + ". Cause: " + e.toString());
@@ -250,14 +250,14 @@ public class BeanUtils {
 	public static boolean hasWritableProperty(Object object, String propertyName) throws NoSuchMethodException {
 		boolean hasProperty = false;
 		
-		if(object instanceof Map<?, ?>) {
+		if (object instanceof Map<?, ?>) {
 			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
-			if(propertyName.contains(".")) {
+			if (propertyName.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				Class<?> type = object.getClass();
 
-				while(parser.hasMoreTokens()) {
+				while (parser.hasMoreTokens()) {
 					propertyName = parser.nextToken();
 					type = getBeanDescriptor(type).getGetterType(propertyName);
 					hasProperty = getBeanDescriptor(type).hasWritableProperty(propertyName);
@@ -281,14 +281,14 @@ public class BeanUtils {
 	public static boolean hasReadableProperty(Object object, String propertyName) throws NoSuchMethodException {
 		boolean hasProperty = false;
 		
-		if(object instanceof Map<?, ?>) {
+		if (object instanceof Map<?, ?>) {
 			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
-			if(propertyName.contains(".")) {
+			if (propertyName.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				Class<?> type = object.getClass();
 				
-				while(parser.hasMoreTokens()) {
+				while (parser.hasMoreTokens()) {
 					propertyName = parser.nextToken();
 					type = getBeanDescriptor(type).getGetterType(propertyName);
 					hasProperty = getBeanDescriptor(type).hasReadableProperty(propertyName);
@@ -304,12 +304,12 @@ public class BeanUtils {
 	private static Object getProperty(Object object, String name) throws InvocationTargetException {
 		try {
 			Object value;
-			if(name.contains("[")) {
+			if (name.contains("[")) {
 				value = getIndexedProperty(object, name);
 			} else {
-				if(object instanceof Map<?, ?>) {
+				if (object instanceof Map<?, ?>) {
 					int index = name.indexOf('.');
-					if(index > -1) {
+					if (index > -1) {
 						String key = name.substring(0, index);
 						value = getProperty(((Map<?, ?>)object).get(key), name.substring(index + 1));
 					} else {
@@ -317,31 +317,31 @@ public class BeanUtils {
 					}
 				} else {
 					int index = name.indexOf('.');
-					if(index > -1) {
+					if (index > -1) {
 						String newName = name.substring(0, index);
 						value = getProperty(getObject(object, newName), name.substring(index + 1));
 					} else {
 						BeanDescriptor cd = getBeanDescriptor(object.getClass());
 						Method method = cd.getGetter(name);
 
-						if(method == null) {
+						if (method == null) {
 							throw new NoSuchMethodException("No GET method for property " + name +
 									" on instance of " + object.getClass().getName());
 						}
 						
 						try {
 							value = method.invoke(object, NO_ARGUMENTS);
-						} catch(Throwable t) {
+						} catch (Throwable t) {
 							throw unwrapThrowable(t);
 						}
 					}					
 				}
 			}
 			return value;
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw e;
-		} catch(Throwable t) {
-			if(object == null) {
+		} catch (Throwable t) {
+			if (object == null) {
 				throw new InvocationTargetException(t, "Could not get property '" + name +
 						"' from null reference. Cause: " + t.toString());
 			} else {
@@ -353,10 +353,10 @@ public class BeanUtils {
 
 	private static void setProperty(Object object, String name, Object value) throws InvocationTargetException {
 		try {
-			if(name.contains("[")) {
+			if (name.contains("[")) {
 				setIndexedProperty(object, name, value);
 			} else {
-				if(object instanceof Map<?, ?>) {
+				if (object instanceof Map<?, ?>) {
 					@SuppressWarnings("unchecked")
 					Map<String, Object> map = (Map<String, Object>)object;
 					map.put(name, value);
@@ -364,7 +364,7 @@ public class BeanUtils {
 					BeanDescriptor cd = getBeanDescriptor(object.getClass());
 					Method method = cd.getSetter(name);
 
-					if(method == null) {
+					if (method == null) {
 						throw new NoSuchMethodException("No SET method for property " + name +
 								" on instance of " + object.getClass().getName());
 					}
@@ -373,24 +373,24 @@ public class BeanUtils {
 
 					try {
 						method.invoke(object, params);
-					} catch(Throwable t) {
+					} catch (Throwable t) {
 						throw unwrapThrowable(t);
 					}
 				}
 			}
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw e;
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			try {
-				if(value != null) {
+				if (value != null) {
 					MethodUtils.invokeSetter(object, name, value);
 					return;
 				}
-			} catch(Throwable tt) {
+			} catch (Throwable tt) {
 				//ignore
 			}
 			
-			if(object == null) {
+			if (object == null) {
 				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" +
 						value + "' for null reference. Cause: " + t.toString());
 			} else {
@@ -406,7 +406,7 @@ public class BeanUtils {
 			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = null;
 
-			if(name.length() > 0) {
+			if (name.length() > 0) {
 				list = getProperty(object, name);
 			} else {
 				list = object;
@@ -414,25 +414,25 @@ public class BeanUtils {
 
 			Object value = null;
 
-			if(list instanceof List<?>) {
+			if (list instanceof List<?>) {
 				value = ((List<?>)list).get(index);
-			} else if(list instanceof Object[]) {
+			} else if (list instanceof Object[]) {
 				value = ((Object[])list)[index];
-			} else if(list instanceof char[]) {
+			} else if (list instanceof char[]) {
 				value = ((char[])list)[index];
-			} else if(list instanceof boolean[]) {
+			} else if (list instanceof boolean[]) {
 				value = ((boolean[])list)[index];
-			} else if(list instanceof byte[]) {
+			} else if (list instanceof byte[]) {
 				value = ((byte[])list)[index];
-			} else if(list instanceof double[]) {
+			} else if (list instanceof double[]) {
 				value = ((double[])list)[index];
-			} else if(list instanceof float[]) {
+			} else if (list instanceof float[]) {
 				value = ((float[]) list)[index];
-			} else if(list instanceof int[]) {
+			} else if (list instanceof int[]) {
 				value = ((int[])list)[index];
-			} else if(list instanceof long[]) {
+			} else if (list instanceof long[]) {
 				value = ((long[])list)[index];
-			} else if(list instanceof short[]) {
+			} else if (list instanceof short[]) {
 				value = ((short[])list)[index];
 			} else {
 				throw new IllegalArgumentException("The '" + name + "' property of the " +
@@ -440,9 +440,9 @@ public class BeanUtils {
 			}
 
 			return value;
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw e;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
 		}
 	}
@@ -453,7 +453,7 @@ public class BeanUtils {
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = null;
 
-			if(name.length() > 0) {
+			if (name.length() > 0) {
 				list = getProperty(object, name);
 			} else {
 				list = object;
@@ -461,25 +461,25 @@ public class BeanUtils {
 
 			Class<?> value = null;
 
-			if(list instanceof List<?>) {
+			if (list instanceof List<?>) {
 				value = ((List<?>)list).get(i).getClass();
-			} else if(list instanceof Object[]) {
+			} else if (list instanceof Object[]) {
 				value = ((Object[])list)[i].getClass();
-			} else if(list instanceof char[]) {
+			} else if (list instanceof char[]) {
 				value = Character.class;
-			} else if(list instanceof boolean[]) {
+			} else if (list instanceof boolean[]) {
 				value = Boolean.class;
-			} else if(list instanceof byte[]) {
+			} else if (list instanceof byte[]) {
 				value = Byte.class;
-			} else if(list instanceof double[]) {
+			} else if (list instanceof double[]) {
 				value = Double.class;
-			} else if(list instanceof float[]) {
+			} else if (list instanceof float[]) {
 				value = Float.class;
-			} else if(list instanceof int[]) {
+			} else if (list instanceof int[]) {
 				value = Integer.class;
-			} else if(list instanceof long[]) {
+			} else if (list instanceof long[]) {
 				value = Long.class;
-			} else if(list instanceof short[]) {
+			} else if (list instanceof short[]) {
 				value = Short.class;
 			} else {
 				throw new IllegalArgumentException("The '" + name + "' property of the " +
@@ -487,9 +487,9 @@ public class BeanUtils {
 			}
 
 			return value;
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw e;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
 		}
 	}
@@ -500,35 +500,35 @@ public class BeanUtils {
 			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = getProperty(object, name);
 
-			if(list instanceof List<?>) {
+			if (list instanceof List<?>) {
 				@SuppressWarnings("unchecked")
 				List<Object> l = (List<Object>)list;
 				l.set(index, value);
-			} else if(list instanceof Object[]) {
+			} else if (list instanceof Object[]) {
 				((Object[])list)[index] = value;
-			} else if(list instanceof char[]) {
+			} else if (list instanceof char[]) {
 				((char[])list)[index] = (Character)value;
-			} else if(list instanceof boolean[]) {
+			} else if (list instanceof boolean[]) {
 				((boolean[])list)[index] = (Boolean)value;
-			} else if(list instanceof byte[]) {
+			} else if (list instanceof byte[]) {
 				((byte[])list)[index] = (Byte)value;
-			} else if(list instanceof double[]) {
+			} else if (list instanceof double[]) {
 				((double[])list)[index] = (Double)value;
-			} else if(list instanceof float[]) {
+			} else if (list instanceof float[]) {
 				((float[])list)[index] = (Float)value;
-			} else if(list instanceof int[]) {
+			} else if (list instanceof int[]) {
 				((int[])list)[index] = (Integer)value;
-			} else if(list instanceof long[]) {
+			} else if (list instanceof long[]) {
 				((long[])list)[index] = (Long)value;
-			} else if(list instanceof short[]) {
+			} else if (list instanceof short[]) {
 				((short[])list)[index] = (Short)value;
 			} else {
 				throw new IllegalArgumentException("The '" + name + "' property of the " +
 						object.getClass().getName() + " class is not a List or Array.");
 			}
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw e;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new InvocationTargetException(e, "Error getting ordinal value from JavaBean. Cause: " + e);
 		}
 	}
@@ -542,10 +542,10 @@ public class BeanUtils {
 	private static Throwable unwrapThrowable(Throwable t) {
 		Throwable t2 = t;
 		
-		while(true) {
-			if(t2 instanceof InvocationTargetException) {
+		while (true) {
+			if (t2 instanceof InvocationTargetException) {
 				t2 = ((InvocationTargetException)t).getTargetException();
-			} else if(t instanceof UndeclaredThrowableException) {
+			} else if (t instanceof UndeclaredThrowableException) {
 				t2 = ((UndeclaredThrowableException)t).getUndeclaredThrowable();
 			} else {
 				return t2;

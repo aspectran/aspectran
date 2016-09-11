@@ -64,10 +64,10 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void startup() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
+			if (this.closed.get()) {
 				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already destroyed.");
 			}
-			if(this.active.get()) {
+			if (this.active.get()) {
 				throw new AspectranServiceException("Cannot start Aspectran Service, because it has already been started.");
 			}
 
@@ -80,7 +80,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			log.info("Aspectran Service has been started successfully.");
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.started();
 			}
 		}
@@ -89,11 +89,11 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void restart() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
+			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
-			if(!this.active.get()) {
+			if (!this.active.get()) {
 				log.warn("Cannot restart Aspectran Service, because it is currently stopped.");
 				return;
 			}
@@ -111,7 +111,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			log.info("Aspectran Service has been restarted successfully.");
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.restarted(isHardReload());
 			}
 		}
@@ -120,14 +120,14 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void pause() {
 		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
+			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
 			pauseSchedulerService();
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(-1L);
 			}
 
@@ -138,12 +138,12 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void pause(long timeout) {
 		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
+			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(timeout);
 			}
 		}
@@ -152,14 +152,14 @@ public class BasicAspectranService extends AbstractAspectranService {
 	@Override
 	public void resume() {
 		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
+			if (this.closed.get()) {
 					log.warn("Cannot resume Aspectran Service, because it was already destroyed.");
 				return;
 			}
 
 			resumeSchedulerService();
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.resumed();
 			}
 
@@ -183,8 +183,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 	 * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
 	 */
 	private void doDestroy() {
-		if(this.active.get() && this.closed.compareAndSet(false, true)) {
-			if(aspectranServiceControllerListener != null) {
+		if (this.active.get() && this.closed.compareAndSet(false, true)) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
 			}
 
@@ -192,7 +192,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 			this.active.set(false);
 
-			if(aspectranServiceControllerListener != null) {
+			if (aspectranServiceControllerListener != null) {
 				aspectranServiceControllerListener.stopped();
 			}
 		}
@@ -203,7 +203,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	 * on JVM shutdown unless it has already been closed at that time.
 	 */
 	private void registerShutdownHook() {
-		if(this.shutdownHook == null) {
+		if (this.shutdownHook == null) {
 			// No shutdown hook registered yet.
 			this.shutdownHook = new Thread() {
 				@Override
@@ -224,10 +224,10 @@ public class BasicAspectranService extends AbstractAspectranService {
 	private void removeShutdownHook() {
 		// If we registered a JVM shutdown hook, we don't need it anymore now:
 		// We've already explicitly closed the context.
-		if(this.shutdownHook != null) {
+		if (this.shutdownHook != null) {
 			try {
 				Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
-			} catch(IllegalStateException ex) {
+			} catch (IllegalStateException ex) {
 				// ignore - VM is already shutting down
 			}
 		}

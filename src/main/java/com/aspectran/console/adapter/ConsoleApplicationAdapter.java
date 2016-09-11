@@ -38,9 +38,10 @@ public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
 		super(null);
 		
 		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-		if(applicationBasePath == null)
+		if (applicationBasePath == null) {
 			applicationBasePath = new File(".").getCanonicalPath();
-		
+		}
+
 		super.setApplicationBasePath(applicationBasePath);
 	}
 

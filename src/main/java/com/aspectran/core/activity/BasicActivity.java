@@ -48,19 +48,20 @@ public abstract class BasicActivity extends AbstractActivity {
 
 	@Override
 	public void exceptionHandling(List<ExceptionRule> exceptionRuleList) {
-		for(ExceptionRule exceptionRule : exceptionRuleList) {
+		for (ExceptionRule exceptionRule : exceptionRuleList) {
 			exceptionHandling(exceptionRule);
-			if(isResponseReserved())
+			if (isResponseReserved()) {
 				return;
+			}
 		}
 	}
 
 	protected void exceptionHandling(ExceptionRule exceptionRule) {
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Exception handling for raised exception: " + getRaisedException());
 		}
 		Executable action = exceptionRule.getExecutableAction();
-		if(action != null) {
+		if (action != null) {
 			execute(action);
 		}
 	}
@@ -71,16 +72,17 @@ public abstract class BasicActivity extends AbstractActivity {
 	 * @param action the executable action
 	 */
 	private void execute(Executable action) {
-		if(log.isDebugEnabled())
+		if (log.isDebugEnabled()) {
 			log.debug("action " + action);
+		}
 
 		try {
 			Object resultValue = action.execute(this);
 
-			if(log.isTraceEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.trace("actionResult " + resultValue);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			setRaisedException(e);
 			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
@@ -88,14 +90,14 @@ public abstract class BasicActivity extends AbstractActivity {
 
 	@Override
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) {
-		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+		for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule, false);
 		}
 	}
 
 	@Override
 	public void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList) {
-		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+		for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule, true);
 		}
 	}
@@ -120,14 +122,14 @@ public abstract class BasicActivity extends AbstractActivity {
 		try {
 			Executable action = aspectAdviceRule.getExecutableAction();
 			
-			if(action == null) {
+			if (action == null) {
 				throw new IllegalArgumentException("No specified action on AspectAdviceRule " + aspectAdviceRule);
 			}
 			
-			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+			if (action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
 				Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
-				if(adviceBean == null) {
-					if(aspectAdviceRule.getAdviceBeanClass() != null) {
+				if (adviceBean == null) {
+					if (aspectAdviceRule.getAdviceBeanClass() != null) {
 						adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
 					} else {
 						adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
@@ -138,19 +140,19 @@ public abstract class BasicActivity extends AbstractActivity {
 			
 			Object adviceActionResult = action.execute(this);
 			
-			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
+			if (adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
 				putAdviceResult(aspectAdviceRule, adviceActionResult);
 			}
 			
-			if(log.isTraceEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.trace("adviceActionResult " + adviceActionResult);
 			}
-		} catch(Exception e) {
-			if(aspectAdviceRule.getAspectRule().isIsolated()) {
+		} catch (Exception e) {
+			if (aspectAdviceRule.getAspectRule().isIsolated()) {
 				log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
 			} else {
 				setRaisedException(e);
-				if(noThrow) {
+				if (noThrow) {
 					log.error("Failed to execute an advice action " + aspectAdviceRule, e);
 				} else {
 					throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);

@@ -58,8 +58,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
 
-			if(attr != null) {
-				if(!(attr instanceof WebAspectranService)) {
+			if (attr != null) {
+				if (!(attr instanceof WebAspectranService)) {
 					throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
 				}
 				
@@ -72,7 +72,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -86,7 +86,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		if(standalone) {
+		if (standalone) {
 			log.info("Do not terminate the server while the all scoped bean destroying.");
 
 			aspectranService.shutdown();

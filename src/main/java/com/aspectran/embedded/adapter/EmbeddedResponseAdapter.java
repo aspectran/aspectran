@@ -45,7 +45,7 @@ public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public Writer getWriter() throws IOException {
-		if(writer == null) {
+		if (writer == null) {
 			writer = new EmbeddedOutputWriter();
 		}
 		return writer;
@@ -62,6 +62,7 @@ public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public void flush() {
+		// nothing to do
 	}
 
 }

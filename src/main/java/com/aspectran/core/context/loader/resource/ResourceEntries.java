@@ -42,7 +42,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		
 		try {
 			url = file.toURI().toURL();
-		} catch(MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			throw new InvalidResourceException("Invalid resource file: " + file, e);
 		}
 		
@@ -56,7 +56,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		try {
 			//"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
 			url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
-		} catch(MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			throw new InvalidResourceException("Invalid resource jar file: " + file, e);
 		}
 		
@@ -65,11 +65,13 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 	
 	@Override
 	public URL put(String resourceName, URL url) {
-		if(resourceName.indexOf('\\') != -1)
+		if (resourceName.indexOf('\\') != -1) {
 			resourceName = resourceName.replace('\\', ResourceUtils.PATH_SPEPARATOR_CHAR);
+		}
 		
-		if(StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR))
+		if (StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
 			resourceName = resourceName.substring(0, resourceName.length() - 1);
+		}
 		
 		return super.put(resourceName, url);
 	}

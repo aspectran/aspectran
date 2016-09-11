@@ -63,12 +63,12 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	@Override
 	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if(contextParameters == null) {
+		if (contextParameters == null) {
 			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
 		}
 
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if(rootContext == null || rootContext.length() == 0) {
+		if (rootContext == null || rootContext.length() == 0) {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 		
@@ -78,14 +78,14 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	@Override
 	public void afterStartup() {
 		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
-		if(sessionScopeAdvisor != null) {
+		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeBeforeAdvice();
 		}
 	}
 
 	@Override
 	public void beforeShutdown() {
-		if(sessionScopeAdvisor != null) {
+		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
 		Scope sessionScope = sessionAdapter.getSessionScope();
@@ -99,8 +99,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 * @param command the translet name
 	 */
 	public void service(String command) {
-		if(pauseTimeout != 0L) {
-			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+		if (pauseTimeout != 0L) {
+			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
 				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + command + "\".");
 				return;
 			} else {
@@ -115,16 +115,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
 			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
 			activity.perform();
-		} catch(TransletNotFoundException e) {
+		} catch (TransletNotFoundException e) {
 			System.out.println("Translet is not found.");
-		} catch(ActivityTerminatedException e) {
-			if(log.isDebugEnabled()) {
+		} catch (ActivityTerminatedException e) {
+			if (log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(activity != null) {
+			if (activity != null) {
 				activity.finish();
 			}
 		}
@@ -140,7 +140,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 */
 	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
-		if(aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
+		if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
 			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
 		}
 
@@ -168,7 +168,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			
 			@Override
 			public void paused(long millis) {
-				if(millis < 0L) {
+				if (millis < 0L) {
 					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
 				}
 				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;

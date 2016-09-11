@@ -52,13 +52,13 @@ public class LocalResourceManager extends ResourceManager {
 		
 		this.owner = owner;
 		
-		if(resourceLocation != null) {
+		if (resourceLocation != null) {
 			File file = new File(resourceLocation);
 			this.resourceLocation = file.getAbsolutePath();
 			this.resourceLocationSubLen = this.resourceLocation.length() + 1;
 			
-			if(!file.isDirectory() &&
-					(file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
+			if (!file.isDirectory()
+					&& (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
 				throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
 			}
 			
@@ -72,27 +72,27 @@ public class LocalResourceManager extends ResourceManager {
 	public void reset() throws InvalidResourceException {
 		super.reset();
 		
-		if(resourceLocation != null) {
+		if (resourceLocation != null) {
 			findResource(new File(resourceLocation));
 		}
 	}
 	
 	private void findResource(File file) throws InvalidResourceException {
 		try {
-			if(file.isDirectory()) {
+			if (file.isDirectory()) {
 				List<File> jarFileList = new ArrayList<>();
 				
 				findResource(file, jarFileList);
 				
-				if(jarFileList.size() > 0) {
-					for(File jarFile : jarFileList) {
+				if (jarFileList.size() > 0) {
+					for (File jarFile : jarFileList) {
 						owner.wishBrother(jarFile.getAbsolutePath());
 					}
 				}
 			} else {
 				findResourceFromJAR(file);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new InvalidResourceException("Faild to find resource from [" + resourceLocation + "]", e);
 		}
 	}
@@ -105,14 +105,14 @@ public class LocalResourceManager extends ResourceManager {
 
             try {
                 resourceEntries.putResource(resourceName, file);
-            } catch(InvalidResourceException e) {
+            } catch (InvalidResourceException e) {
                 throw new AspectranRuntimeException(e);
             }
 
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 findResource(file, jarFileList);
-            } else if(file.isFile()) {
-                if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+            } else if (file.isFile()) {
+                if (filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
                     jarFileList.add(file);
                 }
             }
@@ -127,15 +127,15 @@ public class LocalResourceManager extends ResourceManager {
 		try {
 			jarFile = new JarFile(target);
 			
-			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+			for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				resourceEntries.putResource(target, entry);
 			}
 		} finally {
-			if(jarFile != null) {
+			if (jarFile != null) {
 				try {
 					jarFile.close();
-				} catch(IOException e) {
+				} catch (IOException e) {
 					// ignore
 				}
 			}

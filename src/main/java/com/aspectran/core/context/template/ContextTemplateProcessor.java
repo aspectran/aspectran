@@ -63,14 +63,12 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     public String process(String templateId) {
         StringWriter writer = new StringWriter();
         process(templateId, writer);
-
         return writer.toString();
     }
 
     @Override
     public void process(String templateId, Writer writer) {
     	Activity activity = context.getCurrentActivity();
-
         process(templateId, activity, writer);
     }
 
@@ -78,25 +76,21 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     public String process(TemplateRule templateRule) {
         StringWriter writer = new StringWriter();
         process(templateRule, writer);
-
         return writer.toString();
     }
 
     @Override
     public void process(TemplateRule templateRule, Writer writer) {
     	Activity activity = context.getCurrentActivity();
-
         process(templateRule, activity, writer);
     }
 
     @Override
     public void process(String templateId, Activity activity, Writer writer) {
     	TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
-
-        if(templateRule == null) {
+        if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
-
         process(templateRule, activity, writer);
     }
 
@@ -105,24 +99,26 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         try {
             String engineBeanId = templateRule.getEngine();
 
-            if(engineBeanId != null) {
+            if (engineBeanId != null) {
                 TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
 
-                if(engine == null)
+                if (engine == null) {
                     throw new IllegalArgumentException("No template engine bean registered for '" + engineBeanId + "'.");
+                }
 
                 TemplateDataMap templateDataMap = new TemplateDataMap(activity);
 
-                if(templateRule.isUseExternalSource()) {
+                if (templateRule.isUseExternalSource()) {
                     String templateName = templateRule.getName();
                     engine.process(templateName, templateDataMap, writer, templateDataMap.getLocale());
                 } else {
                     String templateSource = templateRule.getTemplateSource(activity.getApplicationAdapter());
 
-                    if(templateSource != null) {
+                    if (templateSource != null) {
                         String templateName = templateRule.getId();
-                        if(templateName == null)
+                        if (templateName == null) {
                             templateName = templateRule.getEngine() + "/" + templateRule.hashCode();
+                        }
 
                         engine.process(templateName, templateDataMap, templateSource, writer);
                     }
@@ -130,19 +126,19 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             } else {
                 Token[] contentTokens = templateRule.getContentTokens(activity.getApplicationAdapter());
 
-                if(contentTokens != null) {
+                if (contentTokens != null) {
                     TokenEvaluator evaluator = new TokenExpressionParser(activity);
                     evaluator.evaluate(contentTokens, writer);
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateProcessorException("Failed to process the template rule", templateRule, e);
         }
     }
     
     @Override
     public synchronized void initialize(ActivityContext context) {
-        if(this.active) {
+        if (this.active) {
             log.warn("Template Processor has already been initialized.");
             return;
         }
@@ -157,7 +153,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
 
     @Override
     public synchronized void destroy() {
-        if(this.active && !this.closed) {
+        if (this.active && !this.closed) {
             templateRuleRegistry.clear();
             this.closed = true;
             this.active = false;

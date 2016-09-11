@@ -66,13 +66,12 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	}
 
 	public ActionResult getActionResult(String actionId) {
-		for(ContentResult contentResult : this) {
+		for (ContentResult contentResult : this) {
 			ActionResult actionResult = contentResult.getActionResult(actionId);
-			
-			if(actionResult != null)
+			if (actionResult != null) {
 				return actionResult;
+			}
 		}
-		
 		return null;
 	}
 
@@ -84,10 +83,9 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	 */
 	public Object getResultValue(String actionId) {
 		ActionResult actionResult = getActionResult(actionId);
-		
-		if(actionResult != null)
+		if (actionResult != null) {
 			return actionResult.getResultValue();
-		
+		}
 		return null;
 	}
 

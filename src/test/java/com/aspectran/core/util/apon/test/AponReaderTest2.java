@@ -41,7 +41,7 @@ public class AponReaderTest2 {
 			System.out.println("---------------------------------------------------");
 			System.out.print(text2);
 			System.out.println("---------------------------------------------------");
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

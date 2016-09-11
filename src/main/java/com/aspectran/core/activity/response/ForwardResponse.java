@@ -52,19 +52,21 @@ public class ForwardResponse implements Response {
 	@Override
 	public void response(Activity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
-		if(requestAdapter == null)
+		if (requestAdapter == null) {
 			return;
+		}
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + forwardResponseRule);
 		}
 
-		if(forwardResponseRule.getAttributeItemRuleMap() != null) {
+		if (forwardResponseRule.getAttributeItemRuleMap() != null) {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			Map<String, Object> valueMap = evaluator.evaluate(forwardResponseRule.getAttributeItemRuleMap());
 
-			for(Map.Entry<String, Object> entry : valueMap.entrySet())
+			for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+			}
 		}
 	}
 	
@@ -75,9 +77,9 @@ public class ForwardResponse implements Response {
 
 	@Override
 	public String getContentType() {
-		if(forwardResponseRule == null)
+		if (forwardResponseRule == null) {
 			return null;
-		
+		}
 		return forwardResponseRule.getContentType();
 	}
 

@@ -118,25 +118,27 @@ public abstract class ClassUtils {
 	 * @return if the target type is assignable from the value type
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
-		if(rhsType == null) {
-			if(!lhsType.isPrimitive())
+		if (rhsType == null) {
+			if (!lhsType.isPrimitive()) {
 				return true;
+			}
 		} else {
-			if(lhsType.isAssignableFrom(rhsType))
+			if (lhsType.isAssignableFrom(rhsType)) {
 				return true;
-
-			if(rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType)))
+			}
+			if (rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
 				return true;
-
-			if(lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType)))
+			}
+			if (lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
 				return true;
-
-			if(lhsType.isArray() && rhsType.isArray()) {
-				if(rhsType.getComponentType().isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType)))
+			}
+			if (lhsType.isArray() && rhsType.isArray()) {
+				if (rhsType.getComponentType().isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
 					return true;
-
-				if(lhsType.getComponentType().isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType)))
+				}
+				if (lhsType.getComponentType().isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
 					return true;
+				}
 			}
 		}
 
@@ -198,16 +200,15 @@ public abstract class ClassUtils {
 	 * @see #wrapperToPrimitive(Class)
 	 */
 	public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
-		if(classes == null) {
+		if (classes == null) {
 			return null;
 		}
-
-		if(classes.length == 0) {
+		if (classes.length == 0) {
 			return classes;
 		}
 
 		Class<?>[] convertedClasses = new Class<?>[classes.length];
-		for(int i = 0; i < classes.length; i++) {
+		for (int i = 0; i < classes.length; i++) {
 			convertedClasses[i] = wrapperToPrimitive(classes[i]);
 		}
 		return convertedClasses;

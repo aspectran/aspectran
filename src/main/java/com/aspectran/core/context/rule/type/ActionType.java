@@ -47,9 +47,10 @@ public enum ActionType {
 	 * @return an {@code ActionType}, may be {@code null}
 	 */
 	public static ActionType resolve(String alias) {
-		for(ActionType type : values()) {
-			if(type.alias.equals(alias))
+		for (ActionType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

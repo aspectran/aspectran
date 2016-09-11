@@ -79,9 +79,9 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             TransformRule transformRule = assistant.peekObject(1);
             transformRule.setTemplateRule(templateRule);
 
-            if(templateRule.getContentTokens() != null) {
-                for(Token token : templateRule.getContentTokens()) {
-                    if(token.getType() == TokenType.BEAN) {
+            if (templateRule.getContentTokens() != null) {
+                for (Token token : templateRule.getContentTokens()) {
+                    if (token.getType() == TokenType.BEAN) {
 						assistant.resolveBeanClass(token);
                     }
                 }
@@ -91,7 +91,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             TransformRule tr = assistant.popObject();
 
-            if(!actionList.isEmpty())
+            if (!actionList.isEmpty())
                 tr.setActionList(actionList);
 
             ResponseRuleApplicable applicable = assistant.peekObject();
@@ -115,8 +115,9 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             DispatchResponseRule drr = assistant.popObject();
 
-            if(!actionList.isEmpty())
-                drr.setActionList(actionList);
+            if (!actionList.isEmpty()) {
+				drr.setActionList(actionList);
+			}
 
             ResponseRuleApplicable applicable = assistant.peekObject();
             applicable.applyResponseRule(drr);
@@ -142,7 +143,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/redirect/parameters/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 RedirectResponseRule rrr = assistant.peekObject(1);
                 rrr.setParameterItemRuleMap(irm);
             }
@@ -151,18 +152,20 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             RedirectResponseRule rrr = assistant.popObject();
 
-            if(rrr.getTarget() == null)
-                throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute.");
+            if (rrr.getTarget() == null) {
+				throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute.");
+			}
 
-            if(!actionList.isEmpty())
-                rrr.setActionList(actionList);
+            if (!actionList.isEmpty()) {
+				rrr.setActionList(actionList);
+			}
 
             ResponseRuleApplicable applicable = assistant.peekObject();
             applicable.applyResponseRule(rrr);
 
-            if(rrr.getTargetTokens() != null) {
-                for(Token token : rrr.getTargetTokens()) {
-                    if(token.getType() == TokenType.BEAN) {
+            if (rrr.getTargetTokens() != null) {
+                for (Token token : rrr.getTargetTokens()) {
+                    if (token.getType() == TokenType.BEAN) {
 						assistant.resolveBeanClass(token);
                     }
                 }
@@ -190,7 +193,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/forward/parameters/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
-            if(irm.size() > 0) {
+            if (irm.size() > 0) {
                 ForwardResponseRule frr = assistant.peekObject(1);
                 frr.setAttributeItemRuleMap(irm);
             }
@@ -199,7 +202,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             ForwardResponseRule frr = assistant.popObject();
 
-            if(!actionList.isEmpty())
+            if (!actionList.isEmpty())
                 frr.setActionList(actionList);
 
             ResponseRuleApplicable applicable = assistant.peekObject();

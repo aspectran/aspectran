@@ -44,8 +44,9 @@ public class FileImporter extends AbstractImporter {
 	public FileImporter(String basePath, String filePath, ImportFileType importFileType) {
 		super(FILE_IMPORTER);
 	
-		if(importFileType == null)
+		if (importFileType == null) {
 			importFileType = filePath.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		}
 		
 		setImportFileType(importFileType);
 
@@ -68,11 +69,11 @@ public class FileImporter extends AbstractImporter {
 
 	public File getFile() {
 		File file;
-		if(basePath == null)
+		if (basePath == null) {
 			file = new File(filePath);
-		else
+		} else {
 			file = new File(basePath, filePath);
-		
+		}
 		return file;
 	}
 	
@@ -86,7 +87,7 @@ public class FileImporter extends AbstractImporter {
 	public InputStream getInputStream() throws IOException {
 		File file = getFile();
 		
-		if(!file.isFile()) {
+		if (!file.isFile()) {
 			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
 		}
 		

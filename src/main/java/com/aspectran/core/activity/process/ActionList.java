@@ -89,9 +89,10 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	public int getVisibleCount() {
 		int count = 0;
-		for(Executable action : this) {
-			if(!action.isHidden())
+		for (Executable action : this) {
+			if (!action.isHidden()) {
 				count++;
+			}
 		}
 		return count;
 	}
@@ -141,7 +142,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		actionList.setName(name);
 		actionList.setOmittable(omittable);
 		actionList.setHidden(hidden);
-		
 		return actionList;
 	}
 	

@@ -53,7 +53,7 @@ public class QuartzJobListener implements JobListener {
 		try {
 			Activity activity = (Activity)context.get(QuartzSchedulerService.ACTIVITY_DATA_KEY);
 			report.reporting(activity);
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

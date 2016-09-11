@@ -65,33 +65,33 @@ public class HybridImportHandler extends AbstractImportHandler {
 
 		boolean hybridon = false;
 		
-		if(importer.getImportFileType() == ImportFileType.APON) {
+		if (importer.getImportFileType() == ImportFileType.APON) {
 			Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
 			
-			if(rootAponDisassembler == null) {
+			if (rootAponDisassembler == null) {
 				rootAponDisassembler = new RootAponDisassembler(assistant);
 			}
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
-			if(hybridLoad && importer.getImporterType() == ImporterType.FILE) {
+			if (hybridLoad && importer.getImporterType() == ImporterType.FILE) {
 				File aponFile = makeAponFile((FileImporter)importer);
 
-				if(importer.getLastModified() == aponFile.lastModified()) {
+				if (importer.getLastModified() == aponFile.lastModified()) {
 					log.info("Rapid loading for Aspectran Context Configuration: " + aponFile);
 
 					hybridon = true;
 
 					Parameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
 					
-					if(rootAponDisassembler == null) {
+					if (rootAponDisassembler == null) {
 						rootAponDisassembler = new RootAponDisassembler(assistant);
 					}
 					rootAponDisassembler.disassembleRoot(rootParameters);
 				}
 			}
 			
-			if(!hybridon) {
-				if(aspectranNodeParser == null) {
+			if (!hybridon) {
+				if (aspectranNodeParser == null) {
 					aspectranNodeParser = new AspectranNodeParser(assistant);
 				}
 				aspectranNodeParser.parse(importer.getInputStream());
@@ -101,12 +101,12 @@ public class HybridImportHandler extends AbstractImportHandler {
 		super.handle();
 
 		// First default setting is held after configuration loading is completed.
-		if(assistantLocal.getReplicatedCount() > 0) {
+		if (assistantLocal.getReplicatedCount() > 0) {
 			assistant.restoreAssistantLocal(assistantLocal);
 		}
 		
-		if(!hybridon && hybridLoad) {
-			if(importer.getImporterType() == ImporterType.FILE && importer.getImportFileType() == ImportFileType.XML) {
+		if (!hybridon && hybridLoad) {
+			if (importer.getImporterType() == ImporterType.FILE && importer.getImportFileType() == ImportFileType.XML) {
 				importer.setProfiles(null);
 				saveAsAponFormat((FileImporter)importer);
 			}
@@ -123,7 +123,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 			
 			AponWriter aponWriter;
 			
-			if(encoding != null) {
+			if (encoding != null) {
 				OutputStream outputStream = new FileOutputStream(aponFile);
 				aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
 			} else {
@@ -147,13 +147,13 @@ public class HybridImportHandler extends AbstractImportHandler {
 			} finally {
 				try {
 					aponWriter.close();
-				} catch(IOException e) {
+				} catch (IOException e) {
 					// ignore
 				}
 			}
 			
 			aponFile.setLastModified(fileImporter.getLastModified());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Cannot save file " +  aponFile + " as APON Format.", e);
 		}
 	}

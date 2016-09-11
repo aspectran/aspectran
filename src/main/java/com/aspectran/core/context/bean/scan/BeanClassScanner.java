@@ -56,7 +56,7 @@ public class BeanClassScanner extends ClassScanner {
 		this.filterParameters = filterParameters;
 		
 		String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-		if(classScanFilterClassName != null)
+		if (classScanFilterClassName != null)
 			setBeanClassScanFilter(classScanFilterClassName);
 	}
 
@@ -71,7 +71,7 @@ public class BeanClassScanner extends ClassScanner {
 	public void setBeanClassScanFilter(Class<?> beanClassScanFilterClass) {
 		try {
 			beanClassScanFilter = (BeanClassScanFilter)beanClassScanFilterClass.newInstance();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
 		}
 	}
@@ -92,7 +92,7 @@ public class BeanClassScanner extends ClassScanner {
 		Class<?> filterClass;
 		try {
 			filterClass = getClassLoader().loadClass(classScanFilterClassName);
-		} catch(ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + classScanFilterClassName + "]", e);
 		}
 		setBeanClassScanFilter(filterClass);
@@ -113,41 +113,42 @@ public class BeanClassScanner extends ClassScanner {
 
 		@Override
 		public void save(String resourceName, Class<?> scannedClass) {
-			if(scannedClass.isInterface() ||
+			if (scannedClass.isInterface() ||
 					Modifier.isAbstract(scannedClass.getModifiers()) ||
-					!Modifier.isPublic(scannedClass.getModifiers()))
+					!Modifier.isPublic(scannedClass.getModifiers())) {
 				return;
+			}
 
 			String className = scannedClass.getName();
 			String beanId = className;
 
-			if(beanIdMaskPattern != null) {
+			if (beanIdMaskPattern != null) {
 				String maskedBeanId = beanIdMaskPattern.mask(beanId);
-				if(maskedBeanId != null) {
+				if (maskedBeanId != null) {
 					beanId = maskedBeanId;
 				} else {
 					log.warn("Unmatched pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
 				}
 			}
 
-			if(beanClassScanFilter != null) {
+			if (beanClassScanFilter != null) {
 				beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
-				if(beanId == null) {
+				if (beanId == null) {
 					return;
 				}
 			}
 
-			if(filterParameters != null) {
+			if (filterParameters != null) {
 				String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
 
-				if(excludePatterns != null) {
-					for(String excludePattern : excludePatterns) {
+				if (excludePatterns != null) {
+					for (String excludePattern : excludePatterns) {
 						WildcardPattern pattern = excludePatternCache.get(excludePattern);
-						if(pattern == null) {
+						if (pattern == null) {
 							pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 							excludePatternCache.put(excludePattern, pattern);
 						}
-						if(pattern.matches(className)) {
+						if (pattern.matches(className)) {
 							return;
 						}
 					}
@@ -156,8 +157,9 @@ public class BeanClassScanner extends ClassScanner {
 
 			saveHandler.save(beanId, scannedClass);
 
-			if(log.isTraceEnabled())
+			if (log.isTraceEnabled()) {
 				log.trace("scanned bean class {beanId: " + beanId + ", className: " + className + "}");
+			}
 		}
 	}
 

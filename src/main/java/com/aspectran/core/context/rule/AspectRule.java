@@ -143,19 +143,19 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 
 	public JoinpointType getJoinpointType() {
-		return (joinpointRule != null) ? joinpointRule.getJoinpointType() : null;
+		return (joinpointRule != null ? joinpointRule.getJoinpointType() : null);
 	}
 
 	public MethodType[] getTargetMethods() {
-		return (joinpointRule != null) ? joinpointRule.getTargetMethods() : null;
+		return (joinpointRule != null ? joinpointRule.getTargetMethods() : null);
 	}
 
 	public String[] getTargetHeaders() {
-		return (joinpointRule != null) ? joinpointRule.getTargetHeaders() : null;
+		return (joinpointRule != null ? joinpointRule.getTargetHeaders() : null);
 	}
 
 	public PointcutRule getPointcutRule() {
-		return (joinpointRule != null) ? joinpointRule.getPointcutRule() : null;
+		return (joinpointRule != null ? joinpointRule.getPointcutRule() : null);
 	}
 
 	public Pointcut getPointcut() {
@@ -201,7 +201,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
 
-		if(aspectAdviceRuleList == null) {
+		if (aspectAdviceRuleList == null) {
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		}
 		aspectAdviceRuleList.add(aspectAdviceRule);
@@ -250,8 +250,9 @@ public class AspectRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		if(order != Integer.MAX_VALUE)
+		if (order != Integer.MAX_VALUE) {
 			tsb.append("order", order);
+		}
 		tsb.append("isolated", isolated);
 		tsb.append("joinpointRule", joinpointRule);
 		tsb.append("settingsAdviceRule", settingsAdviceRule);
@@ -262,7 +263,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static AspectRule newInstance(String id, String order, Boolean isolated) {
-		if(id == null) {
+		if (id == null) {
 			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
 		}
 
@@ -270,10 +271,10 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectRule.setId(id);
 		aspectRule.setIsolated(isolated);
 
-		if(!StringUtils.isEmpty(order)) {
+		if (!StringUtils.isEmpty(order)) {
 			try {
 				aspectRule.setOrder(Integer.parseInt(order));
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
 			}
 		}

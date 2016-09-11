@@ -56,7 +56,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 
             // AspectAdviceRule may not have a bean id.
-            if(beanIdOrClass != null) {
+            if (beanIdOrClass != null) {
                 assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
             }
 
@@ -70,7 +70,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/arguments/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 BeanActionRule beanActionRule = assistant.peekObject();
                 beanActionRule.setArgumentItemRuleMap(irm);
             }
@@ -83,7 +83,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/properties/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 BeanActionRule beanActionRule = assistant.peekObject();
                 beanActionRule.setPropertyItemRuleMap(irm);
             }
@@ -111,7 +111,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/include/attributes/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 IncludeActionRule includeActionRule = assistant.peekObject();
                 includeActionRule.setAttributeItemRuleMap(irm);
             }
@@ -137,7 +137,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = assistant.popObject();
             EchoActionRule echoActionRule = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 echoActionRule.setAttributeItemRuleMap(irm);
             }
 
@@ -160,7 +160,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = assistant.popObject();
             HeadingActionRule headersActionRule = assistant.popObject();
 
-            if(!irm.isEmpty()) {
+            if (!irm.isEmpty()) {
                 headersActionRule.setHeaderItemRuleMap(irm);
             }
 

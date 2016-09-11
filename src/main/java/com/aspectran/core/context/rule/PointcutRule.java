@@ -54,14 +54,14 @@ public class PointcutRule {
 
 	public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule, List<PointcutPatternRule> excludePointcutPatternRuleList) {
 		pointcutPatternRule.setPointcutType(pointcutType);
-		if(excludePointcutPatternRuleList != null) {
+		if (excludePointcutPatternRuleList != null) {
 			pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
 		}
 		touchPointcutPatternRuleList().add(pointcutPatternRule);
 	}
 	
 	public List<PointcutPatternRule> touchPointcutPatternRuleList() {
-		if(pointcutPatternRuleList == null) {
+		if (pointcutPatternRuleList == null) {
 			pointcutPatternRuleList = newPointcutPatternRuleList();
 		}
 		return pointcutPatternRuleList;
@@ -118,9 +118,9 @@ public class PointcutRule {
 	public static PointcutRule newInstance(String type) {
 		PointcutType pointcutType = null;
 		
-		if(type != null) {
+		if (type != null) {
 			pointcutType = PointcutType.resolve(type);
-			if(pointcutType == null) {
+			if (pointcutType == null) {
 				throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
 			}
 		}

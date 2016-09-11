@@ -43,7 +43,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateSource);
             compiledTemplate.evaluate(writer, model);
             writer.flush();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
@@ -59,7 +59,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
             compiledTemplate.evaluate(writer, model, locale);
             writer.flush();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }

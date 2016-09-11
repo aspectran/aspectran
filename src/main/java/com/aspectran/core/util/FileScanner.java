@@ -55,8 +55,9 @@ public class FileScanner {
 	}
 
 	public void scan(String filePathPattern, SaveHandler saveHandler) {
-		if(filePathPattern == null)
+		if (filePathPattern == null) {
 			throw new IllegalArgumentException("File path pattern must not be null.");
+		}
 
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
@@ -64,11 +65,11 @@ public class FileScanner {
 
 		StringBuilder sb = new StringBuilder();
 		
-		while(matcher.hasNext()) {
+		while (matcher.hasNext()) {
 			String term = matcher.next();
-			if(term.length() > 0) {
-				if(!WildcardPattern.hasWildcards(term)) {
-					if(sb.length() > 0)
+			if (term.length() > 0) {
+				if (!WildcardPattern.hasWildcards(term)) {
+					if (sb.length() > 0)
 						sb.append(FILE_SEPARATOR);
 					sb.append(term);
 				} else {
@@ -99,7 +100,7 @@ public class FileScanner {
 	public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		if(basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
+		if (basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
 			basePath = basePath.substring(0, basePath.length() - 1);
 		}
 		scan(basePath, matcher, saveHandler);
@@ -107,21 +108,23 @@ public class FileScanner {
 
 	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target;
-		if(applicationBasePath != null)
+		if (applicationBasePath != null) {
 			target = new File(applicationBasePath, targetPath);
-		else
+		} else {
 			target = new File(targetPath);
+		}
 		
-		if(!target.exists())
+		if (!target.exists()) {
 			return;
+		}
 
 		target.listFiles(file -> {
             String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 scan(filePath, matcher, saveHandler);
             } else {
-                if(matcher.matches(filePath)) {
+                if (matcher.matches(filePath)) {
                     saveHandler.save(filePath, file);
                 }
             }

@@ -42,7 +42,7 @@ class ExceptionCatchNodeletAdder implements NodeletAdder {
 	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/description", (node, attributes, text) -> {
-            if(text != null) {
+            if (text != null) {
                 ExceptionRule exceptionRule = assistant.peekObject();
                 exceptionRule.setDescription(text);
             }

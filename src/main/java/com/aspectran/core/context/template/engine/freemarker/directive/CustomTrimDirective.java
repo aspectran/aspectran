@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.template.engine.freemarker.directive;
 
-import freemarker.template.TemplateModelException;
-
 import java.util.Map;
+
+import freemarker.template.TemplateModelException;
 
 /**
  * The Class CustomTrimDirective.
@@ -66,7 +66,8 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
      * @param desuffixes the suffixes to be removed from the tailing of body string.
      * @param caseSensitive true to case sensitive; false to ignore case sensitive
      */
-    public CustomTrimDirective(String groupName, String directiveName, String prefix, String suffix, String[] deprefixes, String[] desuffixes, boolean caseSensitive) {
+    public CustomTrimDirective(String groupName, String directiveName, String prefix, String suffix,
+                               String[] deprefixes, String[] desuffixes, boolean caseSensitive) {
         this.groupName = groupName;
         this.directiveName = directiveName;
 
@@ -100,7 +101,7 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
     @SuppressWarnings("rawtypes")
 	@Override
     protected Trimmer getTrimmer(Map params) throws TemplateModelException {
-        if(this.trimmer == null) {
+        if (this.trimmer == null) {
             String prefix = parseStringParameter(params, TrimDirective.PREFIX_PARAM_NAME);
             String suffix = parseStringParameter(params, TrimDirective.SUFFIX_PARAM_NAME);
             String[] deprefixes = parseSequenceParameter(params, TrimDirective.DEPREFIXES_PARAM_NAME);
@@ -113,7 +114,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
             trimmer.setDeprefixes(deprefixes);
             trimmer.setDesuffixes(desuffixes);
             trimmer.setCaseSensitive(Boolean.parseBoolean(caseSensitive));
-
             return trimmer;
         } else {
             return this.trimmer;
@@ -130,7 +130,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
         sb.append(", directiveName=").append(directiveName);
         sb.append(", trimmer=").append(trimmer);
         sb.append("}");
-
         return sb.toString();
     }
 

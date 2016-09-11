@@ -50,8 +50,8 @@ public enum ParameterValueType {
 	 * @return the parameter value type
 	 */
 	public static ParameterValueType resolve(String alias) {
-		for(ParameterValueType type : values()) {
-			if(type.alias.equals(alias))
+		for (ParameterValueType type : values()) {
+			if (type.alias.equals(alias))
 				return type;
 		}
 		return null;
@@ -59,9 +59,9 @@ public enum ParameterValueType {
 
 	public static ParameterValueType resolveByHint(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		if(hintStartIndex > 0) {
+		if (hintStartIndex > 0) {
 			int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
-			if(hintEndIndex > hintStartIndex) {
+			if (hintEndIndex > hintStartIndex) {
 				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
 				return resolve(typeHint);
 			}
@@ -71,7 +71,7 @@ public enum ParameterValueType {
 	
 	public static String stripHintedValueType(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		if(hintStartIndex > 0) {
+		if (hintStartIndex > 0) {
 			return name.substring(0, hintStartIndex);
 		}
 		return name;
@@ -80,23 +80,23 @@ public enum ParameterValueType {
 	public static ParameterValueType determineType(Object value) {
 		ParameterValueType type;
 
-		if(value instanceof String) {
-			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
+		if (value instanceof String) {
+			if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
 				type = ParameterValueType.STRING;
 			} else {
 				type = ParameterValueType.TEXT;
 			}
-		} else if(value instanceof Integer) {
+		} else if (value instanceof Integer) {
 			type = ParameterValueType.INT;
-		} else if(value instanceof Long) {
+		} else if (value instanceof Long) {
 			type = ParameterValueType.LONG;
-		} else if(value instanceof Float) {
+		} else if (value instanceof Float) {
 			type = ParameterValueType.FLOAT;
-		} else if(value instanceof Double) {
+		} else if (value instanceof Double) {
 			type = ParameterValueType.DOUBLE;
-		} else if(value instanceof Boolean) {
+		} else if (value instanceof Boolean) {
 			type = ParameterValueType.BOOLEAN;
-		} else if(value instanceof Parameters) {
+		} else if (value instanceof Parameters) {
 			type = ParameterValueType.PARAMETERS;
 		} else {
 			type = ParameterValueType.STRING;

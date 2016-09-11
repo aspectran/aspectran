@@ -44,7 +44,7 @@ public class QuartzJobResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public Writer getWriter() throws IOException {
-		if(writer == null) {
+		if (writer == null) {
 			writer = new QuartzJobOutputWriter();
 		}
 		return writer;
@@ -61,6 +61,7 @@ public class QuartzJobResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public void flush() {
+		// nothing to do
 	}
 
 }

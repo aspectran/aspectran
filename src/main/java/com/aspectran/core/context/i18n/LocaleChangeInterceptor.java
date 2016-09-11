@@ -100,8 +100,8 @@ public class LocaleChangeInterceptor {
      */
     public void setRequestMethods(String... requestMethods) {
         this.allowedMethods = requestMethods;
-        if(this.allowedMethods != null) {
-            for(int i = 0; i < this.allowedMethods.length; i++) {
+        if (this.allowedMethods != null) {
+            for (int i = 0; i < this.allowedMethods.length; i++) {
                 this.allowedMethods[i] = this.allowedMethods[i].toUpperCase();
             }
         }
@@ -137,24 +137,24 @@ public class LocaleChangeInterceptor {
     public void handle(Translet translet, LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
 
-        if(!checkRequestMethod(requestAdapter.getRequestMethod()))
+        if (!checkRequestMethod(requestAdapter.getRequestMethod()))
             return;
 
         String newLocale = requestAdapter.getParameter(getLocaleParamName());
-        if(newLocale != null) {
+        if (newLocale != null) {
             Locale locale = null;
             try {
                 locale = StringUtils.parseLocaleString(newLocale);
-            } catch(IllegalArgumentException ex) {
-                if(isIgnoreInvalidLocale()) {
+            } catch (IllegalArgumentException ex) {
+                if (isIgnoreInvalidLocale()) {
                     log.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
                 } else {
                     throw ex;
                 }
             }
 
-            if(locale != null) {
-                if(localeResolver != null) {
+            if (locale != null) {
+                if (localeResolver != null) {
                     localeResolver.setLocale(translet, locale);
                 } else {
                     requestAdapter.setLocale(locale);
@@ -163,20 +163,20 @@ public class LocaleChangeInterceptor {
         }
 
         String newTimeZone = requestAdapter.getParameter(getTimeZoneParamName());
-        if(newTimeZone != null) {
+        if (newTimeZone != null) {
             TimeZone timeZone = null;
             try {
                 timeZone = StringUtils.parseTimeZoneString(newTimeZone);
-            } catch(IllegalArgumentException ex) {
-                if(isIgnoreInvalidLocale()) {
+            } catch (IllegalArgumentException ex) {
+                if (isIgnoreInvalidLocale()) {
                     log.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
                 } else {
                     throw ex;
                 }
             }
 
-            if(timeZone != null) {
-                if(localeResolver != null) {
+            if (timeZone != null) {
+                if (localeResolver != null) {
                     localeResolver.setTimeZone(translet, timeZone);
                 } else {
                     requestAdapter.setTimeZone(timeZone);
@@ -187,17 +187,17 @@ public class LocaleChangeInterceptor {
 
     private boolean checkRequestMethod(MethodType requestMethodType) {
         String[] configuredMethods = getAllowedMethods();
-        if(configuredMethods == null || configuredMethods.length == 0) {
+        if (configuredMethods == null || configuredMethods.length == 0) {
             return true;
         }
-        if(requestMethodType == null) {
+        if (requestMethodType == null) {
             return false;
         }
-        if(requestMethodType == MethodType.ALL) {
+        if (requestMethodType == MethodType.ALL) {
             return true;
         }
-        for(String configuredMethod : configuredMethods) {
-            if(requestMethodType.matches(configuredMethod)) {
+        for (String configuredMethod : configuredMethods) {
+            if (requestMethodType.matches(configuredMethod)) {
                 return true;
             }
         }

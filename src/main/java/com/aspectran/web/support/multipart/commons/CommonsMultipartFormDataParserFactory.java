@@ -129,13 +129,15 @@ public class CommonsMultipartFormDataParserFactory {
 	public MultipartFormDataParser createMultipartFormDataParser() {
 		MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
 
-		if(maxRequestSize > -1)
+		if (maxRequestSize > -1) {
 			parser.setMaxRequestSize(maxRequestSize);
+		}
 
-		if(tempDirectoryPath != null)
+		if (tempDirectoryPath != null) {
 			parser.setTempDirectoryPath(tempDirectoryPath);
-		else
+		} else {
 			parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
+		}
 
 		parser.setAllowedFileExtensions(allowedFileExtensions);
 		parser.setDeniedFileExtensions(deniedFileExtensions);

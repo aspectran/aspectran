@@ -60,8 +60,9 @@ public class ParameterValue implements Parameter {
 		this.array = array;
 		this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
 
-		if(this.array && !noBracket)
+		if (this.array && !noBracket) {
 			this.bracketed = true;
+		}
 	}
 	
 	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -83,8 +84,9 @@ public class ParameterValue implements Parameter {
 		this.array = array;
 		this.predefined = predefined;
 
-		if(this.array && !noBracket)
+		if (this.array && !noBracket) {
 			this.bracketed = true;
+		}
 	}
 	
 	@Override
@@ -103,13 +105,15 @@ public class ParameterValue implements Parameter {
 
 	@Override
 	public String getQualifiedName() {
-		if(container == null)
+		if (container == null) {
 			return name;
+		}
 		
 		Parameter prototype = container.getPrototype();
 		
-		if(prototype != null)
+		if (prototype != null) {
 			return prototype.getQualifiedName() + "." + name;
+		}
 		
 		return name;
 	}
@@ -154,13 +158,13 @@ public class ParameterValue implements Parameter {
 	
 	@Override
 	public void putValue(Object value) {
-		if(!predefined && value != null) {
-			if(parameterValueType == ParameterValueType.STRING) {
-				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+		if (!predefined && value != null) {
+			if (parameterValueType == ParameterValueType.STRING) {
+				if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 					parameterValueType = ParameterValueType.TEXT;
 				}
-			} else if(parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
-				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+			} else if (parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
+				if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 					parameterValueType = ParameterValueType.TEXT;
 				} else {
 					parameterValueType = ParameterValueType.STRING;
@@ -168,14 +172,14 @@ public class ParameterValue implements Parameter {
 			}
 		}
 
-		if(!predefined && !array && this.value != null) {
+		if (!predefined && !array && this.value != null) {
 			addValue(this.value);
 			addValue(value);
 			this.value = null;
 			array = true;
 			bracketed = true;
 		} else {
-			if(array) {
+			if (array) {
 				addValue(value);
 			} else {
 				this.value = value;
@@ -192,7 +196,7 @@ public class ParameterValue implements Parameter {
 	}
 	
 	private synchronized void addValue(Object value) {
-		if(list == null) {
+		if (list == null) {
 			list = new ArrayList<Object>();
 			assigned = true;
 		}
@@ -206,7 +210,7 @@ public class ParameterValue implements Parameter {
 
 	@Override
 	public List<?> getValueList() {
-		if(!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
+		if (!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
 			List<Object> list = new ArrayList<Object>();
 			list.add(value);
 			return list;
@@ -227,20 +231,22 @@ public class ParameterValue implements Parameter {
 	
 	@Override
 	public String[] getValueAsStringArray() {
-		if(array) {
-			if(list == null)
+		if (array) {
+			if (list == null) {
 				return null;
+			}
 
 			String[] s = new String[list.size()];
 			
-			for(int i = 0; i < s.length; i++) {
+			for (int i = 0; i < s.length; i++) {
 				s[i] = list.get(i).toString();
 			}
 			
 			return s;
 		} else {
-			if(value == null)
+			if (value == null) {
 				return null;
+			}
 
 			return new String[] { value.toString() };
 		}
@@ -249,16 +255,17 @@ public class ParameterValue implements Parameter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<String> getValueAsStringList() {
-		if(list == null)
+		if (list == null) {
 			return null;
+		}
 
-		if(parameterValueType == ParameterValueType.STRING) {
+		if (parameterValueType == ParameterValueType.STRING) {
 			return (List<String>)getValueList();
 		}
 		
 		List<String> list2 = new ArrayList<String>();
 
-		for(Object o : list) {
+		for (Object o : list) {
 			list2.add(o.toString());
 		}
 
@@ -375,7 +382,7 @@ public class ParameterValue implements Parameter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Parameters> getValueAsParametersList() {
-		if(parameterValueType != ParameterValueType.PARAMETERS)
+		if (parameterValueType != ParameterValueType.PARAMETERS)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
 		
 		return (List<Parameters>)getValueList();
@@ -383,12 +390,12 @@ public class ParameterValue implements Parameter {
 
 	@Override
 	public Parameters newParameters(Parameter prototype) {
-		if(parameterValueType == ParameterValueType.VARIABLE) {
+		if (parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
 			parametersClass = VariableParameters.class;
 		} else {
 			checkParameterValueType(ParameterValueType.PARAMETERS);
-			if(parametersClass == null)
+			if (parametersClass == null)
 				parametersClass = VariableParameters.class;
 		}
 
@@ -397,13 +404,13 @@ public class ParameterValue implements Parameter {
 			p.setPrototype(prototype);
 			putValue(p);
 			return p;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new InvalidParameterException("Could not instantiate parameters class " + parametersClass, e);
 		}
 	}
 
 	private void checkParameterValueType(ParameterValueType parameterValueType) {
-		if(this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType)
+		if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType)
 			throw new IncompatibleParameterValueTypeException(this, parameterValueType);
 	}
 
@@ -412,12 +419,14 @@ public class ParameterValue implements Parameter {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("name", name);
 		tsb.append("parameterValueType", parameterValueType);
-		if(parameterValueType == ParameterValueType.PARAMETERS)
+		if (parameterValueType == ParameterValueType.PARAMETERS) {
 			tsb.append("parametersClass", parametersClass);
+		}
 		tsb.append("array", array);
 		tsb.append("bracketed", bracketed);
-		if(array)
+		if (array) {
 			tsb.append("arraySize", getArraySize());
+		}
 		tsb.append("qualifiedName", getQualifiedName());
 		return tsb.toString();
 	}

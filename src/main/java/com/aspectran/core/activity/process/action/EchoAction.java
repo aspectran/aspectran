@@ -49,13 +49,14 @@ public class EchoAction extends AbstractAction {
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
-		if(echoActionRule.getAttributeItemRuleMap() == null)
+		if (echoActionRule.getAttributeItemRuleMap() == null) {
 			return null;
+		}
 		
 		try {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Failed to execute echo action " + echoActionRule + " Cause: " + e.toString());
 			throw e;
 		}

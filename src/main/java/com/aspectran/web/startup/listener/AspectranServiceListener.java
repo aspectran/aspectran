@@ -38,14 +38,14 @@ public class AspectranServiceListener implements ServletContextListener {
 		
 		try {
 			aspectranService = WebAspectranService.newInstance(event.getServletContext());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Aspectran Service Listener initialization failed.", e);
 		}
 	}
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		if(aspectranService != null) {
+		if (aspectranService != null) {
 			log.info("Do not terminate the server while the all scoped bean destroying.");
 
 			aspectranService.shutdown();

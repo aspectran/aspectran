@@ -50,10 +50,11 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public Writer getWriter() throws IOException {
-		if(getCharacterEncoding() != null)
+		if (getCharacterEncoding() != null) {
 			return new ConsolePrintWriter(printStream, getCharacterEncoding());
-		else
+		} else {
 			return new ConsolePrintWriter(printStream);
+		}
 	}
 
 	@Override
@@ -67,6 +68,7 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 
 	@Override
 	public void flush() {
+		// nothing to do
 	}
 
 }

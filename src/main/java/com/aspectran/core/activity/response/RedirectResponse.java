@@ -51,24 +51,26 @@ public class RedirectResponse implements Response {
 	@Override
 	public void response(Activity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 		
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + redirectResponseRule);
 		}
 		
 		try {
-			if(this.characterEncoding != null) {
+			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
 				String characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 			
 			responseAdapter.redirect(redirectResponseRule);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
 		}
 	}
@@ -80,9 +82,9 @@ public class RedirectResponse implements Response {
 
 	@Override
 	public String getContentType() {
-		if(redirectResponseRule == null)
+		if (redirectResponseRule == null) {
 			return null;
-
+		}
 		return redirectResponseRule.getContentType();
 	}
 

@@ -36,7 +36,7 @@ public class PebbleEngineFactoryBean extends PebbleEngineFactory implements Init
      */
     @Override
     public void initialize() throws Exception {
-        if(this.pebbleEngine == null) {
+        if (this.pebbleEngine == null) {
             this.pebbleEngine = createPebbleEngine();
         }
     }

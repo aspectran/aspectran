@@ -52,10 +52,10 @@ public class StringOutputWriter extends Writer {
 
 	@Override
 	public void write(char[] cbuf, int off, int len) {
-		if((off < 0) || (off > cbuf.length) || (len < 0) ||
+		if ((off < 0) || (off > cbuf.length) || (len < 0) ||
 				((off + len) > cbuf.length) || ((off + len) < 0)) {
 			throw new IndexOutOfBoundsException();
-		} else if(len == 0) {
+		} else if (len == 0) {
 			return;
 		}
 		buffer.append(cbuf, off, len);
@@ -73,10 +73,11 @@ public class StringOutputWriter extends Writer {
 
 	@Override
 	public StringOutputWriter append(CharSequence csq) {
-		if(csq == null)
+		if (csq == null) {
 			write("null");
-		else
+		} else {
 			write(csq.toString());
+		}
 		return this;
 	}
 

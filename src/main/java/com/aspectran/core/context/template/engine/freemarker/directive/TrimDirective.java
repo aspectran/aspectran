@@ -34,28 +34,28 @@ package com.aspectran.core.context.template.engine.freemarker.directive;
  */
 public interface TrimDirective {
 
-    public static final String PREFIX_PARAM_NAME = "prefix";
+    String PREFIX_PARAM_NAME = "prefix";
 
-    public static final String SUFFIX_PARAM_NAME = "suffix";
+    String SUFFIX_PARAM_NAME = "suffix";
 
-    public static final String DEPREFIXES_PARAM_NAME = "deprefixes";
+    String DEPREFIXES_PARAM_NAME = "deprefixes";
 
-    public static final String DESUFFIXES_PARAM_NAME = "desuffixes";
+    String DESUFFIXES_PARAM_NAME = "desuffixes";
 
-    public static final String CASE_SENSITIVE_PARAM_NAME = "caseSensitive";
+    String CASE_SENSITIVE_PARAM_NAME = "caseSensitive";
 
     /**
      * Gets group name.
      *
      * @return the group name
      */
-    public String getGroupName();
+    String getGroupName();
 
     /**
      * Gets directive name.
      *
      * @return the directive name
      */
-    public String getDirectiveName();
+    String getDirectiveName();
 
 }

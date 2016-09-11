@@ -79,13 +79,11 @@ public class ParameterDefinition {
 
 	public ParameterValue newParameterValue() {
 		ParameterValue parameterValue;
-		
-		if(parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
+		if (parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
 			parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
 		} else {
 			parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);
 		}
-
 		return parameterValue;
 	}
 

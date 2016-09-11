@@ -45,10 +45,11 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 	}
 
 	public Response getResponse(String contentType) {
-		if(contentType != null) {
+		if (contentType != null) {
 			Response response = responseMap.get(contentType);
-			if(response != null)
+			if (response != null) {
 				return response;
+			}
 		}
 		return getDefaultResponse();
 	}
@@ -72,7 +73,7 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 	}
 	
 	public Response getDefaultResponse() {
-		if(defaultResponse == null && responseMap.size() == 1) {
+		if (defaultResponse == null && responseMap.size() == 1) {
 			return responseMap.get(0);
 		}
 		return defaultResponse;
@@ -85,64 +86,60 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
 		Response response = TransformFactory.createTransform(transformRule);
-		
-		if(transformRule.getContentType() != null)
+		if (transformRule.getContentType() != null) {
 			responseMap.put(transformRule.getContentType(), response);
-		
-		if(transformRule.isDefaultResponse())
+		}
+		if (transformRule.isDefaultResponse()) {
 			defaultResponse = response;
-		
-		if(defaultResponse == null && transformRule.getContentType() == null)
+		}
+		if (defaultResponse == null && transformRule.getContentType() == null) {
 			defaultResponse = response;
-		
+		}
 		return response;
 	}
 
 	@Override
 	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
 		Response response = new DispatchResponse(dispatchResponseRule);
-		
-		if(dispatchResponseRule.getContentType() != null)
+		if (dispatchResponseRule.getContentType() != null) {
 			responseMap.put(dispatchResponseRule.getContentType(), response);
-		
-		if(dispatchResponseRule.isDefaultResponse())
+		}
+		if (dispatchResponseRule.isDefaultResponse()) {
 			defaultResponse = response;
-		
-		if(defaultResponse == null && dispatchResponseRule.getContentType() == null)
+		}
+		if (defaultResponse == null && dispatchResponseRule.getContentType() == null) {
 			defaultResponse = response;
-		
+		}
 		return response;
 	}
 
 	@Override
 	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
 		Response response = new RedirectResponse(redirectResponseRule);
-
-		if(redirectResponseRule.getContentType() != null)
+		if (redirectResponseRule.getContentType() != null) {
 			responseMap.put(redirectResponseRule.getContentType(), response);
-		
-		if(redirectResponseRule.getDefaultResponse() == Boolean.TRUE)
+		}
+		if (redirectResponseRule.getDefaultResponse() == Boolean.TRUE) {
 			defaultResponse = response;
-		
-		if(defaultResponse == null && redirectResponseRule.getContentType() == null)
+		}
+		if (defaultResponse == null && redirectResponseRule.getContentType() == null) {
 			defaultResponse = response;
-		
+		}
 		return response;
 	}
 
 	@Override
 	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
 		Response response = new ForwardResponse(forwardResponseRule);
-
-		if(forwardResponseRule.getContentType() != null)
+		if (forwardResponseRule.getContentType() != null) {
 			responseMap.put(forwardResponseRule.getContentType(), response);
-		
-		if(forwardResponseRule.isDefaultResponse())
+		}
+		if (forwardResponseRule.isDefaultResponse()) {
 			defaultResponse = response;
-		
-		if(defaultResponse == null && forwardResponseRule.getContentType() == null)
+		}
+		if (defaultResponse == null && forwardResponseRule.getContentType() == null) {
 			defaultResponse = response;
-		
+		}
 		return response;
 	}
 
@@ -157,7 +154,7 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 	
 	public static ExceptionCatchRule newInstance(String exceptionType) {
 		ExceptionCatchRule rbctr = new ExceptionCatchRule();
-		if(exceptionType != null) {
+		if (exceptionType != null) {
 			rbctr.setExceptionType(exceptionType);
 		}
 		return rbctr;

@@ -93,9 +93,9 @@ public class IncludeActionRule {
 	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addAttributeItemRule(ItemRule attributeItemRule) {
-		if(attributeItemRuleMap == null) 
+		if (attributeItemRuleMap == null) {
 			attributeItemRuleMap = new ItemRuleMap();
-		
+		}
 		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 	
@@ -131,8 +131,9 @@ public class IncludeActionRule {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", actionId);
 		tsb.append("translet", transletName);
-		if(attributeItemRuleMap != null)
+		if (attributeItemRuleMap != null) {
 			tsb.append("attributes", attributeItemRuleMap.keySet());
+		}
 		return tsb.toString();
 	}
 	
@@ -145,14 +146,14 @@ public class IncludeActionRule {
 	 * @return the include action rule
 	 */
 	public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
-		if(transletName == null)
+		if (transletName == null) {
 			throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute.");
+		}
 
 		IncludeActionRule includeActionRule = new IncludeActionRule();
 		includeActionRule.setActionId(id);
 		includeActionRule.setTransletName(transletName);
 		includeActionRule.setHidden(hidden);
-
 		return includeActionRule;
 	}
 

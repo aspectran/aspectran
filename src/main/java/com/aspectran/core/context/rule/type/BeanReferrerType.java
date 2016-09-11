@@ -48,9 +48,10 @@ public enum BeanReferrerType {
 	 * @return a {@code BeanReferrerType}, may be {@code null}
 	 */
 	public static BeanReferrerType resolve(String alias) {
-		for(BeanReferrerType type : values()) {
-			if(type.alias.equals(alias))
+		for (BeanReferrerType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

@@ -38,9 +38,10 @@ public class ResourceImporter extends AbstractImporter {
 	public ResourceImporter(ClassLoader classLoader, String resource, ImportFileType importFileType) {
 		super(RESOURCE_IMPORTER);
 
-		if(importFileType == null)
+		if (importFileType == null) {
 			importFileType = resource.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
-		
+		}
+
 		setImportFileType(importFileType);
 		
 		this.classLoader = classLoader;
@@ -58,9 +59,10 @@ public class ResourceImporter extends AbstractImporter {
 	public InputStream getInputStream() throws IOException {
 		InputStream inputStream = classLoader.getResourceAsStream(resource);
 		
-		if(inputStream == null)
+		if (inputStream == null) {
 			throw new IOException("Could not find resource to import. resource: " + resource);
-		
+		}
+
 		return inputStream;
 	}
 	

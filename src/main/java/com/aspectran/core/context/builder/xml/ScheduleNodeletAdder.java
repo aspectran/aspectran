@@ -51,7 +51,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             assistant.pushObject(scheduleRule);
         });
 		parser.addNodelet(xpath, "/schedule/description", (node, attributes, text) -> {
-            if(text != null) {
+            if (text != null) {
 				ScheduleRule scheduleRule = assistant.peekObject();
 				scheduleRule.setDescription(text);
             }
@@ -65,7 +65,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/schedule/scheduler", (node, attributes, text) -> {
 			String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
 
-			if(beanIdOrClass != null) {
+			if (beanIdOrClass != null) {
 				ScheduleRule scheduleRule = assistant.peekObject();
 				scheduleRule.setSchedulerBeanId(beanIdOrClass);
 
@@ -77,8 +77,9 @@ class ScheduleNodeletAdder implements NodeletAdder {
 			String method = StringUtils.emptyToNull(attributes.get("method"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
-			if(transletName == null)
+			if (transletName == null) {
 				throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+			}
 
 			transletName = assistant.applyTransletNamePattern(transletName);
 

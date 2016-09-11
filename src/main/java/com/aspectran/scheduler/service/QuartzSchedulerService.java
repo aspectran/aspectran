@@ -97,24 +97,26 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public synchronized void startup() throws SchedulerServiceException {
-		if(context.getScheduleRuleRegistry() == null)
+		if (context.getScheduleRuleRegistry() == null) {
 			return;
+		}
 
 		Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
-		if(scheduleRuleMap == null)
+		if (scheduleRuleMap == null) {
 			return;
+		}
 		
 		log.info("Now try to starting Quartz Scheduler.");
 		
 		try {
-			for(ScheduleRule scheduleRule : scheduleRuleMap.values()) {
+			for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
 				String schedulerBeanId = scheduleRule.getSchedulerBeanId();
 				
 				Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
 				JobDetail[] jobDetails = buildJobDetails(scheduleRule.getJobRuleList());
 				
-				if(jobDetails.length > 0) {
-					for(JobDetail jobDetail : jobDetails) {
+				if (jobDetails.length > 0) {
+					for (JobDetail jobDetail : jobDetails) {
 						String triggerName = jobDetail.getKey().getName();
 						String triggerGroup = scheduleRule.getId();
 						Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
@@ -127,20 +129,20 @@ public class QuartzSchedulerService implements SchedulerService {
 				schedulerMap.put(scheduleRule.getId(), scheduler);
 			}
 
-			for(Scheduler scheduler : schedulerSet) {
+			for (Scheduler scheduler : schedulerSet) {
 				log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
 
 				//Listener attached to jobKey
 				JobListener defaultJobListener = new QuartzJobListener();
 				scheduler.getListenerManager().addJobListener(defaultJobListener);
 
-				if(startDelaySeconds > 0) {
+				if (startDelaySeconds > 0) {
 					scheduler.startDelayed(startDelaySeconds);
 				} else {
 					scheduler.start();
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
 		}
 	}
@@ -156,15 +158,15 @@ public class QuartzSchedulerService implements SchedulerService {
 		log.info("Now try to shutting down Quartz Scheduler.");
 
 		try {
-			for(Scheduler scheduler : schedulerSet) {
-				if(!scheduler.isShutdown()) {
+			for (Scheduler scheduler : schedulerSet) {
+				if (!scheduler.isShutdown()) {
 					log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
 					scheduler.shutdown(waitOnShutdown);
 				}
 			}
 			schedulerSet.clear();
 			schedulerMap.clear();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
 		}
 	}
@@ -179,10 +181,10 @@ public class QuartzSchedulerService implements SchedulerService {
 	@Override
 	public synchronized void pause() throws SchedulerServiceException {
 		try {
-			for(Scheduler scheduler : schedulerSet) {
+			for (Scheduler scheduler : schedulerSet) {
 				scheduler.pauseAll();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
 		}
 	}
@@ -191,10 +193,10 @@ public class QuartzSchedulerService implements SchedulerService {
 	public synchronized void pause(String scheduleId) throws SchedulerServiceException {
 		try {
 			Scheduler scheduler = getScheduler(scheduleId);
-			if(scheduler != null && scheduler.isStarted()) {
+			if (scheduler != null && scheduler.isStarted()) {
 				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
 		}
 	}
@@ -202,10 +204,10 @@ public class QuartzSchedulerService implements SchedulerService {
 	@Override
 	public synchronized void resume() throws SchedulerServiceException {
 		try {
-			for(Scheduler scheduler : schedulerSet) {
+			for (Scheduler scheduler : schedulerSet) {
 				scheduler.resumeAll();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
 		}
 	}
@@ -214,10 +216,10 @@ public class QuartzSchedulerService implements SchedulerService {
 	public synchronized void resume(String scheduleId) throws SchedulerServiceException {
 		try {
 			Scheduler scheduler = getScheduler(scheduleId);
-			if(scheduler != null && scheduler.isStarted()) {
+			if (scheduler != null && scheduler.isStarted()) {
 				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
 		}
 	}
@@ -234,13 +236,13 @@ public class QuartzSchedulerService implements SchedulerService {
 		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
 
 		Date firstFireTime;
-		if(startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
+		if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
 			firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
 		} else {
 			firstFireTime = new Date();
 		}
 		
-		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+		if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
 			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
 			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
 			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
@@ -250,18 +252,24 @@ public class QuartzSchedulerService implements SchedulerService {
 
 			SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
 
-			if(intervalInMilliseconds != null)
+			if (intervalInMilliseconds != null) {
 				builder.withIntervalInMilliseconds(intervalInMilliseconds);
-			if(intervalInMinutes != null)
+			}
+			if (intervalInMinutes != null) {
 				builder.withIntervalInMinutes(intervalInMinutes);
-			if(intervalInSeconds != null)
+			}
+			if (intervalInSeconds != null) {
 				builder.withIntervalInSeconds(intervalInSeconds);
-			if(intervalInHours != null)
+			}
+			if (intervalInHours != null) {
 				builder.withIntervalInHours(intervalInHours);
-			if(repeatCount != null)
+			}
+			if (repeatCount != null) {
 				builder.withRepeatCount(repeatCount);
-			if(Boolean.TRUE.equals(repeatForever))
+			}
+			if (Boolean.TRUE.equals(repeatForever)) {
 				builder.repeatForever();
+			}
 				
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
@@ -285,9 +293,9 @@ public class QuartzSchedulerService implements SchedulerService {
 	private JobDetail[] buildJobDetails(List<JobRule> jobRuleList) {
 		List<JobDetail> jobDetailList = new ArrayList<>(jobRuleList.size());
 
-		for(JobRule jobRule : jobRuleList) {
+		for (JobRule jobRule : jobRuleList) {
 			JobDetail jobDetail = buildJobDetail(jobRule);
-			if(jobDetail != null) {
+			if (jobDetail != null) {
 				jobDetailList.add(jobDetail);
 			}
 		}
@@ -296,8 +304,9 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	private JobDetail buildJobDetail(JobRule jobRule) {
-		if(jobRule.isDisabled())
+		if (jobRule.isDisabled()) {
 			return null;
+		}
 		
 		String jobName = jobRule.getTransletName();
 		String jobGroup = jobRule.getScheduleRule().getId();

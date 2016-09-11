@@ -253,10 +253,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	public ContentList touchContentList(boolean explicitContent, boolean omittable) {
-		if(contentList == null) {
+		if (contentList == null) {
 			contentList = new ContentList();
 			this.explicitContent = explicitContent;
-			if(omittable) {
+			if (omittable) {
 				contentList.setOmittable(Boolean.TRUE);
 			}
 		}
@@ -300,7 +300,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private ActionList touchActionList() {
 		touchContentList();
 		
-		if(contentList.size() == 1) {
+		if (contentList.size() == 1) {
 			return contentList.get(0);
 		} else {
 			return contentList.newActionList(!explicitContent);
@@ -336,7 +336,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	public void addResponseRule(ResponseRule responseRule) {
-		if(responseRuleList == null) {
+		if (responseRuleList == null) {
 			responseRuleList = new ArrayList<ResponseRule>();
 		}
 		responseRuleList.add(responseRule);
@@ -349,7 +349,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
-		if(responseRule == null) {
+		if (responseRule == null) {
 			responseRule = new ResponseRule();
 		}
 		implicitResponse = true;
@@ -359,7 +359,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		if(responseRule == null) {
+		if (responseRule == null) {
 			responseRule = new ResponseRule();
 		}
 		implicitResponse = true;
@@ -369,7 +369,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		if(responseRule == null) {
+		if (responseRule == null) {
 			responseRule = new ResponseRule();
 		}
 		implicitResponse = true;
@@ -379,7 +379,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		if(responseRule == null) {
+		if (responseRule == null) {
 			responseRule = new ResponseRule();
 		}
 		implicitResponse = true;
@@ -388,22 +388,22 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	private void addActionList(ActionList actionList) {
-		if(actionList != null) {
+		if (actionList != null) {
 			touchContentList();
 			contentList.add(actionList);
 		}
 	}
 	
 	public void determineResponseRule() {
-		if(responseRule == null) {
+		if (responseRule == null) {
 			responseRule = new ResponseRule();
 		} else {
-			if(responseRule.getResponse() != null) {
+			if (responseRule.getResponse() != null) {
 				addActionList(responseRule.getResponse().getActionList());
 			}
 
 			String responseName = responseRule.getName();
-			if(responseName != null && !responseName.isEmpty()) {
+			if (responseName != null && !responseName.isEmpty()) {
 				setName(name + responseName);
 			}
 		}
@@ -443,14 +443,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null) {
+		if (aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
 		return aspectAdviceRuleRegistry;
 	}
 	
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		return (aspectAdviceRuleRegistry == null) ? null : aspectAdviceRuleRegistry.replicate();
+		return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.replicate() : null);
 	}
 
 	/**
@@ -494,14 +494,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
-		if(name == null && scanPath == null)
+		if (name == null && scanPath == null) {
 			throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
+		}
 
 		MethodType[] allowedMethods = null;
-		if(method != null) {
+		if (method != null) {
 			allowedMethods = MethodType.parse(method);
-			if(allowedMethods == null)
+			if (allowedMethods == null) {
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+			}
 		}
 
 		return newInstance(name, scanPath, maskPattern, allowedMethods);
@@ -510,13 +512,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods) {
 		TransletRule transletRule = new TransletRule();
 		transletRule.setName(name);
-		if(allowedMethods != null && allowedMethods.length > 0) {
+		if (allowedMethods != null && allowedMethods.length > 0) {
 			transletRule.setAllowedMethods(allowedMethods);
 		} else {
 			transletRule.setScanPath(scanPath);
 			transletRule.setMaskPattern(maskPattern);
 		}
-
 		return transletRule;
 	}
 	
@@ -537,12 +538,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
-
-		if(transletRule.getContentList() != null) {
+		if (transletRule.getContentList() != null) {
 			ContentList contentList = transletRule.getContentList().replicate();
 			tr.setContentList(contentList, transletRule.isExplicitContent());
 		}
-
 		return tr;
 	}
 	
@@ -555,41 +554,38 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
-
-		if(transletRule.getResponseRule() != null) {
+		if (transletRule.getResponseRule() != null) {
 			ResponseRule responseRule = transletRule.getResponseRule();
 			ResponseRule rr = replicate(responseRule, newDispatchName);
 			tr.setResponseRule(rr);
 		}
-		
-		if(transletRule.getResponseRuleList() != null) {
+		if (transletRule.getResponseRuleList() != null) {
 			List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 			List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
-			for(ResponseRule responseRule : responseRuleList) {
+			for (ResponseRule responseRule : responseRuleList) {
 				ResponseRule rr = replicate(responseRule, newDispatchName);
 				newResponseRuleList.add(rr);
 			}
 			tr.setResponseRuleList(newResponseRuleList);
 		}
-		
 		return tr;
 	}
 	
 	private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
 		ResponseRule rr = responseRule.replicate();
-		if(rr.getResponse() != null) {
+		if (rr.getResponse() != null) {
 			// assign dispatch name if the dispatch respone exists.
-			if(rr.getResponse() instanceof DispatchResponse) {
+			if (rr.getResponse() instanceof DispatchResponse) {
 				DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
 				DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
 				String dispatchName = dispatchResponseRule.getName();
 				
 				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
 
-				if(prefixSuffixPattern.isSplited()) {
+				if (prefixSuffixPattern.isSplited()) {
 					dispatchResponseRule.setName(prefixSuffixPattern.join(newDispatchName));
 				} else {
-					if(dispatchName != null) {
+					if (dispatchName != null) {
 						dispatchResponseRule.setName(dispatchName + newDispatchName);
 					} else {
 						dispatchResponseRule.setName(newDispatchName);
@@ -602,7 +598,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	public static String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
 		StringBuilder sb = new StringBuilder(transletName + (allowedMethods.length * 7) + 1);
-		for(MethodType type : allowedMethods) {
+		for (MethodType type : allowedMethods) {
 			sb.append(type).append(" ");
 		}
 		sb.append(transletName);

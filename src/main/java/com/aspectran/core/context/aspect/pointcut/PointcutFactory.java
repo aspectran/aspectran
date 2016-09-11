@@ -33,7 +33,7 @@ public class PointcutFactory {
 	 * @return the pointcut
 	 */
 	public static Pointcut createPointcut(PointcutRule pointcutRule) {
-		if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
+		if (pointcutRule.getPointcutType() == PointcutType.REGEXP) {
 			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
 		} else {
 			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());

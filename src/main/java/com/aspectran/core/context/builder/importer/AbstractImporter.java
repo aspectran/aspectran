@@ -83,7 +83,7 @@ abstract class AbstractImporter implements Importer {
 	
 	@Override
 	public Reader getReader(String encoding) throws IOException {
-		if(encoding != null) {
+		if (encoding != null) {
 			return new InputStreamReader(getInputStream(), encoding);
 		} else {
 			return new InputStreamReader(getInputStream());

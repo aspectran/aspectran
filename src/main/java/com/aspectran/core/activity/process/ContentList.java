@@ -68,26 +68,26 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 	}
 	
 	public void addActionList(ActionList actionList) {
-		if(actionList != null) {
+		if (actionList != null) {
 			add(actionList);
 		}
 	}
 
 	public ActionList newActionList(boolean omittable) {
 		ActionList actionList = new ActionList();
-		if(omittable)
+		if (omittable) {
 			actionList.setOmittable(Boolean.TRUE);
-		
+		}
 		add(actionList);
-		
 		return actionList;
 	}
 
 	public int getVisibleCount() {
 		int count = 0;
-		for(ActionList actionList : this) {
-			if(!actionList.isHidden())
+		for (ActionList actionList : this) {
+			if (!actionList.isHidden()) {
 				count++;
+			}
 		}
 		return count;
 	}
@@ -101,16 +101,16 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 	}
 
 	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null) {
+		if (aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
 		return aspectAdviceRuleRegistry;
 	}
 
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null)
+		if (aspectAdviceRuleRegistry == null) {
 			return null;
-
+		}
 		return aspectAdviceRuleRegistry.replicate();
 	}
 

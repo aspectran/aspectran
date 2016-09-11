@@ -61,8 +61,9 @@ public class TransletFileScanner extends FileScanner {
 		this.filterParameters = filterParameters;
 		
 		String templateFileScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-		if(templateFileScanFilterClassName != null)
+		if (templateFileScanFilterClassName != null) {
 			setTemplateFileScanFilter(templateFileScanFilterClassName);
+		}
 	}
 
 	public TransletFileScanFilter getTemplateFileScanFilter() {
@@ -76,7 +77,7 @@ public class TransletFileScanner extends FileScanner {
 	public void setTemplateFileScanFilter(Class<?> templateFileScanFilterClass) {
 		try {
 			templateFileScanFilter = (TransletFileScanFilter)templateFileScanFilterClass.newInstance();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
 		}
 	}
@@ -97,7 +98,7 @@ public class TransletFileScanner extends FileScanner {
 		Class<?> filterClass;
 		try {
 			filterClass = classLoader.loadClass(templateFileScanFilterClassName);
-		} catch(ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClassName + "]", e);
 		}
 		setTemplateFileScanFilter(filterClass);
@@ -120,33 +121,33 @@ public class TransletFileScanner extends FileScanner {
 		public void save(String filePath, File scannedFile) {
 			String transletName = filePath;
 
-			if(transletNameMaskPattern != null) {
+			if (transletNameMaskPattern != null) {
 				String maskedTransletName = transletNameMaskPattern.mask(transletName);
-				if(maskedTransletName != null) {
+				if (maskedTransletName != null) {
 					transletName = maskedTransletName;
 				}  else {
 					log.warn("Unmatched the pattern can not be masking. filePath: " + transletName + " (maskPattern: " + transletNameMaskPattern + ")");
 				}
 			}
 
-			if(templateFileScanFilter != null) {
+			if (templateFileScanFilter != null) {
 				boolean pass = templateFileScanFilter.filter(transletName, scannedFile);
-				if(!pass) {
+				if (!pass) {
 					return;
 				}
 			}
 
-			if(filterParameters != null) {
+			if (filterParameters != null) {
 				String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
 
-				if(excludePatterns != null) {
-					for(String excludePattern : excludePatterns) {
+				if (excludePatterns != null) {
+					for (String excludePattern : excludePatterns) {
 						WildcardPattern pattern = excludePatternCache.get(excludePattern);
-						if(pattern == null) {
+						if (pattern == null) {
 							pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 							excludePatternCache.put(excludePattern, pattern);
 						}
-						if(pattern.matches(filePath)) {
+						if (pattern.matches(filePath)) {
 							return;
 						}
 					}
@@ -155,8 +156,9 @@ public class TransletFileScanner extends FileScanner {
 
 			saveHandler.save(transletName, scannedFile);
 
-			if(log.isTraceEnabled())
+			if (log.isTraceEnabled()) {
 				log.trace("scanned template file: " + filePath);
+			}
 		}
 	}
 

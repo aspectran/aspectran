@@ -39,7 +39,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 		super(initialCapacity);
 		this.parent = parent;
 		
-		if(parent != null) {
+		if (parent != null) {
 			parent.addContentResult(this);
 		}
 	}
@@ -57,11 +57,11 @@ public class ContentResult extends ArrayList<ActionResult> {
 	}
 
 	public ActionResult getActionResult(String actionId) {
-		for(ActionResult actionResult : this) {
-			if(actionId.equals(actionResult.getActionId()))
+		for (ActionResult actionResult : this) {
+			if (actionId.equals(actionResult.getActionId())) {
 				return actionResult;
+			}
 		}
-		
 		return null;
 	}
 	

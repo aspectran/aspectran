@@ -42,7 +42,7 @@ public class ActionResult {
 	public ActionResult(ContentResult parent) {
 		this.parent = parent;
 		
-		if(parent != null) {
+		if (parent != null) {
 			parent.addActionResult(this);
 		}
 	}

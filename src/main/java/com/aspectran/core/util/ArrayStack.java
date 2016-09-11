@@ -88,7 +88,7 @@ public class ArrayStack extends ArrayList<Object> {
 	public Object peek() throws EmptyStackException {
 		int n = size();
 
-		if(n <= 0) {
+		if (n <= 0) {
 			throw new EmptyStackException();
 		}
 
@@ -107,7 +107,7 @@ public class ArrayStack extends ArrayList<Object> {
 	public Object peek(int n) throws EmptyStackException {
 		int m = (size() - n) - 1;
 
-		if(m < 0) {
+		if (m < 0) {
 			throw new EmptyStackException();
 		}
 
@@ -123,7 +123,7 @@ public class ArrayStack extends ArrayList<Object> {
 	public Object pop() throws EmptyStackException {
 		int n = size();
 
-		if(n <= 0) {
+		if (n <= 0) {
 			throw new EmptyStackException();
 		}
 
@@ -157,10 +157,10 @@ public class ArrayStack extends ArrayList<Object> {
 		int i = size() - 1; // Current index
 		int n = 1; // Current distance
 
-		while(i >= 0) {
+		while (i >= 0) {
 			Object current = get(i);
 
-			if((object == null && current == null) || (object != null && object.equals(current))) {
+			if ((object == null && current == null) || (object != null && object.equals(current))) {
 				return n;
 			}
 

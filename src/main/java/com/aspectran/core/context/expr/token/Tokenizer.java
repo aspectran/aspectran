@@ -64,14 +64,14 @@ public class Tokenizer {
 		StringBuilder tokenNameBuffer = new StringBuilder();
 		StringBuilder defTextBuffer = new StringBuilder();
 
-		for(int i = 0; i < inputLen; i++) {
+		for (int i = 0; i < inputLen; i++) {
 			c = input.charAt(i);
 
-			switch(status) {
+			switch (status) {
 			case AT_STRING:
 				stringBuffer.append(c);
 
-				if(Token.isTokenSymbol(c)) {
+				if (Token.isTokenSymbol(c)) {
 					symbol = c;
 					status = AT_TOKEN_SYMBOL;
 					// abc$ --> tokenStartOffset: 3
@@ -83,7 +83,7 @@ public class Tokenizer {
 			case AT_TOKEN_SYMBOL:
 				stringBuffer.append(c);
 
-				if(c == Token.START_BRACKET) {
+				if (c == Token.START_BRACKET) {
 					status = AT_TOKEN_NAME;
 				} else {
 					status = AT_STRING;
@@ -95,17 +95,17 @@ public class Tokenizer {
 			case AT_TOKEN_DEFVAL:
 				stringBuffer.append(c);
 
-				if(status == AT_TOKEN_NAME) {
-					if(c == Token.VALUE_SEPARATOR) {
+				if (status == AT_TOKEN_NAME) {
+					if (c == Token.VALUE_SEPARATOR) {
 						status = AT_TOKEN_DEFVAL;
 						break;
 					}
 				}
 
-				if(c == Token.END_BRACKET) {
-					if(tokenNameBuffer.length() > 0 || defTextBuffer.length() > 0) {
+				if (c == Token.END_BRACKET) {
+					if (tokenNameBuffer.length() > 0 || defTextBuffer.length() > 0) {
 						// save previous non-token string
-						if(tokenStartOffset > 0) {
+						if (tokenStartOffset > 0) {
 							String defaultText = trimBuffer(stringBuffer, tokenStartOffset, trimStringToken);
 							Token token = new Token(TokenType.TEXT, defaultText);
 							tokens.add(token);
@@ -124,8 +124,8 @@ public class Tokenizer {
 					break;
 				}
 
-				if(status == AT_TOKEN_NAME) {
-					if(tokenNameBuffer.length() > MAX_TOKEN_NAME_LENGTH) {
+				if (status == AT_TOKEN_NAME) {
+					if (tokenNameBuffer.length() > MAX_TOKEN_NAME_LENGTH) {
 						status = AT_STRING;
 						tokenNameBuffer.setLength(0);
 					}
@@ -139,7 +139,7 @@ public class Tokenizer {
 			}
 		}
 
-		if(stringBuffer.length() > 0) {
+		if (stringBuffer.length() > 0) {
 			String defaultText = trimBuffer(stringBuffer, stringBuffer.length(), trimStringToken);
 			Token token = new Token(TokenType.TEXT, defaultText);
 			tokens.add(token);
@@ -164,44 +164,44 @@ public class Tokenizer {
 		String getter = null;
 		String alternativeValue = null;
 
-		if(defTextBuffer.length() > 0) {
+		if (defTextBuffer.length() > 0) {
 			value = defTextBuffer.toString();
 			defTextBuffer.setLength(0);
 		}
 
-		if(tokenNameBuffer.length() > 0) {
+		if (tokenNameBuffer.length() > 0) {
 			type = Token.resolveTypeAsSymbol(symbol);
 			name = tokenNameBuffer.toString();
 			tokenNameBuffer.setLength(0);
 
 			int offset = name.indexOf(Token.GETTER_SEPARATOR);
-			if(offset > -1) {
+			if (offset > -1) {
 				String name2 = name.substring(0, offset);
 				String getter2 = name.substring(offset + 1);
 				name = name2;
-				if(!getter2.isEmpty()) {
+				if (!getter2.isEmpty()) {
 					getter = getter2;
 				}
-			} else if(value != null) {
+			} else if (value != null) {
 				directiveType = TokenDirectiveType.resolve(name);
-				if(directiveType != null) {
+				if (directiveType != null) {
 					offset = value.indexOf(Token.GETTER_SEPARATOR);
-					if(offset > -1) {
+					if (offset > -1) {
 						String value2 = value.substring(0, offset);
 						String getter2 = value.substring(offset + 1);
 						value = value2;
 						offset = getter2.indexOf(Token.VALUE_SEPARATOR);
-						if(offset > -1) {
+						if (offset > -1) {
 							String getter3 = getter2.substring(0, offset);
 							String value3 = getter2.substring(offset + 1);
-							if(!getter3.isEmpty()) {
+							if (!getter3.isEmpty()) {
 								getter = getter3;
 							}
-							if(!value3.isEmpty()) {
+							if (!value3.isEmpty()) {
 								alternativeValue = value3;
 							}
 						} else {
-							if(!getter2.isEmpty()) {
+							if (!getter2.isEmpty()) {
 								getter = getter2;
 							}
 						}
@@ -217,7 +217,7 @@ public class Tokenizer {
 		token.setValue(value);
 		token.setGetterName(getter);
 
-		if(directiveType != null) {
+		if (directiveType != null) {
 			token.setDirectiveType(directiveType);
 			token.setAlternativeValue(alternativeValue);
 		}
@@ -238,7 +238,7 @@ public class Tokenizer {
 	 * @return the string
 	 */
 	private static String trimBuffer(StringBuilder sb, int end, boolean trim) {
-		if(!trim)
+		if (!trim)
 			return sb.substring(0, end);
 		
 		int start = 0;
@@ -247,38 +247,38 @@ public class Tokenizer {
 		char c;
 		
 		// leading whitespace
-		for(int i = 0; i < end; i++) {
+		for (int i = 0; i < end; i++) {
 			c = sb.charAt(i);
 			
-			if(c == LF || c == CR) {
+			if (c == LF || c == CR) {
 				leadingLF = true;
-			} else if(!Character.isWhitespace(c)) {
+			} else if (!Character.isWhitespace(c)) {
 				start = i;
 				break;
 			}
 		}
 
-		if(leadingLF && start == 0)
+		if (leadingLF && start == 0)
 			return String.valueOf(LF);
 		
 		// tailing whitespace
-		for(int i = end - 1; i > start; i--) {
+		for (int i = end - 1; i > start; i--) {
 			c = sb.charAt(i);
 			
-			if(c == LF || c == CR) {
+			if (c == LF || c == CR) {
 				tailingLF = true;
-			} else if(!Character.isWhitespace(c)) {
+			} else if (!Character.isWhitespace(c)) {
 				end = i + 1;
 				break;
 			}
 		}
 
 		// restore a new line character which is leading whitespace
-		if(leadingLF)
+		if (leadingLF)
 			sb.setCharAt(--start, LF);
 		
 		// restore a new line character which is tailing whitespace
-		if(tailingLF)
+		if (tailingLF)
 			sb.setCharAt(end++, LF);
 		
 		return sb.substring(start, end);
@@ -291,34 +291,34 @@ public class Tokenizer {
 	 * @return the token[]
 	 */
 	public static Token[] optimize(Token[] tokens) {
-		if(tokens == null)
+		if (tokens == null)
 			return null;
 		
 		String firstDefaultText = null;
 		String lastDefaultText = null;
 		
-		if(tokens.length == 1) {
-			if(tokens[0].getType() == TokenType.TEXT)
+		if (tokens.length == 1) {
+			if (tokens[0].getType() == TokenType.TEXT)
 				firstDefaultText = tokens[0].getValue();
-		} else if(tokens.length > 1) {
-			if(tokens[0].getType() == TokenType.TEXT)
+		} else if (tokens.length > 1) {
+			if (tokens[0].getType() == TokenType.TEXT)
 				firstDefaultText = tokens[0].getValue();
 
-			if(tokens[tokens.length - 1].getType() == TokenType.TEXT)
+			if (tokens[tokens.length - 1].getType() == TokenType.TEXT)
 				lastDefaultText = tokens[tokens.length - 1].getValue();
 		}
 
-		if(firstDefaultText != null) {
+		if (firstDefaultText != null) {
 			String text = trimLeadingWhitespace(firstDefaultText);
 			
-			if(!Objects.equals(firstDefaultText, text))
+			if (!Objects.equals(firstDefaultText, text))
 				tokens[0] = new Token(TokenType.TEXT, text);
 		}
 		
-		if(lastDefaultText != null && !lastDefaultText.isEmpty()) {
+		if (lastDefaultText != null && !lastDefaultText.isEmpty()) {
 			String text = trimTailingWhitespace(lastDefaultText);
 
-			if(!Objects.equals(lastDefaultText, text))
+			if (!Objects.equals(lastDefaultText, text))
 				tokens[tokens.length - 1] = new Token(TokenType.TEXT, text);
 		}
 		
@@ -332,22 +332,22 @@ public class Tokenizer {
 	 * @return the string
 	 */
 	private static String trimLeadingWhitespace(String string) {
-		if(string.isEmpty())
+		if (string.isEmpty())
 			return string;
 		
 		int start = 0;
 		char c;
 
-		for(int i = 0; i < string.length(); i++) {
+		for (int i = 0; i < string.length(); i++) {
 			c = string.charAt(i);
 			
-			if(!Character.isWhitespace(c)) {
+			if (!Character.isWhitespace(c)) {
 				start = i;
 				break;
 			}
 		}
 		
-		if(start == 0)
+		if (start == 0)
 			return string;
 		
 		return string.substring(start);
@@ -363,16 +363,16 @@ public class Tokenizer {
 		int end = 0;
 		char c;
 		
-		for(int i = string.length() - 1; i >= 0; i--) {
+		for (int i = string.length() - 1; i >= 0; i--) {
 			c = string.charAt(i);
 			
-			if(!Character.isWhitespace(c)) {
+			if (!Character.isWhitespace(c)) {
 				end = i;
 				break;
 			}
 		}
 		
-		if(end == 0)
+		if (end == 0)
 			return string;
 		
 		return string.substring(0, end + 1);

@@ -73,17 +73,17 @@ public class WebAspectranService extends BasicAspectranService {
 	@Override
 	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if(contextParameters == null) {
+		if (contextParameters == null) {
 			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
 		}
 		
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if(rootContext == null || rootContext.isEmpty()) {
+		if (rootContext == null || rootContext.isEmpty()) {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 		
 		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
-		if(webParameters != null) {
+		if (webParameters != null) {
 			this.uriDecoding = webParameters.getString(AspectranWebConfig.uriDecoding);
 		}
 		
@@ -100,16 +100,16 @@ public class WebAspectranService extends BasicAspectranService {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestUri = request.getRequestURI();
 
-		if(uriDecoding != null) {
+		if (uriDecoding != null) {
 			requestUri = URLDecoder.decode(requestUri, uriDecoding);
 		}
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Request URI: " + requestUri);
 		}
 
-		if(pauseTimeout != 0L) {
-			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+		if (pauseTimeout != 0L) {
+			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
 				log.info("Aspectran Service has been paused, so did not respond to the request URI \"" + requestUri + "\".");
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
@@ -124,32 +124,32 @@ public class WebAspectranService extends BasicAspectranService {
 			activity = new WebActivity(getActivityContext(), request, response);
 			activity.prepare(requestUri, request.getMethod());
 			activity.perform();
-		} catch(TransletNotFoundException e) {
-			if(log.isTraceEnabled()) {
+		} catch (TransletNotFoundException e) {
+			if (log.isTraceEnabled()) {
 				log.trace("Translet is not found: " + requestUri);
 			}
 			try {
-				if(!defaultServletHttpRequestHandler.handle(request, response)) {
+				if (!defaultServletHttpRequestHandler.handle(request, response)) {
 					response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
-			} catch(Exception e2) {
+			} catch (Exception e2) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				log.error(e.getMessage(), e2);
 			}
-		} catch(RequestMethodNotAllowedException e) {
-			if(log.isDebugEnabled()) {
+		} catch (RequestMethodNotAllowedException e) {
+			if (log.isDebugEnabled()) {
 				log.debug(e.getMessage());
 			}
 			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		} catch(ActivityTerminatedException e) {
-			if(log.isDebugEnabled()) {
+		} catch (ActivityTerminatedException e) {
+			if (log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Web Activity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
-			if(activity != null) {
+			if (activity != null) {
 				activity.finish();
 			}
 		}
@@ -163,8 +163,9 @@ public class WebAspectranService extends BasicAspectranService {
 	 */
 	private void setDefaultServletHttpRequestHandler(ServletContext servletContext, String defaultServletName) {
 		defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
-		if(defaultServletName != null)
+		if (defaultServletName != null) {
 			defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);
+		}
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class WebAspectranService extends BasicAspectranService {
 		
 		servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Web Aspectran Service Attribute in ServletContext has been created. " +
 					ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
 		}
@@ -211,7 +212,7 @@ public class WebAspectranService extends BasicAspectranService {
 		String attrName = STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
 		servletContext.setAttribute(attrName, aspectranService);
 		
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Web Aspectran Service Attribute in ServletContext has been created. " + attrName + ": " + aspectranService);
 		}
 
@@ -233,7 +234,7 @@ public class WebAspectranService extends BasicAspectranService {
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		String defaultServletName = servletConfig.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
 		
-		if(aspectranConfigParam != null) {
+		if (aspectranConfigParam != null) {
 			WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 			aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 
@@ -255,7 +256,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 */
 	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
-		if(aspectranConfigParam != null) {
+		if (aspectranConfigParam != null) {
 			aspectranConfig = new AspectranConfig(aspectranConfigParam);
 		} else {
 			aspectranConfig = new AspectranConfig();
@@ -285,7 +286,7 @@ public class WebAspectranService extends BasicAspectranService {
 
 			@Override
 			public void paused(long millis) {
-				if(millis < 0L) {
+				if (millis < 0L) {
 					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
 				}
 				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
@@ -316,7 +317,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 */
 	public static ActivityContext getActivityContext(ServletContext servletContext) {
 		ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
-		if(activityContext == null) {
+		if (activityContext == null) {
 			throw new IllegalStateException("No Root Web Aspectran Service found: No Aspectran Service Listener registered?");
 		}
 		return activityContext;
@@ -332,7 +333,7 @@ public class WebAspectranService extends BasicAspectranService {
 		ServletContext servletContext = servlet.getServletContext();
 		String attrName = STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
 		ActivityContext activityContext = getActivityContext(servletContext, attrName);
-		if(activityContext == null) {
+		if (activityContext == null) {
 			return getActivityContext(servletContext);
 		}
 		return activityContext;
@@ -347,10 +348,10 @@ public class WebAspectranService extends BasicAspectranService {
 	 */
 	private static ActivityContext getActivityContext(ServletContext servletContext, String attrName) {
 		Object attr = servletContext.getAttribute(attrName);
-		if(attr == null) {
+		if (attr == null) {
 			return null;
 		}
-		if(!(attr instanceof WebAspectranService)) {
+		if (!(attr instanceof WebAspectranService)) {
 			throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
 		}
 		return ((AspectranService)attr).getActivityContext();

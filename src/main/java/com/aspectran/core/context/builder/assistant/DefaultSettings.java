@@ -73,10 +73,10 @@ public class DefaultSettings {
 	public void setTransletNamePattern(String transletNamePattern) {
 		this.transletNamePattern = transletNamePattern;
 		
-		if(transletNamePattern != null) {
+		if (transletNamePattern != null) {
 			PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
 			
-			if(prefixSuffixPattern.split(transletNamePattern)) {
+			if (prefixSuffixPattern.split(transletNamePattern)) {
 				transletNamePrefix = prefixSuffixPattern.getPrefix();
 				transletNameSuffix = prefixSuffixPattern.getSuffix();
 			}
@@ -90,17 +90,19 @@ public class DefaultSettings {
 	}
 	
 	public void setTransletNamePrefix(String transletNamePrefix) {
-		if(transletNameSuffix != null)
+		if (transletNameSuffix != null) {
 			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
-		else
+		} else {
 			this.transletNamePrefix = transletNamePrefix;
+		}
 	}
 	
 	public void setTransletNameSuffix(String transletNameSuffix) {
-		if(transletNamePrefix != null)
+		if (transletNamePrefix != null) {
 			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
-		else
+		} else {
 			this.transletNameSuffix = transletNameSuffix;
+		}
 	}
 	
 	public String getTransletNamePrefix() {
@@ -172,30 +174,31 @@ public class DefaultSettings {
 	}
 
 	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
+		if (settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null) {
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
-		
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null)
+		}
+		if (settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null) {
 			setTransletNamePrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX));
-		
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX) != null)
+		}
+		if (settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX) != null) {
 			setTransletNameSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX));
-		
-		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
+		}
+		if (settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null) {
 			setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
-		
-		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null)
+		}
+		if (settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null) {
 			setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
-		
-		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
+		}
+		if (settings.get(DefaultSettingType.BEAN_PROXIFIER) != null) {
 			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
-
-		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
-			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null ||
-										Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
-
-		if(settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null)
+		}
+		if (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null) {
+			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null
+					|| Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+		}
+		if (settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null) {
 			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
+		}
 	}
 
 }

@@ -357,9 +357,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 	
 	public Class<?> getTargetBeanClass() {
-		if(targetBeanClass != null)
-			return targetBeanClass;
-		return beanClass;
+		return (targetBeanClass != null ?  targetBeanClass : beanClass);
 	}
 
 	public void setTargetBeanClass(Class<?> targetBeanClass) {
@@ -367,9 +365,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 	
 	public String getTargetBeanClassName() {
-		if(targetBeanClass != null)
-			return targetBeanClass.getName();
-		return className;
+		return (targetBeanClass != null ? targetBeanClass.getName() : className);
 	}
 
 	/**
@@ -638,7 +634,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	public void addAutowireTargetRule(AutowireTargetRule autowireTargetRule) {
-		if(autowireTargetRuleList == null) {
+		if (autowireTargetRuleList == null) {
 			autowireTargetRuleList = new ArrayList<AutowireTargetRule>();
 		}
 		autowireTargetRuleList.add(autowireTargetRule);
@@ -690,7 +686,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	/**
 	 * Sets whether this bean is registered.
 	 *
-	 * @param whether this bean is registered
+	 * @param registered this bean is registered
 	 */
 	public void setRegistered(boolean registered) {
 		this.registered = registered;
@@ -728,7 +724,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		if(!offered) {
+		if (!offered) {
 			tsb.append("class", className);
 			tsb.append("scope", scopeType);
 			tsb.append("initMethod", initMethodName);
@@ -742,10 +738,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			tsb.append("important", important);
 			tsb.append("proxied", proxied);
 			tsb.append("replicated", replicated);
-			if(constructorArgumentItemRuleMap != null)
+			if (constructorArgumentItemRuleMap != null) {
 				tsb.append("constructorArguments", constructorArgumentItemRuleMap.keySet());
-			if(propertyItemRuleMap != null)
+			}
+			if (propertyItemRuleMap != null) {
 				tsb.append("properties", propertyItemRuleMap.keySet());
+			}
 		} else {
 			tsb.append("scope", scopeType);
 			tsb.append("offerBean", offerBeanId);
@@ -773,20 +771,23 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean lazyInit,
 			Boolean important) {
 		
-		if(className == null && scanPattern == null)
+		if (className == null && scanPattern == null) {
 			throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
+		}
 
 		ScopeType scopeType = ScopeType.resolve(scope);
 
-		if(scope != null && scopeType == null)
+		if (scope != null && scopeType == null) {
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
+		}
 
-		if(scopeType == null)
+		if (scopeType == null) {
 			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+		}
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
-		if(scanPattern == null) {
+		if (scanPattern == null) {
 			beanRule.setClassName(className);
 		} else {
 			beanRule.setScanPattern(scanPattern);
@@ -799,7 +800,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
-
 		return beanRule;
 	}
 	
@@ -815,16 +815,19 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean lazyInit,
 			Boolean important) {
 
-        if(offerBeanId == null || offerMethodName == null)
-            throw new IllegalArgumentException("The 'bean' element requires both 'offerBean' attribute and 'offerMethod' attribute.");
+        if (offerBeanId == null || offerMethodName == null) {
+			throw new IllegalArgumentException("The 'bean' element requires both 'offerBean' attribute and 'offerMethod' attribute.");
+		}
 
 		ScopeType scopeType = ScopeType.resolve(scope);
 		
-		if(scope != null && scopeType == null)
+		if (scope != null && scopeType == null) {
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
+		}
 		
-		if(scopeType == null)
+		if (scopeType == null) {
 			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+		}
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
@@ -838,14 +841,13 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
-		
 		return beanRule;
 	}
 	
 	public static BeanRule replicate(BeanRule beanRule) {
 		BeanRule br = new BeanRule();
 		br.setId(beanRule.getId());
-		if(beanRule.getScanPattern() == null) {
+		if (beanRule.getScanPattern() == null) {
 			br.setBeanClass(beanRule.getBeanClass());
 		}
 		br.setScopeType(beanRule.getScopeType());
@@ -861,34 +863,33 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		br.setImportant(beanRule.getImportant());
 		br.setDescription(beanRule.getDescription());
 		br.setReplicated(true);
-		
 		return br;
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
-		if(!beanRule.isOffered()) {
+		if (!beanRule.isOffered()) {
 			List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
-			if(argumentParametersList == null)
+			if (argumentParametersList == null) {
 				return;
-
+			}
 			ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-			if(constructorArgumentItemRuleMap == null)
+			if (constructorArgumentItemRuleMap == null) {
 				return;
-
+			}
 			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
 		}
 	}
 	
 	public static void updateProperty(BeanRule beanRule, String text) {
-		if(!beanRule.isOffered()) {
+		if (!beanRule.isOffered()) {
 			List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
-			if(propertyParametersList == null)
+			if (propertyParametersList == null) {
 				return;
-
+			}
 			ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-			if(propertyItemRuleMap == null)
+			if (propertyItemRuleMap == null) {
 				return;
-
+			}
 			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
 		}
 	}

@@ -45,9 +45,10 @@ public enum BeanProxifierType {
 	 * @return a {@code BeanProxifierType}, may be {@code null}
 	 */
 	public static BeanProxifierType resolve(String alias) {
-		for(BeanProxifierType type : values()) {
-			if(type.alias.equals(alias))
+		for (BeanProxifierType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

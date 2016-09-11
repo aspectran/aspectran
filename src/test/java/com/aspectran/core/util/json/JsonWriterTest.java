@@ -35,7 +35,7 @@ public class JsonWriterTest {
 
 			List<Customer> customerList = new ArrayList<Customer>();
 			
-			for(int i = 1; i <= 10; i++) {
+			for (int i = 1; i <= 10; i++) {
 				Customer customer = new Customer();
 				customer.putValue(Customer.id, "guest-" + i);
 				customer.putValue(Customer.name, "Guest" + i);
@@ -50,7 +50,7 @@ public class JsonWriterTest {
 
 			System.out.println(JsonWriter.stringify(map, true, "  "));
 			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

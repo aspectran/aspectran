@@ -47,7 +47,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         	Template template = new Template(templateName, reader, configuration);
             template.process(model, writer);
             writer.flush();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
@@ -63,7 +63,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
             Template template = configuration.getTemplate(templateName, locale);
             template.process(model, writer);
             writer.flush();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }

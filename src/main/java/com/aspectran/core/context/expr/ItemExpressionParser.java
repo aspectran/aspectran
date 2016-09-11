@@ -63,7 +63,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 	@Override
 	public void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
-		for(ItemRule itemRule : itemRuleMap.values()) {
+		for (ItemRule itemRule : itemRuleMap.values()) {
 			valueMap.put(itemRule.getName(), evaluate(itemRule));
 		}
 	}
@@ -76,18 +76,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		String name = itemRule.getName();
 		Object value = null;
 		
-		if(itemType == ItemType.SINGLE) {
+		if (itemType == ItemType.SINGLE) {
 			Token[] tokens = itemRule.getTokens();
 			value = evaluate(name, tokens, valueType);
-		} else if(itemType == ItemType.ARRAY) {
+		} else if (itemType == ItemType.ARRAY) {
 			value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
-		} else if(itemType == ItemType.LIST) {
+		} else if (itemType == ItemType.LIST) {
 			value = evaluateAsList(name, itemRule.getTokensList(), valueType);
-		} else if(itemType == ItemType.SET) {
+		} else if (itemType == ItemType.SET) {
 			value = evaluateAsSet(name, itemRule.getTokensList(), valueType);
-		} else if(itemType == ItemType.MAP) {
+		} else if (itemType == ItemType.MAP) {
 			value = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
-		} else if(itemType == ItemType.PROPERTIES) {
+		} else if (itemType == ItemType.PROPERTIES) {
 			value = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
 		}
 		
@@ -98,7 +98,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
 		MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>(itemRuleMap.size());
 		
-		for(ItemRule itemRule : itemRuleMap.values()) {
+		for (ItemRule itemRule : itemRuleMap.values()) {
 			String[] values = evaluateAsStringArray(itemRule);
 			valueMap.put(itemRule.getName(), values);
 		}
@@ -112,36 +112,37 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		ItemValueType valueType = itemRule.getValueType();
 		String name = itemRule.getName();
 
-		if(itemType == ItemType.SINGLE) {
+		if (itemType == ItemType.SINGLE) {
 			Token[] tokens = itemRule.getTokens();
 			Object value = evaluate(name, tokens, valueType);
-			if(value != null) {
-				if(value instanceof String[])
-					return (String[])value;
-				else
-					return new String[] { value.toString() };
+			if (value != null) {
+				if (value instanceof String[]) {
+					return (String[]) value;
+				} else {
+					return (new String[] {value.toString()});
+				}
 			}
-		} else if(itemType == ItemType.ARRAY) {
+		} else if (itemType == ItemType.ARRAY) {
 			Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
 			return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
-		} else if(itemType == ItemType.LIST) {
+		} else if (itemType == ItemType.LIST) {
 			List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
-			if(list != null) {
+			if (list != null) {
 				return Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
 			}
-		} else if(itemType == ItemType.SET) {
+		} else if (itemType == ItemType.SET) {
 			Set<Object> set = evaluateAsSet(name, itemRule.getTokensList(), valueType);
-			if(set != null) {
+			if (set != null) {
 				return Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
 			}
-		} else if(itemType == ItemType.MAP) {
+		} else if (itemType == ItemType.MAP) {
 			Map<String, Object> map = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
-			if(map != null) {
+			if (map != null) {
 				return new String[] { map.toString() };
 			}
-		} else if(itemType == ItemType.PROPERTIES) {
+		} else if (itemType == ItemType.PROPERTIES) {
 			Properties properties = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
-			if(properties != null) {
+			if (properties != null) {
 				return new String[] { properties.toString() };
 			}
 		}
@@ -158,23 +159,23 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
 		List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
 		
-		if(valueType == ItemValueType.STRING) {
+		if (valueType == ItemValueType.STRING) {
 			return list.toArray(new String[list.size()]);
-		} else if(valueType == ItemValueType.INT) {
+		} else if (valueType == ItemValueType.INT) {
 			return list.toArray(new Integer[list.size()]);
-		} else if(valueType == ItemValueType.LONG) {
+		} else if (valueType == ItemValueType.LONG) {
 			return list.toArray(new Long[list.size()]);
-		} else if(valueType == ItemValueType.FLOAT) {
+		} else if (valueType == ItemValueType.FLOAT) {
 			return list.toArray(new Float[list.size()]);
-		} else if(valueType == ItemValueType.DOUBLE) {
+		} else if (valueType == ItemValueType.DOUBLE) {
 			return list.toArray(new Double[list.size()]);
-		} else if(valueType == ItemValueType.BOOLEAN) {
+		} else if (valueType == ItemValueType.BOOLEAN) {
 			return list.toArray(new Boolean[list.size()]);
-		} else if(valueType == ItemValueType.PARAMETERS) {
+		} else if (valueType == ItemValueType.PARAMETERS) {
 			return list.toArray(new Parameters[list.size()]);
-		} else if(valueType == ItemValueType.FILE) {
+		} else if (valueType == ItemValueType.FILE) {
 			return list.toArray(new File[list.size()]);
-		} else if(valueType == ItemValueType.MULTIPART_FILE) {
+		} else if (valueType == ItemValueType.MULTIPART_FILE) {
 			return list.toArray(new FileParameter[list.size()]);
 		} else {
 			return list.toArray(new Object[list.size()]);
@@ -182,16 +183,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	}
 	
 	private List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
-		if(tokensList == null || tokensList.isEmpty())
+		if (tokensList == null || tokensList.isEmpty()) {
 			return getParameterAsList(parameterName, valueType);
+		}
 		
 		List<Object> valueList = new ArrayList<>(tokensList.size());
 		
-		for(Token[] tokens : tokensList) {
+		for (Token[] tokens : tokensList) {
 			Object value = evaluate(parameterName, tokens);
 			
-			if(value != null && valueType != null)
+			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
+			}
 			
 			valueList.add(value);
 		}
@@ -200,16 +203,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	}
 
 	private Set<Object> evaluateAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
-		if(tokensList == null || tokensList.isEmpty())
+		if (tokensList == null || tokensList.isEmpty()) {
 			return getParameterAsSet(parameterName, valueType);
+		}
 		
 		Set<Object> valueSet = new HashSet<>(tokensList.size());
 
-		for(Token[] tokens : tokensList) {
+		for (Token[] tokens : tokensList) {
 			Object value = evaluate(parameterName, tokens);
 			
-			if(value != null && valueType != null)
+			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
+			}
 			
 			valueSet.add(value);
 		}
@@ -218,14 +223,16 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	}
 	
 	private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
-		if(tokensMap == null || tokensMap.isEmpty()) {
+		if (tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
 
-			if(value == null)
+			if (value == null) {
 				return null;
+			}
 			
-			if(valueType != null)
+			if (valueType != null) {
 				value = valuelize(value, valueType);
+			}
 			
 			Map<String, Object> valueMap = new LinkedHashMap<>();
 			valueMap.put(parameterName, value);
@@ -234,11 +241,12 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		
 		Map<String, Object> valueMap = new LinkedHashMap<>();
 
-		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = evaluate(entry.getKey(), entry.getValue());
 
-			if(value != null && valueType != null)
+			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
+			}
 			
 			valueMap.put(entry.getKey(), value);
 		}
@@ -247,14 +255,16 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	}
 	
 	private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
-		if(tokensMap == null || tokensMap.isEmpty()) {
+		if (tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
 
-			if(value == null)
+			if (value == null) {
 				return null;
+			}
 
-			if(valueType != null)
+			if (valueType != null) {
 				value = valuelize(value, valueType);
+			}
 
 			Properties prop = new Properties();
 			prop.put(parameterName, value);
@@ -263,21 +273,23 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		
 		Properties prop = new Properties();
 
-		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = evaluate(entry.getKey(), entry.getValue());
 
-			if(value != null && valueType != null)
+			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
+			}
 
-			if(value != null)
+			if (value != null) {
 				prop.put(entry.getKey(), value);
+			}
 		}
 		
 		return prop;
 	}
 
 	private Object getParameter(String name, ItemValueType valueType) {
-		if(valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
+		if (valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
 			return super.getFileParameter(name);
 		} else {
 			return super.getParameter(name);
@@ -285,7 +297,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	}
 
 	private Object[] getParameterValues(String name, ItemValueType valueType) {
-		if(valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
+		if (valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
 			return super.getFileParameterValues(name);
 		} else {
 			return super.getParameterValues(name);
@@ -295,16 +307,18 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
 
-		if(values == null)
+		if (values == null) {
 			return null;
+		}
 		
 		List<Object> valueList = new ArrayList<>(values.length);
 		
-		for(Object value : values) {
-			if(value != null && valueType != null)
+		for (Object value : values) {
+			if (value != null && valueType != null) {
 				valueList.add(valuelize(value, valueType));
-			else
+			} else {
 				valueList.add(value);
+			}
 		}
 		
 		return valueList;
@@ -313,40 +327,42 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
 
-		if(values == null)
+		if (values == null) {
 			return null;
+		}
 
 		Set<Object> valueSet = new LinkedHashSet<>(values.length);
 		
-		for(Object value : values) {
-			if(value != null && valueType != null)
+		for (Object value : values) {
+			if (value != null && valueType != null) {
 				valueSet.add(valuelize(value, valueType));
-			else
+			} else {
 				valueSet.add(value);
+			}
 		}
 
 		return valueSet;
 	}
 	
 	private Object valuelize(Object value, ItemValueType valueType) {
-		if(valueType == ItemValueType.STRING) {
-			return (value instanceof String) ? value : value.toString();
-		} else if(valueType == ItemValueType.INT) {
-			return (value instanceof Integer) ? value : Integer.valueOf(value.toString());
-		} else if(valueType == ItemValueType.LONG) {
-			return (value instanceof Long) ? value : Long.valueOf(value.toString());
-		} else if(valueType == ItemValueType.FLOAT) {
-			return (value instanceof Float) ? value : Float.valueOf(value.toString());
-		} else if(valueType == ItemValueType.DOUBLE) {
-			return (value instanceof Double) ? value : Double.valueOf(value.toString());
-		} else if(valueType == ItemValueType.BOOLEAN) {
-			return (value instanceof Boolean) ? value : Boolean.valueOf(value.toString());
-		} else if(valueType == ItemValueType.PARAMETERS) {
+		if (valueType == ItemValueType.STRING) {
+			return (value instanceof String ? value : value.toString());
+		} else if (valueType == ItemValueType.INT) {
+			return (value instanceof Integer ? value : Integer.valueOf(value.toString()));
+		} else if (valueType == ItemValueType.LONG) {
+			return (value instanceof Long ? value : Long.valueOf(value.toString()));
+		} else if (valueType == ItemValueType.FLOAT) {
+			return (value instanceof Float ? value : Float.valueOf(value.toString()));
+		} else if (valueType == ItemValueType.DOUBLE) {
+			return (value instanceof Double ? value : Double.valueOf(value.toString()));
+		} else if (valueType == ItemValueType.BOOLEAN) {
+			return (value instanceof Boolean ? value : Boolean.valueOf(value.toString()));
+		} else if (valueType == ItemValueType.PARAMETERS) {
 			return new VariableParameters(value.toString());
-		} else if(valueType == ItemValueType.FILE) {
-			return (value instanceof FileParameter) ? value : new File(value.toString());
-		} else if(valueType == ItemValueType.MULTIPART_FILE) {
-			return (value instanceof FileParameter) ? value : new FileParameter(new File(value.toString()));
+		} else if (valueType == ItemValueType.FILE) {
+			return (value instanceof FileParameter ? value : new File(value.toString()));
+		} else if (valueType == ItemValueType.MULTIPART_FILE) {
+			return (value instanceof FileParameter ? value : new FileParameter(new File(value.toString())));
 		} else {
 			return value;
 		}

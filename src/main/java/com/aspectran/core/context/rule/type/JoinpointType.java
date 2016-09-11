@@ -43,9 +43,10 @@ public enum JoinpointType {
 	 * @return a {@code JoinpointType}, may be {@code null}
 	 */
 	public static JoinpointType resolve(String alias) {
-		for(JoinpointType type : values()) {
-			if(type.alias.equals(alias))
+		for (JoinpointType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

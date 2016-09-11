@@ -77,12 +77,12 @@ public class WebActivity extends CoreActivity {
 	@Override
 	public void prepare(String transletName, MethodType requestMethod) {
 		// Check for HTTP POST with the X-HTTP-Method-Override header
-		if(requestMethod == MethodType.POST) {
+		if (requestMethod == MethodType.POST) {
 			String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
-			if(method != null) {
+			if (method != null) {
 				// Check if the header value is in our methods list
 				MethodType hiddenRequestMethod = MethodType.resolve(method);
-				if(hiddenRequestMethod != null) {
+				if (hiddenRequestMethod != null) {
 					// Change the request method
 					requestMethod = hiddenRequestMethod;
 				}
@@ -99,7 +99,7 @@ public class WebActivity extends CoreActivity {
 			setRequestAdapter(requestAdapter);
 
 			boolean contentEncoding = false;
-			if(!isIncluded() && isGzipAccepted()) {
+			if (!isIncluded() && isGzipAccepted()) {
 				response = new GZipServletResponseWrapper(response);
 				contentEncoding = true;
 			}
@@ -107,17 +107,17 @@ public class WebActivity extends CoreActivity {
 			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
 			setResponseAdapter(responseAdapter);
 
-			if(contentEncoding) {
+			if (contentEncoding) {
 				setGzipContentEncoded();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new AdapterException("Failed to adapt to the Web Activity.", e);
 		}
 	}
 	
 	@Override
 	public SessionAdapter getSessionAdapter() {
-		if(super.getSessionAdapter() == null) {
+		if (super.getSessionAdapter() == null) {
 			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
 			super.setSessionAdapter(sessionAdapter);
 		}
@@ -129,7 +129,7 @@ public class WebActivity extends CoreActivity {
 		String characterEncoding = resolveRequestCharacterEncoding();
 		try {
 			getRequestAdapter().setCharacterEncoding(characterEncoding);
-		} catch(UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			throw new RequestException("Unable to set request character encoding to " + characterEncoding, e);
 		}
 		
@@ -137,14 +137,14 @@ public class WebActivity extends CoreActivity {
 
 		MethodType requestMethod = getRequestAdapter().getRequestMethod();
 		MethodType allowedMethod = getRequestRule().getAllowedMethod();
-		if(allowedMethod != null && !allowedMethod.equals(requestMethod)) {
+		if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
 			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
-		if(contentType != null) {
-			if(MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
+		if (contentType != null) {
+			if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
 				parseMultipartFormData();
-			} else if((MethodType.PUT.equals(requestMethod) ||
+			} else if ((MethodType.PUT.equals(requestMethod) ||
 					MethodType.PATCH.equals(requestMethod) ||
 					MethodType.DELETE.equals(requestMethod)) &&
 					contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
@@ -160,12 +160,12 @@ public class WebActivity extends CoreActivity {
 	 */
 	private void parseMultipartFormData() {
 		String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-		if(multipartFormDataParser == null) {
+		if (multipartFormDataParser == null) {
 			throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings.");
 		}
 
 		MultipartFormDataParser parser = getBean(multipartFormDataParser);
-		if(parser == null) {
+		if (parser == null) {
 			throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
 		}
 
@@ -182,9 +182,9 @@ public class WebActivity extends CoreActivity {
 	@Override
 	protected LocaleResolver resolveLocale() {
 		LocaleResolver localeResolver = super.resolveLocale();
-		if(localeResolver != null) {
+		if (localeResolver != null) {
 			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-			if(localeChangeInterceptorId != null) {
+			if (localeChangeInterceptorId != null) {
 				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
 				localeChangeInterceptor.handle(getTranslet(), localeResolver);
 			}
@@ -202,9 +202,9 @@ public class WebActivity extends CoreActivity {
 
 	private boolean isGzipAccepted() {
 		String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-		if(contentEncoding != null) {
+		if (contentEncoding != null) {
 			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
-			if(acceptEncoding != null) {
+			if (acceptEncoding != null) {
 				return acceptEncoding.contains(contentEncoding);
 			}
 		}

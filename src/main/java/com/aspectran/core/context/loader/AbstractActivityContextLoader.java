@@ -53,7 +53,7 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	@Override
 	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-		if(resourceLocations != null) {
+		if (resourceLocations != null) {
 			aspectranClassLoader.setResourceLocations(resourceLocations);
 		}
 	}

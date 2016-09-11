@@ -115,7 +115,7 @@ public class ActivityContextLoaderTest {
 //
 //	private void deleteResource(ClassLoader classLoader, String resouceName) {
 //		URL url = classLoader.getResource(resouceName);
-//		if(url != null) {
+//		if (url != null) {
 //			File file = new File(url.getFile());
 //			file.delete();
 //		}

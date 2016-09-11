@@ -58,12 +58,12 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 		boolean headersInstantiated = isHeadersInstantiated();
 		MultiValueMap<String, String> headers = super.touchHeaders();
 
-		if(!headersInstantiated) {
+		if (!headersInstantiated) {
 			HttpServletRequest request = ((HttpServletRequest)adaptee);
 
-			for(Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
+			for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
 				String name = names.nextElement();
-				for(Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
+				for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
 					String value = values.nextElement();
 					headers.add(name, value);
 				}
@@ -96,9 +96,9 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
 	@Override
 	public Locale getLocale() {
-		if(super.getLocale() != null)
+		if (super.getLocale() != null) {
 			return super.getLocale();
-
+		}
 		return ((HttpServletRequest)adaptee).getLocale();
 	}
 

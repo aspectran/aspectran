@@ -97,21 +97,21 @@ public class JsonWriter implements Flushable {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
-		if(object == null) {
+		if (object == null) {
 			writeNull();
-		} else if(object instanceof String ||
+		} else if (object instanceof String ||
 					object instanceof Date) {
 			writeString(object.toString());
-		} else if(object instanceof Boolean) {
+		} else if (object instanceof Boolean) {
 			writeBoolean((Boolean)object);
-		} else if(object instanceof Number) {
+		} else if (object instanceof Number) {
 			writeNumber((Number)object);
-		} else if(object instanceof Parameters) {
+		} else if (object instanceof Parameters) {
 			openCurlyBracket();
 
 			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
 			Iterator<ParameterValue> iter = params.values().iterator();
-			while(iter.hasNext()) {
+			while (iter.hasNext()) {
 				Parameter p = iter.next();
 				String name = p.getName();
 				Object value = p.getValue();
@@ -119,18 +119,18 @@ public class JsonWriter implements Flushable {
 
 				writeName(name);
 				write(value);
-				if(iter.hasNext()) {
+				if (iter.hasNext()) {
 					writeComma();
 				}
 			}
 			
 			closeCurlyBracket();
-		} else if(object instanceof Map<?, ?>) {
+		} else if (object instanceof Map<?, ?>) {
 			openCurlyBracket();
 
 			@SuppressWarnings("unchecked")
 			Iterator<Map.Entry<Object, Object>> iter = ((Map<Object, Object>)object).entrySet().iterator();
-			while(iter.hasNext()) {
+			while (iter.hasNext()) {
 				Map.Entry<Object, Object> entry = iter.next();
 				String name = entry.getKey().toString();
 				Object value = entry.getValue();
@@ -138,38 +138,38 @@ public class JsonWriter implements Flushable {
 
 				writeName(name);
 				write(value);
-				if(iter.hasNext()) {
+				if (iter.hasNext()) {
 					writeComma();
 				}
 			}
 
 			closeCurlyBracket();
-		} else if(object instanceof Collection<?>) {
+		} else if (object instanceof Collection<?>) {
 			@SuppressWarnings("unchecked")
 			Iterator<Object> iter = ((Collection<Object>)object).iterator();
 
 			openSquareBracket();
 
-			while(iter.hasNext()) {
+			while (iter.hasNext()) {
 				Object value = iter.next();
 				checkCircularReference(object, value);
 
 				write(value);
-				if(iter.hasNext()) {
+				if (iter.hasNext()) {
 					writeComma();
 				}
 			}
 
 			closeSquareBracket();
-		} else if(object.getClass().isArray()) {
+		} else if (object.getClass().isArray()) {
 			openSquareBracket();
 
 			int len = Array.getLength(object);
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				Object value = Array.get(object, i);
 				checkCircularReference(object, value);
 
-				if(i > 0) {
+				if (i > 0) {
 					writeComma();
 				}
 				write(value);
@@ -178,16 +178,16 @@ public class JsonWriter implements Flushable {
 			closeSquareBracket();
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
-			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
+			if (readablePropertyNames != null && readablePropertyNames.length > 0) {
 				openCurlyBracket();
 
-				for(int i = 0; i < readablePropertyNames.length; i++) {
+				for (int i = 0; i < readablePropertyNames.length; i++) {
 					Object value = BeanUtils.getObject(object, readablePropertyNames[i]);
 					checkCircularReference(object, value);
 
 					writeName(readablePropertyNames[i]);
 					write(value);
-					if(i < (readablePropertyNames.length - 1)) {
+					if (i < (readablePropertyNames.length - 1)) {
 						writeComma();
 					}
 				}
@@ -200,7 +200,7 @@ public class JsonWriter implements Flushable {
 	}
 
 	private void checkCircularReference(Object wrapper, Object member) {
-		if(wrapper.equals(member)) {
+		if (wrapper.equals(member)) {
 			throw new IllegalArgumentException("JSON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}
@@ -211,8 +211,8 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void indent() throws IOException {
-		if(prettyPrint) {
-			for(int i = 0; i < indentDepth; i++) {
+		if (prettyPrint) {
+			for (int i = 0; i < indentDepth; i++) {
 				writer.write(indentString);
 			}
 		}
@@ -230,8 +230,9 @@ public class JsonWriter implements Flushable {
 		writer.write(escape(name));
 		writer.write(":");
 
-		if(prettyPrint)
+		if (prettyPrint) {
 			writer.write(" ");
+		}
 
 		willWriteValue = true;
 	}
@@ -244,8 +245,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeString(String value) throws IOException {
-		if(!willWriteValue)
+		if (!willWriteValue) {
 			indent();
+		}
 
 		writer.write(escape(value));
 
@@ -259,8 +261,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeBoolean(Boolean value) throws IOException {
-		if(!willWriteValue)
+		if (!willWriteValue) {
 			indent();
+		}
 
 		writer.write(value.toString());
 
@@ -274,8 +277,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeNumber(Number value) throws IOException {
-		if(!willWriteValue)
+		if (!willWriteValue) {
 			indent();
+		}
 
 		writer.write(value.toString());
 
@@ -299,8 +303,9 @@ public class JsonWriter implements Flushable {
 	protected void writeComma() throws IOException {
 		writer.write(",");
 
-		if(prettyPrint)
+		if (prettyPrint) {
 			writer.write(" ");
+		}
 		
 		nextLine();
 	}
@@ -311,8 +316,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void nextLine() throws IOException {
-		if(prettyPrint)
+		if (prettyPrint) {
 			writer.write("\n");
+		}
 	}
 
 	/**
@@ -321,8 +327,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void openCurlyBracket() throws IOException {
-		if(!willWriteValue)
+		if (!willWriteValue) {
 			indent();
+		}
 
 		writer.write("{");
 		nextLine();
@@ -350,8 +357,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	protected void openSquareBracket() throws IOException {
-		if(!willWriteValue)
+		if (!willWriteValue) {
 			indent();
+		}
 
 		writer.write("[");
 		nextLine();
@@ -385,8 +393,9 @@ public class JsonWriter implements Flushable {
 	 * @throws IOException an I/O error occurs
 	 */
 	public void close() throws IOException {
-		if(writer != null)
+		if (writer != null) {
 			writer.close();
+		}
 		
 		writer = null;
 	}
@@ -401,8 +410,9 @@ public class JsonWriter implements Flushable {
 	 * @return a String correctly formatted for insertion in a JSON text
 	 */
 	private static String escape(String string) {
-		if(string == null || string.length() == 0)
+		if (string == null || string.length() == 0) {
 			return "\"\"";
+		}
 
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
@@ -412,18 +422,18 @@ public class JsonWriter implements Flushable {
 
 		sb.append('"');
 
-		for(int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			b = c;
 			c = string.charAt(i);
 
-			switch(c) {
+			switch (c) {
 			case '\\':
 			case '"':
 				sb.append('\\');
 				sb.append(c);
 				break;
 			case '/':
-				if(b == '<') {
+				if (b == '<') {
 					sb.append('\\');
 				}
 				sb.append(c);
@@ -444,7 +454,7 @@ public class JsonWriter implements Flushable {
 				sb.append("\\r");
 				break;
 			default:
-				if(c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+				if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 					t = "000" + Integer.toHexString(c);
 					sb.append("\\u").append(t.substring(t.length() - 4));
 				} else {
@@ -479,10 +489,11 @@ public class JsonWriter implements Flushable {
 	 * @return the JSON formatted string
 	 */
 	public static String stringify(Object object, boolean prettyPrint) {
-		if(prettyPrint)
+		if (prettyPrint) {
 			return stringify(object, true, "\t");
-		else
+		} else {
 			return stringify(object, false, null);
+		}
 	}
 	
 	/**
@@ -495,8 +506,9 @@ public class JsonWriter implements Flushable {
 	 * @return the JSON formatted string
 	 */
 	public static String stringify(Object object, boolean prettyPrint, String indentString) {
-		if(object == null)
+		if (object == null) {
 			return null;
+		}
 		
 		try {
 			Writer writer = new StringWriter();
@@ -507,7 +519,7 @@ public class JsonWriter implements Flushable {
 			jsonWriter.close();
 			
 			return writer.toString();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Cannot convert to a JSON formatted string.", e);
 		}
 	}

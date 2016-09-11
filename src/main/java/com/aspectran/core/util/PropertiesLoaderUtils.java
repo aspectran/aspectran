@@ -69,18 +69,19 @@ public class PropertiesLoaderUtils {
      */
     public static synchronized Properties loadProperties(String resourceName, ClassLoader classLoader) throws IOException {
     	Properties props = getCachedProperties(resourceName);
-    	if(props != null)
-    		return props;
+    	if (props != null) {
+			return props;
+		}
     	
     	Enumeration<URL> urls = classLoader.getResources(resourceName);
 		props = new Properties();
 		
-		while(urls.hasMoreElements()) {
+		while (urls.hasMoreElements()) {
 			URL url = urls.nextElement();
 			URLConnection con = url.openConnection();
 			InputStream is = con.getInputStream();
 			try {
-				if(resourceName.endsWith(XML_FILE_EXTENSION)) {
+				if (resourceName.endsWith(XML_FILE_EXTENSION)) {
 					props.loadFromXML(is);
 				} else {
 					props.load(is);
@@ -102,9 +103,9 @@ public class PropertiesLoaderUtils {
      * @return The cached Properties
      */
     private static Properties getCachedProperties(String resourceName) {
-        if(cacheEnabled) {
+        if (cacheEnabled) {
             Reference<Properties> ref = cache.get(resourceName);
-            if(ref != null) {
+            if (ref != null) {
                 return ref.get();
             }
         }
@@ -118,8 +119,8 @@ public class PropertiesLoaderUtils {
      * @param props The Properties to cache
      */
     private static void cacheMethod(String resourceName, Properties props) {
-        if(cacheEnabled) {
-            if(props != null) {
+        if (cacheEnabled) {
+            if (props != null) {
             	cache.put(resourceName, new WeakReference<>(props));
             }
         }
@@ -134,7 +135,7 @@ public class PropertiesLoaderUtils {
      */
     public static synchronized void setCacheEnabled(boolean cacheEnabling) {
     	cacheEnabled = cacheEnabling;
-        if(!cacheEnabled) {
+        if (!cacheEnabled) {
             clearCache();
         }
     }

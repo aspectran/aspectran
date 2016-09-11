@@ -84,7 +84,7 @@ public class CoreActivity extends BasicActivity {
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
-		if(transletRule == null) {
+		if (transletRule == null) {
 			throw new TransletNotFoundException(transletName);
 		}
 
@@ -103,16 +103,16 @@ public class CoreActivity extends BasicActivity {
 
 	private void prepare(String transletName, MethodType requestMethod, ProcessResult processResult) {
 		this.transletName = transletName;
-		this.requestMethod = (requestMethod == null) ? MethodType.GET : requestMethod;
+		this.requestMethod = (requestMethod == null ? MethodType.GET : requestMethod);
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
 		// for RESTful
-		if(transletRule == null && requestMethod != null) {
+		if (transletRule == null && requestMethod != null) {
 			transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, requestMethod);
 		}
 
-		if(transletRule == null) {
+		if (transletRule == null) {
 			throw new TransletNotFoundException(transletName);
 		}
 
@@ -121,32 +121,32 @@ public class CoreActivity extends BasicActivity {
 
 		prepare(transletRule, processResult);
 
-		if(pathVariableMap != null) {
+		if (pathVariableMap != null) {
 			pathVariableMap.apply(translet);
 		}
 	}
 
 	private void prepare(TransletRule transletRule, ProcessResult processResult) {
 		try {
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("translet " + transletRule);
 			}
 
-			if(transletRule.getTransletInterfaceClass() != null) {
+			if (transletRule.getTransletInterfaceClass() != null) {
 				setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 			}
-			if(transletRule.getTransletImplementationClass() != null) {
+			if (transletRule.getTransletImplementationClass() != null) {
 				setTransletImplementationClass(transletRule.getTransletImplementationClass());
 			}
 
 			translet = newTranslet(this, transletRule);
 
-			if(processResult != null) {
+			if (processResult != null) {
 				translet.setProcessResult(processResult);
 			}
 
-			if(forwardTransletName == null) {
-				if(isIncluded()) {
+			if (forwardTransletName == null) {
+				if (isIncluded()) {
 					backupCurrentActivity();
 				} else {
 					setCurrentActivity(this);
@@ -157,10 +157,10 @@ public class CoreActivity extends BasicActivity {
 			prepareAspectAdviceRule(transletRule);
 			parseRequest();
 			
-			if(forwardTransletName == null) {
+			if (forwardTransletName == null) {
 				resolveLocale();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ActivityException("Failed to prepare activity.", e);
 		}
 	}
@@ -176,7 +176,7 @@ public class CoreActivity extends BasicActivity {
 	protected LocaleResolver resolveLocale() {
 		LocaleResolver localeResolver = null;
 		String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-		if(localeResolverBeanId != null) {
+		if (localeResolverBeanId != null) {
 			localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
 			localeResolver.resolveLocale(getTranslet());
 			localeResolver.resolveTimeZone(getTranslet());
@@ -213,33 +213,33 @@ public class CoreActivity extends BasicActivity {
 	 */
 	protected void parseDeclaredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-		if(parameterItemRuleMap != null) {
+		if (parameterItemRuleMap != null) {
 			ItemEvaluator evaluator = null;
 			ItemRuleList missingItemRules = null;
-			for(ItemRule itemRule : parameterItemRuleMap.values()) {
+			for (ItemRule itemRule : parameterItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();
-				if(tokens != null) {
-					if(evaluator == null) {
+				if (tokens != null) {
+					if (evaluator == null) {
 						evaluator = new ItemExpressionParser(this);
 					}
 					String[] values = evaluator.evaluateAsStringArray(itemRule);
 					String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
-					if(values != oldValues) {
+					if (values != oldValues) {
 						getRequestAdapter().setParameter(itemRule.getName(), values);
 					}
 				}
 
-				if(itemRule.isMandatory()) {
+				if (itemRule.isMandatory()) {
 					String[] values = getRequestAdapter().getParameterValues(itemRule.getName());
-					if(values == null) {
-						if(missingItemRules == null) {
+					if (values == null) {
+						if (missingItemRules == null) {
 							missingItemRules = new ItemRuleList();
 						}
 						missingItemRules.add(itemRule);
 					}
 				}
 			}
-			if(missingItemRules != null) {
+			if (missingItemRules != null) {
 				throw new MissingMandatoryParametersException(missingItemRules);
 			}
 		}
@@ -250,9 +250,9 @@ public class CoreActivity extends BasicActivity {
 	 */
 	protected void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-		if(attributeItemRuleMap != null) {
+		if (attributeItemRuleMap != null) {
 			ItemEvaluator evaluator = new ItemExpressionParser(this);
-			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+			for (ItemRule itemRule : attributeItemRuleMap.values()) {
 				Object value = evaluator.evaluate(itemRule);
 				getRequestAdapter().setAttribute(itemRule.getName(), value);
 			}
@@ -266,47 +266,47 @@ public class CoreActivity extends BasicActivity {
 		try {
 			try {
 				// execute the Before Advice Action for Translet Joinpoint
-				if(getBeforeAdviceRuleList() != null) {
+				if (getBeforeAdviceRuleList() != null) {
 					execute(getBeforeAdviceRuleList());
 				}
 
-				if(!isResponseReserved()) {
-					if(getTransletRule().getContentList() != null) {
+				if (!isResponseReserved()) {
+					if (getTransletRule().getContentList() != null) {
 						produce();
 					}
 				}
 
 				// execute the After Advice Action for Translet Joinpoint
-				if(getAfterAdviceRuleList() != null) {
+				if (getAfterAdviceRuleList() != null) {
 					execute(getAfterAdviceRuleList());
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				setRaisedException(e);
 			} finally {
-				if(getFinallyAdviceRuleList() != null) {
+				if (getFinallyAdviceRuleList() != null) {
 					executeWithoutThrow(getFinallyAdviceRuleList());
 				}
 			}
 
-			if(isExceptionRaised()) {
+			if (isExceptionRaised()) {
 				reserveResponse(null);
 
-				if(getTransletRule().getExceptionRule() != null) {
+				if (getTransletRule().getExceptionRule() != null) {
 					exceptionHandling(getTransletRule().getExceptionRule());
 				}
-				if(!isResponseReserved() && getExceptionRuleList() != null) {
+				if (!isResponseReserved() && getExceptionRuleList() != null) {
 					exceptionHandling(getExceptionRuleList());
 				}
 			}
 
-			if(!withoutResponse) {
+			if (!withoutResponse) {
 				response();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ActivityException("Failed to perform an activity.", e);
 		} finally {
 			Scope requestScope = getRequestAdapter().getRequestScope(false);
-			if(requestScope != null) {
+			if (requestScope != null) {
 				requestScope.destroy();
 			}
 		}
@@ -318,47 +318,48 @@ public class CoreActivity extends BasicActivity {
 	private void produce() {
 		ContentList contentList = getTransletRule().getContentList();
 
-		if(contentList != null) {
+		if (contentList != null) {
 			ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
 
-			if(getTransletRule().isExplicitContent()) {
+			if (getTransletRule().isExplicitContent()) {
 				processResult.setOmittable(contentList.isOmittable());
 			} else {
-				if(contentList.getVisibleCount() < 2) {
+				if (contentList.getVisibleCount() < 2) {
 					processResult.setOmittable(true);
 				}
 			}
 
-			for(ActionList actionList : contentList) {
+			for (ActionList actionList : contentList) {
 				execute(actionList);
-				if(isResponseReserved())
+				if (isResponseReserved()) {
 					break;
+				}
 			}
 		}
 	}
 
 	protected Response getDeclaredResponse() {
-		return (getResponseRule() != null) ? getResponseRule().getResponse() : null;
+		return (getResponseRule() != null ? getResponseRule().getResponse() : null);
 	}
 	
 	private void response() {
 		Response res = (this.reservedResponse != null) ? this.reservedResponse : getDeclaredResponse();
 		
-		if(res != null) {
-			if(res.getResponseType() != ResponseType.FORWARD) {
+		if (res != null) {
+			if (res.getResponseType() != ResponseType.FORWARD) {
 				getResponseAdapter().flush();
 			}
 
 			res.response(this);
 
-			if(res.getResponseType() == ResponseType.FORWARD) {
+			if (res.getResponseType() == ResponseType.FORWARD) {
 				ForwardResponse forwardResponse = (ForwardResponse)res;
 				this.forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
 			} else {
 				this.forwardTransletName = null;
 			}
 			
-			if(forwardTransletName != null) {
+			if (forwardTransletName != null) {
 				forward();
 			}
 		}
@@ -374,7 +375,7 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	protected void reserveResponse() {
-		if(this.reservedResponse != null) {
+		if (this.reservedResponse != null) {
 			this.reservedResponse = getDeclaredResponse();
 		}
 	}
@@ -388,7 +389,7 @@ public class CoreActivity extends BasicActivity {
 	 * Forwarding from current translet to other translet.
 	 */
 	private void forward() {
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("Forwarding from [" + transletName + "] to [" + forwardTransletName + "]");
 		}
 
@@ -401,9 +402,9 @@ public class CoreActivity extends BasicActivity {
 	@Override
 	public void exceptionHandling(ExceptionRule exceptionRule) {
 		super.exceptionHandling(exceptionRule);
-		if(!isResponseReserved() && translet != null) {
+		if (!isResponseReserved() && translet != null) {
 			ExceptionCatchRule exceptionCatchRule = exceptionRule.getExceptionCatchRule(getRaisedException());
-			if(exceptionCatchRule != null) {
+			if (exceptionCatchRule != null) {
 				responseByContentType(exceptionCatchRule);
 			}
 		}
@@ -413,21 +414,22 @@ public class CoreActivity extends BasicActivity {
 		Response response = getDeclaredResponse();
 		Response targetResponse;
 
-		if(response != null && response.getContentType() != null)
+		if (response != null && response.getContentType() != null) {
 			targetResponse = exceptionCatchRule.getResponse(response.getContentType());
-		else
+		} else {
 			targetResponse = exceptionCatchRule.getDefaultResponse();
+		}
 
-		if(targetResponse != null) {
+		if (targetResponse != null) {
 			ResponseRule responseRule = new ResponseRule();
 			responseRule.setResponse(targetResponse);
-			if(getResponseRule() != null) {
+			if (getResponseRule() != null) {
 				responseRule.setCharacterEncoding(getResponseRule().getCharacterEncoding());
 			}
 
 			setResponseRule(responseRule);
 
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("Response by Content Type " + responseRule);
 			}
 
@@ -436,7 +438,7 @@ public class CoreActivity extends BasicActivity {
 			translet.touchProcessResult(null, 0).setOmittable(true);
 			
 			ActionList actionList = targetResponse.getActionList();
-			if(actionList != null) {
+			if (actionList != null) {
 				execute(actionList);
 			}
 
@@ -452,20 +454,21 @@ public class CoreActivity extends BasicActivity {
 	protected void execute(ActionList actionList) {
 		ContentResult contentResult = null;
 
-		if(translet.getProcessResult() != null) {
+		if (translet.getProcessResult() != null) {
 			contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
 			contentResult.setName(actionList.getName());
-			if(getTransletRule().isExplicitContent()) {
+			if (getTransletRule().isExplicitContent()) {
 				contentResult.setOmittable(actionList.isOmittable());
-			} else if(actionList.getName() == null && actionList.getVisibleCount() < 2) {
+			} else if (actionList.getName() == null && actionList.getVisibleCount() < 2) {
 				contentResult.setOmittable(true);
 			}
 		}
 
-		for(Executable action : actionList) {
+		for (Executable action : actionList) {
 			execute(action, contentResult);
-			if(isResponseReserved())
+			if (isResponseReserved()) {
 				break;
+			}
 		}
 	}
 
@@ -476,23 +479,24 @@ public class CoreActivity extends BasicActivity {
 	 * @param contentResult the content result
 	 */
 	private void execute(Executable action, ContentResult contentResult) {
-		if(log.isDebugEnabled())
+		if (log.isDebugEnabled()) {
 			log.debug("action " + action);
+		}
 		
 		try {
 			Object resultValue = action.execute(this);
 		
-			if(contentResult != null && resultValue != ActionResult.NO_RESULT) {
+			if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
 				ActionResult actionResult = new ActionResult(contentResult);
 				actionResult.setActionId(action.getActionId());
 				actionResult.setResultValue(resultValue);
 				actionResult.setHidden(action.isHidden());
 			}
 			
-			if(log.isTraceEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.trace("actionResult " + resultValue);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			setRaisedException(e);
 			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}

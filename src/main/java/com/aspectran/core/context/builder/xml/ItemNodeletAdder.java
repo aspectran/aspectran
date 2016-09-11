@@ -54,15 +54,17 @@ class ItemNodeletAdder implements NodeletAdder {
             Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
             Boolean mandatory = BooleanUtils.toNullableBooleanObject(attributes.get("mandatory"));
 
-            if(StringUtils.hasText(text))
-                value = text;
+            if (StringUtils.hasText(text)) {
+				value = text;
+			}
 
             ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize, mandatory);
 
             assistant.pushObject(itemRule);
 
-            if(itemRule.getType() != ItemType.SINGLE)
-                ItemRule.beginValueCollection(itemRule);
+            if (itemRule.getType() != ItemType.SINGLE) {
+				ItemRule.beginValueCollection(itemRule);
+			}
         });
 		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
             String name = attributes.get("name");
@@ -70,7 +72,7 @@ class ItemNodeletAdder implements NodeletAdder {
             ItemRule itemRule = assistant.peekObject();
 
             Token[] tokens = ItemRule.parseValue(itemRule, text);
-            if(tokens != null) {
+            if (tokens != null) {
                 assistant.pushObject(name);
                 assistant.pushObject(tokens);
             }
@@ -83,7 +85,7 @@ class ItemNodeletAdder implements NodeletAdder {
 
             Object object = assistant.peekObject();
 
-            if(object instanceof ItemRule) {
+            if (object instanceof ItemRule) {
                 ItemRule.updateReference((ItemRule)object, parameter, attribute, bean, property);
             } else {
                 assistant.popObject(); // discard tokens
@@ -95,7 +97,7 @@ class ItemNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
             Object object = assistant.peekObject();
 
-            if(object instanceof Token[]) {
+            if (object instanceof Token[]) {
                 // replace tokens to null
                 assistant.popObject();
                 assistant.pushObject(null);
@@ -104,13 +106,14 @@ class ItemNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
             Object object = assistant.peekObject();
 
-            if(object instanceof Token[]) {
+            if (object instanceof Token[]) {
                 Token[] tokens = assistant.popObject();
                 String name = assistant.popObject();
                 ItemRule itemRule = assistant.peekObject();
 
-                if(itemRule.getType() != ItemType.SINGLE)
-                    ItemRule.flushValueCollection(itemRule, name, tokens);
+                if (itemRule.getType() != ItemType.SINGLE) {
+					ItemRule.flushValueCollection(itemRule, name, tokens);
+				}
             }
         });
 		parser.addNodelet(xpath, "/item/reference", (node, attributes, text) -> {

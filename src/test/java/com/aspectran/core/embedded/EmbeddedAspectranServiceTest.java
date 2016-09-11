@@ -46,7 +46,7 @@ public class EmbeddedAspectranServiceTest {
 
 	@After
 	public void finish() {
-		if(aspectranService != null) {
+		if (aspectranService != null) {
 			aspectranService.shutdown();
 		}
 	}

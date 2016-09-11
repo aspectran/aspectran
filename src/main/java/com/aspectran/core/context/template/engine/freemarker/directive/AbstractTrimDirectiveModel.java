@@ -15,6 +15,13 @@
  */
 package com.aspectran.core.context.template.engine.freemarker.directive;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import freemarker.core.Environment;
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -23,13 +30,6 @@ import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The Class AbstractTrimDirectiveModel.
@@ -41,11 +41,13 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
     @SuppressWarnings("rawtypes")
 	@Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-        if(body == null)
+        if (body == null) {
             return;
+        }
 
-        if(loopVars.length != 0)
+        if (loopVars.length != 0) {
             throw new TemplateModelException("Trim directive doesn't allow loop variables.");
+        }
 
         StringWriter bodyWriter = new StringWriter();
         body.render(bodyWriter);
@@ -77,11 +79,13 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 	protected String parseStringParameter(Map params, String paramName) {
         Object paramModel = params.get(paramName);
 
-        if(paramModel == null)
+        if (paramModel == null) {
             return null;
+        }
 
-        if(!(paramModel instanceof SimpleScalar))
+        if (!(paramModel instanceof SimpleScalar)) {
             throw new IllegalArgumentException(paramName + " must be string.");
+        }
 
         return ((SimpleScalar)paramModel).getAsString();
     }
@@ -98,11 +102,13 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 	protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
         Object paramModel = params.get(paramName);
 
-        if(paramModel == null)
+        if (paramModel == null) {
             return null;
+        }
 
-        if(!(paramModel instanceof SimpleSequence))
+        if (!(paramModel instanceof SimpleSequence)) {
             throw new IllegalArgumentException(paramName + " must be sequence.");
+        }
 
         List<String> list = transformSimpleSequenceAsStringList((SimpleSequence)paramModel, paramName);
 
@@ -121,11 +127,12 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
         List<String> list = new ArrayList<String>();
         int size = sequence.size();
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             TemplateModel model = sequence.get(i);
 
-            if(!(model instanceof SimpleScalar))
+            if (!(model instanceof SimpleScalar)) {
                 throw new IllegalArgumentException(paramName + "'s item must be string.");
+            }
 
             list.add(((SimpleScalar)model).getAsString());
         }

@@ -42,7 +42,7 @@ public class ItemRuleList extends ArrayList<ItemRule> {
 
 	public String[] getItemNames() {
 		String[] itemNames = new String[size()];
-		for(int i = 0; i < itemNames.length; i++) {
+		for (int i = 0; i < itemNames.length; i++) {
 			itemNames[i] = get(i).getName();
 		}
 		return itemNames;

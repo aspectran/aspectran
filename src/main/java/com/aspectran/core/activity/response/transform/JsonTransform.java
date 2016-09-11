@@ -70,23 +70,25 @@ public class JsonTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 		
 		try {
-			if(this.characterEncoding != null) {
+			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
 				String characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			}
 
@@ -95,34 +97,34 @@ public class JsonTransform extends TransformResponse {
 
 			// support for jsonp
 			String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
-			if(callback != null) {
+			if (callback != null) {
 				writer.write(callback + ROUND_BRACKET_OPEN);
 			}
 			
 			JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
 			jsonWriter.write(processResult);
 
-			if(callback != null) {
+			if (callback != null) {
 				writer.write(ROUND_BRACKET_CLOSE);
 			}
 
 			writer.flush();
 			
-			if(traceEnabled) {
+			if (traceEnabled) {
 				Writer stringWriter = new StringWriter();
-				if(callback != null) {
+				if (callback != null) {
 					stringWriter.write(callback);
 					stringWriter.write(callback + ROUND_BRACKET_OPEN);
 				}
 				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
 				jsonWriter2.write(processResult);
-				if(callback != null) {
+				if (callback != null) {
 					stringWriter.write(ROUND_BRACKET_CLOSE);
 				}
 				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}

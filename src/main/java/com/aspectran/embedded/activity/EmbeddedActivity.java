@@ -49,7 +49,7 @@ public class EmbeddedActivity extends CoreActivity {
 
 			ResponseAdapter responseAdapter = new EmbeddedResponseAdapter();
 			setResponseAdapter(responseAdapter);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new AdapterException("Failed to adapt for Embedded Activity.", e);
 		}
 	}

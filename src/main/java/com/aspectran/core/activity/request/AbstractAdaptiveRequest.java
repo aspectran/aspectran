@@ -56,7 +56,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public AbstractAdaptiveRequest(Map<String, String[]> parameterMap) {
-		if(parameterMap != null && !parameterMap.isEmpty()) {
+		if (parameterMap != null && !parameterMap.isEmpty()) {
 			this.parameterMap = new ParameterMap(parameterMap);
 		}
 	}
@@ -76,7 +76,7 @@ public abstract class AbstractAdaptiveRequest {
 	 * @return an {@code MultiValueMap} object, may not be {@code null}
 	 */
 	protected MultiValueMap<String, String> touchHeaders() {
-		if(headers == null) {
+		if (headers == null) {
 			headers = new LinkedCaseInsensitiveMultiValueMap<String>(12);
 		}
 		return headers;
@@ -166,7 +166,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public String getParameter(String name) {
-		return (parameterMap == null) ? null : parameterMap.getParameter(name);
+		return (parameterMap == null ? null : parameterMap.getParameter(name));
 	}
 
 	public void setParameter(String name, String value) {
@@ -174,7 +174,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public String[] getParameterValues(String name) {
-		return (parameterMap == null) ? null : parameterMap.getParameterValues(name);
+		return (parameterMap == null ? null : parameterMap.getParameterValues(name));
 	}
 
 	public void setParameter(String name, String[] values) {
@@ -182,7 +182,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	private ParameterMap touchParameterMap() {
-		if(this.parameterMap == null) {
+		if (this.parameterMap == null) {
 			this.parameterMap = new ParameterMap();
 		}
 		return this.parameterMap;
@@ -195,15 +195,15 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public Enumeration<String> getParameterNames() {
-		return (parameterMap == null) ? null : parameterMap.getParameterNames();
+		return (parameterMap == null ? null : parameterMap.getParameterNames());
 	}
 
 	public void fillPrameterMap(Map<String, Object> targetParameterMap) {
-		if(this.parameterMap != null) {
-			for(Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
+		if (this.parameterMap != null) {
+			for (Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
 				String name = entry.getKey();
 				String[] values = entry.getValue();
-				if(values.length == 1) {
+				if (values.length == 1) {
 					targetParameterMap.put(name, values[0]);
 				} else {
 					targetParameterMap.put(name, values);
@@ -213,11 +213,11 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public FileParameter getFileParameter(String name) {
-		return (fileParameterMap == null) ? null : fileParameterMap.getFileParameter(name);
+		return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
 	}
 	
 	public FileParameter[] getFileParameterValues(String name) {
-		return (fileParameterMap == null) ? null : fileParameterMap.getFileParameterValues(name);
+		return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
 	}
 
 	public void setFileParameter(String name, FileParameter fileParameter) {
@@ -230,15 +230,15 @@ public abstract class AbstractAdaptiveRequest {
 	
 	public Enumeration<String> getFileParameterNames() {
 		FileParameterMap fileParameterMap = touchFileParameterMap();
-		return (fileParameterMap == null) ? null : Collections.enumeration(fileParameterMap.keySet());
+		return (fileParameterMap != null ? Collections.enumeration(fileParameterMap.keySet()) : null);
 	}
 	
 	public FileParameter[] removeFileParameter(String name) {
-		return (fileParameterMap == null) ? null : fileParameterMap.remove(name);
+		return (fileParameterMap != null ? fileParameterMap.remove(name) : null);
 	}
 	
 	private FileParameterMap touchFileParameterMap() {
-		if(fileParameterMap == null) {
+		if (fileParameterMap == null) {
 			fileParameterMap = new FileParameterMap();
 		}
 		return fileParameterMap;
@@ -251,10 +251,10 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public void fillAttributeMap(Map<String, Object> targetAttributeMap) {
-		if(targetAttributeMap != null) {
+		if (targetAttributeMap != null) {
 			Enumeration<String> enm = getAttributeNames();
 
-			while(enm.hasMoreElements()) {
+			while (enm.hasMoreElements()) {
 				String name = enm.nextElement();
 				Object value = getAttribute(name);
 				targetAttributeMap.put(name, value);

@@ -49,7 +49,7 @@ public class AspectranConfig extends AbstractParameters {
 	
 	public void updateRootContextLocation(String rootContextLocation) {
 		Parameters contextParameters = getParameters(context);
-		if(contextParameters == null) {
+		if (contextParameters == null) {
 			contextParameters = newParameters(context);
 		}
 		contextParameters.putValue(AspectranContextConfig.root, rootContextLocation);

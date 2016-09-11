@@ -50,11 +50,11 @@ public class FileScannerTest {
 
 		StringBuilder sb = new StringBuilder();
 		
-		while(matcher.hasNext()) {
+		while (matcher.hasNext()) {
 			String term = matcher.next();
-			if(term.length() > 0) {
-				if(!WildcardPattern.hasWildcards(term)) {
-					if(sb.length() > 0)
+			if (term.length() > 0) {
+				if (!WildcardPattern.hasWildcards(term)) {
+					if (sb.length() > 0)
 						sb.append(FILE_SEPARATOR);
 					sb.append(term);
 				} else {
@@ -82,7 +82,7 @@ public class FileScannerTest {
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
-		if(basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
+		if (basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
 			basePath = basePath.substring(0, basePath.length() - 1);
 		}
 		
@@ -99,22 +99,22 @@ public class FileScannerTest {
 	
 	private void scanFiles(final String targetPath, final WildcardMatcher matcher, final Map<String, File> scannedFiles) {
 		final File target;
-		if(applicationBasePath != null)
+		if (applicationBasePath != null)
 			target = new File(applicationBasePath, targetPath);
 		else
 			target = new File(targetPath);
 		
-		if(!target.exists())
+		if (!target.exists())
 			return;
 
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
-				if(file.isDirectory()) {
+				if (file.isDirectory()) {
 					scanFiles(filePath, matcher, scannedFiles);
 				} else {
-					if(matcher.matches(filePath)) {
+					if (matcher.matches(filePath)) {
 						putFile(scannedFiles, filePath, target);
 					}
 				}
@@ -131,7 +131,7 @@ public class FileScannerTest {
 		FileScannerTest scanner = new FileScannerTest(".");
 		Map<String, File> files = scanner.scanFiles("/WEB-INF/jsp/pages/**/*.jsp");
 		
-		for(Map.Entry<String, File> entry : files.entrySet()) {
+		for (Map.Entry<String, File> entry : files.entrySet()) {
 			System.out.println(entry.getKey() + " - " + entry.getValue());
 		}
 	}

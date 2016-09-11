@@ -73,13 +73,15 @@ public class Trimmer {
     }
 
     public String trim(String str) {
-        if(str == null)
+        if (str == null) {
             return null;
+        }
 
         String trimmed = str.trim();
 
-        if(trimmed.length() == 0)
+        if (trimmed.length() == 0) {
             return trimmed;
+        }
 
         StringBuilder builder = new StringBuilder(trimmed);
 
@@ -88,8 +90,9 @@ public class Trimmer {
         boolean prefixed = prefixing(builder);
         boolean sufixed = suffixing(builder);
 
-        if(deprefixed || desuffixed || prefixed || sufixed)
+        if (deprefixed || desuffixed || prefixed || sufixed) {
             return builder.toString();
+        }
 
         return trimmed;
     }
@@ -97,9 +100,9 @@ public class Trimmer {
     private boolean deprefixing(StringBuilder builder) {
         boolean applied = false;
 
-        if(deprefixes != null && deprefixes.length > 0) {
-            for(String deprefix : deprefixes) {
-                if(delete(deprefix, builder, 0)) {
+        if (deprefixes != null && deprefixes.length > 0) {
+            for (String deprefix : deprefixes) {
+                if (delete(deprefix, builder, 0)) {
                     applied = true;
                 }
             }
@@ -111,10 +114,10 @@ public class Trimmer {
     private boolean desuffixing(StringBuilder builder) {
         boolean applied = false;
 
-        if(desuffixes != null && desuffixes.length > 0) {
-            for(String desuffix : desuffixes) {
+        if (desuffixes != null && desuffixes.length > 0) {
+            for (String desuffix : desuffixes) {
                 int start = builder.length() - desuffix.length();
-                if(delete(desuffix, builder, start)) {
+                if (delete(desuffix, builder, start)) {
                     applied = true;
                 }
             }
@@ -124,8 +127,9 @@ public class Trimmer {
     }
 
     private boolean prefixing(StringBuilder builder) {
-        if(prefix == null)
+        if (prefix == null) {
             return false;
+        }
 
         builder.insert(0, prefix);
 
@@ -133,8 +137,9 @@ public class Trimmer {
     }
 
     private boolean suffixing(StringBuilder builder) {
-        if(suffix == null)
+        if (suffix == null) {
             return false;
+        }
 
         builder.append(suffix);
 
@@ -142,16 +147,18 @@ public class Trimmer {
     }
 
     private boolean delete(String str, StringBuilder builder, int start) {
-        if(str == null || str.length() > builder.length())
+        if (str == null || str.length() > builder.length()) {
             return false;
+        }
 
         int end = start + str.length();
 
-        for(int i = start, j = 0; i < end; i++, j++) {
+        for (int i = start, j = 0; i < end; i++, j++) {
             char c1 = caseSensitive ? builder.charAt(i) : Character.toLowerCase(builder.charAt(i));
             char c2 = caseSensitive ? str.charAt(j) : Character.toLowerCase(str.charAt(j));
-            if(c1 != c2)
+            if (c1 != c2) {
                 return false;
+            }
         }
 
         builder.delete(start, end);
@@ -168,10 +175,10 @@ public class Trimmer {
         sb.append("{prefix=").append(prefix);
         sb.append(", suffix=").append(suffix);
         sb.append(", deprefixes=");
-        if(deprefixes != null) {
+        if (deprefixes != null) {
             sb.append("[");
-            for(int i = 0; i < deprefixes.length; i++) {
-                if(i > 0) {
+            for (int i = 0; i < deprefixes.length; i++) {
+                if (i > 0) {
                     sb.append(", ");
                 }
                 sb.append(deprefixes[i]);
@@ -181,11 +188,12 @@ public class Trimmer {
             sb.append("null");
         }
         sb.append(", desuffixes=");
-        if(desuffixes != null) {
+        if (desuffixes != null) {
             sb.append("[");
-            for(int i = 0; i < desuffixes.length; i++) {
-                if(i > 0)
+            for (int i = 0; i < desuffixes.length; i++) {
+                if (i > 0) {
                     sb.append(", ");
+                }
                 sb.append(desuffixes[i]);
             }
             sb.append("]");
@@ -194,7 +202,6 @@ public class Trimmer {
         }
         sb.append(", caseSensitive=").append(caseSensitive);
         sb.append("}");
-
         return sb.toString();
     }
 

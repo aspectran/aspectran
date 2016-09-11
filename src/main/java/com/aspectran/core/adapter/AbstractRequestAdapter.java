@@ -65,7 +65,7 @@ public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest imp
 
 	@Override
 	public RequestScope getRequestScope(boolean create) {
-		if(requestScope == null && create) {
+		if (requestScope == null && create) {
 			requestScope = new RequestScope();
 		}
 		return requestScope;

@@ -69,7 +69,7 @@ public class BeanDescriptor {
 		writeablePropertyNames = writeMethods.keySet().toArray(new String[writeMethods.keySet().size()]);
 		
 		Set<String> nameSet = new HashSet<>();
-		for(Method method : methods) {
+		for (Method method : methods) {
 			nameSet.add(method.getName());
 		}
 		
@@ -77,16 +77,16 @@ public class BeanDescriptor {
 	}
 
 	private void addReadMethods(Method[] methods) {
-		for(Method method : methods) {
+		for (Method method : methods) {
 			String name = method.getName();
 
-			if(name.startsWith("get") && name.length() > 3) {
-				if(method.getParameterTypes().length == 0) {
+			if (name.startsWith("get") && name.length() > 3) {
+				if (method.getParameterTypes().length == 0) {
 					name = dropCase(name);
 					addGetMethod(name, method);
 				}
-			} else if(name.startsWith("is") && name.length() > 2) {
-				if(method.getParameterTypes().length == 0) {
+			} else if (name.startsWith("is") && name.length() > 2) {
+				if (method.getParameterTypes().length == 0) {
 					name = dropCase(name);
 					addGetMethod(name, method);
 				}
@@ -101,10 +101,10 @@ public class BeanDescriptor {
 	
 	private void addWriteMethods(Method[] methods) {
 		Map<String, List<Method>> conflictingSetters = new HashMap<>();
-		for(Method method : methods) {
+		for (Method method : methods) {
 			String name = method.getName();
-			if(name.startsWith("set") && name.length() > 3) {
-				if(method.getParameterTypes().length == 1) {
+			if (name.startsWith("set") && name.length() > 3) {
+				if (method.getParameterTypes().length == 1) {
 					name = dropCase(name);
 					addSetterConflict(conflictingSetters, name, method);
 				}
@@ -115,7 +115,7 @@ public class BeanDescriptor {
 
 	private void addSetterConflict(Map<String, List<Method>> conflictingSetters, String name, Method method) {
 		List<Method> list = conflictingSetters.get(name);
-		if(list == null) {
+		if (list == null) {
 			list = new ArrayList<Method>();
 			conflictingSetters.put(name, list);
 		}
@@ -123,28 +123,28 @@ public class BeanDescriptor {
 	}
 
 	private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
-		for(String propName : conflictingSetters.keySet()) {
+		for (String propName : conflictingSetters.keySet()) {
 			List<Method> setters = conflictingSetters.get(propName);
 			Method firstMethod = setters.get(0);
-			if(setters.size() == 1) {
+			if (setters.size() == 1) {
 				addWriteMethod(propName, firstMethod);
 			} else {
 				Class<?> expectedType = readTypes.get(propName);
-				if(expectedType == null) {
+				if (expectedType == null) {
 					throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
 							propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
 							"specification and can cause unpredicatble results.");
 				} else {
 					Iterator<Method> methods = setters.iterator();
 					Method setter = null;
-					while(methods.hasNext()) {
+					while (methods.hasNext()) {
 						Method method = methods.next();
-						if(method.getParameterTypes().length == 1 && expectedType.equals(method.getParameterTypes()[0])) {
+						if (method.getParameterTypes().length == 1 && expectedType.equals(method.getParameterTypes()[0])) {
 							setter = method;
 							break;
 						}
 					}
-					if(setter == null) {
+					if (setter == null) {
 						throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
 								propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
 								"specification and can cause unpredicatble results.");
@@ -173,13 +173,13 @@ public class BeanDescriptor {
 		Map<String, Method> uniqueMethods = new HashMap<>();
 		Class<?> currentClass = cls;
 		
-		while(currentClass != null) {
+		while (currentClass != null) {
 			addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 	
 			// we also need to look for interface methods -
 			// because the class may be abstract
 			Class<?>[] interfaces = currentClass.getInterfaces();
-			for(Class<?> anInterface : interfaces) {
+			for (Class<?> anInterface : interfaces) {
 				addUniqueMethods(uniqueMethods, anInterface.getMethods());
 			}
 	
@@ -192,14 +192,14 @@ public class BeanDescriptor {
 	}
 	
 	private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
-		for(Method currentMethod : methods) {
-			if(!currentMethod.isBridge()) {
+		for (Method currentMethod : methods) {
+			if (!currentMethod.isBridge()) {
 				String signature = getSignature(currentMethod);
 				// check to see if the method is already known
 				// if it is known, then an extended class must have
 				// overridden a method
-				if(!uniqueMethods.containsKey(signature)) {
-					if(canAccessPrivateMethods()) {
+				if (!uniqueMethods.containsKey(signature)) {
+					if (canAccessPrivateMethods()) {
 						ReflectionUtils.makeAccessible(currentMethod);
 					}
 					uniqueMethods.put(signature, currentMethod);
@@ -213,8 +213,8 @@ public class BeanDescriptor {
 		sb.append(method.getName());
 		Class<?>[] parameters = method.getParameterTypes();
 
-		for(int i = 0; i < parameters.length; i++) {
-			if(i == 0) {
+		for (int i = 0; i < parameters.length; i++) {
+			if (i == 0) {
 				sb.append(':');
 			} else {
 				sb.append(',');
@@ -228,25 +228,25 @@ public class BeanDescriptor {
 	private static boolean canAccessPrivateMethods() {
 		try {
 			SecurityManager securityManager = System.getSecurityManager();
-			if(null != securityManager) {
+			if (null != securityManager) {
 				securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
 			}
-		} catch(SecurityException e) {
+		} catch (SecurityException e) {
 			return false;
 		}
 		return true;
 	}
 	
 	private static String dropCase(String name) {
-		if(name.startsWith("is")) {
+		if (name.startsWith("is")) {
 			name = name.substring(2);
-		} else if(name.startsWith("get") || name.startsWith("set")) {
+		} else if (name.startsWith("get") || name.startsWith("set")) {
 			name = name.substring(3);
 		} else {
 			throw new IllegalArgumentException("Error parsing property name '" + name + "'.  Didn't start with 'is', 'get' or 'set'.");
 		}
 
-		if(name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
+		if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
 			name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
 		}
 
@@ -262,7 +262,7 @@ public class BeanDescriptor {
 	 */
 	public Method getSetter(String propertyName) throws NoSuchMethodException {
 		Method method = writeMethods.get(propertyName);
-		if(method == null) {
+		if (method == null) {
 			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return method;
@@ -277,7 +277,7 @@ public class BeanDescriptor {
 	 */
 	public Method getGetter(String propertyName) throws NoSuchMethodException {
 		Method method = readMethods.get(propertyName);
-		if(method == null) {
+		if (method == null) {
 			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return method;
@@ -292,7 +292,7 @@ public class BeanDescriptor {
 	 */
 	public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = writeType.get(propertyName);
-		if(clazz == null) {
+		if (clazz == null) {
 			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return clazz;
@@ -307,7 +307,7 @@ public class BeanDescriptor {
 	 */
 	public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = readTypes.get(propertyName);
-		if(clazz == null) {
+		if (clazz == null) {
 			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return clazz;
@@ -366,9 +366,9 @@ public class BeanDescriptor {
 	 * @return the method cache for the class
 	 */
 	public static BeanDescriptor getInstance(Class<?> clazz) {
-		if(cacheEnabled) {
+		if (cacheEnabled) {
 			BeanDescriptor cached = cache.get(clazz);
-			if(cached == null) {
+			if (cached == null) {
 				cached = new BeanDescriptor(clazz);
 				cache.put(clazz, cached);
 			}
@@ -380,7 +380,7 @@ public class BeanDescriptor {
 
 	public static synchronized void setCacheEnabled(boolean cacheEnabling) {
 		cacheEnabled = cacheEnabling;
-		if(!cacheEnabled) {
+		if (!cacheEnabled) {
 			clearCache();
 		}
 	}

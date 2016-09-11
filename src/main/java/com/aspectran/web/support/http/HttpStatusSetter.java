@@ -87,7 +87,7 @@ public class HttpStatusSetter {
 	 */
 	public static void created(Translet translet, String location) {
 		translet.getResponseAdapter().setStatus(HttpStatus.CREATED);
-		if(location != null) {
+		if (location != null) {
 			translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
 		}
 	}

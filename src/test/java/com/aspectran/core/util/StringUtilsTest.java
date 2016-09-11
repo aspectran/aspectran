@@ -21,13 +21,13 @@ public class StringUtilsTest {
 
     @Test
     public void convertToHumanFriendlyByteSize() {
-        for(long l : new long[] {1L, 1024L, 10000L, 1234567890L})
+        for (long l : new long[] {1L, 1024L, 10000L, 1234567890L})
             System.out.println(l + " = " + StringUtils.convertToHumanFriendlyByteSize(l));
     }
 
     @Test
     public void convertToMachineFriendlyByteSize() {
-        for(String s : "1K, 1KB, 10M, 10MB, 1.2 GB, 2.4GB, 3.75MB, 1.28KB, 1024, 1024B".split(","))
+        for (String s : "1K, 1KB, 10M, 10MB, 1.2 GB, 2.4GB, 3.75MB, 1.28KB, 1024, 1024B".split(","))
             System.out.println(s.trim() + " = " + StringUtils.convertToMachineFriendlyByteSize(s));
     }
 

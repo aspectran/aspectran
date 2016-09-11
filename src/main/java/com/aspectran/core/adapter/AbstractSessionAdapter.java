@@ -48,7 +48,7 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	
 	@Override
 	public String toString() {
-		if(adaptee == null) {
+		if (adaptee == null) {
 			return super.toString();
 		}
 		ToStringBuilder tsb = new ToStringBuilder();

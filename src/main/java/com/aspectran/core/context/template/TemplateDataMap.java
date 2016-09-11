@@ -33,9 +33,9 @@ public class TemplateDataMap extends ActivityDataMap {
 	}
 
 	public Locale getLocale() {
-		if(requestAdapter != null)
+		if (requestAdapter != null) {
 			return requestAdapter.getLocale();
-
+		}
 		return null;
 	}
 

@@ -68,7 +68,7 @@ public class MethodActionRule {
 	}
 
 	public String getMethodName() {
-		if(method != null)
+		if (method != null)
 			return method.getName();
 		return null;
 	}
@@ -120,8 +120,9 @@ public class MethodActionRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		if(configBeanClass != null)
+		if (configBeanClass != null) {
 			tsb.append("class", configBeanClass.getName());
+		}
 		tsb.append("method", method);
 		tsb.append("aspectAdviceRule", aspectAdviceRule);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
@@ -139,7 +140,6 @@ public class MethodActionRule {
 		MethodActionRule methodActionRule = new MethodActionRule();
 		methodActionRule.setConfigBeanClass(actionClass);
 		methodActionRule.setMethod(method);
-
 		return methodActionRule;
 	}
 	

@@ -61,22 +61,22 @@ class AspectranDtdResolver implements EntityResolver {
 	 */
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-		if(validating) {
+		if (validating) {
 			try {
 				InputSource source = null;
 	
-				if(publicId != null) {
+				if (publicId != null) {
 					String path = doctypeMap.get(publicId.toUpperCase());
 					source = getInputSource(path);
 				}
 				
-				if(source == null && systemId != null) {
+				if (source == null && systemId != null) {
 					String path = doctypeMap.get(systemId.toUpperCase());
 					source = getInputSource(path);
 				}
 	
 				return source;
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new SAXException(e.toString());
 			}
 		} else {
@@ -94,9 +94,8 @@ class AspectranDtdResolver implements EntityResolver {
 	private InputSource getInputSource(String path) throws IOException {
 		InputSource source = null;
 		
-		if(path != null) {
+		if (path != null) {
 			InputStream in = getClass().getResourceAsStream(path);
-			
 			source = new InputSource(in);
 		}
 		

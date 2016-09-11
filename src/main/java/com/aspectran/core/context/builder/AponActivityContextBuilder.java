@@ -43,8 +43,9 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 	@Override
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			if(rootContext == null)
+			if (rootContext == null) {
 				throw new IllegalArgumentException("'rootContext' must not be null.");
+			}
 
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			getContextBuilderAssistant().setImportHandler(importHandler);
@@ -53,7 +54,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 			importHandler.handle(importer);
 
 			return createActivityContext();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a APON Activity Context: " + rootContext, e);
 		}
 	}

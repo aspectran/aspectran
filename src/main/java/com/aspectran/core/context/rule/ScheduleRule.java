@@ -156,8 +156,9 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	}
 	
 	public static ScheduleRule newInstance(String id) {
-        if(id == null)
-            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+        if (id == null) {
+			throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+		}
 
 		ScheduleRule scheduleRule = new ScheduleRule();
 		scheduleRule.setId(id);
@@ -170,23 +171,23 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	}
 	
 	public static void updateTrigger(ScheduleRule scheduleRule, String text) {
-		if(StringUtils.hasText(text)) {
+		if (StringUtils.hasText(text)) {
 			Parameters triggerParameters = new TriggerParameters(text);
 			updateTrigger(scheduleRule, triggerParameters);
 		}
 	}
 
 	public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
-		if(scheduleRule.getTriggerType() == null) {
+		if (scheduleRule.getTriggerType() == null) {
 			String type = triggerParameters.getString(TriggerParameters.type);
 			updateTriggerType(scheduleRule, type);
 		}
-		if(scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+		if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
 			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
 			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
 			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
 			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-			if(intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
+			if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
 				throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
 						"Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
 			}
@@ -195,7 +196,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 			String expression = triggerParameters.getString(TriggerParameters.expression);
 			
 			String[] fields = StringUtils.tokenize(expression, " ");
-			if(fields.length != 6) {
+			if (fields.length != 6) {
 				throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
 			}
 			triggerParameters.putValue(TriggerParameters.expression, StringUtils.arrayToDelimitedString(fields, " "));
@@ -205,9 +206,9 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
 		TriggerType triggerType;
-		if(type != null) {
+		if (type != null) {
 			triggerType = TriggerType.resolve(type);
-			if(triggerType == null) {
+			if (triggerType == null) {
 				throw new IllegalArgumentException("Unknown trigger type '" + type + "'. Trigger type for Scheduler must be 'cron' or 'simple'.");
 			}
 		} else {

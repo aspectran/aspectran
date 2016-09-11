@@ -102,35 +102,35 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
 		StringBuilder sb = new StringBuilder(256);
 
-		if(target != null) {
+		if (target != null) {
 			sb.append(target);
 			questionPos = target.indexOf(QUESTION_CHAR);
 		}
 		
-		if(redirectResponseRule.getParameterItemRuleMap() != null) {
+		if (redirectResponseRule.getParameterItemRuleMap() != null) {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			Map<String, Object> valueMap = evaluator.evaluate(redirectResponseRule.getParameterItemRuleMap());
 
-			if(valueMap != null && !valueMap.isEmpty()) {
-				if(questionPos == -1) {
+			if (valueMap != null && !valueMap.isEmpty()) {
+				if (questionPos == -1) {
 					sb.append(QUESTION_CHAR);
 				}
 
 				String name = null;
 				Object value;
 				
-				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					if(name != null) {
+				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+					if (name != null) {
 						sb.append(AMPERSAND_CHAR);
 					}
 
 					name = entry.getKey();
 					value = entry.getValue();
 
-					if(!redirectResponseRule.isExcludeNullParameter() || value != null) {
+					if (!redirectResponseRule.isExcludeNullParameter() || value != null) {
 						sb.append(name).append(EQUAL_CHAR);
 
-						if(value != null) {
+						if (value != null) {
 							value = URLEncoder.encode(value.toString(), characterEncoding);
 							sb.append(value.toString());
 						}
@@ -148,13 +148,13 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 	@Override
 	public void flush() {
 		MultiValueMap<String, String> headers = getHeaders();
-		if(headers != null && !headers.isEmpty()) {
-			for(Map.Entry<String, List<String>> entry : headers.entrySet()) {
+		if (headers != null && !headers.isEmpty()) {
+			for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
 				List<String> values = entry.getValue();
-				if(values.size() > 0) {
+				if (values.size() > 0) {
 					((HttpServletResponse)adaptee).setHeader(entry.getKey(), values.get(0));
-					if(values.size() > 1) {
-						for(int i = 1; i < values.size(); i++) {
+					if (values.size() > 1) {
+						for (int i = 1; i < values.size(); i++) {
 							((HttpServletResponse)adaptee).addHeader(entry.getKey(), values.get(i));
 						}
 					}
@@ -163,7 +163,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 			}
 		}
 
-		if(getStatus() != 0) {
+		if (getStatus() != 0) {
 			((HttpServletResponse)adaptee).setStatus(getStatus());
 		}
 	}

@@ -48,7 +48,7 @@ public class ContextEnvironment extends AbstractEnvironment {
 	}
 	
 	public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-		if(this.propertyItemRuleMap == null) {
+		if (this.propertyItemRuleMap == null) {
 			this.propertyItemRuleMap = propertyItemRuleMap;
 		} else {
 			this.propertyItemRuleMap.putAll(propertyItemRuleMap);
@@ -56,17 +56,19 @@ public class ContextEnvironment extends AbstractEnvironment {
 	}
 	
 	public <T> T getProperty(String name) {
-		if(propertyItemRuleMap == null) {
+		if (propertyItemRuleMap == null) {
 			return null;
 		}
 
 		ItemRule itemRule = propertyItemRuleMap.get(name);
-		if(itemRule == null)
+		if (itemRule == null) {
 			return null;
+		}
 
 		Activity activity = context.getCurrentActivity();
-		if(activity == null)
+		if (activity == null) {
 			activity = new DefaultActivity(context);
+		}
 
 		ItemEvaluator evaluator = new ItemExpressionParser(activity);
 		return evaluator.evaluate(itemRule);

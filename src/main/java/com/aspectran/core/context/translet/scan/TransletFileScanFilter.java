@@ -24,6 +24,6 @@ import java.io.File;
  */
 public interface TransletFileScanFilter {
 	
-	public boolean filter(String transletName, File templateFile);
+	boolean filter(String transletName, File templateFile);
 
 }

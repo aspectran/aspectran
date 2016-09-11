@@ -67,7 +67,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	 * @return the dispatch name
 	 */
 	public String getName(Activity activity) {
-		if(nameTokens != null && nameTokens.length > 0) {
+		if (nameTokens != null && nameTokens.length > 0) {
 			TokenEvaluator evaluator = new TokenExpressionParser(activity);
 			return evaluator.evaluateAsString(nameTokens);
 		} else {
@@ -86,15 +86,17 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 		List<Token> tokens = Tokenizer.tokenize(name, true);
 		int tokenCount = 0;
 
-		for(Token t : tokens) {
-			if(t.getType() != TokenType.TEXT)
+		for (Token t : tokens) {
+			if (t.getType() != TokenType.TEXT) {
 				tokenCount++;
+			}
 		}
 
-		if(tokenCount > 0)
+		if (tokenCount > 0) {
 			this.nameTokens = tokens.toArray(new Token[tokens.size()]);
-		else
+		} else {
 			this.nameTokens = null;
+		}
 	}
 
 	public void setName(String name, Token[] nameTokens) {
@@ -240,7 +242,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 		drr.setContentType(contentType);
 		drr.setCharacterEncoding(characterEncoding);
 		drr.setDefaultResponse(defaultResponse);
-
 		return drr;
 	}
 
@@ -270,7 +271,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 		drr.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
 		drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
 		drr.setActionList(dispatchResponseRule.getActionList());
-		
 		return drr;
 	}
 

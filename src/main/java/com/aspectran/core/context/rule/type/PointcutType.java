@@ -44,9 +44,10 @@ public enum PointcutType {
 	 * @return a {@code PointcutType}, may be {@code null}
 	 */
 	public static PointcutType resolve(String alias) {
-		for(PointcutType type : values()) {
-			if(type.alias.equals(alias))
+		for (PointcutType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

@@ -72,15 +72,16 @@ public enum MethodType {
 	private static final Map<String, MethodType> mappings = new HashMap<>(MAX_COUNT);
 
 	static {
-		for(MethodType type : values()) {
+		for (MethodType type : values()) {
 			mappings.put(type.name(), type);
 		}
 	}
 	
 	public boolean containsTo(MethodType[] types) {
-		for(MethodType type : types) {
-			if(equals(type) || ALL.equals(type))
+		for (MethodType type : types) {
+			if (equals(type) || ALL.equals(type)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -112,16 +113,16 @@ public enum MethodType {
 		int count = 0;
 
 		StringTokenizer st = new StringTokenizer(value, ", ");
-		while(st.hasMoreTokens()) {
+		while (st.hasMoreTokens()) {
 			String token = st.nextToken();
-			if(!token.isEmpty()) {
+			if (!token.isEmpty()) {
 				MethodType type = resolve(token);
-				if(type != null) {
+				if (type != null) {
 					int ord = type.ordinal();
-					if(ord == 0) {
+					if (ord == 0) {
 						return new MethodType[] { ALL };
 					} else {
-						if(types[ord] == null) {
+						if (types[ord] == null) {
 							types[ord] = type;
 							count++;
 						}
@@ -130,13 +131,13 @@ public enum MethodType {
 			}
 		}
 
-		if(count == 0)
+		if (count == 0)
 			return null;
 
 		MethodType[] orderedTypes = new MethodType[count];
 
-		for(int i = 1, seq = 0; i < MAX_COUNT; i++) {
-			if(types[i] != null) {
+		for (int i = 1, seq = 0; i < MAX_COUNT; i++) {
+			if (types[i] != null) {
 				orderedTypes[seq++] = types[i];
 			}
 		}
@@ -151,13 +152,15 @@ public enum MethodType {
 	 * @return a comma separated {@code String}
 	 */
 	public static String stringify(MethodType[] types) {
-		if(types == null || types.length == 0)
+		if (types == null || types.length == 0) {
 			return null;
+		}
 		
 		StringBuilder sb = new StringBuilder(types.length * 7);
-		for(int i = 0; i < types.length; i++) {
-			if(i > 0)
+		for (int i = 0; i < types.length; i++) {
+			if (i > 0) {
 				sb.append(",");
+			}
 			sb.append(types[i]);
 		}
 		return sb.toString();

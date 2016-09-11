@@ -59,7 +59,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 	@Override
 	public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
-		if(hardReload) {
+		if (hardReload) {
 			newAspectranClassLoader();
 		}
 

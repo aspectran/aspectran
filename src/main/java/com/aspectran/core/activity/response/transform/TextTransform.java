@@ -66,41 +66,43 @@ public class TextTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 
 		try {
-			if(this.characterEncoding != null) {
+			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
 				String characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			}
 
 			Writer writer = responseAdapter.getWriter();
 
-			if(templateId != null) {
+			if (templateId != null) {
 				activity.getTemplateProcessor().process(templateId, activity, writer);
-			} else if(templateRule != null) {
+			} else if (templateRule != null) {
 				activity.getTemplateProcessor().process(templateRule, activity, writer);
 			} else {
 				ProcessResult processResult = activity.getProcessResult();
-				if(processResult != null) {
+				if (processResult != null) {
 					int chunks = 0;
-					for(ContentResult contentResult : processResult) {
-						for(ActionResult actionResult : contentResult) {
+					for (ContentResult contentResult : processResult) {
+						for (ActionResult actionResult : contentResult) {
 							Object resultValue = actionResult.getResultValue();
-							if(resultValue != null) {
-								if(chunks++ > 0)
+							if (resultValue != null) {
+								if (chunks++ > 0)
 									writer.write(ActivityContext.LINE_SEPARATOR);
 								writer.write(resultValue.toString());
 							}
@@ -109,7 +111,7 @@ public class TextTransform extends TransformResponse {
 				}
 				writer.flush();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}

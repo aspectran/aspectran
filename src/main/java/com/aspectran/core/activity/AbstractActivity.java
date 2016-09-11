@@ -129,7 +129,7 @@ public abstract class AbstractActivity implements Activity {
 	 * Removes the current activity.
 	 */
 	protected void removeCurrentActivity() {
-		if(outerActivity != null) {
+		if (outerActivity != null) {
 			setCurrentActivity(outerActivity);
 		} else {
 			context.removeCurrentActivity();
@@ -161,8 +161,8 @@ public abstract class AbstractActivity implements Activity {
 
 	@Override
 	public void setRaisedException(Throwable raisedException) {
-		if(this.raisedException == null) {
-			if(log.isDebugEnabled()) {
+		if (this.raisedException == null) {
+			if (log.isDebugEnabled()) {
 				log.error("Raised exception: ", raisedException);
 			}
 			this.raisedException = raisedException;
@@ -176,10 +176,11 @@ public abstract class AbstractActivity implements Activity {
 
 	@Override
 	public Throwable getOriginRaisedException() {
-		if(raisedException != null) {
-			for(Throwable t = raisedException; t != null; t = t.getCause()) {
-				if(t.getCause() == null)
+		if (raisedException != null) {
+			for (Throwable t = raisedException; t != null; t = t.getCause()) {
+				if (t.getCause() == null) {
 					return t;
+				}
 			}
 		}
 		return null;
@@ -297,16 +298,16 @@ public abstract class AbstractActivity implements Activity {
 	 * @return the new {@code Translet} instance
 	 */
 	protected Translet newTranslet(CoreActivity activity, TransletRule transletRule) {
-		if(transletRule != null) {
+		if (transletRule != null) {
 			this.transletRule = transletRule;
 			this.requestRule = transletRule.getRequestRule();
 			this.responseRule = transletRule.getResponseRule();
 		}
 
-		if(this.transletInterfaceClass == null) {
+		if (this.transletInterfaceClass == null) {
 			this.transletInterfaceClass = Translet.class;
 		}
-		if(this.transletImplementClass == null) {
+		if (this.transletImplementClass == null) {
 			this.transletImplementClass = CoreTranslet.class;
 			return new CoreTranslet(activity);
 		}
@@ -317,7 +318,7 @@ public abstract class AbstractActivity implements Activity {
 			Object[] args = new Object[] { activity };
 			
 			return (Translet)transletImplementConstructor.newInstance(args);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransletInstantiationException(transletImplementClass, e);
 		}
 	}
@@ -353,7 +354,7 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	public String resolveRequestCharacterEncoding() {
 		String characterEncoding = requestRule.getCharacterEncoding();
-		if(characterEncoding == null) {
+		if (characterEncoding == null) {
 			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
 		}
 		return characterEncoding;
@@ -366,42 +367,42 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	public String resolveResponseCharacterEncoding() {
 		String characterEncoding = requestRule.getCharacterEncoding();
-		if(characterEncoding == null) {
+		if (characterEncoding == null) {
 			characterEncoding = resolveRequestCharacterEncoding();
 		}
 		return characterEncoding;
 	}
 	
 	protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if(aspectAdviceRuleRegistry == null) {
+		if (aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 		}
 		return aspectAdviceRuleRegistry;
 	}
 	
 	protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if(aspectAdviceRuleRegistry != null) {
+		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		}
 		return null;
 	}
 
 	protected List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if(aspectAdviceRuleRegistry != null) {
+		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 		}
 		return null;
 	}
 	
 	protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if(aspectAdviceRuleRegistry != null) {
+		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 		}
 		return null;
 	}
 
 	protected List<ExceptionRule> getExceptionRuleList() {
-		if(aspectAdviceRuleRegistry != null) {
+		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getExceptionRuleList();
 		}
 		return null;
@@ -409,7 +410,7 @@ public abstract class AbstractActivity implements Activity {
 
 	@Override
 	public <T> T getSetting(String settingName) {
-		return (aspectAdviceRuleRegistry != null) ? aspectAdviceRuleRegistry.getSetting(settingName) : null;
+		return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
 	}
 
 	/**
@@ -421,7 +422,7 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null;
+		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
 	}
 
 	/**
@@ -431,7 +432,7 @@ public abstract class AbstractActivity implements Activity {
 	 * @param adviceBean the advice bean
 	 */
 	protected void putAspectAdviceBean(String aspectId, Object adviceBean) {
-		if(aspectAdviceResult == null) {
+		if (aspectAdviceResult == null) {
 			aspectAdviceResult = new AspectAdviceResult();
 		}
 		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
@@ -446,7 +447,7 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getBeforeAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null;
+		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
 	}
 
 	/**
@@ -458,7 +459,7 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAfterAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null;
+		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
 	}
 
 	/**
@@ -470,7 +471,7 @@ public abstract class AbstractActivity implements Activity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getFinallyAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null;
+		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
 	}
 
 	/**
@@ -480,7 +481,7 @@ public abstract class AbstractActivity implements Activity {
 	 * @param adviceActionResult the advice action result
 	 */
 	protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-		if(aspectAdviceResult == null) {
+		if (aspectAdviceResult == null) {
 			aspectAdviceResult = new AspectAdviceResult();
 		}
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
@@ -551,17 +552,18 @@ public abstract class AbstractActivity implements Activity {
 	
 	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
-		if(!isAcceptable(aspectRule))
+		if (!isAcceptable(aspectRule)) {
 			return;
+		}
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("register AspectRule " + aspectRule);
 		}
 
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-		if(aspectAdviceRuleList != null) {
-			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+		if (aspectAdviceRuleList != null) {
+			for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+				if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
 					execute(aspectAdviceRule);
 				}
 			}
@@ -574,19 +576,18 @@ public abstract class AbstractActivity implements Activity {
 	}
 	
 	protected void prepareAspectAdviceRule(TransletRule transletRule) {
-		if(transletRule.getNameTokens() == null) {
+		if (transletRule.getNameTokens() == null) {
 			this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
 		} else {
 			AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
-
-			for(AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
+			for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
 				JoinpointType joinpointType = aspectRule.getJoinpointType();
 
-				if(!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
-					if(isAcceptable(aspectRule)) {
+				if (!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
+					if (isAcceptable(aspectRule)) {
 						Pointcut pointcut = aspectRule.getPointcut();
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
-							if(log.isDebugEnabled()) {
+						if (pointcut == null || pointcut.matches(transletRule.getName())) {
+							if (log.isDebugEnabled()) {
 								log.debug("register AspectRule " + aspectRule);
 							}
 							aarPostRegister.register(aspectRule);
@@ -594,29 +595,28 @@ public abstract class AbstractActivity implements Activity {
 					}
 				}
 			}
-
 			this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
 		}
 	}
 	
 	private boolean isAcceptable(AspectRule aspectRule) {
-		if(aspectRule.getTargetMethods() != null) {
-			if(getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods()))
+		if (aspectRule.getTargetMethods() != null) {
+			if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods())) {
 				return false;
+			}
 		}
-
-		if(aspectRule.getTargetHeaders() != null) {
+		if (aspectRule.getTargetHeaders() != null) {
 			boolean contained = false;
-			for(String header : aspectRule.getTargetHeaders()) {
-				if(getRequestAdapter().containsHeader(header)) {
+			for (String header : aspectRule.getTargetHeaders()) {
+				if (getRequestAdapter().containsHeader(header)) {
 					contained = true;
 					break;
 				}
 			}
-			if(!contained)
+			if (!contained) {
 				return false;
+			}
 		}
-
 		return true;
 	}
 

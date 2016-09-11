@@ -37,11 +37,11 @@ public class PathVariableMap extends HashMap<Token, String> {
     }
 
     protected void apply(Translet translet) {
-        for(Map.Entry<Token, String> entry : entrySet()) {
+        for (Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
-            if(token.getType() == TokenType.PARAMETER) {
+            if (token.getType() == TokenType.PARAMETER) {
                 translet.setParameter(token.getName(), entry.getValue());
-            } else if(token.getType() == TokenType.ATTRIBUTE) {
+            } else if (token.getType() == TokenType.ATTRIBUTE) {
                 translet.setAttribute(token.getName(), entry.getValue());
             }
         }
@@ -63,26 +63,27 @@ public class PathVariableMap extends HashMap<Token, String> {
         Token prevToken = null;
         Token lastToken = null;
 
-        for(Token token : nameTokens) {
+        for (Token token : nameTokens) {
             TokenType type = token.getType();
 
-            if(type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
+            if (type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
                 lastToken = token;
             } else {
                 String term = token.stringify();
                 endIndex = requestTransletRuleName.indexOf(term, beginIndex);
 
-                if(endIndex == -1)
+                if (endIndex == -1) {
                     return null;
+                }
 
-                if(endIndex > beginIndex) {
+                if (endIndex > beginIndex) {
                     String value = requestTransletRuleName.substring(beginIndex, endIndex);
-                    if(!value.isEmpty()) {
+                    if (!value.isEmpty()) {
                         pathVariableMap.put(prevToken, value);
                     }
                     beginIndex += value.length();
                 } else {
-                    if(prevToken != null && prevToken.getValue() != null) {
+                    if (prevToken != null && prevToken.getValue() != null) {
                         // If the last token ends with a "/" can be given a default value.
                         pathVariableMap.put(prevToken, prevToken.getValue());
                     }
@@ -94,11 +95,11 @@ public class PathVariableMap extends HashMap<Token, String> {
             prevToken = (token.getType() != TokenType.TEXT) ? token : null;
         }
 
-        if(lastToken != null && prevToken == lastToken) {
+        if (lastToken != null && prevToken == lastToken) {
             String value = requestTransletRuleName.substring(beginIndex);
-            if(!value.isEmpty()) {
+            if (!value.isEmpty()) {
                 pathVariableMap.put(lastToken, value);
-            } else if(lastToken.getValue() != null) {
+            } else if (lastToken.getValue() != null) {
                 // If the last token ends with a "/" can be given a default value.
                 pathVariableMap.put(lastToken, lastToken.getValue());
             }

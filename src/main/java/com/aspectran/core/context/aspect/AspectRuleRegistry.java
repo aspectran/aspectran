@@ -52,8 +52,9 @@ public class AspectRuleRegistry {
 	public void addAspectRule(AspectRule aspectRule) {
 		aspectRuleMap.put(aspectRule.getId(), aspectRule);
 		
-		if(log.isTraceEnabled())
+		if (log.isTraceEnabled()) {
 			log.trace("add AspectRule " + aspectRule);
+		}
 	}
 
 	public Collection<AspectRule> getAspectRules() {

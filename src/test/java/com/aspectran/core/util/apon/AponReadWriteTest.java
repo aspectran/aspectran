@@ -34,7 +34,7 @@ public class AponReadWriteTest {
 		Parameters parameters = AponReader.parse(file);
 		
 		File outputFile = new File("./target/test-classes/config/apon-test-output.apon");
-		if(outputFile.exists()) {
+		if (outputFile.exists()) {
 			outputFile.delete();
 		}
 		

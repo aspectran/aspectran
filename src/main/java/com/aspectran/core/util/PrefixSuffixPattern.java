@@ -34,7 +34,7 @@ public class PrefixSuffixPattern {
 	
 	public boolean split(String input) {
 		int start = (input != null) ? input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR) : -1;
-		if(start == -1) {
+		if (start == -1) {
 			prefix = null;
 			suffix = null;
 			splited = false;
@@ -72,11 +72,11 @@ public class PrefixSuffixPattern {
 	}
 
 	public static String join(String prefix, String input, String suffix) {
-		if(prefix != null && suffix != null) {
+		if (prefix != null && suffix != null) {
 			return prefix + StringUtils.nullToEmpty(input) + suffix;
-		} else if(prefix != null) {
+		} else if (prefix != null) {
 			return prefix + StringUtils.nullToEmpty(input);
-		} else if(suffix != null) {
+		} else if (suffix != null) {
 			return StringUtils.nullToEmpty(input) + suffix;
 		} else {
 			return input;
@@ -84,10 +84,11 @@ public class PrefixSuffixPattern {
 	}
 
 	public static PrefixSuffixPattern parse(String input) {
-		if(input != null && !input.isEmpty()) {
+		if (input != null && !input.isEmpty()) {
 			PrefixSuffixPattern pattern = new PrefixSuffixPattern(input);
-			if(pattern.isSplited())
+			if (pattern.isSplited()) {
 				return pattern;
+			}
 		}
 		return null;
 	}

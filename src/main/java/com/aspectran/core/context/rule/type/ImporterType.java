@@ -45,9 +45,10 @@ public enum ImporterType {
 	 * @return an {@code ImporterType}, may be {@code null}
 	 */
 	public static ImporterType resolve(String alias) {
-		for(ImporterType type : values()) {
-			if(type.alias.equals(alias))
+		for (ImporterType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

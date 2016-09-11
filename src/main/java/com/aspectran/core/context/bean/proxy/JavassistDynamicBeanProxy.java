@@ -57,53 +57,54 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
 		AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
 
-		if(aarr == null) {
+		if (aarr == null) {
 			return proceed.invoke(self, args);
 		}
 
 		try {
 			try {
-				if(log.isTraceEnabled()) {
+				if (log.isTraceEnabled()) {
 					StringBuilder sb = new StringBuilder();
 					sb.append("begin method ").append(methodName).append("(");
-					for(int i = 0; i < args.length; i++) {
-						if(i > 0)
+					for (int i = 0; i < args.length; i++) {
+						if (i > 0) {
 							sb.append(", ");
+						}
 						sb.append(args[i].toString());
 					}
 					sb.append(")");
 					log.trace(sb.toString());
 				}
 
-				if(aarr.getBeforeAdviceRuleList() != null) {
+				if (aarr.getBeforeAdviceRuleList() != null) {
 					activity.execute(aarr.getBeforeAdviceRuleList());
 				}
 
-				if(log.isDebugEnabled()) {
+				if (log.isDebugEnabled()) {
 					log.debug("invoke a proxied method [" + overridden + "] within the bean " + beanRule);
 				}
 				Object result = proceed.invoke(self, args);
 
-				if(aarr.getAfterAdviceRuleList() != null) {
+				if (aarr.getAfterAdviceRuleList() != null) {
 					activity.execute(aarr.getAfterAdviceRuleList());
 				}
 
 				return result;
 			} finally {
-				if(aarr.getFinallyAdviceRuleList() != null) {
+				if (aarr.getFinallyAdviceRuleList() != null) {
 					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
 				}
-				if(log.isTraceEnabled()) {
+				if (log.isTraceEnabled()) {
 					log.trace("end method " + methodName);
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			activity.setRaisedException(e);
 
 			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
-			if(exceptionRuleList != null) {
+			if (exceptionRuleList != null) {
 				activity.exceptionHandling(exceptionRuleList);
-				if(activity.isResponseReserved()) {
+				if (activity.isResponseReserved()) {
 					return null;
 				}
 			}
@@ -127,7 +128,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 			proxyFactory.setSuperclass(beanRule.getBeanClass());
 			MethodHandler methodHandler = new JavassistDynamicBeanProxy(context, beanRule);
 			return proxyFactory.create(constructorArgTypes, constructorArgs, methodHandler);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ProxyBeanInstantiationException(beanRule.getBeanClass(), e);
 		}
 	}

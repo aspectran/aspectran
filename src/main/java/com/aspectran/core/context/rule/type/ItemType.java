@@ -48,9 +48,10 @@ public enum ItemType {
 	 * @return an {@code ItemType}, may be {@code null}
 	 */
 	public static ItemType resolve(String alias) {
-		for(ItemType type : values()) {
-			if(type.alias.equals(alias))
+		for (ItemType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

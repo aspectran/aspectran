@@ -42,9 +42,10 @@ public enum TriggerType {
 	 * @return a {@code TriggerType}, may be {@code null}
 	 */
 	public static TriggerType resolve(String alias) {
-		for(TriggerType type : values()) {
-			if(type.alias.equals(alias))
+		for (TriggerType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

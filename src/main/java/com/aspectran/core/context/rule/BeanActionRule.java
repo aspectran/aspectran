@@ -228,12 +228,15 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		tsb.append("id", actionId);
 		tsb.append("bean", beanId);
 		tsb.append("method", methodName);
-		if(argumentItemRuleMap != null)
+		if (argumentItemRuleMap != null) {
 			tsb.append("arguments", argumentItemRuleMap.keySet());
-		if(propertyItemRuleMap != null)
+		}
+		if (propertyItemRuleMap != null) {
 			tsb.append("properties", propertyItemRuleMap.keySet());
-		if(aspectAdviceRule != null)
+		}
+		if (aspectAdviceRule != null) {
 			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
+		}
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		tsb.append("hidden", hidden);
 		return tsb.toString();
@@ -249,7 +252,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * @return the bean action rule
 	 */
 	public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
-		if(methodName == null) {
+		if (methodName == null) {
 			throw new IllegalArgumentException("The 'action' element requires an 'method' attribute.");
 		}
 
@@ -258,7 +261,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		beanActionRule.setBeanId(beanId);
 		beanActionRule.setMethodName(methodName);
 		beanActionRule.setHidden(hidden);
-
 		return beanActionRule;
 	}
 	

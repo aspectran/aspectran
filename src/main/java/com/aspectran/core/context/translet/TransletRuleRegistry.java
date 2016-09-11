@@ -89,27 +89,30 @@ public class TransletRuleRegistry {
 	
 	public PathVariableMap getPathVariableMap(TransletRule transletRule, String requestTransletName) {
 		Token[] nameTokens = transletRule.getNameTokens();
-		if(nameTokens == null || nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)
+		if (nameTokens == null || nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT) {
 			return null;
+		}
 
 		return PathVariableMap.newInstance(nameTokens, requestTransletName);
 	}
 
 	public TransletRule getRestfulTransletRule(String requestTransletName, MethodType requestMethod) {
-		if(!restfulTransletRuleSet.isEmpty()) {
-			for(TransletRule transletRule : restfulTransletRuleSet) {
+		if (!restfulTransletRuleSet.isEmpty()) {
+			for (TransletRule transletRule : restfulTransletRuleSet) {
 				WildcardPattern namePattern = transletRule.getNamePattern();
-				if(namePattern != null) {
-					if(namePattern.matches(requestTransletName)) {
-						if(transletRule.getAllowedMethods() == null ||
-								requestMethod.containsTo(transletRule.getAllowedMethods()))
+				if (namePattern != null) {
+					if (namePattern.matches(requestTransletName)) {
+						if (transletRule.getAllowedMethods() == null
+								|| requestMethod.containsTo(transletRule.getAllowedMethods())) {
 							return transletRule;
+						}
 					}
 				} else {
-					if(requestTransletName.equals(transletRule.getName())) {
-						if(transletRule.getAllowedMethods() == null ||
-								requestMethod.containsTo(transletRule.getAllowedMethods()))
+					if (requestTransletName.equals(transletRule.getName())) {
+						if (transletRule.getAllowedMethods() == null
+								|| requestMethod.containsTo(transletRule.getAllowedMethods())) {
 							return transletRule;
+						}
 					}
 				}
 			}
@@ -129,20 +132,20 @@ public class TransletRuleRegistry {
 	public void addTransletRule(final TransletRule transletRule) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 
-		if(defaultSettings != null) {
+		if (defaultSettings != null) {
 			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
 			transletRule.setTransletImplementationClass(defaultSettings.getTransletImplementationClass());
 		}
 
 		String scanPath = transletRule.getScanPath();
 
-		if(scanPath != null) {
+		if (scanPath != null) {
 			TransletFileScanner scanner = new TransletFileScanner(applicationBasePath, classLoader);
 
-			if(transletRule.getFilterParameters() != null) {
+			if (transletRule.getFilterParameters() != null) {
 				scanner.setFilterParameters(transletRule.getFilterParameters());
 			}
-			if(transletRule.getMaskPattern() != null) {
+			if (transletRule.getMaskPattern() != null) {
 				scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
 			} else {
 				scanner.setTransletNameMaskPattern(scanPath);
@@ -153,10 +156,10 @@ public class TransletRuleRegistry {
 			scanner.scan(scanPath, (filePath, scannedFile) -> {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
 
-                if(prefixSuffixPattern.isSplited()) {
+                if (prefixSuffixPattern.isSplited()) {
                     newTransletRule.setName(prefixSuffixPattern.join(filePath));
                 } else {
-                    if(transletRule.getName() != null) {
+                    if (transletRule.getName() != null) {
                         newTransletRule.setName(transletRule.getName() + filePath);
                     }
                 }
@@ -169,26 +172,26 @@ public class TransletRuleRegistry {
 	}
 	
 	private void dissectTransletRule(TransletRule transletRule) {
-		if(transletRule.getRequestRule() == null) {
+		if (transletRule.getRequestRule() == null) {
 			RequestRule requestRule = new RequestRule();
 			transletRule.setRequestRule(requestRule);
 		}
 		
 		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 		
-		if(responseRuleList == null || responseRuleList.isEmpty()) {
+		if (responseRuleList == null || responseRuleList.isEmpty()) {
 			saveTransletRule(transletRule);
-		} else if(responseRuleList.size() == 1) {
+		} else if (responseRuleList.size() == 1) {
 			transletRule.setResponseRule(responseRuleList.get(0));
 			saveTransletRule(transletRule);
 		} else {
 			ResponseRule defaultResponseRule = null;
 			
-			for(ResponseRule responseRule : responseRuleList) {
+			for (ResponseRule responseRule : responseRuleList) {
 				String responseName = responseRule.getName();
 				
-				if(responseName == null || responseName.isEmpty()) {
-					if(defaultResponseRule != null) {
+				if (responseName == null || responseName.isEmpty()) {
+					if (defaultResponseRule != null) {
 						log.warn("Ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
 					}
 					defaultResponseRule = responseRule;
@@ -199,7 +202,7 @@ public class TransletRuleRegistry {
 				}
 			}
 			
-			if(defaultResponseRule != null) {
+			if (defaultResponseRule != null) {
 				transletRule.setResponseRule(defaultResponseRule);
 				saveTransletRule(transletRule);
 			}
@@ -213,7 +216,7 @@ public class TransletRuleRegistry {
 
 		transletRule.setName(transletName);
 
-		if(transletRule.getAllowedMethods() != null) {
+		if (transletRule.getAllowedMethods() != null) {
 			String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getAllowedMethods());
 			transletRuleMap.put(key, transletRule);
 			saveRestfulTransletRule(transletRule);
@@ -221,8 +224,9 @@ public class TransletRuleRegistry {
 			transletRuleMap.put(transletName, transletRule);
 		}
 
-		if(log.isTraceEnabled())
+		if (log.isTraceEnabled()) {
 			log.trace("add TransletRule " + transletRule);
+		}
 	}
 
 	private void saveRestfulTransletRule(TransletRule transletRule) {
@@ -232,8 +236,8 @@ public class TransletRuleRegistry {
 
 		StringBuilder sb = new StringBuilder(transletName.length());
 
-		for(Token token : nameTokens) {
-			if(token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
+		for (Token token : nameTokens) {
+			if (token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
 				sb.append(WildcardPattern.STAR_CHAR);
 			} else {
 				String tokenString = token.stringify();
@@ -243,7 +247,7 @@ public class TransletRuleRegistry {
 
 		String newTransletName = sb.toString(); 
 		
-		if(WildcardPattern.hasWildcards(newTransletName)) {
+		if (WildcardPattern.hasWildcards(newTransletName)) {
 			WildcardPattern namePattern = WildcardPattern.compile(newTransletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 
 			transletRule.setNamePattern(namePattern);
@@ -273,30 +277,35 @@ public class TransletRuleRegistry {
 	public String applyTransletNamePattern(String transletName, boolean absolutely) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 
-		if(defaultSettings == null)
+		if (defaultSettings == null) {
 			return transletName;
+		}
 
-		if(StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
-			if(absolutely) {
+		if (StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+			if (absolutely) {
 				return transletName;
 			}
 			transletName = transletName.substring(1);
 		}
 
-		if(defaultSettings.getTransletNamePrefix() == null &&
-				defaultSettings.getTransletNameSuffix() == null)
+		if (defaultSettings.getTransletNamePrefix() == null
+				&& defaultSettings.getTransletNameSuffix() == null) {
 			return transletName;
+		}
 
 		StringBuilder sb = new StringBuilder();
 
-		if(defaultSettings.getTransletNamePrefix() != null)
+		if (defaultSettings.getTransletNamePrefix() != null) {
 			sb.append(defaultSettings.getTransletNamePrefix());
+		}
 
-		if(transletName != null)
+		if (transletName != null) {
 			sb.append(transletName);
+		}
 
-		if(defaultSettings.getTransletNameSuffix() != null)
+		if (defaultSettings.getTransletNameSuffix() != null) {
 			sb.append(defaultSettings.getTransletNameSuffix());
+		}
 
 		return sb.toString();
 	}

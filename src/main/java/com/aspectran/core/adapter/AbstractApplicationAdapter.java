@@ -75,10 +75,9 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
 	@Override
 	public ClassLoader getClassLoader() {
-		if(classLoader == null) {
+		if (classLoader == null) {
 			return AspectranClassLoader.getDefaultClassLoader();
 		}
-
 		return classLoader;
 	}
 
@@ -111,17 +110,17 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public File toRealPathAsFile(String filePath) throws IOException {
 		File file;
 		
-		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+		if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
-		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+		} else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			URL url = getClassLoader().getResource(filePath);
-			if(url == null) {
+			if (url == null) {
 				throw new IOException("Could not find the resource with the given name: " + filePath);
 			}
 			file = new File(url.getFile());
 		} else {
-			if(applicationBasePath != null) {
+			if (applicationBasePath != null) {
 				file = new File(applicationBasePath, filePath);
 			} else {
 				file = new File(filePath);

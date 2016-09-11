@@ -29,7 +29,7 @@ public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirectiv
     private static final long serialVersionUID = 6709732757055800503L;
 
     public TrimDirectiveGroup(TrimDirective[] trimDirectives) {
-        for(TrimDirective directive : trimDirectives) {
+        for (TrimDirective directive : trimDirectives) {
             putTrimDirective(directive);
         }
     }
@@ -38,7 +38,7 @@ public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirectiv
         String groupName = trimDirective.getGroupName();
         Map<String, TrimDirective> directives = get(groupName);
 
-        if(directives != null) {
+        if (directives != null) {
             directives.put(trimDirective.getDirectiveName(), trimDirective);
         } else {
             directives = new HashMap<String, TrimDirective>();

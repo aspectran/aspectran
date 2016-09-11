@@ -62,7 +62,7 @@ public class ActivityContextReloadingTimer {
 	}
 	
 	protected void stop() {
-		if(timer != null) {
+		if (timer != null) {
 			log.debug("Stopping ActivityContextRefreshTimer...");
 			
 			timer.cancel();

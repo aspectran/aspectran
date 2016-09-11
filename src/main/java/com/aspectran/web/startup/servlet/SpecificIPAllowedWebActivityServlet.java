@@ -55,12 +55,12 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	public void init() throws ServletException {
 		String addresses = getServletConfig().getInitParameter("allowedAddresses");
 
-		if(addresses != null) {
+		if (addresses != null) {
 			allowedAddresses = new HashSet<String>();
 
 			StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
 			
-			while(st.hasMoreTokens()) {
+			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
 				allowedAddresses.add(token);			
 			}
@@ -73,8 +73,8 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String remoteAddr = req.getRemoteAddr();
 		
-		if(!isAllowedAdress(remoteAddr)) {
-			if(debugEnabled) {
+		if (!isAllowedAdress(remoteAddr)) {
+			if (debugEnabled) {
 				log.debug("Access denied '" + remoteAddr + "'.");
 			}
 				
@@ -93,17 +93,18 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	 * @return true, if is a valid ip address
 	 */
 	public boolean isAllowedAdress(String ipAddress) {
-		if(allowedAddresses == null)
+		if (allowedAddresses == null) {
 			return false;
+		}
 		
 		// IPv4
 		int offset = ipAddress.lastIndexOf('.');
 		
-		if(offset == -1) {
+		if (offset == -1) {
 			// IPv6
 			offset = ipAddress.lastIndexOf(':');
 			
-			if(offset == -1)
+			if (offset == -1)
 				return false;
 		}
 		

@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.cors;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -92,7 +93,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	private int maxAgeSeconds = -1;
 
 	public String[] getAllowedOrigins() {
-		if(allowedOrigins == null)
+		if (allowedOrigins == null)
 			return null;
 		
 		return allowedOrigins.toArray(new String[allowedOrigins.size()]);
@@ -105,16 +106,14 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
 	public void setAllowedOrigins(String[] allowedOrigins) {
 		Set<String> set = new HashSet<>();
-		if(allowedOrigins != null) {
-			for(String origin : allowedOrigins) {
-				set.add(origin);
-			}
+		if (allowedOrigins != null) {
+			Collections.addAll(set, allowedOrigins);
 		}
 		setAllowedOrigins(set);
 	}
 
 	public void setAllowedOrigins(Set<String> allowedOrigins) {
-		if(allowedOrigins != null && !allowedOrigins.isEmpty()) {
+		if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
 			boolean allowAnyOrigin = allowedOrigins.contains("*");
 			this.allowedOrigins = allowAnyOrigin ? null : allowedOrigins;
 		} else {
@@ -123,9 +122,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getAllowedMethods() {
-		if(allowedMethods == null)
+		if (allowedMethods == null) {
 			return null;
-		
+		}
 		return allowedMethods.toArray(new String[allowedMethods.size()]);
 	}
 	
@@ -144,18 +143,16 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	
 	public void setAllowedMethods(String[] allowedMethods) {
 		Set<String> set = new HashSet<>();
-		if(allowedMethods != null) {
-			for(String method : allowedMethods) {
-				set.add(method);
-			}
+		if (allowedMethods != null) {
+			Collections.addAll(set, allowedMethods);
 		}
 		setAllowedMethods(set);
 	}
 	
 	public void setAllowedMethods(Set<String> allowedMethods) {
-		if(allowedMethods != null && !allowedMethods.isEmpty()) {
+		if (allowedMethods != null && !allowedMethods.isEmpty()) {
 			boolean allowAnyMethod = allowedMethods.contains(ALL);
-			if(allowAnyMethod) {
+			if (allowAnyMethod) {
 				this.allowedMethods = null;
 				this.allowedMethodsString = null;
 			} else {
@@ -169,9 +166,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getAllowedHeaders() {
-		if(allowedHeaders == null)
+		if (allowedHeaders == null) {
 			return null;
-		
+		}
 		return allowedHeaders.toArray(new String[allowedHeaders.size()]);
 	}
 
@@ -186,18 +183,16 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	
 	public void setAllowedHeaders(String[] allowedHeaders) {
 		Set<String> set = new HashSet<>();
-		if(allowedHeaders != null) {
-			for(String header : allowedHeaders) {
-				set.add(header);
-			}
+		if (allowedHeaders != null) {
+			Collections.addAll(set, allowedHeaders);
 		}
 		setAllowedHeaders(set);
 	}
 
 	public void setAllowedHeaders(Set<String> allowedHeaders) {
-		if(allowedHeaders != null && !allowedHeaders.isEmpty()) {
+		if (allowedHeaders != null && !allowedHeaders.isEmpty()) {
 			boolean allowAnyHeader = allowedHeaders.contains(ALL);
-			if(allowAnyHeader) {
+			if (allowAnyHeader) {
 				this.allowedHeaders = null;
 				this.allowedHeadersString = null;
 			} else {
@@ -211,9 +206,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getExposedHeaders() {
-		if(exposedHeaders == null)
+		if (exposedHeaders == null) {
 			return null;
-		
+		}
 		return exposedHeaders.toArray(new String[exposedHeaders.size()]);
 	}
 
@@ -228,18 +223,16 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	
 	public void setExposedHeaders(String[] exposedHeaders) {
 		Set<String> set = new HashSet<>();
-		if(exposedHeaders != null) {
-			for(String header : exposedHeaders) {
-				set.add(header);
-			}
+		if (exposedHeaders != null) {
+			Collections.addAll(set, exposedHeaders);
 		}
 		setExposedHeaders(set);
 	}
 	
 	public void setExposedHeaders(Set<String> exposedHeaders) {
-		if(exposedHeaders != null && !exposedHeaders.isEmpty()) {
+		if (exposedHeaders != null && !exposedHeaders.isEmpty()) {
 			boolean allowAnyHeader = exposedHeaders.contains(ALL);
-			if(allowAnyHeader) {
+			if (allowAnyHeader) {
 				this.exposedHeaders = null;
 				this.exposedHeadersString = null;
 			} else {
@@ -303,9 +296,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	 * @return {@code true} if the method is supported, else {@code false}.
 	 */
 	protected boolean isAllowedMethod(String method) {
-		if(allowedMethods == null)
+		if (allowedMethods == null) {
 			return ("GET".equals(method) || "HEAD".equals(method));
-		
+		}
 		return allowedMethods.contains(method);
 	}
 	

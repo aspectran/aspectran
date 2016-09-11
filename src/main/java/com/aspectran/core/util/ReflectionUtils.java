@@ -43,9 +43,10 @@ public class ReflectionUtils {
 		try {
 			boolean accessibled = makeAccessible(field);
 			field.set(target, value);
-			if(accessibled)
+			if (accessibled) {
 				field.setAccessible(false);
-		} catch(IllegalAccessException e) {
+			}
+		} catch (IllegalAccessException e) {
 			throw new IllegalStateException("Could not access field: " + e.getMessage());
 		}
 	}
@@ -63,7 +64,7 @@ public class ReflectionUtils {
 	public static Object invokeMethod(Method method, Object target, Object... args) {
 		try {
 			return method.invoke(target, args);
-		} catch(InvocationTargetException | IllegalAccessException e) {
+		} catch (InvocationTargetException | IllegalAccessException e) {
 			throw new IllegalStateException("Could not access method: " + e.getMessage());
 		}
 	}
@@ -79,7 +80,7 @@ public class ReflectionUtils {
 	 * @see java.lang.reflect.Field#setAccessible
 	 */
 	public static boolean makeAccessible(Field field) {
-		if((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+		if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
 				|| Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
 			field.setAccessible(true);
 			return true;
@@ -98,7 +99,7 @@ public class ReflectionUtils {
 	 * @see java.lang.reflect.Method#setAccessible
 	 */
 	public static boolean makeAccessible(Method method) {
-		if((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+		if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
 				&& !method.isAccessible()) {
 			method.setAccessible(true);
 			return true;
@@ -116,18 +117,19 @@ public class ReflectionUtils {
 	 * @return the accumulated weight for all arguments
 	 */
 	public static float getTypeDifferenceWeight(Class<?>[] paramTypes, Object[] destArgs) {
-		if(paramTypes.length != destArgs.length)
+		if (paramTypes.length != destArgs.length) {
 			return Float.MAX_VALUE;
+		}
 
 		float weight = 0.0f;
 
-		for(int i = 0; i < paramTypes.length; i++) {
+		for (int i = 0; i < paramTypes.length; i++) {
 			Class<?> srcClass = paramTypes[i];
 			Object destObject = destArgs[i];
 			weight += getTypeDifferenceWeight(srcClass, destObject);
-
-			if(weight == Float.MAX_VALUE)
+			if (weight == Float.MAX_VALUE) {
 				break;
+			}
 		}
 
 		return weight;
@@ -143,9 +145,9 @@ public class ReflectionUtils {
 	 * @return the type difference weight
 	 */
 	public static float getTypeDifferenceWeight(Class<?> paramType, Object destArg) {
-		if(!ClassUtils.isAssignableValue(paramType, destArg))
+		if (!ClassUtils.isAssignableValue(paramType, destArg)) {
 			return Float.MAX_VALUE;
-
+		}
 		return getTypeDifferenceWeight(paramType, destArg.getClass());
 	}
 
@@ -160,7 +162,7 @@ public class ReflectionUtils {
 	public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Class<?>[] destArgs) {
 		float weight = 0.0f;
 
-		for(int i = 0; i < srcArgs.length; i++) {
+		for (int i = 0; i < srcArgs.length; i++) {
 			Class<?> srcClass = srcArgs[i];
 			Class<?> destClass = destArgs[i];
 			weight += getTypeDifferenceWeight(srcClass, destClass);
@@ -179,14 +181,14 @@ public class ReflectionUtils {
 	 * @return The cost of transforming an object
 	 */
 	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
-		if(destClass != null) {
-			if(destClass.isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)) ||
-					srcClass.isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
+		if (destClass != null) {
+			if (destClass.isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass))
+					|| srcClass.isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
 				return 0.5f;
 			}
-			if(srcClass.isArray() && destClass.isArray()) {
-				if(destClass.getComponentType().isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)) ||
-						srcClass.getComponentType().isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
+			if (srcClass.isArray() && destClass.isArray()) {
+				if (destClass.getComponentType().isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass))
+						|| srcClass.getComponentType().isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
 					return 0.75f;
 				}
 			}
@@ -194,8 +196,8 @@ public class ReflectionUtils {
 
 		float weight = 0.0f;
 
-		while(destClass != null && !destClass.equals(srcClass)) {
-			if(destClass.isInterface() && destClass.equals(srcClass)) {
+		while (destClass != null && !destClass.equals(srcClass)) {
+			if (destClass.isInterface() && destClass.equals(srcClass)) {
 				// slight penalty for interface match.
 				// we still want an exact match to override an interface match, but
 				// an interface match should override anything where we have to get a
@@ -211,7 +213,7 @@ public class ReflectionUtils {
 		 * If the destination class is null, we've travelled all the way up to
 		 * an Object match. We'll penalize this by adding 1.5 to the cost.
 		 */
-		if(destClass == null) {
+		if (destClass == null) {
 			weight += 1.5f;
 		}
 
@@ -227,51 +229,51 @@ public class ReflectionUtils {
 	public static Object toPrimitiveArray(Object val) {
 		int len = Array.getLength(val);
 
-		if(val instanceof Boolean[]) {
+		if (val instanceof Boolean[]) {
 			boolean[] arr = new boolean[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Boolean)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Byte[]) {
+		} else if (val instanceof Byte[]) {
 			byte[] arr = new byte[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Byte)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Character[]) {
+		} else if (val instanceof Character[]) {
 			char[] arr = new char[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Character)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Short[]) {
+		} else if (val instanceof Short[]) {
 			short[] arr = new short[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Short)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Integer[]) {
+		} else if (val instanceof Integer[]) {
 			int[] arr = new int[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Integer)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Long[]) {
+		} else if (val instanceof Long[]) {
 			long[] arr = new long[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Long)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Float[]) {
+		} else if (val instanceof Float[]) {
 			float[] arr = new float[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Float)Array.get(val, i);
 			}
 			return arr;
-		} else if(val instanceof Double[]) {
+		} else if (val instanceof Double[]) {
 			double[] arr = new double[len];
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				arr[i] = (Double)Array.get(val, i);
 			}
 			return arr;

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class NoUniqueBeanException.
@@ -36,7 +37,8 @@ public class NoUniqueBeanException extends BeanException {
 	 * @param beanRules the bean rules
 	 */
 	public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
-		super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " + beanRules.length + ": " + beanRules);
+		super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " +
+				beanRules.length + ": " + getBeanDescriptions(beanRules));
 		this.requiredType = requiredType;
 		this.beanRules = beanRules;
 	}
@@ -57,6 +59,14 @@ public class NoUniqueBeanException extends BeanException {
 	 */
 	public BeanRule[] getBeanRules() {
 		return beanRules;
+	}
+
+	private static String getBeanDescriptions(BeanRule[] beanRules) {
+		String[] descrips = new String[beanRules.length];
+		for(int i = 0; i < descrips.length; i++) {
+			descrips[i] = beanRules[i].toString();
+		}
+		return StringUtils.joinCommaDelimitedList(descrips);
 	}
 	
 }

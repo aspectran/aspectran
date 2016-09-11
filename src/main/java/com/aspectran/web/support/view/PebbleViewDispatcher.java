@@ -72,15 +72,15 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 
 		try {
 			dispatchName = dispatchResponseRule.getName();
-			if(dispatchName == null) {
+			if (dispatchName == null) {
 				throw new IllegalArgumentException("No specified dispatch name.");
 			}
 
-			if(templateNamePrefix != null && templateNameSuffix != null) {
+			if (templateNamePrefix != null && templateNameSuffix != null) {
 				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
-			} else if(templateNamePrefix != null) {
+			} else if (templateNamePrefix != null) {
 				dispatchName = templateNamePrefix + dispatchName;
-			} else if(templateNameSuffix != null) {
+			} else if (templateNameSuffix != null) {
 				dispatchName = dispatchName + templateNameSuffix;
 			}
 
@@ -89,16 +89,17 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			}
 
-			if(characterEncoding != null) {
+			if (characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
 				characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 
 			TemplateDataMap model = new TemplateDataMap(activity);
@@ -106,10 +107,10 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
 			compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 
-			if(debugEnabled) {
+			if (debugEnabled) {
 				log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);
 		}
 	}

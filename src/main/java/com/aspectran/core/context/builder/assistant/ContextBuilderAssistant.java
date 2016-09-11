@@ -102,7 +102,7 @@ public class ContextBuilderAssistant {
 	}
 	
 	public ContextBuilderAssistant(ContextEnvironment environment) {
-		if(environment != null) {
+		if (environment != null) {
 			this.environment = environment;
 			this.applicationAdapter = environment.getApplicationAdapter();
 			this.applicationBasePath = applicationAdapter.getApplicationBasePath();
@@ -122,7 +122,7 @@ public class ContextBuilderAssistant {
 		typeAliases = new HashMap<>();
 		assistantLocal = new AssistantLocal();
 
-		if(environment != null) {
+		if (environment != null) {
 			aspectRuleRegistry = new AspectRuleRegistry();
 			
 			beanRuleRegistry = new BeanRuleRegistry(classLoader);
@@ -152,7 +152,7 @@ public class ContextBuilderAssistant {
 		typeAliases = null;
 		assistantLocal = null;
 
-		if(environment != null) {
+		if (environment != null) {
 			aspectRuleRegistry = null;
 			beanRuleRegistry = null;
 			scheduleRuleRegistry = null;
@@ -237,7 +237,7 @@ public class ContextBuilderAssistant {
 	public void putSetting(String name, String value) {
 		DefaultSettingType settingType = null;
 		settingType = DefaultSettingType.resolve(name);
-		if(settingType == null) {
+		if (settingType == null) {
 		    throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 		}
 		settings.put(settingType, value);
@@ -263,11 +263,11 @@ public class ContextBuilderAssistant {
 	 */
 	@SuppressWarnings("unchecked")
 	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-		if(defaultSettings.getTransletInterfaceClassName() != null) {
+		if (defaultSettings.getTransletInterfaceClassName() != null) {
 			Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
 			defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
 		}
-		if(defaultSettings.getTransletImplementationClassName() != null) {
+		if (defaultSettings.getTransletImplementationClassName() != null) {
 			Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
 			defaultSettings.setTransletImplementationClass((Class<CoreTranslet>)transletImplementationClass);
 		}
@@ -340,8 +340,9 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
-		if(transletName == null)
+		if (transletName == null) {
 			return null;
+		}
 		return transletRuleRegistry.applyTransletNamePattern(transletName, true);
 	}
 
@@ -371,9 +372,7 @@ public class ContextBuilderAssistant {
 	 */
 	public AssistantLocal backupAssistantLocal() {
 		AssistantLocal oldAssistantLocal = assistantLocal;
-
 		setAssistantLocal(assistantLocal.replicate());
-		
 		return oldAssistantLocal;
 	}
 
@@ -404,7 +403,7 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-		if(beanClass != null) {
+		if (beanClass != null) {
 			aspectRule.setAdviceBeanClass(beanClass);
 		    reserveBeanReference(beanClass, aspectRule);
 		} else {
@@ -420,7 +419,7 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-		if(beanClass != null) {
+		if (beanClass != null) {
 			beanActionRule.setBeanClass(beanClass);
 		    reserveBeanReference(beanClass, beanActionRule);
 		} else {
@@ -436,7 +435,7 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, BeanRule beanRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-		if(beanClass != null) {
+		if (beanClass != null) {
 			beanRule.setOfferBeanClass(beanClass);
 		    reserveBeanReference(beanClass, beanRule);
 		} else {
@@ -451,10 +450,10 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(ItemRule itemRule) {
 		Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
-		if(iter != null) {
-			while(iter.hasNext()) {
-				for(Token token : iter.next()) {
-					if(token.getType() == TokenType.BEAN) {
+		if (iter != null) {
+			while (iter.hasNext()) {
+				for (Token token : iter.next()) {
+					if (token.getType() == TokenType.BEAN) {
 						resolveBeanClass(token);
 					}
 				}
@@ -468,7 +467,7 @@ public class ContextBuilderAssistant {
 	 * @param token the token
 	 */
 	public void resolveBeanClass(Token token) {
-		if(token.getDirectiveType() == TokenDirectiveType.CLASS) {
+		if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
 			Class<?> beanClass = loadClass(token.getValue());
 			token.setAlternativeValue(beanClass);
 			reserveBeanReference(beanClass, token);
@@ -485,7 +484,7 @@ public class ContextBuilderAssistant {
 	 */
 	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-		if(beanClass != null) {
+		if (beanClass != null) {
 			scheduleRule.setSchedulerBeanClass(beanClass);
 			reserveBeanReference(beanClass, scheduleRule);
 		} else {
@@ -494,7 +493,7 @@ public class ContextBuilderAssistant {
 	}
 	
 	private Class<?> resolveBeanClass(String beanId) {
-		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+		if (beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 			return loadClass(className);
 		}
@@ -504,7 +503,7 @@ public class ContextBuilderAssistant {
 	private Class<?> loadClass(String className) {
 		try {
 			return classLoader.loadClass(className);
-		} catch(ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("Failed to load class: " + className, e);
 		}
 	}
@@ -629,7 +628,7 @@ public class ContextBuilderAssistant {
 	public Collection<BeanRule> getBeanRules() {
 		Set<BeanRule> beanRuleSet = new HashSet<BeanRule>();
 		beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRuleMap().values());
-		for(Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+		for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
 			beanRuleSet.addAll(brs);
 		}
 		beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRuleMap().values());
@@ -695,24 +694,24 @@ public class ContextBuilderAssistant {
 		ImportFileType importFileType = ImportFileType.resolve(fileType);
 		Importer importer = null;
 
-		if(StringUtils.hasText(file)) {
+		if (StringUtils.hasText(file)) {
 			importer = new FileImporter(getApplicationBasePath(), file, importFileType);
-		} else if(StringUtils.hasText(resource)) {
+		} else if (StringUtils.hasText(resource)) {
 			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
-		} else if(StringUtils.hasText(url)) {
+		} else if (StringUtils.hasText(url)) {
 			importer = new UrlImporter(url, importFileType);
 		}
 		
-		if(importer != null) {
-			if(profile != null && !profile.isEmpty()) {
+		if (importer != null) {
+			if (profile != null && !profile.isEmpty()) {
 				String[] arr = StringUtils.splitCommaDelimitedString(profile);
-				if(arr != null && arr.length > 0) {
+				if (arr != null && arr.length > 0) {
 					importer.setProfiles(arr);
 				}
 			}
 		}
 		
-		if(importer == null) {
+		if (importer == null) {
 			throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
 		}
 

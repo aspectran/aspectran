@@ -30,7 +30,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
 	private static final String OR_MATCH_DELIMITER = "|";
 	
-	private volatile Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
+	private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
 	
 	public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		super(pointcutPatternRuleList);
@@ -38,51 +38,52 @@ public class WildcardPointcut extends AbstractPointcut {
 
 	@Override
 	public boolean patternMatches(String pattern, String compareString) {
-		if(!pattern.contains(OR_MATCH_DELIMITER)) {
+		if (!pattern.contains(OR_MATCH_DELIMITER)) {
 			return wildcardPatternMatches(pattern, compareString);
 		} else {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
 
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
-				
-				if(wildcardPatternMatches(patternToken, compareString))
+
+				if (wildcardPatternMatches(patternToken, compareString)) {
 					return true;
+				}
 			}
-			
 			return false;
 		}
 	}
 
 	@Override
 	public boolean patternMatches(String pattern, String compareString, char separator) {
-		if(!pattern.contains(OR_MATCH_DELIMITER)) {
+		if (!pattern.contains(OR_MATCH_DELIMITER)) {
 			return wildcardPatternMatches(pattern, compareString, separator);
 		} else {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
 
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
-				
-				if(wildcardPatternMatches(patternToken, compareString, separator))
-					return true;
-			}
 
+				if (wildcardPatternMatches(patternToken, compareString, separator)) {
+					return true;
+				}
+			}
 			return false;
 		}
 	}
 	
 	private boolean wildcardPatternMatches(String pattern, String compareString) {
-		if(!WildcardPattern.hasWildcards(pattern)) {
+		if (!WildcardPattern.hasWildcards(pattern)) {
 			return pattern.equals(compareString);
 		}
 
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
 
-		if(wildcardPattern == null) {
+		if (wildcardPattern == null) {
 			synchronized(wildcardPatternCache) {
 				wildcardPattern = wildcardPatternCache.get(pattern);
-				if(wildcardPattern == null) {
+
+				if (wildcardPattern == null) {
 					wildcardPattern = new WildcardPattern(pattern);
 					wildcardPatternCache.put(pattern, wildcardPattern);
 				}
@@ -96,10 +97,11 @@ public class WildcardPointcut extends AbstractPointcut {
 		String patternKey = pattern + separator;
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternKey);
 
-		if(wildcardPattern == null) {
+		if (wildcardPattern == null) {
 			synchronized(wildcardPatternCache) {
 				wildcardPattern = wildcardPatternCache.get(patternKey);
-				if(wildcardPattern == null) {
+
+				if (wildcardPattern == null) {
 					wildcardPattern = new WildcardPattern(pattern, separator);
 					wildcardPatternCache.put(patternKey, wildcardPattern);
 				}

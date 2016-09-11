@@ -51,9 +51,10 @@ public enum AspectAdviceType {
 	 * @return an {@code AspectAdviceType}, may be {@code null}
 	 */
 	public static AspectAdviceType resolve(String alias) {
-		for(AspectAdviceType type : values()) {
-			if(type.alias.equals(alias))
+		for (AspectAdviceType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

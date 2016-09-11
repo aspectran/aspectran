@@ -78,16 +78,17 @@ public class JobRule {
 	}
 	
 	public static JobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
-		if(transletName == null)
+		if (transletName == null) {
 			throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+		}
 
 		JobRule jobRule = new JobRule(scheduleRule);
 		jobRule.setTransletName(transletName);
 		jobRule.setDisabled(disabled);
 
-		if(method != null) {
+		if (method != null) {
 			MethodType methodType = MethodType.resolve(method);
-			if(methodType == null) {
+			if (methodType == null) {
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
 			}
 			jobRule.setRequestMethod(methodType);

@@ -82,15 +82,15 @@ public class DefaultServletHttpRequestHandler {
 	 * @param servletContext the servlet context
 	 */
 	private void lookupDefaultServletName(ServletContext servletContext) {
-		if(servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
+		if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
-		} else if(servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
+		} else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = RESIN_DEFAULT_SERVLET_NAME;
-		} else if(servletContext.getNamedDispatcher(WEBLOGIC_DEFAULT_SERVLET_NAME) != null) {
+		} else if (servletContext.getNamedDispatcher(WEBLOGIC_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = WEBLOGIC_DEFAULT_SERVLET_NAME;
-		} else if(servletContext.getNamedDispatcher(WEBSPHERE_DEFAULT_SERVLET_NAME) != null) {
+		} else if (servletContext.getNamedDispatcher(WEBSPHERE_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = WEBSPHERE_DEFAULT_SERVLET_NAME;
-		} else if(servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
+		} else if (servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = GAE_DEFAULT_SERVLET_NAME;
 		} else {
 			log.warn("Unable to locate the default servlet for serving static content. Please set the 'aspectran:defaultServletName'");
@@ -107,11 +107,12 @@ public class DefaultServletHttpRequestHandler {
 	 * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
 	 */
 	public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(defaultServletName != null) {
+		if (defaultServletName != null) {
 			RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
 			
-			if(rd == null)
+			if (rd == null) {
 				throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'.");
+			}
 			
 			rd.forward(request, response);
 			

@@ -80,28 +80,28 @@ public class ResourceUtils {
 	public static final char PATH_SPEPARATOR_CHAR = '/';
 	
 	public static boolean isUrl(String resourceLocation) {
-		if(resourceLocation == null) {
+		if (resourceLocation == null) {
 			return false;
 		}
-		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+		if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			return true;
 		}
 		try {
 			new URL(resourceLocation);
 			return true;
-		} catch(MalformedURLException ex) {
+		} catch (MalformedURLException ex) {
 			return false;
 		}
 	}
 
 	public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-		if(resourceLocation == null) {
+		if (resourceLocation == null) {
 			throw new IllegalArgumentException("'resourceLocation' must not be null.");
 		}
-		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+		if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			URL url = classLoader.getResource(path);
-			if(url == null) {
+			if (url == null) {
 				String description = "class path resource [" + path + "]";
 				throw new FileNotFoundException(description + " cannot be resolved to URL because it does not exist");
 			}
@@ -110,11 +110,11 @@ public class ResourceUtils {
 		try {
 			// try URL
 			return new URL(resourceLocation);
-		} catch(MalformedURLException ex) {
+		} catch (MalformedURLException ex) {
 			// no URL -> treat as file path
 			try {
 				return new File(resourceLocation).toURI().toURL();
-			} catch(MalformedURLException ex2) {
+			} catch (MalformedURLException ex2) {
 				throw new FileNotFoundException("Resource location [" + resourceLocation
 						+ "] is neither a URL not a well-formed file path");
 			}
@@ -122,14 +122,14 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-		if(resourceLocation == null) {
+		if (resourceLocation == null) {
 			throw new IllegalArgumentException("'resourceLocation' must not be null.");
 		}
-		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+		if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			String description = "class path resource [" + path + "]";
 			URL url = classLoader.getResource(path);
-			if(url == null) {
+			if (url == null) {
 				throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 						+ "because it does not reside in the file system");
 			}
@@ -138,7 +138,7 @@ public class ResourceUtils {
 		try {
 			// try URL
 			return getFile(new URL(resourceLocation));
-		} catch(MalformedURLException ex) {
+		} catch (MalformedURLException ex) {
 			// no URL -> treat as file path
 			return new File(resourceLocation);
 		}
@@ -149,16 +149,16 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
-		if(resourceUrl == null) {
+		if (resourceUrl == null) {
 			throw new IllegalArgumentException("'resourceUrl' must not be null.");
 		}
-		if(!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
+		if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 					+ "because it does not reside in the file system: " + resourceUrl);
 		}
 		try {
 			return new File(toURI(resourceUrl).getSchemeSpecificPart());
-		} catch(URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			// Fallback for URLs that are not valid URIs (should hardly ever happen).
 			return new File(resourceUrl.getFile());
 		}
@@ -169,10 +169,10 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
-		if(resourceUri == null) {
+		if (resourceUri == null) {
 			throw new IllegalArgumentException("'resourceUri' must not be null.");
 		}
-		if(!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
+		if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 					+ "because it does not reside in the file system: " + resourceUri);
 		}
@@ -193,14 +193,14 @@ public class ResourceUtils {
 	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
 		String urlFile = jarUrl.getFile();
 		int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
-		if(separatorIndex != -1) {
+		if (separatorIndex != -1) {
 			String jarFile = urlFile.substring(0, separatorIndex);
 			try {
 				return new URL(jarFile);
-			} catch(MalformedURLException ex) {
+			} catch (MalformedURLException ex) {
 				// Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
 				// This usually indicates that the jar file resides in the file system.
-				if(!jarFile.startsWith(PATH_SPEPARATOR)) {
+				if (!jarFile.startsWith(PATH_SPEPARATOR)) {
 					jarFile = PATH_SPEPARATOR + jarFile;
 				}
 				return new URL(FILE_URL_PREFIX + jarFile);
@@ -228,12 +228,15 @@ public class ResourceUtils {
 	 */
 	public static URL getResourceURL(String resource, ClassLoader loader) throws IOException {
 		URL url = null;
-		if(loader != null)
+		if (loader != null) {
 			url = loader.getResource(resource);
-		if(url == null)
+		}
+		if (url == null) {
 			url = ClassLoader.getSystemResource(resource);
-		if(url == null)
+		}
+		if (url == null) {
 			throw new IOException("Could not find resource " + resource);
+		}
 		return url;
 	}
 
@@ -247,12 +250,15 @@ public class ResourceUtils {
 	 */
 	public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
 		InputStream in = null;
-		if(classLoader != null)
+		if (classLoader != null) {
 			in = classLoader.getResourceAsStream(resource);
-		if(in == null)
+		}
+		if (in == null) {
 			in = ClassLoader.getSystemResourceAsStream(resource);
-		if(in == null)
+		}
+		if (in == null) {
 			throw new IOException("Could not find resource " + resource);
+		}
 		return in;
 	}
 
@@ -274,16 +280,16 @@ public class ResourceUtils {
 						}
 					}
 			);
-		} catch(PrivilegedActionException e) {
+		} catch (PrivilegedActionException e) {
 			throw (IOException)e.getException();
 		}
 
 		Reader reader;
-		if(encoding != null) {
+		if (encoding != null) {
 			reader = new InputStreamReader(stream, encoding);
-		} else
+		} else {
 			reader = new InputStreamReader(stream);
-
+		}
 		return reader;
 	}
 
@@ -302,9 +308,9 @@ public class ResourceUtils {
 					new PrivilegedExceptionAction<InputStream>() {
 						public InputStream run() throws IOException {
 							InputStream is = null;
-							if(url != null) {
+							if (url != null) {
 								URLConnection connection = url.openConnection();
-								if(connection != null) {
+								if (connection != null) {
 									// Disable caches to get fresh data for reloading.
 									connection.setUseCaches(false);
 									is = connection.getInputStream();
@@ -314,16 +320,16 @@ public class ResourceUtils {
 						}
 					}
 			);
-		} catch(PrivilegedActionException e) {
+		} catch (PrivilegedActionException e) {
 			throw (IOException)e.getException();
 		}
 
 		Reader reader;
-		if(encoding != null)
+		if (encoding != null) {
 			reader = new InputStreamReader(stream, encoding);
-		else
+		} else {
 			reader = new InputStreamReader(stream);
-
+		}
 		return reader;
 	}
 
@@ -376,7 +382,7 @@ public class ResourceUtils {
 		final char[] buffer = new char[1024];
 		StringBuilder sb = new StringBuilder();
 		int len;
-		while((len = reader.read(buffer)) != -1) {
+		while ((len = reader.read(buffer)) != -1) {
 			sb.append(buffer, 0, len);
 		}
 		return sb.toString();

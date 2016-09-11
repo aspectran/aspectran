@@ -46,14 +46,14 @@ public class ToStringBuilder {
 
 	public ToStringBuilder(String name, int capacity) {
 		this.sb = new StringBuilder(capacity);
-		if(name != null) {
+		if (name != null) {
 			this.sb.append(name).append(" ");
 		}
 		this.sb.append("{");
 	}
 
 	public void append(String name, Object value) {
-		if(value != null) {
+		if (value != null) {
 			appendName(name);
 			append(value);
 		}
@@ -65,7 +65,7 @@ public class ToStringBuilder {
 	}
 	
 	public void append(String name, boolean value) {
-		if(value) {
+		if (value) {
 			appendName(name);
 			this.sb.append(Boolean.toString(true));
 		}
@@ -77,42 +77,42 @@ public class ToStringBuilder {
 	}
 	
 	public void appendEqual(String name, Object value, Object compare) {
-		if(value != null && value.equals(compare)) {
+		if (value != null && value.equals(compare)) {
 			appendName(name);
 			append(value);
 		}
 	}
 	
 	public void appendNotEqual(String name, Object value, Object compare) {
-		if(value != null && !value.equals(compare)) {
+		if (value != null && !value.equals(compare)) {
 			appendName(name);
 			append(value);
 		}
 	}
 	
 	public void appendSize(String name, Object object) {
-		if(object != null) {
+		if (object != null) {
 			appendName(name);
-			if(object instanceof Map<?, ?>) {
+			if (object instanceof Map<?, ?>) {
 				this.sb.append(((Map<?, ?>)object).size());
-			} else if(object instanceof Collection<?>) {
+			} else if (object instanceof Collection<?>) {
 				this.sb.append(((Collection<?>)object).size());
-			} else if(object.getClass().isArray()) {
+			} else if (object.getClass().isArray()) {
 				this.sb.append(Array.getLength(object));
-			} else if(object instanceof CharSequence) {
+			} else if (object instanceof CharSequence) {
 				this.sb.append(((CharSequence)object).length());
 			}
 		}
 	}
 	
 	public void append(Map<?, ?> map) {
-		if(map != null) {
+		if (map != null) {
 			this.sb.append("{");
 			int len = this.sb.length();
-			for(Map.Entry<?, ?> entry : ((Map<?, ?>)map).entrySet()) {
+			for (Map.Entry<?, ?> entry : ((Map<?, ?>)map).entrySet()) {
 				Object key = entry.getKey();
 				Object value = entry.getValue();
-				if(value != null) {
+				if (value != null) {
 					appendName(key, len);
 					append(value);
 				}
@@ -122,12 +122,13 @@ public class ToStringBuilder {
 	}
 	
 	public void append(Collection<?> list) {
-		if(list != null) {
+		if (list != null) {
 			this.sb.append("[");
 			int len = this.sb.length();
-			for(Object o : list) {
-				if(this.sb.length() > len)
+			for (Object o : list) {
+				if (this.sb.length() > len) {
 					addpendComma();
+				}
 				append(o);
 			}
 			this.sb.append("]");
@@ -135,37 +136,38 @@ public class ToStringBuilder {
 	}
 
 	public void append(Enumeration<?> en) {
-		if(en != null) {
-			while(en.hasMoreElements()) {
+		if (en != null) {
+			while (en.hasMoreElements()) {
 				append(en.nextElement());
-				if(en.hasMoreElements())
+				if (en.hasMoreElements()) {
 					addpendComma();
+				}
 			}
 		}
 	}
 	
 	private void append(Object object) {
-		if(object == null) {
+		if (object == null) {
 			this.sb.append((Object)null);
-		} else if(object instanceof Map<?, ?>) {
+		} else if (object instanceof Map<?, ?>) {
 			append((Map<?, ?>)object);
-		} else if(object instanceof Collection<?>) {
+		} else if (object instanceof Collection<?>) {
 			append((Collection<?>)object);
-		} else if(object instanceof Enumeration<?>) {
+		} else if (object instanceof Enumeration<?>) {
 			append((Enumeration<?>)object);
-		} else if(object instanceof Parameters) {
+		} else if (object instanceof Parameters) {
 			this.sb.append(((Parameters)object).describe(false));
-		} else if(object instanceof ToStringBuilder) {
+		} else if (object instanceof ToStringBuilder) {
 			this.sb.append(((ToStringBuilder)object).getStringBuilder());
-		} else if(object instanceof CharSequence) {
+		} else if (object instanceof CharSequence) {
 			this.sb.append(((CharSequence)object));
-		} else if(object.getClass().isArray()) {
+		} else if (object.getClass().isArray()) {
 			this.sb.append("[");
 			int len = Array.getLength(object);
-			for(int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) {
 				Object value = Array.get(object, i);
 				checkCircularReference(object, value);
-				if(i > 0) {
+				if (i > 0) {
 					addpendComma();
 				}
 				append(value);
@@ -177,14 +179,16 @@ public class ToStringBuilder {
 	}
 	
 	public void appendName(Object name) {
-		if(this.sb.length() > 1)
+		if (this.sb.length() > 1) {
 			addpendComma();
+		}
 		this.sb.append(name).append("=");
 	}
 	
 	private void appendName(Object name, int len) {
-		if(this.sb.length() > len)
+		if (this.sb.length() > len) {
 			addpendComma();
+		}
 		this.sb.append(name).append("=");
 	}
 
@@ -203,7 +207,7 @@ public class ToStringBuilder {
 	}
 
 	private void checkCircularReference(Object wrapper, Object member) {
-		if(wrapper.equals(member)) {
+		if (wrapper.equals(member)) {
 			throw new IllegalArgumentException("Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}

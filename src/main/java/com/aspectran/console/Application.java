@@ -30,10 +30,11 @@ public class Application {
     public static void main(String[] args) {
         String aspectranConfigFile;
 
-        if(args.length > 0)
+        if (args.length > 0) {
             aspectranConfigFile = args[0];
-        else
-        	aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
+        } else {
+            aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
+        }
 
         ConsoleAspectranService aspectranService = null;
         int exitStatus = 0;
@@ -42,13 +43,14 @@ public class Application {
             aspectranService = ConsoleAspectranService.newInstance(aspectranConfigFile);
 
             loop:
-            while(true) {
+            while (true) {
                 String command = System.console().readLine("Aspectran> ");
 
-                if(command == null || command.isEmpty())
+                if (command == null || command.isEmpty()) {
                     continue;
+                }
 
-                switch(command) {
+                switch (command) {
                     case "restart":
                         System.out.println("Restart Aspectran Service.");
                         aspectranService.restart();
@@ -71,11 +73,11 @@ public class Application {
                 System.out.println();
             }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
         } finally {
-            if(aspectranService != null) {
+            if (aspectranService != null) {
                 System.out.println("Do not terminate this application while destroying all beans.");
 
                 aspectranService.shutdown();

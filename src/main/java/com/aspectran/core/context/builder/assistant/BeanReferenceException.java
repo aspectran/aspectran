@@ -75,8 +75,8 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cannot resolve reference to bean [");
 		
-		for(int i = 0; i < unknownBeanIdList.size(); i++) {
-			if(i > 0)
+		for (int i = 0; i < unknownBeanIdList.size(); i++) {
+			if (i > 0)
 				sb.append(", ");
 			sb.append(unknownBeanIdList.get(i));
 		}

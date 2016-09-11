@@ -47,9 +47,10 @@ public enum TransformType {
 	 * @return a {@code TransformType}, may be {@code null}
 	 */
 	public static TransformType resolve(String alias) {
-		for(TransformType type : values()) {
-			if(type.alias.equals(alias))
+		for (TransformType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}
@@ -62,16 +63,17 @@ public enum TransformType {
 	 * @return a {@code TransformType}, may be {@code null}
 	 */
 	public static TransformType resolve(ContentType contentType) {
-		if(contentType == ContentType.TEXT_PLAIN)
+		if (contentType == ContentType.TEXT_PLAIN) {
 			return TEXT;
-		else if(contentType == ContentType.TEXT_XML)
+		} else if (contentType == ContentType.TEXT_XML) {
 			return XML;
-		else if(contentType == ContentType.TEXT_JSON)
+		} else if (contentType == ContentType.TEXT_JSON) {
 			return JSON;
-		else if(contentType == ContentType.TEXT_APON)
+		} else if (contentType == ContentType.TEXT_APON) {
 			return APON;
-		else
+		} else {
 			return null;
+		}
 	}
 
 }

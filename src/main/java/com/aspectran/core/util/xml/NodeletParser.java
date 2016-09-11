@@ -130,7 +130,7 @@ public class NodeletParser {
 		try {
 			Document doc = createDocument(reader);
 			parse(doc.getLastChild());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new NodeletException("Error parsing XML.", e);
 		}
 	}
@@ -145,7 +145,7 @@ public class NodeletParser {
 		try {
 			Document doc = createDocument(inputStream);
 			parse(doc.getLastChild());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new NodeletException("Error parsing XML.", e);
 		}
 	}
@@ -168,7 +168,7 @@ public class NodeletParser {
 	 * @param path the path
 	 */
 	private void process(Node node, Path path) {
-		if(node instanceof Element) {
+		if (node instanceof Element) {
 			// Element
 			String elementName = node.getNodeName();
 			path.add(elementName);
@@ -178,7 +178,7 @@ public class NodeletParser {
 			// Attribute
 			NamedNodeMap attributes = node.getAttributes();
 			int n = attributes.getLength();
-			for(int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				Node att = attributes.item(i);
 				String attrName = att.getNodeName();
 				path.add("@" + attrName);
@@ -189,14 +189,14 @@ public class NodeletParser {
 			*/
 			// Children
 			NodeList children = node.getChildNodes();
-			for(int i = 0; i < children.getLength(); i++) {
+			for (int i = 0; i < children.getLength(); i++) {
 				process(children.item(i), path);
 			}
 			path.add("end()");
 			processNodelet(node, path.toString());
 			path.remove();
 			path.remove();
-		} else if(node instanceof Text) {
+		} else if (node instanceof Text) {
 			// Text
 			path.add("text()");
 			processNodelet(node, path.toString());
@@ -210,26 +210,23 @@ public class NodeletParser {
 	private void processNodelet(Node node, String pathString) {
 		Nodelet nodelet = nodeletMap.get(pathString);
 		
-		if(nodelet != null) {
+		if (nodelet != null) {
 			try {
 				Map<String, String> attributes;
 				String text;
 
-				if(!pathString.endsWith("end()")) {
+				if (!pathString.endsWith("end()")) {
 					attributes = parseAttributes(node);
 					text = getNodeValue(node);
 
-					if(log.isTraceEnabled()) {
+					if (log.isTraceEnabled()) {
 						StringBuilder sb = new StringBuilder(pathString);
-						
-						if(attributes != null && attributes.size() > 0) {
+						if (attributes != null && attributes.size() > 0) {
 							sb.append(" ").append(attributes);
 						}
-						
-						if(text != null && text.length() > 0) {
+						if (text != null && text.length() > 0) {
 							sb.append(" ").append(text);
 						}
-						
 						log.trace(sb.toString());
 					}
 				} else {
@@ -238,7 +235,7 @@ public class NodeletParser {
 				}
 
 				nodelet.process(node, attributes, text);
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new RuntimeException("Error parsing XPath '" + pathString + "'. Cause: " + e, e);
 			}
 		}
@@ -247,12 +244,12 @@ public class NodeletParser {
 	private Map<String, String> parseAttributes(Node node) {
 		NamedNodeMap attributeNodes = node.getAttributes();
 		
-		if(attributeNodes == null)
+		if (attributeNodes == null)
 			return EMPTY_ATTRIBUTES;
 
 		Map<String, String> attributes = new HashMap<String, String>();
 
-		for(int i = 0; i < attributeNodes.getLength(); i++) {
+		for (int i = 0; i < attributeNodes.getLength(); i++) {
 			Node attribute = attributeNodes.item(i);
 			String value = attribute.getNodeValue();
 
@@ -266,34 +263,32 @@ public class NodeletParser {
 		NodeList children = node.getChildNodes();
 		int childrenLength = children.getLength();
 		
-		if(childrenLength == 0) {
+		if (childrenLength == 0) {
 			String value = node.getNodeValue();
 			
-			if(value != null)
-				return value.trim();
-
-			return null;
+			return (value != null ? value.trim() : null);
 		}
 		
 		StringBuilder sb = null;
 		
-		for(int i = 0; i < childrenLength; i++) {
+		for (int i = 0; i < childrenLength; i++) {
 			Node child = children.item(i);
 			
-			if(child.getNodeType() == Node.CDATA_SECTION_NODE ||
-					child.getNodeType() == Node.TEXT_NODE) {
+			if (child.getNodeType() == Node.CDATA_SECTION_NODE
+					|| child.getNodeType() == Node.TEXT_NODE) {
 				String data = ((CharacterData)child).getData();
 				
-				if(data.length() > 0) {
-					if(sb == null)
+				if (data.length() > 0) {
+					if (sb == null) {
 						sb = new StringBuilder(data);
-					else
+					} else {
 						sb.append(data);
+					}
 				}
 			}
 		}
 		
-		return (sb == null) ? null : sb.toString();
+		return (sb != null ? sb.toString() : null);
 	}
 
 	/**
@@ -401,8 +396,7 @@ public class NodeletParser {
 		@SuppressWarnings("unused")
 		public Path(String path) {
 			StringTokenizer parser = new StringTokenizer(path, "/", false);
-
-			while(parser.hasMoreTokens()) {
+			while (parser.hasMoreTokens()) {
 				nodeList.add(parser.nextToken());
 			}
 		}
@@ -418,12 +412,10 @@ public class NodeletParser {
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder(128);
-
-			for(String name : nodeList) {
+			for (String name : nodeList) {
 				sb.append("/");
 				sb.append(name);
 			}
-
 			return sb.toString();
 		}
 	}

@@ -45,7 +45,7 @@ public class XmlImportHandler extends AbstractImportHandler {
 		super.handle();
 		
 		// First default setting is held after configuration loading is completed.
-		if(assistantLocal.getReplicatedCount() > 0) {
+		if (assistantLocal.getReplicatedCount() > 0) {
 			assistant.restoreAssistantLocal(assistantLocal);
 		}
 	}

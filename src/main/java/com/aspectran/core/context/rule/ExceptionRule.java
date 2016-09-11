@@ -52,9 +52,9 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	}
 
 	public String getAspectId() {
-		if(aspectRule == null)
+		if (aspectRule == null) {
 			throw new UnsupportedOperationException();
-
+		}
 		return aspectRule.getId();
 	}
 
@@ -104,7 +104,7 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	 * @return the action type
 	 */
 	public ActionType getActionType() {
-		return (action != null) ? action.getActionType() : null;
+		return (action != null ? action.getActionType() : null);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	public ExceptionCatchRule putExceptionCatchRule(ExceptionCatchRule exceptionCatchRule) {
 		String exceptionType = exceptionCatchRule.getExceptionType();
 		
-		if(exceptionType != null) {
+		if (exceptionType != null) {
 			exceptionCatchRuleMap.put(exceptionType, exceptionCatchRule);
 		} else { 
 			this.defaultExceptionCatchRule = exceptionCatchRule;
@@ -144,16 +144,16 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 		ExceptionCatchRule exceptionCatchRule = null;
 		int deepest = Integer.MAX_VALUE;
 
-		for(ExceptionCatchRule rbctr : exceptionCatchRuleMap.values()) {
+		for (ExceptionCatchRule rbctr : exceptionCatchRuleMap.values()) {
 			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
 
-			if(depth >= 0 && depth < deepest) {
+			if (depth >= 0 && depth < deepest) {
 				deepest = depth;
 				exceptionCatchRule = rbctr;
 			}
 		}
 
-		if(exceptionCatchRule == null) {
+		if (exceptionCatchRule == null) {
 			return this.defaultExceptionCatchRule;
 		}
 
@@ -169,7 +169,7 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	 */
 	private int getMatchedDepth(String exceptionType, Throwable ex) {
 		Throwable t = ex.getCause();
-		if(t != null) {
+		if (t != null) {
 			return getMatchedDepth(exceptionType, t);
 		}
 
@@ -185,12 +185,12 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	 * @return the matched depth
 	 */
 	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
-		if(exceptionClass.getName().contains(exceptionType))
+		if (exceptionClass.getName().contains(exceptionType)) {
 			return depth;
-
-		if(exceptionClass.equals(Throwable.class))
+		}
+		if (exceptionClass.equals(Throwable.class)) {
 			return -1;
-		
+		}
 		return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
 	}
 

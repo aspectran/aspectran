@@ -59,15 +59,15 @@ public class TokenExpressionParser implements TokenEvaluator {
 		TokenType tokenType = token.getType();
 		Object value = null;
 
-		if(tokenType == TokenType.TEXT) {
+		if (tokenType == TokenType.TEXT) {
 			value = token.getValue();
-		} else if(tokenType == TokenType.PARAMETER) {
+		} else if (tokenType == TokenType.PARAMETER) {
 			value = getParameter(token.getName(), token.getValue());
-		} else if(tokenType == TokenType.ATTRIBUTE) {
+		} else if (tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
-		} else if(tokenType == TokenType.BEAN) {
+		} else if (tokenType == TokenType.BEAN) {
 			value = getBean(token);
-		} else if(tokenType == TokenType.PROPERTY) {
+		} else if (tokenType == TokenType.PROPERTY) {
 			value = getProperty(token);
 		}
 		
@@ -76,17 +76,18 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 	@Override
 	public Object evaluate(Token[] tokens) {
-		if(tokens == null || tokens.length == 0)
+		if (tokens == null || tokens.length == 0) {
 			return null;
+		}
 
-		if(tokens.length > 1) {
+		if (tokens.length > 1) {
 			StringBuilder sb = new StringBuilder();
 			
-			for(Token t : tokens) {
+			for (Token t : tokens) {
 				Object value = evaluate(t);
-				
-				if(value != null)
+				if (value != null) {
 					sb.append(value.toString());
+				}
 			}
 			
 			return sb.toString();
@@ -97,14 +98,15 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 	@Override
 	public void evaluate(Token[] tokens, Writer writer) throws IOException {
-		if(tokens == null || tokens.length == 0)
+		if (tokens == null || tokens.length == 0) {
 			return;
+		}
 
-		for(Token t : tokens) {
+		for (Token t : tokens) {
 			Object value = evaluate(t);
-
-			if(value != null)
+			if (value != null) {
 				writer.write(value.toString());
+			}
 		}
 
 		writer.flush();
@@ -113,39 +115,40 @@ public class TokenExpressionParser implements TokenEvaluator {
 	@Override
 	public String evaluateAsString(Token[] tokens) {
 		Object value = evaluate(tokens);
-		return (value != null) ? value.toString() : null;
+		return (value != null ? value.toString() : null);
 	}
 
 	@Override
 	public Object evaluate(String parameterName, Token[] tokens) {
-		if(tokens == null || tokens.length == 0) {
+		if (tokens == null || tokens.length == 0) {
 			String[] values = getParameterValues(parameterName);
-			if(values != null) {
-				if(values.length == 1)
+			if (values != null) {
+				if (values.length == 1) {
 					return values[0];
-				else if(values.length > 1)
+				} else if (values.length > 1) {
 					return values;
+				}
 			}
 			return null;
 		}
-		
 		return evaluate(tokens);
 	}
 
 	@Override
 	public String evaluateAsString(String parameterName, Token[] tokens) {
 		Object value = evaluate(parameterName, tokens);
-		return (value != null) ? value.toString() : null;
+		return (value != null ? value.toString() : null);
 	}
 
 	@Override
 	public List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList) {
-		if(tokensList == null || tokensList.isEmpty())
+		if (tokensList == null || tokensList.isEmpty()) {
 			return cast(getParameterAsList(parameterName));
+		}
 		
 		List<Object> valueList = new ArrayList<>(tokensList.size());
 
-		for(Token[] tokens : tokensList) {
+		for (Token[] tokens : tokensList) {
 			Object value = evaluate(parameterName, tokens);
 			valueList.add(value);
 		}
@@ -155,12 +158,13 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 	@Override
 	public Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet) {
-		if(tokensSet == null || tokensSet.isEmpty())
+		if (tokensSet == null || tokensSet.isEmpty()) {
 			return cast(getParameterAsSet(parameterName));
-		
+		}
+
 		Set<Object> valueSet = new HashSet<>(tokensSet.size());
 
-		for(Token[] tokens : tokensSet) {
+		for (Token[] tokens : tokensSet) {
 			Object value = evaluate(parameterName, tokens);
 			valueSet.add(value);
 		}
@@ -170,11 +174,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 	@Override
 	public Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap) {
-		if(tokensMap == null || tokensMap.isEmpty()) {
+		if (tokensMap == null || tokensMap.isEmpty()) {
 			String value = getParameter(parameterName);
-			
-			if(value == null)
+			if (value == null) {
 				return null;
+			}
 			
 			Map<String, Object> valueMap = new LinkedHashMap<>();
 			valueMap.put(parameterName, value);
@@ -183,7 +187,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 		
 		Map<String, Object> valueMap = new LinkedHashMap<>();
 		
-		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = evaluate(entry.getKey(), entry.getValue());
 			valueMap.put(entry.getKey(), value);
 		}
@@ -193,11 +197,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 	@Override
 	public Properties evaluateAsProperties(String parameterName, Properties tokensProp) {
-		if(tokensProp == null || tokensProp.isEmpty()) {
+		if (tokensProp == null || tokensProp.isEmpty()) {
 			String value = getParameter(parameterName);
-
-			if(value == null)
+			if (value == null) {
 				return null;
+			}
 
 			Properties prop = new Properties();
 			prop.put(parameterName, value);
@@ -206,7 +210,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 		
 		Properties prop = new Properties();
 
-		for(Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
+		for (Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
 			Object value = evaluate(entry.getKey().toString(), (Token[])entry.getValue());
 			prop.put(entry.getKey(), value);
 		}
@@ -223,13 +227,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 */
 	private List<String> getParameterAsList(String name) {
 		String[] values = getParameterValues(name);
-		
-		if(values == null)
+		if (values == null) {
 			return null;
+		}
 		
 		List<String> valueList = new ArrayList<>(values.length);
 		Collections.addAll(valueList, values);
-		
 		return valueList;
 	}
 	
@@ -242,13 +245,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 */
 	private Set<String> getParameterAsSet(String name) {
 		String[] values = getParameterValues(name);
-		
-		if(values == null)
+		if (values == null) {
 			return null;
+		}
 
 		Set<String> valueSet = new LinkedHashSet<>(values.length);
 		Collections.addAll(valueSet, values);
-		
 		return valueSet;
 	}
 
@@ -263,7 +265,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 */
 	private String getParameter(String name, String defaultValue) {
 		String value = getParameter(name);
-		return (value != null) ? value : defaultValue;
+		return (value != null ? value : defaultValue);
 	}
 
 	/**
@@ -275,9 +277,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 *			single value of the parameter
 	 */
 	protected String getParameter(String name) {
-		if(activity.getRequestAdapter() != null)
+		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getParameter(name);
-
+		}
 		return null;
 	}
 
@@ -291,9 +293,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 *			containing the parameter's values
 	 */
 	protected String[] getParameterValues(String name) {
-		if(activity.getRequestAdapter() != null)
+		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getParameterValues(name);
-
+		}
 		return null;
 	}
 	
@@ -306,9 +308,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 *			single value of the parameter
 	 */
 	protected FileParameter getFileParameter(String name) {
-		if(activity.getRequestAdapter() != null)
+		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getFileParameter(name);
-
+		}
 		return null;
 	}
 
@@ -322,9 +324,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 *			containing the parameter's values
 	 */
 	protected FileParameter[] getFileParameterValues(String name) {
-		if(activity.getRequestAdapter() != null)
+		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getFileParameterValues(name);
-
+		}
 		return null;
 	}
 
@@ -339,14 +341,15 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected Object getAttribute(Token token) {
 		Object object = null;
 
-		if(activity.getProcessResult() != null)
+		if (activity.getProcessResult() != null) {
 			object = activity.getProcessResult().getResultValue(token.getName());
-
-		if(object == null && activity.getRequestAdapter() != null)
+		}
+		if (object == null && activity.getRequestAdapter() != null) {
 			object = activity.getRequestAdapter().getAttribute(token.getName());
-
-		if(object != null && token.getGetterName() != null)
+		}
+		if (object != null && token.getGetterName() != null) {
 			object = getBeanProperty(object, token.getGetterName());
+		}
 
 		return object;
 	}
@@ -360,13 +363,14 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected Object getBean(Token token) {
 		Object value;
 
-		if(token.getAlternativeValue() != null)
-			value = activity.getBean((Class<?>)token.getAlternativeValue());
-		else
+		if (token.getAlternativeValue() != null) {
+			value = activity.getBean((Class<?>) token.getAlternativeValue());
+		} else {
 			value = activity.getBean(token.getName());
-
-		if(value != null && token.getGetterName() != null)
+		}
+		if (value != null && token.getGetterName() != null) {
 			value = getBeanProperty(value, token.getGetterName());
+		}
 
 		return value;
 	}
@@ -383,7 +387,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 		try {
 			value = BeanUtils.getObject(object, propertyName);
-		} catch(InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			// ignore
 			value = null;
 		}
@@ -403,30 +407,28 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 * @return an environment variable
 	 */
 	protected Object getProperty(Token token) {
-		if(token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
+		if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
 			Properties props;
 
 			try {
 				props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
-			} catch(IOException e) {
+			} catch (IOException e) {
 				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
 			}
 
 			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : props;
-
-			if(value == null)
+			if (value == null) {
 				value = token.getAlternativeValue();
-
+			}
 			return value;
 		} else {
 			Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
-
-			if(value != null && token.getGetterName() != null)
+			if (value != null && token.getGetterName() != null) {
 				value = getBeanProperty(value, token.getGetterName());
-
-			if(value == null)
+			}
+			if (value == null) {
 				value = token.getValue();
-
+			}
 			return value;
 		}
 	}

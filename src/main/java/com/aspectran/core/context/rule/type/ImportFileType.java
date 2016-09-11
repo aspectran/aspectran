@@ -44,9 +44,10 @@ public enum ImportFileType {
 	 * @return an {@code ImportFileType}, may be {@code null}
 	 */
 	public static ImportFileType resolve(String alias) {
-		for(ImportFileType type : values()) {
-			if(type.alias.equals(alias))
+		for (ImportFileType type : values()) {
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}

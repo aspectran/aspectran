@@ -33,7 +33,7 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
 		try {
 			return createActivityContext();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new ActivityContextBuilderException("Faild to create ActivityContext for Aspectran Runtime Activity.", e);
 		}
 	}

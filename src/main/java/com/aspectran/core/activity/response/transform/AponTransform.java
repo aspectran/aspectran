@@ -65,23 +65,24 @@ public class AponTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if(responseAdapter == null)
+		if (responseAdapter == null)
 			return;
 
-		if(debugEnabled) {
+		if (debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 		
 		try {
-			if(this.characterEncoding != null) {
+			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
 				String characterEncoding = activity.resolveResponseCharacterEncoding();
-				if(characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 
-			if(contentType != null) {
+			if (contentType != null) {
 				responseAdapter.setContentType(contentType);
 			}
 
@@ -93,14 +94,14 @@ public class AponTransform extends TransformResponse {
 			aponWriter.write(parameters);
 			aponWriter.flush();
 
-			if(traceEnabled) {
+			if (traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				AponWriter aponWriter2 = new AponWriter(stringWriter, true);
 				aponWriter2.write(parameters);
 				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}

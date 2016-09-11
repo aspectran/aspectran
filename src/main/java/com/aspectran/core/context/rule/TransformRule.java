@@ -66,13 +66,14 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	public void setTransformType(TransformType transformType) {
 		this.transformType = transformType;
 		
-		if(contentType == null) {
-			if(transformType == TransformType.TEXT)
+		if (contentType == null) {
+			if (transformType == TransformType.TEXT) {
 				contentType = ContentType.TEXT_PLAIN.toString();
-			else if(transformType == TransformType.JSON)
+			} else if (transformType == TransformType.JSON) {
 				contentType = ContentType.TEXT_JSON.toString();
-			else if(transformType == TransformType.XML)
+			} else if (transformType == TransformType.XML) {
 				contentType = ContentType.TEXT_XML.toString();
+			}
 		}
 	}
 
@@ -119,9 +120,10 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	public void setTemplateRule(TemplateRule templateRule) {
 		this.templateRule = templateRule;
 
-		if(templateRule != null) {
-			if(templateRule.getEncoding() != null && this.characterEncoding == null)
+		if (templateRule != null) {
+			if (templateRule.getEncoding() != null && this.characterEncoding == null) {
 				this.characterEncoding = templateRule.getEncoding();
+			}
 		}
 	}
 
@@ -180,45 +182,45 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		TransformType transformType = TransformType.resolve(type);
 
-		if(transformType == null && contentType != null) {
+		if (transformType == null && contentType != null) {
 			transformType = TransformType.resolve(ContentType.resolve(contentType));
 		}
 		
-		if(transformType == null)
+		if (transformType == null) {
 			throw new IllegalArgumentException("No transform type registered for '" + type + "'.");
+		}
 
 		TransformRule tr = new TransformRule();
 		tr.setTransformType(transformType);
-		if(contentType != null) {
+		if (contentType != null) {
 			tr.setContentType(contentType);
 		}
 		tr.setTemplateId(templateId);
 		tr.setCharacterEncoding(characterEncoding);
 		tr.setDefaultResponse(defaultResponse);
 		tr.setPretty(pretty);
-		
 		return tr;
 	}
 
 	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, 
 			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		if(transformType == null && contentType != null) {
+		if (transformType == null && contentType != null) {
 			transformType = TransformType.resolve(ContentType.resolve(contentType));
 		}
 
-		if(transformType == null)
+		if (transformType == null) {
 			throw new IllegalArgumentException("Transform Type is not specified.");
+		}
 
 		TransformRule tr = new TransformRule();
 		tr.setTransformType(transformType);
-		if(contentType != null) {
+		if (contentType != null) {
 			tr.setContentType(contentType);
 		}
 		tr.setTemplateId(templateId);
 		tr.setCharacterEncoding(characterEncoding);
 		tr.setDefaultResponse(defaultResponse);
 		tr.setPretty(pretty);
-
 		return tr;
 	}
 
@@ -233,7 +235,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 		tr.setActionList(transformRule.getActionList());
 		
 		TemplateRule templateRule = transformRule.getTemplateRule();
-		if(templateRule != null) {
+		if (templateRule != null) {
 			tr.setTemplateRule(templateRule.replicate());
 		}
 		

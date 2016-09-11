@@ -96,6 +96,9 @@ public class FileParameter {
 	 * @throws IOException if an I/O error has occurred
 	 */
 	public InputStream getInputStream() throws IOException {
+		if(file == null) {
+			throw new IOException("No file specified for the file parameter: " + this);
+		}
 		return new FileInputStream(file);
 	}
 
@@ -114,18 +117,18 @@ public class FileParameter {
 		int len;
 
 		try {
-			while((len = input.read(buffer)) != -1) {
+			while ((len = input.read(buffer)) != -1) {
 				output.write(buffer, 0, len);
 			}
 		} finally {
 			try {
 				output.close();
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// ignore
 			}
 			try {
 				input.close();
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// ignore
 			}
 		}
@@ -175,17 +178,17 @@ public class FileParameter {
 	 * @throws IOException if an I/O error has occurred
 	 */
 	public File saveAs(File destFile, boolean overwrite) throws IOException {
-		if(destFile == null) {
+		if (destFile == null) {
 			throw new IllegalArgumentException("'destFile' must not be null.");
 		}
 
-		if(!overwrite) {
+		if (!overwrite) {
 			File newFile = FilenameUtils.seekUniqueFile(destFile);
-			if(destFile != newFile) {
+			if (destFile != newFile) {
 				destFile = newFile;
 			}
 		} else {
-			if(destFile.exists() && !destFile.delete()) {
+			if (destFile.exists() && !destFile.delete()) {
 				throw new IOException("Destination file [" + destFile.getAbsolutePath() +
 						"] already exists and could not be deleted.");
 			}
@@ -198,18 +201,18 @@ public class FileParameter {
 		int len;
 
 		try {
-			while((len = input.read(buffer)) != -1) {
+			while ((len = input.read(buffer)) != -1) {
 				output.write(buffer, 0, len);
 			}
 		} finally {
 			try {
 				output.close();
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// ignore
 			}
 			try {
 				input.close();
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// ignore
 			}
 		}
@@ -227,7 +230,7 @@ public class FileParameter {
 	 * Delete a file.
 	 */
 	public void delete() {
-		if(file != null) {
+		if (file != null) {
 			file.delete();
 		}
 	}
@@ -236,16 +239,16 @@ public class FileParameter {
 	 * Delete a saved file.
 	 */
 	public void rollback() {
-		if(savedFile != null) {
+		if (savedFile != null) {
 			savedFile.delete();
 		}
 	}
 	
 	public void release() {
-		if(file != null) {
+		if (file != null) {
 			file.setWritable(true);
 		}
-		if(savedFile != null) {
+		if (savedFile != null) {
 			savedFile.setWritable(true);
 		}
 	}

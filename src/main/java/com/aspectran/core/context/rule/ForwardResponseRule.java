@@ -98,9 +98,9 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
 	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addAttributeValueRule(ItemRule attributeItemRule) {
-		if(attributeItemRuleMap == null) 
+		if (attributeItemRuleMap == null) {
 			attributeItemRuleMap = new ItemRuleMap();
-		
+		}
 		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 
@@ -155,24 +155,24 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
 	 * @return an instance of ForwardResponseRule
 	 */
 	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
-		if(transletName == null)
+		if (transletName == null) {
 			throw new IllegalArgumentException("The 'forward' element requires a 'translet' attribute.");
-		
+		}
+
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setContentType(contentType);
 		frr.setTransletName(transletName);
 		frr.setDefaultResponse(defaultResponse);
-
 		return frr;
 	}
 	
 	public static ForwardResponseRule newInstance(String transletName) {
-		if(transletName == null)
+		if (transletName == null) {
 			throw new IllegalArgumentException("'Translet name must not be null.");
-		
+		}
+
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setTransletName(transletName);
-
 		return frr;
 	}
 	
@@ -183,7 +183,6 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
 		frr.setAttributeItemRuleMap(forwardResponseRule.getAttributeItemRuleMap());
 		frr.setDefaultResponse(forwardResponseRule.getDefaultResponse());
 		frr.setActionList(forwardResponseRule.getActionList());
-		
 		return frr;
 	}
 	

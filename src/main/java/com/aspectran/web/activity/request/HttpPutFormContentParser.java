@@ -57,9 +57,9 @@ public class HttpPutFormContentParser {
 			String[] pairs = StringUtils.tokenize(body, "&");
 			MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
 
-			for(String pair : pairs) {
+			for (String pair : pairs) {
 				int idx = pair.indexOf('=');
-				if(idx == -1) {
+				if (idx == -1) {
 					String name = URLDecoder.decode(pair, charset.name());
 					parameterMap.add(name, null);
 				} else {
@@ -69,15 +69,15 @@ public class HttpPutFormContentParser {
 				}
 			}
 
-			if(!parameterMap.isEmpty()) {
-				for(Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+			if (!parameterMap.isEmpty()) {
+				for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
 					String name = entry.getKey();
 					List<String> list = entry.getValue();
 					String[] values = list.toArray(new String[list.size()]);
 					requestAdapter.setParameter(name, values);
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RequestParseException("Could not parse multipart servlet request.", e);
 		}
 	}
@@ -87,7 +87,7 @@ public class HttpPutFormContentParser {
 		InputStreamReader reader = new InputStreamReader(in, charset);
 		char[] buffer = new char[BUFFER_SIZE];
 		int bytesRead = -1;
-		while((bytesRead = reader.read(buffer)) != -1) {
+		while ((bytesRead = reader.read(buffer)) != -1) {
 			out.append(buffer, 0, bytesRead);
 		}
 		return out.toString();

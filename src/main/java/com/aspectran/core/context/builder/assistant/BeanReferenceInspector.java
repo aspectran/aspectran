@@ -53,7 +53,7 @@ public class BeanReferenceInspector {
 	public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
 		Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
 		
-		if(ruleSet == null) {
+		if (ruleSet == null) {
 			ruleSet = new LinkedHashSet<BeanReferenceInspectable>();
 			ruleSet.add(someRule);
 			relationMap.put(beanIdOrClass, ruleSet);
@@ -71,33 +71,34 @@ public class BeanReferenceInspector {
 	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
 		List<Object> unknownBeanIdList = new ArrayList<Object>();
 		
-		for(Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
+		for (Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
 			Object beanIdOrClass = entry.getKey();
 			Set<BeanReferenceInspectable> set = entry.getValue();
 
 			BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
 
-			if(beanRule == null && beanIdOrClass instanceof Class<?>)
-				beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>)beanIdOrClass);
+			if (beanRule == null && beanIdOrClass instanceof Class<?>) {
+				beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>) beanIdOrClass);
+			}
 			
-			if(beanRule == null) {
+			if (beanRule == null) {
 				unknownBeanIdList.add(beanIdOrClass);
 
-				for(BeanReferenceInspectable o : set) {
+				for (BeanReferenceInspectable o : set) {
 					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
 							"' on " + o.getBeanReferrerType() + " " + o);
 				}
 			} else {
-				for(BeanReferenceInspectable o : set) {
-					if(o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
+				for (BeanReferenceInspectable o : set) {
+					if (o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
 						BeanRuleAnalyzer.checkTransletActionParameter((BeanActionRule)o, beanRule);
 					}
 				}
 			}
 		}
 		
-		if(!unknownBeanIdList.isEmpty()) {
-			for(Object beanIdOrClass : unknownBeanIdList) {
+		if (!unknownBeanIdList.isEmpty()) {
+			for (Object beanIdOrClass : unknownBeanIdList) {
 				relationMap.remove(beanIdOrClass);
 			}
 			

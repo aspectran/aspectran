@@ -59,14 +59,14 @@ public class CommandParser {
 	private void parse(String command) {
 		String[] tokens = StringUtils.tokenize(command, " ", true);
 
-		if(tokens.length > 1) {
+		if (tokens.length > 1) {
 			requestMethod = MethodType.resolve(tokens[0]);
-			if(requestMethod != null) {
+			if (requestMethod != null) {
 				transletName = command.substring(tokens[0].length()).trim();
 			}
 		}
 
-		if(requestMethod == null) {
+		if (requestMethod == null) {
 			transletName = command;
 		}
 	}

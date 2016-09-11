@@ -54,7 +54,7 @@ class AspectNodeletAdder implements NodeletAdder {
             assistant.pushObject(aspectRule);
         });
 		parser.addNodelet(xpath, "/aspect/description", (node, attributes, text) -> {
-            if(text != null) {
+            if (text != null) {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setDescription(text);
             }
@@ -75,7 +75,7 @@ class AspectNodeletAdder implements NodeletAdder {
             String name = StringUtils.emptyToNull(attributes.get("name"));
             String value = attributes.get("value");
 
-            if(name != null) {
+            if (name != null) {
                 SettingsAdviceRule sar = assistant.peekObject();
                 sar.putSetting(name, value);
             }
@@ -88,7 +88,7 @@ class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/advice", (node, attributes, text) -> {
             String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
 
-            if(beanIdOrClass != null) {
+            if (beanIdOrClass != null) {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
                 assistant.resolveBeanClass(beanIdOrClass, aspectRule);

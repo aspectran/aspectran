@@ -52,8 +52,8 @@ public abstract class AbstractDynamicBeanProxy {
 			String transletName, String beanId, String className, String methodName) throws Throwable {
 		RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 		
-		if(holder.getDynamicAspectRuleList() != null) {
-			for(AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
+		if (holder.getDynamicAspectRuleList() != null) {
+			for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
 				// register dynamically
 				activity.registerAspectRule(aspectRule);
 			}
@@ -69,14 +69,14 @@ public abstract class AbstractDynamicBeanProxy {
 		// Check the cache first
 		RelevantAspectRuleHolder holder = cache.get(patternString);
 
-		if(holder == null) {
+		if (holder == null) {
 			synchronized(cache) {
 				holder = cache.get(patternString);
-				if(holder == null) {
+				if (holder == null) {
 					holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 					cache.put(patternString, holder);
 
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("cache relevantAspectRuleHolder [" + patternString + "] " + holder);
 					}
 				}
@@ -92,13 +92,13 @@ public abstract class AbstractDynamicBeanProxy {
 		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
 		List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
 
-		for(AspectRule aspectRule : aspectRuleMap.values()) {
-			if(aspectRule.isBeanRelevanted()) {
+		for (AspectRule aspectRule : aspectRuleMap.values()) {
+			if (aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
-				if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
-					if(aspectRule.getJoinpointType() == JoinpointType.BEAN) {
+				if (pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
+					if (aspectRule.getJoinpointType() == JoinpointType.BEAN) {
 						postRegister.register(aspectRule);
-					} else if(aspectRule.getJoinpointType() == JoinpointType.TRANSLET) {
+					} else if (aspectRule.getJoinpointType() == JoinpointType.TRANSLET) {
 						dynamicAspectRuleList.add(aspectRule);
 					}
 				}
@@ -107,10 +107,10 @@ public abstract class AbstractDynamicBeanProxy {
 
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
 
-		if(!dynamicAspectRuleList.isEmpty() ||
+		if (!dynamicAspectRuleList.isEmpty() ||
 				(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)) {
 			RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-			if(!dynamicAspectRuleList.isEmpty()) {
+			if (!dynamicAspectRuleList.isEmpty()) {
 				holder.setDynamicAspectRuleList(dynamicAspectRuleList);
 			} else {
 				holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);

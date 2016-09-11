@@ -97,7 +97,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      */
     protected Locale resolveDefaultLocale(Translet translet) {
         Locale defaultLocale = getDefaultLocale();
-        if(defaultLocale != null) {
+        if (defaultLocale != null) {
             translet.getRequestAdapter().setLocale(defaultLocale);
             return defaultLocale;
         }
@@ -114,7 +114,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      */
 	protected TimeZone resolveDefaultTimeZone(Translet translet) {
         TimeZone defaultTimeZone = getDefaultTimeZone();
-        if(defaultTimeZone != null) {
+        if (defaultTimeZone != null) {
             translet.getRequestAdapter().setTimeZone(defaultTimeZone);
             return defaultTimeZone;
         }

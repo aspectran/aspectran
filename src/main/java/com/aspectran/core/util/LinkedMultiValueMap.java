@@ -68,7 +68,7 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
 	@Override
 	public void add(K key, V value) {
 		List<V> values = get(key);
-		if(values == null) {
+		if (values == null) {
 			values = new LinkedList<>();
 			put(key, values);
 		}
@@ -90,7 +90,7 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
 
 	@Override
 	public void setAll(Map<K, V> values) {
-		for(Map.Entry<K, V> entry : values.entrySet()) {
+		for (Map.Entry<K, V> entry : values.entrySet()) {
 			set(entry.getKey(), entry.getValue());
 		}
 	}
@@ -105,7 +105,7 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
 	@Override
 	public Map<K, V> toSingleValueMap() {
 		LinkedHashMap<K, V> singleValueMap = new LinkedHashMap<>(size());
-		for(Map.Entry<K, List<V>> entry : entrySet()) {
+		for (Map.Entry<K, List<V>> entry : entrySet()) {
 			singleValueMap.put(entry.getKey(), entry.getValue().get(0));
 		}
 		return singleValueMap;
@@ -131,7 +131,7 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
 	 */
 	public LinkedMultiValueMap<K, V> deepCopy() {
 		LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>(size());
-		for(Map.Entry<K, List<V>> entry : entrySet()) {
+		for (Map.Entry<K, List<V>> entry : entrySet()) {
 			copy.put(entry.getKey(), new LinkedList<>(entry.getValue()));
 		}
 		return copy;

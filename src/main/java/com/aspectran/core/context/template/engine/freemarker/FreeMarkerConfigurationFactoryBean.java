@@ -38,7 +38,7 @@ public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationF
      */
     @Override
     public void initialize() throws Exception {
-        if(this.configuration == null) {
+        if (this.configuration == null) {
             this.configuration = createConfiguration();
         }
     }

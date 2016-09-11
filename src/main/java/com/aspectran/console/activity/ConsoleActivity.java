@@ -60,7 +60,7 @@ public class ConsoleActivity extends CoreActivity {
 
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter();
 			setResponseAdapter(responseAdapter);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new AdapterException("Failed to adapt for Console Activity.", e);
 		}
 	}
@@ -78,14 +78,14 @@ public class ConsoleActivity extends CoreActivity {
 	private void receiveRequiredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
-		if(parameterItemRuleMap != null) {
+		if (parameterItemRuleMap != null) {
 			ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
 
 			System.out.println("Required parameters:");
 
-			for(ItemRule itemRule : parameterItemRules) {
+			for (ItemRule itemRule : parameterItemRules) {
 				Token[] tokens = itemRule.getTokens();
-				if(tokens == null) {
+				if (tokens == null) {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
 				}
 
@@ -98,12 +98,12 @@ public class ConsoleActivity extends CoreActivity {
 
 			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
-			if(missingItemRules != null) {
+			if (missingItemRules != null) {
 				System.out.println("Enter missing value of each parameter:");
 
 				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
 
-				if(missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
+				if (missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
 					String[] itemNames = missingItemRules2.getItemNames();
 					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
 					System.out.printf("Missing mandatory parameters: %s", missingParamNames).println();
@@ -117,16 +117,16 @@ public class ConsoleActivity extends CoreActivity {
 	private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
 		ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
 
-		for(ItemRule itemRule : parameterItemRules) {
+		for (ItemRule itemRule : parameterItemRules) {
 			Token[] tokens = itemRule.getTokens();
 			int inputCount = 0;
 
-			if(tokens != null && tokens.length > 0) {
-				for(Token token : tokens) {
-					if(token.getType() == TokenType.PARAMETER) {
+			if (tokens != null && tokens.length > 0) {
+				for (Token token : tokens) {
+					if (token.getType() == TokenType.PARAMETER) {
 						System.out.printf("    %s: ", token.stringify());
 						String input = System.console().readLine();
-						if(input != null && !input.isEmpty()) {
+						if (input != null && !input.isEmpty()) {
 							getRequestAdapter().setParameter(token.getName(), input);
 							inputCount++;
 						}
@@ -135,13 +135,13 @@ public class ConsoleActivity extends CoreActivity {
 			} else {
 				System.out.printf("  $%s: ", itemRule.getName());
 				String input = System.console().readLine();
-				if(input != null && !input.isEmpty()) {
+				if (input != null && !input.isEmpty()) {
 					getRequestAdapter().setParameter(itemRule.getName(), input);
 					inputCount++;
 				}
 			}
 
-			if(itemRule.isMandatory() && inputCount == 0) {
+			if (itemRule.isMandatory() && inputCount == 0) {
 				missingItemRules.add(itemRule);
 			}
 		}

@@ -150,7 +150,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	@Override
 	public MessageSource getMessageSource() {
-		if(this.messageSource == null) {
+		if (this.messageSource == null) {
 			throw new IllegalStateException("MessageSource not initialized - " +
 					"call 'refresh' before accessing messages via the context: " + this);
 		}
@@ -183,7 +183,7 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public Activity getCurrentActivity() {
 		Activity activity = currentActivityHolder.get();
-		return (activity != null) ? activity : getDefaultActivity();
+		return (activity != null ? activity : getDefaultActivity());
 	}
 
 	@Override
@@ -200,31 +200,31 @@ public class AspectranActivityContext implements ActivityContext {
 		Activity activity = new DefaultActivity(this);
 		setDefaultActivity(activity);
 
-		if(contextBeanRegistry != null)
+		if (contextBeanRegistry != null)
 			contextBeanRegistry.initialize(this);
 
-		if(templateProcessor != null)
+		if (templateProcessor != null)
 			templateProcessor.initialize(this);
 
-		if(contextBeanRegistry != null)
+		if (contextBeanRegistry != null)
 			initMessageSource();
 	}
 
 	@Override
 	public void destroy() {
-		if(templateProcessor != null) {
+		if (templateProcessor != null) {
 			templateProcessor.destroy();
 			templateProcessor = null;
 		}
-		if(transletRuleRegistry != null) {
+		if (transletRuleRegistry != null) {
 			transletRuleRegistry.clear();
 			transletRuleRegistry = null;
 		}
-		if(aspectRuleRegistry != null) {
+		if (aspectRuleRegistry != null) {
 			aspectRuleRegistry.clear();
 			aspectRuleRegistry = null;
 		}
-		if(contextBeanRegistry != null) {
+		if (contextBeanRegistry != null) {
 			contextBeanRegistry.destroy();
 			contextBeanRegistry = null;
 		}
@@ -237,16 +237,16 @@ public class AspectranActivityContext implements ActivityContext {
 	 * Use parent's if none defined in this context.
 	 */
 	private void initMessageSource() {
-		if(contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
+		if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
 			messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("Using MessageSource [" + messageSource + "]");
 			}
 		} else {
 			// Use empty MessageSource to be able to accept getMessage calls.
 			messageSource = new DelegatingMessageSource();
 			//contextBeanRegistry.registerSingleton(MESSAGE_SOURCE_BEAN_ID, messageSource);
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
 						"': using default [" + messageSource + "]");
 			}
