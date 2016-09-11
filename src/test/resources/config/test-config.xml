@@ -69,7 +69,7 @@
 			</parameters>
 		</request>
 		<transform type="transform/text" contentType="text/plain">
-			<template engine="token">
+			<template engine="builtin">
 				Using Builtin Token Template Engine
 				-------------------------------------
 				input-1: ${input-1}

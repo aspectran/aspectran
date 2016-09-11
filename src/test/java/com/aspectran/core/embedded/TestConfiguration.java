@@ -19,7 +19,6 @@ import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.annotation.Qualifier;
-import com.aspectran.core.context.rule.type.ScopeType;
 
 @Configuration
 public class TestConfiguration {
@@ -28,7 +27,7 @@ public class TestConfiguration {
 	@Qualifier("FirstBean")
 	private FirstBean firstBean;
 	
-	@Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
+	@Bean(id = "thirdBean", lazyInit = true)
 	public FirstBean getThirdBean() {
 		return firstBean;
 	}

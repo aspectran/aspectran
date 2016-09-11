@@ -17,10 +17,14 @@ package com.aspectran.core.embedded;
 
 import java.io.IOException;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.service.AspectranServiceException;
@@ -32,16 +36,37 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EmbeddedAspectranServiceTest {
 
-	@Test
-	public void embeddedAspectranServiceTest() throws AspectranServiceException, IOException {
+	private EmbeddedAspectranService aspectranService;
+
+	@Before
+	public void ready() throws IOException, AspectranServiceException {
 		String rootContextLocation = "classpath:config/embedded-service-config.xml";
-		EmbeddedAspectranService aspectranService = EmbeddedAspectranService.newInstance(rootContextLocation);
+		aspectranService = EmbeddedAspectranService.newInstance(rootContextLocation);
+	}
+
+	@After
+	public void finish() {
+		if(aspectranService != null) {
+			aspectranService.shutdown();
+		}
+	}
+
+	@Test
+	public void beanRegistryTest() throws AspectranServiceException, IOException {
 		ActivityContext activityContext = aspectranService.getActivityContext();
 		BeanRegistry beanRegistry = activityContext.getBeanRegistry();
 		FirstBean firstBean = beanRegistry.getBean("thirdBean");
 
-		System.out.println(firstBean);
-		System.out.println(firstBean.getMessage());
+		//System.out.println(firstBean);
+		//System.out.println(firstBean.getMessage());
+
+		Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
+	}
+
+	@Test
+	public void transeltRunTest() throws AspectranServiceException, IOException {
+		Translet translet = aspectranService.translet("echo");
+		System.out.println(translet.getResponseAdapter().getWriter().toString());
 	}
 
 }

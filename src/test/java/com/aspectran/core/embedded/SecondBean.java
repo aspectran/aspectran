@@ -17,18 +17,13 @@ package com.aspectran.core.embedded;
 
 public class SecondBean {
 
-	private String message = "This is the second bean.";
+	public static final String message = "This is the second bean.";
 	
 	public SecondBean() {
-		System.out.println("1111111111");
 	}
 
 	public String getMessage() {
 		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 }

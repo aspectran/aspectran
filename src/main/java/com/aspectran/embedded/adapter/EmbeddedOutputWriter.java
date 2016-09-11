@@ -18,10 +18,13 @@ package com.aspectran.embedded.adapter;
 import com.aspectran.core.util.StringOutputWriter;
 
 /**
- * The Class QuartzJobOutputWriter.
+ * The Class EmbeddedOutputWriter.
  */
 public class EmbeddedOutputWriter extends StringOutputWriter {
 
+	/**
+	 * Instantiates a new EmbeddedOutputWriter.
+	 */
 	public EmbeddedOutputWriter() {
 		super(128);
 	}

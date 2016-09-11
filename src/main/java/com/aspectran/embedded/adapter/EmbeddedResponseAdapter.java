@@ -29,7 +29,10 @@ import com.aspectran.core.context.rule.type.ContentType;
 public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
 	private EmbeddedOutputWriter writer;
-	
+
+	/**
+	 * Instantiates a new EmbeddedResponseAdapter.
+	 */
 	public EmbeddedResponseAdapter() {
 		super(null);
 		setContentType(ContentType.TEXT_PLAIN.toString());

@@ -11,4 +11,21 @@
 	
 	<bean scan="com.aspectran.core.embedded.*Configuration" mask="com.aspectran.core.embedded.*"/>
 
+	<translet name="echo">
+		<request>
+			<parameters>
+				<item name="input-1">${input-1:12345}</item>
+				<item name="input-2">${input-2:67890}</item>
+			</parameters>
+		</request>
+		<transform type="transform/text" contentType="text/plain">
+			<template>
+				Using Builtin Token Template Engine
+				-------------------------------------
+				input-1: ${input-1}
+				input-2: ${input-2}
+			</template>
+		</transform>
+	</translet>
+
 </aspectran>

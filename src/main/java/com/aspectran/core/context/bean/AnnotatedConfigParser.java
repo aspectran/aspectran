@@ -107,9 +107,9 @@ public class AnnotatedConfigParser {
 		}
 
 		for(BeanRule beanRule : configBeanRuleMap.values()) {
-			//if(log.isTraceEnabled()) {
-				log.debug("configBeanRule " + beanRule);
-			//}
+			if(log.isTraceEnabled()) {
+				log.trace("configBeanRule " + beanRule);
+			}
 			if(!beanRule.isOffered()) {
 				parseConfigBean(beanRule);
 				parseFieldAutowire(beanRule);
@@ -122,9 +122,9 @@ public class AnnotatedConfigParser {
 		}
 
 		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
-			//if(log.isTraceEnabled()) {
-				log.debug("idBasedBeanRule " + beanRule);
-			//}
+			if(log.isTraceEnabled()) {
+				log.trace("idBasedBeanRule " + beanRule);
+			}
 			if(!beanRule.isOffered()) {
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
@@ -138,9 +138,9 @@ public class AnnotatedConfigParser {
 		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
 			for(BeanRule beanRule : set) {
 				if(!beanRule.isOffered()) {
-					//if(log.isTraceEnabled()) {
-						log.debug("typeBasedBeanRule " + beanRule);
-					//}
+					if(log.isTraceEnabled()) {
+						log.trace("typeBasedBeanRule " + beanRule);
+					}
 					parseFieldAutowire(beanRule);
 					parseMethodAutowire(beanRule);
 				}

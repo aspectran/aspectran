@@ -36,7 +36,7 @@ public interface TemplateEngine {
      * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException;
+    void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException;
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
@@ -47,7 +47,7 @@ public interface TemplateEngine {
      * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException;
+    void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException;
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
@@ -59,6 +59,6 @@ public interface TemplateEngine {
      * @param locale the locale
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException;
+    void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException;
 
 }

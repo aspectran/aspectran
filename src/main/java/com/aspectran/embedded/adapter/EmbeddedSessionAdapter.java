@@ -21,8 +21,6 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
 
 /**
  * The Class EmbeddedSessionAdapter.
- * 
- * @since 2.3.0
  */
 public class EmbeddedSessionAdapter extends BasicSessionAdapter {
 	

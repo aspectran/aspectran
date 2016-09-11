@@ -24,6 +24,9 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.embedded.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
 
+/**
+ * The Class EmbeddedActivity.
+ */
 public class EmbeddedActivity extends CoreActivity {
 
 	/**

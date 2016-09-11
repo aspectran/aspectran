@@ -19,14 +19,13 @@ import java.io.IOException;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
@@ -39,6 +38,8 @@ import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
 
 /**
  * The Class EmbeddedAspectranService.
+ *
+ * @since 3.0.0
  */
 public class EmbeddedAspectranService extends BasicAspectranService {
 
@@ -90,26 +91,40 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Process the actual dispatching to the activity. 
+	 * Runs the translet.
 	 *
-	 * @param transletName the translet name
+	 * @param name the translet name
+	 * @return the {@code Translet} object
 	 */
-	public void translet(String transletName, MethodType method) {
+	public Translet translet(String name) {
+		return translet(name, null);
+	}
+
+	/**
+	 * Runs the translet.
+	 *
+	 * @param name the translet name
+	 * @param method the request method
+	 * @return the {@code Translet} object
+	 */
+	public Translet translet(String name, MethodType method) {
 		if(pauseTimeout != 0L) {
 			if(pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("Aspectran Service has been paused, so did not respond to the command \"" + transletName + "\".");
-				return;
+				log.warn("Aspectran Service has been paused, so did not run the translet \"" + name + "\".");
+				return null;
 			} else {
 				pauseTimeout = 0L;
 			}
 		}
 
 		Activity activity = null;
+		Translet translet = null;
 
 		try {
 			activity = new EmbeddedActivity(getActivityContext(), sessionAdapter);
-			activity.prepare(transletName, method);
+			activity.prepare(name, method);
 			activity.perform();
+			translet = activity.getTranslet();
 		} catch(ActivityTerminatedException e) {
 			if(log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
@@ -119,6 +134,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 				activity.finish();
 			}
 		}
+
+		return translet;
 	}
 
 	@Override
@@ -146,7 +163,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	/**
 	 * Returns a new instance of EmbeddedAspectranService.
 	 *
-	 * @param aspectranConfigText the aspectran configuration text
+	 * @param aspectranConfig the parameters for aspectran configuration
 	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 * @throws IOException if an I/O error has occurred
