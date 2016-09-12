@@ -372,25 +372,21 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return activity.getAspectAdviceBean(aspectId);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getBeforeAdviceResult(String aspectId) {
 		return activity.getBeforeAdviceResult(aspectId);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAfterAdviceResult(String aspectId) {
 		return activity.getAfterAdviceResult(aspectId);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getFinallyAdviceResult(String aspectId) {
 		return activity.getFinallyAdviceResult(aspectId);
 	}

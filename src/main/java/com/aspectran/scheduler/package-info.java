@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Aspectran is a lightweight Java framework for building Enterprise-ready Web
- * and Console-based or Embedded applications.
+ * Built-in scheduling service integration package.
  */
-package com.aspectran;
+package com.aspectran.scheduler;
