@@ -216,6 +216,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                 setTemplateLoader(templateLoaderList);
             }
         }
+
         TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
         if (templateLoader != null) {
             config.setTemplateLoader(templateLoader);

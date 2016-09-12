@@ -37,7 +37,7 @@ public class TemplateException extends AspectranRuntimeException {
 	/**
 	 * Constructs a TemplateException with the specified detail message.
 	 *
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public TemplateException(String msg) {
 		super(msg);
@@ -46,7 +46,7 @@ public class TemplateException extends AspectranRuntimeException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 *
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public TemplateException(Throwable cause) {
 		super(cause);
@@ -56,8 +56,8 @@ public class TemplateException extends AspectranRuntimeException {
 	 * Constructs a TemplateException with the specified error message and also the specified root cause exception.
 	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a TemplateException.
 	 *
-	 * @param msg The detail message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public TemplateException(String msg, Throwable cause) {
 		super(msg, cause);

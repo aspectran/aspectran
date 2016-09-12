@@ -35,7 +35,7 @@ public class InvalidParameterException extends AponException {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public InvalidParameterException(String msg) {
 		super(msg);
@@ -47,7 +47,7 @@ public class InvalidParameterException extends AponException {
 	 * @param lineNumber the line number
 	 * @param line the line
 	 * @param trim the trim
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public InvalidParameterException(int lineNumber, String line, String trim, String msg) {
 		super(createMessage(lineNumber, line, trim, msg));
@@ -56,7 +56,7 @@ public class InvalidParameterException extends AponException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidParameterException(Throwable cause) {
 		super(cause);
@@ -65,8 +65,8 @@ public class InvalidParameterException extends AponException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidParameterException(String msg, Throwable cause) {
 		super(msg, cause);
@@ -78,12 +78,11 @@ public class InvalidParameterException extends AponException {
 	 * @param lineNumber the line number
 	 * @param line the line
 	 * @param trim the trim
-	 * @param msg the msg
+	 * @param msg the message
 	 * @return the string
 	 */
 	protected static String createMessage(int lineNumber, String line, String trim, String msg) {
 		int column = (trim != null) ? line.indexOf(trim) : 0;
-		
 		StringBuilder sb = new StringBuilder();
 		if (msg != null) {
 			sb.append(msg);
@@ -92,13 +91,10 @@ public class InvalidParameterException extends AponException {
 		if (column != -1) {
 			String lspace = line.substring(0, column);
 			int tabCnt = StringUtils.search(lspace, "\t");
-			
 			if (trim != null && trim.length() > 33) {
 				trim = trim.substring(0, 30) + "...";
 			}
-			
 			sb.append(", Column: ").append(column + 1);
-			
 			if (tabCnt == 0) {
 				sb.append(column);
 			} else {
@@ -107,10 +103,8 @@ public class InvalidParameterException extends AponException {
 				sb.append(", Space ").append(column - tabCnt);
 				sb.append(")");
 			}
-			
 			sb.append(": ").append(trim);
 		}
-		
 		return sb.toString();
 	}
 

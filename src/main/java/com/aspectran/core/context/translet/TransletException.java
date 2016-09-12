@@ -18,7 +18,7 @@ package com.aspectran.core.context.translet;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * This class is the basic exception that gets thrown from the beans pacakge.
+ * The Class TransletException.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -28,16 +28,16 @@ public class TransletException extends AspectranRuntimeException {
 	private static final long serialVersionUID = 3736262494374232352L;
 
 	/**
-	 * Creates a new BeanException without detail message.
+	 * Creates a new TransletException without detail message.
 	 */
 	public TransletException() {
 		super();
 	}
 
 	/**
-	 * Constructs a BeanException with the specified detail message.
+	 * Constructs a TransletException with the specified detail message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public TransletException(String msg) {
 		super(msg);
@@ -46,18 +46,17 @@ public class TransletException extends AspectranRuntimeException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public TransletException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The detail message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public TransletException(String msg, Throwable cause) {
 		super(msg, cause);

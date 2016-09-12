@@ -195,8 +195,8 @@ public class AponWriter extends AponFormat implements Flushable {
 					closeCurlyBracket();
 				}
 			}
-		} else if (parameter.getParameterValueType() == ParameterValueType.STRING ||
-				parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
+		} else if (parameter.getParameterValueType() == ParameterValueType.STRING
+				|| parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
 			if (parameter.isArray()) {
 				List<String> list = parameter.getValueAsStringList();
 				if (list != null) {
@@ -342,7 +342,6 @@ public class AponWriter extends AponFormat implements Flushable {
 		Reader r = new StringReader(value);
 		BufferedReader br = new BufferedReader(r);
 		String line;
-		
 		while ((line = br.readLine()) != null) {
 			indent();
 			writer.write(TEXT_LINE_START);
@@ -468,10 +467,11 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * @return the APON formatted string
 	 */
 	public static String stringify(Parameters parameters, boolean prettyPrint) {
-		if (prettyPrint)
+		if (prettyPrint) {
 			return stringify(parameters, true, AponFormat.INDENT_STRING);
-		else
+		} else {
 			return stringify(parameters, false, AponFormat.INDENT_STRING);
+		}
 	}
 	
 	/**

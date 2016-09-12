@@ -47,7 +47,7 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	 * @param parameterValue the parameter value
 	 */
 	public MissingClosingBracketException(String bracketShape, String name, ParameterValue parameterValue) {
-		super("the end of the string was reached with no closing " + bracketShape + " bracket found: " + (parameterValue == null ? name : parameterValue));
+		super("The end of the string was reached with no closing " + bracketShape + " bracket found: " + (parameterValue == null ? name : parameterValue));
 	}
 
 	/**

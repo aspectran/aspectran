@@ -106,16 +106,17 @@ public class AponReader extends AponFormat {
 			trim = line.trim();
 			tlen = trim.length();
 			
-			if (tlen == 0 || trim.charAt(0) == COMMENT_LINE_START)
+			if (tlen == 0 || trim.charAt(0) == COMMENT_LINE_START) {
 				continue;
+			}
 
 			if (openBracket == SQUARE_BRACKET_OPEN) {
 				value = trim;
 				vlen = value.length();
 				cchar = (vlen == 1) ? value.charAt(0) : NO_CONTROL_CHAR;
-				
-				if (SQUARE_BRACKET_CLOSE == cchar)
+				if (SQUARE_BRACKET_CLOSE == cchar) {
 					return lineNumber;
+				}
 			} else {
 				if (tlen == 1) {
 					if (openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0)) {
@@ -159,20 +160,25 @@ public class AponReader extends AponFormat {
 					parameterValueType = null;
 				}
 				if (parameterValueType != null) {
-					if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar)
+					if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
 						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type.");
-					if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar)
+					}
+					if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
 						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
-					if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar)
+					}
+					if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
 						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+					}
 				}
 			}
 			
 			if (parameterValue != null && !parameterValue.isArray()) {
-				if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar)
+				if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
 					throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
-				if (parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar)
+				}
+				if (parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar) {
 					throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+				}
 			}
 
 			if (parameterValue == null || parameterValue.isArray()) {
@@ -341,14 +347,13 @@ public class AponReader extends AponFormat {
 	
 	private String unescape(String value, int lineNumber, String line, String trim) {
 		String s = unescape(value);
-		
-		if (value == s)
+		if (value == s) {
 			return value;
-		
-		if (s == null)
+		}
+		if (s == null) {
 			throw new InvalidParameterException(lineNumber, line, trim,
 					"Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
-		
+		}
 		return s;
 	}
 
@@ -443,7 +448,6 @@ public class AponReader extends AponFormat {
 	 */
 	public static <T extends Parameters> T parse(File file, String encoding, T parameters) throws IOException {
 		AponReader aponReader = null;
-		
 		try {
 			if (encoding == null) {
 				aponReader = new AponReader(new FileReader(file));

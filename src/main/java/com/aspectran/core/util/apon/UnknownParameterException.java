@@ -43,7 +43,7 @@ public class UnknownParameterException extends InvalidParameterException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public UnknownParameterException(Throwable cause) {
 		super(cause);
@@ -52,8 +52,8 @@ public class UnknownParameterException extends InvalidParameterException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public UnknownParameterException(String msg, Throwable cause) {
 		super(msg, cause);

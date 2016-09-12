@@ -244,8 +244,9 @@ public class NodeletParser {
 	private Map<String, String> parseAttributes(Node node) {
 		NamedNodeMap attributeNodes = node.getAttributes();
 		
-		if (attributeNodes == null)
+		if (attributeNodes == null) {
 			return EMPTY_ATTRIBUTES;
+		}
 
 		Map<String, String> attributes = new HashMap<String, String>();
 
@@ -265,7 +266,6 @@ public class NodeletParser {
 		
 		if (childrenLength == 0) {
 			String value = node.getNodeValue();
-			
 			return (value != null ? value.trim() : null);
 		}
 		

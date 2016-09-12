@@ -61,9 +61,9 @@ public class AponFormat {
 		}
 
 		int vlen = value.length();
-
-		if (vlen == 0)
+		if (vlen == 0) {
 			return value;
+		}
 
 		StringBuilder sb = new StringBuilder(vlen);
 		char c;
@@ -114,7 +114,6 @@ public class AponFormat {
 		}
 		
 		int vlen = value.length();
-
 		if (vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1) {
 			return value;
 		}
@@ -126,10 +125,11 @@ public class AponFormat {
 			c = value.charAt(i);
 			
 			if (c == ESCAPE_CHAR) {
-				if (++i < vlen)
+				if (++i < vlen) {
 					c = value.charAt(i);
-				else
+				} else {
 					c = 0;
+				}
 
 				switch (c) {
 				case ESCAPE_CHAR:

@@ -58,7 +58,7 @@ public class TransletInstantiationException extends TransletException {
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new TransletInstantiationException.
 	 *
 	 * @param transletInterfaceClass the translet interface class
 	 * @param transletInstanceClass the translet instance class
@@ -71,7 +71,7 @@ public class TransletInstantiationException extends TransletException {
 	}
 	
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new TransletInstantiationException.
 	 *
 	 * @param transletInstanceClass the translet instance class
 	 * @param cause the root cause
@@ -82,7 +82,7 @@ public class TransletInstantiationException extends TransletException {
 	}
 
 	/**
-	 * Return the translet interface class.
+	 * Returns the translet interface class.
 	 *
 	 * @return the translet interface class
 	 */
@@ -91,7 +91,7 @@ public class TransletInstantiationException extends TransletException {
 	}
 
 	/**
-	 * Return the translet instance class.
+	 * Returns the translet instance class.
 	 *
 	 * @return the translet instance class
 	 */

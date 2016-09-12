@@ -276,37 +276,30 @@ public class TransletRuleRegistry {
 	 */
 	public String applyTransletNamePattern(String transletName, boolean absolutely) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-
 		if (defaultSettings == null) {
 			return transletName;
 		}
-
 		if (StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
 			if (absolutely) {
 				return transletName;
 			}
 			transletName = transletName.substring(1);
 		}
-
 		if (defaultSettings.getTransletNamePrefix() == null
 				&& defaultSettings.getTransletNameSuffix() == null) {
 			return transletName;
 		}
 
 		StringBuilder sb = new StringBuilder();
-
 		if (defaultSettings.getTransletNamePrefix() != null) {
 			sb.append(defaultSettings.getTransletNamePrefix());
 		}
-
 		if (transletName != null) {
 			sb.append(transletName);
 		}
-
 		if (defaultSettings.getTransletNameSuffix() != null) {
 			sb.append(defaultSettings.getTransletNameSuffix());
 		}
-
 		return sb.toString();
 	}
 

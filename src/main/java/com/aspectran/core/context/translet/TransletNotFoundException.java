@@ -51,7 +51,7 @@ public class TransletNotFoundException extends TransletException {
 	 * message.
 	 *
 	 * @param transletName the translet name
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public TransletNotFoundException(String transletName, Throwable cause) {
 		super("Translet is not found: " + transletName, cause);

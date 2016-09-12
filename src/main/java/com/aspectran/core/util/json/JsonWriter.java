@@ -99,8 +99,8 @@ public class JsonWriter implements Flushable {
 	public void write(Object object) throws IOException, InvocationTargetException {
 		if (object == null) {
 			writeNull();
-		} else if (object instanceof String ||
-					object instanceof Date) {
+		} else if (object instanceof String
+				|| object instanceof Date) {
 			writeString(object.toString());
 		} else if (object instanceof Boolean) {
 			writeBoolean((Boolean)object);
@@ -201,7 +201,8 @@ public class JsonWriter implements Flushable {
 
 	private void checkCircularReference(Object wrapper, Object member) {
 		if (wrapper.equals(member)) {
-			throw new IllegalArgumentException("JSON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+			throw new IllegalArgumentException("JSON Serialization Failure: A circular reference was detected " +
+					"while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}
 
@@ -396,7 +397,6 @@ public class JsonWriter implements Flushable {
 		if (writer != null) {
 			writer.close();
 		}
-		
 		writer = null;
 	}
 	

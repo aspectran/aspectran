@@ -196,7 +196,6 @@ public class WildcardPattern {
 	
 	public static boolean hasWildcards(String str) {
 		char[] ca = str.toCharArray();
-
 		for (char c : ca) {
 			if (c == STAR_CHAR
 					|| c == QUESTION_CHAR
@@ -204,7 +203,6 @@ public class WildcardPattern {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 

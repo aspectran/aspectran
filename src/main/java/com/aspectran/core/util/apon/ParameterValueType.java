@@ -51,8 +51,9 @@ public enum ParameterValueType {
 	 */
 	public static ParameterValueType resolve(String alias) {
 		for (ParameterValueType type : values()) {
-			if (type.alias.equals(alias))
+			if (type.alias.equals(alias)) {
 				return type;
+			}
 		}
 		return null;
 	}
@@ -79,7 +80,6 @@ public enum ParameterValueType {
 
 	public static ParameterValueType determineType(Object value) {
 		ParameterValueType type;
-
 		if (value instanceof String) {
 			if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
 				type = ParameterValueType.STRING;
@@ -101,7 +101,6 @@ public enum ParameterValueType {
 		} else {
 			type = ParameterValueType.STRING;
 		}
-
 		return type;
 	}
 	

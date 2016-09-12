@@ -59,7 +59,6 @@ public class ParameterValue implements Parameter {
 		this.parameterValueType = parameterValueType;
 		this.array = array;
 		this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
-
 		if (this.array && !noBracket) {
 			this.bracketed = true;
 		}
@@ -83,7 +82,6 @@ public class ParameterValue implements Parameter {
 		this.parametersClass = parametersClass;
 		this.array = array;
 		this.predefined = predefined;
-
 		if (this.array && !noBracket) {
 			this.bracketed = true;
 		}
@@ -108,13 +106,10 @@ public class ParameterValue implements Parameter {
 		if (container == null) {
 			return name;
 		}
-		
 		Parameter prototype = container.getPrototype();
-		
 		if (prototype != null) {
 			return prototype.getQualifiedName() + "." + name;
 		}
-		
 		return name;
 	}
 
@@ -171,7 +166,6 @@ public class ParameterValue implements Parameter {
 				}
 			}
 		}
-
 		if (!predefined && !array && this.value != null) {
 			addValue(this.value);
 			addValue(value);
@@ -215,7 +209,6 @@ public class ParameterValue implements Parameter {
 			list.add(value);
 			return list;
 		}
-		
 		return list;
 	}
 	
@@ -235,19 +228,15 @@ public class ParameterValue implements Parameter {
 			if (list == null) {
 				return null;
 			}
-
 			String[] s = new String[list.size()];
-			
 			for (int i = 0; i < s.length; i++) {
 				s[i] = list.get(i).toString();
 			}
-			
 			return s;
 		} else {
 			if (value == null) {
 				return null;
 			}
-
 			return new String[] { value.toString() };
 		}
 	}
@@ -258,17 +247,13 @@ public class ParameterValue implements Parameter {
 		if (list == null) {
 			return null;
 		}
-
 		if (parameterValueType == ParameterValueType.STRING) {
 			return (List<String>)getValueList();
 		}
-		
 		List<String> list2 = new ArrayList<String>();
-
 		for (Object o : list) {
 			list2.add(o.toString());
 		}
-
 		return list2;
 	}
 

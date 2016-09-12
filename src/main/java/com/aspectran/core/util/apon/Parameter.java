@@ -27,7 +27,7 @@ public interface Parameter {
 	Parameters getContainer();
 
 	/**
-	 * Gets the parameter name.
+	 * Returns the parameter name.
 	 *
 	 * @return the parameter name
 	 */
@@ -41,7 +41,7 @@ public interface Parameter {
 	String getQualifiedName();
 
 	/**
-	 * Gets the parameter value type.
+	 * Returns the parameter value type.
 	 *
 	 * @return the parameter value type
 	 */
@@ -55,9 +55,9 @@ public interface Parameter {
 	void setParameterValueType(ParameterValueType parameterValueType);
 
 	/**
-	 * Returns whether the parameter value is array.
+	 * Returns whether the parameter value is an array.
 	 *
-	 * @return {@code true} if the parameter value is array, otherwise {@code false}
+	 * @return {@code true} if the parameter value is an array, otherwise {@code false}
 	 */
 	boolean isArray();
 	
@@ -71,7 +71,7 @@ public interface Parameter {
 	boolean isAssigned();
 
 	/**
-	 * Gets the size of the array if the value is an array.
+	 * Returns the size of the array if the value is an array.
 	 *
 	 * @return the size of the array
 	 */

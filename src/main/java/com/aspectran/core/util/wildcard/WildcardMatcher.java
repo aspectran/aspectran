@@ -220,7 +220,8 @@ public class WildcardMatcher {
 				if (trng1 < tlen) {
 					trng2 = trng1;
 					for (; trng2 < tlen; trng2++) {
-						if (types[trng2] == WildcardPattern.EOT_TYPE || types[trng2] != WildcardPattern.LITERAL_TYPE) {
+						if (types[trng2] == WildcardPattern.EOT_TYPE
+								|| types[trng2] != WildcardPattern.LITERAL_TYPE) {
 							break;
 						}
 					}
