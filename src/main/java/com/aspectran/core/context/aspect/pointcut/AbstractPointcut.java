@@ -72,7 +72,6 @@ public abstract class AbstractPointcut implements Pointcut {
 			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
 				if (matches(ppr, transletName, beanId, className, methodName)) {
 					List<PointcutPatternRule> epprList = ppr.getExcludePointcutPatternRuleList();
-					
 					if (epprList != null) {
 						for (PointcutPatternRule eppr : epprList) {
 							if (matches(eppr, transletName, beanId, className, methodName)) {
@@ -80,30 +79,29 @@ public abstract class AbstractPointcut implements Pointcut {
 							}
 						}
 					}
-					
 					return true;
 				}
 			}
 		}
-		
 		return false;
 	}
 
 	/**
-	 * 비교 항목의 값이 null이면 참으로 간주함.
+	 * Returns whether or not corresponding to the point cut pattern rules.
+	 * It is recognized to {@code true} if the operands are {@code null}.
 	 *
 	 * @param pointcutPatternRule the pointcut pattern
 	 * @param transletName the translet name
 	 * @param beanId the bean id
-	 * @param className the class name
-	 * @param methodName the bean's method name
+	 * @param className the bean class name
+	 * @param methodName the name of the method that is executed in the bean.
 	 * @return true, if exists matched
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
-		if ((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
-				(beanId == null && pointcutPatternRule.getBeanIdPattern() != null) ||
-				(className == null && pointcutPatternRule.getClassNamePattern() != null) ||
-				(methodName == null && pointcutPatternRule.getMethodNamePattern() != null)) {
+		if ((transletName == null && pointcutPatternRule.getTransletNamePattern() != null)
+				|| (beanId == null && pointcutPatternRule.getBeanIdPattern() != null)
+				|| (className == null && pointcutPatternRule.getClassNamePattern() != null)
+				|| (methodName == null && pointcutPatternRule.getMethodNamePattern() != null)) {
 			return false;
 		} else {
 			return exists(pointcutPatternRule, transletName, beanId, className, methodName);
@@ -129,23 +127,22 @@ public abstract class AbstractPointcut implements Pointcut {
 				}
 			}
 		}
-		
 		return false;
 	}
 
 	/**
-	 * 비교 항목의 값이 null이면 참으로 간주함.
+	 * Returns whether or not corresponding to the point cut pattern rules.
+	 * It is recognized to {@code true} if the operands are {@code null}.
 	 *
 	 * @param pointcutPatternRule the pointcut pattern
 	 * @param transletName the translet name
-	 * @param beanId the bean or action id
-	 * @param className the class name
-	 * @param methodName the bean method name
+	 * @param beanId the bean id
+	 * @param className the bean class name
+	 * @param methodName the name of the method that is executed in the bean.
 	 * @return true, if exists matched
 	 */
 	protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
 		boolean matched = true;
-		
 		if (transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
@@ -158,7 +155,6 @@ public abstract class AbstractPointcut implements Pointcut {
 		if (matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getMethodNamePattern(), methodName);
 		}
-		
 		return matched;
 	}
 

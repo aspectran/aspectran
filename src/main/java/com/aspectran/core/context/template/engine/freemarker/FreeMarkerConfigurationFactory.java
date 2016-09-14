@@ -282,7 +282,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate TemplateLoader
-     * @throws IOException the io exception
+     * @throws IOException if an I/O error has occurred
      * @see freemarker.cache.FileTemplateLoader
      */
     protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {

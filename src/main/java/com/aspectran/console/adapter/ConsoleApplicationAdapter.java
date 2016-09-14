@@ -30,9 +30,11 @@ import com.aspectran.core.util.SystemUtils;
 public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
 	
 	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.console.workingDir";
-	
+
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.
+	 *
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public ConsoleApplicationAdapter() throws IOException {
 		super(null);

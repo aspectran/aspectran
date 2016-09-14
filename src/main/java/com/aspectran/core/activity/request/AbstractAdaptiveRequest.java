@@ -166,7 +166,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public String getParameter(String name) {
-		return (parameterMap == null ? null : parameterMap.getParameter(name));
+		return (parameterMap != null ? parameterMap.getParameter(name) : null);
 	}
 
 	public void setParameter(String name, String value) {
@@ -174,7 +174,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public String[] getParameterValues(String name) {
-		return (parameterMap == null ? null : parameterMap.getParameterValues(name));
+		return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
 	}
 
 	public void setParameter(String name, String[] values) {
@@ -195,7 +195,7 @@ public abstract class AbstractAdaptiveRequest {
 	}
 
 	public Enumeration<String> getParameterNames() {
-		return (parameterMap == null ? null : parameterMap.getParameterNames());
+		return (parameterMap != null ? parameterMap.getParameterNames() : null);
 	}
 
 	public void fillPrameterMap(Map<String, Object> targetParameterMap) {

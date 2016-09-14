@@ -54,8 +54,9 @@ public class ActivityDataMap extends HashMap<String, Object> {
 		this.activity = activity;
 		this.requestAdapter = activity.getRequestAdapter();
 		
-		if (prefill)
+		if (prefill) {
 			prefillData();
+		}
 	}
 	
 	private void prefillData() {

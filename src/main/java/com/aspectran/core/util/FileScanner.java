@@ -113,11 +113,9 @@ public class FileScanner {
 		} else {
 			target = new File(targetPath);
 		}
-		
 		if (!target.exists()) {
 			return;
 		}
-
 		target.listFiles(file -> {
             String filePath = targetPath + FILE_SEPARATOR + file.getName();
 

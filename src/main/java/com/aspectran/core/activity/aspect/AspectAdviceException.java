@@ -30,8 +30,9 @@ public class AspectAdviceException extends AspectException {
 
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
+	 *
 	 * @param msg a message to associate with the exception
+	 * @param aspectAdviceRule the aspect advice rule
 	 * @param cause the real cause of the exception
 	 */
 	public AspectAdviceException(String msg, AspectAdviceRule aspectAdviceRule, Throwable cause) {

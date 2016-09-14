@@ -295,6 +295,7 @@ public abstract class AbstractActivity implements Activity {
 	 * Create a new {@code Translet} instance.
 	 *
 	 * @param activity the core activity
+	 * @param transletRule the translet rule
 	 * @return the new {@code Translet} instance
 	 */
 	protected Translet newTranslet(CoreActivity activity, TransletRule transletRule) {
@@ -331,18 +332,38 @@ public abstract class AbstractActivity implements Activity {
 		return (T)activity;
 	}
 
+	/**
+	 * Returns the translet rule.
+	 *
+	 * @return the translet rule
+	 */
 	protected TransletRule getTransletRule() {
 		return transletRule;
 	}
 
+	/**
+	 * Returns the request rule.
+	 *
+	 * @return the request rule
+	 */
 	protected RequestRule getRequestRule() {
 		return requestRule;
 	}
 
+	/**
+	 * Returns the response rule.
+	 *
+	 * @return the response rule
+	 */
 	protected ResponseRule getResponseRule() {
 		return responseRule;
 	}
 
+	/**
+	 * Replace the response rule.
+	 *
+	 * @param responseRule the response rule
+	 */
 	protected void setResponseRule(ResponseRule responseRule) {
 		this.responseRule = responseRule;
 	}
