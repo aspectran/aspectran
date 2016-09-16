@@ -16,7 +16,7 @@
 package com.aspectran.core.context.bean.aware;
 
 /**
- * The Interface Aware.
+ * Marker superinterface indicating that a bean is eligible to be notified.
  * 
  * <p>Created: 2016. 1. 25.</p>
  *

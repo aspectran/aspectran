@@ -38,9 +38,9 @@ public abstract class AbstractDynamicBeanProxy {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
-	private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
-
 	private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
+
+	private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
 
 	private final AspectRuleRegistry aspectRuleRegistry;
 
@@ -70,7 +70,7 @@ public abstract class AbstractDynamicBeanProxy {
 		RelevantAspectRuleHolder holder = cache.get(patternString);
 
 		if (holder == null) {
-			synchronized(cache) {
+			synchronized (cache) {
 				holder = cache.get(patternString);
 				if (holder == null) {
 					holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);

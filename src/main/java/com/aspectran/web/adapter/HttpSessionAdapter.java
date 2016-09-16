@@ -148,7 +148,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	@Override
 	public SessionScope getSessionScope() {
 		if (this.sessionScope == null) {
-			synchronized(this) {
+			synchronized (this) {
 				this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
 				if (this.sessionScope == null) {
 					newHttpSessionScope(true);

@@ -25,6 +25,9 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class SessionScope extends AbstractScope {
 
+	/**
+	 * Instantiates a new Session scope.
+	 */
 	public SessionScope() {
 		super(ScopeType.SESSION);
 	}

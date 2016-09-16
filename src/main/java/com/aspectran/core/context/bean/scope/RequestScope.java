@@ -24,7 +24,10 @@ import com.aspectran.core.context.rule.type.ScopeType;
  * @since 2011. 3. 12.
  */
 public class RequestScope extends AbstractScope {
-	
+
+	/**
+	 * Instantiates a new Request scope.
+	 */
 	public RequestScope() {
 		super(ScopeType.REQUEST);
 	}

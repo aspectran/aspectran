@@ -16,7 +16,8 @@
 package com.aspectran.core.context.bean.aware;
 
 /**
- * The Interface ClassLoaderAware.
+ * Interface to be implemented by any object that wishes to be notified of the
+ * {@link ClassLoader} that it runs in.
  * 
  * <p>Created: 2016. 1. 25.</p>
  *

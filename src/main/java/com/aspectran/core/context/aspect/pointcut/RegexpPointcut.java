@@ -39,7 +39,7 @@ public class RegexpPointcut extends AbstractPointcut {
 		Pattern pattern = regexpPatternCache.get(regex);
 
 		if (pattern == null) {
-			synchronized(regexpPatternCache) {
+			synchronized (regexpPatternCache) {
 				pattern = regexpPatternCache.get(regex);
 
 				if (pattern == null) {

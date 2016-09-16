@@ -140,7 +140,7 @@ public class MessageSourceSupport {
         if (messageFormat == INVALID_MESSAGE_FORMAT) {
             return msg;
         }
-        synchronized(messageFormat) {
+        synchronized (messageFormat) {
             return messageFormat.format(args);
         }
     }

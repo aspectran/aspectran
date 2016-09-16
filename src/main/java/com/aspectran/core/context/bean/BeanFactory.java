@@ -23,7 +23,12 @@ import com.aspectran.core.context.ActivityContext;
  * <p>Created: 2012. 11. 9. AM 11:36:47</p>
  */
 public interface BeanFactory {
-	
+
+	/**
+	 * Initialize the bean factory.
+	 *
+	 * @param context the activity context
+	 */
 	void initialize(ActivityContext context);
 
 	/**

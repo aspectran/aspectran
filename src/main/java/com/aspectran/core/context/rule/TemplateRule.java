@@ -247,7 +247,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 			File file = applicationAdapter.toRealPathAsFile(this.file);
 			long lastModifiedTime = file.lastModified();
 			if (lastModifiedTime > this.lastModifiedTime) {
-				synchronized(this) {
+				synchronized (this) {
 					lastModifiedTime = file.lastModified();
 					if (lastModifiedTime > this.lastModifiedTime) {
 						String template = ResourceUtils.read(file, this.encoding);
@@ -258,7 +258,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 			}
 		} else if (this.resource != null) {
 			if (!this.loaded) {
-				synchronized(this) {
+				synchronized (this) {
 					if (!this.loaded) {
 						ClassLoader classLoader = applicationAdapter.getClassLoader();
 						URL url = classLoader.getResource(this.resource);
@@ -270,7 +270,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 			}
 		} else if (this.url != null) {
 			if (!this.loaded) {
-				synchronized(this) {
+				synchronized (this) {
 					if (!this.loaded) {
 						URL url = new URL(this.url);
 						String template = ResourceUtils.read(url, this.encoding);

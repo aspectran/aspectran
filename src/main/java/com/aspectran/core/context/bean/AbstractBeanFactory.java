@@ -247,11 +247,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			} else {
 				bean = newInstance(beanRule.getBeanClass());
 			}
-
 			if (log.isTraceEnabled()) {
 				log.trace("create a jdk proxy bean " + beanRule);
 			}
-
 			bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 		}
 
@@ -506,7 +504,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					|| !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) {
 				ctor.setAccessible(true);
 			}
-	
 			return ctor.newInstance(args);
 		} catch (InstantiationException ex) {
 			throw new BeanInstantiationException("Is it an abstract class?", ctor.getDeclaringClass(), ex);
@@ -528,7 +525,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		
 		for (Constructor<?> candidate : candidates) {
 			matchWeight = ReflectionUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
-			
 			if (matchWeight < bestMatchWeight) {
 				constructorToUse = candidate;
 				bestMatchWeight = matchWeight;

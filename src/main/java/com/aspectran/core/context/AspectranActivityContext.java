@@ -151,8 +151,7 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public MessageSource getMessageSource() {
 		if (this.messageSource == null) {
-			throw new IllegalStateException("MessageSource not initialized - " +
-					"call 'refresh' before accessing messages via the context: " + this);
+			throw new IllegalStateException("MessageSource not initialized.");
 		}
 		return messageSource;
 	}
@@ -200,14 +199,15 @@ public class AspectranActivityContext implements ActivityContext {
 		Activity activity = new DefaultActivity(this);
 		setDefaultActivity(activity);
 
-		if (contextBeanRegistry != null)
+		if (contextBeanRegistry != null) {
 			contextBeanRegistry.initialize(this);
-
-		if (templateProcessor != null)
+		}
+		if (templateProcessor != null) {
 			templateProcessor.initialize(this);
-
-		if (contextBeanRegistry != null)
+		}
+		if (contextBeanRegistry != null) {
 			initMessageSource();
+		}
 	}
 
 	@Override
@@ -245,7 +245,6 @@ public class AspectranActivityContext implements ActivityContext {
 		} else {
 			// Use empty MessageSource to be able to accept getMessage calls.
 			messageSource = new DelegatingMessageSource();
-			//contextBeanRegistry.registerSingleton(MESSAGE_SOURCE_BEAN_ID, messageSource);
 			if (log.isDebugEnabled()) {
 				log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
 						"': using default [" + messageSource + "]");

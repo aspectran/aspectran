@@ -114,7 +114,7 @@ public class DispatchResponse implements Response {
 			
 		ViewDispatcher viewDispatcher;
 
-		synchronized(viewDispatcherCache) {
+		synchronized (viewDispatcherCache) {
 			viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
 			if (viewDispatcher == null) {
 				if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {

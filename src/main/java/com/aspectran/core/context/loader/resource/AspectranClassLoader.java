@@ -126,7 +126,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public void setResourceLocation(String resourceLocation) throws InvalidResourceException {
-		synchronized(children) {
+		synchronized (children) {
 			if (!children.isEmpty()) {
 				children.clear();
 			}
@@ -136,7 +136,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-		synchronized(children) {
+		synchronized (children) {
 			if (!children.isEmpty()) {
 				children.clear();
 			}
@@ -261,7 +261,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	private int addChild(AspectranClassLoader child) {
-		synchronized(children) {
+		synchronized (children) {
 			children.add(child);
 			return children.size();
 		}

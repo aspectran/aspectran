@@ -159,7 +159,7 @@ class XslTransform extends TransformResponse {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
 				long lastModifiedTime = file.lastModified();
 				if (lastModifiedTime > this.templateLastModifiedTime) {
-					synchronized(this) {
+					synchronized (this) {
 						lastModifiedTime = file.lastModified();
 						if (lastModifiedTime > this.templateLastModifiedTime) {
 							this.templates = createTemplates(file);
@@ -176,7 +176,7 @@ class XslTransform extends TransformResponse {
 				determineOutoutStyle();
 			} else {
 				if (!this.templateLoaded) {
-					synchronized(this) {
+					synchronized (this) {
 						if (!this.templateLoaded) {
 							ClassLoader classLoader = applicationAdapter.getClassLoader();
 							this.templates = createTemplates(classLoader.getResource(templateResource));
@@ -192,7 +192,7 @@ class XslTransform extends TransformResponse {
 				determineOutoutStyle();
 			} else {
 				if (!this.templateLoaded) {
-					synchronized(this) {
+					synchronized (this) {
 						if (!this.templateLoaded) {
 							this.templates = createTemplates(new URL(templateUrl));
 							determineOutoutStyle();

@@ -37,7 +37,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	private Set<String> doGetActiveProfiles() {
-		synchronized(activeProfiles) {
+		synchronized (activeProfiles) {
 			if (activeProfiles.isEmpty()) {
 				setActiveProfiles(getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME));
 			}
@@ -50,7 +50,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 	
 	public void setActiveProfiles(String[] profiles) {
-		synchronized(activeProfiles) {
+		synchronized (activeProfiles) {
 			if (!activeProfiles.isEmpty()) {
 				activeProfiles.clear();
 			}
@@ -70,7 +70,7 @@ public abstract class AbstractEnvironment implements Environment {
 		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetActiveProfiles();
 		if (profiles.length > 0) {
-			synchronized(activeProfiles) {
+			synchronized (activeProfiles) {
 				for (String p : profiles) {
 					addProfile(activeProfiles, p);
 				}
@@ -84,7 +84,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	private Set<String> doGetDefaultProfiles() {
-		synchronized(defaultProfiles) {
+		synchronized (defaultProfiles) {
 			if (defaultProfiles.isEmpty()) {
 				setActiveProfiles(getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME));
 			}
@@ -97,7 +97,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	public void setDefaultProfiles(String[] profiles) {
-		synchronized(defaultProfiles) {
+		synchronized (defaultProfiles) {
 			if (!defaultProfiles.isEmpty()) {
 				defaultProfiles.clear();
 			}
@@ -113,7 +113,7 @@ public abstract class AbstractEnvironment implements Environment {
 		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetDefaultProfiles();
 		if (profiles.length > 0) {
-			synchronized(defaultProfiles) {
+			synchronized (defaultProfiles) {
 				for (String p : profiles) {
 					addProfile(defaultProfiles, p);
 				}

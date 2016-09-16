@@ -63,7 +63,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void startup() throws AspectranServiceException {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			if (this.closed.get()) {
 				throw new AspectranServiceException("Cannot start Aspectran Service, because it was already destroyed.");
 			}
@@ -88,7 +88,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void restart() throws AspectranServiceException {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
@@ -119,7 +119,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void pause() {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
@@ -137,7 +137,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void pause(long timeout) {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			if (this.closed.get()) {
 				log.warn("Cannot restart Aspectran Service, because it was already destroyed.");
 				return;
@@ -151,7 +151,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void resume() {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			if (this.closed.get()) {
 					log.warn("Cannot resume Aspectran Service, because it was already destroyed.");
 				return;
@@ -169,7 +169,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	@Override
 	public void shutdown() {
-		synchronized(this.startupShutdownMonitor) {
+		synchronized (this.startupShutdownMonitor) {
 			beforeShutdown();
 			doDestroy();
 			removeShutdownHook();
@@ -208,7 +208,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 			this.shutdownHook = new Thread() {
 				@Override
 				public void run() {
-					synchronized(startupShutdownMonitor) {
+					synchronized (startupShutdownMonitor) {
 						doDestroy();
 					}
 				}

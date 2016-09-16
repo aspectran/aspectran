@@ -18,8 +18,9 @@ package com.aspectran.core.context.bean.aware;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * The Interface ActivityContextAware.
- * 
+ * Interface to be implemented by any object that wishes to be notified of the
+ * {@link ActivityContext} that it runs in.
+ *
  * <p>Created: 2016. 1. 25.</p>
  *
  * @since 2.0.0

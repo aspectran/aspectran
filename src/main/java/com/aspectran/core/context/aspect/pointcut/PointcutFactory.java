@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.PointcutType;
 public class PointcutFactory {
 
 	/**
-	 * Create a pointcut object.
+	 * Creates a new Pointcut instance.
 	 *
 	 * @param pointcutRule the pointcut rule
 	 * @return the pointcut
@@ -41,7 +41,7 @@ public class PointcutFactory {
 	}
 
 	/**
-	 * Create a pointcut object of the wildcard type.
+	 * Creates a new WildcardPointcut instance.
 	 *
 	 * @param pointcutPatternRuleList the pointcut pattern rule list
 	 * @return the pointcut
@@ -51,7 +51,7 @@ public class PointcutFactory {
 	}
 
 	/**
-	 * Create a pointcut object of the regexp type.
+	 * Creates a new RegexpPointcut instance.
 	 *
 	 * @param pointcutPatternRuleList the pointcut pattern rule list
 	 * @return the pointcut

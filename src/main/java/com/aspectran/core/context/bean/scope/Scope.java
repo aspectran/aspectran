@@ -29,8 +29,21 @@ public interface Scope {
 
 	ReadWriteLock getScopeLock();
 
+	/**
+	 * Return an instance of the bean that matches the given bean rule.
+	 *
+	 * @param beanRule the bean rule of the bean to retrieve
+	 * @return an instance of the bean
+	 * @return
+	 */
 	Object getBean(BeanRule beanRule);
 
+	/**
+	 * Puts an instance of the bean for the given bean rule.
+	 *
+	 * @param beanRule the bean rule of the bean to save
+	 * @param bean an instance of the bean
+	 */
 	void putBean(BeanRule beanRule, Object bean);
 
 	/**

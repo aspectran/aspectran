@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Aspectran is a lightweight Java framework for building Enterprise-ready Web
- * and Console-based or Embedded applications.
+ * Aspectran is a lightweight Java framework for building Enterprise-ready Web applications.
+ * Also, It will be able to launch as a Console-based and Embedded application.
  */
 package com.aspectran;

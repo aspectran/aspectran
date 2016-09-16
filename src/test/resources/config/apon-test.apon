@@ -16,7 +16,7 @@ aspectran: {
 		properties: {
 			item: {
 				type: "properties"
-				name: "props"
+				name: "quartzProperties"
 				value: {
 					org.quartz.scheduler.instanceName: "AspectranQuartzScheduler-1"
 					org.quartz.scheduler.rmi.export: "false"

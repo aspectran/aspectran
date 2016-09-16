@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean.aware;
-
-import com.aspectran.core.adapter.ApplicationAdapter;
-
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link ApplicationAdapter} that it runs in.
- * 
- * <p>Created: 2016. 1. 25.</p>
- *
- * @since 2.0.0
+ * Contains a variant of the Service interface for Web application integration.
  */
-public interface ApplicationAdapterAware extends Aware {
-
-	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
-
-}
+package com.aspectran.web.service;

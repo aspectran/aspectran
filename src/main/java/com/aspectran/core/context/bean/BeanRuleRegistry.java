@@ -142,7 +142,7 @@ public class BeanRuleRegistry {
 	}
 
 	/**
-	 * Adds bean rule.
+	 * Adds a bean rule.
 	 *
 	 * @param beanRule the bean rule
 	 * @throws ClassNotFoundException thrown when the bean class is not found.
@@ -324,21 +324,17 @@ public class BeanRuleRegistry {
 
 		if (beanRule.getOfferBeanClass() == null) {
 			offerBeanRule = getBeanRule(beanRule.getOfferBeanId());
-
 			if (offerBeanRule == null) {
 				throw new BeanNotFoundException(beanRule.getOfferBeanId());
 			}
 		} else {
 			BeanRule[] beanRules = getBeanRules(beanRule.getOfferBeanClass());
-
 			if (beanRules == null || beanRules.length == 0) {
 				throw new RequiredTypeBeanNotFoundException(beanRule.getOfferBeanClass());
 			}
-
 			if (beanRules.length > 1) {
 				throw new NoUniqueBeanException(beanRule.getOfferBeanClass(), beanRules);
 			}
-
 			offerBeanRule = beanRules[0];
 		}
 

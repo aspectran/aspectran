@@ -174,7 +174,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
             MessageFormat messageFormat = resolveCode(code, locale);
             if (messageFormat != null) {
-                synchronized(messageFormat) {
+                synchronized (messageFormat) {
                     return messageFormat.format(args);
                 }
             }
@@ -255,7 +255,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
         MessageFormat messageFormat = resolveCode(code, locale);
         if (messageFormat != null) {
-            synchronized(messageFormat) {
+            synchronized (messageFormat) {
                 return messageFormat.format(new Object[0]);
             }
         }

@@ -32,13 +32,11 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
  */
 public interface ActivityContext extends MessageSource {
 
-	String TRANSLET_NAME_SEPARATOR = "/";
-
-	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
-
 	String ID_SEPARATOR = ".";
 
 	char ID_SEPARATOR_CHAR = '.';
+
+	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
 
 	String LINE_SEPARATOR = "\n";
 

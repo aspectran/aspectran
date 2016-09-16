@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Support classes for web application integration.
+ * Support classes for Web application integration.
  */
 package com.aspectran.web.support;

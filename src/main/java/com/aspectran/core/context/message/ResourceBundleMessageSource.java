@@ -249,7 +249,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             return doGetBundle(basename, locale);
         } else {
             // Cache forever: prefer locale cache over repeated getBundle calls.
-            synchronized(this.cachedResourceBundles) {
+            synchronized (this.cachedResourceBundles) {
                 Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
                 if (localeMap != null) {
                     ResourceBundle bundle = localeMap.get(locale);
@@ -315,7 +315,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     protected MessageFormat getMessageFormat(ResourceBundle bundle, String code, Locale locale)
             throws MissingResourceException {
 
-        synchronized(this.cachedBundleMessageFormats) {
+        synchronized (this.cachedBundleMessageFormats) {
             Map<String, Map<Locale, MessageFormat>> codeMap = this.cachedBundleMessageFormats.get(bundle);
             Map<Locale, MessageFormat> localeMap = null;
             if (codeMap != null) {
