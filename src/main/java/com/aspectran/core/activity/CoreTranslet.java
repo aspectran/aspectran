@@ -110,6 +110,16 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
+	public String getRequestCharacterEncoding() {
+		return activity.resolveRequestCharacterEncoding();
+	}
+
+	@Override
+	public String getResponseCharacterEncoding() {
+		return activity.resolveResponseCharacterEncoding();
+	}
+
+	@Override
 	public ProcessResult getProcessResult() {
 		return processResult;
 	}
@@ -152,8 +162,10 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public ActivityDataMap getActivityDataMap(boolean prefill) {
-		if (activityDataMap == null) {
-			activityDataMap = new ActivityDataMap(activity, prefill);
+		if(prefill) {
+			activityDataMap = new ActivityDataMap(activity, true);
+		} else if(activityDataMap == null) {
+			activityDataMap = new ActivityDataMap(activity, false);
 		}
 		return activityDataMap;
 	}
@@ -357,16 +369,6 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return activity.getTransletInterfaceClass();
-	}
-
-	@Override
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return activity.getTransletImplementationClass();
-	}
-
-	@Override
 	public boolean acceptsProfiles(String... profiles) {
 		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
 	}
@@ -389,6 +391,16 @@ public class CoreTranslet implements Translet {
 	@Override
 	public <T> T getFinallyAdviceResult(String aspectId) {
 		return activity.getFinallyAdviceResult(aspectId);
+	}
+
+	@Override
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return activity.getTransletInterfaceClass();
+	}
+
+	@Override
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return activity.getTransletImplementationClass();
 	}
 
 	//---------------------------------------------------------------------

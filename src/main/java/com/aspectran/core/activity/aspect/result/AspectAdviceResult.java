@@ -56,7 +56,7 @@ public class AspectAdviceResult {
 		return beforeAdviceResultMap.get(aspectId);
 	}
 
-	public void putBeforeAdviceResult(String aspectId, Object actionResult) {
+	private void putBeforeAdviceResult(String aspectId, Object actionResult) {
 		if (beforeAdviceResultMap == null) {
 			beforeAdviceResultMap = new HashMap<String, Object>();
 		}
@@ -70,7 +70,7 @@ public class AspectAdviceResult {
 		return afterAdviceResultMap.get(aspectId);
 	}
 
-	public void putAfterAdviceResult(String aspectId, Object actionResult) {
+	private void putAfterAdviceResult(String aspectId, Object actionResult) {
 		if (afterAdviceResultMap == null) {
 			afterAdviceResultMap = new HashMap<String, Object>();
 		}
@@ -84,24 +84,11 @@ public class AspectAdviceResult {
 		return finallyAdviceResultMap.get(aspectId);
 	}
 
-	public void putFinallyAdviceResult(String aspectId, Object actionResult) {
+	private void putFinallyAdviceResult(String aspectId, Object actionResult) {
 		if (finallyAdviceResultMap == null) {
 			finallyAdviceResultMap = new HashMap<String, Object>();
 		}
 		finallyAdviceResultMap.put(aspectId, actionResult);
-	}
-	
-	public Object getAdviceResult(AspectAdviceType aspectAdviceType, String aspectId) {
-		if (aspectAdviceType == AspectAdviceType.BEFORE) {
-			getBeforeAdviceResult(aspectId);
-		} else if (aspectAdviceType == AspectAdviceType.AFTER) {
-			getAfterAdviceResult(aspectId);
-		} else if (aspectAdviceType == AspectAdviceType.FINALLY) {
-			getFinallyAdviceResult(aspectId);
-		} else {
-			throw new UnsupportedOperationException("Unknown aspect advice type.");
-		}
-		return null;
 	}
 	
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {

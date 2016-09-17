@@ -47,7 +47,6 @@ import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.ContextTemplateProcessor;
-import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ResourceUtils;
@@ -139,14 +138,14 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		BeanProxifierType beanProxifierType = BeanProxifierType.resolve((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
 		ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
 
-		TemplateProcessor templateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
+		ContextTemplateProcessor contextTemplateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
 
 		assistant.release();
 		
 		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
 		activityContext.setContextBeanRegistry(contextBeanRegistry);
 		activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-		activityContext.setTemplateProcessor(templateProcessor);
+		activityContext.setContextTemplateProcessor(contextTemplateProcessor);
 		activityContext.setTransletRuleRegistry(transletRuleRegistry);
 		activityContext.initialize();
 

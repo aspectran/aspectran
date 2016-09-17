@@ -15,8 +15,12 @@
  */
 package com.aspectran.embedded.activity;
 
+import java.util.Map;
+
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -29,6 +33,10 @@ import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
  */
 public class EmbeddedActivity extends CoreActivity {
 
+	private ParameterMap parameterMap;
+
+	private Map<String, Object> attributeMap;
+
 	/**
 	 * Instantiates a new embedded activity.
 	 *
@@ -40,19 +48,39 @@ public class EmbeddedActivity extends CoreActivity {
 		setSessionAdapter(sessionAdapter);
 	}
 
+	public void setParameterMap(ParameterMap parameterMap) {
+		this.parameterMap = parameterMap;
+	}
+
+	public void setAttributeMap(Map<String, Object> attributeMap) {
+		this.attributeMap = attributeMap;
+	}
+
 	@Override
 	protected void adapt() throws AdapterException {
 		try {
-			RequestAdapter requestAdapter = new EmbeddedRequestAdapter();
-			requestAdapter.setCharacterEncoding(resolveRequestCharacterEncoding());
+			RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
 			setRequestAdapter(requestAdapter);
 
 			ResponseAdapter responseAdapter = new EmbeddedResponseAdapter();
 			setResponseAdapter(responseAdapter);
+
+			if(attributeMap != null) {
+				for(Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+				}
+			}
 		} catch (Exception e) {
-			throw new AdapterException("Failed to adapt for Embedded Activity.", e);
+			throw new AdapterException("Could not adapt to Embedded Activity.", e);
 		}
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Activity> T newActivity() {
+		EmbeddedActivity activity = new EmbeddedActivity(getActivityContext(), getSessionAdapter());
+		activity.setIncluded(true);
+		return (T)activity;
+	}
 
 }

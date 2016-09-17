@@ -17,8 +17,11 @@ package com.aspectran.core.context.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpressionParser;
@@ -37,9 +40,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
 
     private final Log log = LogFactory.getLog(ContextTemplateProcessor.class);
 
-    protected ActivityContext context;
+    private final TemplateRuleRegistry templateRuleRegistry;
 
-    protected final TemplateRuleRegistry templateRuleRegistry;
+    private ActivityContext context;
 
     private boolean active;
 
@@ -55,88 +58,107 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     }
 
     @Override
-    public TemplateRuleRegistry getTemplateRuleRegistry() {
-        return templateRuleRegistry;
-    }
-
-    @Override
-    public String process(String templateId) {
+    public String process(String templateId, Map<String, Object> model) {
         StringWriter writer = new StringWriter();
-        process(templateId, writer);
+        process(templateId, null, model, writer);
         return writer.toString();
     }
 
     @Override
-    public void process(String templateId, Writer writer) {
-    	Activity activity = context.getCurrentActivity();
-        process(templateId, activity, writer);
-    }
-
-    @Override
-    public String process(TemplateRule templateRule) {
+    public String process(TemplateRule templateRule, Map<String, Object> model) {
         StringWriter writer = new StringWriter();
-        process(templateRule, writer);
+        process(templateRule, null, model, writer);
         return writer.toString();
     }
 
     @Override
-    public void process(TemplateRule templateRule, Writer writer) {
-    	Activity activity = context.getCurrentActivity();
-        process(templateRule, activity, writer);
+    public void process(String templateId, Activity activity) {
+        process(templateId, activity, null, null);
     }
 
     @Override
-    public void process(String templateId, Activity activity, Writer writer) {
+    public void process(TemplateRule templateRule, Activity activity) {
+        process(templateRule, activity, null, null);
+    }
+
+    @Override
+    public void process(String templateId, Activity activity, Map<String, Object> model) {
+        process(templateId, activity, model, null);
+    }
+
+    @Override
+    public void process(TemplateRule templateRule, Activity activity, Map<String, Object> model) {
+        process(templateRule, activity, model, null);
+    }
+
+    @Override
+    public void process(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
     	TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
         if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
-        process(templateRule, activity, writer);
+        process(templateRule, activity, model, writer);
     }
 
     @Override
-    public void process(TemplateRule templateRule, Activity activity, Writer writer) {
+    public void process(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
         try {
+            if(activity == null) {
+                activity = context.getCurrentActivity();
+            }
+
+            if(writer == null) {
+                writer = (activity.getResponseAdapter() != null ? activity.getResponseAdapter().getWriter() : null);
+                if(writer == null) {
+                    throw new IllegalStateException("No such writer to transfer the output string.");
+                }
+            }
+
             String engineBeanId = templateRule.getEngine();
 
             if (engineBeanId != null) {
                 TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
-
                 if (engine == null) {
                     throw new IllegalArgumentException("No template engine bean registered for '" + engineBeanId + "'.");
                 }
 
-                TemplateDataMap templateDataMap = new TemplateDataMap(activity);
+                if(model == null) {
+                    if(activity.getTranslet() != null) {
+                        model = activity.getTranslet().getActivityDataMap();
+                    } else {
+                        model = new ActivityDataMap(activity);
+                    }
+                }
 
                 if (templateRule.isUseExternalSource()) {
                     String templateName = templateRule.getName();
-                    engine.process(templateName, templateDataMap, writer, templateDataMap.getLocale());
+                    Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
+                    engine.process(templateName, model, writer, locale);
                 } else {
                     String templateSource = templateRule.getTemplateSource(activity.getApplicationAdapter());
-
                     if (templateSource != null) {
                         String templateName = templateRule.getId();
                         if (templateName == null) {
                             templateName = templateRule.getEngine() + "/" + templateRule.hashCode();
                         }
-
-                        engine.process(templateName, templateDataMap, templateSource, writer);
+                        engine.process(templateName, model, templateSource, writer);
                     }
                 }
             } else {
-                Token[] contentTokens = templateRule.getContentTokens(activity.getApplicationAdapter());
-
+                Token[] contentTokens = templateRule.getContentTokens(context.getApplicationAdapter());
                 if (contentTokens != null) {
                     TokenEvaluator evaluator = new TokenExpressionParser(activity);
                     evaluator.evaluate(contentTokens, writer);
                 }
             }
         } catch (Exception e) {
-            throw new TemplateProcessorException("Failed to process the template rule", templateRule, e);
+            throw new TemplateProcessorException("Failed to process the template", templateRule, e);
         }
     }
-    
-    @Override
+
+    /**
+     * Initialize TemplateProcessor.
+     */
     public synchronized void initialize(ActivityContext context) {
         if (this.active) {
             log.warn("Template Processor has already been initialized.");
@@ -151,7 +173,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         log.info("Template Processor has been initialized.");
     }
 
-    @Override
+    /**
+     * Destroy TemplateProcessor.
+     */
     public synchronized void destroy() {
         if (this.active && !this.closed) {
             templateRuleRegistry.clear();

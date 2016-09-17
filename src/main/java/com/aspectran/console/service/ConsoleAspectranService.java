@@ -138,7 +138,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 * @throws AspectranServiceException the aspectran service exception
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
+	public static ConsoleAspectranService newInstance(String aspectranConfigFile)
+			throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 		if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
 			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);

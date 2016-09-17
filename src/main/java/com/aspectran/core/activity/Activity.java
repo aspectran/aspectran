@@ -38,20 +38,6 @@ import com.aspectran.core.context.template.TemplateProcessor;
 public interface Activity extends BeanRegistry {
 
 	/**
-	 * Return the interface class for {@code Translet}.
-	 *
-	 * @return the translet interface class
-	 */
-	Class<? extends Translet> getTransletInterfaceClass();
-	
-	/**
-	 * Return the implementation class for {@code Translet}.
-	 *
-	 * @return the translet implementation class
-	 */
-	Class<? extends CoreTranslet> getTransletImplementationClass();
-
-	/**
 	 * Preparation for the activity.
 	 *
 	 * @param transletName the translet name
@@ -133,20 +119,6 @@ public interface Activity extends BeanRegistry {
 	 */
 	Object getProcessResult(String actionId);
 
-	/**
-	 * Determine the request character encoding.
-	 *
-	 * @return the request character encoding
-	 */
-	String resolveRequestCharacterEncoding();
-
-	/**
-	 * Determine the response character encoding.
-	 *
-	 * @return the response character encoding
-	 */
-	String resolveResponseCharacterEncoding();
-	
 	/**
 	 * Execute the aspect advices.
 	 *
@@ -305,5 +277,5 @@ public interface Activity extends BeanRegistry {
 	 * @return the aspect advice bean object
 	 */
 	<T> T getAspectAdviceBean(String aspectId);
-	
+
 }

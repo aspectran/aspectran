@@ -40,6 +40,15 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	/**
 	 * Instantiates a new Parameter map.
 	 *
+	 * @param  initialCapacity the initial capacity
+	 */
+	public ParameterMap(int initialCapacity) {
+		super(initialCapacity);
+	}
+
+	/**
+	 * Instantiates a new Parameter map.
+	 *
 	 * @param params the other parameter map
 	 */
 	public ParameterMap(Map<String, String[]> params) {
@@ -77,22 +86,21 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @param value a {@code String} representing the
 	 *			single value of the parameter
-	 * @see #setParameter(String, String[])
+	 * @see #setParameterValues(String, String[])
 	 */
 	public void setParameter(String name, String value) {
-		String[] values = new String[] { value };
-		put(name, values);
+		put(name, new String[] { value });
 	}
 
 	/**
-	 * Sets the value to the parameter with the given name.
+	 * Sets the values to the parameter with the given name.
 	 *
 	 * @param name a {@code String} specifying the name of the parameter
 	 * @param values an array of {@code String} objects
 	 *			containing the parameter's values
 	 * @see #setParameter
 	 */
-	public void setParameter(String name, String[] values) {
+	public void setParameterValues(String name, String[] values) {
 		put(name, values);
 	}
 
@@ -107,6 +115,17 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 */
 	public Enumeration<String> getParameterNames() {
 		return Collections.enumeration(keySet());
+	}
+
+	/**
+	 * Set the given parameters under.
+	 *
+	 * @param params the values
+	 */
+	public void setAll(Map<String, String> params) {
+		for(Map.Entry<String, String> entry : params.entrySet()) {
+			setParameter(entry.getKey(), entry.getValue());
+		}
 	}
 
 }

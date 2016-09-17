@@ -48,7 +48,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	 * Instantiates a new activity data map.
 	 *
 	 * @param activity the activity
-	 * @param prefill whether or not to pre-fill the data.
+	 * @param prefill whether or not to pre-fill the data
 	 */
 	public ActivityDataMap(Activity activity, boolean prefill) {
 		this.activity = activity;
@@ -103,7 +103,6 @@ public class ActivityDataMap extends HashMap<String, Object> {
 				return value;
 			}
 		}
-
 		return null;
 	}
 

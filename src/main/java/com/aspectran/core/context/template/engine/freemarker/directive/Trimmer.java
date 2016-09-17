@@ -77,13 +77,11 @@ public class Trimmer {
             return null;
         }
 
-        String trimmed = str.trim();
-
-        if (trimmed.length() == 0) {
-            return trimmed;
+        if (str.length() == 0) {
+            return str;
         }
 
-        StringBuilder builder = new StringBuilder(trimmed);
+        StringBuilder builder = new StringBuilder(str);
 
         boolean deprefixed = deprefixing(builder);
         boolean desuffixed = desuffixing(builder);
@@ -94,15 +92,22 @@ public class Trimmer {
             return builder.toString();
         }
 
-        return trimmed;
+        return str.trim();
     }
 
     private boolean deprefixing(StringBuilder builder) {
         boolean applied = false;
 
         if (deprefixes != null && deprefixes.length > 0) {
+            int start = 0;
+            for(; start < builder.length(); start++) {
+                if(!Character.isWhitespace(builder.charAt(start))) {
+                    break;
+                }
+            }
+
             for (String deprefix : deprefixes) {
-                if (delete(deprefix, builder, 0)) {
+                if (delete(deprefix, builder, start)) {
                     applied = true;
                 }
             }
@@ -115,8 +120,15 @@ public class Trimmer {
         boolean applied = false;
 
         if (desuffixes != null && desuffixes.length > 0) {
+            int len = builder.length();
+            for(; len > 0; len--) {
+                if(!Character.isWhitespace(builder.charAt(len - 1))) {
+                    break;
+                }
+            }
+
             for (String desuffix : desuffixes) {
-                int start = builder.length() - desuffix.length();
+                int start = len - desuffix.length();
                 if (delete(desuffix, builder, start)) {
                     applied = true;
                 }
@@ -131,7 +143,14 @@ public class Trimmer {
             return false;
         }
 
-        builder.insert(0, prefix);
+        int start = 0;
+        for(; start < builder.length(); start++) {
+            if(!Character.isWhitespace(builder.charAt(start))) {
+                break;
+            }
+        }
+
+        builder.insert(start, prefix);
 
         return true;
     }

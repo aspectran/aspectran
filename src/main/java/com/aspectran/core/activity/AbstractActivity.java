@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
@@ -32,13 +31,10 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.template.TemplateProcessor;
-import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -66,19 +62,9 @@ public abstract class AbstractActivity implements Activity {
 
 	private ResponseAdapter responseAdapter;
 	
-	private Class<? extends Translet> transletInterfaceClass;
-	
-	private Class<? extends CoreTranslet> transletImplementClass;
-
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	private AspectAdviceResult aspectAdviceResult;
-
-	private TransletRule transletRule;
-
-	private RequestRule requestRule;
-
-	private ResponseRule responseRule;
 
 	/**
 	 * Instantiates a new abstract activity.
@@ -253,77 +239,6 @@ public abstract class AbstractActivity implements Activity {
 		this.responseAdapter = responseAdapter;
 	}
 
-	/**
-	 * Gets the translet interface class.
-	 *
-	 * @return the translet interface class
-	 */
-	@Override
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return transletInterfaceClass;
-	}
-
-	/**
-	 * Sets the translet interface class.
-	 *
-	 * @param transletInterfaceClass the new translet interface class
-	 */
-	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
-	}
-
-	/**
-	 * Gets the translet implement class.
-	 *
-	 * @return the translet implement class
-	 */
-	@Override
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return transletImplementClass;
-	}
-
-	/**
-	 * Sets the translet implement class.
-	 *
-	 * @param transletImplementClass the new translet implement class
-	 */
-	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
-	}
-	
-	/**
-	 * Create a new {@code Translet} instance.
-	 *
-	 * @param activity the core activity
-	 * @param transletRule the translet rule
-	 * @return the new {@code Translet} instance
-	 */
-	protected Translet newTranslet(CoreActivity activity, TransletRule transletRule) {
-		if (transletRule != null) {
-			this.transletRule = transletRule;
-			this.requestRule = transletRule.getRequestRule();
-			this.responseRule = transletRule.getResponseRule();
-		}
-
-		if (this.transletInterfaceClass == null) {
-			this.transletInterfaceClass = Translet.class;
-		}
-		if (this.transletImplementClass == null) {
-			this.transletImplementClass = CoreTranslet.class;
-			return new CoreTranslet(activity);
-		}
-		
-		//create a custom translet instance
-		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
-			Object[] args = new Object[] { activity };
-			
-			return (Translet)transletImplementConstructor.newInstance(args);
-		} catch (Exception e) {
-			throw new TransletInstantiationException(transletImplementClass, e);
-		}
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
@@ -332,68 +247,6 @@ public abstract class AbstractActivity implements Activity {
 		return (T)activity;
 	}
 
-	/**
-	 * Returns the translet rule.
-	 *
-	 * @return the translet rule
-	 */
-	protected TransletRule getTransletRule() {
-		return transletRule;
-	}
-
-	/**
-	 * Returns the request rule.
-	 *
-	 * @return the request rule
-	 */
-	protected RequestRule getRequestRule() {
-		return requestRule;
-	}
-
-	/**
-	 * Returns the response rule.
-	 *
-	 * @return the response rule
-	 */
-	protected ResponseRule getResponseRule() {
-		return responseRule;
-	}
-
-	/**
-	 * Replace the response rule.
-	 *
-	 * @param responseRule the response rule
-	 */
-	protected void setResponseRule(ResponseRule responseRule) {
-		this.responseRule = responseRule;
-	}
-
-	/**
-	 * Determine the request character encoding.
-	 *
-	 * @return the request character encoding
-	 */
-	public String resolveRequestCharacterEncoding() {
-		String characterEncoding = requestRule.getCharacterEncoding();
-		if (characterEncoding == null) {
-			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-		}
-		return characterEncoding;
-	}
-
-	/**
-	 * Determine the response character encoding.
-	 *
-	 * @return the response character encoding
-	 */
-	public String resolveResponseCharacterEncoding() {
-		String characterEncoding = requestRule.getCharacterEncoding();
-		if (characterEncoding == null) {
-			characterEncoding = resolveRequestCharacterEncoding();
-		}
-		return characterEncoding;
-	}
-	
 	protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
 		if (aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
@@ -570,7 +423,12 @@ public abstract class AbstractActivity implements Activity {
 	public boolean containsBean(Class<?> requiredType) {
 		return context.getBeanRegistry().containsBean(requiredType);
 	}
-	
+
+	@Override
+	public void terminate() {
+		throw new ActivityTerminatedException();
+	}
+
 	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
 		if (!isAcceptable(aspectRule)) {
@@ -639,11 +497,6 @@ public abstract class AbstractActivity implements Activity {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public void terminate() {
-		throw new ActivityTerminatedException();
 	}
 
 }

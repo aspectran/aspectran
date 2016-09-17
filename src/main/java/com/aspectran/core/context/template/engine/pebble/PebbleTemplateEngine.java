@@ -38,7 +38,8 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer)
+            throws TemplateEngineProcessException {
         try {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateSource);
             compiledTemplate.evaluate(writer, model);
@@ -49,12 +50,14 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer)
+            throws TemplateEngineProcessException {
         process(templateName, model, writer, null);
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
+            throws TemplateEngineProcessException {
         try {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
             compiledTemplate.evaluate(writer, model, locale);

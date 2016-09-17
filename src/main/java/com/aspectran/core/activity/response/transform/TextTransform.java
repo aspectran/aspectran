@@ -78,7 +78,7 @@ public class TextTransform extends TransformResponse {
 			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
-				String characterEncoding = activity.resolveResponseCharacterEncoding();
+				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
 				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 				}
@@ -91,9 +91,9 @@ public class TextTransform extends TransformResponse {
 			Writer writer = responseAdapter.getWriter();
 
 			if (templateId != null) {
-				activity.getTemplateProcessor().process(templateId, activity, writer);
+				activity.getTemplateProcessor().process(templateId, activity);
 			} else if (templateRule != null) {
-				activity.getTemplateProcessor().process(templateRule, activity, writer);
+				activity.getTemplateProcessor().process(templateRule, activity);
 			} else {
 				ProcessResult processResult = activity.getProcessResult();
 				if (processResult != null) {
@@ -102,8 +102,9 @@ public class TextTransform extends TransformResponse {
 						for (ActionResult actionResult : contentResult) {
 							Object resultValue = actionResult.getResultValue();
 							if (resultValue != null) {
-								if (chunks++ > 0)
+								if (chunks++ > 0) {
 									writer.write(ActivityContext.LINE_SEPARATOR);
+								}
 								writer.write(resultValue.toString());
 							}
 						}

@@ -15,6 +15,7 @@
  */
 package com.aspectran.embedded.adapter;
 
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
@@ -27,6 +28,15 @@ public class EmbeddedRequestAdapter extends BasicRequestAdapter {
 	 */
 	public EmbeddedRequestAdapter() {
 		super(null);
+	}
+
+	/**
+	 * Instantiates a new EmbeddedRequestAdapter.
+	 *
+	 * @param parameterMap the parameter map
+	 */
+	public EmbeddedRequestAdapter(ParameterMap parameterMap) {
+		super(null, parameterMap);
 	}
 
 }

@@ -61,7 +61,7 @@ public class ConsoleActivity extends CoreActivity {
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter();
 			setResponseAdapter(responseAdapter);
 		} catch (Exception e) {
-			throw new AdapterException("Failed to adapt for Console Activity.", e);
+			throw new AdapterException("Could not adapt to Console Activity.", e);
 		}
 	}
 

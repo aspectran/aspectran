@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity;
 
+import java.lang.reflect.Constructor;
+
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
@@ -41,6 +43,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -55,16 +58,26 @@ import com.aspectran.core.util.logging.LogFactory;
 public class CoreActivity extends BasicActivity {
 
 	private static final Log log = LogFactory.getLog(CoreActivity.class);
-	
-	private MethodType requestMethod;
+
+	private TransletRule transletRule;
+
+	private RequestRule requestRule;
+
+	private ResponseRule responseRule;
+
+	private Class<? extends Translet> transletInterfaceClass;
+
+	private Class<? extends CoreTranslet> transletImplementClass;
+
+	private Translet translet;
 
 	private String transletName;
-	
+
+	private MethodType requestMethod;
+
 	private String forwardTransletName;
 
 	private boolean withoutResponse;
-
-	private Translet translet;
 
 	private Response reservedResponse;
 
@@ -212,7 +225,7 @@ public class CoreActivity extends BasicActivity {
 	 * Parses the declared parameters.
 	 */
 	protected void parseDeclaredParameters() {
-		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
+		ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
 		if (parameterItemRuleMap != null) {
 			ItemEvaluator evaluator = null;
 			ItemRuleList missingItemRules = null;
@@ -228,7 +241,6 @@ public class CoreActivity extends BasicActivity {
 						getRequestAdapter().setParameter(itemRule.getName(), values);
 					}
 				}
-
 				if (itemRule.isMandatory()) {
 					String[] values = getRequestAdapter().getParameterValues(itemRule.getName());
 					if (values == null) {
@@ -249,7 +261,7 @@ public class CoreActivity extends BasicActivity {
 	 * Parses the declared attributes.
 	 */
 	protected void parseDeclaredAttributes() {
-		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
+		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
 		if (attributeItemRuleMap != null) {
 			ItemEvaluator evaluator = new ItemExpressionParser(this);
 			for (ItemRule itemRule : attributeItemRuleMap.values()) {
@@ -271,7 +283,7 @@ public class CoreActivity extends BasicActivity {
 				}
 
 				if (!isResponseReserved()) {
-					if (getTransletRule().getContentList() != null) {
+					if (transletRule.getContentList() != null) {
 						produce();
 					}
 				}
@@ -291,8 +303,8 @@ public class CoreActivity extends BasicActivity {
 			if (isExceptionRaised()) {
 				reserveResponse(null);
 
-				if (getTransletRule().getExceptionRule() != null) {
-					exceptionHandling(getTransletRule().getExceptionRule());
+				if (transletRule.getExceptionRule() != null) {
+					exceptionHandling(transletRule.getExceptionRule());
 				}
 				if (!isResponseReserved() && getExceptionRuleList() != null) {
 					exceptionHandling(getExceptionRuleList());
@@ -316,12 +328,12 @@ public class CoreActivity extends BasicActivity {
 	 * Produces content.
 	 */
 	private void produce() {
-		ContentList contentList = getTransletRule().getContentList();
+		ContentList contentList = transletRule.getContentList();
 
 		if (contentList != null) {
 			ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
 
-			if (getTransletRule().isExplicitContent()) {
+			if (transletRule.isExplicitContent()) {
 				processResult.setOmittable(contentList.isOmittable());
 			} else {
 				if (contentList.getVisibleCount() < 2) {
@@ -339,12 +351,12 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	protected Response getDeclaredResponse() {
-		return (getResponseRule() != null ? getResponseRule().getResponse() : null);
+		return (responseRule != null ? responseRule.getResponse() : null);
 	}
-	
+
 	private void response() {
 		Response res = (this.reservedResponse != null) ? this.reservedResponse : getDeclaredResponse();
-		
+
 		if (res != null) {
 			if (res.getResponseType() != ResponseType.FORWARD) {
 				getResponseAdapter().flush();
@@ -358,7 +370,7 @@ public class CoreActivity extends BasicActivity {
 			} else {
 				this.forwardTransletName = null;
 			}
-			
+
 			if (forwardTransletName != null) {
 				forward();
 			}
@@ -384,7 +396,7 @@ public class CoreActivity extends BasicActivity {
 	public boolean isResponseReserved() {
 		return (this.reservedResponse != null);
 	}
-	
+
 	/**
 	 * Forwarding from current translet to other translet.
 	 */
@@ -394,7 +406,7 @@ public class CoreActivity extends BasicActivity {
 		}
 
 		reserveResponse(null);
-		
+
 		prepare(forwardTransletName, requestMethod, translet.getProcessResult());
 		perform();
 	}
@@ -423,8 +435,8 @@ public class CoreActivity extends BasicActivity {
 		if (targetResponse != null) {
 			ResponseRule responseRule = new ResponseRule();
 			responseRule.setResponse(targetResponse);
-			if (getResponseRule() != null) {
-				responseRule.setCharacterEncoding(getResponseRule().getCharacterEncoding());
+			if (responseRule != null) {
+				responseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
 			}
 
 			setResponseRule(responseRule);
@@ -436,7 +448,7 @@ public class CoreActivity extends BasicActivity {
 			// Clear produced results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
 			translet.touchProcessResult(null, 0).setOmittable(true);
-			
+
 			ActionList actionList = targetResponse.getActionList();
 			if (actionList != null) {
 				execute(actionList);
@@ -457,7 +469,7 @@ public class CoreActivity extends BasicActivity {
 		if (translet.getProcessResult() != null) {
 			contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
 			contentResult.setName(actionList.getName());
-			if (getTransletRule().isExplicitContent()) {
+			if (transletRule.isExplicitContent()) {
 				contentResult.setOmittable(actionList.isOmittable());
 			} else if (actionList.getName() == null && actionList.getVisibleCount() < 2) {
 				contentResult.setOmittable(true);
@@ -482,17 +494,17 @@ public class CoreActivity extends BasicActivity {
 		if (log.isDebugEnabled()) {
 			log.debug("action " + action);
 		}
-		
+
 		try {
 			Object resultValue = action.execute(this);
-		
+
 			if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
 				ActionResult actionResult = new ActionResult(contentResult);
 				actionResult.setActionId(action.getActionId());
 				actionResult.setResultValue(resultValue);
 				actionResult.setHidden(action.isHidden());
 			}
-			
+
 			if (log.isTraceEnabled()) {
 				log.trace("actionResult " + resultValue);
 			}
@@ -500,6 +512,138 @@ public class CoreActivity extends BasicActivity {
 			setRaisedException(e);
 			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
+	}
+
+
+	/**
+	 * Create a new {@code Translet} instance.
+	 *
+	 * @param activity the core activity
+	 * @param transletRule the translet rule
+	 * @return the new {@code Translet} instance
+	 */
+	private Translet newTranslet(CoreActivity activity, TransletRule transletRule) {
+		if (transletRule != null) {
+			this.transletRule = transletRule;
+			this.requestRule = transletRule.getRequestRule();
+			this.responseRule = transletRule.getResponseRule();
+		}
+
+		if (this.transletInterfaceClass == null) {
+			this.transletInterfaceClass = Translet.class;
+		}
+		if (this.transletImplementClass == null) {
+			this.transletImplementClass = CoreTranslet.class;
+			return new CoreTranslet(activity);
+		}
+
+		//create a custom translet instance
+		try {
+			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
+			Object[] args = new Object[] { activity };
+
+			return (CoreTranslet)transletImplementConstructor.newInstance(args);
+		} catch (Exception e) {
+			throw new TransletInstantiationException(transletImplementClass, e);
+		}
+	}
+
+	/**
+	 * Returns an interface class for the {@code Translet}.
+	 *
+	 * @return the interface class for the translet
+	 */
+	protected Class<? extends Translet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
+
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
+	}
+
+	/**
+	 * Returns an implementation class for the {@code Translet}.
+	 *
+	 * @return the implementation class for the translet
+	 */
+	protected Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return transletImplementClass;
+	}
+
+	/**
+	 * Sets the translet implement class.
+	 *
+	 * @param transletImplementClass the new translet implement class
+	 */
+	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
+	}
+
+	/**
+	 * Returns the translet rule.
+	 *
+	 * @return the translet rule
+	 */
+	protected TransletRule getTransletRule() {
+		return transletRule;
+	}
+
+	/**
+	 * Returns the request rule.
+	 *
+	 * @return the request rule
+	 */
+	protected RequestRule getRequestRule() {
+		return requestRule;
+	}
+
+	/**
+	 * Returns the response rule.
+	 *
+	 * @return the response rule
+	 */
+	protected ResponseRule getResponseRule() {
+		return responseRule;
+	}
+
+	/**
+	 * Replace the response rule.
+	 *
+	 * @param responseRule the response rule
+	 */
+	protected void setResponseRule(ResponseRule responseRule) {
+		this.responseRule = responseRule;
+	}
+
+	/**
+	 * Determine the request character encoding.
+	 *
+	 * @return the request character encoding
+	 */
+	protected String resolveRequestCharacterEncoding() {
+		String characterEncoding = requestRule.getCharacterEncoding();
+		if (characterEncoding == null) {
+			characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+		}
+		return characterEncoding;
+	}
+
+	/**
+	 * Determine the response character encoding.
+	 *
+	 * @return the response character encoding
+	 */
+	protected String resolveResponseCharacterEncoding() {
+		String characterEncoding = requestRule.getCharacterEncoding();
+		if (characterEncoding == null) {
+			characterEncoding = resolveRequestCharacterEncoding();
+		}
+		return characterEncoding;
 	}
 
 	@Override

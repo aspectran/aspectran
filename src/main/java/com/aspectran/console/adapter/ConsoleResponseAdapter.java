@@ -16,12 +16,8 @@
 package com.aspectran.console.adapter;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Writer;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.util.SystemUtils;
 
 /**
@@ -32,43 +28,20 @@ import com.aspectran.core.util.SystemUtils;
  */
 public class ConsoleResponseAdapter extends BasicResponseAdapter {
 
-	private PrintStream printStream;
-	
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
 	 */
-	public ConsoleResponseAdapter() {
+	public ConsoleResponseAdapter() throws IOException {
 		super(null);
-		printStream = System.out;
+
 		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
-	}
+		setOutputStream(System.out);
 
-	@Override
-	public OutputStream getOutputStream() {
-		return printStream;
-	}
-
-	@Override
-	public Writer getWriter() throws IOException {
 		if (getCharacterEncoding() != null) {
-			return new ConsolePrintWriter(printStream, getCharacterEncoding());
+			setWriter(new ConsolePrintWriter(System.out, getCharacterEncoding()));
 		} else {
-			return new ConsolePrintWriter(printStream);
+			setWriter(new ConsolePrintWriter(System.out));
 		}
-	}
-
-	@Override
-	public void redirect(String target) {
-	}
-
-	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule) {
-		return null;
-	}
-
-	@Override
-	public void flush() {
-		// nothing to do
 	}
 
 }

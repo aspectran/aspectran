@@ -82,7 +82,7 @@ public class JsonTransform extends TransformResponse {
 			if (this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
-				String characterEncoding = activity.resolveResponseCharacterEncoding();
+				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
 				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 				}

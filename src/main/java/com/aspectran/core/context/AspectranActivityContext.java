@@ -28,6 +28,7 @@ import com.aspectran.core.context.message.DelegatingMessageSource;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
+import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ToStringBuilder;
@@ -57,7 +58,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private ScheduleRuleRegistry scheduleRuleRegistry;
 
-	private TemplateProcessor templateProcessor;
+	private ContextTemplateProcessor contextTemplateProcessor;
 	
 	private TransletRuleRegistry transletRuleRegistry;
 
@@ -122,16 +123,16 @@ public class AspectranActivityContext implements ActivityContext {
 
 	@Override
 	public TemplateProcessor getTemplateProcessor() {
-		return templateProcessor;
+		return contextTemplateProcessor;
 	}
 
 	/**
 	 * Sets the template processor.
 	 *
-	 * @param templateProcessor the new template processor
+	 * @param contextTemplateProcessor the new template processor
 	 */
-	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
-		this.templateProcessor = templateProcessor;
+	public void setContextTemplateProcessor(ContextTemplateProcessor contextTemplateProcessor) {
+		this.contextTemplateProcessor = contextTemplateProcessor;
 	}
 
 	@Override
@@ -202,8 +203,8 @@ public class AspectranActivityContext implements ActivityContext {
 		if (contextBeanRegistry != null) {
 			contextBeanRegistry.initialize(this);
 		}
-		if (templateProcessor != null) {
-			templateProcessor.initialize(this);
+		if (contextTemplateProcessor != null) {
+			contextTemplateProcessor.initialize(this);
 		}
 		if (contextBeanRegistry != null) {
 			initMessageSource();
@@ -212,9 +213,9 @@ public class AspectranActivityContext implements ActivityContext {
 
 	@Override
 	public void destroy() {
-		if (templateProcessor != null) {
-			templateProcessor.destroy();
-			templateProcessor = null;
+		if (contextTemplateProcessor != null) {
+			contextTemplateProcessor.destroy();
+			contextTemplateProcessor = null;
 		}
 		if (transletRuleRegistry != null) {
 			transletRuleRegistry.clear();
@@ -261,7 +262,7 @@ public class AspectranActivityContext implements ActivityContext {
 		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
 		tsb.append("beanRegistry", contextBeanRegistry);
 		tsb.append("transletRuleRegistry", transletRuleRegistry);
-		tsb.append("templateProcessor", templateProcessor);
+		tsb.append("templateProcessor", contextTemplateProcessor);
 		tsb.append("messageSource", messageSource);
 		return tsb.toString();
 	}

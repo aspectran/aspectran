@@ -15,12 +15,7 @@
  */
 package com.aspectran.embedded.adapter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-
 import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ContentType;
 
 /**
@@ -28,41 +23,13 @@ import com.aspectran.core.context.rule.type.ContentType;
  */
 public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
-	private EmbeddedOutputWriter writer;
-
 	/**
 	 * Instantiates a new EmbeddedResponseAdapter.
 	 */
 	public EmbeddedResponseAdapter() {
 		super(null);
+
 		setContentType(ContentType.TEXT_PLAIN.toString());
-	}
-
-	@Override
-	public OutputStream getOutputStream() throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Writer getWriter() throws IOException {
-		if (writer == null) {
-			writer = new EmbeddedOutputWriter();
-		}
-		return writer;
-	}
-
-	@Override
-	public void redirect(String target) throws IOException {
-	}
-
-	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule) {
-		throw new UnsupportedOperationException("redirect");
-	}
-
-	@Override
-	public void flush() {
-		// nothing to do
 	}
 
 }

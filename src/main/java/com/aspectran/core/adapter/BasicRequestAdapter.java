@@ -25,7 +25,7 @@ import java.util.Map;
   *
  * @since 2016. 2. 13.
 */
-public abstract class BasicRequestAdapter extends AbstractRequestAdapter {
+public class BasicRequestAdapter extends AbstractRequestAdapter {
 
 	private String characterEncoding;
 

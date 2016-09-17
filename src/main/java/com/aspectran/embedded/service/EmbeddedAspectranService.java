@@ -15,12 +15,13 @@
  */
 package com.aspectran.embedded.service;
 
-import java.io.IOException;
+import java.util.Map;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -95,9 +96,37 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 *
 	 * @param name the translet name
 	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public Translet translet(String name) {
-		return translet(name, null);
+	public Translet translet(String name) throws AspectranServiceException {
+		return translet(name, null, null, null);
+	}
+
+	/**
+	 * Runs the translet.
+	 *
+	 * @param name the translet name
+	 * @param parameterMap the parameter map
+	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public Translet translet(String name, ParameterMap parameterMap)
+			throws AspectranServiceException {
+		return translet(name, null, parameterMap, null);
+	}
+
+	/**
+	 * Runs the translet.
+	 *
+	 * @param name the translet name
+	 * @param parameterMap the parameter map
+	 * @param attributeMap the attribute map
+	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap)
+			throws AspectranServiceException {
+		return translet(name, null, parameterMap, attributeMap);
 	}
 
 	/**
@@ -106,8 +135,37 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @param name the translet name
 	 * @param method the request method
 	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public Translet translet(String name, MethodType method) {
+	public Translet translet(String name, MethodType method) throws AspectranServiceException {
+		return translet(name, method, null, null);
+	}
+
+	/**
+	 * Runs the translet.
+	 *
+	 * @param name the translet name
+	 * @param method the request method
+	 * @param parameterMap the parameter map
+	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public Translet translet(String name, MethodType method, ParameterMap parameterMap)
+			throws AspectranServiceException {
+		return translet(name, method, parameterMap, null);
+	}
+
+	/**
+	 * Runs the translet.
+	 *
+	 * @param name the translet name
+	 * @param method the request method
+	 * @param parameterMap the parameter map
+	 * @param attributeMap the attribute map
+	 * @return the {@code Translet} object
+	 */
+	public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap)
+			throws AspectranServiceException {
 		if (pauseTimeout != 0L) {
 			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
 				log.warn("Aspectran Service has been paused, so did not run the translet \"" + name + "\".");
@@ -117,18 +175,22 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 			}
 		}
 
-		Activity activity = null;
+		EmbeddedActivity activity = null;
 		Translet translet = null;
 
 		try {
 			activity = new EmbeddedActivity(getActivityContext(), sessionAdapter);
+			activity.setParameterMap(parameterMap);
+			activity.setAttributeMap(attributeMap);
 			activity.prepare(name, method);
 			activity.perform();
 			translet = activity.getTranslet();
 		} catch (ActivityTerminatedException e) {
-			if (log.isDebugEnabled()) {
+			if(log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
 			}
+		} catch (Exception e) {
+			throw new AspectranServiceException("Failed to process translet.", e);
 		} finally {
 			if (activity != null) {
 				activity.finish();
@@ -136,6 +198,61 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 		}
 
 		return translet;
+	}
+
+	/**
+	 * Evaluate the template without any provided variables.
+	 *
+	 * @param templateId the template id
+	 * @return the output string of the template
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public String template(String templateId) throws AspectranServiceException {
+		return template(templateId, null, null);
+	}
+
+	/**
+	 * Evaluate the template with a set of parameters.
+	 *
+	 * @param templateId the template id
+	 * @param parameterMap the parameter map
+	 * @return the output string of the template
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public String template(String templateId, Map<String, String> parameterMap)
+			throws AspectranServiceException {
+		return template(templateId, parameterMap, null);
+	}
+
+	/**
+	 * Evaluate the template with a set of parameters and a set of attributes.
+	 *
+	 * @param templateId the template id
+	 * @param parameterMap the parameter map
+	 * @param attributeMap the attribute map
+	 * @return the output string of the template
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public String template(String templateId, Map<String, String> parameterMap, Map<String, Object> attributeMap)
+			throws AspectranServiceException {
+		try {
+			InstantActivity activity = new InstantActivity(getActivityContext(), sessionAdapter);
+			if(parameterMap != null) {
+				ParameterMap parameterMap2 = new ParameterMap(parameterMap.size());
+				parameterMap2.setAll(parameterMap);
+				activity.setParameterMap(parameterMap2);
+			}
+			if(attributeMap != null) {
+				activity.setAttributeMap(attributeMap);
+			}
+			activity.adapt();
+
+			getActivityContext().getTemplateProcessor().process(templateId, activity);
+
+			return activity.getResponseAdapter().getWriter().toString();
+		} catch (Exception e) {
+			throw new AspectranServiceException("Failed to evaluate template.", e);
+		}
 	}
 
 	@Override
@@ -152,9 +269,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @param rootContextLocation the root context location
 	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
-	 * @throws IOException if an I/O error has occurred
 	 */
-	public static EmbeddedAspectranService newInstance(String rootContextLocation) throws AspectranServiceException, IOException {
+	public static EmbeddedAspectranService newInstance(String rootContextLocation) throws AspectranServiceException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 		aspectranConfig.updateRootContextLocation(rootContextLocation);
 		return newInstance(aspectranConfig);
@@ -166,9 +282,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @param aspectranConfig the parameters for aspectran configuration
 	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
-	 * @throws IOException if an I/O error has occurred
 	 */
-	public static EmbeddedAspectranService newInstance(AspectranConfig aspectranConfig) throws AspectranServiceException, IOException {
+	public static EmbeddedAspectranService newInstance(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		

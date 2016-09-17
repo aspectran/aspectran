@@ -17,6 +17,8 @@ package com.aspectran.core.context.template.engine.freemarker.directive;
 
 import java.util.Map;
 
+import com.aspectran.core.util.ToStringBuilder;
+
 import freemarker.template.TemplateModelException;
 
 /**
@@ -120,17 +122,13 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{groupName=").append(groupName);
-        sb.append(", directiveName=").append(directiveName);
-        sb.append(", trimmer=").append(trimmer);
-        sb.append("}");
-        return sb.toString();
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("groupName", groupName);
+        tsb.append("directiveName", directiveName);
+        tsb.append("trimmer", trimmer);
+        return tsb.toString();
     }
 
 }

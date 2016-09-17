@@ -102,7 +102,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		if (activityContext != null) {
-			throw new AspectranServiceException("Aspectran Context has already been loaded. Must destroy the old Aspectran Context before reloading.");
+			throw new AspectranServiceException("Aspectran Context has already been loaded. Must destroy the current Aspectran Context before reloading.");
 		}
 
 		log.info("Initializing Aspectran Service...");
@@ -156,7 +156,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch (Exception e) {
-			throw new AspectranServiceException("Failed to initialize Aspectran Service.", e);
+			throw new AspectranServiceException("Could not initialize Aspectran Service.", e);
 		}
 	}
 	
@@ -166,7 +166,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 
 		if (activityContext != null) {
-			throw new AspectranServiceException("Activity Context has already been loaded. Must destroy the old Activity Context before reloading.");
+			throw new AspectranServiceException("Activity Context has already been loaded. Must destroy the current Activity Context before reloading.");
 		}
 		
 		if (log.isDebugEnabled()) {
@@ -180,9 +180,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			startReloadingTimer();
 			
 			return activityContext;
-			
 		} catch (Exception e) {
-			throw new AspectranServiceException("Failed to load Activity Context.", e);
+			throw new AspectranServiceException("Could not load Activity Context.", e);
 		}
 	}
 
@@ -203,7 +202,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				activityContext = null;
 				log.info("Aspectran Context has been destroyed.");
 			} catch (Exception e) {
-				log.error("Failed to destroy Aspectran Context " + activityContext, e);
+				log.error("Could not destroy Aspectran Context " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -213,7 +212,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 
 	/**
-	 * Destroys an application scope.
+	 * Destroys the application scope.
 	 */
 	private void destroyApplicationScope() {
 		ApplicationAdapter applicationAdapter = getApplicationAdapter();
@@ -237,7 +236,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch (Exception e) {
-			throw new AspectranServiceException("Failed to reload Activity Context.", e);
+			throw new AspectranServiceException("Could not reload Activity Context.", e);
 		}
 
 		return activityContext;
@@ -306,7 +305,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				schedulerService.resume();
 				log.info("Scheduler Service has been resumed.");
 			} catch (Exception e) {
-				log.error("Scheduler Service pause failed.", e);
+				log.error("Scheduler Service resume failed.", e);
 				return false;
 			}
 		}

@@ -24,7 +24,8 @@ import com.mitchellbosecke.pebble.PebbleEngine;
  *
  * <p>Created: 2016. 1. 25.</p>
  */
-public class PebbleEngineFactoryBean extends PebbleEngineFactory implements InitializableBean, FactoryBean<PebbleEngine> {
+public class PebbleEngineFactoryBean extends PebbleEngineFactory
+        implements InitializableBean, FactoryBean<PebbleEngine> {
 
     private PebbleEngine pebbleEngine;
 

@@ -115,6 +115,20 @@ public interface Translet extends BeanRegistry, MessageSource {
 	<T> T getApplicationAdaptee();
 
 	/**
+	 * Returns the request character encoding.
+	 *
+	 * @return the request character encoding
+	 */
+	String getRequestCharacterEncoding();
+
+	/**
+	 * Returns the response character encoding.
+	 *
+	 * @return the response character encoding
+	 */
+	String getResponseCharacterEncoding();
+
+	/**
 	 * Returns the process result.
 	 *
 	 * @return the process result

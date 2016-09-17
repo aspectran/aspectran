@@ -41,7 +41,8 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer)
+            throws TemplateEngineProcessException {
         try {
         	Reader reader = new StringReader(templateSource);
         	Template template = new Template(templateName, reader, configuration);
@@ -53,12 +54,14 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer) throws
+            TemplateEngineProcessException {
         process(templateName, model, writer, null);
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
+            throws TemplateEngineProcessException {
         try {
             Template template = configuration.getTemplate(templateName, locale);
             template.process(model, writer);

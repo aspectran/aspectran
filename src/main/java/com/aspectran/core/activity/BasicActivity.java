@@ -113,7 +113,7 @@ public abstract class BasicActivity extends AbstractActivity {
 	}
 
 	/**
-	 * Execute advice action.
+	 * Executes advice action.
 	 *
 	 * @param aspectAdviceRule the aspect advice rule
 	 * @param noThrow whether or not throw exception

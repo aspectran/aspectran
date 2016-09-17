@@ -16,6 +16,8 @@
 package com.aspectran.core.embedded;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -64,6 +66,17 @@ public class EmbeddedAspectranServiceTest {
 
 		Translet translet = aspectranService.translet("echo");
 		System.out.println(translet.getResponseAdapter().getWriter().toString());
+
+		Map<String, String> params = new HashMap<>();
+		params.put("id", "0001");
+		params.put("name", "aspectran");
+		params.put("email", "aspectran@aspectran.com");
+
+		String selectQuery = aspectranService.template("selectQuery", params);
+		String updateQuery = aspectranService.template("updateQuery", params);
+
+		System.out.println(selectQuery);
+		System.out.println(updateQuery);
 	}
 
 }

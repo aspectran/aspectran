@@ -206,7 +206,7 @@ public class BeanAction extends AbstractAction {
 				argIndex = 1;
 				argsTypes = new Class<?>[argSize + argIndex];
 				argsObjects = new Object[argsTypes.length];
-				argsTypes[0] = activity.getTransletInterfaceClass();
+				argsTypes[0] = activity.getTranslet().getTransletInterfaceClass();
 				argsObjects[0] = activity.getTranslet();
 			} else {
 				argIndex = 0;
@@ -221,7 +221,7 @@ public class BeanAction extends AbstractAction {
 				argIndex++;
 			}
 		} else if (requiresTranslet) {
-			argsTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
+			argsTypes = new Class<?>[] { activity.getTranslet().getTransletInterfaceClass() };
 			argsObjects = new Object[] { activity.getTranslet() };
 		}
 		

@@ -22,11 +22,12 @@ import freemarker.template.Configuration;
 /**
  * JavaBean to configure FreeMarker.
  *
- * Note: Aspectran's FreeMarker support requires FreeMarker 2.3 or higher.
+ * <p>Note: Aspectran's FreeMarker support requires FreeMarker 2.3 or higher.</p>
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory implements InitializableBean, FactoryBean<Configuration> {
+public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory
+        implements InitializableBean, FactoryBean<Configuration> {
 
     private Configuration configuration;
 

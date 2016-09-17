@@ -227,7 +227,8 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) throws AspectranServiceException {
+	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService)
+			throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
@@ -254,7 +255,8 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) throws AspectranServiceException {
+	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam)
+			throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
 		if (aspectranConfigParam != null) {
 			aspectranConfig = new AspectranConfig(aspectranConfigParam);
