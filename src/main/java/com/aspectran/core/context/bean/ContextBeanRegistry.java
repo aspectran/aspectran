@@ -43,7 +43,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(BeanRule beanRule) {
 		if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-			return (T)createBean(beanRule);
+			// Does not manage the complete lifecycle of a prototype bean.
+			Object[] beans = createBean(beanRule);
+			return (T)beans[beans.length - 1];
 		} else if (beanRule.getScopeType() == ScopeType.SINGLETON) {
 			return (T)getSingletonScopeBean(beanRule);
 		} else if (beanRule.getScopeType() == ScopeType.REQUEST) {
@@ -62,15 +64,16 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		singletonScopeLock.readLock().lock();
 
 		try {
-			if (!beanRule.isRegistered()) {
+			if (!beanRule.isInstantiated()) {
 				readLocked = false;
 				singletonScopeLock.readLock().unlock();
 				singletonScopeLock.writeLock().lock();
 
 				try {
-					if (!beanRule.isRegistered()) {
-						beanRule.setBean(createBean(beanRule));
-						beanRule.setRegistered(true);
+					if (!beanRule.isInstantiated()) {
+						Object[] beans = createBean(beanRule);
+						beanRule.setInstantiatedBeans(beans);
+						beanRule.setInstantiated(true);
 					}
 				} finally {
 					singletonScopeLock.writeLock().unlock();
@@ -82,7 +85,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 			}
 		}
 
-		return beanRule.getBean();
+		return beanRule.getExposedBean();
 	}
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
@@ -116,15 +119,17 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		scopeLock.readLock().lock();
 
 		try {
-			if (!beanRule.isRegistered()) {
+			Object bean = scope.getBean(beanRule);
+			if (bean == null) {
 				readLocked = false;
 				scopeLock.readLock().unlock();
 				scopeLock.writeLock().lock();
 
 				try {
-					if (!beanRule.isRegistered()) {
-						beanRule.setBean(createBean(beanRule));
-						beanRule.setRegistered(true);
+					bean = scope.getBean(beanRule);
+					if (bean == null) {
+						Object[] beans = createBean(beanRule);
+						scope.putInstantiatedBean(beanRule, createBean(beanRule));
 					}
 				} finally {
 					scopeLock.writeLock().unlock();
@@ -136,7 +141,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 			}
 		}
 
-		return beanRule.getBean();
+		return beanRule.getExposedBean();
 	}
 
 	private Scope getRequestScope() {

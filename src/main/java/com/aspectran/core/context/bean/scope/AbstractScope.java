@@ -40,7 +40,7 @@ public class AbstractScope implements Scope {
 
 	private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<>();
+	protected final Map<BeanRule, Object[]> scopedBeanMap = new HashMap<>();
 	
 	private final ScopeType scopeType;
 	
@@ -55,11 +55,23 @@ public class AbstractScope implements Scope {
 
 	@Override
 	public Object getBean(BeanRule beanRule) {
+		Object[] beans = scopedBeanMap.get(beanRule);
+		return (beans != null ? beans[0] : null);
+	}
+
+	@Override
+	public Object getExposedBean(BeanRule beanRule) {
+		Object[] beans = scopedBeanMap.get(beanRule);
+		return (beans != null ? beans[beans.length - 1] : null);
+	}
+
+	@Override
+	public Object[] getInstantiatedBean(BeanRule beanRule) {
 		return scopedBeanMap.get(beanRule);
 	}
 
 	@Override
-	public void putBean(BeanRule beanRule, Object bean) {
+	public void putInstantiatedBean(BeanRule beanRule, Object[] bean) {
 		scopedBeanMap.put(beanRule, bean);
 	}
 
@@ -67,14 +79,14 @@ public class AbstractScope implements Scope {
 	public void destroy() {
 		if (log.isDebugEnabled()) {
 			if (scopedBeanMap.size() > 0) {
-				log.debug("Destroy scoped beans in the " + this);
+				log.debug("Destroy " + scopeType + " scoped beans in the " + this);
 			}
 		}
 
-		for (Map.Entry<BeanRule, Object> entry : scopedBeanMap.entrySet()) {
+		for (Map.Entry<BeanRule, Object[]> entry : scopedBeanMap.entrySet()) {
 			BeanRule beanRule = entry.getKey();
-			Object bean = entry.getValue();
-			doDestroy(beanRule, bean);
+			Object[] beans = entry.getValue();
+			doDestroy(beanRule, beans[0]);
 		}
 
 		scopedBeanMap.clear();
@@ -90,7 +102,7 @@ public class AbstractScope implements Scope {
 					destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
 			} catch (Exception e) {
-				log.error("Cannot destroy " + scopeType + " scoped bean " + beanRule, e);
+				log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
 			}
 		}
 	}

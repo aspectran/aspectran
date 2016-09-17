@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
@@ -58,11 +59,13 @@ public class ActivityContextLoaderTest {
 		
 		System.out.println("================ load ===============");
 
-		activityContextLoader.load("/config/test-config.xml");
+		ActivityContext context = activityContextLoader.load("/config/test-config.xml");
+		context.destroy();
 
 		System.out.println("=============== reload ==============");
 
-		activityContextLoader.reload(false);
+		context = activityContextLoader.reload(false);
+		context.destroy();
 	}
 
 //	@Test

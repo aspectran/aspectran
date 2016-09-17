@@ -30,10 +30,10 @@ public class AponReadWriteTest {
 
 	@Test
 	public void readWriteTest() throws IOException {
-		File file = new File("./target/test-classes/config/apon-test.apon");
+		File file = new File("./target/test-classes/config/apon/apon-test.apon");
 		Parameters parameters = AponReader.parse(file);
 		
-		File outputFile = new File("./target/test-classes/config/apon-test-output.apon");
+		File outputFile = new File("./target/test-classes/config/apon/apon-test-output.apon");
 		if (outputFile.exists()) {
 			outputFile.delete();
 		}

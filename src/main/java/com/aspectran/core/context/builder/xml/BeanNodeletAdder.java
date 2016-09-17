@@ -53,9 +53,9 @@ class BeanNodeletAdder implements NodeletAdder {
             String scan = attributes.get("scan");
             String mask = attributes.get("mask");
             String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
-			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
 			String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
-            String scope = attributes.get("scope");
+			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
+			String scope = attributes.get("scope");
             Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
             Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
             Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
@@ -63,10 +63,10 @@ class BeanNodeletAdder implements NodeletAdder {
             BeanRule beanRule;
 
             if (className == null && scan == null && offerBean != null) {
-                beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
+                beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 				assistant.resolveBeanClass(offerBean, beanRule);
             } else {
-                beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
+                beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
             }
 
             assistant.pushObject(beanRule);

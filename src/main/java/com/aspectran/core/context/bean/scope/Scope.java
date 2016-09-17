@@ -30,21 +30,36 @@ public interface Scope {
 	ReadWriteLock getScopeLock();
 
 	/**
-	 * Return an instance of the bean that matches the given bean rule.
+	 * Returns an instance of the bean that matches the given bean rule.
 	 *
 	 * @param beanRule the bean rule of the bean to retrieve
 	 * @return an instance of the bean
-	 * @return
 	 */
 	Object getBean(BeanRule beanRule);
 
 	/**
-	 * Puts an instance of the bean for the given bean rule.
+	 * Returns an instance of the bean that matches the given bean rule.
+	 *
+	 * @param beanRule the bean rule of the bean to retrieve
+	 * @return an instance of the bean
+	 */
+	Object getExposedBean(BeanRule beanRule);
+
+	/**
+	 * Returns the instances of the bean that matches the given bean rule.
+	 *
+	 * @param beanRule the bean rule of the bean to retrieve
+	 * @return the instances of the bean
+	 */
+	Object[] getInstantiatedBean(BeanRule beanRule);
+
+	/**
+	 * Puts the instances of the bean for the given bean rule.
 	 *
 	 * @param beanRule the bean rule of the bean to save
-	 * @param bean an instance of the bean
+	 * @param bean the instances of the bean
 	 */
-	void putBean(BeanRule beanRule, Object bean);
+	void putInstantiatedBean(BeanRule beanRule, Object[] bean);
 
 	/**
 	 * Destroy all scoped beans in this scope.

@@ -8,9 +8,11 @@
 		<setting name="transletNamePattern" value="*.job"/>
 	</settings>
 
+	<bean id="*" scan="test.**.*Advice" mask="test.**.*"/>
+	<bean id="*" scan="test.**.*Action" mask="test.**.*"/>
 	<bean id="*" scan="test.**.*Schedule" mask="test.**.*"/>
 
-	<bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean">
+	<bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean" lazyInit="true">
 		<properties>
 			<item type="properties" name="quartzProperties">
 				<value name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler-1</value>
@@ -27,7 +29,7 @@
 		</properties>
 	</bean>
 
-	<bean id="schedulerFactory" class="org.quartz.impl.StdSchedulerFactory">
+	<bean id="schedulerFactory" class="org.quartz.impl.StdSchedulerFactory" lazyInit="true">
 		<constructor>
 			<arguments>
 				<item type="properties">
@@ -46,7 +48,7 @@
 		</constructor>
 	</bean>
 
-	<bean id="defaultScheduler2" offerBean="schedulerFactory" offerMethod="getScheduler"/>
+	<bean id="defaultScheduler2" offerBean="schedulerFactory" offerMethod="getScheduler" lazyInit="true"/>
 
 	<schedule id="scheduler1">
 		<trigger type="simple">

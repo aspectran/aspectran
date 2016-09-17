@@ -116,9 +116,9 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private boolean methodAutowireParsed;
 
-	private Object bean; // only for singleton
+	private Object[] beans; // only for singleton
 
-	private boolean registered;
+	private boolean instantiated;
 
 	/**
 	 * Returns the bean id.
@@ -394,51 +394,61 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Gets the inits the method name.
+	 * Returns the initialization method name.
 	 *
-	 * @return the inits the method name
+	 * @return the initialization method name
 	 */
 	public String getInitMethodName() {
 		return initMethodName;
 	}
 
 	/**
-	 * Sets the inits the method name.
+	 * Sets the initialization method name.
 	 *
-	 * @param initMethodName the new inits the method name
+	 * @param initMethodName the new initialization method name
 	 */
 	public void setInitMethodName(String initMethodName) {
 		this.initMethodName = initMethodName;
 	}
-	
+
+	/**
+	 * Returns the initialization method.
+	 *
+	 * @return the initialization method
+	 */
 	public Method getInitMethod() {
 		return initMethod;
 	}
 
+	/**
+	 * Sets the initialization method.
+	 *
+	 * @param initMethod the initialization method
+	 */
 	public void setInitMethod(Method initMethod) {
 		this.initMethod = initMethod;
 	}
 
 	/**
-	 * Returns whether or not the initialization method requiring Translet argument.
+	 * Returns whether the initialization method requires the Translate argument.
 	 *
-	 * @return whether or not the initialization method requiring Translet argument
+	 * @return true if the initialization method requires the Translate argument, otherwise false
 	 */
 	public boolean isInitMethodRequiresTranslet() {
 		return initMethodRequiresTranslet;
 	}
 
 	/**
-	 * Sets whether or not the initialization method requiring Translet argument.
+	 * Sets whether the initialization method requires the Translate argument.
 	 *
-	 * @param initMethodRequiresTranslet whether or not the initialization method requiring Translet argument
+	 * @param initMethodRequiresTranslet whether or not the initialization method requires Translet argument
 	 */
 	public void setInitMethodRequiresTranslet(boolean initMethodRequiresTranslet) {
 		this.initMethodRequiresTranslet = initMethodRequiresTranslet;
 	}
 
 	/**
-	 * Gets the destroy method name.
+	 * Returns the destroy method name.
 	 *
 	 * @return the destroy method name
 	 */
@@ -455,10 +465,20 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.destroyMethodName = destroyMethodName;
 	}
 
+	/**
+	 * Returns the destroy method.
+	 *
+	 * @return the destroy method
+	 */
 	public Method getDestroyMethod() {
 		return destroyMethod;
 	}
 
+	/**
+	 * Sets the destroy method.
+	 *
+	 * @param destroyMethod the new destroy method
+	 */
 	public void setDestroyMethod(Method destroyMethod) {
 		this.destroyMethod = destroyMethod;
 	}
@@ -590,9 +610,9 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether this bean is replicated.
+	 * Returns whether this bean has been replicated.
 	 *
-	 * @return whether this bean is replicated
+	 * @return true if this bean has been replicated, otherwise false
 	 */
 	public boolean isReplicated() {
 		return replicated;
@@ -610,7 +630,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	/**
 	 * Returns whether this bean is proxied.
 	 *
-	 * @return whether this bean is proxied
+	 * @return true if this bean is proxied, otherwise false
 	 */
 	public boolean isProxied() {
 		return proxied;
@@ -625,6 +645,11 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.proxied = proxied;
 	}
 
+	/**
+	 * Returns whether this bean can be proxied.
+	 *
+	 * @return true if this bean can be proxied, otherwise false
+	 */
 	public boolean isProxiable() {
 		return (!offered && !factoryBean && factoryMethod == null);
 	}
@@ -657,39 +682,57 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns an instantiated bean.
+	 * Returns the instantiated objects of this bean.
 	 *
-	 * @return an instantiated bean object
+	 * @return the instantiated objects of this bean
+	 */
+	public Object[] getInstantiatedBeans() {
+		return beans;
+	}
+
+	/**
+	 * Sets the instantiated objects of this bean.
+	 *
+	 * @param beans the instantiated objects of this bean
+	 */
+	public void setInstantiatedBeans(Object[] beans) {
+		this.beans = beans;
+	}
+
+	/**
+	 * Returns an instantiated object of this bean.
+	 *
+	 * @return an instantiated object of this bean
 	 */
 	public Object getBean() {
-		return bean;
+		return (beans != null) ? beans[0] : null;
 	}
 
 	/**
-	 * Returns an instantiated bean.
+	 * Returns an instantiated object by factory method.
 	 *
-	 * @param bean an instantiated bean object
+	 * @return an instantiated object by factory method
 	 */
-	public void setBean(Object bean) {
-		this.bean = bean;
+	public Object getExposedBean() {
+		return (beans != null) ? beans[beans.length - 1] : null;
 	}
 
 	/**
-	 * Returns whether this bean is registered.
+	 * Returns whether this bean has been instantiated.
 	 *
-	 * @return whether this bean is registered
+	 * @return whether this bean has been instantiated
 	 */
-	public boolean isRegistered() {
-		return registered;
+	public boolean isInstantiated() {
+		return instantiated;
 	}
 
 	/**
-	 * Sets whether this bean is registered.
+	 * Sets whether this bean has been instantiated.
 	 *
-	 * @param registered this bean is registered
+	 * @param instantiated this bean has been instantiated
 	 */
-	public void setRegistered(boolean registered) {
-		this.registered = registered;
+	public void setInstantiated(boolean instantiated) {
+		this.instantiated = instantiated;
 	}
 
 	/**

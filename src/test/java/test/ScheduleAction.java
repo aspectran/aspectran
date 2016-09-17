@@ -17,7 +17,7 @@ package test;
 
 public class ScheduleAction {
 
-    public void delayJob(long millis) throws InterruptedException {
+    public void delay(long millis) throws InterruptedException {
         if (millis > 0) {
             Thread.sleep(millis);
         }

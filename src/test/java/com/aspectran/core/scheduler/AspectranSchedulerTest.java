@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.embedded;
+package com.aspectran.core.scheduler;
 
 import java.io.IOException;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.embedded.service.EmbeddedAspectranService;
 
@@ -34,14 +31,17 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
  * <p>Created: 2016. 9. 7.</p>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class EmbeddedAspectranServiceTest {
+public class AspectranSchedulerTest {
 
 	private EmbeddedAspectranService aspectranService;
 
 	@Before
 	public void ready() throws IOException, AspectranServiceException {
-		String rootContextLocation = "classpath:config/embedded/embedded-service-config.xml";
-		aspectranService = EmbeddedAspectranService.newInstance(rootContextLocation);
+		AspectranConfig aspectranConfig = new AspectranConfig();
+		aspectranConfig.updateRootContextLocation("classpath:config/scheduler/scheduler-config.xml");
+		aspectranConfig.updateSchedulerConfig(0, true, true);
+
+		aspectranService = EmbeddedAspectranService.newInstance(aspectranConfig);
 	}
 
 	@After
@@ -52,18 +52,8 @@ public class EmbeddedAspectranServiceTest {
 	}
 
 	@Test
-	public void test() throws AspectranServiceException, IOException {
-		ActivityContext activityContext = aspectranService.getActivityContext();
-		BeanRegistry beanRegistry = activityContext.getBeanRegistry();
-		FirstBean firstBean = beanRegistry.getBean("thirdBean");
-
-		//System.out.println(firstBean);
-		//System.out.println(firstBean.getMessage());
-
-		Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
-
-		Translet translet = aspectranService.translet("echo");
-		System.out.println(translet.getResponseAdapter().getWriter().toString());
+	public void dummyTest() throws InterruptedException {
+		Thread.sleep(3000);
 	}
 
 }

@@ -48,11 +48,15 @@ public class AspectranConfig extends AbstractParameters {
 	}
 	
 	public void updateRootContextLocation(String rootContextLocation) {
-		Parameters contextParameters = getParameters(context);
-		if (contextParameters == null) {
-			contextParameters = newParameters(context);
-		}
+		Parameters contextParameters = touchParameters(context);
 		contextParameters.putValue(AspectranContextConfig.root, rootContextLocation);
 	}
-	
+
+	public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
+		Parameters schedulerParameters = touchParameters(scheduler);
+		schedulerParameters.putValue(AspectranSchedulerConfig.startDelaySeconds, startDelaySeconds);
+		schedulerParameters.putValue(AspectranSchedulerConfig.waitOnShutdown, waitOnShutdown);
+		schedulerParameters.putValue(AspectranSchedulerConfig.startup, startup);
+	}
+
 }

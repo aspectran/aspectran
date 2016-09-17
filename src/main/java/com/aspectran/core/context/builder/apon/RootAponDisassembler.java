@@ -303,8 +303,8 @@ public class RootAponDisassembler {
 		String offerBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerBean));
 		String offerMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerMethod));
 		String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
-		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
 		String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
+		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);

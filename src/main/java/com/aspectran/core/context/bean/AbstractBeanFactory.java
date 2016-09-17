@@ -79,7 +79,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
 	}
 	
-	protected Object createBean(BeanRule beanRule) {
+	protected Object[] createBean(BeanRule beanRule) {
 		Activity activity = context.getCurrentActivity();
 		if (activity == null) {
 			throw new BeanException("Cannot create a bean because an active activity is not found.");
@@ -87,7 +87,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return createBean(beanRule, activity);
 	}
 	
-	private Object createBean(BeanRule beanRule, Activity activity) {
+	private Object[] createBean(BeanRule beanRule, Activity activity) {
 		if (beanRule.isOffered()) {
 			return createOfferedBean(beanRule, activity);
 		} else {
@@ -95,7 +95,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private Object createOfferedBean(BeanRule beanRule, Activity activity) {
+	private Object[] createOfferedBean(BeanRule beanRule, Activity activity) {
 		String offerBeanId = beanRule.getOfferBeanId();
 		Class<?> offerBeanClass = beanRule.getOfferBeanClass();
 		Object bean;
@@ -136,18 +136,23 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			if (beanRule.getInitMethod() != null) {
 				invokeInitMethod(beanRule, bean, activity);
 			}
-			
+
+			Object exposedBean = null;
 			if (beanRule.getFactoryMethodName() != null) {
-				bean = invokeFactoryMethod(beanRule, bean, activity);
+				exposedBean = invokeFactoryMethod(beanRule, bean, activity);
 			}
-			
-			return bean;
+
+			if(exposedBean == null) {
+				return new Object[] { bean };
+			} else {
+				return new Object[] { bean, exposedBean };
+			}
 		} catch (Exception e) {
 			throw new BeanCreationException(beanRule, e);
 		}
 	}
 	
-	private Object createNormalBean(BeanRule beanRule, Activity activity) {
+	private Object[] createNormalBean(BeanRule beanRule, Activity activity) {
 		try {
 			Object bean;
 			Object[] args;
@@ -200,13 +205,18 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				invokeInitMethod(beanRule, bean, activity);
 			}
 
+			Object exposedBean = null;
 			if (beanRule.isFactoryBean()) {
-				bean = invokeObjectFromFactoryBean(beanRule, bean);
+				exposedBean = invokeObjectFromFactoryBean(beanRule, bean);
 			} else if (beanRule.getFactoryMethodName() != null) {
-				bean = invokeFactoryMethod(beanRule, bean, activity);
+				exposedBean = invokeFactoryMethod(beanRule, bean, activity);
 			}
 
-			return bean;
+			if(exposedBean == null) {
+				return new Object[] { bean };
+			} else {
+				return new Object[] { bean, exposedBean };
+			}
 		} catch (Exception e) {
 			throw new BeanCreationException(beanRule, e);
 		}
@@ -309,8 +319,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			if (beanRule.isInitializableBean()) {
 				((InitializableBean)bean).initialize();
-			}
-			if (beanRule.isInitializableTransletBean()) {
+			} else if (beanRule.isInitializableTransletBean()) {
 				((InitializableTransletBean)bean).initialize(activity.getTranslet());
 			}
 		} catch (Exception e) {
@@ -350,22 +359,22 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private Object invokeObjectFromFactoryBean(BeanRule beanRule, Object bean) {
 		FactoryBean<?> factory = (FactoryBean<?>)bean;
-		Object factoryObject;
+		Object exposedBean;
 		
 		try {
-			factoryObject = factory.getObject();
+			exposedBean = factory.getObject();
 		} catch (Exception e) {
 			throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
 		}
 
-		if (factoryObject == null) {
+		if (exposedBean == null) {
 			throw new FactoryBeanNotInitializedException(
 							"FactoryBean returned null object: " +
 							"probably not fully initialized (maybe due to circular bean reference)",
 							beanRule);
 		}
 		
-		return factoryObject;
+		return exposedBean;
 	}
 
 	@Override
@@ -417,11 +426,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private void instantiateSingleton(BeanRule beanRule, Activity activity) {
 		if (beanRule.getScopeType() == ScopeType.SINGLETON
-				&& !beanRule.isRegistered()
+				&& !beanRule.isInstantiated()
 				&& !beanRule.isLazyInit()) {
-			Object bean = createBean(beanRule, activity);
-			beanRule.setBean(bean);
-			beanRule.setRegistered(true);
+			Object[] beans = createBean(beanRule, activity);
+			beanRule.setInstantiatedBeans(beans);
+			beanRule.setInstantiated(true);
 		}
 	}
 
@@ -456,23 +465,25 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	private int destroySingleton(BeanRule beanRule) {
 		int failedCount = 0;
-		if (beanRule.isRegistered() && beanRule.getScopeType() == ScopeType.SINGLETON) {
+
+		if (beanRule.isInstantiated() && beanRule.getScopeType() == ScopeType.SINGLETON) {
 			try {
+				Object bean = beanRule.getBean();
 				if (beanRule.isDisposableBean()) {
-					Object bean = beanRule.getBean();
 					((DisposableBean)bean).destroy();
 				} else if (beanRule.getDestroyMethod() != null) {
 					Method destroyMethod = beanRule.getDestroyMethod();
-					destroyMethod.invoke(beanRule.getBean(), MethodUtils.EMPTY_OBJECT_ARRAY);
+					destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
 			} catch (Exception e) {
 				failedCount++;
-				log.error("Cannot destroy singleton bean " + beanRule, e);
+				log.error("Could not destroy singleton bean " + beanRule, e);
 			}
 
-			beanRule.setBean(null);
-			beanRule.setRegistered(false);
+			beanRule.setInstantiatedBeans(null);
+			beanRule.setInstantiated(false);
 		}
+
 		return failedCount;
 	}
 	
