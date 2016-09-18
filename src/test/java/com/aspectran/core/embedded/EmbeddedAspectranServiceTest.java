@@ -72,10 +72,13 @@ public class EmbeddedAspectranServiceTest {
 		params.put("name", "aspectran");
 		params.put("email", "aspectran@aspectran.com");
 
-		String selectQuery = aspectranService.template("selectQuery", params);
-		String updateQuery = aspectranService.template("updateQuery", params);
+		String echo = aspectranService.template("echo", params);
+		System.out.println(echo);
 
+		String selectQuery = aspectranService.template("selectQuery", params);
 		System.out.println(selectQuery);
+
+		String updateQuery = aspectranService.template("updateQuery", params);
 		System.out.println(updateQuery);
 	}
 

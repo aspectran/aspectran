@@ -132,7 +132,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
     public void setTrimDirectives(Parameters parameters) {
         String[] directiveGroupNames = parameters.getParameterNames();
-        List<TrimDirective> list = new ArrayList<TrimDirective>();
+        List<TrimDirective> list = new ArrayList<>();
 
         for (String groupName : directiveGroupNames) {
             List<Parameters> paramsList = parameters.getParametersList(groupName);
@@ -209,7 +209,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         // determine FreeMarker TemplateLoader
         if (templateLoaders == null) {
             if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
-                List<TemplateLoader> templateLoaderList = new ArrayList<TemplateLoader>();
+                List<TemplateLoader> templateLoaderList = new ArrayList<>();
                 for (String path : templateLoaderPaths) {
                     templateLoaderList.add(getTemplateLoaderForPath(path));
                 }
@@ -222,7 +222,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             config.setTemplateLoader(templateLoader);
         }
 
-        // determine CustomTrimDirectives.
+        // determine CustomTrimDirectives
         if (trimDirectives != null && trimDirectives.length > 0) {
             TrimDirectiveGroup group = new TrimDirectiveGroup(trimDirectives);
             for (Map.Entry<String, Map<String, TrimDirective>> directives : group.entrySet()) {
@@ -256,7 +256,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @return the aggregate TemplateLoader
      */
     protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
-    	int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
+    	int loaderCount = (templateLoaders != null ? templateLoaders.length : 0);
         switch (loaderCount) {
             case 0:
             	if (log.isDebugEnabled()) {

@@ -31,7 +31,7 @@ public class WildcardPattern {
 	static final int STAR_STAR_TYPE = 3;
 	static final int QUESTION_TYPE = 4;
 	static final int PLUS_TYPE = 5;
-	private static final int SKIP_TYPE = 8;
+	static final int SKIP_TYPE = 8;
 	static final int SEPARATOR_TYPE = 9;
 	static final int EOT_TYPE = 0;
 
@@ -171,7 +171,8 @@ public class WildcardPattern {
 	}
 	
 	/**
-	 * Erase the characters that corresponds to the wildcard, and returns collect only the remaining characters.
+	 * Erase the characters that corresponds to the wildcard, and
+	 * returns collect only the remaining characters.
 	 * In other words, only it remains for the wildcard character.
 	 *
 	 * @param nakedString the naked string

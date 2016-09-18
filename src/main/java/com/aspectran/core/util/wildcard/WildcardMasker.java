@@ -21,7 +21,8 @@ package com.aspectran.core.util.wildcard;
 public class WildcardMasker {
 
 	/**
-	 * Erase the characters that corresponds to the wildcard, and returns collect only the remaining characters.
+	 * Erase the characters that corresponds to the wildcard, and
+	 * returns collect only the remaining characters.
 	 * In other words, only it remains for the wildcard character.
 	 *
 	 * @param pattern the pattern
@@ -126,7 +127,6 @@ public class WildcardMasker {
 						}
 					}
 					if (trange1 > -1 && trange2 > -1) {
-						//crange1 = cindex;
 						crange2 = cindex;
 						ttemp = trange1;
 						while (ttemp <= trange2 && crange2 < clength) {
@@ -151,7 +151,6 @@ public class WildcardMasker {
 						}
 					} else {
 						tindex++;
-
 						scnt1 = 0;
 						for (ttemp = tindex; ttemp < tlength; ttemp++) {
 							if (types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
@@ -175,6 +174,10 @@ public class WildcardMasker {
 								for (ctemp = crange1; ctemp < crange2; ctemp++) {
 									masks[ctemp] = input.charAt(ctemp);
 								}
+							}
+						} else {
+							for (; cindex < clength; cindex++) {
+								masks[cindex] = input.charAt(cindex);
 							}
 						}
 					}
@@ -213,8 +216,9 @@ public class WildcardMasker {
 				if (tokens[tindex] != input.charAt(cindex)) {
 					return null;
 				}
-				if (tindex > 0 && (types[tindex - 1] == WildcardPattern.STAR_STAR_TYPE
-						|| types[tindex - 1] == WildcardPattern.STAR_TYPE)) {
+				if (tindex > 0 && cindex > 0 && masks[cindex - 1] > 0
+						&& (types[tindex - 1] == WildcardPattern.STAR_STAR_TYPE
+							|| types[tindex - 1] == WildcardPattern.STAR_TYPE)) {
 					masks[cindex] = input.charAt(cindex);
 				}
 				tindex++;
@@ -227,6 +231,17 @@ public class WildcardMasker {
 		}
 		
 		if (cindex < clength) {
+			if(cindex == 0 && tlength > 0 && types[0] == WildcardPattern.STAR_STAR_TYPE) {
+				for(int end = 0; end < clength; end++) {
+					if(input.charAt(end) != separator) {
+						if(end > 0) {
+							return input.subSequence(end, clength).toString();
+						}
+						break;
+					}
+				}
+				return input.toString();
+			}
 			return null;
 		}
 
@@ -246,6 +261,18 @@ public class WildcardMasker {
 				sb.append(mask);
 			}
 		}
+
+		if(types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
+			for(int end = 0; end < sb.length(); end++) {
+				if(sb.charAt(end) != separator) {
+					if(end > 0) {
+						sb.delete(0, end);
+					}
+					break;
+				}
+			}
+		}
+
 		return sb.toString();
 	}
 

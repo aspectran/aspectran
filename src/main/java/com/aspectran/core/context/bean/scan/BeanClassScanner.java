@@ -42,7 +42,7 @@ public class BeanClassScanner extends ClassScanner {
 	
 	private WildcardPattern beanIdMaskPattern;
 	
-	private Map<String, WildcardPattern> excludePatternCache = new HashMap<String, WildcardPattern>();
+	private Map<String, WildcardPattern> excludePatternCache = new HashMap<>();
 
 	public BeanClassScanner(ClassLoader classLoader) {
 		super(classLoader);
@@ -56,8 +56,9 @@ public class BeanClassScanner extends ClassScanner {
 		this.filterParameters = filterParameters;
 		
 		String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-		if (classScanFilterClassName != null)
+		if (classScanFilterClassName != null) {
 			setBeanClassScanFilter(classScanFilterClassName);
+		}
 	}
 
 	public BeanClassScanFilter getBeanClassScanFilter() {
@@ -113,9 +114,9 @@ public class BeanClassScanner extends ClassScanner {
 
 		@Override
 		public void save(String resourceName, Class<?> scannedClass) {
-			if (scannedClass.isInterface() ||
-					Modifier.isAbstract(scannedClass.getModifiers()) ||
-					!Modifier.isPublic(scannedClass.getModifiers())) {
+			if (scannedClass.isInterface()
+					|| Modifier.isAbstract(scannedClass.getModifiers())
+					|| !Modifier.isPublic(scannedClass.getModifiers())) {
 				return;
 			}
 
@@ -127,7 +128,7 @@ public class BeanClassScanner extends ClassScanner {
 				if (maskedBeanId != null) {
 					beanId = maskedBeanId;
 				} else {
-					log.warn("Unmatched pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
+					log.warn(String.format("Unmatched pattern can not be masking. beanId: %s (maskPattern: %s)", beanId, beanIdMaskPattern));
 				}
 			}
 
@@ -158,7 +159,7 @@ public class BeanClassScanner extends ClassScanner {
 			saveHandler.save(beanId, scannedClass);
 
 			if (log.isTraceEnabled()) {
-				log.trace("scanned bean class {beanId: " + beanId + ", className: " + className + "}");
+				log.trace(String.format("scanned bean class {beanId: %s, className: %s}", beanId, className));
 			}
 		}
 	}

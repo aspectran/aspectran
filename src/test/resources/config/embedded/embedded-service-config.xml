@@ -67,6 +67,12 @@
 		</transform>
 	</translet>
 
+	<template id="echo" engine="builtin">
+		ID: ${id}
+		Name: ${name}
+		Email: ${email}
+	</template>
+
 	<template id="selectQuery" engine="freemarker">
 		<![CDATA[
 		SELECT
@@ -75,7 +81,7 @@
 		FROM table1
 		<@directive.where>
 			<#if id?has_content>
-			AND	id = :id
+			AND id = :id
 			</#if>
 			<#if name?has_content>
 			AND name = :name
