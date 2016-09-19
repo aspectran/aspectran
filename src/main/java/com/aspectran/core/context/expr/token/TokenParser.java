@@ -23,28 +23,40 @@ import java.util.Map;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 
+/**
+ * The Class TokenParser.
+ */
 public class TokenParser {
 
+	/**
+	 * Returns an array of tokens that contains tokenized string.
+	 *
+	 * @param value the string to parse
+	 * @return an array of tokens
+	 */
 	public static Token[] parse(String value) {
 		return parse(value, false);
 	}
-	
-	public static Token[] parse(String value, boolean trimStringToken) {
-		if (value == null)
+
+	/**
+	 * Returns an array of tokens that contains tokenized string.
+	 *
+	 * @param value the string to parse
+	 * @param optimize whether to optimize tokens
+	 * @return an array of tokens
+	 */
+	public static Token[] parse(String value, boolean optimize) {
+		if (value == null) {
 			return null;
+		}
 
 		Token[] tokens = null;
-		List<Token> tokenList = Tokenizer.tokenize(value, trimStringToken);
+		List<Token> tokenList = Tokenizer.tokenize(value, optimize);
 
 		if (!tokenList.isEmpty()) {
 			tokens = tokenList.toArray(new Token[tokenList.size()]);
 			
-			if (trimStringToken) {
-				/**
-				 * If you did not trim the string type token,
-				 * first token string is left trim
-				 * last token string is right trim
-				 */
+			if (optimize) {
 				tokens = Tokenizer.optimize(tokens);
 			}
 		}
@@ -53,8 +65,9 @@ public class TokenParser {
 	}
 	
 	public static List<Token[]> parseAsList(String value) {
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 
 		List<Token> tokenList = Tokenizer.tokenize(value, true);
 		List<Token[]> tokensList = null;
@@ -77,8 +90,9 @@ public class TokenParser {
 	}
 	
 	public static Map<String, Token[]> parseAsMap(String value) {
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 
 		List<Token> tokenList = Tokenizer.tokenize(value, true);
 		Map<String, Token[]> tokensMap = null;
@@ -124,16 +138,19 @@ public class TokenParser {
 	 * @return the string
 	 */
 	public static String toString(Token[] tokens) {
-		if (tokens == null || tokens.length == 0)
+		if (tokens == null || tokens.length == 0) {
 			return StringUtils.EMPTY;
+		}
 
-		if (tokens.length == 1)
+		if (tokens.length == 1) {
 			return (tokens[0] == null ? StringUtils.EMPTY : tokens[0].stringify());
+		}
 
 		StringBuilder sb = new StringBuilder();
 		for (Token t : tokens) {
-			if (t != null)
+			if (t != null) {
 				sb.append(t.stringify());
+			}
 		}
 
 		return sb.toString();

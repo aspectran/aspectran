@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.aspectran</groupId>
 		<artifactId>aspectran-parent</artifactId>
-		<version>4</version>
+		<version>5</version>
 		<relativePath />
 	</parent>
 
@@ -15,7 +15,8 @@
 
 	<name>aspectran</name>
 	<description>
-		Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web and Console-based applications.
+		Aspectran is a lightweight Java framework for building Enterprise-ready Web applications.
+		Also, It will be able to launch as a Console-based and Embedded application.
 	</description>
 	<url>http://www.aspectran.com/</url>
 

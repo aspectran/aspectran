@@ -158,6 +158,8 @@ public class ContextTemplateProcessor implements TemplateProcessor {
 
     /**
      * Initialize TemplateProcessor.
+     *
+     * @param context the activity context
      */
     public synchronized void initialize(ActivityContext context) {
         if (this.active) {

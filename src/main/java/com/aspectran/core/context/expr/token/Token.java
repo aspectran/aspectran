@@ -45,21 +45,21 @@ public class Token implements BeanReferenceInspectable {
 
 	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TOKEN;
 
-	public static final char PARAMETER_SYMBOL = '$';
+	static final char PARAMETER_SYMBOL = '$';
 
-	public static final char ATTRIBUTE_SYMBOL = '@';
+	static final char ATTRIBUTE_SYMBOL = '@';
 
-	public static final char BEAN_SYMBOL = '#';
+	static final char BEAN_SYMBOL = '#';
 	
-	public static final char PROPERTY_SYMBOL = '%';
+	static final char PROPERTY_SYMBOL = '%';
 
-	public static final char START_BRACKET = '{';
+	static final char START_BRACKET = '{';
 
-	public static final char END_BRACKET = '}';
+	static final char END_BRACKET = '}';
 
-	public static final char VALUE_SEPARATOR = ':';
+	static final char VALUE_SEPARATOR = ':';
 	
-	public static final char GETTER_SEPARATOR = '^';
+	static final char GETTER_SEPARATOR = '^';
 	
 	private final TokenType type;
 
@@ -132,7 +132,8 @@ public class Token implements BeanReferenceInspectable {
 
 	/**
 	 * Returns the token's default value or bean's class name.
-	 * If the token's type is Bean and token's name is "class" then token's value is class name of the Bean. Others that is default value.
+	 * If the token's type is Bean and token's name is "class" then token's
+	 * value is class name of the Bean. Others that is default value.
 	 * 
 	 * @return the default value or bean's class name
 	 */

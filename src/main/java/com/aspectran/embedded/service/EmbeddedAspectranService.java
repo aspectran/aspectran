@@ -163,6 +163,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @param parameterMap the parameter map
 	 * @param attributeMap the attribute map
 	 * @return the {@code Translet} object
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap)
 			throws AspectranServiceException {

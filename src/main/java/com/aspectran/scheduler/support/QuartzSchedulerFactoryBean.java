@@ -42,6 +42,7 @@ public class QuartzSchedulerFactoryBean implements FactoryBean<Scheduler> {
 	 * Set the name of the Scheduler to create via the SchedulerFactory.
 	 * <p>If not specified, the bean name will be used as default scheduler name.
 	 *
+	 * @param schedulerName the scheduler name
 	 * @see org.quartz.SchedulerFactory#getScheduler()
 	 * @see org.quartz.SchedulerFactory#getScheduler(String)
 	 */

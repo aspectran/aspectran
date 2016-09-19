@@ -30,6 +30,8 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
+	 *
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public ConsoleResponseAdapter() throws IOException {
 		super(null);

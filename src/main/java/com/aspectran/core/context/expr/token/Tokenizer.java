@@ -44,13 +44,13 @@ public class Tokenizer {
 	private static final char LF = '\n';
 
 	/**
-	 * Tokenize a string and returns a list of tokens.
+	 * Returns a list of tokens that contains tokenized string.
 	 * 
 	 * @param input the string to tokenize
-	 * @param trimStringToken the trim string token
-	 * @return the token list
+	 * @param trimText whether to trim text
+	 * @return a list of tokens
 	 */
-	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
+	public static List<Token> tokenize(CharSequence input, boolean trimText) {
 		List<Token> tokens = new ArrayList<>();
 
 		int inputLen = input.length();
@@ -106,7 +106,7 @@ public class Tokenizer {
 					if (tokenNameBuffer.length() > 0 || defTextBuffer.length() > 0) {
 						// save previous non-token string
 						if (tokenStartOffset > 0) {
-							String defaultText = trimBuffer(stringBuffer, tokenStartOffset, trimStringToken);
+							String defaultText = trimBuffer(stringBuffer, tokenStartOffset, trimText);
 							Token token = new Token(TokenType.TEXT, defaultText);
 							tokens.add(token);
 						}
@@ -129,7 +129,6 @@ public class Tokenizer {
 						status = AT_STRING;
 						tokenNameBuffer.setLength(0);
 					}
-
 					tokenNameBuffer.append(c);
 				} else {
 					defTextBuffer.append(c);
@@ -140,7 +139,7 @@ public class Tokenizer {
 		}
 
 		if (stringBuffer.length() > 0) {
-			String defaultText = trimBuffer(stringBuffer, stringBuffer.length(), trimStringToken);
+			String defaultText = trimBuffer(stringBuffer, stringBuffer.length(), trimText);
 			Token token = new Token(TokenType.TEXT, defaultText);
 			tokens.add(token);
 		}
@@ -226,20 +225,21 @@ public class Tokenizer {
 	}
 	
 	/**
-	 * Returns a copy of the string, with leading and trailing whitespace omitted.
+	 * Returns a copy of the string, with leading and trailing whitespaces stripped.
 	 * <pre>
 	 * "   \r\n   aaa  \r\n  bbb  "   ==&gt;   "\naaa  \n  bbb"
 	 * "  aaa    \r\n   bbb   \r\n  "   ==&gt;   "aaa\nbbb\n"
 	 * </pre>
 	 * 
-	 * @param sb the sb
-	 * @param end the end
-	 * @param trim the trim
-	 * @return the string
+	 * @param sb the string builder object
+	 * @param end the ending index, exclusive.
+	 * @param trim whether to trim
+	 * @return the trimmed string
 	 */
 	private static String trimBuffer(StringBuilder sb, int end, boolean trim) {
-		if (!trim)
+		if (!trim) {
 			return sb.substring(0, end);
+		}
 		
 		int start = 0;
 		boolean leadingLF = false;
@@ -258,10 +258,11 @@ public class Tokenizer {
 			}
 		}
 
-		if (leadingLF && start == 0)
+		if (leadingLF && start == 0) {
 			return String.valueOf(LF);
+		}
 		
-		// tailing whitespace
+		// trailing whitespace
 		for (int i = end - 1; i > start; i--) {
 			c = sb.charAt(i);
 			
@@ -274,106 +275,114 @@ public class Tokenizer {
 		}
 
 		// restore a new line character which is leading whitespace
-		if (leadingLF)
+		if (leadingLF) {
 			sb.setCharAt(--start, LF);
+		}
 		
 		// restore a new line character which is tailing whitespace
-		if (tailingLF)
+		if (tailingLF) {
 			sb.setCharAt(end++, LF);
+		}
 		
 		return sb.substring(start, end);
 	}
 	
 	/**
-	 * Optimize tokens.
+	 * Returns an array of tokens that is optimized.
 	 * 
-	 * @param tokens the tokens
-	 * @return the token[]
+	 * @param tokens the tokens before optimizing
+	 * @return the optimized tokens
 	 */
 	public static Token[] optimize(Token[] tokens) {
-		if (tokens == null)
+		if (tokens == null) {
 			return null;
+		}
 		
 		String firstDefaultText = null;
 		String lastDefaultText = null;
 		
 		if (tokens.length == 1) {
-			if (tokens[0].getType() == TokenType.TEXT)
+			if (tokens[0].getType() == TokenType.TEXT) {
 				firstDefaultText = tokens[0].getValue();
+			}
 		} else if (tokens.length > 1) {
-			if (tokens[0].getType() == TokenType.TEXT)
+			if (tokens[0].getType() == TokenType.TEXT) {
 				firstDefaultText = tokens[0].getValue();
-
-			if (tokens[tokens.length - 1].getType() == TokenType.TEXT)
+			}
+			if (tokens[tokens.length - 1].getType() == TokenType.TEXT) {
 				lastDefaultText = tokens[tokens.length - 1].getValue();
+			}
 		}
 
 		if (firstDefaultText != null) {
 			String text = trimLeadingWhitespace(firstDefaultText);
-			
-			if (!Objects.equals(firstDefaultText, text))
+			if (!Objects.equals(firstDefaultText, text)) {
 				tokens[0] = new Token(TokenType.TEXT, text);
+			}
 		}
 		
 		if (lastDefaultText != null && !lastDefaultText.isEmpty()) {
-			String text = trimTailingWhitespace(lastDefaultText);
-
-			if (!Objects.equals(lastDefaultText, text))
+			String text = trimTrailingWhitespace(lastDefaultText);
+			if (!Objects.equals(lastDefaultText, text)) {
 				tokens[tokens.length - 1] = new Token(TokenType.TEXT, text);
+			}
 		}
 		
 		return tokens;
 	}
 	
 	/**
-	 * Trim leading whitespace.
+	 * Returns a string that contains a copy of a specified string
+	 * without leading whitespaces.
 	 * 
-	 * @param string the string
-	 * @return the string
+	 * @param string the string to trim leading whitespaces
+	 * @return a string with leading whitespaces trimmed
 	 */
 	private static String trimLeadingWhitespace(String string) {
-		if (string.isEmpty())
+		if (string.isEmpty()) {
 			return string;
+		}
 		
 		int start = 0;
 		char c;
 
 		for (int i = 0; i < string.length(); i++) {
 			c = string.charAt(i);
-			
 			if (!Character.isWhitespace(c)) {
 				start = i;
 				break;
 			}
 		}
 		
-		if (start == 0)
+		if (start == 0) {
 			return string;
+		}
 		
 		return string.substring(start);
 	}
 	
 	/**
-	 * Trim tailing whitespace.
-	 * 
-	 * @param string the string
-	 * @return the string
+	 * Returns a string that contains a copy of a specified string
+	 * without trailing whitespaces.
+	 *
+	 * @param string the string to trim trailing whitespaces
+	 * @return a string with trailing whitespaces trimmed
 	 */
-	private static String trimTailingWhitespace(String string) {
+	private static String trimTrailingWhitespace(String string) {
 		int end = 0;
 		char c;
 		
 		for (int i = string.length() - 1; i >= 0; i--) {
 			c = string.charAt(i);
-			
 			if (!Character.isWhitespace(c)) {
 				end = i;
 				break;
 			}
 		}
 		
-		if (end == 0)
+		if (end == 0) {
 			return string;
+		}
 		
 		return string.substring(0, end + 1);
 	}
