@@ -433,16 +433,16 @@ public class CoreActivity extends BasicActivity {
 		}
 
 		if (targetResponse != null) {
-			ResponseRule responseRule = new ResponseRule();
-			responseRule.setResponse(targetResponse);
-			if (responseRule != null) {
-				responseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
+			ResponseRule newResponseRule = new ResponseRule();
+			newResponseRule.setResponse(targetResponse);
+			if (this.responseRule != null) {
+				newResponseRule.setCharacterEncoding(this.responseRule.getCharacterEncoding());
 			}
 
-			setResponseRule(responseRule);
+			setResponseRule(newResponseRule);
 
 			if (log.isDebugEnabled()) {
-				log.debug("Response by Content Type " + responseRule);
+				log.debug("Response by Content Type " + newResponseRule);
 			}
 
 			// Clear produced results. No reflection to ProcessResult.
