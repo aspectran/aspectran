@@ -119,17 +119,17 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 		scopeLock.readLock().lock();
 
 		try {
-			Object bean = scope.getBean(beanRule);
-			if (bean == null) {
+			Object[] beans = scope.getInstantiatedBean(beanRule);
+			if (beans == null) {
 				readLocked = false;
 				scopeLock.readLock().unlock();
 				scopeLock.writeLock().lock();
 
 				try {
-					bean = scope.getBean(beanRule);
-					if (bean == null) {
-						Object[] beans = createBean(beanRule);
-						scope.putInstantiatedBean(beanRule, createBean(beanRule));
+					beans = scope.getInstantiatedBean(beanRule);
+					if (beans == null) {
+						beans = createBean(beanRule);
+						scope.putInstantiatedBean(beanRule, beans);
 					}
 				} finally {
 					scopeLock.writeLock().unlock();
@@ -141,7 +141,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 			}
 		}
 
-		return beanRule.getExposedBean();
+		return scope.getExposedBean(beanRule);
 	}
 
 	private Scope getRequestScope() {

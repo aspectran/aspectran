@@ -38,28 +38,28 @@ public interface Scope {
 	Object getBean(BeanRule beanRule);
 
 	/**
-	 * Returns an instance of the bean that matches the given bean rule.
+	 * Returns an exposed instance of the bean that matches the given bean rule.
 	 *
 	 * @param beanRule the bean rule of the bean to retrieve
-	 * @return an instance of the bean
+	 * @return an exposed instance of the bean
 	 */
 	Object getExposedBean(BeanRule beanRule);
 
 	/**
-	 * Returns the instances of the bean that matches the given bean rule.
+	 * Returns an array of instantiated beans that matches the given bean rule.
 	 *
 	 * @param beanRule the bean rule of the bean to retrieve
-	 * @return the instances of the bean
+	 * @return an array of instantiated beans
 	 */
 	Object[] getInstantiatedBean(BeanRule beanRule);
 
 	/**
-	 * Puts the instances of the bean for the given bean rule.
+	 * Puts an array of instantiated beans for the given bean rule.
 	 *
 	 * @param beanRule the bean rule of the bean to save
-	 * @param bean the instances of the bean
+	 * @param beans an array of instantiated beans
 	 */
-	void putInstantiatedBean(BeanRule beanRule, Object[] bean);
+	void putInstantiatedBean(BeanRule beanRule, Object[] beans);
 
 	/**
 	 * Destroy all scoped beans in this scope.

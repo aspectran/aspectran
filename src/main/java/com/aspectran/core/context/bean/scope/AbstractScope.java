@@ -71,8 +71,8 @@ public class AbstractScope implements Scope {
 	}
 
 	@Override
-	public void putInstantiatedBean(BeanRule beanRule, Object[] bean) {
-		scopedBeanMap.put(beanRule, bean);
+	public void putInstantiatedBean(BeanRule beanRule, Object[] beans) {
+		scopedBeanMap.put(beanRule, beans);
 	}
 
 	@Override

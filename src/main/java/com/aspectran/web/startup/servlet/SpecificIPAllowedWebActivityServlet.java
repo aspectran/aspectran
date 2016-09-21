@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class SpecificIPAllowedWebActivityServlet.
  */
-public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet implements Servlet {
+public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
 	/** @serial */
 	private static final long serialVersionUID = -2369788867122156319L;
@@ -92,7 +91,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	 * 
 	 * @return true, if is a valid ip address
 	 */
-	public boolean isAllowedAdress(String ipAddress) {
+	private boolean isAllowedAdress(String ipAddress) {
 		if (allowedAddresses == null) {
 			return false;
 		}
@@ -104,13 +103,14 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 			// IPv6
 			offset = ipAddress.lastIndexOf(':');
 			
-			if (offset == -1)
+			if (offset == -1) {
 				return false;
+			}
 		}
 		
 		String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
 
-		return allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress);
+		return (allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress));
 	}
 	
 }

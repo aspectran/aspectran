@@ -25,6 +25,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.MethodUtils;
 
+/**
+ * The Class BeanRuleAnalyzer.
+ */
 public class BeanRuleAnalyzer {
 
 	public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };

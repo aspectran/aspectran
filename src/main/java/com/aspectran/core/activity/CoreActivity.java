@@ -539,7 +539,7 @@ public class CoreActivity extends BasicActivity {
 
 		//create a custom translet instance
 		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
+			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class);
 			Object[] args = new Object[] { activity };
 
 			return (CoreTranslet)transletImplementConstructor.newInstance(args);
