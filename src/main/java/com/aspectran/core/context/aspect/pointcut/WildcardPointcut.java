@@ -42,10 +42,8 @@ public class WildcardPointcut extends AbstractPointcut {
 			return wildcardPatternMatches(pattern, compareString);
 		} else {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
-
 			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
-
 				if (wildcardPatternMatches(patternToken, compareString)) {
 					return true;
 				}
@@ -60,10 +58,8 @@ public class WildcardPointcut extends AbstractPointcut {
 			return wildcardPatternMatches(pattern, compareString, separator);
 		} else {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
-
 			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
-
 				if (wildcardPatternMatches(patternToken, compareString, separator)) {
 					return true;
 				}
@@ -82,7 +78,6 @@ public class WildcardPointcut extends AbstractPointcut {
 		if (wildcardPattern == null) {
 			synchronized (wildcardPatternCache) {
 				wildcardPattern = wildcardPatternCache.get(pattern);
-
 				if (wildcardPattern == null) {
 					wildcardPattern = new WildcardPattern(pattern);
 					wildcardPatternCache.put(pattern, wildcardPattern);
@@ -100,7 +95,6 @@ public class WildcardPointcut extends AbstractPointcut {
 		if (wildcardPattern == null) {
 			synchronized (wildcardPatternCache) {
 				wildcardPattern = wildcardPatternCache.get(patternKey);
-
 				if (wildcardPattern == null) {
 					wildcardPattern = new WildcardPattern(pattern, separator);
 					wildcardPatternCache.put(patternKey, wildcardPattern);

@@ -41,7 +41,6 @@ public class RegexpPointcut extends AbstractPointcut {
 		if (pattern == null) {
 			synchronized (regexpPatternCache) {
 				pattern = regexpPatternCache.get(regex);
-
 				if (pattern == null) {
 					pattern = Pattern.compile(regex);
 					regexpPatternCache.put(regex, pattern);
@@ -50,7 +49,6 @@ public class RegexpPointcut extends AbstractPointcut {
 		}
 
 		Matcher matcher = pattern.matcher(compareString);
-
 		return matcher.matches();
 	}
 
