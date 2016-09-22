@@ -18,6 +18,7 @@ package com.aspectran.core.activity.response;
 import com.aspectran.core.activity.response.transform.JsonTransform;
 import com.aspectran.core.activity.response.transform.TextTransform;
 import com.aspectran.core.activity.response.transform.XmlTransform;
+import com.aspectran.core.activity.response.transform.XslTransform;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.TransformType;
 
@@ -46,7 +47,7 @@ public class TransformResponseFactory {
 		if (type == TransformType.XML) {
 			res = new XmlTransform(transformRule);
 		} else if (type == TransformType.XSL) {
-			res = new XmlTransform(transformRule);
+			res = new XslTransform(transformRule);
 		} else if (type == TransformType.JSON) {
 			res = new JsonTransform(transformRule);
 		} else if (type == TransformType.TEXT) {

@@ -95,7 +95,7 @@ public class ForwardResponse implements Response {
 	}
 
 	/**
-	 * Gets the forward response rule.
+	 * Returns the forward response rule.
 	 * 
 	 * @return the forward response rule
 	 */

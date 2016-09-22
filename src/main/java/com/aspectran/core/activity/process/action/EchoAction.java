@@ -63,7 +63,7 @@ public class EchoAction extends AbstractAction {
 	}
 	
 	/**
-	 * Gets the echo action rule.
+	 * Returns the echo action rule.
 	 * 
 	 * @return the echoActionRule
 	 */

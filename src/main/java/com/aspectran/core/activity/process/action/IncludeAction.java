@@ -82,7 +82,7 @@ public class IncludeAction extends AbstractAction {
 	}
 
 	/**
-	 * Gets the include action rule.
+	 * Returns the include action rule.
 	 * 
 	 * @return the include action rule
 	 */

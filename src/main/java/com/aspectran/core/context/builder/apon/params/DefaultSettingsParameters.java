@@ -26,9 +26,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 	public static final ParameterDefinition transletNamePrefix;
 	public static final ParameterDefinition transletNameSuffix;
 	public static final ParameterDefinition transletInterfaceClass;
-	public static final ParameterDefinition transletImplementClass;
-	public static final ParameterDefinition nullableContentId;
-	public static final ParameterDefinition nullableActionId;
+	public static final ParameterDefinition transletImplementationClass;
 	public static final ParameterDefinition beanProxifier;
 	public static final ParameterDefinition pointcutPatternVerifiable;
 	public static final ParameterDefinition defaultTemplateEngine;
@@ -40,9 +38,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 		transletNamePrefix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ParameterValueType.STRING);
 		transletNameSuffix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ParameterValueType.STRING);
 		transletInterfaceClass = new ParameterDefinition(DefaultSettingType.TRANSLET_INTERFACE_CLASS.toString(), ParameterValueType.STRING);
-		transletImplementClass = new ParameterDefinition(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS.toString(), ParameterValueType.STRING);
-		nullableContentId = new ParameterDefinition(DefaultSettingType.NULLABLE_CONTENT_ID.toString(), ParameterValueType.BOOLEAN);
-		nullableActionId = new ParameterDefinition(DefaultSettingType.NULLABLE_ACTION_ID.toString(), ParameterValueType.BOOLEAN);
+		transletImplementationClass = new ParameterDefinition(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS.toString(), ParameterValueType.STRING);
 		beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
 		pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.STRING);
 		defaultTemplateEngine = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE.toString(), ParameterValueType.STRING);
@@ -52,9 +48,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 			transletNamePrefix,
 			transletNameSuffix,
 			transletInterfaceClass,
-			transletImplementClass,
-			nullableContentId,
-			nullableActionId,
+			transletImplementationClass,
 			beanProxifier,
 			pointcutPatternVerifiable,
 			defaultTemplateEngine

@@ -229,7 +229,7 @@ public class BeanAction extends AbstractAction {
 	}
 	
 	/**
-	 * Gets the bean action rule.
+	 * Returns the bean action rule.
 	 * 
 	 * @return the bean action rule
 	 */

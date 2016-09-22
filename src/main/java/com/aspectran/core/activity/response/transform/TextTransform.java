@@ -39,8 +39,6 @@ public class TextTransform extends TransformResponse {
 
 	private static final Log log = LogFactory.getLog(TextTransform.class);
 
-	private static final boolean debugEnabled = log.isDebugEnabled();
-
 	private final String templateId;
 
 	private final TemplateRule templateRule;
@@ -70,7 +68,7 @@ public class TextTransform extends TransformResponse {
 			return;
 		}
 
-		if (debugEnabled) {
+		if (log.isDebugEnabled()) {
 			log.debug("response " + transformRule);
 		}
 

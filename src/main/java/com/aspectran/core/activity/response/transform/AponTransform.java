@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import java.io.StringWriter;
 import java.io.Writer;
 
 import com.aspectran.core.activity.Activity;
@@ -39,10 +38,6 @@ public class AponTransform extends TransformResponse {
 	
 	private static final Log log = LogFactory.getLog(AponTransform.class);
 	
-	private static final boolean traceEnabled = log.isTraceEnabled();
-	
-	private static final boolean debugEnabled = log.isDebugEnabled();
-
 	private final String characterEncoding;
 
 	private final String contentType;
@@ -65,10 +60,11 @@ public class AponTransform extends TransformResponse {
 	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null)
+		if (responseAdapter == null) {
 			return;
+		}
 
-		if (debugEnabled) {
+		if (log.isDebugEnabled()) {
 			log.debug("response " + transformRule);
 		}
 		
@@ -93,14 +89,6 @@ public class AponTransform extends TransformResponse {
 			AponWriter aponWriter = new AponWriter(writer, pretty);
 			aponWriter.write(parameters);
 			aponWriter.flush();
-
-			if (traceEnabled) {
-				Writer stringWriter = new StringWriter();
-				AponWriter aponWriter2 = new AponWriter(stringWriter, true);
-				aponWriter2.write(parameters);
-				stringWriter.close(); // forward compatibility
-				log.trace(stringWriter.toString());
-			}
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

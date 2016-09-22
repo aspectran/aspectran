@@ -80,7 +80,7 @@ public class MethodAction extends AbstractAction {
 	}
 
 	/**
-	 * Gets the method action rule.
+	 * Returns the method action rule.
 	 * 
 	 * @return the method action rule
 	 */

@@ -15,13 +15,8 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -75,18 +70,7 @@ public abstract class TransformResponse implements Response {
 	public TransformRule getTransformRule() {
 		return transformRule;
 	}
-	
-	/**
-	 * Gets the template as stream.
-	 * 
-	 * @param file the file
-	 * @return the input stream of the template
-	 * @throws IOException if an I/O error has occurred
-	 */
-	protected InputStream getTemplateAsStream(File file) throws IOException {
-		return new FileInputStream(file);
-	}
-	
+
 	/**
 	 * Gets the template as stream.
 	 * 
@@ -97,48 +81,6 @@ public abstract class TransformResponse implements Response {
 	protected InputStream getTemplateAsStream(URL url) throws IOException {
 		URLConnection conn = url.openConnection();
 		return conn.getInputStream();
-	}
-	
-	/**
-	 * Gets the template as reader.
-	 * 
-	 * @param file the file
-	 * @param encoding the encoding
-	 * @return the reader of the template
-	 * @throws IOException if an I/O error has occurred
-	 */
-	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
-		Reader reader;
-		
-		if (encoding != null) {
-			InputStream inputStream = getTemplateAsStream(file);
-			reader = new InputStreamReader(inputStream, encoding);
-		} else {
-			reader = new FileReader(file);
-		}
-
-		return reader;
-	}
-	
-	/**
-	 * Gets the template as reader.
-	 * 
-	 * @param url the url
-	 * @param encoding the encoding
-	 * @return the template as reader
-	 * @throws IOException if an I/O error has occurred
-	 */
-	protected Reader getTemplateAsReader(URL url, String encoding) throws IOException {
-		InputStream inputStream = getTemplateAsStream(url);
-		Reader reader;
-		
-		if (encoding != null) {
-			reader = new InputStreamReader(inputStream, encoding);
-		} else {
-			reader = new InputStreamReader(inputStream);
-		}
-
-		return reader;
 	}
 
 	@Override

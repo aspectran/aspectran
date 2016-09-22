@@ -412,7 +412,7 @@ public class BeanUtils {
 				list = object;
 			}
 
-			Object value = null;
+			Object value;
 
 			if (list instanceof List<?>) {
 				value = ((List<?>)list).get(index);
@@ -451,7 +451,7 @@ public class BeanUtils {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-			Object list = null;
+			Object list;
 
 			if (name.length() > 0) {
 				list = getProperty(object, name);
@@ -459,7 +459,7 @@ public class BeanUtils {
 				list = object;
 			}
 
-			Class<?> value = null;
+			Class<?> value;
 
 			if (list instanceof List<?>) {
 				value = ((List<?>)list).get(i).getClass();

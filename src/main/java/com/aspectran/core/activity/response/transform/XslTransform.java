@@ -17,9 +17,9 @@ package com.aspectran.core.activity.response.transform;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
@@ -51,7 +51,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-class XslTransform extends TransformResponse {
+public class XslTransform extends TransformResponse {
 	
 	private static final String OUTPUT_METHOD_XML = "xml";
 
@@ -60,10 +60,6 @@ class XslTransform extends TransformResponse {
 	private static final String OUTPUT_METHOD_TEXT = "text";
 	
 	private static final Log log = LogFactory.getLog(XslTransform.class);
-	
-	private static boolean traceEnabled = log.isTraceEnabled();
-	
-	private static boolean debugEnabled = log.isDebugEnabled();
 	
 	private final TemplateRule templateRule;
 	
@@ -82,7 +78,7 @@ class XslTransform extends TransformResponse {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	XslTransform(TransformRule transformRule) {
+	public XslTransform(TransformRule transformRule) {
 		super(transformRule);
 		this.templateRule = transformRule.getTemplateRule();
 	}
@@ -94,7 +90,7 @@ class XslTransform extends TransformResponse {
 			return;
 		}
 
-		if (debugEnabled) {
+		if (log.isDebugEnabled()) {
 			log.debug("response " + transformRule);
 		}
 
@@ -117,17 +113,6 @@ class XslTransform extends TransformResponse {
 			
 			Transformer transformer = templates.newTransformer();
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-
-			if (traceEnabled) {
-				StringWriter stringWriter = new StringWriter();
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				transformer = transformerFactory.newTransformer();
-				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
-				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
-				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
-				stringWriter.close(); // forward compatibility
-				log.trace(stringWriter.toString());
-			}
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
@@ -208,12 +193,11 @@ class XslTransform extends TransformResponse {
 
 	private void determineOutoutStyle() {
     	contentType = transformRule.getContentType();
-		outputEncoding = getOutputEncoding(templates);
-		
 		if (contentType == null) {
 			contentType = getContentType(templates);
 		}
-		
+
+		outputEncoding = getOutputEncoding(templates);
 		if (outputEncoding == null) {
 			outputEncoding = transformRule.getCharacterEncoding();
 		}
@@ -225,7 +209,8 @@ class XslTransform extends TransformResponse {
     }
     
     private Templates createTemplates(URL url) throws TransformerConfigurationException, IOException {
-    	Source source = new StreamSource(getTemplateAsStream(url));
+		URLConnection conn = url.openConnection();
+    	Source source = new StreamSource(conn.getInputStream());
 		return createTemplates(source);
     }
 

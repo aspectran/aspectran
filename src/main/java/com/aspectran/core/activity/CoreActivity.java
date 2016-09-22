@@ -67,7 +67,7 @@ public class CoreActivity extends BasicActivity {
 
 	private Class<? extends Translet> transletInterfaceClass;
 
-	private Class<? extends CoreTranslet> transletImplementClass;
+	private Class<? extends CoreTranslet> transletImplementationClass;
 
 	private Translet translet;
 
@@ -532,19 +532,19 @@ public class CoreActivity extends BasicActivity {
 		if (this.transletInterfaceClass == null) {
 			this.transletInterfaceClass = Translet.class;
 		}
-		if (this.transletImplementClass == null) {
-			this.transletImplementClass = CoreTranslet.class;
+		if (this.transletImplementationClass == null) {
+			this.transletImplementationClass = CoreTranslet.class;
 			return new CoreTranslet(activity);
 		}
 
 		//create a custom translet instance
 		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class);
+			Constructor<?> transletImplementConstructor = transletImplementationClass.getConstructor(CoreActivity.class);
 			Object[] args = new Object[] { activity };
 
 			return (CoreTranslet)transletImplementConstructor.newInstance(args);
 		} catch (Exception e) {
-			throw new TransletInstantiationException(transletImplementClass, e);
+			throw new TransletInstantiationException(transletInterfaceClass, transletImplementationClass, e);
 		}
 	}
 
@@ -572,16 +572,16 @@ public class CoreActivity extends BasicActivity {
 	 * @return the implementation class for the translet
 	 */
 	protected Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return transletImplementClass;
+		return transletImplementationClass;
 	}
 
 	/**
 	 * Sets the translet implement class.
 	 *
-	 * @param transletImplementClass the new translet implement class
+	 * @param transletImplementationClass the new translet implementation class
 	 */
-	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
+	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
+		this.transletImplementationClass = transletImplementationClass;
 	}
 
 	/**

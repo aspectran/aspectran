@@ -100,7 +100,7 @@ public class RedirectResponse implements Response {
 	}
 	
 	/**
-	 * Gets the redirect response rule.
+	 * Returns the redirect response rule.
 	 * 
 	 * @return the redirect response rule
 	 */

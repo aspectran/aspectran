@@ -74,7 +74,7 @@ public class HeadingAction extends AbstractAction {
 	}
 	
 	/**
-	 * Gets the heading action rule.
+	 * Returns the heading action rule.
 	 * 
 	 * @return the headingActionRule
 	 */

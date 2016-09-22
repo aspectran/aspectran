@@ -89,7 +89,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * 		of the headers of this response
 	 */
 	public Collection<String> getHeaderNames() {
-		return (headers == null ? null : headers.keySet());
+		return (headers != null ? headers.keySet() : null);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public abstract class AbstractAdaptiveResponse {
 	 * 		has already been set; {@code false} otherwise
 	 */
 	public boolean containsHeader(String name) {
-		return (headers != null && headers.get(name) != null) && headers.get(name).isEmpty();
+		return (headers != null && headers.get(name) != null && !headers.get(name).isEmpty());
 	}
 
 	/**

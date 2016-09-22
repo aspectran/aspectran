@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import java.io.StringWriter;
 import java.io.Writer;
 
 import com.aspectran.core.activity.Activity;
@@ -38,15 +37,11 @@ public class JsonTransform extends TransformResponse {
 	
 	private static final Log log = LogFactory.getLog(JsonTransform.class);
 	
-	private static final boolean traceEnabled = log.isTraceEnabled();
-	
-	private static final boolean debugEnabled = log.isDebugEnabled();
-
 	private static final String CALLBACK_PARAM_NAME = "callback";
 
-	protected static final String ROUND_BRACKET_OPEN = "(";
+	private static final String ROUND_BRACKET_OPEN = "(";
 
-	protected static final String ROUND_BRACKET_CLOSE = ")";
+	private static final String ROUND_BRACKET_CLOSE = ")";
 
 	private final String characterEncoding;
 
@@ -74,7 +69,7 @@ public class JsonTransform extends TransformResponse {
 			return;
 		}
 
-		if (debugEnabled) {
+		if (log.isDebugEnabled()) {
 			log.debug("response " + transformRule);
 		}
 		
@@ -109,21 +104,6 @@ public class JsonTransform extends TransformResponse {
 			}
 
 			writer.flush();
-			
-			if (traceEnabled) {
-				Writer stringWriter = new StringWriter();
-				if (callback != null) {
-					stringWriter.write(callback);
-					stringWriter.write(callback + ROUND_BRACKET_OPEN);
-				}
-				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
-				jsonWriter2.write(processResult);
-				if (callback != null) {
-					stringWriter.write(ROUND_BRACKET_CLOSE);
-				}
-				stringWriter.close(); // forward compatibility
-				log.trace(stringWriter.toString());
-			}
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

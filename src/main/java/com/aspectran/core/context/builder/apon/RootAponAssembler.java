@@ -131,7 +131,7 @@ public class RootAponAssembler {
 				settingParameters.putValueNonNull(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
 			}
 			settingParameters.putValueNonNull(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
-			settingParameters.putValueNonNull(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementationClassName());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.transletImplementationClass, defaultSettings.getTransletImplementationClassName());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());

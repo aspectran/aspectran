@@ -92,7 +92,7 @@ public class PathVariableMap extends HashMap<Token, String> {
                 beginIndex += term.length();
             }
 
-            prevToken = (token.getType() != TokenType.TEXT) ? token : null;
+            prevToken = (token.getType() != TokenType.TEXT ? token : null);
         }
 
         if (lastToken != null && prevToken == lastToken) {

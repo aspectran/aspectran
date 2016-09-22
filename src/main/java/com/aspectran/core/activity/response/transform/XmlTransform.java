@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import java.io.StringWriter;
 import java.io.Writer;
 
 import javax.xml.transform.OutputKeys;
@@ -42,19 +41,15 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class XmlTransform extends TransformResponse {
 
-	static final String OUTPUT_METHOD_XML = "xml";
+	private static final String OUTPUT_METHOD_XML = "xml";
 
-	static final String OUTPUT_INDENT_YES = "yes";
+	private static final String OUTPUT_INDENT_YES = "yes";
 
 	private static final String INDENT_NUMBER_KEY = "indent-number";
 
 	private static final Integer INDENT_NUMBER_VAL = 1;
 
 	private static final Log log = LogFactory.getLog(XmlTransform.class);
-
-	private static final boolean traceEnabled = log.isTraceEnabled();
-
-	private static final boolean debugEnabled = log.isDebugEnabled();
 
 	private final String characterEncoding;
 
@@ -82,7 +77,7 @@ public class XmlTransform extends TransformResponse {
 			return;
 		}
 
-		if (debugEnabled) {
+		if (log.isDebugEnabled()) {
 			log.debug("response " + transformRule);
 		}
 
@@ -125,13 +120,6 @@ public class XmlTransform extends TransformResponse {
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-
-			if (traceEnabled) {
-				StringWriter stringWriter = new StringWriter();
-				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
-				stringWriter.close(); // forward compatibility
-				log.trace(stringWriter.toString());
-			}
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

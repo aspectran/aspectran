@@ -50,27 +50,33 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
 		super(adaptee, parameterMap);
 	}
 
+	@Override
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
 
+	@Override
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)attributeMap.get(name);
 	}
 
+	@Override
 	public void setAttribute(String name, Object value) {
 		attributeMap.put(name, value);
 	}
 
+	@Override
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributeMap.keySet());
 	}
 
+	@Override
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
 	}
