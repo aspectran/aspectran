@@ -42,7 +42,7 @@ public class PointcutPatternRule {
 
 	private String methodNamePattern;
 	
-	private int matchedTransletCount;
+//	private int matchedTransletCount;
 	
 	private int matchedBeanCount;
 
@@ -118,13 +118,13 @@ public class PointcutPatternRule {
 		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
 	}
 
-	public int getMatchedTransletCount() {
-		return matchedTransletCount;
-	}
-
-	public void increaseMatchedTransletCount() {
-		matchedTransletCount++;
-	}
+//	public int getMatchedTransletCount() {
+//		return matchedTransletCount;
+//	}
+//
+//	public void increaseMatchedTransletCount() {
+//		matchedTransletCount++;
+//	}
 
 	public int getMatchedBeanCount() {
 		return matchedBeanCount;

@@ -63,19 +63,6 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
 		try {
 			try {
-				if (log.isTraceEnabled()) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("begin method ").append(methodName).append("(");
-					for (int i = 0; i < args.length; i++) {
-						if (i > 0) {
-							sb.append(", ");
-						}
-						sb.append(args[i].toString());
-					}
-					sb.append(")");
-					log.trace(sb.toString());
-				}
-
 				if (aarr.getBeforeAdviceRuleList() != null) {
 					activity.execute(aarr.getBeforeAdviceRuleList());
 				}
@@ -93,9 +80,6 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 			} finally {
 				if (aarr.getFinallyAdviceRuleList() != null) {
 					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
-				}
-				if (log.isTraceEnabled()) {
-					log.trace("end method " + methodName);
 				}
 			}
 		} catch (Exception e) {

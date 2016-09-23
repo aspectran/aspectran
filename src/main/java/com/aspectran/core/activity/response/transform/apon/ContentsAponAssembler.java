@@ -32,8 +32,6 @@ import com.aspectran.core.util.apon.Parameters;
  * Converts a ProcessResult object to a APON object.
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
- *
- * @author Juho Jeong
  */
 public class ContentsAponAssembler {
 	
@@ -47,7 +45,6 @@ public class ContentsAponAssembler {
 			if (contentResult.getName() == null && contentResult.size() == 1) {
 				ActionResult actionResult = contentResult.get(0);
 				Object resultValue = actionResult.getResultValue();
-				
 				if (actionResult.getActionId() == null) {
 					if (resultValue instanceof Parameters) {
 						return (Parameters)resultValue;
@@ -100,7 +97,6 @@ public class ContentsAponAssembler {
 				}
 			} else if (value.getClass().isArray()) {
 				int len = Array.getLength(value);
-
 				for (int i = 0; i < len; i++) {
 					Object o = Array.get(value, i);
 					if (o != null) {

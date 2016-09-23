@@ -146,9 +146,9 @@ public class RequestRule {
 	}
 
 	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null)
+		if (aspectAdviceRuleRegistry == null) {
 			return null;
-
+		}
 		return aspectAdviceRuleRegistry.replicate();
 	}
 
@@ -168,12 +168,14 @@ public class RequestRule {
 		
 		if (allowedMethod != null) {
 			allowedethodType = MethodType.resolve(allowedMethod);
-			if (allowedethodType == null)
+			if (allowedethodType == null) {
 				throw new IllegalArgumentException("No request method type registered for '" + allowedMethod + "'.");
+			}
 		}
 		
-		if (characterEncoding != null && !Charset.isSupported(characterEncoding))
+		if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
 			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+		}
 		
 		RequestRule requestRule = new RequestRule();
 		requestRule.setAllowedMethod(allowedethodType);

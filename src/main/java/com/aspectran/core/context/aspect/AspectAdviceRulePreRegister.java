@@ -149,35 +149,34 @@ public class AspectAdviceRulePreRegister {
 					}
 				}
 			}
-			
-			//if (pointcut != null) {
-			//	countMatchedTranslet(pointcut, transletRule.getName());
-			//}
+
+//			if (pointcut != null) {
+//				countMatchedTranslet(pointcut, transletRule.getName());
+//			}
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void countMatchedTranslet(Pointcut pointcut, String transletName) {
-		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-		
-		if (pointcutPatternRuleList != null) {
-			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if (existsMatchedTranslet(pointcut, ppr, transletName)) {
-					ppr.increaseMatchedTransletCount();
-				}
-			}
-		}
-	}
-	
-	private boolean existsMatchedTranslet(Pointcut pointcut, PointcutPatternRule pointcutPatternRule, String transletName) {
-		boolean matched = true;
-		
-		if (pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
-		}
-		
-		return matched;
-	}
+//	private void countMatchedTranslet(Pointcut pointcut, String transletName) {
+//		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
+//
+//		if (pointcutPatternRuleList != null) {
+//			for (PointcutPatternRule ppr : pointcutPatternRuleList) {
+//				if (existsMatchedTranslet(pointcut, ppr, transletName)) {
+//					ppr.increaseMatchedTransletCount();
+//				}
+//			}
+//		}
+//	}
+//
+//	private boolean existsMatchedTranslet(Pointcut pointcut, PointcutPatternRule pointcutPatternRule, String transletName) {
+//		boolean matched = true;
+//
+//		if (pointcutPatternRule.getTransletNamePattern() != null) {
+//			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+//		}
+//
+//		return matched;
+//	}
 	
 	private boolean existsMatchedBean(Pointcut pointcut, String beanId, String className) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();

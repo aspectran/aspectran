@@ -258,12 +258,12 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
 	}
 
-	Importer resolveImporter(String rootContext) {
+	protected Importer resolveImporter(String rootContext) {
 		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
 		return resolveImporter(rootContext, importFileType);
 	}
-	
-	Importer resolveImporter(String rootContext, ImportFileType importFileType) {
+
+	protected Importer resolveImporter(String rootContext, ImportFileType importFileType) {
 		Importer importer;
 
 		if (rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {

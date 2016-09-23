@@ -110,8 +110,9 @@ public class EchoActionRule {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", actionId);
-		if (attributeItemRuleMap != null)
+		if (attributeItemRuleMap != null) {
 			tsb.append("attributes", attributeItemRuleMap.keySet());
+		}
 		tsb.append("hidden", hidden);
 		return tsb.toString();
 	}
