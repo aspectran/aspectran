@@ -24,8 +24,6 @@ import com.aspectran.core.adapter.ApplicationAdapter;
  */
 public class BasicAspectranService extends AbstractAspectranService {
 
-	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
-	
 	private AspectranServiceControllerListener aspectranServiceControllerListener;
 	
 	/** Flag that indicates whether this context is currently active */
@@ -128,7 +126,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 			pauseSchedulerService();
 
 			if (aspectranServiceControllerListener != null) {
-				aspectranServiceControllerListener.paused(-1L);
+				aspectranServiceControllerListener.paused();
 			}
 
 			log.info("Aspectran Service has been paused.");
@@ -185,7 +183,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	private void doDestroy() {
 		if (this.active.get() && this.closed.compareAndSet(false, true)) {
 			if (aspectranServiceControllerListener != null) {
-				aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
+				aspectranServiceControllerListener.paused();
 			}
 
 			destroyActivityContext();
