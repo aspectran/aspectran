@@ -30,7 +30,6 @@ import javassist.util.proxy.ProxyFactory;
 /**
  * The Class JavassistDynamicBeanProxy.
  *
- * @author Juho Jeong
  * @since 1.1.0
  */
 public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodHandler  {

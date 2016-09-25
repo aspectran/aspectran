@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.BeanRule;
 /**
  * The Interface Scope.
  *
- * @author Juho Jeong
  * @since 2011. 3. 12.
  */
 public interface Scope {

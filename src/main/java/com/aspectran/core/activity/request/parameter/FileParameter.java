@@ -33,7 +33,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class FileParameter {
 
-	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+	private static final int DEFAULT_BUFFER_SIZE = 4096;
 
 	private final File file;
 	
@@ -133,9 +133,6 @@ public class FileParameter {
 			}
 		}
 
-		input.close();
-		output.close();
-		
 		return output.toByteArray();
 	}
 	

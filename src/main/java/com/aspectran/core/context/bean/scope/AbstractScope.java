@@ -31,7 +31,6 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class AbstractScope.
  *
- * @author Juho Jeong
  * @since 2011. 3. 12.
  */
 public class AbstractScope implements Scope {

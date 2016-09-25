@@ -30,8 +30,6 @@ import net.sf.cglib.proxy.MethodProxy;
 
 /**
  * The Class CglibDynamicBeanProxy.
- *
- * @author Juho Jeong
  */
 public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
 

@@ -20,7 +20,6 @@ import com.aspectran.core.context.rule.type.ScopeType;
 /**
  * The Class ApplicationScope.
  *
- * @author Juho Jeong
  * @since 2011. 3. 12.
  */
 public class ApplicationScope extends AbstractScope {

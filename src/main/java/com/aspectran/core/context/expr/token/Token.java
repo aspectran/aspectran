@@ -285,10 +285,10 @@ public class Token implements BeanReferenceInspectable {
 	 * @return true, if a specified character is one of the token symbols
 	 */
 	public static boolean isTokenSymbol(char c) {
-		return (c == PARAMETER_SYMBOL ||
-					c == ATTRIBUTE_SYMBOL ||
-					c == BEAN_SYMBOL ||
-					c == PROPERTY_SYMBOL);
+		return (c == PARAMETER_SYMBOL
+				|| c == ATTRIBUTE_SYMBOL
+				|| c == BEAN_SYMBOL
+				|| c == PROPERTY_SYMBOL);
 	}
 	
 	/**
@@ -299,16 +299,15 @@ public class Token implements BeanReferenceInspectable {
 	 */
 	public static TokenType resolveTypeAsSymbol(char symbol) {
 		TokenType type;
-
-		if (symbol == Token.ATTRIBUTE_SYMBOL)
+		if (symbol == Token.ATTRIBUTE_SYMBOL) {
 			type = TokenType.ATTRIBUTE;
-		else if (symbol == Token.BEAN_SYMBOL)
+		} else if (symbol == Token.BEAN_SYMBOL) {
 			type = TokenType.BEAN;
-		else if (symbol == Token.PROPERTY_SYMBOL)
+		} else if (symbol == Token.PROPERTY_SYMBOL) {
 			type = TokenType.PROPERTY;
-		else
+		} else {
 			type = TokenType.PARAMETER;
-		
+		}
 		return type;
 	}
 

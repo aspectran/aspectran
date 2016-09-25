@@ -43,13 +43,17 @@ public class ActivityContextReloadingTimer {
 	}
 	
 	private void init() {
-		log.debug("ActivityContextRefreshTimer is initialized.");
+		if(log.isDebugEnabled()) {
+			log.debug("ActivityContextRefreshTimer is initialized.");
+		}
 	}
 	
 	public void start(int observationInterval) {
 		stop();
 		
-		log.debug("Starting ActivityContextRefreshTimer...");
+		if(log.isDebugEnabled()) {
+			log.debug("Starting ActivityContextRefreshTimer...");
+		}
 		
 		timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
 		

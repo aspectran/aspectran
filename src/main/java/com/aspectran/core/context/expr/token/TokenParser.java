@@ -152,7 +152,6 @@ public class TokenParser {
 				sb.append(t.stringify());
 			}
 		}
-
 		return sb.toString();
 	}
 
