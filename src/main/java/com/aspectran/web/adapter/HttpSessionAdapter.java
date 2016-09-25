@@ -29,7 +29,6 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  * The Class HttpSessionAdapter.
  * 
  * @since 2011. 3. 13.
- * @author Juho Jeong
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter {
 	
@@ -166,12 +165,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	 */
 	private SessionScope newHttpSessionScope(boolean force) {
 		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
-		
 		if (advisor != null || force) {
 			this.sessionScope = new HttpSessionScope(this, advisor);
 			setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
 		}
-		
 		return this.sessionScope;
 	}
 

@@ -23,7 +23,6 @@ import com.aspectran.core.util.SystemUtils;
 /**
  * The Class ConsoleResponseAdapter.
  * 
- * @author Juho Jeong
  * @since 2016. 1. 18.
  */
 public class ConsoleResponseAdapter extends BasicResponseAdapter {

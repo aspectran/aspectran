@@ -31,7 +31,6 @@ import com.aspectran.web.support.http.HttpHeaders;
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
  *
- * @author Juho Jeong
  * @since 2.3.0
  */
 public abstract class AbstractCorsProcessor implements CorsProcessor {
@@ -329,9 +328,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	 * @return {@code true} if the request is a valid CORS pre-flight one, else {@code false}
 	 */
 	protected boolean isPreFlightRequest(HttpServletRequest request) {
-		return (isCorsRequest(request) &&
-				MethodType.OPTIONS.name().equals(request.getMethod()) &&
-				request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD) != null);
+		return (isCorsRequest(request)
+				&& MethodType.OPTIONS.name().equals(request.getMethod())
+				&& request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD) != null);
 	}
 	
 }

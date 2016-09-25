@@ -39,11 +39,10 @@ public class PrefixSuffixPattern {
 			suffix = null;
 			splited = false;
 		} else {
-			prefix = (start > 0) ? input.substring(0, start) : null;
-			suffix = (start < input.length() - 1) ? input.substring(start + 1) : null;
+			prefix = (start > 0 ? input.substring(0, start) : null);
+			suffix = (start < input.length() - 1 ? input.substring(start + 1) : null);
 			splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
 		}
-		
 		return splited;
 	}
 

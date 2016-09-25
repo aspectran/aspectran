@@ -327,8 +327,9 @@ public class AponReader extends AponFormat {
 			tlen = trim.length();
 			tchar = tlen > 0 ? trim.charAt(0) : NO_CONTROL_CHAR;
 			
-			if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar)
+			if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar) {
 				return lineNumber;
+			}
 				
 			if (TEXT_LINE_START == tchar) {
 				if (sb.length() > 0) {

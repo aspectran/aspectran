@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -43,8 +42,6 @@ public class RequestRule {
 
 	private ItemRuleMap attributeItemRuleMap;
 
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
 	public RequestRule() {
 	}
 	
@@ -120,38 +117,6 @@ public class RequestRule {
 		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 
-	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @return the aspect advice rule registry
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-
-	/**
-	 * Sets the aspect advice rule registry.
-	 *
-	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
-	 */
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-
-	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return aspectAdviceRuleRegistry;
-	}
-
-	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			return null;
-		}
-		return aspectAdviceRuleRegistry.replicate();
-	}
-
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
@@ -159,7 +124,6 @@ public class RequestRule {
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("parameters", parameterItemRuleMap);
 		tsb.append("attributes", attributeItemRuleMap);
-		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		return tsb.toString();
 	}
 	

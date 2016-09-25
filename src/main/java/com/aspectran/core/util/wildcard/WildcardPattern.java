@@ -123,11 +123,9 @@ public class WildcardPattern {
 					types[i] = LITERAL_TYPE;
 				}
 			}
-
 			if (tokens[i] != STAR_CHAR && star) {
 				star = false;
 			}
-
 			if (types[i] != SKIP_TYPE) {
 				ptype = types[i];
 				pindex = i;
@@ -176,7 +174,7 @@ public class WildcardPattern {
 	 * In other words, only it remains for the wildcard character.
 	 *
 	 * @param nakedString the naked string
-	 * @return the string
+	 * @return the masked string
 	 */
 	public String mask(String nakedString) {
 		return WildcardMasker.mask(this, nakedString);

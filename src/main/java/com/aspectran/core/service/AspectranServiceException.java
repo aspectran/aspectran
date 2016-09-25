@@ -21,8 +21,6 @@ import com.aspectran.core.context.AspectranCheckedException;
  * The Class AspectranServiceException.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
- * 
- * @author Juho Jeong
  */
 public class AspectranServiceException extends AspectranCheckedException {
 

@@ -20,7 +20,6 @@ import com.aspectran.console.service.ConsoleAspectranService;
 /**
  * The Aspectran Console Application.
  *
- * @author Juho Jeong
  * @since 2016. 1. 17.
  */
 public class Application {

@@ -35,7 +35,6 @@ import com.aspectran.core.service.AspectranServiceException;
 /**
  * The Class SchedulerServiceException.
  * 
- * @author Juho Jeong
  * @since 2.0.0
  */
 public class SchedulerServiceException extends AspectranServiceException {

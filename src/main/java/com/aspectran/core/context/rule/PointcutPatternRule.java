@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.rule.type.PointcutType;
@@ -109,13 +108,6 @@ public class PointcutPatternRule {
 
 	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
 		this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
-	}
-	
-	public void addExcludePointcutPatternRule(PointcutPatternRule excludePointcutPatternRule) {
-		if (excludePointcutPatternRuleList == null) {
-			excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
-		}
-		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
 	}
 
 //	public int getMatchedTransletCount() {

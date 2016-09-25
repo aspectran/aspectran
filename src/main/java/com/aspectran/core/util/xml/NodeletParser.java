@@ -390,7 +390,7 @@ public class NodeletParser {
 
 		private List<String> nodeList = new ArrayList<String>();
 
-		public Path() {
+		private Path() {
 		}
 
 		@SuppressWarnings("unused")

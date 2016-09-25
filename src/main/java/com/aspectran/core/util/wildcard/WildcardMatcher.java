@@ -93,8 +93,9 @@ public class WildcardMatcher {
 	}
 
 	public WildcardMatcher last() {
-		if (separatorCount > -1)
+		if (separatorCount > -1) {
 			separatorIndex = separatorCount;
+		}
 		return this;
 	}
 	

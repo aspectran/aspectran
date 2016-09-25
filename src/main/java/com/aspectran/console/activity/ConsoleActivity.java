@@ -35,7 +35,6 @@ import com.aspectran.core.util.StringUtils;
 /**
  * The Class ConsoleActivity.
  *
- * @author Juho Jeong
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity {

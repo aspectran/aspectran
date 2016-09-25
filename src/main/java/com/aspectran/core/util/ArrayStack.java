@@ -47,7 +47,7 @@ import java.util.EmptyStackException;
 public class ArrayStack extends ArrayList<Object> {
 
 	/**  Ensure serialization compatibility. */
-	static final long serialVersionUID = 4952513157310856314L;
+	private static final long serialVersionUID = 4952513157310856314L;
 
 	/**
 	 * Constructs a new empty <code>ArrayStack</code>. The initial size
@@ -87,11 +87,9 @@ public class ArrayStack extends ArrayList<Object> {
 	 */
 	public Object peek() throws EmptyStackException {
 		int n = size();
-
 		if (n <= 0) {
 			throw new EmptyStackException();
 		}
-
 		return get(n - 1);
 	}
 
@@ -106,11 +104,9 @@ public class ArrayStack extends ArrayList<Object> {
 	 */
 	public Object peek(int n) throws EmptyStackException {
 		int m = (size() - n) - 1;
-
 		if (m < 0) {
 			throw new EmptyStackException();
 		}
-
 		return get(m);
 	}
 
@@ -122,11 +118,9 @@ public class ArrayStack extends ArrayList<Object> {
 	 */
 	public Object pop() throws EmptyStackException {
 		int n = size();
-
 		if (n <= 0) {
 			throw new EmptyStackException();
 		}
-
 		return remove(n - 1);
 	}
 
@@ -156,18 +150,14 @@ public class ArrayStack extends ArrayList<Object> {
 	public int search(Object object) {
 		int i = size() - 1; // Current index
 		int n = 1; // Current distance
-
 		while (i >= 0) {
 			Object current = get(i);
-
 			if ((object == null && current == null) || (object != null && object.equals(current))) {
 				return n;
 			}
-
 			i--;
 			n++;
 		}
-
 		return -1;
 	}
 

@@ -100,8 +100,9 @@ public class JspViewDispatcher implements ViewDispatcher {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
 				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 			
 			ProcessResult processResult = activity.getProcessResult();

@@ -404,7 +404,7 @@ public class BeanUtils {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-			Object list = null;
+			Object list;
 
 			if (name.length() > 0) {
 				list = getProperty(object, name);

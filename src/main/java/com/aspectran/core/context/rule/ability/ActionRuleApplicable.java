@@ -24,7 +24,6 @@ import com.aspectran.core.context.rule.MethodActionRule;
 /**
  * The Interface ActionRuleApplicable.
  *
- * @author Juho Jeong
  * @since 2011. 2. 21.
  */
 public interface ActionRuleApplicable {

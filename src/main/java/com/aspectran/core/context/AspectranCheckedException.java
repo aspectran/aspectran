@@ -33,7 +33,6 @@ package com.aspectran.core.context;
 /**
  * Class for constructing checked Exceptions with a given root cause.
  * 
- * @author Juho Jeong
  * @since 2.0.0
  */
 public class AspectranCheckedException extends Exception {

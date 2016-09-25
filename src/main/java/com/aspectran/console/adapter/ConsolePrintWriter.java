@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 /**
  * The Class ConsolePrintWriter.
  * 
- * @author Juho Jeong
  * @since 2016. 1. 22.
  */
 class ConsolePrintWriter extends PrintWriter {

@@ -36,7 +36,6 @@ import com.aspectran.core.util.MultiValueMap;
  * The Class HttpServletResponseAdapter.
  * 
  * @since 2011. 3. 13.
- * @author Juho Jeong
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 

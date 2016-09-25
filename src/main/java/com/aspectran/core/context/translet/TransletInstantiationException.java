@@ -52,7 +52,8 @@ public class TransletInstantiationException extends TransletException {
 	 * @param transletImplementationClass the translet implement class
 	 * @param cause the root cause
 	 */
-	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTranslet> transletImplementationClass, Throwable cause) {
+	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass,
+										  Class<? extends CoreTranslet> transletImplementationClass, Throwable cause) {
 		super("Could not instantiate translet class [" + transletImplementationClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]", cause);
 		this.transletInterfaceClass = transletInterfaceClass;
 		this.transletImplementationClass = transletImplementationClass;

@@ -41,7 +41,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * The Class ConsoleAspectranService.
  *
  * @since 2016. 1. 18.
- * @author Juho Jeong
  */
 public class ConsoleAspectranService extends BasicAspectranService {
 

@@ -24,7 +24,6 @@ import com.aspectran.core.util.SystemUtils;
 /**
  * The Class ConsoleApplicationAdapter.
  * 
- * @author Juho Jeong
  * @since 2016. 1. 18.
  */
 public class ConsoleApplicationAdapter extends BasicApplicationAdapter {

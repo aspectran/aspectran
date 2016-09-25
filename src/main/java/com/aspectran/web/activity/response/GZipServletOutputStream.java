@@ -26,6 +26,7 @@ import javax.servlet.WriteListener;
  * The Class GZipServletOutputStream.
  */
 public class GZipServletOutputStream extends ServletOutputStream {
+
 	private OutputStream stream;
 
 	public GZipServletOutputStream(OutputStream output) throws IOException {
@@ -65,7 +66,6 @@ public class GZipServletOutputStream extends ServletOutputStream {
 
 	@Override
 	public void setWriteListener(WriteListener listener) {
-
 	}
 
 }

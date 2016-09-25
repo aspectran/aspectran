@@ -69,7 +69,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2016. 2. 16.</p>
  *
  * @since 2.0.0
- * @author Juho Jeong
  */
 public class AnnotatedConfigParser {
 

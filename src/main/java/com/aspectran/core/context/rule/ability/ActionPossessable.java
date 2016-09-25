@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.ActionList;
 /**
  * The Interface ActionPossessable.
  *
- * @author Juho Jeong
  * @since 2011. 2. 21.
  */
 public interface ActionPossessable {

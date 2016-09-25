@@ -50,8 +50,6 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	
 	private TriggerType triggerType;
 	
-	private String cronExpression;
-	
 	private Parameters triggerParameters;
 
 	private String schedulerBeanId;
@@ -76,14 +74,6 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	public void setTriggerType(TriggerType triggerType) {
 		this.triggerType = triggerType;
-	}
-
-	public String getCronExpression() {
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
 	}
 
 	public Parameters getTriggerParameters() {

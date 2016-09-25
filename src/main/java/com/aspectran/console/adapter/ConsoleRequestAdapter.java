@@ -21,7 +21,6 @@ import com.aspectran.core.util.SystemUtils;
 /**
  * The Class ConsoleRequestAdapter.
  * 
- * @author Juho Jeong
  * @since 2016. 1. 18.
  */
 public class ConsoleRequestAdapter extends BasicRequestAdapter {

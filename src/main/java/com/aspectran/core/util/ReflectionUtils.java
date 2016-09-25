@@ -80,7 +80,8 @@ public class ReflectionUtils {
 	 * @see java.lang.reflect.Field#setAccessible
 	 */
 	public static boolean makeAccessible(Field field) {
-		if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+		if ((!Modifier.isPublic(field.getModifiers())
+				|| !Modifier.isPublic(field.getDeclaringClass().getModifiers())
 				|| Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
 			field.setAccessible(true);
 			return true;
@@ -99,7 +100,8 @@ public class ReflectionUtils {
 	 * @see java.lang.reflect.Method#setAccessible
 	 */
 	public static boolean makeAccessible(Method method) {
-		if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+		if ((!Modifier.isPublic(method.getModifiers())
+				|| !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
 				&& !method.isAccessible()) {
 			method.setAccessible(true);
 			return true;
@@ -182,13 +184,17 @@ public class ReflectionUtils {
 	 */
 	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
 		if (destClass != null) {
-			if (destClass.isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass))
-					|| srcClass.isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
+			if ((destClass.isPrimitive()
+					&& srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)))
+					|| (srcClass.isPrimitive()
+					&& destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass)))) {
 				return 0.5f;
 			}
 			if (srcClass.isArray() && destClass.isArray()) {
-				if (destClass.getComponentType().isPrimitive() && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass))
-						|| srcClass.getComponentType().isPrimitive() && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass))) {
+				if ((destClass.getComponentType().isPrimitive()
+						&& srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)))
+						|| (srcClass.getComponentType().isPrimitive()
+						&& destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass)))) {
 					return 0.75f;
 				}
 			}

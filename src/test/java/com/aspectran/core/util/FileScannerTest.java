@@ -26,7 +26,6 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 /**
  * The Class FileScannerTest.
  *
- * @author Juho Jeong
  * @since 1.3.0
  */
 public class FileScannerTest {

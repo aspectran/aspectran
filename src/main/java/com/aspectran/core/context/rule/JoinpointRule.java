@@ -143,8 +143,7 @@ public class JoinpointRule {
 	}
 
 	public static JoinpointRule newInstance() {
-		JoinpointRule joinpointRule = new JoinpointRule();
-		return joinpointRule;
+		return new JoinpointRule();
 	}
 	
 	public static void updateJoinpoint(JoinpointRule joinpointRule, String text) {
@@ -217,8 +216,8 @@ public class JoinpointRule {
 			List<Parameters> includeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.includes);
 			List<Parameters> execludeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.execludes);
 
-			int patternStringCount = (plusPatternStringList != null) ? plusPatternStringList.size() : 0;
-			int targetParametersCount = (includeTargetParametersList != null) ? includeTargetParametersList.size() : 0;
+			int patternStringCount = (plusPatternStringList != null ? plusPatternStringList.size() : 0);
+			int targetParametersCount = (includeTargetParametersList != null ? includeTargetParametersList.size() : 0);
 			
 			if (patternStringCount > 0 || targetParametersCount > 0) {
 				pointcutRule = PointcutRule.newInstance(pointcutParameters.getString(PointcutParameters.type));

@@ -32,8 +32,6 @@ package com.aspectran.core.context;
 
 /**
  * Class for constructing runtime Exceptions with a given root cause.
- * 
- * @author Juho Jeong
  */
 public class AspectranRuntimeException extends RuntimeException {
 

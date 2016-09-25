@@ -25,7 +25,6 @@ import com.aspectran.core.context.rule.type.TransformType;
 /**
  * The Class TransformResponseFactory.
  * 
- * @author Juho Jeong
  * @since 2011. 3. 12.
  */
 public class TransformResponseFactory {

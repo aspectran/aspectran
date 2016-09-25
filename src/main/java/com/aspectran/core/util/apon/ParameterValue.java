@@ -367,9 +367,9 @@ public class ParameterValue implements Parameter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Parameters> getValueAsParametersList() {
-		if (parameterValueType != ParameterValueType.PARAMETERS)
+		if (parameterValueType != ParameterValueType.PARAMETERS) {
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
-		
+		}
 		return (List<Parameters>)getValueList();
 	}
 
@@ -380,8 +380,9 @@ public class ParameterValue implements Parameter {
 			parametersClass = VariableParameters.class;
 		} else {
 			checkParameterValueType(ParameterValueType.PARAMETERS);
-			if (parametersClass == null)
+			if (parametersClass == null) {
 				parametersClass = VariableParameters.class;
+			}
 		}
 
 		try {
@@ -395,8 +396,9 @@ public class ParameterValue implements Parameter {
 	}
 
 	private void checkParameterValueType(ParameterValueType parameterValueType) {
-		if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType)
+		if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType) {
 			throw new IncompatibleParameterValueTypeException(this, parameterValueType);
+		}
 	}
 
 	@Override

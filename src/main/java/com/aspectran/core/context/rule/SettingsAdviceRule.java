@@ -83,10 +83,8 @@ public class SettingsAdviceRule {
 
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
 		SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
-
 		if (settingsParameters != null) {
 			Set<String> parametersNames = settingsParameters.getParameterNameSet();
-			
 			if (parametersNames != null) {
 				for (String name : parametersNames) {
 					sar.putSetting(name, settingsParameters.getString(name));

@@ -326,7 +326,7 @@ public class StringUtils {
 	 * @return {@code string} itself if it is non-null; {@code ""} if it is null
 	 */
 	public static String nullToEmpty(String str) {
-	  return (str == null) ? EMPTY : str;
+	  return (str != null ? str : EMPTY);
 	}
 
 	/**
@@ -336,7 +336,7 @@ public class StringUtils {
 	 * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
 	 */
 	public static String emptyToNull(String str) {
-		return (str == null || str.length() == 0) ? null : str;
+		return (str == null || str.length() == 0 ? null : str);
 	}
 
 	public static boolean startsWith(String str, char prefix) {
@@ -676,14 +676,11 @@ public class StringUtils {
 		if (str == null) {
 			return new String[0];
 		}
-
 		StringTokenizer st = new StringTokenizer(str, delimiters);
 		List<String> tokens = new ArrayList<String>();
-
 		while (st.hasMoreTokens()) {
 			tokens.add(trim ? st.nextToken().trim() : st.nextToken());
 		}
-
 		return tokens.toArray(new String[tokens.size()]);
 	}
 

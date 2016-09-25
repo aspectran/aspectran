@@ -25,7 +25,6 @@ import com.aspectran.core.adapter.AbstractApplicationAdapter;
  * The Class WebApplicationAdapter.
  * 
  * @since 2011. 3. 13.
- * @author Juho Jeong
  */
 public class WebApplicationAdapter extends AbstractApplicationAdapter {
 	

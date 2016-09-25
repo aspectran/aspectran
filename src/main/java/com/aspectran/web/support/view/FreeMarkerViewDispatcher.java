@@ -99,8 +99,9 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
 				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null)
+				if (characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
+				}
 			}
 			
 			TemplateDataMap model = new TemplateDataMap(activity);

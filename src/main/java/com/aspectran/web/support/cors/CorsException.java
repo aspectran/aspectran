@@ -25,7 +25,6 @@ import com.aspectran.core.context.AspectranCheckedException;
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
  *
- * @author Juho Jeong
  * @since 2.3.0
  */
 public class CorsException extends AspectranCheckedException {

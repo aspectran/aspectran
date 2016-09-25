@@ -40,8 +40,6 @@ import com.aspectran.core.util.apon.Parameters;
  * The Class ItemRule.
  * 
  * <p>Created: 2008. 03. 27 PM 3:57:48</p>
- * 
- * @author Juho Jeong
  */
 public class ItemRule {
 

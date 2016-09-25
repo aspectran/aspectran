@@ -17,7 +17,10 @@ package com.aspectran.core.util.apon;
 
 import java.io.Serializable;
 
-public class VariableParameters extends AbstractParameters implements Parameters, Serializable {
+/**
+ * The Class VariableParameters.
+ */
+public class VariableParameters extends AbstractParameters implements Serializable {
 
 	/** @serial */
 	private static final long serialVersionUID = 4492298345259110525L;

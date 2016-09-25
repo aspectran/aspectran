@@ -25,7 +25,6 @@ import com.aspectran.core.activity.Translet;
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
  *
- * @author Juho Jeong
  * @since 2.3.0
  * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommandation</a>
  */

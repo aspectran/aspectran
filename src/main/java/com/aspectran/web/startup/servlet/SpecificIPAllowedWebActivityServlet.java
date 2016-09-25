@@ -85,11 +85,11 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 	}
 	
 	/**
-	 * Returns whether a valid IP address.
+	 * Returns whether IP address is valid.
 	 * 
-	 * @param ipAddress the ip address
+	 * @param ipAddress the IP address
 	 * 
-	 * @return true, if is a valid ip address
+	 * @return true if IP address is a valid, otherwise false
 	 */
 	private boolean isAllowedAdress(String ipAddress) {
 		if (allowedAddresses == null) {
@@ -98,11 +98,9 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 		
 		// IPv4
 		int offset = ipAddress.lastIndexOf('.');
-		
 		if (offset == -1) {
 			// IPv6
 			offset = ipAddress.lastIndexOf(':');
-			
 			if (offset == -1) {
 				return false;
 			}

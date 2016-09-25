@@ -23,7 +23,9 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  *
  * @since 2.0.0
  */
-public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartFormDataParserFactory implements FactoryBean<MultipartFormDataParser> {
+public class CommonsMultipartFormDataParserFactoryBean
+		extends CommonsMultipartFormDataParserFactory
+		implements FactoryBean<MultipartFormDataParser> {
 
 	@Override
 	public MultipartFormDataParser getObject() throws Exception {
