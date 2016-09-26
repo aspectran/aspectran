@@ -239,14 +239,6 @@ public abstract class AbstractActivity implements Activity {
 		this.responseAdapter = responseAdapter;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		CoreActivity activity = new CoreActivity(context);
-		activity.setIncluded(true);
-		return (T)activity;
-	}
-
 	protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
 		if (aspectAdviceRuleRegistry == null) {
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();

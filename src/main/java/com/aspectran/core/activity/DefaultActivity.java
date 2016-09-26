@@ -34,6 +34,11 @@ public class DefaultActivity extends BasicActivity {
 	}
 
 	@Override
+	public <T extends Activity> T newActivity() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void prepare(String transletName) {
 		throw new UnsupportedOperationException();
 	}

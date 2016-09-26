@@ -647,6 +647,11 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	@Override
+	public <T extends Activity> T newActivity() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String getTransletName() {
 		return transletName;
 	}
