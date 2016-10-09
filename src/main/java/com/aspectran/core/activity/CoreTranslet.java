@@ -25,11 +25,13 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.TransformResponseFactory;
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.message.NoSuchMessageException;
+import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -289,6 +291,33 @@ public class CoreTranslet implements Translet {
 	public void transform(TransformRule transformRule) {
 		Response res = TransformResponseFactory.createTransformResponse(transformRule);
 		response(res);
+	}
+
+	@Override
+	public void dispatch(DispatchResponseRule dispatchResponseRule) {
+		Response res = new DispatchResponse(dispatchResponseRule);
+		response(res);
+	}
+
+	@Override
+	public void dispatch(String name) {
+		dispatch(name, false);
+	}
+
+	@Override
+	public void dispatch(String name, boolean immediately) {
+		if (!immediately && activity.getDeclaredResponse() != null) {
+			Response res = activity.getDeclaredResponse();
+			if (res.getResponseType() == ResponseType.DISPATCH) {
+				Response r = res.replicate();
+				DispatchResponseRule drr = ((DispatchResponse)r).getDispatchResponseRule();
+				drr.setName(name);
+				dispatch(drr);
+				return;
+			}
+		}
+		DispatchResponseRule drr = DispatchResponseRule.newInstance(name);
+		dispatch(drr);
 	}
 
 	@Override

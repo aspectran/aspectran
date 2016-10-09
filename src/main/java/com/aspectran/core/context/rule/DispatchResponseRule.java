@@ -259,6 +259,21 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	}
 
 	/**
+	 * Returns a new instance of DispatchResponseRule.
+	 *
+	 * @param name the dispatch name
+	 * @return the dispatch response rule
+	 */
+	public static DispatchResponseRule newInstance(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("name must not be null.");
+		}
+		DispatchResponseRule drr = new DispatchResponseRule();
+		drr.setName(name);
+		return drr;
+	}
+
+	/**
 	 * Returns a new derived instance of DispatchResponseRule.
 	 *
 	 * @param dispatchResponseRule an instance of DispatchResponseRulethe

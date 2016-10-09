@@ -279,13 +279,12 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 		return rrr;
 	}
 	
-	public static RedirectResponseRule newInstance(String redirectName) {
-		if (redirectName == null) {
-			throw new IllegalArgumentException("redirectName must not be null");
+	public static RedirectResponseRule newInstance(String target) {
+		if (target == null) {
+			throw new IllegalArgumentException("target must not be null.");
 		}
-		
 		RedirectResponseRule rrr = new RedirectResponseRule();
-		rrr.setTarget(redirectName);
+		rrr.setTarget(target);
 		return rrr;
 	}
 	

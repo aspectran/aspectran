@@ -28,6 +28,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
+import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -415,6 +416,28 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * @param transformRule the transformation rule
 	 */
 	void transform(TransformRule transformRule);
+
+	/**
+	 * Dispatch to other resources as the given rule.
+	 *
+	 * @param dispatchResponseRule the dispatch response rule
+	 */
+	void dispatch(DispatchResponseRule dispatchResponseRule);
+
+	/**
+	 * Dispatch to other resources as the given name.
+	 *
+	 * @param name the dispatch name
+	 */
+	void dispatch(String name);
+
+	/**
+	 * Dispatch to other resources as the given name.
+	 *
+	 * @param name the dispatch name
+	 * @param immediately whether to override the intended dispatch response rule
+	 */
+	void dispatch(String name, boolean immediately);
 
 	/**
 	 * Redirect a client according to the given rule.
