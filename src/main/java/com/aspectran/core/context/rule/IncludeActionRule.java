@@ -102,7 +102,7 @@ public class IncludeActionRule {
 	/**
 	 * Returns whether to hide result of the action.
 	 * 
-	 * @return true, if is hidden
+	 * @return true, if this action is hidden
 	 */
 	public Boolean getHidden() {
 		return hidden;
@@ -111,7 +111,7 @@ public class IncludeActionRule {
 	/**
 	 * Returns whether to hide result of the action.
 	 *
-	 * @return true, if is hidden
+	 * @return true, if this action is hidden
 	 */
 	public Boolean isHidden() {
 		return BooleanUtils.toBoolean(hidden);

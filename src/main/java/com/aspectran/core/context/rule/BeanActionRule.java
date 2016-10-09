@@ -137,7 +137,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	/**
 	 * Returns whether to hide result of the action.
 	 *
-	 * @return true, if is hidden
+	 * @return true, if this action is hidden
 	 */
 	public Boolean getHidden() {
 		return hidden;
@@ -146,7 +146,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	/**
 	 * Returns whether to hide result of the action.
 	 *
-	 * @return true, if is hidden
+	 * @return true, if this action is hidden
 	 */
 	public boolean isHidden() {
 		return BooleanUtils.toBoolean(hidden);

@@ -66,7 +66,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private boolean implicitResponse;
 
-	/** The response rule list is that each new sub Translet. */
 	private List<ResponseRule> responseRuleList;
 	
 	private ExceptionRule exceptionRule;

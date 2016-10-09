@@ -258,7 +258,7 @@ public class TransletRuleRegistry {
 	}
 
 	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 * Returns the translet name of the prefix and suffix are combined.
 	 *
 	 * @param transletName the translet name
 	 * @return the string
@@ -268,7 +268,7 @@ public class TransletRuleRegistry {
 	}
 
 	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 * Returns the translet name of the prefix and suffix are combined.
 	 *
 	 * @param transletName the translet name
 	 * @param absolutely whether to allow absolutely name for translet
