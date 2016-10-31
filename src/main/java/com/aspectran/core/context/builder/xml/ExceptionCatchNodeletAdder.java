@@ -48,17 +48,18 @@ class ExceptionCatchNodeletAdder implements NodeletAdder {
             }
         });
 		parser.addNodelet(xpath, new ActionInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/catch", (node, attributes, text) -> {
-            String exceptionType = attributes.get("exception");
+		parser.addNodelet(xpath, "/thrown", (node, attributes, text) -> {
+            String exceptionType = attributes.get("type");
 
             ExceptionCatchRule rbctr = ExceptionCatchRule.newInstance(exceptionType);
             assistant.pushObject(rbctr);
         });
-		parser.addNodelet(xpath, "/catch", new ResponseInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/catch/end()", (node, attributes, text) -> {
-            ExceptionCatchRule rbctr = assistant.popObject();
+		parser.addNodelet(xpath, "/thrown", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/thrown", new ResponseInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/thrown/end()", (node, attributes, text) -> {
+            ExceptionCatchRule ecr = assistant.popObject();
             ExceptionRule exceptionRule = assistant.peekObject();
-            exceptionRule.putExceptionCatchRule(rbctr);
+            exceptionRule.putExceptionCatchRule(ecr);
         });
 	}
 

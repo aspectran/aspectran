@@ -57,7 +57,7 @@ public class EchoAction extends AbstractAction {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
 		} catch (Exception e) {
-			log.error("Failed to execute echo action " + echoActionRule + " Cause: " + e.toString());
+			log.error("Failed to executeAdvice echo action " + echoActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

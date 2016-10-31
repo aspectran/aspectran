@@ -61,7 +61,7 @@ public class MethodAction extends AbstractAction {
 			Object bean = activity.getConfigBean(configBeanClass);
 			return invokeMethod(activity, bean, methodActionRule.getMethod(), methodActionRule.isRequiresTranslet());
 		} catch (Exception e) {
-			log.error("Failed to execute action that invoking method in the bean instance. methodActionRule " + methodActionRule + " Cause: " + e.toString());
+			log.error("Failed to executeAdvice action that invoking method in the bean instance. methodActionRule " + methodActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

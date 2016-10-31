@@ -124,28 +124,28 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
+	void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
 	 * Execute the aspect advices without throw exceptions.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
+	void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
 	 * Execute the aspect advice.
 	 *
 	 * @param aspectAdviceRule the aspect advice rule
 	 */
-	void execute(AspectAdviceRule aspectAdviceRule);
+	void executeAdvice(AspectAdviceRule aspectAdviceRule);
 	
 	/**
 	 * Execute the aspect advice without throw exceptions.
 	 *
 	 * @param aspectAdviceRule the aspect advice rule
 	 */
-	void executeWithoutThrow(AspectAdviceRule aspectAdviceRule);
+	void executeAdviceWithoutThrow(AspectAdviceRule aspectAdviceRule);
 	
 	/**
 	 * Returns whether the response is reserved.
@@ -159,7 +159,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @param exceptionRuleList the exception rule list
 	 */
-	void exceptionHandling(List<ExceptionRule> exceptionRuleList);
+	void handleException(List<ExceptionRule> exceptionRuleList);
 
 	/**
 	 * Returns whether the exception was thrown.

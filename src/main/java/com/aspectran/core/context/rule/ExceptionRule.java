@@ -19,102 +19,18 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.aspectran.core.activity.process.action.BeanAction;
-import com.aspectran.core.activity.process.action.EchoAction;
-import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.HeadingAction;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.context.rule.type.ActionType;
-
 /**
  * The Class ExceptionRule.
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCatchRule> {
+public class ExceptionRule implements Iterable<ExceptionCatchRule> {
 
-	private final AspectRule aspectRule;
-
-	private Executable action;
-	
-	private ExceptionCatchRule defaultExceptionCatchRule;
-	
 	private Map<String, ExceptionCatchRule> exceptionCatchRuleMap = new LinkedHashMap<>();
-	
+
+	private ExceptionCatchRule defaultExceptionCatchRule;
+
 	private String description;
-
-	public ExceptionRule() {
-		this.aspectRule = null;
-	}
-
-	public ExceptionRule(AspectRule aspectRule) {
-		this.aspectRule = aspectRule;
-	}
-
-	public String getAspectId() {
-		if (aspectRule == null) {
-			throw new UnsupportedOperationException();
-		}
-		return aspectRule.getId();
-	}
-
-	public AspectRule getAspectRule() {
-		return aspectRule;
-	}
-
-	@Override
-	public void applyActionRule(BeanActionRule beanActionRule) {
-		action = new BeanAction(beanActionRule, null);
-	}
-
-	@Override
-	public void applyActionRule(MethodActionRule methodActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Method Action Rule to the Exception Rule.");
-	}
-
-	@Override
-	public void applyActionRule(IncludeActionRule includeActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Include Action Rule to the Exception Rule.");
-	}
-
-	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		action = new EchoAction(echoActionRule, null);
-	}
-
-	@Override
-	public void applyActionRule(HeadingActionRule headingActionRule) {
-		action = new HeadingAction(headingActionRule, null);
-	}
-	
-	/**
-	 * Gets the executable action.
-	 *
-	 * @return the executable action
-	 */
-	public Executable getExecutableAction() {
-		return action;
-	}
-	
-	/**
-	 * Gets the action type.
-	 *
-	 * @return the action type
-	 */
-	public ActionType getActionType() {
-		return (action != null ? action.getActionType() : null);
-	}
-
-	/**
-	 * Gets the response by content type rule.
-	 *
-	 * @return the response by content type rule
-	 */
-	public ExceptionCatchRule getExceptionCatchRule() {
-		return defaultExceptionCatchRule;
-	}
 
 	/**
 	 * Puts the exception catch rule.
@@ -124,13 +40,11 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	 */
 	public ExceptionCatchRule putExceptionCatchRule(ExceptionCatchRule exceptionCatchRule) {
 		String exceptionType = exceptionCatchRule.getExceptionType();
-		
 		if (exceptionType != null) {
 			exceptionCatchRuleMap.put(exceptionType, exceptionCatchRule);
 		} else { 
 			this.defaultExceptionCatchRule = exceptionCatchRule;
 		}
-		
 		return exceptionCatchRule;
 	}
 	
@@ -138,18 +52,17 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 	 * Gets the exception catch rule as specified exception.
 	 *
 	 * @param ex the exception
-	 * @return the rule for the response by content type
+	 * @return the exception catch rule
 	 */
 	public ExceptionCatchRule getExceptionCatchRule(Throwable ex) {
 		ExceptionCatchRule exceptionCatchRule = null;
 		int deepest = Integer.MAX_VALUE;
 
-		for (ExceptionCatchRule rbctr : exceptionCatchRuleMap.values()) {
-			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
-
+		for (ExceptionCatchRule ecr : exceptionCatchRuleMap.values()) {
+			int depth = getMatchedDepth(ecr.getExceptionType(), ex);
 			if (depth >= 0 && depth < deepest) {
 				deepest = depth;
-				exceptionCatchRule = rbctr;
+				exceptionCatchRule = ecr;
 			}
 		}
 
@@ -217,8 +130,8 @@ public class ExceptionRule implements ActionRuleApplicable, Iterable<ExceptionCa
 		this.description = description;
 	}
 
-	public static ExceptionRule newInstance(AspectRule aspectRule) {
-		return new ExceptionRule(aspectRule);
+	public static ExceptionRule newInstance() {
+		return new ExceptionRule();
 	}
 
 }

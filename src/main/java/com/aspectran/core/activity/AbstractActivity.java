@@ -435,7 +435,7 @@ public abstract class AbstractActivity implements Activity {
 		if (aspectAdviceRuleList != null) {
 			for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 				if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-					execute(aspectAdviceRule);
+					executeAdvice(aspectAdviceRule);
 				}
 			}
 		}

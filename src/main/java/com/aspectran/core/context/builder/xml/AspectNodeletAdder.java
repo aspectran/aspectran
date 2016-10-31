@@ -99,8 +99,7 @@ class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/advice/around", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.AROUND));
 		parser.addNodelet(xpath, "/aspect/advice/finally", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.FINALLY));
 		parser.addNodelet(xpath, "/aspect/exception", (node, attributes, text) -> {
-			AspectRule aspectRule = assistant.peekObject();
-			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
+			ExceptionRule exceptionRule = ExceptionRule.newInstance();
 			assistant.pushObject(exceptionRule);
 		});
 		parser.addNodelet(xpath, "/aspect/exception", new ExceptionCatchNodeletAdder(assistant));

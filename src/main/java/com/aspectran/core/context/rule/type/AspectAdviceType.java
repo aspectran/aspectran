@@ -17,12 +17,12 @@ package com.aspectran.core.context.rule.type;
 
 /**
  * Types of advice include "around," "before" and "after" advice.
- * <pre>
- * Before advice: Advice that executes before a join point.
- * After advice: Advice to be executed after a join point completes normally.
- * Finally advice: Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
- * Around advice: Before advice + After advice
- * </pre>
+ * <dl>
+ * <dt>Before advice: <dd>Advice that executes before a join point.
+ * <dt>After advice: <dd>Advice to be executed after a join point completes normally.
+ * <dt>Finally advice: <dd>Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
+ * <dt>Around advice: <dd>Before advice + After advice
+ * </dl>
  */
 public enum AspectAdviceType {
 
@@ -30,6 +30,7 @@ public enum AspectAdviceType {
 	BEFORE("before"),
 	AFTER("after"),
 	AROUND("around"),
+	THROWN("thrown"),
 	FINALLY("finally");
 
 	private final String alias;

@@ -148,7 +148,7 @@ public class BeanAction extends AbstractAction {
 				return result;
 			}
 		} catch (Exception e) {
-			log.error("Failed to execute action that invoking method in the bean instance. beanActionRule " + beanActionRule);
+			log.error("Failed to executeAdvice action that invoking method in the bean instance. beanActionRule " + beanActionRule);
 			throw e;
 		}
 	}

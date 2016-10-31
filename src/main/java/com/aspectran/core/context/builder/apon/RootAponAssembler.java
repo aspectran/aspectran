@@ -267,6 +267,9 @@ public class RootAponAssembler {
 					}
 				} else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
 					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
+					if (aspectAdviceRule.getExceptionCatchRule() != null) {
+						adviceActionParameters.putValue(AdviceActionParameters.thrown, assembleExceptionCatchParameters(aspectAdviceRule.getExceptionCatchRule()));
+					}
 					if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.putValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
@@ -285,16 +288,6 @@ public class RootAponAssembler {
 		if (exceptionRule != null) {
 			Parameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
 			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-			if (exceptionRule.getActionType() == ActionType.BEAN) {
-				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
-			} else if (exceptionRule.getActionType() == ActionType.ECHO) {
-				EchoActionRule echoActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(echoActionRule));
-			} else if (exceptionRule.getActionType() == ActionType.HEADERS) {
-				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
-			}
 			for (ExceptionCatchRule ecr : exceptionRule) {
 				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
 			}
@@ -460,16 +453,6 @@ public class RootAponAssembler {
 		if (exceptionRule != null) {
 			Parameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
 			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-			if (exceptionRule.getActionType() == ActionType.BEAN) {
-				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
-			} else if (exceptionRule.getActionType() == ActionType.ECHO) {
-				EchoActionRule echoActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(echoActionRule));
-			} else if (exceptionRule.getActionType() == ActionType.HEADERS) {
-				HeadingActionRule headingActionRule = exceptionRule.getExecutableAction().getActionRule();
-				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(headingActionRule));
-			}
 			for (ExceptionCatchRule ecr : exceptionRule) {
 				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
 			}
@@ -499,27 +482,39 @@ public class RootAponAssembler {
 	}
 	
 	private Parameters assembleExceptionCatchParameters(ExceptionCatchRule exceptionCatchRule) {
-		ExceptionCatchParameters exceptionCatchParameters = new ExceptionCatchParameters();
-		exceptionCatchParameters.putValue(ExceptionCatchParameters.exception, exceptionCatchRule.getExceptionType());
-		
+		ExceptionCatchParameters ecParameters = new ExceptionCatchParameters();
+		ecParameters.putValue(ExceptionCatchParameters.type, exceptionCatchRule.getExceptionType());
+
+		if (exceptionCatchRule.getActionType() == ActionType.BEAN) {
+			BeanActionRule beanActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(beanActionRule));
+		} else if (exceptionCatchRule.getActionType() == ActionType.ECHO) {
+			EchoActionRule echoActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(echoActionRule));
+		} else if (exceptionCatchRule.getActionType() == ActionType.HEADERS) {
+			HeadingActionRule headingActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(headingActionRule));
+		}
+
+
 		ResponseMap responseMap = exceptionCatchRule.getResponseMap();
 		for (Response response : responseMap) {
 			if (response.getResponseType() == ResponseType.TRANSFORM) {
 				TransformResponse transformResponse = (TransformResponse)response;
-				exceptionCatchParameters.putValue(ExceptionCatchParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
+				ecParameters.putValue(ExceptionCatchParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
 			} else if (response.getResponseType() == ResponseType.DISPATCH) {
 				DispatchResponse dispatchResponse = (DispatchResponse)response;
-				exceptionCatchParameters.putValue(ExceptionCatchParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+				ecParameters.putValue(ExceptionCatchParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
 			} else if (response.getResponseType() == ResponseType.FORWARD) {
 				ForwardResponse forwardResponse = (ForwardResponse)response;
-				exceptionCatchParameters.putValue(ExceptionCatchParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+				ecParameters.putValue(ExceptionCatchParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
 			} else if (response.getResponseType() == ResponseType.REDIRECT) {
 				RedirectResponse redirectResponse = (RedirectResponse)response;
-				exceptionCatchParameters.putValue(ExceptionCatchParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+				ecParameters.putValue(ExceptionCatchParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
 			}
 		}
 		
-		return exceptionCatchParameters;
+		return ecParameters;
 	}
 	
 	private Parameters assembleResponseParameters(ResponseRule responseRule) {

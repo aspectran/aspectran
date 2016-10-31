@@ -68,7 +68,7 @@ public class HeadingAction extends AbstractAction {
 			
 			return valueMap;
 		} catch (Exception e) {
-			log.error("Failed to execute heading action " + headingActionRule + " Cause: " + e.toString());
+			log.error("Failed to executeAdvice heading action " + headingActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

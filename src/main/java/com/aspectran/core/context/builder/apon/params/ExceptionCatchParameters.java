@@ -21,7 +21,8 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ExceptionCatchParameters extends AbstractParameters {
 
-	public static final ParameterDefinition exception;
+	public static final ParameterDefinition type;
+	public static final ParameterDefinition action;
 	public static final ParameterDefinition transforms;
 	public static final ParameterDefinition dispatchs;
 	public static final ParameterDefinition forwards;
@@ -30,14 +31,16 @@ public class ExceptionCatchParameters extends AbstractParameters {
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		exception = new ParameterDefinition("exception", ParameterValueType.STRING);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
+		action = new ParameterDefinition("action", ActionParameters.class);
 		transforms = new ParameterDefinition("transform", TransformParameters.class, true, true);
 		dispatchs = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);
 		forwards = new ParameterDefinition("forward", ForwardParameters.class, true, true);
 		redirects = new ParameterDefinition("redirect", RedirectParameters.class, true, true);
 
 		parameterDefinitions = new ParameterDefinition[] {
-			exception,
+			type,
+			action,
 			transforms,
 			dispatchs,
 			forwards,

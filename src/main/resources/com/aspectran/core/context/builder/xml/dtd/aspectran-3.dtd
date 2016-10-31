@@ -61,16 +61,16 @@
   bean    CDATA #IMPLIED
 >
 
-<!ELEMENT before  (echo | action)>
-<!ELEMENT after   (echo | action)>
-<!ELEMENT around  (echo | action)>
-<!ELEMENT finally (echo | action)>
+<!ELEMENT before  (headers | echo | action)>
+<!ELEMENT after   (headers | echo | action)>
+<!ELEMENT around  (action)>
+<!ELEMENT finally (thrown?, (headers | echo | action))>
 
-<!ELEMENT exception (description?, action?, catch*)>
+<!ELEMENT exception (description?, thrown*)>
 
-<!ELEMENT catch (transform? | dispatch? | redirect? | forward?)*>
-<!ATTLIST catch
-  exception CDATA #IMPLIED
+<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST thrown
+  type CDATA #IMPLIED
 >
 
 <!ELEMENT bean (description?, filter?, constructor?, properties?)>

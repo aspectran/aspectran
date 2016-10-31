@@ -15,27 +15,35 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.EchoAction;
+import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.HeadingAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformFactory;
+import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.type.ActionType;
 
 /**
  * The Class ExceptionCatchRule.
  * 
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class ExceptionCatchRule implements ResponseRuleApplicable {
+public class ExceptionCatchRule implements ResponseRuleApplicable, ActionRuleApplicable {
 	
 	private String exceptionType;
 
 	private ResponseMap responseMap = new ResponseMap();
 	
 	private Response defaultResponse;
-	
+
+	private Executable action;
+
 	public String getExceptionType() {
 		return exceptionType;
 	}
@@ -143,15 +151,51 @@ public class ExceptionCatchRule implements ResponseRuleApplicable {
 		return response;
 	}
 
-	/**
-	 * Adds the response.
-	 *
-	 * @param response the response
-	 */
-	public void addResponse(Response response) {
-		responseMap.put(response.getContentType(), response);
+	@Override
+	public void applyActionRule(BeanActionRule beanActionRule) {
+		action = new BeanAction(beanActionRule, null);
 	}
-	
+
+	@Override
+	public void applyActionRule(MethodActionRule methodActionRule) {
+		throw new UnsupportedOperationException(
+				"Cannot apply the Method Action Rule to the Exception Catch Rule.");
+	}
+
+	@Override
+	public void applyActionRule(IncludeActionRule includeActionRule) {
+		throw new UnsupportedOperationException(
+				"Cannot apply the Include Action Rule to the Exception Catch Rule.");
+	}
+
+	@Override
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		action = new EchoAction(echoActionRule, null);
+	}
+
+	@Override
+	public void applyActionRule(HeadingActionRule headingActionRule) {
+		action = new HeadingAction(headingActionRule, null);
+	}
+
+	/**
+	 * Returns the executable action.
+	 *
+	 * @return the executable action
+	 */
+	public Executable getExecutableAction() {
+		return action;
+	}
+
+	/**
+	 * Returns the action type of the executable action.
+	 *
+	 * @return the action type
+	 */
+	public ActionType getActionType() {
+		return (action != null ? action.getActionType() : null);
+	}
+
 	public static ExceptionCatchRule newInstance(String exceptionType) {
 		ExceptionCatchRule rbctr = new ExceptionCatchRule();
 		if (exceptionType != null) {

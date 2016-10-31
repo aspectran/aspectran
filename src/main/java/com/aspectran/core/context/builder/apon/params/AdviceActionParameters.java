@@ -20,14 +20,18 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class AdviceActionParameters extends AbstractParameters {
 
-	public static final ParameterDefinition action;
+	public static final ParameterDefinition thrown;
 	
+	public static final ParameterDefinition action;
+
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
+		thrown = new ParameterDefinition("thrown", ExceptionCatchParameters.class);
 		action = new ParameterDefinition("action", ActionParameters.class);
-		
+
 		parameterDefinitions = new ParameterDefinition[] {
+			thrown,
 			action
 		};
 	}

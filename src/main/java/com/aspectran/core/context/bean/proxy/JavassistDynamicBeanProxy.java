@@ -63,7 +63,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 		try {
 			try {
 				if (aarr.getBeforeAdviceRuleList() != null) {
-					activity.execute(aarr.getBeforeAdviceRuleList());
+					activity.executeAdvice(aarr.getBeforeAdviceRuleList());
 				}
 
 				if (log.isDebugEnabled()) {
@@ -72,13 +72,13 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 				Object result = proceed.invoke(self, args);
 
 				if (aarr.getAfterAdviceRuleList() != null) {
-					activity.execute(aarr.getAfterAdviceRuleList());
+					activity.executeAdvice(aarr.getAfterAdviceRuleList());
 				}
 
 				return result;
 			} finally {
 				if (aarr.getFinallyAdviceRuleList() != null) {
-					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
+					activity.executeAdviceWithoutThrow(aarr.getFinallyAdviceRuleList());
 				}
 			}
 		} catch (Exception e) {
@@ -86,7 +86,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
 			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
 			if (exceptionRuleList != null) {
-				activity.exceptionHandling(exceptionRuleList);
+				activity.handleException(exceptionRuleList);
 				if (activity.isResponseReserved()) {
 					return null;
 				}

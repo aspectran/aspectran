@@ -30,6 +30,7 @@ import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
@@ -37,7 +38,6 @@ import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.ScheduleParameters;
@@ -55,15 +55,16 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
@@ -261,8 +262,11 @@ public class RootAponDisassembler {
 		
 			Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
 			if (finallyAdviceParameters != null) {
+				Parameters ecParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
 				Parameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.FINALLY);
+				ExceptionCatchRule ecr = disassembleExceptionCatchRule(ecParameters);
+				aspectAdviceRule.setExceptionCatchRule(ecr);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
 			}
@@ -270,22 +274,15 @@ public class RootAponDisassembler {
 		
 		Parameters exceptionParameters = aspectParameters.getParameters(AspectParameters.exception);
 		if (exceptionParameters != null) {
-			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
+			ExceptionRule exceptionRule = ExceptionRule.newInstance();
 			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
-
-			Parameters actionParameters = exceptionParameters.getParameters(ExceptionParameters.action);
-			if (actionParameters != null) {
-				disassembleActionRule(actionParameters, exceptionRule);
-			}
-	
-			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
-			if (rbctParametersList != null) {
-				for (Parameters rrtrParameters : rbctParametersList) {
-					ExceptionCatchRule rbctr = disassembleExceptionCatchRule(rrtrParameters);
-					exceptionRule.putExceptionCatchRule(rbctr);
+			List<Parameters> ecParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
+			if (ecParametersList != null) {
+				for (Parameters ecParameters : ecParametersList) {
+					ExceptionCatchRule ecr = disassembleExceptionCatchRule(ecParameters);
+					exceptionRule.putExceptionCatchRule(ecr);
 				}
 			}
-			
 			aspectRule.setExceptionRule(exceptionRule);
 		}
 
@@ -429,20 +426,13 @@ public class RootAponDisassembler {
 		if (exceptionParameters != null) {
 			ExceptionRule exceptionRule = new ExceptionRule();
 			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
-
-			Parameters actionParameters = exceptionParameters.getParameters(ExceptionParameters.action);
-			if (actionParameters != null) {
-				disassembleActionRule(actionParameters, exceptionRule);
-			}
-
-			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
-			if (rbctParametersList != null) {
-				for (Parameters rrtrParameters : rbctParametersList) {
-					ExceptionCatchRule rbctr = disassembleExceptionCatchRule(rrtrParameters);
-					exceptionRule.putExceptionCatchRule(rbctr);
+			List<Parameters> ecParametersList = exceptionParameters.getParametersList(ExceptionParameters.catches);
+			if (ecParametersList != null) {
+				for (Parameters ecParameters : ecParametersList) {
+					ExceptionCatchRule ecr = disassembleExceptionCatchRule(ecParameters);
+					exceptionRule.putExceptionCatchRule(ecr);
 				}
 			}
-
 			transletRule.setExceptionRule(exceptionRule);
 		}
 
@@ -566,16 +556,16 @@ public class RootAponDisassembler {
 	
 	private void disassembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
 		String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
-		String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
 		String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
-		ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
-		ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
-		ItemHolderParameters attributeItemHolderParameters = actionParameters.getParameters(ActionParameters.attributes);
 		ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
+		ItemHolderParameters headersItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if (methodName != null) {
+			String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
+			ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
+			ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 			if (argumentItemHolderParameters != null) {
 				ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentItemHolderParameters);
@@ -592,6 +582,7 @@ public class RootAponDisassembler {
 		} else if (include != null) {
 			include = assistant.applyTransletNamePattern(include);
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
+			ItemHolderParameters attributeItemHolderParameters = actionParameters.getParameters(ActionParameters.attributes);
 			if (attributeItemHolderParameters != null) {
 				ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);
 				includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
@@ -602,15 +593,25 @@ public class RootAponDisassembler {
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			actionRuleApplicable.applyActionRule(echoActionRule);
+		} else if (headersItemHolderParameters != null) {
+			HeadingActionRule headingActionRule = HeadingActionRule.newInstance(id, hidden);
+			ItemRuleMap headerItemRuleMap = disassembleItemRuleMap(headersItemHolderParameters);
+			headingActionRule.setHeaderItemRuleMap(headerItemRuleMap);
+			actionRuleApplicable.applyActionRule(headingActionRule);
 		}
 	}
 
 	private ExceptionCatchRule disassembleExceptionCatchRule(Parameters exceptionCatchParameters) {
 		ExceptionCatchRule exceptionCatchRule = new ExceptionCatchRule();
 		
-		String exceptionType = exceptionCatchParameters.getString(ExceptionCatchParameters.exception);
+		String exceptionType = exceptionCatchParameters.getString(ExceptionCatchParameters.type);
 		exceptionCatchRule.setExceptionType(exceptionType);
-		
+
+		Parameters actionParameters = exceptionCatchParameters.getParameters(ExceptionCatchParameters.action);
+		if (actionParameters != null) {
+			disassembleActionRule(actionParameters, exceptionCatchRule);
+		}
+
 		List<Parameters> transformParametersList = exceptionCatchParameters.getParametersList(ExceptionCatchParameters.transforms);
 		if (transformParametersList != null && !transformParametersList.isEmpty()) {
 			disassembleTransformRule(transformParametersList, exceptionCatchRule);
