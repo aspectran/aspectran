@@ -30,11 +30,11 @@ import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
- * The Class ExceptionCatchRule.
+ * The Class ExceptionThrownRule.
  * 
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class ExceptionCatchRule implements ResponseRuleApplicable, ActionRuleApplicable {
+public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleApplicable {
 	
 	private String exceptionType;
 
@@ -159,13 +159,13 @@ public class ExceptionCatchRule implements ResponseRuleApplicable, ActionRuleApp
 	@Override
 	public void applyActionRule(MethodActionRule methodActionRule) {
 		throw new UnsupportedOperationException(
-				"Cannot apply the Method Action Rule to the Exception Catch Rule.");
+				"Cannot apply the Method Action Rule to the Exception Thrown Rule.");
 	}
 
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException(
-				"Cannot apply the Include Action Rule to the Exception Catch Rule.");
+				"Cannot apply the Include Action Rule to the Exception Thrown Rule.");
 	}
 
 	@Override
@@ -196,12 +196,12 @@ public class ExceptionCatchRule implements ResponseRuleApplicable, ActionRuleApp
 		return (action != null ? action.getActionType() : null);
 	}
 
-	public static ExceptionCatchRule newInstance(String exceptionType) {
-		ExceptionCatchRule rbctr = new ExceptionCatchRule();
+	public static ExceptionThrownRule newInstance(String exceptionType) {
+		ExceptionThrownRule etr = new ExceptionThrownRule();
 		if (exceptionType != null) {
-			rbctr.setExceptionType(exceptionType);
+			etr.setExceptionType(exceptionType);
 		}
-		return rbctr;
+		return etr;
 	}
 	
 }

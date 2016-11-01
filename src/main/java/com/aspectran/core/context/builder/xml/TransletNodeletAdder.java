@@ -169,7 +169,7 @@ class TransletNodeletAdder implements NodeletAdder {
 			ExceptionRule exceptionRule = new ExceptionRule();
 			assistant.pushObject(exceptionRule);
 		});
-		parser.addNodelet(xpath, "/translet/exception", new ExceptionCatchNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/exception", new ExceptionThrownNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/exception/end()", (node, attributes, text) -> {
 			ExceptionRule exceptionRule = assistant.popObject();
 			TransletRule transletRule = assistant.peekObject();

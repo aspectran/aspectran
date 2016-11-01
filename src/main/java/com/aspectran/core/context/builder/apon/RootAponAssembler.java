@@ -39,7 +39,7 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionCatchParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionThrownParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
@@ -68,8 +68,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -267,8 +267,8 @@ public class RootAponAssembler {
 					}
 				} else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
 					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
-					if (aspectAdviceRule.getExceptionCatchRule() != null) {
-						adviceActionParameters.putValue(AdviceActionParameters.thrown, assembleExceptionCatchParameters(aspectAdviceRule.getExceptionCatchRule()));
+					if (aspectAdviceRule.getExceptionThrownRule() != null) {
+						adviceActionParameters.putValue(AdviceActionParameters.thrown, assembleExceptionThrownParameters(aspectAdviceRule.getExceptionThrownRule()));
 					}
 					if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
@@ -288,8 +288,8 @@ public class RootAponAssembler {
 		if (exceptionRule != null) {
 			Parameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
 			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-			for (ExceptionCatchRule ecr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
+			for (ExceptionThrownRule etr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.throwns, assembleExceptionThrownParameters(etr));
 			}
 		}
 
@@ -453,8 +453,8 @@ public class RootAponAssembler {
 		if (exceptionRule != null) {
 			Parameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
 			exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-			for (ExceptionCatchRule ecr : exceptionRule) {
-				exceptionParameters.putValue(ExceptionParameters.catches, assembleExceptionCatchParameters(ecr));
+			for (ExceptionThrownRule etr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.throwns, assembleExceptionThrownParameters(etr));
 			}
 		}
 
@@ -481,36 +481,36 @@ public class RootAponAssembler {
 		return importParameters;
 	}
 	
-	private Parameters assembleExceptionCatchParameters(ExceptionCatchRule exceptionCatchRule) {
-		ExceptionCatchParameters ecParameters = new ExceptionCatchParameters();
-		ecParameters.putValue(ExceptionCatchParameters.type, exceptionCatchRule.getExceptionType());
+	private Parameters assembleExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
+		ExceptionThrownParameters ecParameters = new ExceptionThrownParameters();
+		ecParameters.putValue(ExceptionThrownParameters.type, exceptionThrownRule.getExceptionType());
 
-		if (exceptionCatchRule.getActionType() == ActionType.BEAN) {
-			BeanActionRule beanActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(beanActionRule));
-		} else if (exceptionCatchRule.getActionType() == ActionType.ECHO) {
-			EchoActionRule echoActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(echoActionRule));
-		} else if (exceptionCatchRule.getActionType() == ActionType.HEADERS) {
-			HeadingActionRule headingActionRule = exceptionCatchRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionCatchParameters.action, assembleActionParameters(headingActionRule));
+		if (exceptionThrownRule.getActionType() == ActionType.BEAN) {
+			BeanActionRule beanActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(beanActionRule));
+		} else if (exceptionThrownRule.getActionType() == ActionType.ECHO) {
+			EchoActionRule echoActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(echoActionRule));
+		} else if (exceptionThrownRule.getActionType() == ActionType.HEADERS) {
+			HeadingActionRule headingActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(headingActionRule));
 		}
 
 
-		ResponseMap responseMap = exceptionCatchRule.getResponseMap();
+		ResponseMap responseMap = exceptionThrownRule.getResponseMap();
 		for (Response response : responseMap) {
 			if (response.getResponseType() == ResponseType.TRANSFORM) {
 				TransformResponse transformResponse = (TransformResponse)response;
-				ecParameters.putValue(ExceptionCatchParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
+				ecParameters.putValue(ExceptionThrownParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
 			} else if (response.getResponseType() == ResponseType.DISPATCH) {
 				DispatchResponse dispatchResponse = (DispatchResponse)response;
-				ecParameters.putValue(ExceptionCatchParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+				ecParameters.putValue(ExceptionThrownParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
 			} else if (response.getResponseType() == ResponseType.FORWARD) {
 				ForwardResponse forwardResponse = (ForwardResponse)response;
-				ecParameters.putValue(ExceptionCatchParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+				ecParameters.putValue(ExceptionThrownParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
 			} else if (response.getResponseType() == ResponseType.REDIRECT) {
 				RedirectResponse redirectResponse = (RedirectResponse)response;
-				ecParameters.putValue(ExceptionCatchParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+				ecParameters.putValue(ExceptionThrownParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
 			}
 		}
 		

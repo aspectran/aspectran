@@ -27,7 +27,7 @@ public class AdviceActionParameters extends AbstractParameters {
 	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		thrown = new ParameterDefinition("thrown", ExceptionCatchParameters.class);
+		thrown = new ParameterDefinition("thrown", ExceptionThrownParameters.class);
 		action = new ParameterDefinition("action", ActionParameters.class);
 
 		parameterDefinitions = new ParameterDefinition[] {

@@ -22,17 +22,17 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class ExceptionParameters extends AbstractParameters {
 
 	public static final ParameterDefinition description;
-	public static final ParameterDefinition catches;
+	public static final ParameterDefinition throwns;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
 		description = new ParameterDefinition("description", ParameterValueType.TEXT);
-		catches = new ParameterDefinition("catch", ExceptionCatchParameters.class, true, true);
+		throwns = new ParameterDefinition("thrown", ExceptionThrownParameters.class, true, true);
 
 		parameterDefinitions = new ParameterDefinition[] {
 			description,
-			catches
+			throwns
 		};
 	}
 

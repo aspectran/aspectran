@@ -19,7 +19,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class ExceptionCatchParameters extends AbstractParameters {
+public class ExceptionThrownParameters extends AbstractParameters {
 
 	public static final ParameterDefinition type;
 	public static final ParameterDefinition action;
@@ -48,11 +48,11 @@ public class ExceptionCatchParameters extends AbstractParameters {
 		};
 	}
 	
-	public ExceptionCatchParameters() {
+	public ExceptionThrownParameters() {
 		super(parameterDefinitions);
 	}
 	
-	public ExceptionCatchParameters(String text) {
+	public ExceptionThrownParameters(String text) {
 		super(parameterDefinitions, text);
 	}
 	

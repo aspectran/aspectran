@@ -23,7 +23,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
+import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.logging.Log;
@@ -100,9 +100,9 @@ public abstract class BasicActivity extends AbstractActivity {
 	 * @param noThrow whether or not throw exception
 	 */
 	private void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
-		if(isExceptionRaised() && aspectAdviceRule.getExceptionCatchRule() != null) {
+		if(isExceptionRaised() && aspectAdviceRule.getExceptionThrownRule() != null) {
 			try {
-				handleException(aspectAdviceRule.getExceptionCatchRule());
+				handleException(aspectAdviceRule.getExceptionThrownRule());
 			} catch (Exception e) {
 				if (aspectAdviceRule.getAspectRule().isIsolated()) {
 					log.error("Failed to executeAdvice an isolated advice action " + aspectAdviceRule, e);
@@ -170,17 +170,17 @@ public abstract class BasicActivity extends AbstractActivity {
 			log.debug("Exception handling for raised exception: " + getRaisedException());
 		}
 
-		ExceptionCatchRule exceptionCatchRule = exceptionRule.getExceptionCatchRule(getRaisedException());
-		if (exceptionCatchRule != null) {
-			Executable action = exceptionCatchRule.getExecutableAction();
+		ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
+		if (exceptionThrownRule != null) {
+			Executable action = exceptionThrownRule.getExecutableAction();
 			if (action != null) {
 				executeAdvice(action);
 			}
 		}
 	}
 
-	protected void handleException(ExceptionCatchRule exceptionCatchRule) {
-		Executable action = exceptionCatchRule.getExecutableAction();
+	protected void handleException(ExceptionThrownRule exceptionThrownRule) {
+		Executable action = exceptionThrownRule.getExecutableAction();
 		if (action != null) {
 			executeAdvice(action);
 		}

@@ -33,7 +33,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.i18n.LocaleResolver;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
+import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -417,7 +417,7 @@ public class CoreActivity extends BasicActivity {
 			log.debug("Exception handling for raised exception: " + getRaisedException());
 		}
 
-		ExceptionCatchRule exceptionCatchRule = exceptionRule.getExceptionCatchRule(getRaisedException());
+		ExceptionThrownRule exceptionCatchRule = exceptionRule.getExceptionThrownRule(getRaisedException());
 		if (exceptionCatchRule != null) {
 			Executable action = exceptionCatchRule.getExecutableAction();
 			if (action != null) {
@@ -430,14 +430,14 @@ public class CoreActivity extends BasicActivity {
 	}
 
 	@Override
-	protected void handleException(ExceptionCatchRule exceptionCatchRule) {
+	protected void handleException(ExceptionThrownRule exceptionThrownRule) {
 		Response response = getDeclaredResponse();
 		Response targetResponse;
 
 		if (response != null && response.getContentType() != null) {
-			targetResponse = exceptionCatchRule.getResponse(response.getContentType());
+			targetResponse = exceptionThrownRule.getResponse(response.getContentType());
 		} else {
-			targetResponse = exceptionCatchRule.getDefaultResponse();
+			targetResponse = exceptionThrownRule.getDefaultResponse();
 		}
 
 		if (targetResponse != null) {

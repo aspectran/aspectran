@@ -17,16 +17,16 @@ package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.ExceptionCatchRule;
+import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * The Class ExceptionCatchNodeletAdder.
+ * The Class ExceptionThrownNodeletAdder.
  *
  * @since 2013. 8. 11.
  */
-class ExceptionCatchNodeletAdder implements NodeletAdder {
+class ExceptionThrownNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -35,7 +35,7 @@ class ExceptionCatchNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	ExceptionCatchNodeletAdder(ContextBuilderAssistant assistant) {
+	ExceptionThrownNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -51,15 +51,15 @@ class ExceptionCatchNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/thrown", (node, attributes, text) -> {
             String exceptionType = attributes.get("type");
 
-            ExceptionCatchRule rbctr = ExceptionCatchRule.newInstance(exceptionType);
-            assistant.pushObject(rbctr);
+            ExceptionThrownRule etr = ExceptionThrownRule.newInstance(exceptionType);
+            assistant.pushObject(etr);
         });
 		parser.addNodelet(xpath, "/thrown", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/thrown", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/thrown/end()", (node, attributes, text) -> {
-            ExceptionCatchRule ecr = assistant.popObject();
+            ExceptionThrownRule ecr = assistant.popObject();
             ExceptionRule exceptionRule = assistant.peekObject();
-            exceptionRule.putExceptionCatchRule(ecr);
+            exceptionRule.putExceptionThrownRule(ecr);
         });
 	}
 

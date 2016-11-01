@@ -41,7 +41,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	private Executable action;
 
-	private ExceptionCatchRule exceptionCatchRule;
+	private ExceptionThrownRule exceptionThrownRule;
 
 	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
 		this.aspectRule = aspectRule;
@@ -108,12 +108,12 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return (action != null ? action.getActionType() : null);
 	}
 
-	public ExceptionCatchRule getExceptionCatchRule() {
-		return exceptionCatchRule;
+	public ExceptionThrownRule getExceptionThrownRule() {
+		return exceptionThrownRule;
 	}
 
-	public void setExceptionCatchRule(ExceptionCatchRule exceptionCatchRule) {
-		this.exceptionCatchRule = exceptionCatchRule;
+	public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+		this.exceptionThrownRule = exceptionThrownRule;
 	}
 
 	@Override

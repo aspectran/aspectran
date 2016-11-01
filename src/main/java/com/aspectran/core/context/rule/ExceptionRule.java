@@ -24,53 +24,53 @@ import java.util.Map;
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ExceptionRule implements Iterable<ExceptionCatchRule> {
+public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
-	private Map<String, ExceptionCatchRule> exceptionCatchRuleMap = new LinkedHashMap<>();
+	private Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>();
 
-	private ExceptionCatchRule defaultExceptionCatchRule;
+	private ExceptionThrownRule defaultExceptionThrownRule;
 
 	private String description;
 
 	/**
-	 * Puts the exception catch rule.
+	 * Puts the exception thrown rule.
 	 *
-	 * @param exceptionCatchRule the exception catch rule
-	 * @return the exception catch rule
+	 * @param exceptionThrownRule the exception thrown rule
+	 * @return the exception thrown rule
 	 */
-	public ExceptionCatchRule putExceptionCatchRule(ExceptionCatchRule exceptionCatchRule) {
-		String exceptionType = exceptionCatchRule.getExceptionType();
+	public ExceptionThrownRule putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+		String exceptionType = exceptionThrownRule.getExceptionType();
 		if (exceptionType != null) {
-			exceptionCatchRuleMap.put(exceptionType, exceptionCatchRule);
+			exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
 		} else { 
-			this.defaultExceptionCatchRule = exceptionCatchRule;
+			this.defaultExceptionThrownRule = exceptionThrownRule;
 		}
-		return exceptionCatchRule;
+		return exceptionThrownRule;
 	}
 	
 	/**
-	 * Gets the exception catch rule as specified exception.
+	 * Gets the exception thrown rule as specified exception.
 	 *
 	 * @param ex the exception
-	 * @return the exception catch rule
+	 * @return the exception thrown rule
 	 */
-	public ExceptionCatchRule getExceptionCatchRule(Throwable ex) {
-		ExceptionCatchRule exceptionCatchRule = null;
+	public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
+		ExceptionThrownRule exceptionThrownRule = null;
 		int deepest = Integer.MAX_VALUE;
 
-		for (ExceptionCatchRule ecr : exceptionCatchRuleMap.values()) {
-			int depth = getMatchedDepth(ecr.getExceptionType(), ex);
+		for (ExceptionThrownRule etr : exceptionThrownRuleMap.values()) {
+			int depth = getMatchedDepth(etr.getExceptionType(), ex);
 			if (depth >= 0 && depth < deepest) {
 				deepest = depth;
-				exceptionCatchRule = ecr;
+				exceptionThrownRule = etr;
 			}
 		}
 
-		if (exceptionCatchRule == null) {
-			return this.defaultExceptionCatchRule;
+		if (exceptionThrownRule == null) {
+			return this.defaultExceptionThrownRule;
 		}
 
-		return exceptionCatchRule;
+		return exceptionThrownRule;
 	}
 	
 	/**
@@ -108,8 +108,8 @@ public class ExceptionRule implements Iterable<ExceptionCatchRule> {
 	}
 
 	@Override
-	public Iterator<ExceptionCatchRule> iterator() {
-		return exceptionCatchRuleMap.values().iterator();
+	public Iterator<ExceptionThrownRule> iterator() {
+		return exceptionThrownRuleMap.values().iterator();
 	}
 
 	/**
