@@ -414,23 +414,22 @@ public class CoreActivity extends BasicActivity {
 	@Override
 	public void handleException(ExceptionRule exceptionRule) {
 		if (log.isDebugEnabled()) {
-			log.debug("Exception handling for raised exception: " + getRaisedException());
+			log.debug("Exception handling for raised exception: " + getOriginRaisedException());
 		}
 
-		ExceptionThrownRule exceptionCatchRule = exceptionRule.getExceptionThrownRule(getRaisedException());
-		if (exceptionCatchRule != null) {
-			Executable action = exceptionCatchRule.getExecutableAction();
+		ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
+		if (exceptionThrownRule != null) {
+			Executable action = exceptionThrownRule.getExecutableAction();
 			if (action != null) {
 				executeAdvice(action);
 			}
 			if (!isResponseReserved() && translet != null) {
-				handleException(exceptionCatchRule);
+				handleException(exceptionThrownRule);
 			}
 		}
 	}
 
-	@Override
-	protected void handleException(ExceptionThrownRule exceptionThrownRule) {
+	private void handleException(ExceptionThrownRule exceptionThrownRule) {
 		Response response = getDeclaredResponse();
 		Response targetResponse;
 
@@ -518,7 +517,7 @@ public class CoreActivity extends BasicActivity {
 			}
 		} catch (Exception e) {
 			setRaisedException(e);
-			throw new ActionExecutionException("Failed to executeAdvice action " + action, e);
+			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
 	}
 

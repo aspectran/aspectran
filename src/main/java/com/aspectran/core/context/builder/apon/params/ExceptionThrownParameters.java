@@ -31,7 +31,7 @@ public class ExceptionThrownParameters extends AbstractParameters {
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
+		type = new ParameterDefinition("type", ParameterValueType.STRING, true, true);
 		action = new ParameterDefinition("action", ActionParameters.class);
 		transforms = new ParameterDefinition("transform", TransformParameters.class, true, true);
 		dispatchs = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);

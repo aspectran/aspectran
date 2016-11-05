@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
-	private Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>();
+	private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(4);
 
 	private ExceptionThrownRule defaultExceptionThrownRule;
 
@@ -38,14 +38,19 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 	 * @param exceptionThrownRule the exception thrown rule
 	 * @return the exception thrown rule
 	 */
-	public ExceptionThrownRule putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
-		String exceptionType = exceptionThrownRule.getExceptionType();
-		if (exceptionType != null) {
-			exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
-		} else { 
-			this.defaultExceptionThrownRule = exceptionThrownRule;
+	public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+		String[] exceptionTypes = exceptionThrownRule.getExceptionTypes();
+		if (exceptionTypes != null) {
+			for(String exceptionType : exceptionTypes) {
+				if(exceptionType != null) {
+					if(!exceptionThrownRuleMap.containsKey(exceptionType)) {
+						exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
+					}
+				}
+			}
+		} else {
+			defaultExceptionThrownRule = exceptionThrownRule;
 		}
-		return exceptionThrownRule;
 	}
 	
 	/**
@@ -58,21 +63,25 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 		ExceptionThrownRule exceptionThrownRule = null;
 		int deepest = Integer.MAX_VALUE;
 
-		for (ExceptionThrownRule etr : exceptionThrownRuleMap.values()) {
-			int depth = getMatchedDepth(etr.getExceptionType(), ex);
+		for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
+			int depth = getMatchedDepth(entry.getKey(), ex);
 			if (depth >= 0 && depth < deepest) {
 				deepest = depth;
-				exceptionThrownRule = etr;
+				exceptionThrownRule = entry.getValue();
 			}
 		}
 
-		if (exceptionThrownRule == null) {
-			return this.defaultExceptionThrownRule;
-		}
-
-		return exceptionThrownRule;
+		return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
 	}
-	
+
+	public ExceptionThrownRule getFirstExceptionThrownRule() {
+		if (exceptionThrownRuleMap.size() > 0) {
+			return exceptionThrownRuleMap.get(0);
+		} else {
+			return defaultExceptionThrownRule;
+		}
+	}
+
 	/**
 	 * Gets the matched depth.
 	 *
@@ -84,9 +93,9 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 		Throwable t = ex.getCause();
 		if (t != null) {
 			return getMatchedDepth(exceptionType, t);
+		} else {
+			return getMatchedDepth(exceptionType, ex.getClass(), 0);
 		}
-
-		return getMatchedDepth(exceptionType, ex.getClass(), 0);
 	}
 
 	/**
@@ -98,7 +107,7 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 	 * @return the matched depth
 	 */
 	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
-		if (exceptionClass.getName().contains(exceptionType)) {
+		if (exceptionClass.getName().equals(exceptionType)) {
 			return depth;
 		}
 		if (exceptionClass.equals(Throwable.class)) {
@@ -132,6 +141,12 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
 	public static ExceptionRule newInstance() {
 		return new ExceptionRule();
+	}
+
+	public static ExceptionRule newInstance(ExceptionThrownRule exceptionThrownRule) {
+		ExceptionRule exceptionRule = new ExceptionRule();
+		exceptionRule.putExceptionThrownRule(exceptionThrownRule);
+		return exceptionRule;
 	}
 
 }

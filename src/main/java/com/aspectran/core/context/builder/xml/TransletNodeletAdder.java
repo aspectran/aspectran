@@ -62,7 +62,7 @@ class TransletNodeletAdder implements NodeletAdder {
 				transletRule.setDescription(text);
 			}
 		});
-		parser.addNodelet(xpath, "/translet", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/request", (node, attributes, text) -> {
             String method = attributes.get("method");
@@ -117,7 +117,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/translet/contents/content", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/contents/content", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/contents/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
 
@@ -142,7 +142,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/translet/content", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
 
@@ -169,7 +169,7 @@ class TransletNodeletAdder implements NodeletAdder {
 			ExceptionRule exceptionRule = new ExceptionRule();
 			assistant.pushObject(exceptionRule);
 		});
-		parser.addNodelet(xpath, "/translet/exception", new ExceptionThrownNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/exception", new ExceptionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/exception/end()", (node, attributes, text) -> {
 			ExceptionRule exceptionRule = assistant.popObject();
 			TransletRule transletRule = assistant.peekObject();

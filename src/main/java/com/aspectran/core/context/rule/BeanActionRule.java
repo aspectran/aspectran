@@ -52,8 +52,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 
 	private Boolean hidden;
 	
-	private AspectAdviceRule aspectAdviceRule;
-	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	/**
@@ -182,24 +180,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	}
 
 	/**
-	 * Gets the aspect advice rule.
-	 *
-	 * @return the aspect advice rule
-	 */
-	public AspectAdviceRule getAspectAdviceRule() {
-		return aspectAdviceRule;
-	}
-
-	/**
-	 * Sets the aspect advice rule.
-	 *
-	 * @param aspectAdviceRule the new aspect advice rule
-	 */
-	public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		this.aspectAdviceRule = aspectAdviceRule;
-	}
-
-	/**
 	 * Gets the aspect advice rule registry.
 	 *
 	 * @return the aspect advice rule registry
@@ -233,9 +213,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		}
 		if (propertyItemRuleMap != null) {
 			tsb.append("properties", propertyItemRuleMap.keySet());
-		}
-		if (aspectAdviceRule != null) {
-			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
 		}
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		tsb.append("hidden", hidden);

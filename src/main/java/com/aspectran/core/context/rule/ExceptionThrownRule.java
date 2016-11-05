@@ -28,6 +28,7 @@ import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class ExceptionThrownRule.
@@ -36,7 +37,7 @@ import com.aspectran.core.context.rule.type.ActionType;
  */
 public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleApplicable {
 	
-	private String exceptionType;
+	private String[] exceptionTypes;
 
 	private ResponseMap responseMap = new ResponseMap();
 	
@@ -44,12 +45,12 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
 	private Executable action;
 
-	public String getExceptionType() {
-		return exceptionType;
+	public String[] getExceptionTypes() {
+		return exceptionTypes;
 	}
 
-	public void setExceptionType(String exceptionType) {
-		this.exceptionType = exceptionType;
+	public void setExceptionTypes(String[] exceptionTypes) {
+		this.exceptionTypes = exceptionTypes;
 	}
 
 	public Response getResponse(String contentType) {
@@ -199,7 +200,8 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 	public static ExceptionThrownRule newInstance(String exceptionType) {
 		ExceptionThrownRule etr = new ExceptionThrownRule();
 		if (exceptionType != null) {
-			etr.setExceptionType(exceptionType);
+			String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+			etr.setExceptionTypes(exceptionTypes);
 		}
 		return etr;
 	}

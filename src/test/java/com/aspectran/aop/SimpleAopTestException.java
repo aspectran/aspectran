@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.embedded;
+package com.aspectran.aop;
 
-public class SecondBean {
+/**
+ * <p>Created: 2016. 11. 5.</p>
+ */
+public class SimpleAopTestException extends RuntimeException {
 
-	public static final String message = "This is the second bean.";
-	
-	public SecondBean() {
-	}
-
-	public String getMessage() {
-		return message;
+	public SimpleAopTestException() {
+		super("************************ Exception generation for testing ************************");
 	}
 
 }

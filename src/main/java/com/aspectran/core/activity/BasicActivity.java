@@ -23,8 +23,8 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -65,7 +65,7 @@ public abstract class BasicActivity extends AbstractActivity {
 			}
 		} catch (Exception e) {
 			setRaisedException(e);
-			throw new ActionExecutionException("Failed to executeAdvice action " + action, e);
+			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
 	}
 
@@ -100,17 +100,17 @@ public abstract class BasicActivity extends AbstractActivity {
 	 * @param noThrow whether or not throw exception
 	 */
 	private void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
-		if(isExceptionRaised() && aspectAdviceRule.getExceptionThrownRule() != null) {
+		if(isExceptionRaised() && aspectAdviceRule.getExceptionRule() != null) {
 			try {
-				handleException(aspectAdviceRule.getExceptionThrownRule());
+				handleException(aspectAdviceRule.getExceptionRule());
 			} catch (Exception e) {
 				if (aspectAdviceRule.getAspectRule().isIsolated()) {
-					log.error("Failed to executeAdvice an isolated advice action " + aspectAdviceRule, e);
+					log.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
 				} else {
 					if (noThrow) {
-						log.error("Failed to executeAdvice an advice action " + aspectAdviceRule, e);
+						log.error("Failed to execute advice action " + aspectAdviceRule, e);
 					} else {
-						throw new AspectAdviceException("Failed to executeAdvice the advice action " + aspectAdviceRule, aspectAdviceRule, e);
+						throw new AspectAdviceException("Failed to execute advice action " + aspectAdviceRule, aspectAdviceRule, e);
 					}
 				}
 			}
@@ -146,13 +146,13 @@ public abstract class BasicActivity extends AbstractActivity {
 			}
 		} catch (Exception e) {
 			if (aspectAdviceRule.getAspectRule().isIsolated()) {
-				log.error("Failed to executeAdvice an isolated advice action " + aspectAdviceRule, e);
+				log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
 			} else {
 				setRaisedException(e);
 				if (noThrow) {
-					log.error("Failed to executeAdvice an advice action " + aspectAdviceRule, e);
+					log.error("Failed to execute an advice action " + aspectAdviceRule, e);
 				} else {
-					throw new AspectAdviceException("Failed to executeAdvice the advice action " + aspectAdviceRule, aspectAdviceRule, e);
+					throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);
 				}
 			}
 		}
@@ -167,7 +167,7 @@ public abstract class BasicActivity extends AbstractActivity {
 
 	protected void handleException(ExceptionRule exceptionRule) {
 		if (log.isDebugEnabled()) {
-			log.debug("Exception handling for raised exception: " + getRaisedException());
+			log.debug("Exception handling for raised exception: " + getOriginRaisedException());
 		}
 
 		ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
@@ -176,13 +176,6 @@ public abstract class BasicActivity extends AbstractActivity {
 			if (action != null) {
 				executeAdvice(action);
 			}
-		}
-	}
-
-	protected void handleException(ExceptionThrownRule exceptionThrownRule) {
-		Executable action = exceptionThrownRule.getExecutableAction();
-		if (action != null) {
-			executeAdvice(action);
 		}
 	}
 

@@ -7,9 +7,9 @@
 		This is the configuration for Embedded Service Testing.
 	</description>
 
-	<bean scan="com.aspectran.core.embedded.*Bean" mask="com.aspectran.core.embedded.*"/>
+	<bean scan="com.aspectran.embedded.*Bean" mask="com.aspectran.embedded.*"/>
 	
-	<bean scan="com.aspectran.core.embedded.*Configuration" mask="com.aspectran.core.embedded.*"/>
+	<bean scan="com.aspectran.embedded.*Configuration" mask="com.aspectran.embedded.*"/>
 
 	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerConfigurationFactoryBean">
 		<properties>

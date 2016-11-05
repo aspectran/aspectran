@@ -64,7 +64,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/transform", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", (node, attributes, text) -> {
             String engine = attributes.get("engine");
             String name = attributes.get("name");
@@ -91,8 +91,9 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             TransformRule tr = assistant.popObject();
 
-            if (!actionList.isEmpty())
-                tr.setActionList(actionList);
+            if (!actionList.isEmpty()) {
+				tr.setActionList(actionList);
+			}
 
             ResponseRuleApplicable applicable = assistant.peekObject();
             applicable.applyResponseRule(tr);
@@ -110,7 +111,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/dispatch", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/dispatch", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/dispatch/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
             DispatchResponseRule drr = assistant.popObject();
@@ -134,7 +135,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/redirect", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/redirect/parameters", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
@@ -184,7 +185,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/forward", new ActionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/forward/parameters", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
@@ -202,8 +203,9 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = assistant.popObject();
             ForwardResponseRule frr = assistant.popObject();
 
-            if (!actionList.isEmpty())
-                frr.setActionList(actionList);
+            if (!actionList.isEmpty()) {
+				frr.setActionList(actionList);
+			}
 
             ResponseRuleApplicable applicable = assistant.peekObject();
             applicable.applyResponseRule(frr);

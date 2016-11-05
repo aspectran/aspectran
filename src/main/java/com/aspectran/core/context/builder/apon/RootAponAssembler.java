@@ -482,39 +482,38 @@ public class RootAponAssembler {
 	}
 	
 	private Parameters assembleExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
-		ExceptionThrownParameters ecParameters = new ExceptionThrownParameters();
-		ecParameters.putValue(ExceptionThrownParameters.type, exceptionThrownRule.getExceptionType());
+		ExceptionThrownParameters etParameters = new ExceptionThrownParameters();
+		etParameters.putValue(ExceptionThrownParameters.type, exceptionThrownRule.getExceptionTypes());
 
 		if (exceptionThrownRule.getActionType() == ActionType.BEAN) {
 			BeanActionRule beanActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(beanActionRule));
+			etParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(beanActionRule));
 		} else if (exceptionThrownRule.getActionType() == ActionType.ECHO) {
 			EchoActionRule echoActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(echoActionRule));
+			etParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(echoActionRule));
 		} else if (exceptionThrownRule.getActionType() == ActionType.HEADERS) {
 			HeadingActionRule headingActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
-			ecParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(headingActionRule));
+			etParameters.putValue(ExceptionThrownParameters.action, assembleActionParameters(headingActionRule));
 		}
-
 
 		ResponseMap responseMap = exceptionThrownRule.getResponseMap();
 		for (Response response : responseMap) {
 			if (response.getResponseType() == ResponseType.TRANSFORM) {
 				TransformResponse transformResponse = (TransformResponse)response;
-				ecParameters.putValue(ExceptionThrownParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
+				etParameters.putValue(ExceptionThrownParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
 			} else if (response.getResponseType() == ResponseType.DISPATCH) {
 				DispatchResponse dispatchResponse = (DispatchResponse)response;
-				ecParameters.putValue(ExceptionThrownParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+				etParameters.putValue(ExceptionThrownParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
 			} else if (response.getResponseType() == ResponseType.FORWARD) {
 				ForwardResponse forwardResponse = (ForwardResponse)response;
-				ecParameters.putValue(ExceptionThrownParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+				etParameters.putValue(ExceptionThrownParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
 			} else if (response.getResponseType() == ResponseType.REDIRECT) {
 				RedirectResponse redirectResponse = (RedirectResponse)response;
-				ecParameters.putValue(ExceptionThrownParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+				etParameters.putValue(ExceptionThrownParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
 			}
 		}
 		
-		return ecParameters;
+		return etParameters;
 	}
 	
 	private Parameters assembleResponseParameters(ResponseRule responseRule) {
@@ -541,21 +540,26 @@ public class RootAponAssembler {
 	
 	private Parameters assembleTransformParameters(TransformRule transformRule) {
 		TransformParameters transformParameters = new TransformParameters();
+
 		if (transformRule.getTransformType() != null) {
 			transformParameters.putValue(TransformParameters.type, transformRule.getTransformType().toString());
 		}
+
 		transformParameters.putValueNonNull(TransformParameters.contentType, transformRule.getContentType());
 		transformParameters.putValueNonNull(TransformParameters.template, transformRule.getTemplateId());
 		transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
 		transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
 		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
+
 		if (transformRule.getTemplateRule() != null) {
 			transformParameters.putValue(TransformParameters.builtin, assembleTemplateParameters(transformRule.getTemplateRule()));
 		}
+
 		ActionList actionList = transformRule.getActionList();
 		if (actionList != null) {
 			assembleActionList(actionList, transformParameters, TransformParameters.actions);
 		}
+
 		return transformParameters;
 	}
 	

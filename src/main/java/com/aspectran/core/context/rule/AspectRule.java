@@ -199,7 +199,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
+		AspectAdviceRule.updateAspectAdviceRule(aspectAdviceRule);
 
 		if (aspectAdviceRuleList == null) {
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();

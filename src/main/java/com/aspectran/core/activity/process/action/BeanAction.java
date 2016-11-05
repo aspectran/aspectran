@@ -44,19 +44,11 @@ public class BeanAction extends AbstractAction {
 	private final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
-	
-	private final String beanId;
 
-	private final Class<?> beanClass;
-
-	private final ItemRuleMap argumentItemRuleMap;
-
-	private final ItemRuleMap propertyItemRuleMap;
-
-	private final AspectAdviceRule aspectAdviceRule;
+	private AspectAdviceRule aspectAdviceRule;
 
 	private volatile Boolean needTranslet;
-	
+
 	/**
 	 * Instantiates a new BeanAction.
 	 *
@@ -67,19 +59,24 @@ public class BeanAction extends AbstractAction {
 		super(parent);
 
 		this.beanActionRule = beanActionRule;
+	}
 
-		if (beanActionRule.getBeanId() != null || beanActionRule.getBeanClass() != null) {
-			this.beanId = beanActionRule.getBeanId();
-			this.beanClass = beanActionRule.getBeanClass();
-			this.aspectAdviceRule = null;
-		} else {
-			this.beanId = null;
-			this.beanClass = null;
-			this.aspectAdviceRule = beanActionRule.getAspectAdviceRule();
-		}
+	/**
+	 * Gets the aspect advice rule.
+	 *
+	 * @return the aspect advice rule
+	 */
+	public AspectAdviceRule getAspectAdviceRule() {
+		return aspectAdviceRule;
+	}
 
-		this.argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
-		this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
+	/**
+	 * Sets the aspect advice rule.
+	 *
+	 * @param aspectAdviceRule the new aspect advice rule
+	 */
+	public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		this.aspectAdviceRule = aspectAdviceRule;
 	}
 
 	@Override
@@ -89,17 +86,22 @@ public class BeanAction extends AbstractAction {
 
 			if (aspectAdviceRule != null) {
 				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+				if (bean == null) {
+					throw new ActionExecutionException("No such bean; Invalid BeanActionRule" + aspectAdviceRule);
+				}
 			} else {
-				if (beanClass != null) {
-					bean = activity.getBean(beanClass);
-				} else if (beanId != null) {
-					bean = activity.getBean(beanId);
+				if (beanActionRule.getBeanClass() != null) {
+					bean = activity.getBean(beanActionRule.getBeanClass());
+				} else if (beanActionRule.getBeanId() != null) {
+					bean = activity.getBean(beanActionRule.getBeanId());
+				}
+				if (bean == null) {
+					throw new ActionExecutionException("No such bean; Invalid BeanActionRule " + beanActionRule);
 				}
 			}
 
-			if (bean == null) {
-				throw new ActionExecutionException("Invalid BeanActionRule: No such bean " + beanActionRule);
-			}
+			ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
+			ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 
 			ItemEvaluator evaluator = null;
 			
@@ -148,7 +150,7 @@ public class BeanAction extends AbstractAction {
 				return result;
 			}
 		} catch (Exception e) {
-			log.error("Failed to executeAdvice action that invoking method in the bean instance. beanActionRule " + beanActionRule);
+			log.error("Failed to execute action that invoking method in the bean instance. beanActionRule " + beanActionRule);
 			throw e;
 		}
 	}
@@ -268,6 +270,9 @@ public class BeanAction extends AbstractAction {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("actionType", getActionType());
 		tsb.append("beanActionRule", beanActionRule);
+		if (aspectAdviceRule != null) {
+			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
+		}
 		return tsb.toString();
 	}
 	

@@ -262,13 +262,14 @@ public class RootAponDisassembler {
 		
 			Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
 			if (finallyAdviceParameters != null) {
-				Parameters ecParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
 				Parameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.FINALLY);
-				ExceptionThrownRule etr = disassembleExceptionThrownRule(ecParameters);
-				aspectAdviceRule.setExceptionThrownRule(etr);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+				// for thrown
+				Parameters etParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
+				ExceptionThrownRule etr = disassembleExceptionThrownRule(etParameters);
+				aspectAdviceRule.setExceptionThrownRule(etr);
 			}
 		}
 		
@@ -276,11 +277,11 @@ public class RootAponDisassembler {
 		if (exceptionParameters != null) {
 			ExceptionRule exceptionRule = ExceptionRule.newInstance();
 			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
-			List<Parameters> ecParametersList = exceptionParameters.getParametersList(ExceptionParameters.throwns);
-			if (ecParametersList != null) {
-				for (Parameters ecParameters : ecParametersList) {
-					ExceptionThrownRule ecr = disassembleExceptionThrownRule(ecParameters);
-					exceptionRule.putExceptionThrownRule(ecr);
+			List<Parameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.throwns);
+			if (etParametersList != null) {
+				for (Parameters etParameters : etParametersList) {
+					ExceptionThrownRule etr = disassembleExceptionThrownRule(etParameters);
+					exceptionRule.putExceptionThrownRule(etr);
 				}
 			}
 			aspectRule.setExceptionRule(exceptionRule);
@@ -426,10 +427,10 @@ public class RootAponDisassembler {
 		if (exceptionParameters != null) {
 			ExceptionRule exceptionRule = new ExceptionRule();
 			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
-			List<Parameters> ecParametersList = exceptionParameters.getParametersList(ExceptionParameters.throwns);
-			if (ecParametersList != null) {
-				for (Parameters ecParameters : ecParametersList) {
-					ExceptionThrownRule etr = disassembleExceptionThrownRule(ecParameters);
+			List<Parameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.throwns);
+			if (etParametersList != null) {
+				for (Parameters etParameters : etParametersList) {
+					ExceptionThrownRule etr = disassembleExceptionThrownRule(etParameters);
 					exceptionRule.putExceptionThrownRule(etr);
 				}
 			}
@@ -604,8 +605,8 @@ public class RootAponDisassembler {
 	private ExceptionThrownRule disassembleExceptionThrownRule(Parameters exceptionThrownParameters) {
 		ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
 		
-		String exceptionType = exceptionThrownParameters.getString(ExceptionThrownParameters.type);
-		exceptionThrownRule.setExceptionType(exceptionType);
+		String[] exceptionTypes = exceptionThrownParameters.getStringArray(ExceptionThrownParameters.type);
+		exceptionThrownRule.setExceptionTypes(exceptionTypes);
 
 		Parameters actionParameters = exceptionThrownParameters.getParameters(ExceptionThrownParameters.action);
 		if (actionParameters != null) {

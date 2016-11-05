@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  *
  * @since 2011. 1. 9.
  */
-class ActionInnerNodeletAdder implements NodeletAdder {
+class ActionNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -41,7 +41,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the ContextBuilderAssistant
 	 */
-	ActionInnerNodeletAdder(ContextBuilderAssistant assistant) {
+	ActionNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -144,7 +144,6 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             ActionRuleApplicable applicable = assistant.peekObject();
             applicable.applyActionRule(echoActionRule);
         });
-
 		parser.addNodelet(xpath, "/headers", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
