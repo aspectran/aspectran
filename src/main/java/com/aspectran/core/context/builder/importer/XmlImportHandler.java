@@ -32,7 +32,7 @@ public class XmlImportHandler extends AbstractImportHandler {
 	public XmlImportHandler(ActivityContextBuilder builder) {
 		super(builder.getContextEnvironment());
 
-		this.assistant = builder.getContextBuilderAssistant();
+		assistant = builder.getContextBuilderAssistant();
 		aspectranNodeParser = new AspectranNodeParser(assistant);
 	}
 

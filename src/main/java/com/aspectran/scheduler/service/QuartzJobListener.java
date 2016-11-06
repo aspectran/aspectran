@@ -57,4 +57,5 @@ public class QuartzJobListener implements JobListener {
 			e.printStackTrace();
 		}
 	}
+
 }

@@ -160,7 +160,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	/**
 	 * Returns a new HTTP session scope.
 	 *
-	 * @param force whether creating a new session scope to force
+	 * @param force whether to force a new session scope
 	 * @return a {@code SessionScope} object
 	 */
 	private SessionScope newHttpSessionScope(boolean force) {

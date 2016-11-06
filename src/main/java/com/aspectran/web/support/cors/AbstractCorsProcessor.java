@@ -92,10 +92,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	private int maxAgeSeconds = -1;
 
 	public String[] getAllowedOrigins() {
-		if (allowedOrigins == null)
+		if (allowedOrigins != null) {
+			return allowedOrigins.toArray(new String[allowedOrigins.size()]);
+		} else {
 			return null;
-		
-		return allowedOrigins.toArray(new String[allowedOrigins.size()]);
+		}
 	}
 
 	public void setAllowedOrigins(String allowedOrigins) {
@@ -121,10 +122,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getAllowedMethods() {
-		if (allowedMethods == null) {
+		if (allowedMethods != null) {
+			return allowedMethods.toArray(new String[allowedMethods.size()]);
+		} else {
 			return null;
 		}
-		return allowedMethods.toArray(new String[allowedMethods.size()]);
 	}
 	
 	public boolean containsMethod(String method) {
@@ -165,10 +167,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getAllowedHeaders() {
-		if (allowedHeaders == null) {
+		if (allowedHeaders != null) {
+			return allowedHeaders.toArray(new String[allowedHeaders.size()]);
+		} else {
 			return null;
 		}
-		return allowedHeaders.toArray(new String[allowedHeaders.size()]);
 	}
 
 	public String getAllowedHeadersString() {
@@ -205,10 +208,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	}
 
 	public String[] getExposedHeaders() {
-		if (exposedHeaders == null) {
+		if (exposedHeaders != null) {
+			return exposedHeaders.toArray(new String[exposedHeaders.size()]);
+		} else {
 			return null;
 		}
-		return exposedHeaders.toArray(new String[exposedHeaders.size()]);
 	}
 
 	public String getExposedHeadersString() {
@@ -297,8 +301,9 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	protected boolean isAllowedMethod(String method) {
 		if (allowedMethods == null) {
 			return ("GET".equals(method) || "HEAD".equals(method));
+		} else {
+			return allowedMethods.contains(method);
 		}
-		return allowedMethods.contains(method);
 	}
 	
 	/**

@@ -71,7 +71,7 @@ public class ResourceManager {
 			
 			@Override
 			public synchronized boolean hasMoreElements() {
-				return next != null || hasNext();
+				return (next != null || hasNext());
 			}
 
 			@Override

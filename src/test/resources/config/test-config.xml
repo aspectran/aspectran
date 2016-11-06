@@ -176,7 +176,7 @@
 		</description>
 		<joinpoint type="translet">
 			pointcut: {
-                +: "hello@class:test.TestAction^helloWorld"
+                +: hello@class:test.TestAction^helloWorld
             }
 		</joinpoint>
 		<advice bean="class:test.TestAdvice">

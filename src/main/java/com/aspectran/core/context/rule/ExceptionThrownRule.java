@@ -83,9 +83,10 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 	
 	public Response getDefaultResponse() {
 		if (defaultResponse == null && responseMap.size() == 1) {
-			return responseMap.get(0);
+			return responseMap.getFirst();
+		} else {
+			return defaultResponse;
 		}
-		return defaultResponse;
 	}
 
 	public void setDefaultResponse(Response response) {

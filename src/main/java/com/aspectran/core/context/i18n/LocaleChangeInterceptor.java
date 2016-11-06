@@ -137,8 +137,9 @@ public class LocaleChangeInterceptor {
     public void handle(Translet translet, LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
 
-        if (!checkRequestMethod(requestAdapter.getRequestMethod()))
+        if (!checkRequestMethod(requestAdapter.getRequestMethod())) {
             return;
+        }
 
         String newLocale = requestAdapter.getParameter(getLocaleParamName());
         if (newLocale != null) {

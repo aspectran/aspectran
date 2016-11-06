@@ -142,7 +142,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				exposedBean = invokeFactoryMethod(beanRule, bean, activity);
 			}
 
-			if(exposedBean == null) {
+			if (exposedBean == null) {
 				return new Object[] { bean };
 			} else {
 				return new Object[] { bean, exposedBean };

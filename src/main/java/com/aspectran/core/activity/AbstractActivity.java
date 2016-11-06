@@ -249,29 +249,33 @@ public abstract class AbstractActivity implements Activity {
 	protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
 		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	protected List<AspectAdviceRule> getAfterAdviceRuleList() {
 		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+		} else {
+			return null;
 		}
-		return null;
 	}
 	
 	protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
 		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	protected List<ExceptionRule> getExceptionRuleList() {
 		if (aspectAdviceRuleRegistry != null) {
 			return aspectAdviceRuleRegistry.getExceptionRuleList();
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	@Override
@@ -453,7 +457,6 @@ public abstract class AbstractActivity implements Activity {
 			AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
 			for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
 				JoinpointType joinpointType = aspectRule.getJoinpointType();
-
 				if (!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
 					if (isAcceptable(aspectRule)) {
 						Pointcut pointcut = aspectRule.getPointcut();

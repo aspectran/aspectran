@@ -64,7 +64,7 @@
 <!ELEMENT before  (headers | echo | action)>
 <!ELEMENT after   (headers | echo | action)>
 <!ELEMENT around  (action)>
-<!ELEMENT finally (thrown?, (headers | echo | action))>
+<!ELEMENT finally (thrown?, (headers | echo | action)?)>
 
 <!ELEMENT exception (description?, thrown*)>
 

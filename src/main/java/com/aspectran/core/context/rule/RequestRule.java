@@ -144,7 +144,6 @@ public class RequestRule {
 		RequestRule requestRule = new RequestRule();
 		requestRule.setAllowedMethod(allowedethodType);
 		requestRule.setCharacterEncoding(characterEncoding);
-		
 		return requestRule;
 	}
 	

@@ -69,6 +69,7 @@ public class LocalResourceManager extends ResourceManager {
 		}
 	}
 
+	@Override
 	public void reset() throws InvalidResourceException {
 		super.reset();
 		

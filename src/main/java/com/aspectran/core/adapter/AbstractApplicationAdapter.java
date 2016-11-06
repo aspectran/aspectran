@@ -77,8 +77,9 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public ClassLoader getClassLoader() {
 		if (classLoader == null) {
 			return AspectranClassLoader.getDefaultClassLoader();
+		} else {
+			return classLoader;
 		}
-		return classLoader;
 	}
 
 	@Override
@@ -109,7 +110,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	@Override
 	public File toRealPathAsFile(String filePath) throws IOException {
 		File file;
-		
 		if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
@@ -126,7 +126,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 				file = new File(filePath);
 			}
 		}
-		
 		return file;
 	}
 

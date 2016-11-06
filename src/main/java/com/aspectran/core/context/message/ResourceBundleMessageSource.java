@@ -140,8 +140,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     public ClassLoader getClassLoader() {
         if (classLoader == null) {
             return AspectranClassLoader.getDefaultClassLoader();
+        } else {
+            return classLoader;
         }
-        return classLoader;
     }
 
     @Override
@@ -193,8 +194,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             this.basenames = new String[basenames.length];
             for (int i = 0; i < basenames.length; i++) {
                 String basename = basenames[i];
-                if (!StringUtils.hasText(basename))
+                if (!StringUtils.hasText(basename)) {
                     throw new IllegalArgumentException("Basename must not be empty.");
+                }
                 this.basenames[i] = basename.trim();
             }
         } else {

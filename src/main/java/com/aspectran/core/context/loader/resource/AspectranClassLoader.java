@@ -253,7 +253,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public boolean isRoot() {
-		return this == root;
+		return (this == root);
 	}
 	
 	public List<AspectranClassLoader> getChildren() {
@@ -554,8 +554,8 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public static String classNameToResourceName(String className) {
-		return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR) +
-				ClassUtils.CLASS_FILE_SUFFIX;
+		return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR)
+				+ ClassUtils.CLASS_FILE_SUFFIX;
 	}
 	
 	public static String packageNameToResourceName(String packageName) {

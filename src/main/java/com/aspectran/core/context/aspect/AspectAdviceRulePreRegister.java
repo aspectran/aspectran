@@ -100,25 +100,25 @@ public class AspectAdviceRulePreRegister {
 		for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			if (aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
-				
+
 				if (pointcut != null && pointcut.isExistsBeanMethodNamePattern()) {
 					if (existsMatchedBean(pointcut, beanRule)) {
 						beanRule.setProxied(true);
-	
+
 						if (log.isTraceEnabled()) {
 							log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
 						}
-	
+
 						break;
 					}
 				} else {
 					if (pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
 						beanRule.setProxied(true);
-	
+
 						if (log.isTraceEnabled()) {
 							log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
 						}
-	
+
 						break;
 					}
 				}

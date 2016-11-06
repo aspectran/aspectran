@@ -169,8 +169,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
                 return message;
             }
         } else {
-            if (args == null)
+            if (args == null) {
                 args = new Object[0];
+            }
 
             MessageFormat messageFormat = resolveCode(code, locale);
             if (messageFormat != null) {
@@ -231,8 +232,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     protected String getDefaultMessage(String code) {
         if (isUseCodeAsDefaultMessage()) {
             return code;
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -258,8 +260,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
             synchronized (messageFormat) {
                 return messageFormat.format(new Object[0]);
             }
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**

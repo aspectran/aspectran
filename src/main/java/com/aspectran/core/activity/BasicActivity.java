@@ -116,43 +116,40 @@ public abstract class BasicActivity extends AbstractActivity {
 			}
 		}
 
-		try {
-			Executable action = aspectAdviceRule.getExecutableAction();
-			
-			if (action == null) {
-				throw new IllegalArgumentException("No specified action on AspectAdviceRule " + aspectAdviceRule);
-			}
-			
-			if (action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
-				Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
-				if (adviceBean == null) {
-					if (aspectAdviceRule.getAdviceBeanClass() != null) {
-						adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
-					} else {
-						adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+		Executable action = aspectAdviceRule.getExecutableAction();
+		if (action != null) {
+			try {
+				if (action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+					Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
+					if (adviceBean == null) {
+						if (aspectAdviceRule.getAdviceBeanClass() != null) {
+							adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
+						} else {
+							adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+						}
+						putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 					}
-					putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 				}
-			}
-			
-			Object adviceActionResult = action.execute(this);
-			
-			if (adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-				putAdviceResult(aspectAdviceRule, adviceActionResult);
-			}
-			
-			if (log.isTraceEnabled()) {
-				log.trace("adviceActionResult " + adviceActionResult);
-			}
-		} catch (Exception e) {
-			if (aspectAdviceRule.getAspectRule().isIsolated()) {
-				log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
-			} else {
-				setRaisedException(e);
-				if (noThrow) {
-					log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+
+				Object adviceActionResult = action.execute(this);
+
+				if (adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
+					putAdviceResult(aspectAdviceRule, adviceActionResult);
+				}
+
+				if (log.isTraceEnabled()) {
+					log.trace("adviceActionResult " + adviceActionResult);
+				}
+			} catch(Exception e) {
+				if (aspectAdviceRule.getAspectRule().isIsolated()) {
+					log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
 				} else {
-					throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);
+					setRaisedException(e);
+					if (noThrow) {
+						log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+					} else {
+						throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);
+					}
 				}
 			}
 		}

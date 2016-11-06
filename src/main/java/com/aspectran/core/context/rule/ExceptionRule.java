@@ -36,14 +36,13 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 	 * Puts the exception thrown rule.
 	 *
 	 * @param exceptionThrownRule the exception thrown rule
-	 * @return the exception thrown rule
 	 */
 	public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
 		String[] exceptionTypes = exceptionThrownRule.getExceptionTypes();
 		if (exceptionTypes != null) {
-			for(String exceptionType : exceptionTypes) {
-				if(exceptionType != null) {
-					if(!exceptionThrownRuleMap.containsKey(exceptionType)) {
+			for (String exceptionType : exceptionTypes) {
+				if (exceptionType != null) {
+					if (!exceptionThrownRuleMap.containsKey(exceptionType)) {
 						exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
 					}
 				}
@@ -74,16 +73,8 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 		return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
 	}
 
-	public ExceptionThrownRule getFirstExceptionThrownRule() {
-		if (exceptionThrownRuleMap.size() > 0) {
-			return exceptionThrownRuleMap.get(0);
-		} else {
-			return defaultExceptionThrownRule;
-		}
-	}
-
 	/**
-	 * Gets the matched depth.
+	 * Returns the matched depth.
 	 *
 	 * @param exceptionType the exception type
 	 * @param ex the throwable exception
@@ -99,7 +90,7 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 	}
 
 	/**
-	 * Gets the matched depth.
+	 * Returns the matched depth.
 	 *
 	 * @param exceptionType the exception type
 	 * @param exceptionClass the exception class

@@ -279,8 +279,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected String getParameter(String name) {
 		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getParameter(name);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -295,8 +296,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected String[] getParameterValues(String name) {
 		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getParameterValues(name);
+		} else {
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -310,8 +312,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected FileParameter getFileParameter(String name) {
 		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getFileParameter(name);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -326,8 +329,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	protected FileParameter[] getFileParameterValues(String name) {
 		if (activity.getRequestAdapter() != null) {
 			return activity.getRequestAdapter().getFileParameterValues(name);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	/**

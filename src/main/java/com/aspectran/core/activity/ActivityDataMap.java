@@ -64,7 +64,6 @@ public class ActivityDataMap extends HashMap<String, Object> {
 			requestAdapter.fillPrameterMap(this);
 			requestAdapter.fillAttributeMap(this);
 		}
-		
 		if (activity.getProcessResult() != null) {
 			for (ContentResult cr : activity.getProcessResult()) {
 				for (ActionResult ar : cr) {
@@ -123,15 +122,17 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	public Object getAttributeWithoutCache(String name) {
 		if (requestAdapter != null) {
 			return requestAdapter.getAttribute(name);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	public Object getActionResultWithoutCache(String name) {
-		if (activity.getProcessResult() == null) {
+		if (activity.getProcessResult() != null) {
+			return activity.getProcessResult().getResultValue(name);
+		} else {
 			return null;
 		}
-		return activity.getProcessResult().getResultValue(name);
 	}
 
 }

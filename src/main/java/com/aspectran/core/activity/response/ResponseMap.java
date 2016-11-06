@@ -28,21 +28,12 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
 	/** @serial */
 	private static final long serialVersionUID = 2093093144584776388L;
 
-	/**
-	 * Gets the response.
-	 * 
-	 * @param index the index
-	 * @return the response
-	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= size()) 
-	 */
-	public Response get(int index) {
-		if (index < 0 || index >= size()) {
-			throw new IndexOutOfBoundsException("index is out of range.");
+	public Response getFirst() {
+		if (size() > 0) {
+			return (Response)values().toArray()[0];
+		} else {
+			return null;
 		}
-
-		String[] keys = keySet().toArray(new String[size()]);
-		
-		return get(keys[index]);
 	}
 	
 	@Override
