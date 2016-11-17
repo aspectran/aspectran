@@ -14,29 +14,25 @@ Aspectran will support most of the functionality required in an enterprise envir
 
 The main features of Aspectran are as follows.
 
-* Supports POJO (*Plain Old Java Object*) programming.  
-  You can concentrate on implementing the core logic and functionality that you actually need, rather than extending the functionality by inheriting specific classes.
-  The result is returned in the simplest Java object.
-*  Supports Inversion of Control (*IoC*).  
-  The framework invokes the functionality of the module created by the developer while controlling the overall flow.
+* Supports POJO (*Plain Old Java Object*) programming model.  
+  You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
+  The resulting value can be returned to the most simple Java object.
+* Supports Inversion of Control (*IoC*).  
+  The framework controls the overall flow and invokes the functionality of the module created by the developer.
   Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
-* Supports Dependency Injection(*DI*).  
+* Supports Dependency Injection (*DI*).  
   The framework links modules that depend on each other at runtime.
   It can maintain low coupling between modules and increase code reusability.
 * Supports Aspect-Oriented Programming (*AOP*).  
   You can write code by separating core functions and additional functions.
-  After the core functionality has been implemented, you can combine functions related to transaction or logging, security, and exception handling with core functionality.
+  Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
 * Supports building RESTful Web Services.
 
-Aspectran 3는 핵심 기능이 포함된 `core` 패키지를 기반으로 각각 다른 실행 환경을 지원하는 다음과 같은 패키지를 포함하고 있습니다.
+Aspectran 3 includes the following packages that support different execution environments, based on the `core` package containing core functionality.
 
-* `console` 패키지:  Console 기반 응용 프로그램 구축을 지원하는 기능이 포함된 패키지
-* `embedded` 패키지 :  Aspectran을 다른 응용 프로그램의 내부에서 실행할 수 있는 기능이 포함된 패키지
-* `web` 패키지:  웹 어플리케이션 구축을 지원하는 기능이 포함된 패키지
-
-동일한 설정 구성으로 실행 환경이 다른 3개의 어플리케이션을 구축할 수 있습니다.
-즉, 동일한 기능을 제공하는 다른 실행 환경에서 구동되는 어플리케이션을 손 쉽게 제작할 수 있습니다.
-다양한 방식으로 서비스를 제공해야 하는 엔터프라이즈 환경에서 꼭 필요한 기능입니다.
+* The `console` Package: A package containing features to support building Console-based applications
+* The `embedded` package: A package containing the ability to run the functionality provided by Aspectran from within another application
+* The `web` package: A package containing features to support building web applications
 
 ## 주요 패키지 구조
 
