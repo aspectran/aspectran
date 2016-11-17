@@ -8,7 +8,7 @@
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
-Aspectran is a lightweight Java framework for building Enterprise-ready Web applications and it can also be run as Console-based and Embedded applications.
+Aspectran is a lightweight Java framework for building enterprise-ready Web applications and it can also be run as a console-based and embedded applications.
 It has a special feature that can provide the same service by using a same configuration settings on the Web, console-based or other applications.
 Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java framework.
 
@@ -30,9 +30,9 @@ The main features of Aspectran are as follows.
 
 Aspectran 3 includes the following packages that support different execution environments, based on the `core` package containing core functionality.
 
-* The `console` package: A package containing features to support building Console-based applications
-* The `embedded` package: A package containing the ability to run the functionality provided by Aspectran from within another application
-* The `web` package: A package containing features to support building web applications
+* `com.aspectran.console` package: Contains classes to support building Console-based applications.
+* `com.aspectran.embedded` package: Contains classes to support embedding Aspectran in other applications.
+* `com.aspectran.web` package: Contains classes to support building Web applications.
 
 ## 주요 패키지 구조
 
