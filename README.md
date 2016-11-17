@@ -30,7 +30,7 @@ The main features of Aspectran are as follows.
 
 Aspectran 3 includes the following packages that support different execution environments, based on the `core` package containing core functionality.
 
-* The `console` Package: A package containing features to support building Console-based applications
+* The `console` package: A package containing features to support building Console-based applications
 * The `embedded` package: A package containing the ability to run the functionality provided by Aspectran from within another application
 * The `web` package: A package containing features to support building web applications
 
