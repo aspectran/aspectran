@@ -10,9 +10,9 @@
 
 Aspectran is a lightweight Java framework for building enterprise-ready Web applications and it can also be run as a console-based and embedded applications.
 It has a special feature that can provide the same service by using a same configuration settings on the Web, console-based or other applications.
-Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java framework.
+Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java application framework.
 
-The main features of Aspectran are as follows.
+The main features of Aspectran are as follows:
 
 * Supports POJO (*Plain Old Java Object*) programming model.  
   You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
