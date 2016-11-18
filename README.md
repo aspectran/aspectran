@@ -66,7 +66,7 @@ com.aspectran
 ```
 
 ## [Quick Start Guide](http://www.aspectran.com/getting-started/quickstart/)
-Describes the process of creating a simple web application using Aspectran.
+Describes the process of developing a simple web application using Aspectran.
 
 ## [Download](http://www.aspectran.com/getting-started/download/)
 Provides information on downloading the Aspectran library directly and information about Aspectran Atifact for Maven users.
@@ -91,7 +91,7 @@ Provides java source packages and configuration metadata that can integrate the 
 * [https://github.com/aspectran/aspectran-modules](https://github.com/aspectran/aspectran-modules)
 
 ## [Examples](http://www.aspectran.com/examples/)
-Provides a sample application created using Aspectran.
+Provides a sample application developed using Aspectran.
 * [https://github.com/aspectran-guides](https://github.com/aspectran-guides)
 
 ## License
