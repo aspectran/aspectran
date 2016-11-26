@@ -15,8 +15,8 @@
 
 	<name>aspectran</name>
 	<description>
-		Aspectran is a lightweight Java framework for building Enterprise-ready Web applications.
-		Also, It will be able to launch as a Console-based and Embedded application.
+		Aspectran is a lightweight Java framework for building enterprise-ready Web applications
+		and it can also be run as console-based and embedded applications.
 	</description>
 	<url>http://www.aspectran.com/</url>
 
