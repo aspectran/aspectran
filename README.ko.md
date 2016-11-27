@@ -70,10 +70,6 @@ Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 Aspectran API 문서를 제공합니다.
 * [http://api.aspectran.com/3.1.0/](http://api.aspectran.com/)
 
-## [FAQ](http://www.aspectran.com/docs/faq/)
-자주 문의하는 질문과 그 답변을 미리 정리하여 제공합니다.  
-해답을 찾을 수 없거나 다른 질문이 있으면 [Contact](/contact/) 페이지 또는 [Aspectran Issues](https://github.com/aspectran/aspectran/issues)에 문의해 주시기 바랍니다.
-
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
 Aspectran의 소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.
