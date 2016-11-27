@@ -4,7 +4,7 @@
 <aspectran>
 	
 	<description>
-		This is the configuration for Embedded Service Testing.
+		Aspectran configuration for embedded mode for tests
 	</description>
 
 	<bean scan="com.aspectran.embedded.*Bean" mask="com.aspectran.embedded.*"/>
