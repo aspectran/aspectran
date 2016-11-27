@@ -78,10 +78,6 @@ Provides user guide documentation for Aspectran users.
 Provides Aspectran API documentation.
 * [http://api.aspectran.com/3.1.0/](http://api.aspectran.com/)
 
-## [FAQ](http://www.aspectran.com/docs/faq/)
-We provide frequently asked questions and answers in advance.  
-If you can not find the answer, or have other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
-
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Provides information on Aspectran's major change history.  
 You can view detailed changes history of Aspectran's source code in GitHub.
