@@ -82,7 +82,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		if (activityContextLoader == null) {
-			throw new UnsupportedOperationException("Activity Context Loader is not initialized. Call initialize() method first.");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
 		}
 		return activityContextLoader.getAspectranClassLoader();
 	}
@@ -102,10 +102,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		if (activityContext != null) {
-			throw new AspectranServiceException("Aspectran Context has already been loaded. Must destroy the current Aspectran Context before reloading.");
+			throw new AspectranServiceException("AspectranContext has already been loaded. Must destroy the current AspectranContext before reloading.");
 		}
 
-		log.info("Initializing Aspectran Service...");
+		log.info("Initializing AspectranService...");
 
 		try {
 			this.aspectranConfig = aspectranConfig;
@@ -156,21 +156,21 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch (Exception e) {
-			throw new AspectranServiceException("Could not initialize Aspectran Service.", e);
+			throw new AspectranServiceException("Could not initialize AspectranService.", e);
 		}
 	}
 	
 	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if (activityContextLoader == null) {
-			throw new UnsupportedOperationException("Activity Context Loader is not initialized. Please call initialize() method first.");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 		}
 
 		if (activityContext != null) {
-			throw new AspectranServiceException("Activity Context has already been loaded. Must destroy the current Activity Context before reloading.");
+			throw new AspectranServiceException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading.");
 		}
 		
 		if (log.isDebugEnabled()) {
-			log.debug("Loading the Activity Context...");
+			log.debug("Loading the ActivityContext...");
 		}
 		
 		try {
@@ -181,7 +181,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			
 			return activityContext;
 		} catch (Exception e) {
-			throw new AspectranServiceException("Could not load Activity Context.", e);
+			throw new AspectranServiceException("Could not load ActivityContext.", e);
 		}
 	}
 
@@ -200,9 +200,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Aspectran Context has been destroyed.");
+				log.info("AspectranContext has been destroyed.");
 			} catch (Exception e) {
-				log.error("Could not destroy Aspectran Context " + activityContext, e);
+				log.error("Could not destroy AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -226,7 +226,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	protected synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		if (activityContextLoader == null) {
-			throw new UnsupportedOperationException("Activity Context Loader is not initialized. Please call initialize() method first.");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 		}
 
 		try {
@@ -236,7 +236,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch (Exception e) {
-			throw new AspectranServiceException("Could not reload Activity Context.", e);
+			throw new AspectranServiceException("Could not reload ActivityContext.", e);
 		}
 
 		return activityContext;
@@ -266,7 +266,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			schedulerService.startup(startDelaySeconds);
 			this.schedulerService = schedulerService;
 
-			log.info("Scheduler Service has been started.");
+			log.info("SchedulerService has been started.");
 		}
 	}
 	
@@ -275,9 +275,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				schedulerService.shutdown();
 				schedulerService = null;
-				log.info("Scheduler Service has been shut down.");
+				log.info("SchedulerService has been shut down.");
 			} catch (Exception e) {
-				log.error("Scheduler Service did not shutdown cleanly.", e);
+				log.error("SchedulerService did not shutdown cleanly.", e);
 				return false;
 			}
 		}
@@ -289,9 +289,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if (schedulerService != null) {
 			try {
 				schedulerService.pause();
-				log.info("Scheduler Service has been paused.");
+				log.info("SchedulerService has been paused.");
 			} catch (Exception e) {
-				log.error("Scheduler Service pause failed.", e);
+				log.error("SchedulerService pause failed.", e);
 				return false;
 			}
 		}
@@ -303,9 +303,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if (schedulerService != null) {
 			try {
 				schedulerService.resume();
-				log.info("Scheduler Service has been resumed.");
+				log.info("SchedulerService has been resumed.");
 			} catch (Exception e) {
-				log.error("Scheduler Service resume failed.", e);
+				log.error("SchedulerService resume failed.", e);
 				return false;
 			}
 		}

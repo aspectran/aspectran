@@ -169,7 +169,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 			throws AspectranServiceException {
 		if (pauseTimeout != 0L) {
 			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				log.warn("Aspectran Service has been paused, so did not run the translet \"" + name + "\".");
+				log.warn("AspectranService has been paused, so did not run the translet \"" + name + "\".");
 				return null;
 			} else {
 				pauseTimeout = 0L;

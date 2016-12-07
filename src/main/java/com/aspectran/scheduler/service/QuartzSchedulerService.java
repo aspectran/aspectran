@@ -106,7 +106,7 @@ public class QuartzSchedulerService implements SchedulerService {
 			return;
 		}
 		
-		log.info("Now try to starting Quartz Scheduler.");
+		log.info("Now try to starting QuartzSchedulerService.");
 		
 		try {
 			for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
@@ -143,7 +143,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				}
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler startup failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public synchronized void shutdown() throws SchedulerServiceException {
-		log.info("Now try to shutting down Quartz Scheduler.");
+		log.info("Now try to shutting down QuartzSchedulerService.");
 
 		try {
 			for (Scheduler scheduler : schedulerSet) {
@@ -167,7 +167,7 @@ public class QuartzSchedulerService implements SchedulerService {
 			schedulerSet.clear();
 			schedulerMap.clear();
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler shutdown failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService shutdown failed.", e);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.pauseAll();
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService pause failed.", e);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler pause failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService pause failed.", e);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.resumeAll();
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService resume failed.", e);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("Quartz Scheduler resume failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService resume failed.", e);
 		}
 	}
 

@@ -51,15 +51,15 @@ public class Application {
 
                 switch (command) {
                     case "restart":
-                        System.out.println("Restart Aspectran Service.");
+                        System.out.println("Restarting the Aspectran Service...");
                         aspectranService.restart();
                         break;
                     case "pause":
-                        System.out.println("Pause Aspectran Service.");
+                        System.out.println("Pausing the Aspectran Service...");
                         aspectranService.pause();
                         break;
                     case "resume":
-                        System.out.println("Resume Aspectran Service.");
+                        System.out.println("Resuming Aspectran Service...");
                         aspectranService.resume();
                         break;
                     case "quit":
@@ -77,7 +77,7 @@ public class Application {
             exitStatus = 1;
         } finally {
             if (aspectranService != null) {
-                System.out.println("Do not terminate this application while destroying all beans.");
+                System.out.println("Do not terminate the application while destroying all scoped beans.");
 
                 aspectranService.shutdown();
             }

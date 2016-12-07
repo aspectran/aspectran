@@ -67,7 +67,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 				standalone = (rootAspectranService != aspectranService);
 			} else {
-				log.info("Running Aspectran Service in standalone mode inside a servlet.");
+				log.info("AspectranService is running in standalone mode inside the servlet.");
 
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
@@ -87,7 +87,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		super.destroy();
 
 		if (standalone) {
-			log.info("Do not terminate the server while the all scoped bean destroying.");
+			log.info("Do not terminate the application server while destroying all scoped beans.");
 
 			aspectranService.shutdown();
 
