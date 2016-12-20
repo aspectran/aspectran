@@ -111,9 +111,11 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public File toRealPathAsFile(String filePath) throws IOException {
 		File file;
 		if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+			// Using url fully qualified paths
 			URI uri = URI.create(filePath);
 			file = new File(uri);
 		} else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			// Using classpath relative resources
 			URL url = getClassLoader().getResource(filePath);
 			if (url == null) {
 				throw new IOException("Could not find the resource with the given name: " + filePath);
