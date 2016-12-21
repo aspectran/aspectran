@@ -70,26 +70,14 @@ public class WebAspectranService extends BasicAspectranService {
 		super(new WebApplicationAdapter(servletContext));
 	}
 
-	@Override
-	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
-		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if (contextParameters == null) {
-			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
-		}
-		
-		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if (rootContext == null || rootContext.isEmpty()) {
-			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
-		}
-		
-		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
-		if (webParameters != null) {
-			this.uriDecoding = webParameters.getString(AspectranWebConfig.uriDecoding);
-		}
-		
-		super.initialize(aspectranConfig);
+	private WebAspectranService(AspectranService parentAspectranService) {
+		super(parentAspectranService);
 	}
-	
+
+	protected void setUriDecoding(String uriDecoding) {
+		this.uriDecoding = uriDecoding;
+	}
+
 	/**
 	 * Process the actual dispatching to the activity. 
 	 *
@@ -250,6 +238,26 @@ public class WebAspectranService extends BasicAspectranService {
 	/**
 	 * Returns a new instance of WebAspectranService.
 	 *
+	 * @param parentAspectranService the parent aspectran service
+	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
+	 */
+	public static WebAspectranService newInstance(AspectranService parentAspectranService)
+			throws AspectranServiceException {
+		WebAspectranService aspectranService = new WebAspectranService(parentAspectranService);
+
+		AspectranConfig aspectranConfig = aspectranService.getAspectranConfig();
+		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
+		if (webParameters != null) {
+			aspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
+		}
+
+		return aspectranService;
+	}
+
+	/**
+	 * Returns a new instance of WebAspectranService.
+	 *
 	 * @param servletContext the servlet context
 	 * @param aspectranConfigParam the parameter for aspectran configuration
 	 * @return the web aspectran service
@@ -263,10 +271,25 @@ public class WebAspectranService extends BasicAspectranService {
 		} else {
 			aspectranConfig = new AspectranConfig();
 		}
-		
+
+		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+		if (contextParameters == null) {
+			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+		}
+
+		String rootContext = contextParameters.getString(AspectranContextConfig.root);
+		if (rootContext == null || rootContext.isEmpty()) {
+			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+		}
+
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
 		aspectranService.initialize(aspectranConfig);
-		
+
+		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
+		if (webParameters != null) {
+			aspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
+		}
+
 		setAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();

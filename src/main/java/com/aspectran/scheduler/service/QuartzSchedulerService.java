@@ -57,7 +57,7 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	private ActivityContext context;
 
-	private final Set<Scheduler> schedulerSet = new HashSet<Scheduler>();
+	private final Set<Scheduler> schedulerSet = new HashSet<>();
 	
 	private Map<String, Scheduler> schedulerMap = new HashMap<>();
 	

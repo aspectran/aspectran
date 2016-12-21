@@ -22,7 +22,6 @@ import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.loader.resource.AspectranClassLoader;
-import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -38,8 +37,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	protected final ApplicationScope scope = new ApplicationScope();
 
 	protected ClassLoader classLoader;
-
-	protected AspectranServiceController aspectranServiceController;
 
 	protected String applicationBasePath;
 
@@ -61,16 +58,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	@Override
 	public ApplicationScope getApplicationScope() {
 		return scope;
-	}
-
-	@Override
-	public AspectranServiceController getAspectranServiceController() {
-		return aspectranServiceController;
-	}
-
-	@Override
-	public void setAspectranServiceController(AspectranServiceController aspectranServiceController) {
-		this.aspectranServiceController = aspectranServiceController;
 	}
 
 	@Override

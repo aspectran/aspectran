@@ -60,21 +60,6 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 	
 	@Override
-	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
-		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if (contextParameters == null) {
-			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
-		}
-
-		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if (rootContext == null || rootContext.isEmpty()) {
-			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
-		}
-		
-		super.initialize(aspectranConfig);
-	}
-
-	@Override
 	public void afterStartup() {
 		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
 		if (sessionScopeAdvisor != null) {
@@ -285,6 +270,16 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	public static EmbeddedAspectranService newInstance(AspectranConfig aspectranConfig) throws AspectranServiceException {
+		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+		if (contextParameters == null) {
+			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+		}
+
+		String rootContext = contextParameters.getString(AspectranContextConfig.root);
+		if (rootContext == null || rootContext.isEmpty()) {
+			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+		}
+
 		EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		

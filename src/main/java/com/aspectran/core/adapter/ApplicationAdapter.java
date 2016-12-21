@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.service.AspectranServiceController;
 
 /**
  * The Interface ApplicationAdapter.
@@ -75,20 +74,6 @@ public interface ApplicationAdapter {
 	 */
 	void removeAttribute(String name);
 	
-	/**
-	 * Gets the aspectran service controller.
-	 *
-	 * @return the aspectran service controller
-	 */
-	AspectranServiceController getAspectranServiceController();
-
-	/**
-	 * Sets the aspectran service controller.
-	 *
-	 * @param aspectranServiceController the aspectran service controller
-	 */
-	void setAspectranServiceController(AspectranServiceController aspectranServiceController);
-
 	/**
 	 * Gets the class loader.
 	 *

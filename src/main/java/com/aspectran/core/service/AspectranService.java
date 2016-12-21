@@ -17,6 +17,7 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 
 /**
@@ -44,6 +45,13 @@ public interface AspectranService extends AspectranServiceController {
 	 * @return the aspectran class loader
 	 */
 	AspectranClassLoader getAspectranClassLoader();
+
+	/**
+	 * Returns the Aspectran configuration parameters used to generate the AspectranContext.
+	 *
+	 * @return the Aspectran Configuration Parameters
+	 */
+	AspectranConfig getAspectranConfig();
 
 	/**
 	 * Sets the aspectran service controller listener.

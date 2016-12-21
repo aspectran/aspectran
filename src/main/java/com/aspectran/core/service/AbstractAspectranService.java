@@ -42,9 +42,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	private final ApplicationAdapter applicationAdapter;
 
-	private Parameters aspectranConfig;
+	private AspectranConfig aspectranConfig;
 	
-	private Parameters aspectranSchedulerConfig;
+	private AspectranSchedulerConfig aspectranSchedulerConfig;
 
 	private ActivityContextLoader activityContextLoader;
 	
@@ -67,6 +67,12 @@ public abstract class AbstractAspectranService implements AspectranService {
 			throw new IllegalArgumentException("'applicationAdapter' must not be null.");
 		}
 		this.applicationAdapter = applicationAdapter;
+	}
+
+	AbstractAspectranService(AspectranService parentAspectranService) {
+		this.applicationAdapter = parentAspectranService.getApplicationAdapter();
+		this.activityContext = parentAspectranService.getActivityContext();
+		this.aspectranConfig = parentAspectranService.getAspectranConfig();
 	}
 
 	@Override
@@ -92,11 +98,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return hardReload;
 	}
 
-	public String getRootContext() {
-		return rootContext;
-	}
-
-	public Parameters getAspectranConfig() {
+	@Override
+	public AspectranConfig getAspectranConfig() {
 		return aspectranConfig;
 	}
 
@@ -175,7 +178,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		try {
 			activityContext = activityContextLoader.load(rootContext);
-			
+			activityContext.setOriginAspectranService(this);
+
 			startupSchedulerService();
 			startReloadingTimer();
 			
@@ -210,7 +214,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return cleanlyDestoryed;
 	}
 
-
 	/**
 	 * Destroys the application scope.
 	 */
@@ -231,7 +234,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 		try {
 			activityContext = activityContextLoader.reload(hardReload);
-			
+			activityContext.setOriginAspectranService(this);
+
 			startupSchedulerService();
 	
 			startReloadingTimer();

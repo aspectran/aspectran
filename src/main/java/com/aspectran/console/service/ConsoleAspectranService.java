@@ -60,21 +60,6 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	}
 
 	@Override
-	protected void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
-		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if (contextParameters == null) {
-			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
-		}
-
-		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if (rootContext == null || rootContext.length() == 0) {
-			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
-		}
-		
-		super.initialize(aspectranConfig);
-	}
-
-	@Override
 	public void afterStartup() {
 		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
 		if (sessionScopeAdvisor != null) {
@@ -91,7 +76,6 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		sessionScope.destroy();
 	}
 
-	
 	/**
 	 * Process the actual dispatching to the activity. 
 	 *
@@ -142,6 +126,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 		if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
 			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
+		}
+
+		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+		if (contextParameters == null) {
+			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+		}
+
+		String rootContext = contextParameters.getString(AspectranContextConfig.root);
+		if (rootContext == null || rootContext.length() == 0) {
+			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 
 		ConsoleAspectranService aspectranService = new ConsoleAspectranService();

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.service.AspectranServiceController;
 
 /**
  * The Class RegulatedApplicationAdapter.
@@ -68,16 +67,6 @@ public class RegulatedApplicationAdapter implements ApplicationAdapter {
 	@Override
 	public void removeAttribute(String name) {
 		applicationAdapter.removeAttribute(name);
-	}
-
-	@Override
-	public AspectranServiceController getAspectranServiceController() {
-		return applicationAdapter.getAspectranServiceController();
-	}
-
-	@Override
-	public void setAspectranServiceController(AspectranServiceController aspectranServiceController) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

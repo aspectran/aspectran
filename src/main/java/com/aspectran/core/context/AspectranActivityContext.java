@@ -31,6 +31,7 @@ import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -51,7 +52,9 @@ public class AspectranActivityContext implements ActivityContext {
 	private final ContextEnvironment contextEnvironment;
 	
 	private final ApplicationAdapter applicationAdapter;
-	
+
+	private AspectranService originAspectranService;
+
 	private AspectRuleRegistry aspectRuleRegistry;
 
 	private ContextBeanRegistry contextBeanRegistry;
@@ -63,7 +66,7 @@ public class AspectranActivityContext implements ActivityContext {
 	private TransletRuleRegistry transletRuleRegistry;
 
 	private MessageSource messageSource;
-	
+
 	/**
 	 * Instantiates a new AspectranActivityContext.
 	 *
@@ -87,6 +90,19 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
+	}
+
+	@Override
+	public AspectranService getOriginAspectranService() {
+		return originAspectranService;
+	}
+
+	@Override
+	public void setOriginAspectranService(AspectranService originAspectranService) throws AspectranCheckedException {
+		if (this.originAspectranService != null) {
+			throw new AspectranCheckedException("The origin Aspectran Service is already specified.");
+		}
+		this.originAspectranService = originAspectranService;
 	}
 
 	@Override

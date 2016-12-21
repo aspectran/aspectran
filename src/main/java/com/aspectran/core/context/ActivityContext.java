@@ -24,6 +24,7 @@ import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.service.AspectranService;
 
 /**
  * Central interface to provide configuration for performing various activities.
@@ -64,6 +65,22 @@ public interface ActivityContext extends MessageSource {
 	 * @return the application adapter
 	 */
 	ApplicationAdapter getApplicationAdapter();
+
+	/**
+	 * Returns the Aspectran Service that created the current ActivityContext.
+	 *
+	 * @return the origin aspectran service
+	 */
+	AspectranService getOriginAspectranService();
+
+	/**
+	 * Sets the Aspectran Service that created the current ActivityContext.
+	 * It is set only once, just after the ActivityContext is created.
+	 *
+	 * @param originAspectranService the origin aspectran service
+	 * @throws AspectranCheckedException if it is already set, it throws an exception
+	 */
+	void setOriginAspectranService(AspectranService originAspectranService) throws AspectranCheckedException;
 
 	/**
 	 * Gets the aspect rule registry.
