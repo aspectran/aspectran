@@ -29,7 +29,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.service.AspectranServiceControllerListener;
+import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.AponReader;
@@ -141,15 +141,15 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		ConsoleAspectranService aspectranService = new ConsoleAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		
-		setAspectranServiceControllerListener(aspectranService);
+		setAspectranServiceLifeCycleListener(aspectranService);
 		
 		aspectranService.startup();
 
 		return aspectranService;
 	}
 
-	private static void setAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
-		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
+	private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
+		aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
 			@Override
 			public void started() {
 				aspectranService.pauseTimeout = 0;

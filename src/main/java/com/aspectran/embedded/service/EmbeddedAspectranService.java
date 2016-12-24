@@ -27,7 +27,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceControllerListener;
+import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.Parameters;
@@ -283,15 +283,15 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 		EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		
-		setAspectranServiceControllerListener(aspectranService);
+		setAspectranServiceLifeCycleListener(aspectranService);
 		
 		aspectranService.startup();
 		
 		return aspectranService;
 	}
 
-	private static void setAspectranServiceControllerListener(final EmbeddedAspectranService aspectranService) {
-		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
+	private static void setAspectranServiceLifeCycleListener(final EmbeddedAspectranService aspectranService) {
+		aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
 			@Override
 			public void started() {
 				aspectranService.pauseTimeout = 0;

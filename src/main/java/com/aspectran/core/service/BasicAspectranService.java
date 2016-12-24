@@ -26,7 +26,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 	private final boolean derivedService;
 
-	private AspectranServiceControllerListener aspectranServiceControllerListener;
+	private AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener;
 	
 	/** Flag that indicates whether this context is currently active */
 	private final AtomicBoolean active = new AtomicBoolean();
@@ -55,9 +55,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 		this.derivedService = true;
 	}
 
-	@Override
-	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener) {
-		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
+	public void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener) {
+		this.aspectranServiceLifeCycleListener = aspectranServiceLifeCycleListener;
 	}
 
 	protected void afterStartup() {
@@ -86,8 +85,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 				log.info("AspectranService has been started successfully.");
 
-				if (aspectranServiceControllerListener != null) {
-					aspectranServiceControllerListener.started();
+				if (aspectranServiceLifeCycleListener != null) {
+					aspectranServiceLifeCycleListener.started();
 				}
 			}
 		}
@@ -119,8 +118,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 				log.info("AspectranService has been restarted successfully.");
 
-				if (aspectranServiceControllerListener != null) {
-					aspectranServiceControllerListener.restarted(isHardReload());
+				if (aspectranServiceLifeCycleListener != null) {
+					aspectranServiceLifeCycleListener.restarted(isHardReload());
 				}
 			}
 		}
@@ -137,8 +136,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 				pauseSchedulerService();
 
-				if (aspectranServiceControllerListener != null) {
-					aspectranServiceControllerListener.paused();
+				if (aspectranServiceLifeCycleListener != null) {
+					aspectranServiceLifeCycleListener.paused();
 				}
 
 				log.info("AspectranService has been paused.");
@@ -155,8 +154,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 					return;
 				}
 
-				if (aspectranServiceControllerListener != null) {
-					aspectranServiceControllerListener.paused(timeout);
+				if (aspectranServiceLifeCycleListener != null) {
+					aspectranServiceLifeCycleListener.paused(timeout);
 				}
 			}
 		}
@@ -173,8 +172,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 				resumeSchedulerService();
 
-				if (aspectranServiceControllerListener != null) {
-					aspectranServiceControllerListener.resumed();
+				if (aspectranServiceLifeCycleListener != null) {
+					aspectranServiceLifeCycleListener.resumed();
 				}
 
 				log.info("AspectranService has been resumed.");
@@ -201,16 +200,16 @@ public class BasicAspectranService extends AbstractAspectranService {
 	 */
 	private void doDestroy() {
 		if (this.active.get() && this.closed.compareAndSet(false, true)) {
-			if (aspectranServiceControllerListener != null) {
-				aspectranServiceControllerListener.paused();
+			if (aspectranServiceLifeCycleListener != null) {
+				aspectranServiceLifeCycleListener.paused();
 			}
 
 			destroyActivityContext();
 
 			this.active.set(false);
 
-			if (aspectranServiceControllerListener != null) {
-				aspectranServiceControllerListener.stopped();
+			if (aspectranServiceLifeCycleListener != null) {
+				aspectranServiceLifeCycleListener.stopped();
 			}
 		}
 	}

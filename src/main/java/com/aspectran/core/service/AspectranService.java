@@ -54,11 +54,11 @@ public interface AspectranService extends AspectranServiceController {
 	AspectranConfig getAspectranConfig();
 
 	/**
-	 * Sets the aspectran service controller listener.
+	 * Sets the aspectran service life-cycle listener.
 	 *
-	 * @param aspectranServiceControllerListener the new aspectran service controller listener
+	 * @param aspectranServiceLifeCycleListener the new aspectran service life-cycle listener
 	 */
-	void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
+	void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener);
 	
 	/**
 	 * Returns whether or not the java classes to be reload when the activity context is reloading.

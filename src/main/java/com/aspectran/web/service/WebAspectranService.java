@@ -33,7 +33,7 @@ import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranWebConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
-import com.aspectran.core.service.AspectranServiceControllerListener;
+import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.Parameters;
@@ -290,15 +290,15 @@ public class WebAspectranService extends BasicAspectranService {
 			aspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
 		}
 
-		setAspectranServiceControllerListener(aspectranService);
+		setAspectranServiceLifeCycleListener(aspectranService);
 		
 		aspectranService.startup();
 		
 		return aspectranService;
 	}
 	
-	private static void setAspectranServiceControllerListener(final WebAspectranService aspectranService) {
-		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
+	private static void setAspectranServiceLifeCycleListener(final WebAspectranService aspectranService) {
+		aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
 			@Override
 			public void started() {
 				aspectranService.pauseTimeout = 0L;
