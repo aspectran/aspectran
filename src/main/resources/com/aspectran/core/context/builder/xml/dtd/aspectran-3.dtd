@@ -64,7 +64,7 @@
 <!ELEMENT before  (headers | echo | action)>
 <!ELEMENT after   (headers | echo | action)>
 <!ELEMENT around  (action)>
-<!ELEMENT finally (thrown?, (headers | echo | action)?)>
+<!ELEMENT finally (thrown?, (headers | echo | action))>
 
 <!ELEMENT exception (description?, thrown*)>
 
@@ -178,13 +178,13 @@
   hidden   (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (#PCDATA | attributes | item | null)*>
+<!ELEMENT echo (#PCDATA | attributes | item)*>
 <!ATTLIST echo
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT headers (#PCDATA | item | null)*>
+<!ELEMENT headers (#PCDATA | item)*>
 <!ATTLIST headers
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
@@ -245,7 +245,7 @@
 <!ELEMENT properties (#PCDATA | item)*>
 <!ELEMENT arguments  (#PCDATA | item)*>
 
-<!ELEMENT item (#PCDATA | value | reference | null)*>
+<!ELEMENT item (#PCDATA | value | ref | null)*>
 <!ATTLIST item
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
@@ -256,13 +256,13 @@
   mandatory    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | null)*>
+<!ELEMENT value (#PCDATA | ref | null)*>
 <!ATTLIST value
   name    CDATA #IMPLIED
 >
 
-<!ELEMENT reference EMPTY>
-<!ATTLIST reference
+<!ELEMENT ref EMPTY>
+<!ATTLIST ref
   bean      CDATA #IMPLIED
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
