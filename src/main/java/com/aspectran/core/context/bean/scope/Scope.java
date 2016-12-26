@@ -17,6 +17,7 @@ package com.aspectran.core.context.bean.scope;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
+import com.aspectran.core.context.bean.InstantiatedBean;
 import com.aspectran.core.context.rule.BeanRule;
 
 /**
@@ -26,6 +27,11 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public interface Scope {
 
+	/**
+	 * Returns the scope lock.
+	 *
+	 * @return the scope lock
+	 */
 	ReadWriteLock getScopeLock();
 
 	/**
@@ -34,31 +40,15 @@ public interface Scope {
 	 * @param beanRule the bean rule of the bean to retrieve
 	 * @return an instance of the bean
 	 */
-	Object getBean(BeanRule beanRule);
+	InstantiatedBean getInstantiatedBean(BeanRule beanRule);
 
 	/**
-	 * Returns an exposed instance of the bean that matches the given bean rule.
-	 *
-	 * @param beanRule the bean rule of the bean to retrieve
-	 * @return an exposed instance of the bean
-	 */
-	Object getExposedBean(BeanRule beanRule);
-
-	/**
-	 * Returns an array of instantiated beans that matches the given bean rule.
-	 *
-	 * @param beanRule the bean rule of the bean to retrieve
-	 * @return an array of instantiated beans
-	 */
-	Object[] getInstantiatedBean(BeanRule beanRule);
-
-	/**
-	 * Puts an array of instantiated beans for the given bean rule.
+	 * Saves an instantiated bean with the given bean rule into the scope.
 	 *
 	 * @param beanRule the bean rule of the bean to save
-	 * @param beans an array of instantiated beans
+	 * @param instantiatedBean an instance of the bean
 	 */
-	void putInstantiatedBean(BeanRule beanRule, Object[] beans);
+	void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean);
 
 	/**
 	 * Destroy all scoped beans in this scope.

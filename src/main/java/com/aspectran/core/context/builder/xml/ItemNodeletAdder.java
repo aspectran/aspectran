@@ -77,7 +77,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 assistant.pushObject(tokens);
             }
         });
-		parser.addNodelet(xpath, "/item/value/reference", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/item/value/ref", (node, attributes, text) -> {
             String parameter = attributes.get("parameter");
 			String attribute = attributes.get("attribute");
 			String bean= attributes.get("bean");
@@ -116,7 +116,7 @@ class ItemNodeletAdder implements NodeletAdder {
 				}
             }
         });
-		parser.addNodelet(xpath, "/item/reference", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/item/ref", (node, attributes, text) -> {
             String bean = StringUtils.emptyToNull(attributes.get("bean"));
             String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
             String attribute = StringUtils.emptyToNull(attributes.get("attribute"));

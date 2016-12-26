@@ -45,7 +45,7 @@
 	<bean id="freemarker" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerTemplateEngine">
 		<constructor>
 			<arguments>
-				<item><reference bean="freemarkerConfigurationFactory"/></item>
+				<item><ref bean="freemarkerConfigurationFactory"/></item>
 			</arguments>
 		</constructor>
 	</bean>

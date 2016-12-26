@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.service;
 
+import java.util.EventListener;
+
 /**
  * The listener interface for receiving AspectranService life-cycle events.
  */
-public interface AspectranServiceLifeCycleListener {
+public interface AspectranServiceLifeCycleListener extends EventListener {
 	
 	void started();
 	

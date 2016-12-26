@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.bean.InstantiatedBean;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
@@ -116,9 +117,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private boolean methodAutowireParsed;
 
-	private Object[] beans; // only for singleton
-
-	private boolean instantiated;
+	private InstantiatedBean instantiatedBean; // only for singleton
 
 	/**
 	 * Returns the bean id.
@@ -269,6 +268,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.singleton = singleton;
 	}
 
+	public boolean isSingleton() {
+		return (this.scopeType == ScopeType.SINGLETON);
+	}
+
 	/**
 	 * Gets the offer bean id.
 	 *
@@ -347,15 +350,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.offered = offered;
 	}
 
-	/**
-	 * Gets the factory method name.
-	 *
-	 * @return the factory method
-	 */
-	public String getFactoryMethodName() {
-		return factoryMethodName;
-	}
-	
 	public Class<?> getTargetBeanClass() {
 		return (targetBeanClass != null ?  targetBeanClass : beanClass);
 	}
@@ -363,9 +357,18 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	public void setTargetBeanClass(Class<?> targetBeanClass) {
 		this.targetBeanClass = targetBeanClass;
 	}
-	
+
 	public String getTargetBeanClassName() {
 		return (targetBeanClass != null ? targetBeanClass.getName() : className);
+	}
+
+	/**
+	 * Gets the factory method name.
+	 *
+	 * @return the factory method
+	 */
+	public String getFactoryMethodName() {
+		return factoryMethodName;
 	}
 
 	/**
@@ -391,6 +394,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	public void setFactoryMethodRequiresTranslet(boolean factoryMethodRequiresTranslet) {
 		this.factoryMethodRequiresTranslet = factoryMethodRequiresTranslet;
+	}
+
+	public boolean isFactoryOperationRequired() {
+		return !isOffered() && (isFactoryBean() || getFactoryMethod() != null);
 	}
 
 	/**
@@ -682,57 +689,21 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns the instantiated objects of this bean.
+	 * Returns the instantiated object of this bean.
 	 *
-	 * @return the instantiated objects of this bean
+	 * @return the instantiated object of this bean
 	 */
-	public Object[] getInstantiatedBeans() {
-		return beans;
+	public InstantiatedBean getInstantiatedBean() {
+		return instantiatedBean;
 	}
 
 	/**
-	 * Sets the instantiated objects of this bean.
+	 * Sets the instantiated object of this bean.
 	 *
-	 * @param beans the instantiated objects of this bean
+	 * @param instantiatedBean the instantiated object of this bean
 	 */
-	public void setInstantiatedBeans(Object[] beans) {
-		this.beans = beans;
-	}
-
-	/**
-	 * Returns an instantiated object of this bean.
-	 *
-	 * @return an instantiated object of this bean
-	 */
-	public Object getBean() {
-		return (beans != null) ? beans[0] : null;
-	}
-
-	/**
-	 * Returns an instantiated object by factory method.
-	 *
-	 * @return an instantiated object by factory method
-	 */
-	public Object getExposedBean() {
-		return (beans != null) ? beans[beans.length - 1] : null;
-	}
-
-	/**
-	 * Returns whether this bean has been instantiated.
-	 *
-	 * @return whether this bean has been instantiated
-	 */
-	public boolean isInstantiated() {
-		return instantiated;
-	}
-
-	/**
-	 * Sets whether this bean has been instantiated.
-	 *
-	 * @param instantiated this bean has been instantiated
-	 */
-	public void setInstantiated(boolean instantiated) {
-		this.instantiated = instantiated;
+	public void setInstantiatedBean(InstantiatedBean instantiatedBean) {
+		this.instantiatedBean = instantiatedBean;
 	}
 
 	/**
