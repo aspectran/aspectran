@@ -145,11 +145,10 @@ public class JsonWriter implements Flushable {
 
 			closeCurlyBracket();
 		} else if (object instanceof Collection<?>) {
-			@SuppressWarnings("unchecked")
-			Iterator<Object> iter = ((Collection<Object>)object).iterator();
-
 			openSquareBracket();
 
+			@SuppressWarnings("unchecked")
+			Iterator<Object> iter = ((Collection<Object>)object).iterator();
 			while (iter.hasNext()) {
 				Object value = iter.next();
 				checkCircularReference(object, value);
