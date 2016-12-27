@@ -181,7 +181,7 @@ public class AponReader extends AponFormat {
 				}
 			}
 
-			if (parameterValue == null || parameterValue.isArray()) {
+			if (parameterValue == null || parameterValue.isArray() || parameterValueType == null) {
 				if (SQUARE_BRACKET_OPEN == cchar) {
 					valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
