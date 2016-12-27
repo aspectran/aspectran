@@ -60,8 +60,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
 	private Object getPrototypeScopeBean(BeanRule beanRule) {
 		Object bean = createBean(beanRule);
-		if (bean != null && beanRule.isFactoryOperationRequired()) {
-			bean = getObjectFromFactoryBean(beanRule, bean);
+		if (bean != null && beanRule.isFactoryProductionRequired()) {
+			bean = getFactoryProducedObject(beanRule, bean);
 		}
 		return bean;
 	}
@@ -85,8 +85,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 					} else {
 						bean = instantiatedBean.getBean();
 					}
-					if (bean != null && beanRule.isFactoryOperationRequired()) {
-						bean = getObjectFromFactoryBean(beanRule, bean);
+					if (bean != null && beanRule.isFactoryProductionRequired()) {
+						bean = getFactoryProducedObject(beanRule, bean);
 					}
 				} finally {
 					singletonScopeLock.writeLock().unlock();
@@ -94,13 +94,13 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 			} else {
 				instantiatedBean = beanRule.getInstantiatedBean();
 				bean = instantiatedBean.getBean();
-				if (bean != null && beanRule.isFactoryOperationRequired()) {
+				if (bean != null && beanRule.isFactoryProductionRequired()) {
 					readLocked = false;
 					singletonScopeLock.readLock().unlock();
 					singletonScopeLock.writeLock().lock();
 
 					try {
-						bean = getObjectFromFactoryBean(beanRule, bean);
+						bean = getFactoryProducedObject(beanRule, bean);
 					} finally {
 						singletonScopeLock.writeLock().unlock();
 					}
@@ -161,21 +161,21 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 					} else {
 						bean = instantiatedBean.getBean();
 					}
-					if(beanRule.isFactoryOperationRequired()) {
-						bean = getObjectFromFactoryBean(beanRule, bean);
+					if(beanRule.isFactoryProductionRequired()) {
+						bean = getFactoryProducedObject(beanRule, bean);
 					}
 				} finally {
 					scopeLock.writeLock().unlock();
 				}
 			} else {
 				bean = instantiatedBean.getBean();
-				if (bean != null && beanRule.isFactoryOperationRequired()) {
+				if (bean != null && beanRule.isFactoryProductionRequired()) {
 					readLocked = false;
 					scopeLock.readLock().unlock();
 					scopeLock.writeLock().lock();
 
 					try {
-						bean = getObjectFromFactoryBean(beanRule, bean);
+						bean = getFactoryProducedObject(beanRule, bean);
 					} finally {
 						scopeLock.writeLock().unlock();
 					}

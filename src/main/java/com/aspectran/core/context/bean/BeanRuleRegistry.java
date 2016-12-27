@@ -180,7 +180,7 @@ public class BeanRuleRegistry {
 				throw new BeanClassScanFailedException("Failed to scan bean class. scanPattern: " + scanPattern, e);
 			}
 		} else {
-			if (!beanRule.isOffered()) {
+			if (!beanRule.isFactoryOffered()) {
 				String className = beanRule.getClassName();
 				if (prefixSuffixPattern != null) {
 					beanRule.setId(prefixSuffixPattern.join(className));
@@ -202,7 +202,7 @@ public class BeanRuleRegistry {
 				saveBeanRule(beanRule.getId(), beanRule);
 			}
 
-			if (!beanRule.isOffered()) {
+			if (!beanRule.isFactoryOffered()) {
 				if (targetBeanClass.isAnnotationPresent(Configuration.class)) {
 					// bean rule for configuration
 					saveConfigBeanRule(beanRule);
@@ -258,9 +258,9 @@ public class BeanRuleRegistry {
 					saveBeanRule(beanRule.getId(), beanRule);
 				}
 
-				if (beanRule.isOffered()) {
+				if (beanRule.isFactoryOffered()) {
 					Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
-					Class<?> targetBeanClass = BeanRuleAnalyzer.determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
+					Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(offerBeanClass, beanRule);
 
 					if (beanRule.getInitMethodName() != null) {
 						BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
@@ -323,23 +323,23 @@ public class BeanRuleRegistry {
 	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
 		BeanRule offerBeanRule;
 
-		if (beanRule.getOfferBeanClass() == null) {
-			offerBeanRule = getBeanRule(beanRule.getOfferBeanId());
+		if (beanRule.getFactoryBeanClass() == null) {
+			offerBeanRule = getBeanRule(beanRule.getFactoryBeanId());
 			if (offerBeanRule == null) {
-				throw new BeanNotFoundException(beanRule.getOfferBeanId());
+				throw new BeanNotFoundException(beanRule.getFactoryBeanId());
 			}
 		} else {
-			BeanRule[] beanRules = getBeanRules(beanRule.getOfferBeanClass());
+			BeanRule[] beanRules = getBeanRules(beanRule.getFactoryBeanClass());
 			if (beanRules == null || beanRules.length == 0) {
-				throw new RequiredTypeBeanNotFoundException(beanRule.getOfferBeanClass());
+				throw new RequiredTypeBeanNotFoundException(beanRule.getFactoryBeanClass());
 			}
 			if (beanRules.length > 1) {
-				throw new NoUniqueBeanException(beanRule.getOfferBeanClass(), beanRules);
+				throw new NoUniqueBeanException(beanRule.getFactoryBeanClass(), beanRules);
 			}
 			offerBeanRule = beanRules[0];
 		}
 
-		if (offerBeanRule.isOffered()) {
+		if (offerBeanRule.isFactoryOffered()) {
 			throw new BeanRuleException("Invalid BeanRule: An Offer Bean can not call another Offer Bean. caller:", beanRule);
 		}
 

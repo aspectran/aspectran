@@ -436,7 +436,7 @@ public class ContextBuilderAssistant {
 	public void resolveBeanClass(String beanId, BeanRule beanRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
 		if (beanClass != null) {
-			beanRule.setOfferBeanClass(beanClass);
+			beanRule.setFactoryBeanClass(beanClass);
 		    reserveBeanReference(beanClass, beanRule);
 		} else {
 		    reserveBeanReference(beanId, beanRule);

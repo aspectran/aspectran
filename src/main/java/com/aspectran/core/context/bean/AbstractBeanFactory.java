@@ -86,7 +86,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return createBean(beanRule, activity);
 	}
 
-	protected Object getObjectFromFactoryBean(BeanRule beanRule, Object bean) {
+	protected Object getFactoryProducedObject(BeanRule beanRule, Object bean) {
 		if (beanRule.isFactoryBean()) {
 			return invokeMethodOfFactoryBean(beanRule, bean);
 		} else if (beanRule.getFactoryMethodName() != null) {
@@ -99,10 +99,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private Object createBean(BeanRule beanRule, Activity activity) {
 		Object bean;
-		if (!beanRule.isOffered()) {
+		if (!beanRule.isFactoryOffered()) {
 			bean = createNormalBean(beanRule, activity);
 		} else {
-			bean = createOfferedBean(beanRule, activity);
+			bean = createOfferedFactoryBean(beanRule, activity);
 		}
 		return bean;
 	}
@@ -170,29 +170,29 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private Object createOfferedBean(BeanRule beanRule, Activity activity) {
-		String offerBeanId = beanRule.getOfferBeanId();
-		Class<?> offerBeanClass = beanRule.getOfferBeanClass();
+	private Object createOfferedFactoryBean(BeanRule beanRule, Activity activity) {
+		String factoryBeanId = beanRule.getFactoryBeanId();
+		Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
 		Object bean;
 		
 		try {
-			if (offerBeanClass != null) {
-				if (offerBeanClass.isAnnotationPresent(Configuration.class)) {
-					bean = activity.getConfigBean(offerBeanClass);
+			if (factoryBeanClass != null) {
+				if (factoryBeanClass.isAnnotationPresent(Configuration.class)) {
+					bean = activity.getConfigBean(factoryBeanClass);
 				} else {
-					bean = activity.getBean(offerBeanClass);
+					bean = activity.getBean(factoryBeanClass);
 				}
 			} else {
-				bean = activity.getBean(offerBeanId);
+				bean = activity.getBean(factoryBeanId);
 			}
 
 			bean = invokeOfferMethod(beanRule, bean, activity);
 			if (bean == null) {
-				throw new NumberFormatException("Offer Method [" + beanRule.getOfferMethod() + "] has returned null.");
+				throw new NumberFormatException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null.");
 			}
 		} catch (Exception e) {
 			throw new BeanCreationException(
-					"An exception occurred during the execution of a offer method from the referenced offer bean",
+					"An exception occurred during the execution of a factory method from the offered factory bean",
 					beanRule, e);
 		}
 
@@ -329,9 +329,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	private Object invokeOfferMethod(BeanRule beanRule, Object bean, Activity activity) {
 		try {
-			Method offerMethod = beanRule.getOfferMethod();
-			boolean requiresTranslet = beanRule.isOfferMethodRequiresTranslet();
-			return MethodAction.invokeMethod(activity, bean, offerMethod, requiresTranslet);
+			Method factoryMethod = beanRule.getFactoryMethod();
+			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
+			return MethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
 		} catch (Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of an offer method of the bean", beanRule, e);
 		}

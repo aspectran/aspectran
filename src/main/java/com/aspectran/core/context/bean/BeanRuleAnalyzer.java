@@ -35,13 +35,13 @@ public class BeanRuleAnalyzer {
 	public static Class<?> determineBeanClass(BeanRule beanRule) {
 		Class<?> targetBeanClass;
 
-		if (beanRule.isOffered()) {
-			targetBeanClass = beanRule.getOfferBeanClass();
+		if (beanRule.isFactoryOffered()) {
+			targetBeanClass = beanRule.getFactoryBeanClass();
 			if (targetBeanClass == null) {
 				// (will be post processing)
 				return null;
 			}
-			targetBeanClass = determineOfferMethodTargetBeanClass(targetBeanClass, beanRule);
+			targetBeanClass = determineOfferedFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 		} else {
 			targetBeanClass = beanRule.getBeanClass();
 		}
@@ -67,25 +67,25 @@ public class BeanRuleAnalyzer {
 		return targetBeanClass;
 	}
 
-	public static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
-		String offerMethodName = beanRule.getOfferMethodName();
+	public static Class<?> determineOfferedFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+		String factoryMethodName = beanRule.getFactoryMethodName();
 
 		Class<?> targetBeanClass;
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if (m1 != null) {
-			beanRule.setOfferMethod(m1);
-			beanRule.setOfferMethodRequiresTranslet(true);
+			beanRule.setFactoryMethod(m1);
+			beanRule.setFactoryMethodRequiresTranslet(true);
 			targetBeanClass = m1.getReturnType();
 		} else {
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName);
+			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
 
 			if (m2 == null) {
-				throw new BeanRuleException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+				throw new BeanRuleException("No such offer method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
 			}
 
-			beanRule.setOfferMethod(m2);
+			beanRule.setFactoryMethod(m2);
 			targetBeanClass = m2.getReturnType();
 		}
 

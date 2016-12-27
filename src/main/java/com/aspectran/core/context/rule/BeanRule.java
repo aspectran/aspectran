@@ -59,25 +59,19 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private Boolean singleton;
 
-	private String offerBeanId;
+	private String factoryBeanId;
 	
-	private Class<?> offerBeanClass;
-
-	private String offerMethodName;
-
-	private Method offerMethod;
-	
-	private boolean offerMethodRequiresTranslet;
-
-	private boolean offered;
-	
-	private Class<?> targetBeanClass;
+	private Class<?> factoryBeanClass;
 
 	private String factoryMethodName;
 
 	private Method factoryMethod;
 	
 	private boolean factoryMethodRequiresTranslet;
+
+	private boolean factoryOffered;
+
+	private Class<?> targetBeanClass;
 
 	private String initMethodName;
 	
@@ -251,115 +245,66 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	/**
-	 * Returns whether Singleton. 
-	 *
-	 * @return whether Singleton
+     * Returns whether this bean is a singleton.
+     * 
+     * @return whether this bean is a singleton
 	 */
 	public Boolean getSingleton() {
 		return singleton;
 	}
 
 	/**
-	 * Sets whether Singleton. 
-	 *
-	 * @param singleton whether Singleton
+     * Sets whether this bean is a singleton.
+     *  
+     * @param singleton whether this bean is a singleton
 	 */
 	public void setSingleton(Boolean singleton) {
 		this.singleton = singleton;
 	}
 
+	/**
+     * Returns whether this bean is a singleton.
+     * 
+     * @return whether this bean is a singleton
+	 */
 	public boolean isSingleton() {
 		return (this.scopeType == ScopeType.SINGLETON);
 	}
 
 	/**
-	 * Gets the offer bean id.
+	 * Gets the factory bean id.
 	 *
-	 * @return the offer bean id
+	 * @return the factory bean id
 	 */
-	public String getOfferBeanId() {
-		return offerBeanId;
+	public String getFactoryBeanId() {
+		return factoryBeanId;
 	}
 
 	/**
-	 * Sets the offer bean id.
+	 * Sets the factory bean id.
 	 *
-	 * @param offerBeanId the new offer bean id
+	 * @param factoryBeanId the new factory bean id
 	 */
-	public void setOfferBeanId(String offerBeanId) {
-		this.offerBeanId = offerBeanId;
+	public void setFactoryBeanId(String factoryBeanId) {
+		this.factoryBeanId = factoryBeanId;
 	}
 
 	/**
-	 * Gets offer bean class.
+	 * Gets factory bean class.
 	 *
-	 * @return the offer bean class
+	 * @return the factory bean class
 	 */
-	public Class<?> getOfferBeanClass() {
-		return offerBeanClass;
+	public Class<?> getFactoryBeanClass() {
+		return factoryBeanClass;
 	}
 
 	/**
-	 * Sets offer bean class.
+	 * Sets factory bean class.
 	 *
-	 * @param offerBeanClass the offer bean class
+	 * @param factoryBeanClass the factory bean class
 	 */
-	public void setOfferBeanClass(Class<?> offerBeanClass) {
-		this.offerBeanClass = offerBeanClass;
-	}
-
-	/**
-	 * Gets the offer bean's offer method name.
-	 *
-	 * @return the factory method
-	 */
-	public String getOfferMethodName() {
-		return offerMethodName;
-	}
-
-	/**
-	 * Sets the offer bean's method name.
-	 *
-	 * @param offerMethodName the new offer method name
-	 */
-	public void setOfferMethodName(String offerMethodName) {
-		this.offerMethodName = offerMethodName;
-	}
-	
-	public Method getOfferMethod() {
-		return offerMethod;
-	}
-
-	public void setOfferMethod(Method offerMethod) {
-		this.offerMethod = offerMethod;
-	}
-
-	public boolean isOfferMethodRequiresTranslet() {
-		return offerMethodRequiresTranslet;
-	}
-
-	public void setOfferMethodRequiresTranslet(boolean offerMethodRequiresTranslet) {
-		this.offerMethodRequiresTranslet = offerMethodRequiresTranslet;
-	}
-
-	public boolean isOffered() {
-		return offered;
-	}
-
-	public void setOffered(boolean offered) {
-		this.offered = offered;
-	}
-
-	public Class<?> getTargetBeanClass() {
-		return (targetBeanClass != null ?  targetBeanClass : beanClass);
-	}
-
-	public void setTargetBeanClass(Class<?> targetBeanClass) {
-		this.targetBeanClass = targetBeanClass;
-	}
-
-	public String getTargetBeanClassName() {
-		return (targetBeanClass != null ? targetBeanClass.getName() : className);
+	public void setFactoryBeanClass(Class<?> factoryBeanClass) {
+		this.factoryBeanClass = factoryBeanClass;
 	}
 
 	/**
@@ -396,8 +341,28 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.factoryMethodRequiresTranslet = factoryMethodRequiresTranslet;
 	}
 
-	public boolean isFactoryOperationRequired() {
-		return !isOffered() && (isFactoryBean() || getFactoryMethod() != null);
+	public boolean isFactoryOffered() {
+		return factoryOffered;
+	}
+
+	public void setFactoryOffered(boolean factoryOffered) {
+		this.factoryOffered = factoryOffered;
+	}
+
+	public boolean isFactoryProductionRequired() {
+		return !isFactoryOffered() && (isFactoryBean() || getFactoryMethod() != null);
+	}
+
+	public Class<?> getTargetBeanClass() {
+		return (targetBeanClass != null ?  targetBeanClass : beanClass);
+	}
+
+	public void setTargetBeanClass(Class<?> targetBeanClass) {
+		this.targetBeanClass = targetBeanClass;
+	}
+
+	public String getTargetBeanClassName() {
+		return (targetBeanClass != null ? targetBeanClass.getName() : className);
 	}
 
 	/**
@@ -658,7 +623,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	 * @return true if this bean can be proxied, otherwise false
 	 */
 	public boolean isProxiable() {
-		return (!offered && !factoryBean && factoryMethod == null);
+		return (!factoryOffered && !factoryBean && factoryMethod == null);
 	}
 
 	public List<AutowireTargetRule> getAutowireTargetRuleList() {
@@ -738,16 +703,16 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		if (!offered) {
+		if (!factoryOffered) {
 			tsb.append("class", className);
 			tsb.append("scope", scopeType);
 			tsb.append("initMethod", initMethodName);
-			tsb.append("factoryMethod", factoryMethodName);
 			tsb.append("destroyMethod", destroyMethodName);
-			tsb.append("factoryBean", factoryBean);
+			tsb.append("factoryMethod", factoryMethodName);
 			tsb.append("initializableBean", initializableBean);
 			tsb.append("initializableTransletBean", initializableTransletBean);
 			tsb.append("disposableBean", disposableBean);
+			tsb.append("factoryBean", factoryBean);
 			tsb.append("lazyInit", lazyInit);
 			tsb.append("important", important);
 			tsb.append("proxied", proxied);
@@ -760,10 +725,9 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			}
 		} else {
 			tsb.append("scope", scopeType);
-			tsb.append("offerBean", offerBeanId);
-			tsb.append("offerMethod", offerMethodName);
-			tsb.append("initMethod", initMethodName);
+			tsb.append("factoryBean", factoryBeanId);
 			tsb.append("factoryMethod", factoryMethodName);
+			tsb.append("initMethod", initMethodName);
 			tsb.append("destroyMethod", destroyMethodName);
 			tsb.append("lazyInit", lazyInit);
 			tsb.append("important", important);
@@ -817,20 +781,19 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		return beanRule;
 	}
 	
-	public static BeanRule newOfferedBeanInstance(
+	public static BeanRule newOfferedFactoryBeanInstance(
 			String id,
-			String offerBeanId,
-			String offerMethodName,
+			String factoryBeanId,
+			String factoryMethodName,
 			String initMethodName,
 			String destroyMethodName,
-			String factoryMethodName,
 			String scope,
 			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
 
-        if (offerBeanId == null || offerMethodName == null) {
-			throw new IllegalArgumentException("The 'bean' element requires both 'offerBean' attribute and 'offerMethod' attribute.");
+        if (factoryBeanId == null || factoryMethodName == null) {
+			throw new IllegalArgumentException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute.");
 		}
 
 		ScopeType scopeType = ScopeType.resolve(scope);
@@ -847,12 +810,11 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		beanRule.setId(id);
 		beanRule.setScopeType(scopeType);
 		beanRule.setSingleton(singleton);
-		beanRule.setOfferBeanId(offerBeanId);
-		beanRule.setOfferMethodName(offerMethodName);
-		beanRule.setOffered(true);
+		beanRule.setFactoryBeanId(factoryBeanId);
+		beanRule.setFactoryMethodName(factoryMethodName);
+		beanRule.setFactoryOffered(true);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 		return beanRule;
@@ -866,11 +828,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		}
 		br.setScopeType(beanRule.getScopeType());
 		br.setSingleton(beanRule.getSingleton());
-		br.setOfferBeanId(beanRule.getOfferBeanId());
-		br.setOfferMethodName(beanRule.getOfferMethodName());
+		br.setFactoryBeanId(beanRule.getFactoryBeanId());
+		br.setFactoryMethodName(beanRule.getFactoryMethodName());
 		br.setInitMethodName(beanRule.getInitMethodName());
 		br.setDestroyMethodName(beanRule.getDestroyMethodName());
-		br.setFactoryMethodName(beanRule.getFactoryMethodName());
 		br.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
 		br.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
 		br.setLazyInit(beanRule.getLazyInit());
@@ -881,7 +842,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
-		if (!beanRule.isOffered()) {
+		if (!beanRule.isFactoryOffered()) {
 			List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
 			if (argumentParametersList == null) {
 				return;
@@ -895,7 +856,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 	
 	public static void updateProperty(BeanRule beanRule, String text) {
-		if (!beanRule.isOffered()) {
+		if (!beanRule.isFactoryOffered()) {
 			List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
 			if (propertyParametersList == null) {
 				return;

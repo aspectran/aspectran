@@ -109,7 +109,7 @@ public class AnnotatedConfigParser {
 			if (log.isTraceEnabled()) {
 				log.trace("configBeanRule " + beanRule);
 			}
-			if (!beanRule.isOffered()) {
+			if (!beanRule.isFactoryOffered()) {
 				parseConfigBean(beanRule);
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
@@ -124,7 +124,7 @@ public class AnnotatedConfigParser {
 			if (log.isTraceEnabled()) {
 				log.trace("idBasedBeanRule " + beanRule);
 			}
-			if (!beanRule.isOffered()) {
+			if (!beanRule.isFactoryOffered()) {
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
 			}
@@ -136,7 +136,7 @@ public class AnnotatedConfigParser {
 
 		for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
 			for (BeanRule beanRule : set) {
-				if (!beanRule.isOffered()) {
+				if (!beanRule.isFactoryOffered()) {
 					if (log.isTraceEnabled()) {
 						log.trace("typeBasedBeanRule " + beanRule);
 					}
@@ -308,20 +308,18 @@ public class AnnotatedConfigParser {
 			ScopeType scopeType = beanAnno.scope();
 			String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
 			String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
-			String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
 			boolean lazyInit = beanAnno.lazyInit();
 			boolean important = beanAnno.important();
 			BeanRule beanRule = new BeanRule();
 			beanRule.setId(beanId);
 			beanRule.setScopeType(scopeType);
-			beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
-			beanRule.setOfferBeanClass(beanClass);
-			beanRule.setOfferMethodName(method.getName());
-			beanRule.setOfferMethod(method);
-			beanRule.setOffered(true);
+			beanRule.setFactoryBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
+			beanRule.setFactoryBeanClass(beanClass);
+			beanRule.setFactoryMethodName(method.getName());
+			beanRule.setFactoryMethod(method);
+			beanRule.setFactoryOffered(true);
 			beanRule.setInitMethodName(initMethodName);
 			beanRule.setDestroyMethodName(destroyMethodName);
-			beanRule.setFactoryMethodName(factoryMethodName);
 			if (lazyInit) {
 				beanRule.setLazyInit(Boolean.TRUE);
 			}

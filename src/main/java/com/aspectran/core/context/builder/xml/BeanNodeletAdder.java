@@ -48,13 +48,12 @@ class BeanNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/bean", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
             String className = StringUtils.emptyToNull(assistant.resolveAliasType(attributes.get("class")));
-            String offerBean = StringUtils.emptyToNull(attributes.get("offerBean"));
-            String offerMethod = StringUtils.emptyToNull(attributes.get("offerMethod"));
+            String factoryBean = StringUtils.emptyToNull(attributes.get("factoryBean"));
+			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
             String scan = attributes.get("scan");
             String mask = attributes.get("mask");
             String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
 			String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
-			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
 			String scope = attributes.get("scope");
             Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
             Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
@@ -62,9 +61,9 @@ class BeanNodeletAdder implements NodeletAdder {
 
             BeanRule beanRule;
 
-            if (className == null && scan == null && offerBean != null) {
-                beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
-				assistant.resolveBeanClass(offerBean, beanRule);
+            if (className == null && scan == null && factoryBean != null) {
+                beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
+				assistant.resolveBeanClass(factoryBean, beanRule);
             } else {
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
             }

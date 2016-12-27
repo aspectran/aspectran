@@ -46,7 +46,7 @@
 		</constructor>
 	</bean>
 
-	<bean id="defaultScheduler2" offerBean="schedulerFactory" offerMethod="getScheduler"/>
+	<bean id="defaultScheduler2" factoryBean="schedulerFactory" factoryMethod="getScheduler"/>
 
 	<schedule id="scheduler1">
 		<trigger type="simple">
