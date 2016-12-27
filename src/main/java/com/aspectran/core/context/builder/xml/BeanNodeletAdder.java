@@ -63,7 +63,7 @@ class BeanNodeletAdder implements NodeletAdder {
 
             if (className == null && scan == null && factoryBean != null) {
                 beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
-				assistant.resolveBeanClass(factoryBean, beanRule);
+				assistant.resolveFactoryBeanClass(factoryBean, beanRule);
             } else {
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
             }

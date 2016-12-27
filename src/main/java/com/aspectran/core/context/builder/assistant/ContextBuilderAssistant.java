@@ -401,11 +401,11 @@ public class ContextBuilderAssistant {
 	 * @param beanId the bean id
 	 * @param aspectRule the aspect rule
 	 */
-	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
+	public void resolveAdviceBeanClass(String beanId, AspectRule aspectRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
 		if (beanClass != null) {
 			aspectRule.setAdviceBeanClass(beanClass);
-		    reserveBeanReference(beanClass, aspectRule);
+			reserveBeanReference(beanClass, aspectRule);
 		} else {
 		    reserveBeanReference(beanId, aspectRule);
 		}
@@ -415,29 +415,29 @@ public class ContextBuilderAssistant {
 	 * Resolve bean class for bean action rule.
 	 *
 	 * @param beanId the bean id
-	 * @param beanActionRule the aspect rule
+	 * @param beanActionRule the bean action rule
 	 */
-	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
+	public void resolveActionBeanClass(String beanId, BeanActionRule beanActionRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
 		if (beanClass != null) {
 			beanActionRule.setBeanClass(beanClass);
-		    reserveBeanReference(beanClass, beanActionRule);
+			reserveBeanReference(beanClass, beanActionRule);
 		} else {
 		    reserveBeanReference(beanId, beanActionRule);
 		}
 	}
 
 	/**
-	 * Resolve bean class for bean rule.
+	 * Resolve bean class for factory bean rule.
 	 *
 	 * @param beanId the bean id
-	 * @param beanRule the aspect rule
+	 * @param beanRule the bean rule
 	 */
-	public void resolveBeanClass(String beanId, BeanRule beanRule) {
+	public void resolveFactoryBeanClass(String beanId, BeanRule beanRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
 		if (beanClass != null) {
 			beanRule.setFactoryBeanClass(beanClass);
-		    reserveBeanReference(beanClass, beanRule);
+			reserveBeanReference(beanClass, beanRule);
 		} else {
 		    reserveBeanReference(beanId, beanRule);
 		}

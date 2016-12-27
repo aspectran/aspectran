@@ -57,7 +57,7 @@ class ActionNodeletAdder implements NodeletAdder {
 
             // AspectAdviceRule may not have a bean id.
             if (beanIdOrClass != null) {
-                assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
+                assistant.resolveActionBeanClass(beanIdOrClass, beanActionRule);
             }
 
             assistant.pushObject(beanActionRule);

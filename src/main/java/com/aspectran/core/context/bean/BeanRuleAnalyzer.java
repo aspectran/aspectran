@@ -41,7 +41,7 @@ public class BeanRuleAnalyzer {
 				// (will be post processing)
 				return null;
 			}
-			targetBeanClass = determineOfferedFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+			targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 		} else {
 			targetBeanClass = beanRule.getBeanClass();
 		}
@@ -58,38 +58,13 @@ public class BeanRuleAnalyzer {
 			checkDestroyMethod(targetBeanClass, beanRule);
 		}
 
-		if (beanRule.isFactoryBean()) {
-			targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
-		} else if (beanRule.getFactoryMethodName() != null) {
-			targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
-		}
-
-		return targetBeanClass;
-	}
-
-	public static Class<?> determineOfferedFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
-		String factoryMethodName = beanRule.getFactoryMethodName();
-
-		Class<?> targetBeanClass;
-
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
-		if (m1 != null) {
-			beanRule.setFactoryMethod(m1);
-			beanRule.setFactoryMethodRequiresTranslet(true);
-			targetBeanClass = m1.getReturnType();
-		} else {
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
-
-			if (m2 == null) {
-				throw new BeanRuleException("No such offer method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+		if (!beanRule.isFactoryOffered()) {
+			if (beanRule.isFactoryBean()) {
+				targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
+			} else if (beanRule.getFactoryMethodName() != null) {
+				targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 			}
-
-			beanRule.setFactoryMethod(m2);
-			targetBeanClass = m2.getReturnType();
 		}
-
-		beanRule.setTargetBeanClass(targetBeanClass);
 
 		return targetBeanClass;
 	}
@@ -106,10 +81,6 @@ public class BeanRuleAnalyzer {
 	}
 	
 	protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
-		if (beanRule.isFactoryBean()) {
-			throw new BeanRuleException("Bean factory method is duplicated. Already implemented the FactoryBean", beanRule);
-		}
-		
 		String factoryMethodName = beanRule.getFactoryMethodName();
 
 		Class<?> targetBeanClass;

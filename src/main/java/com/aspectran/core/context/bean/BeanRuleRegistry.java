@@ -259,8 +259,8 @@ public class BeanRuleRegistry {
 				}
 
 				if (beanRule.isFactoryOffered()) {
-					Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
-					Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(offerBeanClass, beanRule);
+					Class<?> offeredFactoryBeanClass = resolveOfferedFactoryBeanClass(beanRule);
+					Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(offeredFactoryBeanClass, beanRule);
 
 					if (beanRule.getInitMethodName() != null) {
 						BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
@@ -268,10 +268,6 @@ public class BeanRuleRegistry {
 
 					if (beanRule.getDestroyMethodName() != null) {
 						BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
-					}
-
-					if (beanRule.getFactoryMethodName() != null) {
-						targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 					}
 
 					saveBeanRule(targetBeanClass, beanRule);
@@ -320,12 +316,12 @@ public class BeanRuleRegistry {
 		parser.parse();
 	}
 
-	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
-		BeanRule offerBeanRule;
+	private Class<?> resolveOfferedFactoryBeanClass(BeanRule beanRule) {
+		BeanRule offeredFactoryBeanRule;
 
 		if (beanRule.getFactoryBeanClass() == null) {
-			offerBeanRule = getBeanRule(beanRule.getFactoryBeanId());
-			if (offerBeanRule == null) {
+			offeredFactoryBeanRule = getBeanRule(beanRule.getFactoryBeanId());
+			if (offeredFactoryBeanRule == null) {
 				throw new BeanNotFoundException(beanRule.getFactoryBeanId());
 			}
 		} else {
@@ -336,14 +332,14 @@ public class BeanRuleRegistry {
 			if (beanRules.length > 1) {
 				throw new NoUniqueBeanException(beanRule.getFactoryBeanClass(), beanRules);
 			}
-			offerBeanRule = beanRules[0];
+			offeredFactoryBeanRule = beanRules[0];
 		}
 
-		if (offerBeanRule.isFactoryOffered()) {
-			throw new BeanRuleException("Invalid BeanRule: An Offer Bean can not call another Offer Bean. caller:", beanRule);
+		if (offeredFactoryBeanRule.isFactoryOffered()) {
+			throw new BeanRuleException("Invalid BeanRule: An offered factory bean can not call another offered factory bean. caller:", beanRule);
 		}
 
-		return offerBeanRule.getTargetBeanClass();
+		return offeredFactoryBeanRule.getTargetBeanClass();
 	}
 
 	public void ignoreDependencyInterface(Class<?> ifc) {

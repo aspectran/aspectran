@@ -482,7 +482,11 @@ public class RootAponAssembler {
 	
 	private Parameters assembleExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
 		ExceptionThrownParameters etParameters = new ExceptionThrownParameters();
-		etParameters.putValue(ExceptionThrownParameters.type, exceptionThrownRule.getExceptionTypes());
+		if(exceptionThrownRule.getExceptionTypes() != null) {
+			for(String exceptionType : exceptionThrownRule.getExceptionTypes()) {
+				etParameters.putValue(ExceptionThrownParameters.type, exceptionType);
+			}
+		}
 
 		if (exceptionThrownRule.getActionType() == ActionType.BEAN) {
 			BeanActionRule beanActionRule = exceptionThrownRule.getExecutableAction().getActionRule();

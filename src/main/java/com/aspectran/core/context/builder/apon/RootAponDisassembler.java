@@ -233,7 +233,7 @@ public class RootAponDisassembler {
 			String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
 			if (!StringUtils.isEmpty(adviceBeanId)) {
 				aspectRule.setAdviceBeanId(adviceBeanId);
-				assistant.resolveBeanClass(adviceBeanId, aspectRule);
+				assistant.resolveAdviceBeanClass(adviceBeanId, aspectRule);
 			}
 			
 			Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
@@ -312,7 +312,7 @@ public class RootAponDisassembler {
 
 		if (className == null && scan == null && factoryBean != null) {
 			beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
-			assistant.resolveBeanClass(factoryBean, beanRule);
+			assistant.resolveFactoryBeanClass(factoryBean, beanRule);
 		} else {
 			beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 		}
@@ -576,7 +576,7 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			if (beanIdOrClass != null) {
-				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
+				assistant.resolveActionBeanClass(beanIdOrClass, beanActionRule);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
 		} else if (include != null) {
