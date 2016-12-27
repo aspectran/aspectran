@@ -43,7 +43,7 @@
 	<bean id="freemarker" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerTemplateEngine">
 		<constructor>
 			<arguments>
-				<item><reference bean="freemarkerConfigurationFactory"/></item>
+				<item><ref bean="freemarkerConfigurationFactory"/></item>
 			</arguments>
 		</constructor>
 	</bean>
@@ -53,7 +53,7 @@
 	<bean id="pebble" class="com.aspectran.core.context.template.engine.pebble.PebbleTemplateEngine">
 		<constructor>
 			<arguments>
-				<item><reference bean="pebbleConfigurationFactory"/></item>
+				<item><ref bean="pebbleConfigurationFactory"/></item>
 			</arguments>
 		</constructor>
 	</bean>
