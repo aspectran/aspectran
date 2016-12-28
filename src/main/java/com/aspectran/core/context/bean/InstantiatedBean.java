@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.service;
-
-import java.util.EventListener;
+package com.aspectran.core.context.bean;
 
 /**
- * The listener interface for receiving AspectranService life-cycle events.
+ * <p>Created: 2016. 12. 27.</p>
  */
-public interface AspectranServiceLifeCycleListener extends EventListener {
-	
-	void started();
-	
-	void restarted(boolean hardReload);
+public class InstantiatedBean {
 
-	void paused(long millis);
-	
-	void paused();
-	
-	void resumed();
+	private Object bean;
 
-	void stopped();
+	public InstantiatedBean(Object bean) {
+		this.bean = bean;
+	}
+
+	public Object getBean() {
+		return bean;
+	}
 
 }

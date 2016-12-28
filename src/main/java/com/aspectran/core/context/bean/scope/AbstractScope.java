@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.aspectran.core.context.bean.InstantiatedBean;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -39,7 +40,7 @@ public class AbstractScope implements Scope {
 
 	private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-	protected final Map<BeanRule, Object[]> scopedBeanMap = new HashMap<>();
+	protected final Map<BeanRule, InstantiatedBean> scopedBeanMap = new HashMap<>();
 	
 	private final ScopeType scopeType;
 	
@@ -53,25 +54,13 @@ public class AbstractScope implements Scope {
 	}
 
 	@Override
-	public Object getBean(BeanRule beanRule) {
-		Object[] beans = scopedBeanMap.get(beanRule);
-		return (beans != null ? beans[0] : null);
-	}
-
-	@Override
-	public Object getExposedBean(BeanRule beanRule) {
-		Object[] beans = scopedBeanMap.get(beanRule);
-		return (beans != null ? beans[beans.length - 1] : null);
-	}
-
-	@Override
-	public Object[] getInstantiatedBean(BeanRule beanRule) {
+	public InstantiatedBean getInstantiatedBean(BeanRule beanRule) {
 		return scopedBeanMap.get(beanRule);
 	}
 
 	@Override
-	public void putInstantiatedBean(BeanRule beanRule, Object[] beans) {
-		scopedBeanMap.put(beanRule, beans);
+	public void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean) {
+		scopedBeanMap.put(beanRule, instantiatedBean);
 	}
 
 	@Override
@@ -82,10 +71,13 @@ public class AbstractScope implements Scope {
 			}
 		}
 
-		for (Map.Entry<BeanRule, Object[]> entry : scopedBeanMap.entrySet()) {
+		for (Map.Entry<BeanRule, InstantiatedBean> entry : scopedBeanMap.entrySet()) {
 			BeanRule beanRule = entry.getKey();
-			Object[] beans = entry.getValue();
-			doDestroy(beanRule, beans[0]);
+			InstantiatedBean instantiatedBean = entry.getValue();
+			Object bean = instantiatedBean.getBean();
+			if(bean != null) {
+				doDestroy(beanRule, bean);
+			}
 		}
 
 		scopedBeanMap.clear();

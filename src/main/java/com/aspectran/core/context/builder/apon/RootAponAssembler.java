@@ -308,10 +308,9 @@ public class RootAponAssembler {
 		} else if (beanRule.getScopeType() != null) {
 			beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
 		}
-		beanParameters.putValueNonNull(BeanParameters.offerBean, beanRule.getOfferBeanId());
-		beanParameters.putValueNonNull(BeanParameters.offerMethod, beanRule.getOfferMethodName());
-		beanParameters.putValueNonNull(BeanParameters.initMethod, beanRule.getInitMethodName());
+		beanParameters.putValueNonNull(BeanParameters.factoryBean, beanRule.getFactoryBeanId());
 		beanParameters.putValueNonNull(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
+		beanParameters.putValueNonNull(BeanParameters.initMethod, beanRule.getInitMethodName());
 		beanParameters.putValueNonNull(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
 		beanParameters.putValueNonNull(BeanParameters.lazyInit, beanRule.getLazyInit());
 		beanParameters.putValueNonNull(BeanParameters.important, beanRule.getImportant());
@@ -483,7 +482,11 @@ public class RootAponAssembler {
 	
 	private Parameters assembleExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
 		ExceptionThrownParameters etParameters = new ExceptionThrownParameters();
-		etParameters.putValue(ExceptionThrownParameters.type, exceptionThrownRule.getExceptionTypes());
+		if(exceptionThrownRule.getExceptionTypes() != null) {
+			for(String exceptionType : exceptionThrownRule.getExceptionTypes()) {
+				etParameters.putValue(ExceptionThrownParameters.type, exceptionType);
+			}
+		}
 
 		if (exceptionThrownRule.getActionType() == ActionType.BEAN) {
 			BeanActionRule beanActionRule = exceptionThrownRule.getExecutableAction().getActionRule();

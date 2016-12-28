@@ -28,11 +28,10 @@ public class BeanParameters extends AbstractParameters {
 	public static final ParameterDefinition mask;
 	public static final ParameterDefinition scope;
 	public static final ParameterDefinition singleton;
-	public static final ParameterDefinition offerBean;
-	public static final ParameterDefinition offerMethod;
+	public static final ParameterDefinition factoryBean;
+	public static final ParameterDefinition factoryMethod;
 	public static final ParameterDefinition initMethod;
 	public static final ParameterDefinition destroyMethod;
-	public static final ParameterDefinition factoryMethod;
 	public static final ParameterDefinition lazyInit;
 	public static final ParameterDefinition important;
 	public static final ParameterDefinition camelCase;
@@ -50,11 +49,10 @@ public class BeanParameters extends AbstractParameters {
 		mask = new ParameterDefinition("mask", ParameterValueType.STRING);
 		scope = new ParameterDefinition("scope", ParameterValueType.STRING);
 		singleton = new ParameterDefinition("singleton", ParameterValueType.BOOLEAN);
-		offerBean = new ParameterDefinition("offerBean", ParameterValueType.STRING);
-		offerMethod = new ParameterDefinition("offerMethod", ParameterValueType.STRING);
+		factoryBean = new ParameterDefinition("factoryBean", ParameterValueType.STRING);
+		factoryMethod = new ParameterDefinition("factoryMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefinition("initMethod", ParameterValueType.STRING);
 		destroyMethod = new ParameterDefinition("destroyMethod", ParameterValueType.STRING);
-		factoryMethod = new ParameterDefinition("factoryMethod", ParameterValueType.STRING);
 		lazyInit = new ParameterDefinition("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefinition("important", ParameterValueType.BOOLEAN);
 		camelCase = new ParameterDefinition("camelCase", ParameterValueType.BOOLEAN);
@@ -70,11 +68,10 @@ public class BeanParameters extends AbstractParameters {
 			mask,
 			scope,
 			singleton,
-			offerBean,
-			offerMethod,
+			factoryBean,
+			factoryMethod,
 			initMethod,
 			destroyMethod,
-			factoryMethod,
 			lazyInit,
 			important,
 			camelCase,

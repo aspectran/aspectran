@@ -233,7 +233,7 @@ public class RootAponDisassembler {
 			String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
 			if (!StringUtils.isEmpty(adviceBeanId)) {
 				aspectRule.setAdviceBeanId(adviceBeanId);
-				assistant.resolveBeanClass(adviceBeanId, aspectRule);
+				assistant.resolveAdviceBeanClass(adviceBeanId, aspectRule);
 			}
 			
 			Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
@@ -298,11 +298,10 @@ public class RootAponDisassembler {
 		String mask = beanParameters.getString(BeanParameters.mask);
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
-		String offerBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerBean));
-		String offerMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerMethod));
+		String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
+		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
 		String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
 		String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
-		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
@@ -311,9 +310,9 @@ public class RootAponDisassembler {
 		
 		BeanRule beanRule;
 
-		if (className == null && scan == null && offerBean != null) {
-			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
-			assistant.resolveBeanClass(offerBean, beanRule);
+		if (className == null && scan == null && factoryBean != null) {
+			beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
+			assistant.resolveFactoryBeanClass(factoryBean, beanRule);
 		} else {
 			beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 		}
@@ -577,7 +576,7 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			if (beanIdOrClass != null) {
-				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
+				assistant.resolveActionBeanClass(beanIdOrClass, beanActionRule);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
 		} else if (include != null) {

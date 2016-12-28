@@ -328,9 +328,13 @@ public class AponWriter extends AponFormat implements Flushable {
 			if (noQuotes && !NULL.equals(value)) {
 				writer.write(escape(value, true));
 			} else {
-				writer.write(DOUBLE_QUOTE_CHAR);
-				writer.write(escape(value, false));
-				writer.write(DOUBLE_QUOTE_CHAR);
+				if(value.startsWith(AponFormat.SPACE) || value.endsWith(AponFormat.SPACE)) {
+					writer.write(DOUBLE_QUOTE_CHAR);
+					writer.write(escape(value, false));
+					writer.write(DOUBLE_QUOTE_CHAR);
+				} else {
+					writer.write(escape(value, true));
+				}
 			}
 			nextLine();
 		} else {

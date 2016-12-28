@@ -141,17 +141,17 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 	
 	@Override
-	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
+	public void resolveAdviceBeanClass(String beanId, AspectRule aspectRule) {
 		// shallow
 	}
 
 	@Override
-	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
+	public void resolveActionBeanClass(String beanId, BeanActionRule beanActionRule) {
 		// shallow
 	}
 
 	@Override
-	public void resolveBeanClass(String beanId, BeanRule beanRule) {
+	public void resolveFactoryBeanClass(String beanId, BeanRule beanRule) {
 		// shallow
 	}
 	

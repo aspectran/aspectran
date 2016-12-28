@@ -47,8 +47,10 @@ public class AponFormat {
 
 	protected static final String INDENT_STRING = "\t";
 	
-	protected static final char SPACE_CHAR = ' ';
+	protected static final String SPACE = " ";
 	
+	protected static final char SPACE_CHAR = ' ';
+
 	protected static final String NULL = "null";
 	
 	protected static final String TRUE = "true";
