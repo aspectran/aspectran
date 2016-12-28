@@ -350,7 +350,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 
 	public boolean isFactoryProductionRequired() {
-		return !isFactoryOffered() && (isFactoryBean() || getFactoryMethod() != null);
+		return (!isFactoryOffered() && (isFactoryBean() || getFactoryMethod() != null));
 	}
 
 	public Class<?> getTargetBeanClass() {

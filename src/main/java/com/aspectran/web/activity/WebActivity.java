@@ -111,7 +111,7 @@ public class WebActivity extends CoreActivity {
 				setGzipContentEncoded();
 			}
 		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to Web Activity.", e);
+			throw new AdapterException("Could not adapt to web application activity.", e);
 		}
 	}
 	

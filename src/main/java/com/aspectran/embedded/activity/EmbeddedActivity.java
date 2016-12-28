@@ -71,7 +71,7 @@ public class EmbeddedActivity extends CoreActivity {
 				}
 			}
 		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to Embedded Activity.", e);
+			throw new AdapterException("Could not adapt to embeded application activity.", e);
 		}
 	}
 
