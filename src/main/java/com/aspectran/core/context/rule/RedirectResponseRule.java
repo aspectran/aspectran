@@ -281,7 +281,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	
 	public static RedirectResponseRule newInstance(String target) {
 		if (target == null) {
-			throw new IllegalArgumentException("'target' must not be null.");
+			throw new IllegalArgumentException("The target argument must not be null.");
 		}
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setTarget(target);

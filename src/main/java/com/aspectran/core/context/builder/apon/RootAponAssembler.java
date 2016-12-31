@@ -483,7 +483,7 @@ public class RootAponAssembler {
 	private Parameters assembleExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
 		ExceptionThrownParameters etParameters = new ExceptionThrownParameters();
 		if(exceptionThrownRule.getExceptionTypes() != null) {
-			for(String exceptionType : exceptionThrownRule.getExceptionTypes()) {
+			for (String exceptionType : exceptionThrownRule.getExceptionTypes()) {
 				etParameters.putValue(ExceptionThrownParameters.type, exceptionType);
 			}
 		}

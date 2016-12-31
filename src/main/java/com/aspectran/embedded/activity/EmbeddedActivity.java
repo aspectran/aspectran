@@ -66,12 +66,12 @@ public class EmbeddedActivity extends CoreActivity {
 			setResponseAdapter(responseAdapter);
 
 			if(attributeMap != null) {
-				for(Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+				for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
 					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 				}
 			}
 		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to embeded application activity.", e);
+			throw new AdapterException("Could not adapt to embedded application activity.", e);
 		}
 	}
 

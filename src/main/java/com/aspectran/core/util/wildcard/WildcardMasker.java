@@ -232,7 +232,7 @@ public class WildcardMasker {
 		
 		if (cindex < clength) {
 			if(cindex == 0 && tlength > 0 && types[0] == WildcardPattern.STAR_STAR_TYPE) {
-				for(int end = 0; end < clength; end++) {
+				for (int end = 0; end < clength; end++) {
 					if(input.charAt(end) != separator) {
 						if(end > 0) {
 							return input.subSequence(end, clength).toString();
@@ -263,7 +263,7 @@ public class WildcardMasker {
 		}
 
 		if(types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
-			for(int end = 0; end < sb.length(); end++) {
+			for (int end = 0; end < sb.length(); end++) {
 				if(sb.charAt(end) != separator) {
 					if(end > 0) {
 						sb.delete(0, end);

@@ -18,7 +18,7 @@ package com.aspectran.core.context.bean;
 /**
  * The Interface BeanRegistry.
  *
- * @since 2012. 11. 9
+ * @since 2012. 11. 9.
  */
 public interface BeanRegistry {
 

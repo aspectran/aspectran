@@ -323,7 +323,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				((InitializableTransletBean)bean).initialize(activity.getTranslet());
 			}
 		} catch (Exception e) {
-			throw new BeanCreationException("An exception occurred during initialization of the bean", beanRule, e);
+			throw new BeanCreationException("An exception occurred while initialization of the bean", beanRule, e);
 		}
 	}
 
@@ -333,7 +333,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
 			MethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
 		} catch (Exception e) {
-			throw new BeanCreationException("An exception occurred during the execution of an initialization method of the bean", beanRule, e);
+			throw new BeanCreationException("An exception occurred while executing an initialization method of the bean", beanRule, e);
 		}
 	}
 	
@@ -343,7 +343,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
 			return MethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
 		} catch (Exception e) {
-			throw new BeanCreationException("An exception occurred during the execution of a factory method of the bean", beanRule, e);
+			throw new BeanCreationException("An exception occurred while executing a factory method of the bean", beanRule, e);
 		}
 	}
 	

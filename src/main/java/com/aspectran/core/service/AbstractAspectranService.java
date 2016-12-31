@@ -64,7 +64,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	AbstractAspectranService(ApplicationAdapter applicationAdapter) {
 		if (applicationAdapter == null) {
-			throw new IllegalArgumentException("'applicationAdapter' must not be null.");
+			throw new IllegalArgumentException("The applicationAdapter argument must not be null.");
 		}
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -173,7 +173,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 		
 		if (log.isDebugEnabled()) {
-			log.debug("Loading the ActivityContext...");
+			log.debug("Loading ActivityContext...");
 		}
 		
 		try {

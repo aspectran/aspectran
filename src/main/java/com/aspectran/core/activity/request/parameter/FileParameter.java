@@ -176,7 +176,7 @@ public class FileParameter {
 	 */
 	public File saveAs(File destFile, boolean overwrite) throws IOException {
 		if (destFile == null) {
-			throw new IllegalArgumentException("'destFile' must not be null.");
+			throw new IllegalArgumentException("The destFile argument must not be null.");
 		}
 
 		if (!overwrite) {

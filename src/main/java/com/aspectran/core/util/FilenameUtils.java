@@ -277,10 +277,8 @@ public class FilenameUtils {
 	}
 
 	/**
-	 * 특정 디렉토리내에서 중복되지 않는 파일명을 반환한다.
-	 * 중복 파일명이 존재할 경우 파일명  뒤에 숫자가 붙는다.
-	 * 지정한 디렉토리내에 "example.txt"라는 파일명을 가진 파일이 이미 존재할 경우
-	 * "example1.txt"라는 새로운 파일명을 반환한다.
+	 * Returns a file name that does not overlap in the specified directory.
+	 * If a duplicate file name exists, it is returned by appending a number after the file name.
 	 *
 	 * @param srcFile the file to seek
 	 * @return an unique file
@@ -291,10 +289,8 @@ public class FilenameUtils {
 	}
 
 	/**
-	 * 특정 디렉토리내에서 중복되지 않는 파일명을 반환한다.
-	 * 중복 파일명이 존재할 경우 파일명  뒤에 숫자가 붙는다.
-	 * 지정한 디렉토리내에 "example.txt"라는 파일명을 가진 파일이 이미 존재할 경우
-	 * "example1.txt"라는 새로운 파일명을 반환한다.
+	 * Returns a file name that does not overlap in the specified directory.
+	 * If a duplicate file name exists, it is returned by appending a number after the file name.
 	 *
 	 * @param srcFile the file to seek
 	 * @param extSeparator the extension separator
@@ -303,7 +299,7 @@ public class FilenameUtils {
 	 */
 	public static File seekUniqueFile(File srcFile, char extSeparator) throws IOException {
 		if (srcFile == null) {
-			throw new IllegalArgumentException("'srcFile' must not be null.");
+			throw new IllegalArgumentException("The srcFile argument must not be null.");
 		}
 
 		String path = getFullPath(srcFile.getCanonicalPath());
@@ -334,9 +330,12 @@ public class FilenameUtils {
 	}
 
 	/**
-	 * 특정 디렉토리내에서 중복되지 않는 안전한 파일명을 반환한다.
-	 * 파일 확장자는 '_' 문자로 구분한다.
-	 * 형식) 1111111111_txt
+	 * Creates and returns a safe file name on the system without duplication in the specified directory.
+	 * If a duplicate file name exists, it is returned by appending a number after the file name.
+	 * File extensions are separated by '_' character.
+	 * <pre>
+	 * ex) 1111111111_txt
+	 * </pre>
 	 *
 	 * @param file the file to seek
 	 * @return an unique file

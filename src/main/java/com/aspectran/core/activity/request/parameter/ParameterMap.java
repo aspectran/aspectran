@@ -123,7 +123,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 * @param params the values
 	 */
 	public void setAll(Map<String, String> params) {
-		for(Map.Entry<String, String> entry : params.entrySet()) {
+		for (Map.Entry<String, String> entry : params.entrySet()) {
 			setParameter(entry.getKey(), entry.getValue());
 		}
 	}

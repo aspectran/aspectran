@@ -88,7 +88,7 @@ public class Token implements BeanReferenceInspectable {
 			this.value = nameOrValue;
 		} else {
 			if (nameOrValue == null) {
-				throw new IllegalArgumentException("'nameOrValue' must not be null.");
+				throw new IllegalArgumentException("The nameOrValue argument must not be null.");
 			}
 			this.name = nameOrValue;
 		}

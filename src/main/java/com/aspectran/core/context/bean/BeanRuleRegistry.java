@@ -78,7 +78,7 @@ public class BeanRuleRegistry {
 	
 	public BeanRule getBeanRule(Object idOrRequiredType) {
 		if (idOrRequiredType == null) {
-			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
+			throw new IllegalArgumentException("The idOrRequiredType argument must not be null.");
 		}
 		if (idOrRequiredType instanceof Class<?>) {
 			BeanRule[] beanRules = getBeanRules((Class<?>)idOrRequiredType);
@@ -113,7 +113,7 @@ public class BeanRuleRegistry {
 
 	public boolean containsBeanRule(Object idOrRequiredType) {
 		if (idOrRequiredType == null) {
-			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
+			throw new IllegalArgumentException("The idOrRequiredType argument must not be null.");
 		}
 		if (idOrRequiredType instanceof Class<?>) {
 			return containsBeanRule((Class<?>)idOrRequiredType);
@@ -177,7 +177,7 @@ public class BeanRuleRegistry {
 					dissectBeanRule(beanRule2);
 				});
 			} catch (IOException e) {
-				throw new BeanClassScanFailedException("Failed to scan bean class. scanPattern: " + scanPattern, e);
+				throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " + scanPattern, e);
 			}
 		} else {
 			if (!beanRule.isFactoryOffered()) {

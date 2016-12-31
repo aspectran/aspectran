@@ -85,7 +85,7 @@ public class InstantActivity extends BasicActivity {
 			setResponseAdapter(responseAdapter);
 
 			if(attributeMap != null) {
-				for(Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+				for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
 					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 				}
 			}

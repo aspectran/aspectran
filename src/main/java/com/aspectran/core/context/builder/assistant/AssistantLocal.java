@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
 /**
  * The Class AssistantLocal.
  * 
- * <p>Created: 2015. 10. 2</p>
+ * <p>Created: 2015. 10. 2.</p>
  */
 public class AssistantLocal implements Replicable<AssistantLocal> {
 

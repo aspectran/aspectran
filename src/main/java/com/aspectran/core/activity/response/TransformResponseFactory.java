@@ -37,7 +37,7 @@ public class TransformResponseFactory {
 	 */
 	public static Response createTransformResponse(TransformRule transformRule) {
 		if (transformRule == null) {
-			throw new IllegalArgumentException("transformRule must not be null.");
+			throw new IllegalArgumentException("The transformRule argument must not be null.");
 		}
 		
 		TransformType type = transformRule.getTransformType();
@@ -52,7 +52,7 @@ public class TransformResponseFactory {
 		} else if (type == TransformType.TEXT) {
 			res = new TextTransform(transformRule);
 		} else {
-			throw new IllegalArgumentException("The specified tranform-type is not valid. transformRule " + transformRule);
+			throw new IllegalArgumentException("Invalid transform-type for transformRule: " + transformRule);
 		}
 		
 		return res;

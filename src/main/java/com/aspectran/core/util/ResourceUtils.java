@@ -96,14 +96,14 @@ public class ResourceUtils {
 
 	public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
 		if (resourceLocation == null) {
-			throw new IllegalArgumentException("'resourceLocation' must not be null.");
+			throw new IllegalArgumentException("The resourceLocation argument must not be null.");
 		}
 		if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			URL url = classLoader.getResource(path);
 			if (url == null) {
 				String description = "class path resource [" + path + "]";
-				throw new FileNotFoundException(description + " cannot be resolved to URL because it does not exist");
+				throw new FileNotFoundException(description + " cannot be resolved to URL because it does not exist.");
 			}
 			return url;
 		}
@@ -116,14 +116,14 @@ public class ResourceUtils {
 				return new File(resourceLocation).toURI().toURL();
 			} catch (MalformedURLException ex2) {
 				throw new FileNotFoundException("Resource location [" + resourceLocation
-						+ "] is neither a URL not a well-formed file path");
+						+ "] is neither a URL not a well-formed file path.");
 			}
 		}
 	}
 
 	public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
 		if (resourceLocation == null) {
-			throw new IllegalArgumentException("'resourceLocation' must not be null.");
+			throw new IllegalArgumentException("The resourceLocation argument must not be null.");
 		}
 		if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
@@ -131,7 +131,7 @@ public class ResourceUtils {
 			URL url = classLoader.getResource(path);
 			if (url == null) {
 				throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
-						+ "because it does not reside in the file system");
+						+ "because it does not reside in the file system.");
 			}
 			return getFile(url, description);
 		}
@@ -150,7 +150,7 @@ public class ResourceUtils {
 
 	public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
 		if (resourceUrl == null) {
-			throw new IllegalArgumentException("'resourceUrl' must not be null.");
+			throw new IllegalArgumentException("The resourceUrl argument must not be null.");
 		}
 		if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
@@ -170,7 +170,7 @@ public class ResourceUtils {
 
 	public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
 		if (resourceUri == null) {
-			throw new IllegalArgumentException("'resourceUri' must not be null.");
+			throw new IllegalArgumentException("The resourceUri argument must not be null.");
 		}
 		if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
@@ -219,7 +219,7 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns the URL of the resource on the classpath
+	 * Returns the URL of the resource on the classpath.
 	 * 
 	 * @param loader The classloader used to load the resource
 	 * @param resource The resource to find

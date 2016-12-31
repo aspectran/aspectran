@@ -323,10 +323,10 @@ public class ItemRule {
 	 */
 	public void setValue(Token[] tokens) {
 		if (type == null) {
-			throw new IllegalArgumentException("Item type is must not be null.");
+			throw new IllegalArgumentException("The item type must be specified first.");
 		}
 		if (type != ItemType.SINGLE) {
-			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
+			throw new IllegalArgumentException("The item type must be 'single': " + this);
 		}
 		this.tokens = tokens;
 	}
@@ -338,10 +338,10 @@ public class ItemRule {
 	 */
 	public void setValue(List<Token[]> tokensList) {
 		if (type == null) {
-			throw new IllegalArgumentException("Item type is must not be null.");
+			throw new IllegalArgumentException("The item type must be specified first.");
 		}
 		if (!isListableType()) {
-			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
+			throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item: " + this);
 		}
 		this.tokensList = tokensList;
 	}
@@ -353,36 +353,36 @@ public class ItemRule {
 	 */
 	public void setValue(Map<String, Token[]> tokensMap) {
 		if (type == null) {
-			throw new IllegalArgumentException("Item type is must not be null.");
+			throw new IllegalArgumentException("The item type must be specified first.");
 		}
 		if (!isMappableType()) {
-			throw new IllegalArgumentException("Invalid value type for the item rule " + this);
+			throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item: " + this);
 		}
 		this.tokensMap = tokensMap;
 	}
 
 	/**
-	 * Returns whether or not the item is mandatory.
+	 * Returns whether this item is mandatory.
 	 *
-	 * @return whether or not the item is mandatory
+	 * @return whether or not this item is mandatory
 	 */
 	public Boolean getMandatory() {
 		return mandatory;
 	}
 
 	/**
-	 * Returns whether or not the item is mandatory.
+	 * Returns whether this item is mandatory.
 	 *
-	 * @return whether or not the item is mandatory
+	 * @return whether or not this item is mandatory
 	 */
 	public boolean isMandatory() {
 		return (mandatory == Boolean.TRUE);
 	}
 
 	/**
-	 * Sets whether or not the item is mandatory.
+	 * Sets whether this item is mandatory.
 	 *
-	 * @param mandatory the mandatory
+	 * @param mandatory whether this item is mandatory
 	 */
 	public void setMandatory(Boolean mandatory) {
 		this.mandatory = mandatory;

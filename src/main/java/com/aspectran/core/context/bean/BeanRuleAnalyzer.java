@@ -134,7 +134,7 @@ public class BeanRuleAnalyzer {
 
 	public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
 		if (beanRule.isDisposableBean()) {
-			throw new BeanRuleException("Bean destroy method  is duplicated. Already implemented the DisposableBean", beanRule);
+			throw new BeanRuleException("Bean destroy method is duplicated. Already implemented the DisposableBean", beanRule);
 		}
 
 		String destroyMethodName = beanRule.getDestroyMethodName();

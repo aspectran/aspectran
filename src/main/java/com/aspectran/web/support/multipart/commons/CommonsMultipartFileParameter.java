@@ -125,7 +125,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
 	@Override
 	public File saveAs(File destFile, boolean overwrite) throws IOException {
 		if (destFile == null) {
-			throw new IllegalArgumentException("'destFile' must not be null.");
+			throw new IllegalArgumentException("The destFile argument must not be null.");
 		}
 		if (!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");

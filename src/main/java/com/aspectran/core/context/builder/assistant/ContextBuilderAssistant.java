@@ -235,8 +235,7 @@ public class ContextBuilderAssistant {
 	 * @param value the value
 	 */
 	public void putSetting(String name, String value) {
-		DefaultSettingType settingType = null;
-		settingType = DefaultSettingType.resolve(name);
+		DefaultSettingType settingType = DefaultSettingType.resolve(name);
 		if (settingType == null) {
 		    throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 		}

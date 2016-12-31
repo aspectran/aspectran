@@ -16,7 +16,11 @@
 package com.aspectran.core.context.bean;
 
 /**
+ * Contains an object of the instantiated bean.
+ *
  * <p>Created: 2016. 12. 27.</p>
+ *
+ * @since 3.2.0
  */
 public class InstantiatedBean {
 
