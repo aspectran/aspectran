@@ -416,7 +416,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private void instantiateSingleton(BeanRule beanRule, Activity activity) {
 		if (beanRule.isSingleton()
-				&& beanRule.getInstantiatedBean() != null
+				&& beanRule.getInstantiatedBean() == null
 				&& !beanRule.isLazyInit()) {
 			createBean(beanRule, activity);
 		}

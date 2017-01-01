@@ -71,11 +71,11 @@ class ItemNodeletAdder implements NodeletAdder {
 
             ItemRule itemRule = assistant.peekObject();
 
-            Token[] tokens = ItemRule.parseValue(itemRule, text);
-            if (tokens != null) {
-                assistant.pushObject(name);
-                assistant.pushObject(tokens);
-            }
+			if (itemRule.getType() != ItemType.SINGLE) {
+				Token[] tokens = ItemRule.parseValue(itemRule, text);
+				assistant.pushObject(name);
+				assistant.pushObject(tokens);
+			}
         });
 		parser.addNodelet(xpath, "/item/value/ref", (node, attributes, text) -> {
             String parameter = attributes.get("parameter");
@@ -85,7 +85,7 @@ class ItemNodeletAdder implements NodeletAdder {
 
             Object object = assistant.peekObject();
 
-            if (object instanceof ItemRule) {
+            if (object != null && object instanceof ItemRule) {
                 ItemRule.updateReference((ItemRule)object, parameter, attribute, bean, property);
             } else {
                 assistant.popObject(); // discard tokens
@@ -97,7 +97,7 @@ class ItemNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
             Object object = assistant.peekObject();
 
-            if (object instanceof Token[]) {
+            if (object != null && !(object instanceof ItemRule)) {
                 // replace tokens to null
                 assistant.popObject();
                 assistant.pushObject(null);
@@ -106,14 +106,12 @@ class ItemNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
             Object object = assistant.peekObject();
 
-            if (object instanceof Token[]) {
+            if (object == null || object instanceof Token[]) {
                 Token[] tokens = assistant.popObject();
                 String name = assistant.popObject();
                 ItemRule itemRule = assistant.peekObject();
 
-                if (itemRule.getType() != ItemType.SINGLE) {
-					ItemRule.flushValueCollection(itemRule, name, tokens);
-				}
+				ItemRule.flushValueCollection(itemRule, name, tokens);
             }
         });
 		parser.addNodelet(xpath, "/item/ref", (node, attributes, text) -> {

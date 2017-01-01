@@ -6,8 +6,8 @@ context: {
 	]
 	hybridLoad: false
 	autoReload: {
-		reloadMethod: hard
-		observationInterval: 5
+		reloadMode: hard
+		scanIntervalSeconds: 5
 		startup: false
 	}
 	profiles: {

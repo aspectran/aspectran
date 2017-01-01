@@ -508,7 +508,7 @@ public class ItemRule {
 	public static void updateReference(ItemRule itemRule, String parameter, String attribute, String bean, String property) {
 		Token token = makeReferenceToken(parameter, attribute, bean, property);
 		if (token != null) {
-			itemRule.setValue(new Token[] {token});
+			itemRule.setValue(new Token[] { token });
 		}
 	}
 	

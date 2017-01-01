@@ -21,20 +21,32 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextAutoReloadConfig extends AbstractParameters {
 
-	public static final ParameterDefinition reloadMethod;
-	public static final ParameterDefinition observationInterval;
+	/**
+	 * The reload mode, which is either "hard" or "soft".
+	 */
+	public static final ParameterDefinition reloadMode;
+
+	/**
+	 * The interval in seconds between scanning the specified resouces for file changes.
+	 * If file changes are detected, the activity context is reloaded.
+	 */
+	public static final ParameterDefinition scanIntervalSeconds;
+
+	/**
+	 *  Defaults to {@code false}, which disables automatic reloading.
+	 */
 	public static final ParameterDefinition startup;
 	
 	private final static ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		reloadMethod = new ParameterDefinition("reloadMethod", ParameterValueType.STRING);
-		observationInterval = new ParameterDefinition("observationInterval", ParameterValueType.INT);
+		reloadMode = new ParameterDefinition("reloadMode", ParameterValueType.STRING);
+		scanIntervalSeconds = new ParameterDefinition("scanIntervalSeconds", ParameterValueType.INT);
 		startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
 		parameterDefinitions = new ParameterDefinition[] {
-			reloadMethod,
-			observationInterval,
+			reloadMode,
+			scanIntervalSeconds,
 			startup
 		};
 	}

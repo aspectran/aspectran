@@ -54,7 +54,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 	private boolean autoReloadingStartup;
 	
-	private int observationInterval;
+	private int scanIntervalSeconds;
 
 	private ActivityContext activityContext;
 
@@ -117,12 +117,12 @@ public abstract class AbstractAspectranService implements AspectranService {
 			Parameters aspectranContextProfilesConfig = aspectranContextConfig.getParameters(AspectranContextConfig.profiles);
 
 			if (aspectranContextAutoReloadConfig != null) {
-				String reloadMethod = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMethod);
-				int observationInterval = aspectranContextAutoReloadConfig.getInt(AspectranContextAutoReloadConfig.observationInterval, -1);
+				String reloadMode = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMode);
+				int scanIntervalSeconds = aspectranContextAutoReloadConfig.getInt(AspectranContextAutoReloadConfig.scanIntervalSeconds, -1);
 				boolean autoReloadStartup = aspectranContextAutoReloadConfig.getBoolean(AspectranContextAutoReloadConfig.startup, false);
-				this.hardReload = "hard".equals(reloadMethod);
+				this.hardReload = "hard".equals(reloadMode);
 				this.autoReloadingStartup = autoReloadStartup;
-				this.observationInterval = observationInterval;
+				this.scanIntervalSeconds = scanIntervalSeconds;
 			}
 
 			this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
@@ -152,8 +152,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 				autoReloadingStartup = false;
 			}
 			if (autoReloadingStartup) {
-				if (observationInterval == -1) {
-					observationInterval = 10;
+				if (scanIntervalSeconds == -1) {
+					scanIntervalSeconds = 10;
 					String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReload.getName();
 					log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
 				}
@@ -322,7 +322,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
 			if (aspectranClassLoader != null) {
 				reloadingTimer = new ActivityContextReloadingTimer(this, aspectranClassLoader.extractResources());
-				reloadingTimer.start(observationInterval);
+				reloadingTimer.start(scanIntervalSeconds);
 			}
 		}
 	}

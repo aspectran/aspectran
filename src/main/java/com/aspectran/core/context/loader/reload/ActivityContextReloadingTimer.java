@@ -48,7 +48,7 @@ public class ActivityContextReloadingTimer {
 		}
 	}
 	
-	public void start(int observationInterval) {
+	public void start(int scanIntervalSeconds) {
 		stop();
 		
 		if(log.isDebugEnabled()) {
@@ -58,7 +58,7 @@ public class ActivityContextReloadingTimer {
 		timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
 		
 		timer = new Timer();
-		timer.schedule(timerTask, 0, observationInterval * 1000L);
+		timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
 	}
 	
 	public void cancel() {
