@@ -82,6 +82,7 @@ public abstract class ClassUtils {
 	/**
 	 * Check if the given class represents a primitive wrapper,
 	 * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
+	 *
 	 * @param clazz the class to check
 	 * @return whether the given class is a primitive wrapper class
 	 */
@@ -92,6 +93,7 @@ public abstract class ClassUtils {
 	/**
 	 * Check if the given class represents an array of primitives,
 	 * i.e. boolean, byte, char, short, int, long, float, or double.
+	 *
 	 * @param clazz the class to check
 	 * @return whether the given class is a primitive array class
 	 */
@@ -102,6 +104,7 @@ public abstract class ClassUtils {
 	/**
 	 * Check if the given class represents an array of primitive wrappers,
 	 * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
+	 *
 	 * @param clazz the class to check
 	 * @return whether the given class is a primitive wrapper array class
 	 */
@@ -113,35 +116,35 @@ public abstract class ClassUtils {
 	 * Check if the right-hand side type may be assigned to the left-hand side
 	 * type, assuming setting by reflection. Considers primitive wrapper
 	 * classes as assignable to the corresponding primitive types.
+	 *
 	 * @param lhsType the target type
 	 * @param rhsType the value type that should be assigned to the target type
 	 * @return if the target type is assignable from the value type
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
 		if (rhsType == null) {
-			if (!lhsType.isPrimitive()) {
-				return true;
-			}
-		} else {
-			if (lhsType.isAssignableFrom(rhsType)) {
-				return true;
-			}
-			if (rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
-				return true;
-			}
-			if (lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
-				return true;
-			}
-			if (lhsType.isArray() && rhsType.isArray()) {
-				if (rhsType.getComponentType().isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
+			return !lhsType.isPrimitive();
+		}
+		if (lhsType.isArray() || rhsType.isArray()) {
+			if((lhsType.isArray() && rhsType.isArray())) {
+				if (rhsType.getComponentType().equals(Object.class)) {
 					return true;
+				} else {
+					return isAssignable(lhsType.getComponentType(), rhsType.getComponentType());
 				}
-				if (lhsType.getComponentType().isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
-					return true;
-				}
+			} else {
+				return false;
 			}
 		}
-
+		if (lhsType.isAssignableFrom(rhsType)) {
+			return true;
+		}
+		if (rhsType.isPrimitive() && !lhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
+			return true;
+		}
+		if (lhsType.isPrimitive() && !rhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
+			return true;
+		}
 		return false;
 	}
 
