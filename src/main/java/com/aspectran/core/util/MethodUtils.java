@@ -248,8 +248,9 @@ public class MethodUtils {
 			} else {
 				paramTypes = new Class[arguments];
 				for (int i = 0; i < arguments; i++) {
-					if (args[i] != null)
+					if (args[i] != null) {
 						paramTypes[i] = args[i].getClass();
+					}
 				}
 			}
 		}
@@ -288,7 +289,7 @@ public class MethodUtils {
 		if (paramTypes == null) {
 			paramTypes = EMPTY_CLASS_PARAMETERS;
 		}
-		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, paramTypes);
+		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, args, paramTypes);
 		if (method == null) {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: " + object.getClass().getName());
 		}
@@ -509,7 +510,7 @@ public class MethodUtils {
 		if (paramTypes == null) {
 			paramTypes = EMPTY_CLASS_PARAMETERS;
 		}
-		Method method = getMatchingAccessibleMethod(objectClass, methodName, paramTypes);
+		Method method = getMatchingAccessibleMethod(objectClass, methodName, args, paramTypes);
 		if (method == null) {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: " + objectClass.getName());
 		}
@@ -821,7 +822,7 @@ public class MethodUtils {
 	 * @param paramTypes find method with compatible parameters
 	 * @return The accessible method
 	 */
-	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
+	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Object[] args, Class<?>[] paramTypes) {
 		MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, false);
 
 		// see if we can find the method directly
@@ -855,9 +856,21 @@ public class MethodUtils {
 				if (methodParamSize == paramSize) {
 					boolean paramMatch = true;
 					for (int n = 0; n < methodParamSize; n++) {
-						if (!ClassUtils.isAssignable(methodsParams[n], paramTypes[n])) {
-							paramMatch = false;
-							break;
+						methodsParams[n].getComponentType();
+						System.out.println("*** paramTypes[n] - " + paramTypes[n]);
+						System.out.println("*** methodsParams[n]) - " + methodsParams[n]);
+						System.out.println("*** methodsParams[n]).getComponentType() - " + methodsParams[n].getComponentType());
+//						System.out.println("*** .isInstance(args[n]) - " + methodsParams[n].getComponentType().isInstance(args[n]));
+						if(args != null) {
+							if (!ClassUtils.isAssignableValue(methodsParams[n], args[n])) {
+								paramMatch = false;
+								break;
+							}
+						} else {
+							if (!ClassUtils.isAssignable(methodsParams[n], paramTypes[n])) {
+								paramMatch = false;
+								break;
+							}
 						}
 					}
 

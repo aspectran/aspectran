@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
 import java.lang.reflect.Method;
 
@@ -30,18 +30,30 @@ import com.aspectran.core.activity.Translet;
 public class MethodUtilsTest {
 
     @Test
-    public void getMatchingAccessibleMethod() {
+    public void testGetMatchingAccessibleMethod() {
         Class<?>[] paramTypes = { Integer[].class };
-        Method method = MethodUtils.getMatchingAccessibleMethod(SampleAction.class, "primitiveArray", paramTypes);
-        assertNotNull(method);
+
+        Method method1 = MethodUtils.getMatchingAccessibleMethod(SampleAction.class, "primitiveArray", null, paramTypes);
+        assertNotNull(method1);
+
+//        Object[] oo = { new Integer(1), new Integer(2) };
+//
+//        Class<?>[] paramTypes2 = { oo.getClass() };
+//
+//        Method method2 = MethodUtils.getMatchingAccessibleMethod(SampleAction.class, "primitiveArray", oo, paramTypes2);
+//        assertNotNull(method2);
     }
 
     @Test
-    public void isAssignable() {
+    public void testIsAssignable() {
         Class<?> paramTypes1 = Integer[].class;
         Class<?> paramTypes2 = int[].class;
-        boolean result = ClassUtils.isAssignable(paramTypes1, paramTypes2);
-        assertTrue(result);
+
+        boolean result1 = ClassUtils.isAssignable(paramTypes1, paramTypes2);
+        assertTrue(result1);
+
+        boolean result2 = ClassUtils.isAssignable(paramTypes2, paramTypes1);
+        assertTrue(result2);
     }
 
     private class SampleAction {

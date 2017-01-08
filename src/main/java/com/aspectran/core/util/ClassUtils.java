@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,23 +61,9 @@ public abstract class ClassUtils {
 		primitiveWrapperTypeMap.put(Double[].class, double[].class);
 		primitiveWrapperTypeMap.put(Void.TYPE, void.class);
 
-		primitiveTypeToWrapperMap.put(boolean.class, Boolean.class);
-		primitiveTypeToWrapperMap.put(byte.class, Byte.class);
-		primitiveTypeToWrapperMap.put(char.class, Character.class);
-		primitiveTypeToWrapperMap.put(short.class, Short.class);
-		primitiveTypeToWrapperMap.put(int.class, Integer.class);
-		primitiveTypeToWrapperMap.put(long.class, Long.class);
-		primitiveTypeToWrapperMap.put(float.class, Float.class);
-		primitiveTypeToWrapperMap.put(double.class, Double.class);
-		primitiveTypeToWrapperMap.put(boolean[].class, Boolean[].class);
-		primitiveTypeToWrapperMap.put(byte[].class, Byte[].class);
-		primitiveTypeToWrapperMap.put(char[].class, Character[].class);
-		primitiveTypeToWrapperMap.put(short[].class, Short[].class);
-		primitiveTypeToWrapperMap.put(int[].class, Integer[].class);
-		primitiveTypeToWrapperMap.put(long[].class, Long[].class);
-		primitiveTypeToWrapperMap.put(float[].class, Float[].class);
-		primitiveTypeToWrapperMap.put(double[].class, Double[].class);
-		primitiveTypeToWrapperMap.put(void.class, Void.TYPE);
+		for (final Map.Entry<Class<?>, Class<?>> e : primitiveWrapperTypeMap.entrySet()) {
+			primitiveTypeToWrapperMap.put(e.getValue(), e.getKey());
+		}
 	}
 
 	/**
@@ -127,23 +114,25 @@ public abstract class ClassUtils {
 		}
 		if (lhsType.isArray() || rhsType.isArray()) {
 			if((lhsType.isArray() && rhsType.isArray())) {
-				if (rhsType.getComponentType().equals(Object.class)) {
-					return true;
-				} else {
-					return isAssignable(lhsType.getComponentType(), rhsType.getComponentType());
-				}
-			} else {
-				return false;
+				System.out.println("*** isArray lhsType - " + lhsType);
+				System.out.println("*** isArray rhsType - " + rhsType);
+				return isAssignable(lhsType.getComponentType(), rhsType.getComponentType());
 			}
-		}
-		if (lhsType.isAssignableFrom(rhsType)) {
-			return true;
-		}
-		if (rhsType.isPrimitive() && !lhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
-			return true;
-		}
-		if (lhsType.isPrimitive() && !rhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
-			return true;
+		} else {
+			System.out.println("*** isAssignableFrom lhsType - " + lhsType);
+			System.out.println("*** isAssignableFrom rhsType - " + rhsType);
+			System.out.println("*** getPrimitiveWrapper(rhsType) - " + getPrimitiveWrapper(rhsType));
+			System.out.println("*** getPrimitiveWrapper(lhsType) - " + getPrimitiveWrapper(lhsType));
+
+			if (lhsType.isAssignableFrom(rhsType)) {
+				return true;
+			}
+			if (rhsType.isPrimitive() && !lhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType))) {
+				return true;
+			}
+			if (lhsType.isPrimitive() && !rhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType))) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -158,8 +147,46 @@ public abstract class ClassUtils {
 	 * @return if the type is assignable from the value
 	 */
 	public static boolean isAssignableValue(Class<?> type, Object value) {
-		return (value != null ? isAssignable(type, value.getClass()) : !type.isPrimitive());
+		if (value == null) {
+			return !type.isPrimitive();
+		}
+		Class<?> valueType = value.getClass();
+		if (type.isArray() || valueType.isArray()) {
+			if((type.isArray() && valueType.isArray())) {
+				int len = Array.getLength(value);
+				if(len == 0) {
+					return true;
+				} else {
+					Object first = Array.get(value, 0);
+					return isAssignableValue(type.getComponentType(), first);
+				}
+			}
+		} else {
+			if(type.isInstance(value)) {
+				return true;
+			}
+			if (valueType.isPrimitive() && !type.isPrimitive() && type.equals(getPrimitiveWrapper(valueType))) {
+				return true;
+			}
+			if (type.isPrimitive() && !valueType.isPrimitive() && valueType.equals(getPrimitiveWrapper(type))) {
+				return true;
+			}
+		}
+		return false;
 	}
+
+//	/**
+//	 * Determine if the given type is assignable from the given value,
+//	 * assuming setting by reflection. Considers primitive wrapper classes
+//	 * as assignable to the corresponding primitive types.
+//	 *
+//	 * @param type	the target type
+//	 * @param value the value that should be assigned to the type
+//	 * @return if the type is assignable from the value
+//	 */
+//	public static boolean isAssignableValue(Class<?> type, Object value) {
+//		return (value != null ? isAssignable(type, value.getClass()) : !type.isPrimitive());
+//	}
 
 	/**
 	 * Gets the wrapper object class for the given primitive type class.

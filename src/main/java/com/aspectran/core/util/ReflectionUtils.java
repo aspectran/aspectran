@@ -25,7 +25,6 @@ import java.lang.reflect.Modifier;
  * Simple utility class for working with the reflection API.
  *
  * @since 2.0.0
- * @author Juho.jeong
  */
 public class ReflectionUtils {
 
@@ -180,7 +179,7 @@ public class ReflectionUtils {
 	 *
 	 * @param srcClass the source class
 	 * @param destClass the destination class
-	 * @return The cost of transforming an object
+	 * @return the cost of transforming an object
 	 */
 	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
 		if (destClass != null) {
@@ -192,9 +191,9 @@ public class ReflectionUtils {
 			}
 			if (srcClass.isArray() && destClass.isArray()) {
 				if ((destClass.getComponentType().isPrimitive()
-						&& srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)))
+						&& srcClass.getComponentType().equals(ClassUtils.getPrimitiveWrapper(destClass.getComponentType())))
 						|| (srcClass.getComponentType().isPrimitive()
-						&& destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass)))) {
+						&& destClass.getComponentType().equals(ClassUtils.getPrimitiveWrapper(srcClass.getComponentType())))) {
 					return 0.75f;
 				}
 			}

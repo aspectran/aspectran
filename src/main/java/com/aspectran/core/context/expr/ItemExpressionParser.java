@@ -346,7 +346,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	
 	private Object valuelize(Object value, ItemValueType valueType) {
 		if (valueType == ItemValueType.STRING) {
-			return (value instanceof String ? value : value.toString());
+			return value.toString();
 		} else if (valueType == ItemValueType.INT) {
 			return (value instanceof Integer ? value : Integer.valueOf(value.toString()));
 		} else if (valueType == ItemValueType.LONG) {
