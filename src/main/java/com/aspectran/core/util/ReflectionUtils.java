@@ -236,59 +236,85 @@ public class ReflectionUtils {
 	 * @return an array of their primitive types
 	 */
 	public static Object toPrimitiveArray(Object val) {
-		int len = Array.getLength(val);
-
 		if (val instanceof Boolean[]) {
+			int len = Array.getLength(val);
 			boolean[] arr = new boolean[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Boolean)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Byte[]) {
+			int len = Array.getLength(val);
 			byte[] arr = new byte[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Byte)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Character[]) {
+			int len = Array.getLength(val);
 			char[] arr = new char[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Character)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Short[]) {
+			int len = Array.getLength(val);
 			short[] arr = new short[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Short)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Integer[]) {
+			int len = Array.getLength(val);
 			int[] arr = new int[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Integer)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Long[]) {
+			int len = Array.getLength(val);
 			long[] arr = new long[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Long)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Float[]) {
+			int len = Array.getLength(val);
 			float[] arr = new float[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Float)Array.get(val, i);
 			}
 			return arr;
 		} else if (val instanceof Double[]) {
+			int len = Array.getLength(val);
 			double[] arr = new double[len];
 			for (int i = 0; i < len; i++) {
 				arr[i] = (Double)Array.get(val, i);
 			}
 			return arr;
+		} else {
+			return null;
 		}
+	}
 
-		return null;
+	/**
+	 * Converts an array of objects to an array of the specified component type.
+	 *
+	 * @param val an array of objects to be converted
+	 * @param componentType the {@code Class} object representing the component type of the new array
+	 * @return an array of the objects with the specified component type
+	 */
+	public static Object toComponentTypeArray(Object val, Class<?> componentType) {
+		if (val != null) {
+			int len = Array.getLength(val);
+			Object arr = Array.newInstance(componentType, len);
+			for (int i = 0; i < len; i++) {
+				Array.set(arr, i, Array.get(val, i));
+			}
+			return arr;
+		} else {
+			return null;
+		}
 	}
 
 }

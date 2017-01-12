@@ -579,15 +579,18 @@ public class MethodUtils {
 				if (methodsParams[i].isArray()) {
 					Class<?> methodParamType = methodsParams[i].getComponentType();
 					Class<?> argParamType = paramTypes[i].getComponentType();
-					if (methodParamType.isPrimitive()) {
-						if (ClassUtils.isPrimitiveWrapper(argParamType)) {
-							args2[i] = ReflectionUtils.toPrimitiveArray(args2[i]);
-						}
-					} else {
-						if (!methodParamType.equals(argParamType)) {
-							args2[i] = methodParamType.cast(args2[i]);
-						}
+					if (!methodParamType.equals(argParamType)) {
+						args2[i] = ReflectionUtils.toComponentTypeArray(args2[i], methodParamType);
 					}
+//					if (methodParamType.isPrimitive()) {
+//						if (ClassUtils.isPrimitiveWrapper(argParamType)) {
+//							args2[i] = ReflectionUtils.toPrimitiveArray(args2[i]);
+//						}
+//					} else {
+//						if (!methodParamType.equals(argParamType)) {
+//							args2[i] = ReflectionUtils.toComponentTypeArray(args2[i], methodParamType);
+//						}
+//					}
 				}
 			}
 			return method.invoke(object, args2);
@@ -888,7 +891,7 @@ public class MethodUtils {
 				}
 			}
 		}
-		
+
 		if (bestMatch != null) {
 			cacheMethod(md, bestMatch);
 		}

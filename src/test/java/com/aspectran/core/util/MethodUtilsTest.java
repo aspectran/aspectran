@@ -41,10 +41,12 @@ public class MethodUtilsTest {
     @Test
     public void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object[] args = { new Integer(1) };
-        Class<?>[] paramTypes = { Integer[].class };
+        Class<?>[] paramTypes = { Integer.class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", null, paramTypes);
         assertNotNull(method);
+
+        log.debug("matched method: " + method);
 
         SampleBean sampleBean = new SampleBean();
         MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
@@ -52,8 +54,8 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { new Integer[] { new Integer(1), new Integer(2) } };
-        Class<?>[] paramTypes = { Object[].class };
+        Object[] args = { new Object[] { new Integer(1), new Integer(2) } };
+        Class<?>[] paramTypes = { Integer[].class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", args, paramTypes);
         assertNotNull(method);
@@ -67,7 +69,7 @@ public class MethodUtilsTest {
     @Test
     public void testGetMatchingAccessibleMethod3() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object[] args = { new SampleBean() };
-        Class<?>[] paramTypes = { args.getClass() };
+        Class<?>[] paramTypes = { args[0].getClass() };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
@@ -80,14 +82,14 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod4() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { new SampleBean[] { new SampleBean(), new SampleBean() } };
-        Class<?>[] paramTypes = { Object.class };
+        Object[] args = { new Object[] { new SampleBean(), new SampleBean() } };
+        Class<?>[] paramTypes = { Object[].class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
         log.debug("matched method: " + method);
-        
+
         SampleBean sampleBean = new SampleBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
     }
@@ -160,10 +162,10 @@ public class MethodUtilsTest {
         	log.debug("specified args: " + list);
         }
 
-        @SuppressWarnings("unused")
-        public void setSampleBean(Object o) {
-        	log.debug("specified args: " + o);
-        }
+//        @SuppressWarnings("unused")
+//        public void setSampleBean(Object o) {
+//        	log.debug("specified args: " + o);
+//        }
         
     }
 
