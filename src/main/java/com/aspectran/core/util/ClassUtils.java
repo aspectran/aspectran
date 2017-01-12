@@ -114,16 +114,9 @@ public abstract class ClassUtils {
 		}
 		if (lhsType.isArray() || rhsType.isArray()) {
 			if((lhsType.isArray() && rhsType.isArray())) {
-				System.out.println("*** isArray lhsType - " + lhsType);
-				System.out.println("*** isArray rhsType - " + rhsType);
 				return isAssignable(lhsType.getComponentType(), rhsType.getComponentType());
 			}
 		} else {
-			System.out.println("*** isAssignableFrom lhsType - " + lhsType);
-			System.out.println("*** isAssignableFrom rhsType - " + rhsType);
-			System.out.println("*** getPrimitiveWrapper(rhsType) - " + getPrimitiveWrapper(rhsType));
-			System.out.println("*** getPrimitiveWrapper(lhsType) - " + getPrimitiveWrapper(lhsType));
-
 			if (lhsType.isAssignableFrom(rhsType)) {
 				return true;
 			}

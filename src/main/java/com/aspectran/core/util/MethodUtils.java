@@ -271,7 +271,6 @@ public class MethodUtils {
 	 * via passing in wrapping classes. So, for example, a <code>Boolean</code> class
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
-	 *
 	 * @param object invoke method on this object
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
@@ -565,28 +564,36 @@ public class MethodUtils {
 		return invokeExactStaticMethod(objectClass, methodName, args, paramTypes);
 	}
 
-	private static Object invokeMethod(Object object, Method method, Object[] args, Class<?>[] paramTypes)
+	private static Object invokeMethod(Object object, Method method, Object[] args, Class<?>[] paramTypes) 
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<?>[] methodsParams = method.getParameterTypes();
-		if (hasPrimitiveArray(methodsParams)) {
+		return invokeMethod(object, method, methodsParams, args, paramTypes);
+	}
+	
+	private static Object invokeMethod(Object object, Method method, Class<?>[] methodsParams, Object[] args, Class<?>[] paramTypes)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(methodsParams != null && methodsParams.length > 0) {
+			Object[] args2 = new Object[methodsParams.length];
 			for (int i = 0; i < methodsParams.length; i++) {
-				if (ClassUtils.isPrimitiveArray(methodsParams[i])) {
-					if (ClassUtils.isPrimitiveWrapperArray(paramTypes[i])) {
-						args[i] = ReflectionUtils.toPrimitiveArray(args[i]);
+				args2[i] = args[i];
+				if (methodsParams[i].isArray()) {
+					Class<?> methodParamType = methodsParams[i].getComponentType();
+					Class<?> argParamType = paramTypes[i].getComponentType();
+					if (methodParamType.isPrimitive()) {
+						if (ClassUtils.isPrimitiveWrapper(argParamType)) {
+							args2[i] = ReflectionUtils.toPrimitiveArray(args2[i]);
+						}
+					} else {
+						if (!methodParamType.equals(argParamType)) {
+							args2[i] = methodParamType.cast(args2[i]);
+						}
 					}
 				}
 			}
+			return method.invoke(object, args2);
+		} else {
+			return method.invoke(object, args);
 		}
-		return method.invoke(object, args);
-	}
-
-	private static boolean hasPrimitiveArray(Class<?>[] paramTypes) {
-		for (Class<?> paramType : paramTypes) {
-			if (ClassUtils.isPrimitiveArray(paramType)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -819,6 +826,7 @@ public class MethodUtils {
 	 *
 	 * @param clazz find method in this class
 	 * @param methodName find method with this name
+	 * @param args find method with given arguments
 	 * @param paramTypes find method with compatible parameters
 	 * @return The accessible method
 	 */
@@ -833,11 +841,9 @@ public class MethodUtils {
 			if (method != null) {
 				return method;
 			}
-
 			method = clazz.getMethod(methodName, paramTypes);
 			ReflectionUtils.makeAccessible(method); // Default access superclass workaround
 			cacheMethod(md, method);
-
 			return method;
 		} catch (NoSuchMethodException e) { /* SWALLOW */ }
 
@@ -856,11 +862,6 @@ public class MethodUtils {
 				if (methodParamSize == paramSize) {
 					boolean paramMatch = true;
 					for (int n = 0; n < methodParamSize; n++) {
-						methodsParams[n].getComponentType();
-						System.out.println("*** paramTypes[n] - " + paramTypes[n]);
-						System.out.println("*** methodsParams[n]) - " + methodsParams[n]);
-						System.out.println("*** methodsParams[n]).getComponentType() - " + methodsParams[n].getComponentType());
-//						System.out.println("*** .isInstance(args[n]) - " + methodsParams[n].getComponentType().isInstance(args[n]));
 						if(args != null) {
 							if (!ClassUtils.isAssignableValue(methodsParams[n], args[n])) {
 								paramMatch = false;
@@ -873,9 +874,12 @@ public class MethodUtils {
 							}
 						}
 					}
-
 					if (paramMatch) {
-						myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
+						if(args != null) {
+							myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), args);
+						} else {
+							myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
+						}
 						if (myWeight < bestMatchWeight) {
 							bestMatch = method;
 							bestMatchWeight = myWeight;
@@ -892,6 +896,29 @@ public class MethodUtils {
 		return bestMatch;
 	}
 
+	/**
+	 * <p>Find an accessible method that matches the given name and has compatible parameters.
+	 * Compatible parameters mean that every method parameter is assignable from
+	 * the given parameters.
+	 * In other words, it finds a method with the given name
+	 * that will take the parameters given.
+	 *
+	 * <p>This method is slightly undeterminstic since it loops
+	 * through methods names and return the first matching method.</p>
+	 *
+	 * <p>This method can match primitive parameter by passing in wrapper classes.
+	 * For example, a <code>Boolean</code> will match a primitive <code>boolean</code>
+	 * parameter.
+	 *
+	 * @param clazz find method in this class
+	 * @param methodName find method with this name
+	 * @param paramTypes find method with compatible parameters
+	 * @return The accessible method
+	 */
+	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
+		return getMatchingAccessibleMethod(clazz, methodName, null, paramTypes);
+	}
+	
     /**
      * Return the method from the cache, if present.
      *

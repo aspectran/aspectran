@@ -126,8 +126,8 @@ public class ReflectionUtils {
 
 		for (int i = 0; i < paramTypes.length; i++) {
 			Class<?> srcClass = paramTypes[i];
-			Object destObject = destArgs[i];
-			weight += getTypeDifferenceWeight(srcClass, destObject);
+			Object destArg = destArgs[i];
+			weight += getTypeDifferenceWeight(srcClass, destArg);
 			if (weight == Float.MAX_VALUE) {
 				break;
 			}
@@ -167,6 +167,9 @@ public class ReflectionUtils {
 			Class<?> srcClass = srcArgs[i];
 			Class<?> destClass = destArgs[i];
 			weight += getTypeDifferenceWeight(srcClass, destClass);
+			if (weight == Float.MAX_VALUE) {
+				break;
+			}
 		}
 
 		return weight;
@@ -182,20 +185,21 @@ public class ReflectionUtils {
 	 * @return the cost of transforming an object
 	 */
 	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
+		if(srcClass == null){
+			return Float.MAX_VALUE;
+		}
+		
 		if (destClass != null) {
+			if (srcClass.isArray() && destClass.isArray()) {
+				srcClass = srcClass.getComponentType();
+				destClass = destClass.getComponentType();
+			}
+		
 			if ((destClass.isPrimitive()
 					&& srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)))
 					|| (srcClass.isPrimitive()
 					&& destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass)))) {
-				return 0.5f;
-			}
-			if (srcClass.isArray() && destClass.isArray()) {
-				if ((destClass.getComponentType().isPrimitive()
-						&& srcClass.getComponentType().equals(ClassUtils.getPrimitiveWrapper(destClass.getComponentType())))
-						|| (srcClass.getComponentType().isPrimitive()
-						&& destClass.getComponentType().equals(ClassUtils.getPrimitiveWrapper(srcClass.getComponentType())))) {
-					return 0.75f;
-				}
+				return 0.1f;
 			}
 		}
 

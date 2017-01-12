@@ -18,30 +18,96 @@ package com.aspectran.core.util;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class MethodUtilsTest.
+ * 
  * <p>Created: 2016. 2. 29.</p>
  */
 public class MethodUtilsTest {
+	
+	private static final Log log = LogFactory.getLog(MethodUtilsTest.class);
 
     @Test
-    public void testGetMatchingAccessibleMethod() {
+    public void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] args = { new Integer(1) };
         Class<?>[] paramTypes = { Integer[].class };
 
-        Method method1 = MethodUtils.getMatchingAccessibleMethod(SampleAction.class, "primitiveArray", null, paramTypes);
-        assertNotNull(method1);
+        Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", null, paramTypes);
+        assertNotNull(method);
 
-//        Object[] oo = { new Integer(1), new Integer(2) };
-//
-//        Class<?>[] paramTypes2 = { oo.getClass() };
-//
-//        Method method2 = MethodUtils.getMatchingAccessibleMethod(SampleAction.class, "primitiveArray", oo, paramTypes2);
-//        assertNotNull(method2);
+        SampleBean sampleBean = new SampleBean();
+        MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
+    }
+
+    @Test
+    public void testGetMatchingAccessibleMethod2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] args = { new Integer[] { new Integer(1), new Integer(2) } };
+        Class<?>[] paramTypes = { Object[].class };
+
+        Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", args, paramTypes);
+        assertNotNull(method);
+
+        log.debug("matched method: " + method);
+
+        SampleBean sampleBean = new SampleBean();
+        MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
+    }
+
+    @Test
+    public void testGetMatchingAccessibleMethod3() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] args = { new SampleBean() };
+        Class<?>[] paramTypes = { args.getClass() };
+
+        Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "setSampleBean", args, paramTypes);
+        assertNotNull(method);
+
+        log.debug("matched method: " + method);
+
+        SampleBean sampleBean = new SampleBean();
+        MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
+    }
+
+    @Test
+    public void testGetMatchingAccessibleMethod4() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] args = { new SampleBean[] { new SampleBean(), new SampleBean() } };
+        Class<?>[] paramTypes = { Object.class };
+
+        Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "setSampleBean", args, paramTypes);
+        assertNotNull(method);
+
+        log.debug("matched method: " + method);
+        
+        SampleBean sampleBean = new SampleBean();
+        MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
+    }
+
+    @Test
+    public void testGetMatchingAccessibleMethod5() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        List<SampleBean> list = new ArrayList<>();
+        list.add(new SampleBean());
+        list.add(new SampleBean());
+        
+        Object[] args = { list };
+        Class<?>[] paramTypes = { Object.class };
+        
+        Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "setSampleBean", args, paramTypes);
+        assertNotNull(method);
+
+        log.debug("matched method: " + method);
+        
+        SampleBean sampleBean = new SampleBean();
+        MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
     }
 
     @Test
@@ -56,10 +122,16 @@ public class MethodUtilsTest {
         assertTrue(result2);
     }
 
-    private class SampleAction {
+    private class SampleBean {
+
+        @SuppressWarnings("unused")
+		public void primitiveArray(int num) {
+        	log.debug("specified args: " + num);
+        }
 
         @SuppressWarnings("unused")
 		public void primitiveArray(int[] intArray) {
+        	log.debug("specified args: " + intArray);
         }
 
         @SuppressWarnings("unused")
@@ -72,7 +144,31 @@ public class MethodUtilsTest {
 
             return sb.toString();
         }
+        
+        @SuppressWarnings("unused")
+		public void setSampleBean(SampleBean sampleBean) {
+        	log.debug("specified args: " + sampleBean);
+        }
+        
+        @SuppressWarnings("unused")
+		public void setSampleBean(SampleBean[] sampleBean) {
+        	log.debug("specified args: " + sampleBean);
+        }
 
+        @SuppressWarnings("unused")
+		public void setSampleBean(List<SampleBean> list) {
+        	log.debug("specified args: " + list);
+        }
+
+        @SuppressWarnings("unused")
+        public void setSampleBean(Object o) {
+        	log.debug("specified args: " + o);
+        }
+        
     }
 
+    @SuppressWarnings("unused")
+	private class ExtendedSampleBean extends SampleBean {
+    }
+    
 }
