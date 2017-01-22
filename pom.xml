@@ -45,6 +45,7 @@
 	</ciManagement>
 
 	<properties>
+		<maven.test.skip>false</maven.test.skip>
 		<clirr.comparisonVersion>3.0.0</clirr.comparisonVersion>
 		<findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 	</properties>
