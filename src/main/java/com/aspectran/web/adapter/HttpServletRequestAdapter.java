@@ -49,7 +49,9 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
 	@Override
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
-		((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
+		if(characterEncoding != null) {
+			((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
+		}
 	}
 
 	@Override

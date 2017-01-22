@@ -50,8 +50,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 		this.derivedService = false;
 	}
 
-	public BasicAspectranService(AspectranService parentAspectranService) {
-		super(parentAspectranService);
+	public BasicAspectranService(AspectranService rootAspectranService) {
+		super(rootAspectranService);
 		this.derivedService = true;
 	}
 

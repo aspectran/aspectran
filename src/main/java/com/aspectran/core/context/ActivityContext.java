@@ -71,16 +71,7 @@ public interface ActivityContext extends MessageSource {
 	 *
 	 * @return the origin aspectran service
 	 */
-	AspectranService getOriginAspectranService();
-
-	/**
-	 * Sets the Aspectran Service that created the current ActivityContext.
-	 * It is set only once, just after the ActivityContext is created.
-	 *
-	 * @param originAspectranService the origin aspectran service
-	 * @throws AspectranCheckedException if it is already set, it throws an exception
-	 */
-	void setOriginAspectranService(AspectranService originAspectranService) throws AspectranCheckedException;
+	AspectranService getRootAspectranService();
 
 	/**
 	 * Gets the aspect rule registry.
@@ -149,7 +140,17 @@ public interface ActivityContext extends MessageSource {
 	 * Removes the current activity.
 	 */
 	void removeCurrentActivity();
-	
+
+	/**
+	 * Initializes the ActivityContext.
+	 * Sets the Aspectran Service that created the current ActivityContext.
+	 * It is set only once, just after the ActivityContext is created.
+	 *
+	 * @param rootAspectranService the origin aspectran service
+	 * @throws AspectranCheckedException if it has already been initialized, it throws an exception
+	 */
+	void initialize(AspectranService rootAspectranService) throws AspectranCheckedException;
+
 	/**
 	 * Destroy the aspectran context. 
 	 */

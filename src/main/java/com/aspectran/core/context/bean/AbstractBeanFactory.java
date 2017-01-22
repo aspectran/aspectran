@@ -378,9 +378,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			instantiateSingletons();
 
-			log.info("Bean Factory has been initialized.");
+			log.info("BeanFactory has been initialized.");
 		} else {
-			log.warn("Bean Factory has already been initialized.");
+			log.warn("BeanFactory has already been initialized.");
 		}
 	}
 
@@ -389,9 +389,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if (this.active.compareAndSet(true, false)) {
 			destroySingletons();
 
-			log.info("Bean Factory has been destroyed.");
+			log.info("BeanFactory has been destroyed.");
 		} else {
-			log.warn("Bean Factory has already been destroyed.");
+			log.warn("BeanFactory has already been destroyed.");
 		}
 	}
 

@@ -53,7 +53,7 @@ public class AspectranActivityContext implements ActivityContext {
 	
 	private final ApplicationAdapter applicationAdapter;
 
-	private AspectranService originAspectranService;
+	private AspectranService rootAspectranService;
 
 	private AspectRuleRegistry aspectRuleRegistry;
 
@@ -93,16 +93,8 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	@Override
-	public AspectranService getOriginAspectranService() {
-		return originAspectranService;
-	}
-
-	@Override
-	public void setOriginAspectranService(AspectranService originAspectranService) throws AspectranCheckedException {
-		if (this.originAspectranService != null) {
-			throw new AspectranCheckedException("The origin Aspectran Service is already specified.");
-		}
-		this.originAspectranService = originAspectranService;
+	public AspectranService getRootAspectranService() {
+		return rootAspectranService;
 	}
 
 	@Override
@@ -212,7 +204,17 @@ public class AspectranActivityContext implements ActivityContext {
 		currentActivityHolder.remove();
 	}
 
-	public void initialize() {
+	public void initialize(AspectranService rootAspectranService) throws AspectranCheckedException {
+		if (rootAspectranService == null) {
+			throw new AspectranCheckedException("The root AspectranService must not be null.");
+		}
+
+		if (this.rootAspectranService != null) {
+			throw new AspectranCheckedException("ActivityContext has already been initialized.");
+		}
+
+		this.rootAspectranService = rootAspectranService;
+
 		Activity activity = new DefaultActivity(this);
 		setDefaultActivity(activity);
 

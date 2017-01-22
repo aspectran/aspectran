@@ -70,8 +70,8 @@ public class WebAspectranService extends BasicAspectranService {
 		super(new WebApplicationAdapter(servletContext));
 	}
 
-	private WebAspectranService(AspectranService parentAspectranService) {
-		super(parentAspectranService);
+	private WebAspectranService(AspectranService rootAspectranService) {
+		super(rootAspectranService);
 	}
 
 	protected void setUriDecoding(String uriDecoding) {
@@ -79,7 +79,7 @@ public class WebAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Process the actual dispatching to the activity. 
+	 * Processes the actual dispatching to the activity.
 	 *
 	 * @param request current HTTP servlet request
 	 * @param response current HTTP servlet response
@@ -238,13 +238,13 @@ public class WebAspectranService extends BasicAspectranService {
 	/**
 	 * Returns a new instance of WebAspectranService.
 	 *
-	 * @param parentAspectranService the parent aspectran service
+	 * @param rootAspectranService the root aspectran service
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(AspectranService parentAspectranService)
+	public static WebAspectranService newInstance(AspectranService rootAspectranService)
 			throws AspectranServiceException {
-		WebAspectranService aspectranService = new WebAspectranService(parentAspectranService);
+		WebAspectranService aspectranService = new WebAspectranService(rootAspectranService);
 
 		AspectranConfig aspectranConfig = aspectranService.getAspectranConfig();
 		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
@@ -282,26 +282,26 @@ public class WebAspectranService extends BasicAspectranService {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 
-		WebAspectranService aspectranService = new WebAspectranService(servletContext);
-		aspectranService.initialize(aspectranConfig);
+		WebAspectranService webAspectranService = new WebAspectranService(servletContext);
+		webAspectranService.initialize(aspectranConfig);
 
 		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
 		if (webParameters != null) {
-			aspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
+			webAspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
 		}
 
-		setAspectranServiceLifeCycleListener(aspectranService);
+		setAspectranServiceLifeCycleListener(webAspectranService);
 		
-		aspectranService.startup();
+		webAspectranService.startup();
 		
-		return aspectranService;
+		return webAspectranService;
 	}
 	
-	private static void setAspectranServiceLifeCycleListener(final WebAspectranService aspectranService) {
-		aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
+	private static void setAspectranServiceLifeCycleListener(final WebAspectranService webAspectranService) {
+		webAspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
 			@Override
 			public void started() {
-				aspectranService.pauseTimeout = 0L;
+				webAspectranService.pauseTimeout = 0L;
 			}
 
 			@Override
@@ -314,12 +314,12 @@ public class WebAspectranService extends BasicAspectranService {
 				if (millis < 0L) {
 					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
 				}
-				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
+				webAspectranService.pauseTimeout = System.currentTimeMillis() + millis;
 			}
 			
 			@Override
 			public void paused() {
-				aspectranService.pauseTimeout = -1L;
+				webAspectranService.pauseTimeout = -1L;
 			}
 
 			@Override

@@ -39,7 +39,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 
-	private WebAspectranService aspectranService;
+	private WebAspectranService webAspectranService;
 	
 	private boolean standalone;
 
@@ -64,12 +64,12 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				}
 				
 				WebAspectranService rootAspectranService = (WebAspectranService)attr;
-				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
-				standalone = (rootAspectranService != aspectranService);
+				webAspectranService = WebAspectranService.newInstance(this, rootAspectranService);
+				standalone = (rootAspectranService != webAspectranService);
 			} else {
 				log.info("AspectranService is running in standalone mode inside the servlet.");
 
-				aspectranService = WebAspectranService.newInstance(this);
+				webAspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
 			}
 		} catch (Exception e) {
@@ -79,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		aspectranService.service(req, res);
+		webAspectranService.service(req, res);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		if (standalone) {
 			log.info("Do not terminate the application server while destroying all scoped beans.");
 
-			aspectranService.shutdown();
+			webAspectranService.shutdown();
 
 			log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
 		}

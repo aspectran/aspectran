@@ -69,10 +69,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.applicationAdapter = applicationAdapter;
 	}
 
-	AbstractAspectranService(AspectranService parentAspectranService) {
-		this.applicationAdapter = parentAspectranService.getApplicationAdapter();
-		this.activityContext = parentAspectranService.getActivityContext();
-		this.aspectranConfig = parentAspectranService.getAspectranConfig();
+	AbstractAspectranService(AspectranService rootAspectranService) {
+		this.applicationAdapter = rootAspectranService.getApplicationAdapter();
+		this.activityContext = rootAspectranService.getActivityContext();
+		this.aspectranConfig = rootAspectranService.getAspectranConfig();
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		try {
 			activityContext = activityContextLoader.load(rootContext);
-			activityContext.setOriginAspectranService(this);
+			activityContext.initialize(this);
 
 			startupSchedulerService();
 			startReloadingTimer();
@@ -234,7 +234,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 		try {
 			activityContext = activityContextLoader.reload(hardReload);
-			activityContext.setOriginAspectranService(this);
+			activityContext.initialize(this);
 
 			startupSchedulerService();
 	

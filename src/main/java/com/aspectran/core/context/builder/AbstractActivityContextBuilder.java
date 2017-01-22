@@ -147,7 +147,6 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
 		activityContext.setContextTemplateProcessor(contextTemplateProcessor);
 		activityContext.setTransletRuleRegistry(transletRuleRegistry);
-		activityContext.initialize();
 
 		return activityContext;
 	}
