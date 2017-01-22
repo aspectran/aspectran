@@ -134,7 +134,7 @@ public class WebAspectranService extends BasicAspectranService {
 				log.debug("Translet activity was terminated.");
 			}
 		} catch (Exception e) {
-			log.error("Web Activity service failed.", e);
+			log.error("An error occurred while processing a web activity.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
 			if (activity != null) {

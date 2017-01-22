@@ -41,8 +41,6 @@ public class PointcutPatternRule {
 
 	private String methodNamePattern;
 	
-//	private int matchedTransletCount;
-	
 	private int matchedBeanCount;
 
 	private int matchedClassCount;
@@ -109,14 +107,6 @@ public class PointcutPatternRule {
 	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
 		this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
 	}
-
-//	public int getMatchedTransletCount() {
-//		return matchedTransletCount;
-//	}
-//
-//	public void increaseMatchedTransletCount() {
-//		matchedTransletCount++;
-//	}
 
 	public int getMatchedBeanCount() {
 		return matchedBeanCount;

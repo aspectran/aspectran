@@ -56,11 +56,12 @@ public class SessionScopeAdvisor {
 	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
 		AspectRuleRegistry aspectRuleRegistry = context.getAspectRuleRegistry();
 		AspectAdviceRuleRegistry aarr = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
-		if (aarr == null) {
+		if (aarr != null) {
+			SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
+			return new SessionScopeAdvisor(activity, aarr);
+		} else {
 			return null;
 		}
-		SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
-		return new SessionScopeAdvisor(activity, aarr);
 	}
 	
 }

@@ -176,7 +176,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 				log.debug("Translet activity was terminated.");
 			}
 		} catch (Exception e) {
-			throw new AspectranServiceException("Failed to process translet.", e);
+			throw new AspectranServiceException("An error occurred while processing a translet.", e);
 		} finally {
 			if (activity != null) {
 				activity.finish();
@@ -237,7 +237,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
 			return activity.getResponseAdapter().getWriter().toString();
 		} catch (Exception e) {
-			throw new AspectranServiceException("Failed to evaluate template.", e);
+			throw new AspectranServiceException("An error occurred while processing a template.", e);
 		}
 	}
 
