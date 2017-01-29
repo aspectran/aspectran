@@ -24,19 +24,22 @@ import org.quartz.impl.SchedulerRepository;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
 
 /**
  * The type Quartz scheduler factory bean.
  *
  * @since 3.0.0
  */
-public class QuartzSchedulerFactoryBean implements FactoryBean<Scheduler> {
+public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBean<Scheduler> {
 
 	private String schedulerName;
 
 	private Properties quartzProperties;
 
 	private boolean exposeSchedulerInRepository;
+
+	private Scheduler scheduler;
 
 	/**
 	 * Set the name of the Scheduler to create via the SchedulerFactory.
@@ -116,8 +119,13 @@ public class QuartzSchedulerFactoryBean implements FactoryBean<Scheduler> {
 	}
 
 	@Override
+	public void initialize() throws Exception {
+		this.scheduler = createScheduler();
+	}
+
+	@Override
 	public Scheduler getObject() throws SchedulerException {
-		return createScheduler();
+		return this.scheduler;
 	}
 
 }
