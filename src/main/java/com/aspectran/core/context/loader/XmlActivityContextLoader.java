@@ -39,7 +39,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
 
-		log.info("Build ActivityContext using the configuration root file: " + rootContext);
+		log.info("Building ActivityContext with root configuration: " + rootContext);
 
 		long startTime = System.currentTimeMillis();
 

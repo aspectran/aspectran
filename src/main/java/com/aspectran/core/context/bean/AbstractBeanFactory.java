@@ -150,9 +150,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				if (evaluator == null) {
 					evaluator = new ItemExpressionParser(activity);
 				}
-
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
-
 				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
 				}

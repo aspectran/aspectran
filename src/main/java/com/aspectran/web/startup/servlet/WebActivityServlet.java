@@ -73,6 +73,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				standalone = true;
 			}
 		} catch (Exception e) {
+			log.error("Unable to initialize WebActivityServlet.", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}

@@ -130,7 +130,7 @@ public class QuartzSchedulerService implements SchedulerService {
 			}
 
 			for (Scheduler scheduler : schedulerSet) {
-				log.info("Starting the scheduler '" + scheduler.getSchedulerName() + "'.");
+				log.info("Starting scheduler '" + scheduler.getSchedulerName() + "'.");
 
 				//Listener attached to jobKey
 				JobListener defaultJobListener = new QuartzJobListener();
