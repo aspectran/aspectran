@@ -22,14 +22,17 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class AspectranWebConfig extends AbstractParameters {
 
 	public static final ParameterDefinition uriDecoding;
+	public static final ParameterDefinition defaultServletName;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
 		uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
+		defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
 
 		parameterDefinitions = new ParameterDefinition[] {
-			uriDecoding
+			uriDecoding,
+			defaultServletName
 		};
 	}
 
