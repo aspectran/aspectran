@@ -22,7 +22,7 @@ import com.aspectran.core.context.bean.aware.ActivityContextAware;
 /**
  * <p>Created: 2017. 1. 29.</p>
  */
-public class BasePath implements ActivityContextAware, FactoryBean<String> {
+public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<String> {
 
 	private String basePath;
 
