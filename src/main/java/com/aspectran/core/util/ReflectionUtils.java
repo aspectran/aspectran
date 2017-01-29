@@ -149,7 +149,7 @@ public class ReflectionUtils {
 		if (!ClassUtils.isAssignableValue(paramType, destArg)) {
 			return Float.MAX_VALUE;
 		}
-		return getTypeDifferenceWeight(paramType, destArg.getClass());
+		return getTypeDifferenceWeight(paramType, (destArg != null ? destArg.getClass() : null));
 	}
 
 	/**
