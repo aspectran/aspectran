@@ -69,7 +69,7 @@ public class ContextBuilderAssistant {
 	
 	private final ApplicationAdapter applicationAdapter;
 	
-	private final String applicationBasePath;
+	private final String basePath;
 
 	private final ClassLoader classLoader;
 
@@ -105,12 +105,12 @@ public class ContextBuilderAssistant {
 		if (environment != null) {
 			this.environment = environment;
 			this.applicationAdapter = environment.getApplicationAdapter();
-			this.applicationBasePath = applicationAdapter.getApplicationBasePath();
+			this.basePath = applicationAdapter.getBasePath();
 			this.classLoader = applicationAdapter.getClassLoader();
 		} else {
 			this.environment = null;
 			this.applicationAdapter = null;
-			this.applicationBasePath = null;
+			this.basePath = null;
 			this.classLoader = null;
 		}
 	}
@@ -175,8 +175,8 @@ public class ContextBuilderAssistant {
 		return applicationAdapter;
 	}
 
-	public String getApplicationBasePath() {
-		return applicationBasePath;
+	public String getBasePath() {
+		return basePath;
 	}
 	
 	public ClassLoader getClassLoader() {
@@ -694,7 +694,7 @@ public class ContextBuilderAssistant {
 		Importer importer = null;
 
 		if (StringUtils.hasText(file)) {
-			importer = new FileImporter(getApplicationBasePath(), file, importFileType);
+			importer = new FileImporter(getBasePath(), file, importFileType);
 		} else if (StringUtils.hasText(resource)) {
 			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
 		} else if (StringUtils.hasText(url)) {

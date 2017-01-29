@@ -568,7 +568,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return resourceName;
 	}
 
-	public static String[] checkResourceLocations(String[] resourceLocations, String applicationBasePath) throws InvalidResourceException {
+	public static String[] checkResourceLocations(String[] resourceLocations, String basePath) throws InvalidResourceException {
 		if (resourceLocations == null) {
 			return null;
 		}
@@ -589,8 +589,8 @@ public class AspectranClassLoader extends ClassLoader {
 					throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path.");
 				}
 			} else {
-				if (applicationBasePath != null) {
-					resourceLocations[i] = applicationBasePath + resourceLocations[i];
+				if (basePath != null) {
+					resourceLocations[i] = basePath + resourceLocations[i];
 				}
 			}
 

@@ -299,7 +299,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             }
             return new FileTemplateLoader(file);
         } else {
-            File file = new File(applicationAdapter.getApplicationBasePath(), templateLoaderPath);
+            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
             }

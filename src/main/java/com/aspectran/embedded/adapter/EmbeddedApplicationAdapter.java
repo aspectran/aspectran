@@ -31,9 +31,9 @@ public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
 	public EmbeddedApplicationAdapter() {
 		super(null);
 		
-		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+		String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
 
-		super.setApplicationBasePath(applicationBasePath);
+		super.setBasePath(basePath);
 	}
 
 }

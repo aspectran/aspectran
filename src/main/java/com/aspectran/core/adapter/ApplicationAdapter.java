@@ -93,7 +93,7 @@ public interface ApplicationAdapter {
 	 *
 	 * @return the application base path
 	 */
-	String getApplicationBasePath();
+	String getBasePath();
 	
 	/**
 	 * Returns to convert the given file path with the real file path.

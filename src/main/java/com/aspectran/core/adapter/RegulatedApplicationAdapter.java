@@ -79,9 +79,8 @@ public class RegulatedApplicationAdapter implements ApplicationAdapter {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public String getApplicationBasePath() {
-		return applicationAdapter.getApplicationBasePath();
+	public String getBasePath() {
+		return applicationAdapter.getBasePath();
 	}
 
 	@Override

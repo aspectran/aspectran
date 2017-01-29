@@ -272,7 +272,7 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
 			importer = new FileImporter(filePath, importFileType);
 		} else {
-			importer = new FileImporter(assistant.getApplicationBasePath(), rootContext, importFileType);
+			importer = new FileImporter(assistant.getBasePath(), rootContext, importFileType);
 		}
 		
 		return importer;

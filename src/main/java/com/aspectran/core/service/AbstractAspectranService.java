@@ -140,7 +140,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				defaultProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
 			}
 			
-			resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getApplicationBasePath());
+			resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getBasePath());
 
 			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
 			activityContextLoader.setResourceLocations(resourceLocations);

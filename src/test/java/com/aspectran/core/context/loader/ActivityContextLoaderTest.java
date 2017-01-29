@@ -45,7 +45,7 @@ public class ActivityContextLoaderTest {
 
 		File base = new File("./target/test-classes");
 		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-		applicationAdapter.setApplicationBasePath(base.getCanonicalPath());
+		applicationAdapter.setBasePath(base.getCanonicalPath());
 
 		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
 		activityContextLoader.setHybridLoad(true);
@@ -74,7 +74,7 @@ public class ActivityContextLoaderTest {
 //
 //		File file = new File("./target/test-classes");
 //		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-//		applicationAdapter.setApplicationBasePath(file.getCanonicalPath());
+//		applicationAdapter.setBasePath(file.getCanonicalPath());
 //
 //		ActivityContextLoader activityContextLoader = new XmlActivityContextLoader(applicationAdapter);
 //
@@ -93,7 +93,7 @@ public class ActivityContextLoaderTest {
 //
 //		File file = new File("./target/test-classes");
 //		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-//		applicationAdapter.setApplicationBasePath(file.getCanonicalPath());
+//		applicationAdapter.setBasePath(file.getCanonicalPath());
 //
 //		ActivityContextLoader activityContextLoader = new AponActivityContextLoader(applicationAdapter);
 //

@@ -38,7 +38,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
 	protected ClassLoader classLoader;
 
-	protected String applicationBasePath;
+	protected String basePath;
 
 	/**
 	 * Instantiates a new AbstractApplicationAdapter.
@@ -74,18 +74,17 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.classLoader = classLoader;
 	}
 
-	@Override
-	public String getApplicationBasePath() {
-		return applicationBasePath;
+	public String getBasePath() {
+		return basePath;
 	}
 
 	/**
 	 * Sets the application base path.
 	 *
-	 * @param applicationBasePath the new application base path
+	 * @param basePath the new application base path
 	 */
-	public void setApplicationBasePath(String applicationBasePath) {
-		this.applicationBasePath = applicationBasePath;
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
 	}
 
 	@Override
@@ -109,8 +108,8 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 			}
 			file = new File(url.getFile());
 		} else {
-			if (applicationBasePath != null) {
-				file = new File(applicationBasePath, filePath);
+			if (basePath != null) {
+				file = new File(basePath, filePath);
 			} else {
 				file = new File(filePath);
 			}
@@ -121,7 +120,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("applicationBasePath", applicationBasePath);
+		tsb.append("basePath", basePath);
 		tsb.append("classLoader", getClassLoader());
 		tsb.append("adaptee", adaptee);
 		return tsb.toString();

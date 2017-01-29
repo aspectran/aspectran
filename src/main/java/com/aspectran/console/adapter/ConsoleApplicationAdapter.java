@@ -38,12 +38,12 @@ public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
 	public ConsoleApplicationAdapter() throws IOException {
 		super(null);
 		
-		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-		if (applicationBasePath == null) {
-			applicationBasePath = new File(".").getCanonicalPath();
+		String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+		if (basePath == null) {
+			basePath = new File(".").getCanonicalPath();
 		}
 
-		super.setApplicationBasePath(applicationBasePath);
+		super.setBasePath(basePath);
 	}
 
 }

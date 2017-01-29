@@ -52,14 +52,14 @@ public class TransletRuleRegistry {
 	
 	private final Set<TransletRule> restfulTransletRuleSet = new HashSet<>();
 
-	private final String applicationBasePath;
+	private final String basePath;
 
 	private final ClassLoader classLoader;
 
 	private AssistantLocal assistantLocal;
 	
 	public TransletRuleRegistry(ApplicationAdapter applicationAdapter) {
-		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
+		this.basePath = applicationAdapter.getBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
 	}
 	
@@ -140,7 +140,7 @@ public class TransletRuleRegistry {
 		String scanPath = transletRule.getScanPath();
 
 		if (scanPath != null) {
-			TransletFileScanner scanner = new TransletFileScanner(applicationBasePath, classLoader);
+			TransletFileScanner scanner = new TransletFileScanner(basePath, classLoader);
 
 			if (transletRule.getFilterParameters() != null) {
 				scanner.setFilterParameters(transletRule.getFilterParameters());

@@ -32,14 +32,14 @@ public class FileScanner {
 
 	private static final char FILE_SEPARATOR = '/';
 	
-	private final String applicationBasePath;
+	private final String basePath;
 	
 	public FileScanner() {
 		this(null);
 	}
 	
-	public FileScanner(String applicationBasePath) {
-		this.applicationBasePath = applicationBasePath;
+	public FileScanner(String basePath) {
+		this.basePath = basePath;
 	}
 
 	public Map<String, File> scan(String filePathPattern) {
@@ -108,8 +108,8 @@ public class FileScanner {
 
 	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target;
-		if (applicationBasePath != null) {
-			target = new File(applicationBasePath, targetPath);
+		if (basePath != null) {
+			target = new File(basePath, targetPath);
 		} else {
 			target = new File(targetPath);
 		}

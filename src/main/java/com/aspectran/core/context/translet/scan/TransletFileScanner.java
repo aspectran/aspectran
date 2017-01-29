@@ -48,8 +48,8 @@ public class TransletFileScanner extends FileScanner {
 	
 	private Map<String, WildcardPattern> excludePatternCache = new HashMap<String, WildcardPattern>();
 
-	public TransletFileScanner(String applicationBasePath, ClassLoader classLoader) {
-		super(applicationBasePath);
+	public TransletFileScanner(String basePath, ClassLoader classLoader) {
+		super(basePath);
 		this.classLoader = classLoader;
 	}
 	

@@ -35,7 +35,7 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter {
 	 */
 	public WebApplicationAdapter(ServletContext servletContext) {
 		super(servletContext);
-		super.setApplicationBasePath(servletContext.getRealPath("/"));
+		super.setBasePath(servletContext.getRealPath("/"));
 	}
 
 	@Override

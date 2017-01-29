@@ -174,7 +174,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             loader.setPrefix(prefix);
             return loader;
         } else {
-            File file = new File(applicationAdapter.getApplicationBasePath(), templateLoaderPath);
+            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
