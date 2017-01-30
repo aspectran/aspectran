@@ -68,7 +68,7 @@ Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 
 ## [API Reference](http://www.aspectran.com/docs/api/)
 Aspectran API 문서를 제공합니다.
-* [http://api.aspectran.com/3.1.0/](http://api.aspectran.com/)
+* [http://api.aspectran.com/3.2.0/](http://api.aspectran.com/)
 
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
