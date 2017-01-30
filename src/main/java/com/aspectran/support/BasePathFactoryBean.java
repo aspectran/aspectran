@@ -20,6 +20,9 @@ import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.aware.ActivityContextAware;
 
 /**
+ * {@code BasePathFactoryBean} that returns the base path under which the application is running.
+ * This can be used to reference the base path by declaring it as a bean in the Aspectran configuration metadata.
+ *
  * <p>Created: 2017. 1. 29.</p>
  */
 public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<String> {
@@ -30,7 +33,6 @@ public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<St
 	public void setActivityContext(ActivityContext context) {
 		this.basePath = context.getApplicationAdapter().getBasePath();
 	}
-
 
 	@Override
 	public String getObject() throws Exception {
