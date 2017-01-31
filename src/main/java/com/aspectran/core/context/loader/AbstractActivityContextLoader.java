@@ -90,12 +90,12 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	protected AspectranClassLoader newAspectranClassLoader() {
 		String[] excludePackageNames = new String[] {
-				"com.aspectran.core",
-				"com.aspectran.scheduler",
-				"com.aspectran.web",
 				"com.aspectran.console",
-				"com.aspectran.embedded"
-		};
+				"com.aspectran.core",
+				"com.aspectran.embedded",
+				"com.aspectran.scheduler",
+				"com.aspectran.web"
+			};
 
 		AspectranClassLoader acl = new AspectranClassLoader();
 		acl.excludePackage(excludePackageNames);
