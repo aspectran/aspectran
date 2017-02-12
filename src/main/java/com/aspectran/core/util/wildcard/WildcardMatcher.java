@@ -192,7 +192,7 @@ public class WildcardMatcher {
 	/**
 	 * Checks whether a string matches a given wildcard pattern.
 	 *
-	 * @param input the pattern to match
+	 * @param pattern the pattern to match
 	 * @param input the input string
 	 * @return {@code true} if string matches the pattern, otherwise {@code false}
 	 */
