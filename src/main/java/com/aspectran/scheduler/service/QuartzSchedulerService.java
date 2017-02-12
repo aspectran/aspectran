@@ -15,7 +15,6 @@
  */
 package com.aspectran.scheduler.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +42,7 @@ import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 
 /**
  * The Class QuartzSchedulerService.
@@ -64,6 +64,8 @@ public class QuartzSchedulerService implements SchedulerService {
 	private int startDelaySeconds = 0;
 	
 	private boolean waitOnShutdown = false;
+
+	private PluralWildcardPattern pluralWildcardPattern;
 	
 	public QuartzSchedulerService(ActivityContext context) {
 		this.context = context;
@@ -89,6 +91,14 @@ public class QuartzSchedulerService implements SchedulerService {
 		this.waitOnShutdown = waitOnShutdown;
 	}
 
+	public void setExposals(String[] exposals) {
+		pluralWildcardPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+	}
+
+	private boolean isExposable(String transletName) {
+		return (pluralWildcardPattern == null || pluralWildcardPattern.matches(transletName));
+	}
+
 	@Override
 	public void startup(int delaySeconds) throws SchedulerServiceException {
 		this.startDelaySeconds = delaySeconds;
@@ -110,20 +120,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		
 		try {
 			for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
-				String schedulerBeanId = scheduleRule.getSchedulerBeanId();
-				
-				Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
-				JobDetail[] jobDetails = buildJobDetails(scheduleRule.getJobRuleList());
-				
-				if (jobDetails.length > 0) {
-					for (JobDetail jobDetail : jobDetails) {
-						String triggerName = jobDetail.getKey().getName();
-						String triggerGroup = scheduleRule.getId();
-						Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
-
-						scheduler.scheduleJob(jobDetail, trigger);
-					}
-				}
+				Scheduler scheduler = buildScheduler((scheduleRule));
 
 				schedulerSet.add(scheduler);
 				schedulerMap.put(scheduleRule.getId(), scheduler);
@@ -227,7 +224,47 @@ public class QuartzSchedulerService implements SchedulerService {
 	private Scheduler getScheduler(String scheduleId) throws SchedulerException {
 		return schedulerMap.get(scheduleId);
 	}
-	
+
+	private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
+		String schedulerBeanId = scheduleRule.getSchedulerBeanId();
+		Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
+
+		List<JobRule> jobRuleList = scheduleRule.getJobRuleList();
+		for (JobRule jobRule : jobRuleList) {
+			if (isExposable(jobRule.getTransletName())) {
+				JobDetail jobDetail = buildJobDetail(jobRule);
+				if (jobDetail != null) {
+					String triggerName = jobDetail.getKey().getName();
+					String triggerGroup = scheduleRule.getId();
+					Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
+
+					scheduler.scheduleJob(jobDetail, trigger);
+				}
+			} else {
+				log.warn("Unexposable translet [" + jobRule.getTransletName() + "] at " + scheduler);
+			}
+		}
+
+		return scheduler;
+	}
+
+	private JobDetail buildJobDetail(JobRule jobRule) {
+		if (jobRule.isDisabled()) {
+			return null;
+		}
+
+		String jobName = jobRule.getTransletName();
+		String jobGroup = jobRule.getScheduleRule().getId();
+
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
+
+		return JobBuilder.newJob(ActivityLauncherJob.class)
+				.withIdentity(jobName, jobGroup)
+				.setJobData(jobDataMap)
+				.build();
+	}
+
 	private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
 		Trigger trigger;
 
@@ -289,35 +326,5 @@ public class QuartzSchedulerService implements SchedulerService {
 		
 		return trigger;
 	}
-	
-	private JobDetail[] buildJobDetails(List<JobRule> jobRuleList) {
-		List<JobDetail> jobDetailList = new ArrayList<>(jobRuleList.size());
 
-		for (JobRule jobRule : jobRuleList) {
-			JobDetail jobDetail = buildJobDetail(jobRule);
-			if (jobDetail != null) {
-				jobDetailList.add(jobDetail);
-			}
-		}
-
-		return jobDetailList.toArray(new JobDetail[jobDetailList.size()]);
-	}
-
-	private JobDetail buildJobDetail(JobRule jobRule) {
-		if (jobRule.isDisabled()) {
-			return null;
-		}
-		
-		String jobName = jobRule.getTransletName();
-		String jobGroup = jobRule.getScheduleRule().getId();
-		
-		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
-
-		return JobBuilder.newJob(ActivityLauncherJob.class)
-				.withIdentity(jobName, jobGroup)
-				.setJobData(jobDataMap)
-				.build();
-	}
-	
 }

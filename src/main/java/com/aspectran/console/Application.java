@@ -16,6 +16,8 @@
 package com.aspectran.console;
 
 import com.aspectran.console.service.ConsoleAspectranService;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Aspectran Console Application.
@@ -23,7 +25,9 @@ import com.aspectran.console.service.ConsoleAspectranService;
  * @since 2016. 1. 17.
  */
 public class Application {
-	
+
+    private static final Log log = LogFactory.getLog(Application.class);
+
 	private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static void main(String[] args) {
@@ -51,19 +55,19 @@ public class Application {
 
                 switch (command) {
                     case "restart":
-                        System.out.println("Restarting the Aspectran Service...");
+                        log.info("Restarting the Aspectran Service...");
                         aspectranService.restart();
                         break;
                     case "pause":
-                        System.out.println("Pausing the Aspectran Service...");
+						log.info("Pausing the Aspectran Service...");
                         aspectranService.pause();
                         break;
                     case "resume":
-                        System.out.println("Resuming Aspectran Service...");
+						log.info("Resuming Aspectran Service...");
                         aspectranService.resume();
                         break;
                     case "quit":
-                        System.out.println("Goodbye.");
+						log.info("Goodbye.");
                         break loop;
                     default:
                         aspectranService.service(command);
@@ -77,7 +81,7 @@ public class Application {
             exitStatus = 1;
         } finally {
             if (aspectranService != null) {
-                System.out.println("Do not terminate the application while destroying all scoped beans.");
+				log.info("Do not terminate the application while destroying all scoped beans.");
 
                 aspectranService.shutdown();
             }

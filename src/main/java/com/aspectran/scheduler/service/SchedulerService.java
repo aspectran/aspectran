@@ -29,7 +29,9 @@ public interface SchedulerService {
 	boolean isWaitOnShutdown();
 	
 	void setWaitOnShutdown(boolean waitOnShutdown);
-	
+
+	void setExposals(String[] exposals);
+
 	void startup() throws SchedulerServiceException;
 	
 	void startup(int delaySeconds) throws SchedulerServiceException;

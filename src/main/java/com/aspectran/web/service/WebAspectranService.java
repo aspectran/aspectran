@@ -90,13 +90,21 @@ public class WebAspectranService extends BasicAspectranService {
 			requestUri = URLDecoder.decode(requestUri, uriDecoding);
 		}
 
+		if (!isExposable(requestUri)) {
+			if (log.isDebugEnabled()) {
+				log.debug("Unexposable translet [" + requestUri + "] at " + this);
+			}
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+
 		if (log.isDebugEnabled()) {
 			log.debug("Request URI: " + requestUri);
 		}
 
 		if (pauseTimeout != 0L) {
 			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				log.info("AspectranService has been paused, so did not respond to the request URI \"" + requestUri + "\".");
+				log.debug("AspectranService has been paused, so did not respond to the request URI \"" + requestUri + "\".");
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -192,11 +200,12 @@ public class WebAspectranService extends BasicAspectranService {
 		WebAspectranService webAspectranService = new WebAspectranService(rootAspectranService);
 
 		AspectranConfig aspectranConfig = webAspectranService.getAspectranConfig();
-		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
+		Parameters webConfig = aspectranConfig.getParameters(AspectranConfig.web);
 		String defaultServletName = null;
-		if (webParameters != null) {
-			webAspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
-			defaultServletName = webParameters.getString(AspectranWebConfig.defaultServletName);
+		if (webConfig != null) {
+			webAspectranService.setUriDecoding(webConfig.getString(AspectranWebConfig.uriDecoding));
+			defaultServletName = webConfig.getString(AspectranWebConfig.defaultServletName);
+			webAspectranService.setExposals(webConfig.getStringArray(AspectranWebConfig.exposals));
 		}
 
 		webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
@@ -286,11 +295,12 @@ public class WebAspectranService extends BasicAspectranService {
 		WebAspectranService webAspectranService = new WebAspectranService(servletContext);
 		webAspectranService.initialize(aspectranConfig);
 
-		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
+		Parameters webConfig = aspectranConfig.getParameters(AspectranConfig.web);
 		String defaultServletName = null;
-		if (webParameters != null) {
-			webAspectranService.setUriDecoding(webParameters.getString(AspectranWebConfig.uriDecoding));
-			defaultServletName = webParameters.getString(AspectranWebConfig.defaultServletName);
+		if (webConfig != null) {
+			webAspectranService.setUriDecoding(webConfig.getString(AspectranWebConfig.uriDecoding));
+			defaultServletName = webConfig.getString(AspectranWebConfig.defaultServletName);
+			webAspectranService.setExposals(webConfig.getStringArray(AspectranWebConfig.exposals));
 		}
 
 		webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);

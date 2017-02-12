@@ -30,6 +30,7 @@ import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
 
@@ -55,6 +56,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 	private boolean autoReloadingStartup;
 	
 	private int scanIntervalSeconds;
+
+	private PluralWildcardPattern exposableTransletNamesPattern;
 
 	private ActivityContext activityContext;
 
@@ -162,6 +165,14 @@ public abstract class AbstractAspectranService implements AspectranService {
 			throw new AspectranServiceException("Could not initialize AspectranService.", e);
 		}
 	}
+
+	protected void setExposals(String[] exposals) {
+		exposableTransletNamesPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+	}
+
+	protected boolean isExposable(String transletName) {
+		return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
+	}
 	
 	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if (activityContextLoader == null) {
@@ -251,6 +262,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			return;
 		}
 		
+		String[] exposals = this.aspectranSchedulerConfig.getStringArray(AspectranSchedulerConfig.exposals);
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
@@ -266,8 +278,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 				log.info("Scheduler option 'startDelaySeconds' not specified. So defaulting to 5 seconds.");
 				startDelaySeconds = 5;
 			}
-			
+
+			schedulerService.setExposals(exposals);
 			schedulerService.startup(startDelaySeconds);
+
 			this.schedulerService = schedulerService;
 
 			log.info("SchedulerService has been started.");

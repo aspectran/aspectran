@@ -27,10 +27,11 @@ import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.loader.config.AspectranConsoleConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
@@ -82,9 +83,14 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 * @param command the translet name
 	 */
 	public void service(String command) {
+		if (!isExposable(command)) {
+			log.info("Unexposable translet [" + command + "] at " + this);
+			return;
+		}
+
 		if (pauseTimeout != 0L) {
 			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("AspectranService has been paused, so did not respond to the command \"" + command + "\".");
+				log.info("AspectranService has been paused, so did not respond to the command \"" + command + "\".");
 				return;
 			} else {
 				pauseTimeout = 0L;
@@ -99,7 +105,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
 			activity.perform();
 		} catch (TransletNotFoundException e) {
-			System.out.println("Translet is not found.");
+			log.info("Translet is not found.");
 		} catch (ActivityTerminatedException e) {
 			if (log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
@@ -138,14 +144,19 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 
-		ConsoleAspectranService aspectranService = new ConsoleAspectranService();
-		aspectranService.initialize(aspectranConfig);
-		
-		setAspectranServiceLifeCycleListener(aspectranService);
-		
-		aspectranService.startup();
+		ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
+		consoleAspectranService.initialize(aspectranConfig);
 
-		return aspectranService;
+		Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
+		if (consoleConfig != null) {
+			consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
+		}
+
+		setAspectranServiceLifeCycleListener(consoleAspectranService);
+
+		consoleAspectranService.startup();
+
+		return consoleAspectranService;
 	}
 
 	private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
