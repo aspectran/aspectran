@@ -76,7 +76,7 @@ Provides user guide documentation for Aspectran users.
 
 ## [API Reference](http://www.aspectran.com/docs/api/)
 Provides Aspectran API documentation.
-* [http://api.aspectran.com/3.2.0/](http://api.aspectran.com/)
+* [http://api.aspectran.com/3.3.0/](http://api.aspectran.com/)
 
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Provides information on Aspectran's major change history.  
