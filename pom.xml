@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.aspectran</groupId>
 		<artifactId>aspectran-parent</artifactId>
-		<version>8</version>
+		<version>9-SNAPSHOT</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>3.3.0</version>
+	<version>3.3.1</version>
 	<packaging>jar</packaging>
 
 	<name>aspectran</name>
