@@ -16,7 +16,9 @@
 package com.aspectran.core.util.wildcard;
 
 /**
- * The Class WildcardMasker.
+ * Erase the characters that corresponds to the wildcard, and
+ * returns collect only the remaining characters.
+ * In other words, only it remains for the wildcard character.
  */
 public class WildcardMasker {
 
@@ -25,9 +27,9 @@ public class WildcardMasker {
 	 * returns collect only the remaining characters.
 	 * In other words, only it remains for the wildcard character.
 	 *
-	 * @param pattern the pattern
-	 * @param input the input
-	 * @return the string
+	 * @param pattern the pattern to match
+	 * @param input the input string
+	 * @return the remains string
 	 */
 	public static String mask(WildcardPattern pattern, CharSequence input) {
 		char[] tokens = pattern.getTokens();

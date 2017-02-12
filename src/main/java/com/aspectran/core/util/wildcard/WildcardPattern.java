@@ -17,6 +17,24 @@ package com.aspectran.core.util.wildcard;
 
 /**
  * The Class WildcardPattern.
+ * <p>
+ * The following standard quantifiers are recognized:
+ * <dl>
+ * <dt>{@code *}</dt>  <dd>matches single character</dd>
+ * <dt>{@code +}</dt>  <dd>matches one or more characters</dd>
+ * <dt>{@code ?}</dt>  <dd>matches zero or more characters</dd>
+ * <dt>{@code **}</dt> <dd>matches zero or more string delimited by separators</dd>
+ * <dt>{@code \}</dt>  <dd>Wildcard characters can be escaped</dd>
+ * </dl>
+ * <p>
+ * Examples
+ * <dl>
+ * <dt>/static/{@code *}</dt>  <dd>/static/a.jpg</dd>
+ * <dt>/static{@code *}/{@code **}/b/{@code *}</dt>  <dd>matches one or more characters</dd>
+ * <dt>/static{@code *}/{@code **}</dt>  <dd>/static/a/a.jpg</dd>
+ * <dt>{@code **}/static/{@code **}</dt> <dd>a/b/static/a/b/c/a.jpg</dd>
+ * <dt>/static-{@code ?}/a{@code ?}{@code ?}.jpg</dt>  <dd>/static-a/abc.jpg</dd>
+ * </dl>
  */
 public class WildcardPattern {
 

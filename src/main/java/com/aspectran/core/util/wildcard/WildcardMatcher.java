@@ -18,7 +18,7 @@ package com.aspectran.core.util.wildcard;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * The Class WildcardMatcher.
+ * Checks whether a string matches a given wildcard pattern.
  */
 public class WildcardMatcher {
 
@@ -35,7 +35,13 @@ public class WildcardMatcher {
 	public WildcardMatcher(WildcardPattern pattern) {
 		this.pattern = pattern;
 	}
-	
+
+	/**
+	 * Checks whether a string matches a given wildcard pattern.
+	 *
+	 * @param input the input string
+	 * @return {@code true} if string matches the pattern, otherwise {@code false}
+	 */
 	public boolean matches(CharSequence input) {
 		separatorCount = -1;
 		separatorIndex = 0;
@@ -182,7 +188,14 @@ public class WildcardMatcher {
 	public WildcardPattern getWildcardPattern() {
 		return pattern;
 	}
-	
+
+	/**
+	 * Checks whether a string matches a given wildcard pattern.
+	 *
+	 * @param input the pattern to match
+	 * @param input the input string
+	 * @return {@code true} if string matches the pattern, otherwise {@code false}
+	 */
 	public static boolean matches(WildcardPattern pattern, CharSequence input) {
 		return matches(pattern, input, null);
 	}

@@ -38,9 +38,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
 	@Override
 	public boolean patternMatches(String pattern, String compareString) {
-		if (!pattern.contains(OR_MATCH_DELIMITER)) {
-			return wildcardPatternMatches(pattern, compareString);
-		} else {
+		if (pattern.contains(OR_MATCH_DELIMITER)) {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
 			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
@@ -49,14 +47,14 @@ public class WildcardPointcut extends AbstractPointcut {
 				}
 			}
 			return false;
+		} else {
+			return wildcardPatternMatches(pattern, compareString);
 		}
 	}
 
 	@Override
 	public boolean patternMatches(String pattern, String compareString, char separator) {
-		if (!pattern.contains(OR_MATCH_DELIMITER)) {
-			return wildcardPatternMatches(pattern, compareString, separator);
-		} else {
+		if (pattern.contains(OR_MATCH_DELIMITER)) {
 			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
 			while (parser.hasMoreTokens()) {
 				String patternToken = parser.nextToken();
@@ -65,6 +63,8 @@ public class WildcardPointcut extends AbstractPointcut {
 				}
 			}
 			return false;
+		} else {
+			return wildcardPatternMatches(pattern, compareString, separator);
 		}
 	}
 	
