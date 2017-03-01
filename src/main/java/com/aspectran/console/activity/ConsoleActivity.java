@@ -132,7 +132,7 @@ public class ConsoleActivity extends CoreActivity {
 					}
 				}
 			} else {
-				System.out.printf("  $%s: ", itemRule.getName());
+				System.out.printf("    $%s: ", itemRule.getName());
 				String input = System.console().readLine();
 				if (input != null && !input.isEmpty()) {
 					getRequestAdapter().setParameter(itemRule.getName(), input);
