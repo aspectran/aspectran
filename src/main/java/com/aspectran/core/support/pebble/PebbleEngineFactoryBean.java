@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.template.engine.pebble;
+package com.aspectran.core.support.pebble;
 
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
