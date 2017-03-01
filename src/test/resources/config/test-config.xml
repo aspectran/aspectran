@@ -11,7 +11,7 @@
 		<setting name="defaultTemplateEngine" value="freemarker"/>
 	</settings>
 
-	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerConfigurationFactoryBean">
+	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
 		<properties>
 			<item name="freemarkerSettings" type="properties">
 				<value name="incompatible_improvements">2.3.23</value>
@@ -40,7 +40,7 @@
 		</properties>
 	</bean>
 
-	<bean id="freemarker" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerTemplateEngine">
+	<bean id="freemarker" class="com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine">
 		<constructor>
 			<arguments>
 				<item><ref bean="freemarkerConfigurationFactory"/></item>
@@ -48,9 +48,9 @@
 		</constructor>
 	</bean>
 
-	<bean id="pebbleConfigurationFactory" class="com.aspectran.core.context.template.engine.pebble.PebbleEngineFactoryBean"/>
+	<bean id="pebbleConfigurationFactory" class="com.aspectran.core.support.pebble.PebbleEngineFactoryBean"/>
 
-	<bean id="pebble" class="com.aspectran.core.context.template.engine.pebble.PebbleTemplateEngine">
+	<bean id="pebble" class="com.aspectran.core.support.pebble.PebbleTemplateEngine">
 		<constructor>
 			<arguments>
 				<item><ref bean="pebbleConfigurationFactory"/></item>

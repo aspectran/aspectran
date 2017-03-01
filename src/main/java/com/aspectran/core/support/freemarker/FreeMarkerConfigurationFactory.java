@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.template.engine.freemarker;
+package com.aspectran.core.support.freemarker;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,10 +24,10 @@ import java.util.Properties;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.context.template.engine.freemarker.directive.CustomTrimDirective;
-import com.aspectran.core.context.template.engine.freemarker.directive.TrimDirective;
-import com.aspectran.core.context.template.engine.freemarker.directive.TrimDirectiveGroup;
-import com.aspectran.core.context.template.engine.freemarker.directive.Trimmer;
+import com.aspectran.core.support.freemarker.directive.CustomTrimDirective;
+import com.aspectran.core.support.freemarker.directive.TrimDirective;
+import com.aspectran.core.support.freemarker.directive.TrimDirectiveGroup;
+import com.aspectran.core.support.freemarker.directive.Trimmer;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
