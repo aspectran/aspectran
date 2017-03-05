@@ -43,7 +43,7 @@ public class EmbeddedAspectranServiceTest {
 	@Before
 	public void ready() throws IOException, AspectranServiceException {
 		String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
-		aspectranService = EmbeddedAspectranService.newInstance(rootContextLocation);
+		aspectranService = EmbeddedAspectranService.build(rootContextLocation);
 	}
 
 	@After

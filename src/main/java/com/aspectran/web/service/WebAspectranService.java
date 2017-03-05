@@ -169,13 +169,13 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(ServletContext servletContext) throws AspectranServiceException {
+	public static WebAspectranService build(ServletContext servletContext) throws AspectranServiceException {
 		String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		if (aspectranConfigParam == null) {
 			log.warn("No specified servlet context initialization parameter for instantiating WebAspectranService.");
 		}
 
-		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
+		WebAspectranService aspectranService = build(servletContext, aspectranConfigParam);
 		
 		servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
@@ -195,7 +195,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(ServletContext servletContext, AspectranService rootAspectranService)
+	public static WebAspectranService build(ServletContext servletContext, AspectranService rootAspectranService)
 			throws AspectranServiceException {
 		WebAspectranService webAspectranService = new WebAspectranService(rootAspectranService);
 
@@ -220,7 +220,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(WebActivityServlet servlet) throws AspectranServiceException {
+	public static WebAspectranService build(WebActivityServlet servlet) throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
@@ -229,7 +229,7 @@ public class WebAspectranService extends BasicAspectranService {
 			log.warn("No specified servlet initialization parameter for instantiating WebAspectranService.");
 		}
 
-		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
+		WebAspectranService aspectranService = build(servletContext, aspectranConfigParam);
 		
 		String attrName = STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
 		servletContext.setAttribute(attrName, aspectranService);
@@ -249,7 +249,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService)
+	public static WebAspectranService build(WebActivityServlet servlet, WebAspectranService rootAspectranService)
 			throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
@@ -257,7 +257,7 @@ public class WebAspectranService extends BasicAspectranService {
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 
 		if (aspectranConfigParam != null) {
-			WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
+			WebAspectranService aspectranService = build(servletContext, aspectranConfigParam);
 			servletContext.setAttribute(STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName(), aspectranService);
 			return aspectranService;
 		} else {
@@ -273,7 +273,7 @@ public class WebAspectranService extends BasicAspectranService {
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam)
+	private static WebAspectranService build(ServletContext servletContext, String aspectranConfigParam)
 			throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
 		if (aspectranConfigParam != null) {

@@ -68,7 +68,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	@Override
-	public void beforeShutdown() {
+	public void beforeDestroy() {
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
@@ -256,10 +256,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static EmbeddedAspectranService newInstance(String rootContextLocation) throws AspectranServiceException {
+	public static EmbeddedAspectranService build(String rootContextLocation) throws AspectranServiceException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 		aspectranConfig.updateRootContextLocation(rootContextLocation);
-		return newInstance(aspectranConfig);
+		return build(aspectranConfig);
 	}
 	
 	/**
@@ -269,7 +269,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	 * @return the embedded aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static EmbeddedAspectranService newInstance(AspectranConfig aspectranConfig) throws AspectranServiceException {
+	public static EmbeddedAspectranService build(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
 		if (contextParameters == null) {
 			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
