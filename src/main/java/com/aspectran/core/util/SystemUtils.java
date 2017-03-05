@@ -37,5 +37,19 @@ public class SystemUtils {
 		}
 		return null;
 	}
-	
+
+	public static String getProperty(String name, String defVal) {
+		String val = null;
+		try {
+			val = System.getProperty(name);
+		} catch (AccessControlException ex) {
+			if (log.isDebugEnabled()) {
+				log.debug(String.format(
+						"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
+						name, ex.getMessage()));
+			}
+		}
+		return (val != null ? val : defVal);
+	}
+
 }
