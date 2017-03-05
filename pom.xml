@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>3.3.1-SNAPSHOT</version>
+	<version>3.4.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>aspectran</name>
@@ -81,7 +81,13 @@
 			<version>2.5</version>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.1.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.24</version>
