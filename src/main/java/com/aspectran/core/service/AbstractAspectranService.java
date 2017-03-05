@@ -188,13 +188,15 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 		
 		try {
-			activityContext = activityContextLoader.load(rootContext);
-			activityContext.initialize(this);
+			ActivityContext newActivityContext = activityContextLoader.load(rootContext);
+			newActivityContext.initialize(this);
+
+			this.activityContext = newActivityContext;
 
 			startupSchedulerService();
 			startReloadingTimer();
-			
-			return activityContext;
+
+			return this.activityContext;
 		} catch (Exception e) {
 			throw new AspectranServiceException("Could not load ActivityContext.", e);
 		}

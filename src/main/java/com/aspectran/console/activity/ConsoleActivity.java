@@ -17,13 +17,13 @@ package com.aspectran.console.activity;
 
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
+import com.aspectran.console.inout.ConsoleInout;
+import com.aspectran.console.service.ConsoleAspectranService;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
@@ -38,26 +38,33 @@ import com.aspectran.core.util.StringUtils;
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity {
-	
+
+	private final ConsoleAspectranService service;
+
+	private final ConsoleInout consoleInout;
+
 	/**
 	 * Instantiates a new ConsoleActivity.
 	 *
-	 * @param context the current ActivityContext
-	 * @param sessionAdapter the session adapter
+	 * @param service the console aspectran service
 	 */
-	public ConsoleActivity(ActivityContext context, SessionAdapter sessionAdapter) {
-		super(context);
-		setSessionAdapter(sessionAdapter);
+	public ConsoleActivity(ConsoleAspectranService service) {
+		super(service.getActivityContext());
+		setSessionAdapter(service.getSessionAdapter());
+
+		this.service = service;
+		this.consoleInout = service.getConsoleInout();
 	}
 
 	@Override
 	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new ConsoleRequestAdapter();
-			requestAdapter.setCharacterEncoding(resolveRequestCharacterEncoding());
+			requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new ConsoleResponseAdapter();
+			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(consoleInout);
+			responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setResponseAdapter(responseAdapter);
 		} catch (Exception e) {
 			throw new AdapterException("Could not adapt to console application activity.", e);
@@ -80,7 +87,7 @@ public class ConsoleActivity extends CoreActivity {
 		if (parameterItemRuleMap != null) {
 			ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
 
-			System.out.println("Required parameters:");
+			consoleInout.writeLine("Required parameters:");
 
 			for (ItemRule itemRule : parameterItemRules) {
 				Token[] tokens = itemRule.getTokens();
@@ -89,23 +96,22 @@ public class ConsoleActivity extends CoreActivity {
 				}
 
 				String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
-				System.out.printf("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
-				System.out.println();
+				consoleInout.writeLine("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
 			}
 
-			System.out.println("Enter value of each parameter:");
+			consoleInout.writeLine("Enter values for each parameter:");
 
 			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
 			if (missingItemRules != null) {
-				System.out.println("Enter missing value of each parameter:");
+				consoleInout.writeLine("Enter the missing values for each parameter:");
 
 				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
 
 				if (missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
 					String[] itemNames = missingItemRules2.getItemNames();
 					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
-					System.out.printf("Missing mandatory parameters: %s", missingParamNames).println();
+					consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
 
 					terminate();
 				}
@@ -123,8 +129,7 @@ public class ConsoleActivity extends CoreActivity {
 			if (tokens != null && tokens.length > 0) {
 				for (Token token : tokens) {
 					if (token.getType() == TokenType.PARAMETER) {
-						System.out.printf("    %s: ", token.stringify());
-						String input = System.console().readLine();
+						String input = consoleInout.readLine("    %s: ", token.stringify());
 						if (input != null && !input.isEmpty()) {
 							getRequestAdapter().setParameter(token.getName(), input);
 							inputCount++;
@@ -132,8 +137,7 @@ public class ConsoleActivity extends CoreActivity {
 					}
 				}
 			} else {
-				System.out.printf("    $%s: ", itemRule.getName());
-				String input = System.console().readLine();
+				String input = consoleInout.readLine("    $%s: ", itemRule.getName());
 				if (input != null && !input.isEmpty()) {
 					getRequestAdapter().setParameter(itemRule.getName(), input);
 					inputCount++;
@@ -151,7 +155,7 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		ConsoleActivity activity = new ConsoleActivity(getActivityContext(), getSessionAdapter());
+		ConsoleActivity activity = new ConsoleActivity(service);
 		activity.setIncluded(true);
 		return (T)activity;
 	}

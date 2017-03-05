@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.adapter;
+package com.aspectran.console.inout;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 /**
- * The Class ConsoleRequestAdapter.
- * 
- * @since 2016. 1. 18.
+ * <p>Created: 2017. 3. 4.</p>
  */
-public class ConsoleRequestAdapter extends BasicRequestAdapter {
+public abstract class AbstractConsoleInout implements ConsoleInout {
 
-	/**
-	 * Instantiates a new ConsoleRequestAdapter.
-	 */
-	public ConsoleRequestAdapter() {
-		super(null);
+	private Writer unclosableWriter;
+
+	@Override
+	public Writer getUnclosableWriter() throws UnsupportedEncodingException {
+		if (unclosableWriter == null) {
+			unclosableWriter = new UnclosablePrintWriter(getOutput(), getEncoding());
+		}
+		return unclosableWriter;
 	}
 
 }

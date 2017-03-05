@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.adapter;
+package com.aspectran.console.terminal.internal.readline;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import java.io.IOException;
+
+import com.aspectran.console.inout.Jline3ConsoleInout;
+import com.aspectran.console.inout.ConsoleInout;
 
 /**
- * The Class ConsoleRequestAdapter.
- * 
- * @since 2016. 1. 18.
+ * <p>Created: 2017. 3. 5.</p>
  */
-public class ConsoleRequestAdapter extends BasicRequestAdapter {
+public class Jline3TerminalTest {
 
-	/**
-	 * Instantiates a new ConsoleRequestAdapter.
-	 */
-	public ConsoleRequestAdapter() {
-		super(null);
+	public static void main(String argv[]) throws IOException {
+		ConsoleInout terminalInput = new Jline3ConsoleInout();
+		String prompt = "jline3 > ";
+		while (true) {
+			terminalInput.readLine(prompt);
+		}
 	}
 
 }

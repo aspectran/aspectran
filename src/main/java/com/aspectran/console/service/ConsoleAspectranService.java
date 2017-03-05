@@ -18,9 +18,14 @@ package com.aspectran.console.service;
 import java.io.File;
 import java.io.IOException;
 
+import org.jline.reader.UserInterruptException;
+
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
+import com.aspectran.console.inout.ConsoleInout;
+import com.aspectran.console.inout.Jline3ConsoleInout;
+import com.aspectran.console.inout.SystemConsoleInout;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
@@ -55,6 +60,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	
 	private long pauseTimeout;
 
+	private ConsoleInout consoleInout;
+
 	private ConsoleAspectranService() throws IOException {
 		super(new ConsoleApplicationAdapter());
 		this.sessionAdapter = new ConsoleSessionAdapter();
@@ -69,7 +76,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	}
 
 	@Override
-	public void beforeShutdown() {
+	public void beforeDestroy() {
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
@@ -77,12 +84,24 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		sessionScope.destroy();
 	}
 
+	public SessionAdapter getSessionAdapter() {
+		return sessionAdapter;
+	}
+
+	public ConsoleInout getConsoleInout() {
+		return consoleInout;
+	}
+
+	private void setConsoleInout(ConsoleInout consoleInout) {
+		this.consoleInout = consoleInout;
+	}
+
 	/**
 	 * Process the actual dispatching to the activity. 
 	 *
 	 * @param command the translet name
 	 */
-	public void service(String command) {
+	protected void service(String command) {
 		if (!isExposable(command)) {
 			log.info("Unexposable translet [" + command + "] at " + this);
 			return;
@@ -101,7 +120,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		Activity activity = null;
 
 		try {
-			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
+			activity = new ConsoleActivity(this);
 			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
 			activity.perform();
 		} catch (TransletNotFoundException e) {
@@ -119,6 +138,50 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		}
 	}
 
+	public void service() {
+		try {
+			loop:
+			while (true) {
+				String command = consoleInout.readLine("Aspectran> ");
+
+				if (command == null || command.isEmpty()) {
+					continue;
+				}
+
+				switch (command) {
+					case "restart":
+						log.info("Restarting the Aspectran Service ...");
+						restart();
+						break;
+					case "pause":
+						log.info("Pausing the Aspectran Service ...");
+						pause();
+						break;
+					case "resume":
+						log.info("Resuming the Aspectran Service ...");
+						resume();
+						break;
+					case "quit":
+						log.info("Goodbye.");
+						break loop;
+					default:
+						service(command);
+				}
+
+				System.out.println();
+			}
+		} catch (UserInterruptException e) {
+			//nothing
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (isActive()) {
+				log.info("Do not terminate the application while destroying all scoped beans.");
+				shutdown();
+			}
+		}
+	}
+
 	/**
 	 * Returns a new instance of ConsoleAspectranService.
 	 *
@@ -127,7 +190,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 * @throws AspectranServiceException the aspectran service exception
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public static ConsoleAspectranService newInstance(String aspectranConfigFile)
+	public static ConsoleAspectranService build(String aspectranConfigFile)
 			throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 		if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
@@ -147,9 +210,17 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
 		consoleAspectranService.initialize(aspectranConfig);
 
+
 		Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
 		if (consoleConfig != null) {
+			String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
+			if("jline".equals(consoleMode)) {
+				consoleAspectranService.setConsoleInout(new Jline3ConsoleInout());
+			}
 			consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
+		}
+		if (consoleAspectranService.getConsoleInout() == null) {
+			consoleAspectranService.setConsoleInout(new SystemConsoleInout());
 		}
 
 		setAspectranServiceLifeCycleListener(consoleAspectranService);

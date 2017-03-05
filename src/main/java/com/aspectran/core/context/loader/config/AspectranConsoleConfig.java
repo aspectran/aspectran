@@ -21,15 +21,18 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranConsoleConfig extends AbstractParameters {
 
+	public static final ParameterDefinition mode;
 	public static final ParameterDefinition exposals;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
+		mode = new ParameterDefinition("mode", ParameterValueType.STRING);
 		exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
 		parameterDefinitions = new ParameterDefinition[] {
-			exposals,
+			mode,
+			exposals
 		};
 	}
 

@@ -17,8 +17,8 @@ package com.aspectran.console.adapter;
 
 import java.io.IOException;
 
+import com.aspectran.console.inout.ConsoleInout;
 import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class ConsoleResponseAdapter.
@@ -32,17 +32,11 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 	 *
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public ConsoleResponseAdapter() throws IOException {
+	public ConsoleResponseAdapter(ConsoleInout consoleInout) throws IOException {
 		super(null);
 
-		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
-		setOutputStream(System.out);
-
-		if (getCharacterEncoding() != null) {
-			setWriter(new ConsolePrintWriter(System.out, getCharacterEncoding()));
-		} else {
-			setWriter(new ConsolePrintWriter(System.out));
-		}
+		setOutputStream(consoleInout.getOutput());
+		setWriter(consoleInout.getUnclosableWriter());
 	}
 
 }
