@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.adapter;
+package com.aspectran.console.inout;
 
+import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -25,14 +26,14 @@ import java.io.UnsupportedEncodingException;
  * 
  * @since 2016. 1. 22.
  */
-class ConsolePrintWriter extends PrintWriter {
+public class UnclosablePrintWriter extends PrintWriter {
 
-	ConsolePrintWriter(OutputStream out) {
+	public UnclosablePrintWriter(OutputStream out) {
 		super(out, true);
 	}
 
-	ConsolePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
-		super(new OutputStreamWriter(out, characterEncoding), true);
+	public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
+		super(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)), true);
 	}
 	
 	@Override
