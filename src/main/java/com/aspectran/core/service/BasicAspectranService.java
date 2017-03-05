@@ -18,6 +18,7 @@ package com.aspectran.core.service;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.util.ShutdownHooks;
 
 /**
  * The Class BasicAspectranService.
@@ -37,8 +38,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 	/** Synchronization monitor for the "restart" and "shutdown" */
 	private final Object startupShutdownMonitor = new Object();
 
-	/** Reference to the JVM shutdown hook, if registered */
-	private Thread shutdownHook;
+	/** Reference to the shutdown task, if registered */
+	private ShutdownHooks.Task shutdownTask;
 
 	/**
 	 * Instantiates a new Basic aspectran service.
@@ -55,6 +56,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 		this.derivedService = true;
 	}
 
+	@Override
 	public void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener) {
 		this.aspectranServiceLifeCycleListener = aspectranServiceLifeCycleListener;
 	}
@@ -62,7 +64,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 	protected void afterStartup() {
 	}
 
-	protected void beforeShutdown() {
+	protected void beforeDestroy() {
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 				}
 
 				loadActivityContext();
-				registerShutdownHook();
+				registerShutdownTask();
 				afterStartup();
 
 				this.closed.set(false);
@@ -105,7 +107,6 @@ public class BasicAspectranService extends AbstractAspectranService {
 					return;
 				}
 
-				beforeShutdown();
 				doDestroy();
 
 				log.info("AspectranService has been stopped.");
@@ -185,9 +186,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 	public void shutdown() {
 		if (!this.derivedService) {
 			synchronized (this.startupShutdownMonitor) {
-				beforeShutdown();
 				doDestroy();
-				removeShutdownHook();
+				removeShutdownTask();
 
 				log.info("AspectranService has been shut down successfully.");
 			}
@@ -204,6 +204,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 				aspectranServiceLifeCycleListener.paused();
 			}
 
+			beforeDestroy();
 			destroyActivityContext();
 
 			this.active.set(false);
@@ -215,37 +216,30 @@ public class BasicAspectranService extends AbstractAspectranService {
 	}
 
 	/**
-	 * Register a shutdown hook with the JVM runtime, closing this context
+	 * Registers a shutdown hook with the JVM runtime, closing this context
 	 * on JVM shutdown unless it has already been closed at that time.
 	 */
-	private void registerShutdownHook() {
-		if (this.shutdownHook == null) {
-			// No shutdown hook registered yet.
-			this.shutdownHook = new Thread() {
-				@Override
-				public void run() {
-					synchronized (startupShutdownMonitor) {
-						doDestroy();
-					}
+	private void registerShutdownTask() {
+		if (this.shutdownTask == null) {
+			// Register a task to destroy the activity context on shutdown
+			this.shutdownTask = ShutdownHooks.add(() -> {
+				synchronized (startupShutdownMonitor) {
+					doDestroy();
+					removeShutdownTask();
 				}
-			};
-			Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+			});
 		}
 	}
 
 	/**
-	 * Register a shutdown hook with the JVM runtime, closing this context
-	 * on JVM shutdown unless it has already been closed at that time.
+	 * De-registers a shutdown hook with the JVM runtime.
 	 */
-	private void removeShutdownHook() {
+	private void removeShutdownTask() {
 		// If we registered a JVM shutdown hook, we don't need it anymore now:
 		// We've already explicitly closed the context.
-		if (this.shutdownHook != null) {
-			try {
-				Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
-			} catch (IllegalStateException ex) {
-				// ignore - VM is already shutting down
-			}
+		if (this.shutdownTask != null) {
+			ShutdownHooks.remove(this.shutdownTask);
+			this.shutdownTask = null;
 		}
 	}
 
