@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Writer;
 import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -26,6 +27,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class InstantActivity
@@ -81,7 +83,8 @@ public class InstantActivity extends BasicActivity {
 			RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
 			setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new BasicResponseAdapter(null);
+			Writer writer = new StringOutputWriter();
+			ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
 			setResponseAdapter(responseAdapter);
 
 			if(attributeMap != null) {

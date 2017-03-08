@@ -28,10 +28,6 @@ import java.io.UnsupportedEncodingException;
  */
 public class UnclosablePrintWriter extends PrintWriter {
 
-	public UnclosablePrintWriter(OutputStream out) {
-		super(out, true);
-	}
-
 	public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
 		super(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)), true);
 	}

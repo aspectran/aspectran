@@ -17,6 +17,7 @@ package com.aspectran.embedded.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class EmbeddedResponseAdapter.
@@ -27,7 +28,7 @@ public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 	 * Instantiates a new EmbeddedResponseAdapter.
 	 */
 	public EmbeddedResponseAdapter() {
-		super(null);
+		super(null, new StringOutputWriter());
 
 		setContentType(ContentType.TEXT_PLAIN.toString());
 	}

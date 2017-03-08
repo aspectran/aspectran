@@ -23,14 +23,9 @@ import java.io.Writer;
  */
 public abstract class AbstractConsoleInout implements ConsoleInout {
 
-	private Writer unclosableWriter;
-
 	@Override
 	public Writer getUnclosableWriter() throws UnsupportedEncodingException {
-		if (unclosableWriter == null) {
-			unclosableWriter = new UnclosablePrintWriter(getOutput(), getEncoding());
-		}
-		return unclosableWriter;
+		return new UnclosablePrintWriter(getOutput(), getEncoding());
 	}
 
 }

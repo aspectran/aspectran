@@ -17,6 +17,7 @@ package com.aspectran.console.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 
 import org.jline.reader.UserInterruptException;
 
@@ -103,7 +104,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	 */
 	protected void service(String command) {
 		if (!isExposable(command)) {
-			log.info("Unexposable translet [" + command + "] at " + this);
+			log.info("Unexposable translet name: " + command);
 			return;
 		}
 
@@ -117,14 +118,25 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		}
 
 		CommandParser commandParser = CommandParser.parseCommand(command);
+		Writer[] redirectionWriters = null;
+
+		if(commandParser.getRedirectionOperationList() != null) {
+			try {
+				redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
+			} catch (Exception e) {
+				log.warn("Invalid redirection file: " + commandParser.getRedirectionFile(), e);
+				return;
+			}
+		}
+
 		Activity activity = null;
 
 		try {
-			activity = new ConsoleActivity(this);
+			activity = new ConsoleActivity(this, redirectionWriters);
 			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
 			activity.perform();
 		} catch (TransletNotFoundException e) {
-			log.info("Translet is not found.");
+			log.info("Unknown translet name: " + command);
 		} catch (ActivityTerminatedException e) {
 			if (log.isDebugEnabled()) {
 				log.debug("Translet activity was terminated.");
@@ -150,15 +162,15 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 				switch (command) {
 					case "restart":
-						log.info("Restarting the Aspectran Service ...");
+						log.info("Restarting the Aspectran Service...");
 						restart();
 						break;
 					case "pause":
-						log.info("Pausing the Aspectran Service ...");
+						log.info("Pausing the Aspectran Service...");
 						pause();
 						break;
 					case "resume":
-						log.info("Resuming the Aspectran Service ...");
+						log.info("Resuming the Aspectran Service...");
 						resume();
 						break;
 					case "quit":

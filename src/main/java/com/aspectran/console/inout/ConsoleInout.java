@@ -21,6 +21,8 @@ import java.io.Writer;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
+ *
+ * @since 3.4.0
  */
 public interface ConsoleInout {
 

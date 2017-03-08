@@ -15,9 +15,12 @@
  */
 package com.aspectran.console.activity;
 
+import java.io.Writer;
+
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.console.inout.ConsoleInout;
+import com.aspectran.console.inout.MultiWriter;
 import com.aspectran.console.service.ConsoleAspectranService;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
@@ -43,17 +46,20 @@ public class ConsoleActivity extends CoreActivity {
 
 	private final ConsoleInout consoleInout;
 
+	private final Writer[] redirectionWriters;
+
 	/**
 	 * Instantiates a new ConsoleActivity.
 	 *
 	 * @param service the console aspectran service
 	 */
-	public ConsoleActivity(ConsoleAspectranService service) {
+	public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
 		super(service.getActivityContext());
 		setSessionAdapter(service.getSessionAdapter());
 
 		this.service = service;
 		this.consoleInout = service.getConsoleInout();
+		this.redirectionWriters = redirectionWriters;
 	}
 
 	@Override
@@ -63,7 +69,18 @@ public class ConsoleActivity extends CoreActivity {
 			requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(consoleInout);
+			Writer writer;
+			if (redirectionWriters == null) {
+				writer = consoleInout.getUnclosableWriter();
+			} else {
+				if (redirectionWriters.length == 1) {
+					writer = redirectionWriters[0];
+				} else {
+					writer = new MultiWriter(redirectionWriters);
+				}
+			}
+
+			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(writer);
 			responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setResponseAdapter(responseAdapter);
 		} catch (Exception e) {
@@ -155,7 +172,7 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		ConsoleActivity activity = new ConsoleActivity(service);
+		ConsoleActivity activity = new ConsoleActivity(service, null);
 		activity.setIncluded(true);
 		return (T)activity;
 	}

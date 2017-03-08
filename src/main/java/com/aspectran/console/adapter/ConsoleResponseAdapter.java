@@ -16,8 +16,8 @@
 package com.aspectran.console.adapter;
 
 import java.io.IOException;
+import java.io.Writer;
 
-import com.aspectran.console.inout.ConsoleInout;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 
 /**
@@ -30,13 +30,13 @@ public class ConsoleResponseAdapter extends BasicResponseAdapter {
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
 	 *
+	 * @param writer the writer to output
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public ConsoleResponseAdapter(ConsoleInout consoleInout) throws IOException {
+	public ConsoleResponseAdapter(Writer writer) throws IOException {
 		super(null);
 
-		setOutputStream(consoleInout.getOutput());
-		setWriter(consoleInout.getUnclosableWriter());
+		setWriter(writer);
 	}
 
 }

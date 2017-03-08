@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class BasicResponseAdapter.
@@ -44,6 +43,17 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
 	 */
 	public BasicResponseAdapter(Object adaptee) {
 		super(adaptee);
+	}
+
+	/**
+	 * Instantiates a new Basic response adapter.
+	 *
+	 * @param adaptee the adaptee object
+	 * @param writer the writer to output
+	 */
+	public BasicResponseAdapter(Object adaptee, Writer writer) {
+		super(adaptee);
+		setWriter(writer);
 	}
 
 	@Override
@@ -81,7 +91,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
 	@Override
 	public Writer getWriter() throws IOException {
 		if (writer == null) {
-			writer = new StringOutputWriter();
+			throw new UnsupportedOperationException();
 		}
 		return writer;
 	}
