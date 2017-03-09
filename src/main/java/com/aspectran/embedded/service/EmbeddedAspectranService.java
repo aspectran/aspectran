@@ -30,6 +30,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
+import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -76,8 +77,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 		sessionScope.destroy();
 	}
 
+	public SessionAdapter getSessionAdapter() {
+		return sessionAdapter;
+	}
+
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @return the {@code Translet} object
@@ -88,7 +93,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @param parameterMap the parameter map
@@ -101,7 +106,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @param parameterMap the parameter map
@@ -115,7 +120,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @param method the request method
@@ -127,7 +132,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @param method the request method
@@ -141,7 +146,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	/**
-	 * Runs the translet.
+	 * Run a translet.
 	 *
 	 * @param name the translet name
 	 * @param method the request method
@@ -163,9 +168,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
 		EmbeddedActivity activity = null;
 		Translet translet = null;
+		StringOutputWriter outputWriter = new StringOutputWriter();
 
 		try {
-			activity = new EmbeddedActivity(getActivityContext(), sessionAdapter);
+			activity = new EmbeddedActivity(this, outputWriter);
 			activity.setParameterMap(parameterMap);
 			activity.setAttributeMap(attributeMap);
 			activity.prepare(name, method);

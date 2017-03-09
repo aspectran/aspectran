@@ -15,7 +15,6 @@
  */
 package com.aspectran.embedded.activity;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
@@ -25,22 +24,18 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.StringOutputWriter;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embedded.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
+import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
  * The Class EmbeddedActivity.
  */
 public class EmbeddedActivity extends CoreActivity {
 	
-	private static final Log log = LogFactory.getLog(EmbeddedActivity.class);
-	
-	private final Writer outputWriter = new StringOutputWriter();
+	private final EmbeddedAspectranService service;
+
+	private final Writer outputWriter;
 
 	private ParameterMap parameterMap;
 
@@ -49,12 +44,14 @@ public class EmbeddedActivity extends CoreActivity {
 	/**
 	 * Instantiates a new embedded activity.
 	 *
-	 * @param context the current ActivityContext
-	 * @param sessionAdapter the session adapter
+	 * @param service the embedded aspectran service
 	 */
-	public EmbeddedActivity(ActivityContext context, SessionAdapter sessionAdapter) {
-		super(context);
-		setSessionAdapter(sessionAdapter);
+	public EmbeddedActivity(EmbeddedAspectranService service, Writer outputWriter) {
+		super(service.getActivityContext());
+		setSessionAdapter(service.getSessionAdapter());
+
+		this.service = service;
+		this.outputWriter = outputWriter;
 	}
 
 	public void setParameterMap(ParameterMap parameterMap) {
@@ -83,22 +80,11 @@ public class EmbeddedActivity extends CoreActivity {
 			throw new AdapterException("Could not adapt to embedded application activity.", e);
 		}
 	}
-	
-	@Override
-	protected void release() {
-		// 
-		
-		try {
-			outputWriter.close();
-		} catch (IOException e) {
-			log.error("Failed to close the output writer.", e);
-		}
-	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		EmbeddedActivity activity = new EmbeddedActivity(getActivityContext(), getSessionAdapter());
+		EmbeddedActivity activity = new EmbeddedActivity(service, outputWriter);
 		activity.setIncluded(true);
 		return (T)activity;
 	}

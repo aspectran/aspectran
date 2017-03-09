@@ -15,9 +15,9 @@
  */
 package com.aspectran.console.activity;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
@@ -37,8 +37,6 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ConsoleActivity.
@@ -47,20 +45,17 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ConsoleActivity extends CoreActivity {
 	
-	private static final Log log = LogFactory.getLog(ConsoleActivity.class);
-
 	private final ConsoleAspectranService service;
 
 	private final ConsoleInout consoleInout;
 
 	private final Writer[] redirectionWriters;
-	
-	private Writer outputWriter;
 
 	/**
 	 * Instantiates a new ConsoleActivity.
 	 *
 	 * @param service the console aspectran service
+	 * @param redirectionWriters the redirection writers
 	 */
 	public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
 		super(service.getActivityContext());
@@ -78,17 +73,14 @@ public class ConsoleActivity extends CoreActivity {
 			requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setRequestAdapter(requestAdapter);
 
-			if (outputWriter == null) { 
-				if (redirectionWriters == null) {
-					outputWriter = consoleInout.getUnclosableWriter();
-				} else {
-					List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
-					writerList.add(consoleInout.getUnclosableWriter());
-					for (Writer w : redirectionWriters) {
-						writerList.add(w);
-					}
-					outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
-				}
+			Writer outputWriter;
+			if (redirectionWriters == null) {
+				outputWriter = consoleInout.getUnclosableWriter();
+			} else {
+				List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
+				writerList.add(consoleInout.getUnclosableWriter());
+				Collections.addAll(writerList, redirectionWriters);
+				outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
 			}
 
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(outputWriter);
@@ -99,15 +91,6 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
-	@Override
-	protected void release() {
-		try {
-			outputWriter.close();
-		} catch (IOException e) {
-			log.error("Failed to close the output writer.", e);
-		}
-	}
-	
 	@Override
 	protected void parseRequest() {
 		receiveRequiredParameters();
@@ -192,7 +175,7 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		ConsoleActivity activity = new ConsoleActivity(service, null);
+		ConsoleActivity activity = new ConsoleActivity(service, redirectionWriters);
 		activity.setIncluded(true);
 		return (T)activity;
 	}

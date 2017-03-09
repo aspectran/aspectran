@@ -529,7 +529,6 @@ public class CoreActivity extends BasicActivity {
 		}
 	}
 
-
 	/**
 	 * Create a new {@code Translet} instance.
 	 *

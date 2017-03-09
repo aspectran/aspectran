@@ -2,114 +2,147 @@
                            "http://aspectran.github.io/dtd/aspectran-3.dtd">
 
 <aspectran>
-	
-	<description>
-		Aspectran configuration for embedded mode for tests
-	</description>
 
-	<bean scan="com.aspectran.embedded.*Bean" mask="com.aspectran.embedded.*"/>
-	
-	<bean scan="com.aspectran.embedded.*Configuration" mask="com.aspectran.embedded.*"/>
+    <description>
+        Aspectran configuration for embedded mode for tests
+    </description>
 
-	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
-		<properties>
-			<item name="freemarkerSettings" type="properties">
-				<value name="incompatible_improvements">2.3.23</value>
-				<value name="template_exception_handler">rethrow</value>
-				<value name="default_encoding">UTF-8</value>
-				<value name="number_format">0.####</value>
-			</item>
-			<item name="trimDirectives" valueType="parameters">
-				directive: {
-					name: trim
-				}
-				directive: {
-					name: where
-					prefix: "WHERE "
-					deprefixes: [
-						"and "
-						"and\t"
-						"or "
-						"or\t"
-					]
-				}
-				directive: {
-					name: set
-					prefix: "SET "
-					desuffixes: ","
-				}
-			</item>
-		</properties>
-	</bean>
+    <bean scan="com.aspectran.embedded.*Bean" mask="com.aspectran.embedded.*"/>
 
-	<bean id="freemarker" class="com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine">
-		<constructor>
-			<arguments>
-				<item><ref bean="freemarkerConfigurationFactory"/></item>
-			</arguments>
-		</constructor>
-	</bean>
+    <bean scan="com.aspectran.embedded.*Configuration" mask="com.aspectran.embedded.*"/>
 
-	<translet name="echo">
-		<request>
-			<parameters>
-				<item name="input-1">${input-1:12345}</item>
-				<item name="input-2">${input-2:67890}</item>
-			</parameters>
-		</request>
-		<transform type="transform/text" contentType="text/plain">
-			<template>
-				Using Builtin Token Template Engine
-				-------------------------------------
-				input-1: ${input-1}
-				input-2: ${input-2}
-			</template>
-		</transform>
-	</translet>
+    <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
+        <properties>
+            <item name="freemarkerSettings" type="properties">
+                <value name="incompatible_improvements">2.3.23</value>
+                <value name="template_exception_handler">rethrow</value>
+                <value name="default_encoding">UTF-8</value>
+                <value name="number_format">0.####</value>
+            </item>
+            <item name="trimDirectives" valueType="parameters">
+                directive: {
+                    name: trim
+                }
+                directive: {
+                    name: where
+                    prefix: "WHERE "
+                    deprefixes: [
+                        "and "
+                        "and\t"
+                        "or "
+                        "or\t"
+                    ]
+                }
+                directive: {
+                    name: set
+                    prefix: "SET "
+                    desuffixes: ","
+                }
+            </item>
+        </properties>
+    </bean>
 
-	<template id="echo" engine="builtin">
-		ID: ${id}
-		Name: ${name}
-		Email: ${email}
-	</template>
+    <bean id="freemarker" class="com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine">
+        <constructor>
+            <arguments>
+                <item><ref bean="freemarkerConfigurationFactory"/></item>
+            </arguments>
+        </constructor>
+    </bean>
 
-	<template id="selectQuery" engine="freemarker">
-		<![CDATA[
-		SELECT
-			'${name}' as name,
-			'${email}' as email
-		FROM table1
-		<@directive.where>
-			<#if id?has_content>
-			AND id = :id
-			</#if>
-			<#if name?has_content>
-			AND name = :name
-			</#if>
-			<#if email?has_content>
-			AND email = :email
-			</#if>
-		</@directive.where>
-		ORDER BY name
-		]]>
-	</template>
+    <translet name="echo">
+        <request>
+            <parameters>
+                <item name="input-1">${input-1:12345}</item>
+                <item name="input-2">${input-2:67890}</item>
+            </parameters>
+        </request>
+        <transform type="transform/text" contentType="text/plain">
+            <template>
+                Using Builtin Token Template Engine
+                -------------------------------------
+                input-1: ${input-1}
+                input-2: ${input-2}
+            </template>
+        </transform>
+    </translet>
 
-	<template id="updateQuery" engine="freemarker">
-		<![CDATA[
-		UPDATE table1
-		<@directive.set>
-			<#if name??>
-			name = :name,
-			</#if>
-			<#if email??>
-			email = :email,
-			</#if>
-			<#if id??>
-			id = :id,
-			</#if>
-		</@directive.set>
-		WHERE id = :id
-		]]>
-	</template>
+    <template id="echo" engine="builtin">
+        ID: ${id}
+        Name: ${name}
+        Email: ${email}
+    </template>
+
+    <template id="selectQuery" engine="freemarker">
+        <![CDATA[
+        SELECT
+            '${name}' as name,
+            '${email}' as email
+        FROM table1
+        <@directive.where>
+            <#if id?has_content>
+            AND id = :id
+            </#if>
+            <#if name?has_content>
+            AND name = :name
+            </#if>
+            <#if email?has_content>
+            AND email = :email
+            </#if>
+        </@directive.where>
+        ORDER BY name
+        ]]>
+    </template>
+
+    <template id="updateQuery" engine="freemarker">
+        <![CDATA[
+        UPDATE table1
+        <@directive.set>
+            <#if name??>
+            name = :name,
+            </#if>
+            <#if email??>
+            email = :email,
+            </#if>
+            <#if id??>
+            id = :id,
+            </#if>
+        </@directive.set>
+        WHERE id = :id
+        ]]>
+    </template>
+
+    <translet name="include-test">
+        <transform type="transform/text" contentType="text/plain">
+            <include id="inc" translet="include-target">
+                <attributes>
+                    <item name="attr-1" value="1"/>
+                    <item name="attr-2" value="2"/>
+                    <item name="attr-3" value="3"/>
+                </attributes>
+            </include>
+            <action id="action1" bean="SecondBean" method="getMessage"/>
+            <template> :: @{action1}</template>
+        </transform>
+    </translet>
+
+    <translet name="include-target">
+        <transform type="transform/text" contentType="text/plain">
+            <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
+        </transform>
+    </translet>
+
+    <translet name="attr-test">
+        <request>
+            <attributes>
+                <item name="attr-1" value="1"/>
+                <item name="attr-2" value="2"/>
+                <item name="attr-3" value="3"/>
+            </attributes>
+        </request>
+        <transform type="transform/text" contentType="text/plain">
+            <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
+        </transform>
+    </translet>
 
 </aspectran>

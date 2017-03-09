@@ -54,7 +54,7 @@ public class EmbeddedAspectranServiceTest {
 	}
 
 	@Test
-	public void test() throws AspectranServiceException, IOException {
+	public void test1() throws AspectranServiceException, IOException {
 		ActivityContext activityContext = aspectranService.getActivityContext();
 		BeanRegistry beanRegistry = activityContext.getBeanRegistry();
 		FirstBean firstBean = beanRegistry.getBean("thirdBean");
@@ -80,6 +80,18 @@ public class EmbeddedAspectranServiceTest {
 
 		String updateQuery = aspectranService.template("updateQuery", params);
 		System.out.println(updateQuery);
+	}
+
+	@Test
+	public void test2() throws AspectranServiceException, IOException {
+		Translet translet = aspectranService.translet("attr-test");
+		System.out.println(translet.getResponseAdapter().getWriter().toString());
+	}
+
+	@Test
+	public void includeTest() throws AspectranServiceException, IOException {
+		Translet translet = aspectranService.translet("include-test");
+		System.out.println(translet.getResponseAdapter().getWriter().toString());
 	}
 
 }

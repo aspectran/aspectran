@@ -93,7 +93,7 @@ public class InstantActivity extends BasicActivity {
 				}
 			}
 		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to Instant Activity.", e);
+			throw new AdapterException("Could not adapt to the Instant Activity.", e);
 		}
 	}
 
