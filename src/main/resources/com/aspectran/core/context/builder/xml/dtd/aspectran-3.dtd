@@ -170,7 +170,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT include (attributes?)>
+<!ELEMENT include (parameters?, attributes?)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED

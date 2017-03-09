@@ -682,11 +682,16 @@ public class RootAponAssembler {
 		actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
 		actionParameters.putValueNonNull(ActionParameters.hidden, includeActionRule.getHidden());
 		
+		ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
+		if (parameterItemRuleMap != null) {
+			actionParameters.putValue(ActionParameters.parameters, assembleItemHolderParameters(parameterItemRuleMap));
+		}
+
 		ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
 		if (attributeItemRuleMap != null) {
 			actionParameters.putValue(ActionParameters.attributes, assembleItemHolderParameters(attributeItemRuleMap));
 		}
-		
+
 		return actionParameters;
 	}
 

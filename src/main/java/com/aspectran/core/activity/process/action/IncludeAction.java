@@ -19,7 +19,6 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -55,20 +54,27 @@ public class IncludeAction extends AbstractAction {
 		Activity innerActivity = null;
 		
 		try {
-			RequestAdapter requestAdapter = activity.getRequestAdapter();
-			
-			if (includeActionRule.getAttributeItemRuleMap() != null) {
-				ItemEvaluator evaluator = new ItemExpressionParser(activity);
-				Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
-
-				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-				}
-			}
-			
 			innerActivity = activity.newActivity();
 			innerActivity.prepare(includeActionRule.getTransletName());
-			innerActivity.performWithoutResponse();
+
+			if(includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
+				ItemEvaluator evaluator = new ItemExpressionParser(activity);
+
+				if (includeActionRule.getParameterItemRuleMap() != null) {
+					Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
+					for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+						innerActivity.getRequestAdapter().setParameter(entry.getKey(), entry.getValue().toString());
+					}
+				}
+				if (includeActionRule.getAttributeItemRuleMap() != null) {
+					Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
+					for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+						innerActivity.getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
+					}
+				}
+			}
+
+			innerActivity.perform();
 			
 			return innerActivity.getProcessResult();
 		} catch (Exception e) {

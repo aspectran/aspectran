@@ -29,8 +29,10 @@ public class IncludeActionRule {
 	
 	private String transletName;
 	
+	private ItemRuleMap parameterItemRuleMap;
+
 	private ItemRuleMap attributeItemRuleMap;
-	
+
 	private Boolean hidden;
 	
 	/**
@@ -67,6 +69,36 @@ public class IncludeActionRule {
 	 */
 	public void setTransletName(String transletName) {
 		this.transletName = transletName;
+	}
+
+	/**
+	 * Gets the parameter item rule map.
+	 *
+	 * @return the parameter item rule map
+	 */
+	public ItemRuleMap getParameterItemRuleMap() {
+		return parameterItemRuleMap;
+	}
+
+	/**
+	 * Sets the attribute item rule map.
+	 *
+	 * @param parameterItemRuleMap the new attribute item rule map
+	 */
+	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
+		this.parameterItemRuleMap = parameterItemRuleMap;
+	}
+
+	/**
+	 * Adds the parameter item rule.
+	 *
+	 * @param parameterItemRule the parameter item rule
+	 */
+	public void addParameterItemRule(ItemRule parameterItemRule) {
+		if (parameterItemRuleMap == null) {
+			parameterItemRuleMap = new ItemRuleMap();
+		}
+		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
 
 	/**
@@ -131,6 +163,9 @@ public class IncludeActionRule {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", actionId);
 		tsb.append("translet", transletName);
+		if (parameterItemRuleMap != null) {
+			tsb.append("parameters", parameterItemRuleMap.keySet());
+		}
 		if (attributeItemRuleMap != null) {
 			tsb.append("attributes", attributeItemRuleMap.keySet());
 		}

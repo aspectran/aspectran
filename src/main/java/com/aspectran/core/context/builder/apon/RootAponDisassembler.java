@@ -582,6 +582,11 @@ public class RootAponDisassembler {
 		} else if (include != null) {
 			include = assistant.applyTransletNamePattern(include);
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
+			ItemHolderParameters parameterItemHolderParameters = actionParameters.getParameters(ActionParameters.parameters);
+			if (parameterItemHolderParameters != null) {
+				ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParameters);
+				includeActionRule.setParameterItemRuleMap(parameterItemRuleMap);
+			}
 			ItemHolderParameters attributeItemHolderParameters = actionParameters.getParameters(ActionParameters.attributes);
 			if (attributeItemHolderParameters != null) {
 				ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);

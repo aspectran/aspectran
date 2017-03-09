@@ -103,6 +103,19 @@ class ActionNodeletAdder implements NodeletAdder {
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
             assistant.pushObject(includeActionRule);
         });
+		parser.addNodelet(xpath, "/include/parameters", (node, attributes, text) -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+        });
+		parser.addNodelet(xpath, "/include/parameters", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/include/parameters/end()", (node, attributes, text) -> {
+            ItemRuleMap irm = assistant.popObject();
+
+            if (!irm.isEmpty()) {
+                IncludeActionRule includeActionRule = assistant.peekObject();
+                includeActionRule.setParameterItemRuleMap(irm);
+            }
+        });
 		parser.addNodelet(xpath, "/include/attributes", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
