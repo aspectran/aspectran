@@ -15,6 +15,8 @@
  */
 package com.aspectran.embedded.activity;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
@@ -25,6 +27,9 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embedded.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
 
@@ -32,6 +37,10 @@ import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
  * The Class EmbeddedActivity.
  */
 public class EmbeddedActivity extends CoreActivity {
+	
+	private static final Log log = LogFactory.getLog(EmbeddedActivity.class);
+	
+	private final Writer outputWriter = new StringOutputWriter();
 
 	private ParameterMap parameterMap;
 
@@ -62,7 +71,7 @@ public class EmbeddedActivity extends CoreActivity {
 			RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
 			setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new EmbeddedResponseAdapter();
+			ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
 			setResponseAdapter(responseAdapter);
 
 			if(attributeMap != null) {
@@ -72,6 +81,17 @@ public class EmbeddedActivity extends CoreActivity {
 			}
 		} catch (Exception e) {
 			throw new AdapterException("Could not adapt to embedded application activity.", e);
+		}
+	}
+	
+	@Override
+	protected void release() {
+		// 
+		
+		try {
+			outputWriter.close();
+		} catch (IOException e) {
+			log.error("Failed to close the output writer.", e);
 		}
 	}
 

@@ -15,7 +15,10 @@
  */
 package com.aspectran.console.activity;
 
+import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
@@ -34,6 +37,8 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ConsoleActivity.
@@ -41,12 +46,16 @@ import com.aspectran.core.util.StringUtils;
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity {
+	
+	private static final Log log = LogFactory.getLog(ConsoleActivity.class);
 
 	private final ConsoleAspectranService service;
 
 	private final ConsoleInout consoleInout;
 
 	private final Writer[] redirectionWriters;
+	
+	private Writer outputWriter;
 
 	/**
 	 * Instantiates a new ConsoleActivity.
@@ -69,18 +78,20 @@ public class ConsoleActivity extends CoreActivity {
 			requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setRequestAdapter(requestAdapter);
 
-			Writer writer;
-			if (redirectionWriters == null) {
-				writer = consoleInout.getUnclosableWriter();
-			} else {
-				if (redirectionWriters.length == 1) {
-					writer = redirectionWriters[0];
+			if (outputWriter == null) { 
+				if (redirectionWriters == null) {
+					outputWriter = consoleInout.getUnclosableWriter();
 				} else {
-					writer = new MultiWriter(redirectionWriters);
+					List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
+					writerList.add(consoleInout.getUnclosableWriter());
+					for (Writer w : redirectionWriters) {
+						writerList.add(w);
+					}
+					outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
 				}
 			}
 
-			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(writer);
+			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(outputWriter);
 			responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
 			setResponseAdapter(responseAdapter);
 		} catch (Exception e) {
@@ -88,6 +99,15 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
+	@Override
+	protected void release() {
+		try {
+			outputWriter.close();
+		} catch (IOException e) {
+			log.error("Failed to close the output writer.", e);
+		}
+	}
+	
 	@Override
 	protected void parseRequest() {
 		receiveRequiredParameters();
@@ -176,5 +196,5 @@ public class ConsoleActivity extends CoreActivity {
 		activity.setIncluded(true);
 		return (T)activity;
 	}
-
+	
 }

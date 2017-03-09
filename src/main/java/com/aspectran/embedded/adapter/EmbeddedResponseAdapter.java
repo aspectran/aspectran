@@ -15,9 +15,10 @@
  */
 package com.aspectran.embedded.adapter;
 
+import java.io.Writer;
+
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class EmbeddedResponseAdapter.
@@ -26,9 +27,11 @@ public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
 	/**
 	 * Instantiates a new EmbeddedResponseAdapter.
+	 * 
+	 * @param outputWriter the writer for output
 	 */
-	public EmbeddedResponseAdapter() {
-		super(null, new StringOutputWriter());
+	public EmbeddedResponseAdapter(Writer outputWriter) {
+		super(null, outputWriter);
 
 		setContentType(ContentType.TEXT_PLAIN.toString());
 	}

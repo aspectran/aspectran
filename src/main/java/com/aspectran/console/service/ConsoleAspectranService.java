@@ -27,6 +27,7 @@ import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.console.inout.ConsoleInout;
 import com.aspectran.console.inout.Jline3ConsoleInout;
 import com.aspectran.console.inout.SystemConsoleInout;
+import com.aspectran.console.service.command.CommandParser;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
@@ -120,11 +121,11 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		CommandParser commandParser = CommandParser.parseCommand(command);
 		Writer[] redirectionWriters = null;
 
-		if(commandParser.getRedirectionOperationList() != null) {
+		if(commandParser.getRedirectionList() != null) {
 			try {
 				redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
 			} catch (Exception e) {
-				log.warn("Invalid redirection file: " + commandParser.getRedirectionFile(), e);
+				log.warn("Invalid redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
 				return;
 			}
 		}

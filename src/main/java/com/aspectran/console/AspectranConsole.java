@@ -16,8 +16,6 @@
 package com.aspectran.console;
 
 import com.aspectran.console.service.ConsoleAspectranService;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Aspectran Console Application.
@@ -25,8 +23,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * @since 2016. 1. 17.
  */
 public class AspectranConsole {
-
-	private static final Log log = LogFactory.getLog(AspectranConsole.class);
 
 	private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 

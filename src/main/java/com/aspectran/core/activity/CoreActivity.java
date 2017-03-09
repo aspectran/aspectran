@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 
 import com.aspectran.core.activity.process.ActionList;
@@ -181,6 +182,9 @@ public class CoreActivity extends BasicActivity {
 	protected void adapt() throws AdapterException {
 	}
 	
+	protected void release() {
+	}
+	
 	/**
 	 * Resolve the current locale.
 	 * 
@@ -210,7 +214,11 @@ public class CoreActivity extends BasicActivity {
 
 	@Override
 	public void finish() {
-		removeCurrentActivity();
+		try {
+			release();
+		} finally {
+			removeCurrentActivity();
+		}
 	}
 
 	/**
@@ -354,7 +362,7 @@ public class CoreActivity extends BasicActivity {
 		return (responseRule != null ? responseRule.getResponse() : null);
 	}
 
-	private void response() {
+	private void response() throws IOException {
 		Response res = (this.reservedResponse != null) ? this.reservedResponse : getDeclaredResponse();
 
 		if (res != null) {
