@@ -143,8 +143,17 @@ public class ConsoleAspectranService extends BasicAspectranService {
 				log.debug("Translet activity was terminated.");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Colsole activity failed to perform.", e);
 		} finally {
+			if (redirectionWriters != null) {
+				for (Writer writer : redirectionWriters) {
+					try {
+						writer.close();
+					} catch (IOException e) {
+						log.error("Failed to close writer: " + e.getMessage(), e);
+					}
+				}
+			}
 			if (activity != null) {
 				activity.finish();
 			}

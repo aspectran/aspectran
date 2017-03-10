@@ -45,8 +45,16 @@ public class MultiWriter extends Writer {
 
 	@Override
 	public void close() throws IOException {
+		int unclosed = 0;
 		for (Writer writer : writers) {
-			writer.close();
+			try {
+				writer.close();
+			} catch (IOException e) {
+				unclosed++;
+			}
+		}
+		if (unclosed > 0) {
+			throw new IOException("Failed to close the multi-writer.");
 		}
 	}
 
