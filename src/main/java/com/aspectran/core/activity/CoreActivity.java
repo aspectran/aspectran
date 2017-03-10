@@ -175,7 +175,7 @@ public class CoreActivity extends BasicActivity {
 				resolveLocale();
 			}
 		} catch (Exception e) {
-			throw new ActivityException("Failed to prepare activity.", e);
+			throw new ActivityException("Activity failed to prepare.", e);
 		}
 	}
 
@@ -323,7 +323,7 @@ public class CoreActivity extends BasicActivity {
 				response();
 			}
 		} catch (Exception e) {
-			throw new ActivityException("Failed to perform an activity.", e);
+			throw new ActivityException("Activity failed to perform.", e);
 		} finally {
 			Scope requestScope = getRequestAdapter().getRequestScope(false);
 			if (requestScope != null) {
