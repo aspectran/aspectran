@@ -16,6 +16,9 @@
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.Reader;
@@ -32,7 +35,7 @@ import java.util.Map;
  * Pretty-printing is enabled by default.
  * The default indentation string is a tab character.
  */
-public class AponWriter extends AponFormat implements Flushable {
+public class AponWriter extends AponFormat implements Flushable, Closeable {
 
 	private Writer writer;
 
@@ -85,14 +88,35 @@ public class AponWriter extends AponFormat implements Flushable {
 		this.prettyPrint = prettyPrint;
 		this.indentString = indentString;
 	}
-	
+
 	/**
-	 * Returns whether to wrap a string in quotes.
+	 * Instantiates a new AponWriter.
 	 *
-	 * @return whether or not to wrap a string in quotes
+	 * @param file  a File object to write to
+	 * @throws IOException the io exception
 	 */
-	public boolean isNoQuotes() {
-		return noQuotes;
+	public AponWriter(File file) throws IOException {
+		this(file, false);
+	}
+
+	/**
+	 * Instantiates a new AponWriter.
+	 *
+	 * @param file  a File object to write to
+	 * @param append if <code>true</code>, then bytes will be written
+	 *               to the end of the file rather than the beginning
+	 * @throws IOException the io exception
+	 */
+	public AponWriter(File file, boolean append) throws IOException {
+		this.writer = new FileWriter(file, append);
+	}
+
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
+	}
+
+	public void setIndentString(String indentString) {
+		this.indentString = indentString;
 	}
 
 	/**
@@ -105,30 +129,12 @@ public class AponWriter extends AponFormat implements Flushable {
 	}
 
 	/**
-	 * Returns whether to write a null parameter.
-	 *
-	 * @return whether or not to write a null parameter
-	 */
-	public boolean isNullWrite() {
-		return nullWrite;
-	}
-
-	/**
 	 * Sets whether to write a null parameter.
 	 *
 	 * @param nullWrite true, write a null parameter
 	 */
 	public void setNullWrite(boolean nullWrite) {
 		this.nullWrite = nullWrite;
-	}
-
-	/**
-	 * Returns whether write a type hint for values.
-	 *
-	 * @return whether or not write a type hint for values
-	 */
-	public boolean isTypeHintWrite() {
-		return typeHintWrite;
 	}
 
 	/**
@@ -441,6 +447,7 @@ public class AponWriter extends AponFormat implements Flushable {
 	 *
 	 * @throws IOException an I/O error occurs.
 	 */
+	@Override
 	public void close() throws IOException {
 		if (writer != null) {
 			writer.close();

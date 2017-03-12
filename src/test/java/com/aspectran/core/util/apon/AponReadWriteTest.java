@@ -29,19 +29,18 @@ import org.junit.runners.MethodSorters;
 public class AponReadWriteTest {
 
 	@Test
-	public void readWriteTest() throws IOException {
+	public void writeTest() throws IOException {
 		File file = new File("./target/test-classes/config/apon/apon-test.apon");
 		Parameters parameters = AponReader.parse(file);
 		
 		File outputFile = new File("./target/test-classes/config/apon/apon-test-output.apon");
-		if (outputFile.exists()) {
-			outputFile.delete();
-		}
-		
-		AponWriter aponWriter = new FileAponWriter(outputFile, true, "  ");
+
+		AponWriter aponWriter = new AponWriter(outputFile);
+		aponWriter.setPrettyPrint(true);
 		aponWriter.setNoQuotes(true);
 		aponWriter.setNullWrite(true);
 		aponWriter.setTypeHintWrite(true);
+		aponWriter.setIndentString("  ");
 		aponWriter.write(parameters);
 		aponWriter.close();
 	}
