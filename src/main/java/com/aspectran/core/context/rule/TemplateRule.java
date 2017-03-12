@@ -38,7 +38,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
 
-	private static final String DEFAULT_TEMPLATE_ENGINE_NAME = "builtin";
+	private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "internal";
 
 	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
@@ -74,7 +74,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public TemplateRule(String engine) {
-		if (engine != null && !engine.isEmpty() && !engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
+		if (engine != null && !engine.isEmpty() && !engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
 			this.engine = engine;
 		}
 	}
@@ -92,7 +92,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public void setEngine(String engine) {
-    	if (engine == null || engine.isEmpty() || engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
+    	if (engine == null || engine.isEmpty() || engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
     		this.engine = null;
     		this.contentTokens = null;
     	} else {
