@@ -50,6 +50,8 @@ public class DefaultSettings {
 
 	private String defaultTemplateEngine;
 
+	private String defaultSchedulerBean;
+
 	public DefaultSettings() {
 	}
 
@@ -64,6 +66,7 @@ public class DefaultSettings {
 		this.beanProxifier = ds.getBeanProxifier();
 		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
 		this.defaultTemplateEngine = ds.getDefaultTemplateEngine();
+		this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
 	}
 	
 	public String getTransletNamePattern() {
@@ -173,6 +176,14 @@ public class DefaultSettings {
 		this.defaultTemplateEngine = defaultTemplateEngine;
 	}
 
+	public String getDefaultSchedulerBean() {
+		return defaultSchedulerBean;
+	}
+
+	public void setDefaultSchedulerBean(String defaultSchedulerBean) {
+		this.defaultSchedulerBean = defaultSchedulerBean;
+	}
+
 	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		if (settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null) {
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
@@ -198,6 +209,9 @@ public class DefaultSettings {
 		}
 		if (settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null) {
 			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
+		}
+		if (settings.get(DefaultSettingType.DEFAULT_SCHEDULER_BEAN) != null) {
+			defaultSchedulerBean = settings.get(DefaultSettingType.DEFAULT_SCHEDULER_BEAN);
 		}
 	}
 

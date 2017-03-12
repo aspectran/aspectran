@@ -27,7 +27,8 @@ public enum DefaultSettingType {
 	TRANSLET_IMPLEMENTATION_CLASS("transletImplementationClass"),
 	BEAN_PROXIFIER("beanProxifier"),
 	POINTCUT_PATTERN_VERIFIABLE("pointcutPatternVerifiable"),
-	DEFAULT_TEMPLATE_ENGINE("defaultTemplateEngine");
+	DEFAULT_TEMPLATE_ENGINE("defaultTemplateEngine"),
+	DEFAULT_SCHEDULER_BEAN("defaultSchedulerBean");
 
 	private final String alias;
 
