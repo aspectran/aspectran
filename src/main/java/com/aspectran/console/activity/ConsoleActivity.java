@@ -122,7 +122,7 @@ public class ConsoleActivity extends CoreActivity {
 				}
 
 				String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
-				consoleInout.writeLine("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+				consoleInout.writeLine(" %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
 			}
 
 			consoleInout.writeLine("Enter a value for each parameter:");
@@ -156,7 +156,7 @@ public class ConsoleActivity extends CoreActivity {
 				if (tokens != null && tokens.length > 0) {
 					for (Token token : tokens) {
 						if (token.getType() == TokenType.PARAMETER) {
-							String input = consoleInout.readLine("    %s: ", token.stringify());
+							String input = consoleInout.readLine("   %s: ", token.stringify());
 							if (input != null && !input.isEmpty()) {
 								getRequestAdapter().setParameter(token.getName(), input);
 								inputCount++;
@@ -164,7 +164,7 @@ public class ConsoleActivity extends CoreActivity {
 						}
 					}
 				} else {
-					String input = consoleInout.readLine("    $%s: ", itemRule.getName());
+					String input = consoleInout.readLine("   $%s: ", itemRule.getName());
 					if (input != null && !input.isEmpty()) {
 						getRequestAdapter().setParameter(itemRule.getName(), input);
 						inputCount++;

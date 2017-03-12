@@ -189,7 +189,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 						service(command);
 				}
 
-				System.out.println();
+				consoleInout.writeLine();
 			}
 		} catch (ConsoleTerminatedException e) {
 			//nothing
