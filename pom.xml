@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>3.4.0-SNAPSHOT</version>
+	<version>4.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>aspectran</name>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>3.2.4</version>
+			<version>3.2.5</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
