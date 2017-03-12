@@ -136,7 +136,7 @@ public class BeanAction extends AbstractAction {
 						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
 						needTranslet = Boolean.TRUE;
 					} catch (NoSuchMethodException e) {
-						log.info("Cannot find a method that requires a argument translet. " +
+						log.info("Cannot find a method that requires an argument translet. " +
 								"So in the future will continue to call a method with no argument " +
 								"translet. beanActionRule " + beanActionRule);
 

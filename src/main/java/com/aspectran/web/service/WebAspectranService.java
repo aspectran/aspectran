@@ -92,7 +92,7 @@ public class WebAspectranService extends BasicAspectranService {
 
 		if (!isExposable(requestUri)) {
 			if (log.isDebugEnabled()) {
-				log.debug("Unexposable translet [" + requestUri + "] at " + this);
+				log.debug("Unexposable translet [" + requestUri + "] in WebAspectranService " + this);
 			}
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
@@ -120,7 +120,7 @@ public class WebAspectranService extends BasicAspectranService {
 			activity.perform();
 		} catch (TransletNotFoundException e) {
 			if (log.isTraceEnabled()) {
-				log.trace("Translet is not found: " + requestUri);
+				log.trace("Unknown translet name: " + requestUri);
 			}
 			try {
 				if (!defaultServletHttpRequestHandler.handle(request, response)) {
