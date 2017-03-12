@@ -34,9 +34,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
+import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.params.TriggerParameters;
-import com.aspectran.core.context.rule.JobRule;
+import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.apon.Parameters;
@@ -226,11 +227,18 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 
 	private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
-		String schedulerBeanId = scheduleRule.getSchedulerBeanId();
-		Scheduler scheduler = context.getBeanRegistry().getBean(schedulerBeanId);
+		Scheduler scheduler = null;
+		if (scheduleRule.getSchedulerBeanClass() != null) {
+			scheduler = (Scheduler)context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
+		} else if (scheduleRule.getSchedulerBeanId() != null) {
+			scheduler = context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
+		}
+		if (scheduler == null) {
+			throw new ActionExecutionException("No such Scheduler bean; Invalid ScheduleRule " + scheduleRule);
+		}
 
-		List<JobRule> jobRuleList = scheduleRule.getJobRuleList();
-		for (JobRule jobRule : jobRuleList) {
+		List<ScheduleJobRule> jobRuleList = scheduleRule.getScheduleJobRuleList();
+		for (ScheduleJobRule jobRule : jobRuleList) {
 			if (isExposable(jobRule.getTransletName())) {
 				JobDetail jobDetail = buildJobDetail(jobRule);
 				if (jobDetail != null) {
@@ -241,20 +249,20 @@ public class QuartzSchedulerService implements SchedulerService {
 					scheduler.scheduleJob(jobDetail, trigger);
 				}
 			} else {
-				log.warn("Unexposable translet [" + jobRule.getTransletName() + "] at " + scheduler);
+				log.warn("Unexposable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
 			}
 		}
 
 		return scheduler;
 	}
 
-	private JobDetail buildJobDetail(JobRule jobRule) {
-		if (jobRule.isDisabled()) {
+	private JobDetail buildJobDetail(ScheduleJobRule scheduleJobRule) {
+		if (scheduleJobRule.isDisabled()) {
 			return null;
 		}
 
-		String jobName = jobRule.getTransletName();
-		String jobGroup = jobRule.getScheduleRule().getId();
+		String jobName = scheduleJobRule.getTransletName();
+		String jobGroup = scheduleJobRule.getScheduleRule().getId();
 
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
