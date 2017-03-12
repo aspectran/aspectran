@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  XML DTD for the Aspectran Configuration File, Version 3.0
+  XML DTD for the Aspectran Configuration File, Version 4.0
 
-  Copyright 2008-2016 Juho Jeong
+  Copyright 2008-2017 Juho Jeong
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
-  SYSTEM "http://aspectran.github.io/dtd/aspectran-3.dtd">
+  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+  SYSTEM "http://aspectran.github.io/dtd/aspectran-4.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
-  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
-                             "http://aspectran.github.io/dtd/aspectran-3.dtd">
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                             "http://aspectran.github.io/dtd/aspectran-4.dtd">
 -->
 
 <!ELEMENT aspectran (
-    description?,
-    (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
-  )
->
+  description?,
+  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
+)>
 
 <!ELEMENT description (#PCDATA)>
 
@@ -53,7 +52,7 @@
 
 <!ELEMENT joinpoint (#PCDATA)>
 <!ATTLIST joinpoint
-  type   (session | translet | bean) #IMPLIED
+  type    (session | translet | bean) #IMPLIED
 >
 
 <!ELEMENT advice (before?, after?, around?, finally?)>
@@ -70,7 +69,7 @@
 
 <!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST thrown
-  type CDATA #IMPLIED
+  type    CDATA #IMPLIED
 >
 
 <!ELEMENT bean (description?, filter?, constructor?, properties?)>
@@ -108,19 +107,19 @@
   noCache  (true | false) #IMPLIED
 >
 
-<!ELEMENT schedule (description?, trigger, scheduler)>
+<!ELEMENT schedule (description?, scheduler, job*)>
 <!ATTLIST schedule
   id      ID #IMPLIED
+>
+
+<!ELEMENT scheduler (trigger)>
+<!ATTLIST scheduler
+  bean    CDATA #IMPLIED
 >
 
 <!ELEMENT trigger (#PCDATA)>
 <!ATTLIST trigger
   type    CDATA #IMPLIED
->
-
-<!ELEMENT scheduler (job*)>
-<!ATTLIST scheduler
-  bean    CDATA #REQUIRED
 >
 
 <!ELEMENT job EMPTY>
@@ -131,11 +130,11 @@
 >
 
 <!ELEMENT translet (
-    (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
-    (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
-    (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
-    (description?, request?, content*, contents?, response*, exception?)
-  )>
+  (description?, request?, content*, contents?, response*, exception?) |
+  (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
+  (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+)>
 <!ATTLIST translet
   name    CDATA #REQUIRED
   scan    CDATA #IMPLIED
@@ -235,7 +234,7 @@
   file     CDATA #IMPLIED
   resource CDATA #IMPLIED
   url      CDATA #IMPLIED
-  fileType (xml | apon) #IMPLIED
+  format   (xml | apon) #IMPLIED
   profile  CDATA #IMPLIED
 >
 
