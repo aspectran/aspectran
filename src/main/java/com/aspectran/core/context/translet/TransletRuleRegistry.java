@@ -63,10 +63,6 @@ public class TransletRuleRegistry {
 		this.classLoader = applicationAdapter.getClassLoader();
 	}
 	
-	public AssistantLocal getAssistantLocal() {
-		return assistantLocal;
-	}
-
 	public void setAssistantLocal(AssistantLocal assistantLocal) {
 		this.assistantLocal = assistantLocal;
 	}
@@ -131,7 +127,6 @@ public class TransletRuleRegistry {
 	
 	public void addTransletRule(final TransletRule transletRule) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-
 		if (defaultSettings != null) {
 			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
 			transletRule.setTransletImplementationClass(defaultSettings.getTransletImplementationClass());
@@ -261,7 +256,7 @@ public class TransletRuleRegistry {
 	 * Returns the translet name of the prefix and suffix are combined.
 	 *
 	 * @param transletName the translet name
-	 * @return the string
+	 * @return the new translet name
 	 */
 	public String applyTransletNamePattern(String transletName) {
 		return applyTransletNamePattern(transletName, false);
@@ -272,7 +267,7 @@ public class TransletRuleRegistry {
 	 *
 	 * @param transletName the translet name
 	 * @param absolutely whether to allow absolutely name for translet
-	 * @return the string
+	 * @return the new translet name
 	 */
 	public String applyTransletNamePattern(String transletName, boolean absolutely) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();

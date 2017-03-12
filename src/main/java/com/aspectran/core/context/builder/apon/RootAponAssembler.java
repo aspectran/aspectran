@@ -135,6 +135,7 @@ public class RootAponAssembler {
 			settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultSchedulerBean, defaultSettings.getDefaultSchedulerBean());
 		}
 		
 		List<EnvironmentRule> environmentRules = assistant.getEnvironmentRules();

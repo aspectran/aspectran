@@ -355,7 +355,6 @@ public class RootAponDisassembler {
 			String schedulerBeanId = schedulerParameters.getString(SchedulerParameters.bean);
 			if (!StringUtils.isEmpty(schedulerBeanId)) {
 				scheduleRule.setSchedulerBeanId(schedulerBeanId);
-				assistant.resolveBeanClass(schedulerBeanId, scheduleRule);
 			}
 			Parameters triggerParameters = schedulerParameters.getParameters(SchedulerParameters.trigger);
 			if (triggerParameters != null) {
@@ -760,11 +759,11 @@ public class RootAponDisassembler {
 
 		translet = assistant.applyTransletNamePattern(translet);
 
-		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
+		ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
 		if (attributeItemHolderParametersList != null) {
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParametersList);
-			rrr.setAttributeItemRuleMap(attributeItemRuleMap);
+			frr.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 		
 		if (actionParametersList != null && !actionParametersList.isEmpty()) {
@@ -772,10 +771,10 @@ public class RootAponDisassembler {
 			for (Parameters actionParameters : actionParametersList) {
 				disassembleActionRule(actionParameters, actionList);
 			}
-			rrr.setActionList(actionList);
+			frr.setActionList(actionList);
 		}
 		
-		return rrr;
+		return frr;
 	}
 	
 	private ItemRuleMap disassembleItemRuleMap(Parameters itemHolderParameters) {
@@ -804,12 +803,7 @@ public class RootAponDisassembler {
 
 		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
 
-		if (engine != null) {
-			assistant.reserveBeanReference(engine, templateRule);
-		}
-
 		assistant.addTemplateRule(templateRule);
 	}
 
-	
 }

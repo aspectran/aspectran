@@ -18,7 +18,6 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -59,15 +58,10 @@ class ScheduleNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/schedule/scheduler", (node, attributes, text) -> {
 			String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
-			if (beanIdOrClass == null) {
-				beanIdOrClass = (String)assistant.getSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN);
-			}
 
 			if (beanIdOrClass != null) {
 				ScheduleRule scheduleRule = assistant.peekObject();
 				scheduleRule.setSchedulerBeanId(beanIdOrClass);
-
-				assistant.resolveBeanClass(beanIdOrClass, scheduleRule);
 			}
 		});
 		parser.addNodelet(xpath, "/schedule/scheduler/trigger", (node, attributes, text) -> {

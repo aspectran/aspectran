@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.aspectran.core.context.builder.assistant.AssistantLocal;
+import com.aspectran.core.context.builder.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -31,10 +33,16 @@ public class ScheduleRuleRegistry {
 	private final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
 
 	private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
-	
+
+	private AssistantLocal assistantLocal;
+
 	public ScheduleRuleRegistry() {
 	}
-	
+
+	public void setAssistantLocal(AssistantLocal assistantLocal) {
+		this.assistantLocal = assistantLocal;
+	}
+
 	public Map<String, ScheduleRule> getScheduleRuleMap() {
 		return scheduleRuleMap;
 	}
@@ -48,6 +56,16 @@ public class ScheduleRuleRegistry {
 	}
 
 	public void addScheduleRule(ScheduleRule scheduleRule) {
+		if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
+			DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+			if(defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
+				scheduleRule.setSchedulerBeanId(defaultSettings.getDefaultSchedulerBean());
+			}
+		}
+		if (scheduleRule.getSchedulerBeanId() != null) {
+			assistantLocal.getAssistant().resolveBeanClass(scheduleRule.getSchedulerBeanId(), scheduleRule);
+		}
+
 		scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
 		
 		if (log.isTraceEnabled()) {
