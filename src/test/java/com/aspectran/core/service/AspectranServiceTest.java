@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.util.apon.FileAponWriter;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 
@@ -46,11 +45,10 @@ public class AspectranServiceTest {
 		AponReader.parse(file, aspectranConfig);
 		
 		File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
-		if (outputFile.exists()) {
-			outputFile.delete();
-		}
-		
-		AponWriter aponWriter = new FileAponWriter(outputFile, true, "  ");
+
+		AponWriter aponWriter = new AponWriter(outputFile);
+		aponWriter.setPrettyPrint(true);
+		aponWriter.setIndentString("  ");
 		aponWriter.setNoQuotes(true);
 		aponWriter.write(aspectranConfig);
 		aponWriter.close();
