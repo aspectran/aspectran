@@ -24,7 +24,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * Manages the shutdown-hook thread and tasks to execute on shutdown.
  *
- * @since 3.4.0
+ * @since 4.0.0
  */
 public class ShutdownHooks {
 
