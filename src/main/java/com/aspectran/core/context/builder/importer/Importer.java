@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 
 /**
@@ -31,9 +31,9 @@ public interface Importer {
 	
 	ImporterType getImporterType();
 
-	ImportFileType getImportFileType();
+	ImporterFileFormatType getImporterFileFormatType();
 
-	void setImportFileType(ImportFileType importFileType);
+	void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType);
 
 	String[] getProfiles();
 

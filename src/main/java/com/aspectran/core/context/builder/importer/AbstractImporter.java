@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 
 /**
@@ -31,7 +31,7 @@ abstract class AbstractImporter implements Importer {
 
 	private ImporterType importerType;
 
-	private ImportFileType importFileType;
+	private ImporterFileFormatType importerFileFormatType;
 	
 	private String[] profiles;
 
@@ -47,13 +47,13 @@ abstract class AbstractImporter implements Importer {
 	}
 	
 	@Override
-	public ImportFileType getImportFileType() {
-		return importFileType;
+	public ImporterFileFormatType getImporterFileFormatType() {
+		return importerFileFormatType;
 	}
 
 	@Override
-	public void setImportFileType(ImportFileType importFileType) {
-		this.importFileType = importFileType;
+	public void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType) {
+		this.importerFileFormatType = importerFileFormatType;
 	}
 
 	@Override

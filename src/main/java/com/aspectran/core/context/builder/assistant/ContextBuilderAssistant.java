@@ -46,7 +46,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
@@ -685,20 +685,20 @@ public class ContextBuilderAssistant {
 	 * @param file the file to import
 	 * @param resource the resource to import
 	 * @param url the url to import
-	 * @param fileType the file type ('xml' or 'apon')
+	 * @param format the file type ('xml' or 'apon')
 	 * @param profile the environment profile name
 	 * @return an {@code Importer} object
 	 */
-	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
-		ImportFileType importFileType = ImportFileType.resolve(fileType);
+	public Importer newImporter(String file, String resource, String url, String format, String profile) {
+		ImporterFileFormatType importerFileFormatType = ImporterFileFormatType.resolve(format);
 		Importer importer = null;
 
 		if (StringUtils.hasText(file)) {
-			importer = new FileImporter(getBasePath(), file, importFileType);
+			importer = new FileImporter(getBasePath(), file, importerFileFormatType);
 		} else if (StringUtils.hasText(resource)) {
-			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
+			importer = new ResourceImporter(getClassLoader(), resource, importerFileFormatType);
 		} else if (StringUtils.hasText(url)) {
-			importer = new UrlImporter(url, importFileType);
+			importer = new UrlImporter(url, importerFileFormatType);
 		}
 		
 		if (importer != null) {

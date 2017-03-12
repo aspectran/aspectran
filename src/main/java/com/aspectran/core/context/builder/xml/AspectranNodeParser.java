@@ -231,12 +231,12 @@ public class AspectranNodeParser {
 			String file = attributes.get("file");
 			String resource = attributes.get("resource");
 			String url = attributes.get("url");
-			String fileType = attributes.get("fileType");
+			String format = attributes.get("format");
 			String profile = attributes.get("profile");
 
 			ImportHandler importHandler = assistant.getImportHandler();
 			if (importHandler != null) {
-				Importer importer = assistant.newImporter(file, resource, url, fileType, profile);
+				Importer importer = assistant.newImporter(file, resource, url, format, profile);
 				importHandler.pending(importer);
 			}
 		});

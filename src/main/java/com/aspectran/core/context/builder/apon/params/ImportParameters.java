@@ -24,7 +24,7 @@ public class ImportParameters extends AbstractParameters {
 	public static final ParameterDefinition file;
 	public static final ParameterDefinition resource;
 	public static final ParameterDefinition url;
-	public static final ParameterDefinition fileType;
+	public static final ParameterDefinition format;
 	public static final ParameterDefinition profile;
 	
 	private static final ParameterDefinition[] parameterDefinitions;
@@ -33,14 +33,14 @@ public class ImportParameters extends AbstractParameters {
 		file = new ParameterDefinition("file", ParameterValueType.STRING);
 		resource = new ParameterDefinition("resource", ParameterValueType.STRING);
 		url = new ParameterDefinition("url", ParameterValueType.STRING);
-		fileType = new ParameterDefinition("fileType", ParameterValueType.STRING);
+		format = new ParameterDefinition("format", ParameterValueType.STRING);
 		profile = new ParameterDefinition("profile", ParameterValueType.STRING);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			file,
 			resource,
 			url,
-			fileType,
+			format,
 			profile
 		};
 	}

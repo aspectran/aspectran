@@ -43,7 +43,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.template.ContextTemplateProcessor;
@@ -71,7 +71,7 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	
 	private boolean hybridLoad;
 	
-	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+	protected AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
 		environment = activityContext.getContextEnvironment();
 		
@@ -79,10 +79,12 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 		assistant.ready();
 	}
 
+	@Override
 	public ContextEnvironment getContextEnvironment() {
 		return environment;
 	}
-	
+
+	@Override
 	public ContextBuilderAssistant getContextBuilderAssistant() {
 		return assistant;
 	}
@@ -118,7 +120,7 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	 * @return the activity context
 	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
 	 */
-	ActivityContext createActivityContext() throws BeanReferenceException {
+	protected ActivityContext createActivityContext() throws BeanReferenceException {
 		initContextEnvironment();
 		
 		AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
@@ -258,21 +260,21 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 	}
 
 	protected Importer resolveImporter(String rootContext) {
-		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
-		return resolveImporter(rootContext, importFileType);
+		ImporterFileFormatType importerFileFormatType = rootContext.toLowerCase().endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
+		return resolveImporter(rootContext, importerFileFormatType);
 	}
 
-	protected Importer resolveImporter(String rootContext, ImportFileType importFileType) {
+	protected Importer resolveImporter(String rootContext, ImporterFileFormatType importerFileFormatType) {
 		Importer importer;
 
 		if (rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			importer = new ResourceImporter(assistant.getClassLoader(), resource, importFileType);
+			importer = new ResourceImporter(assistant.getClassLoader(), resource, importerFileFormatType);
 		} else if (rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
-			importer = new FileImporter(filePath, importFileType);
+			importer = new FileImporter(filePath, importerFileFormatType);
 		} else {
-			importer = new FileImporter(assistant.getBasePath(), rootContext, importFileType);
+			importer = new FileImporter(assistant.getBasePath(), rootContext, importerFileFormatType);
 		}
 		
 		return importer;

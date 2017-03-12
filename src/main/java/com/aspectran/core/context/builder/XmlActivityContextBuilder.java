@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.XmlImportHandler;
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 
 /**
  * The Class XmlActivityContextBuilder.
@@ -43,12 +43,12 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			ImportHandler importHandler = new XmlImportHandler(this);
 			getContextBuilderAssistant().setImportHandler(importHandler);
 			
-			Importer importer = resolveImporter(rootContext, ImportFileType.XML);
+			Importer importer = resolveImporter(rootContext, ImporterFileFormatType.XML);
 			importHandler.handle(importer);
 
 			return createActivityContext();
 		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build a XML Activity Context: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + rootContext, e);
 		}
 	}
 	

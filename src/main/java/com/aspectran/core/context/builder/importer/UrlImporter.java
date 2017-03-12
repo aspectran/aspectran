@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -35,14 +35,14 @@ public class UrlImporter extends AbstractImporter {
 	
 	private final String urlString;
 
-	public UrlImporter(String urlString, ImportFileType importFileType) {
+	public UrlImporter(String urlString, ImporterFileFormatType importerFileFormatType) {
 		super(URL_IMPORTER);
 
-		if (importFileType == null) {
-			importFileType = urlString.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		if (importerFileFormatType == null) {
+			importerFileFormatType = urlString.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
 		}
 
-		setImportFileType(importFileType);
+		setImporterFileFormatType(importerFileFormatType);
 		
 		this.urlString = urlString;
 	}

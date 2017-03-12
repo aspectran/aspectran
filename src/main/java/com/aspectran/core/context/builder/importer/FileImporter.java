@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -37,18 +37,18 @@ public class FileImporter extends AbstractImporter {
 	
 	private final String filePath;
 
-	public FileImporter(String filePath, ImportFileType importFileType) {
-		this(null, filePath, importFileType);
+	public FileImporter(String filePath, ImporterFileFormatType importerFileFormatType) {
+		this(null, filePath, importerFileFormatType);
 	}
 
-	public FileImporter(String basePath, String filePath, ImportFileType importFileType) {
+	public FileImporter(String basePath, String filePath, ImporterFileFormatType importerFileFormatType) {
 		super(FILE_IMPORTER);
 	
-		if (importFileType == null) {
-			importFileType = filePath.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		if (importerFileFormatType == null) {
+			importerFileFormatType = filePath.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
 		}
 		
-		setImportFileType(importFileType);
+		setImporterFileFormatType(importerFileFormatType);
 
 		this.basePath = basePath;
 		this.filePath = filePath;
@@ -86,13 +86,10 @@ public class FileImporter extends AbstractImporter {
 	@Override
 	public InputStream getInputStream() throws IOException {
 		File file = getFile();
-		
 		if (!file.isFile()) {
 			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
 		}
-		
 		setLastModified(file.lastModified());
-
 		return new FileInputStream(file);
 	}
 	
@@ -102,7 +99,7 @@ public class FileImporter extends AbstractImporter {
 		tsb.append("importerType", getImporterType());
 		tsb.append("basePath", basePath);
 		tsb.append("filePath", filePath);
-		tsb.append("fileType", getImportFileType());
+		tsb.append("format", getImporterFileFormatType());
 		tsb.append("profile", getProfiles());
 		return tsb.toString();
 	}

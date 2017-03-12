@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -35,14 +35,14 @@ public class ResourceImporter extends AbstractImporter {
 
 	private final String resource;
 
-	public ResourceImporter(ClassLoader classLoader, String resource, ImportFileType importFileType) {
+	public ResourceImporter(ClassLoader classLoader, String resource, ImporterFileFormatType importerFileFormatType) {
 		super(RESOURCE_IMPORTER);
 
-		if (importFileType == null) {
-			importFileType = resource.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		if (importerFileFormatType == null) {
+			importerFileFormatType = resource.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
 		}
 
-		setImportFileType(importFileType);
+		setImporterFileFormatType(importerFileFormatType);
 		
 		this.classLoader = classLoader;
 		this.resource = resource;

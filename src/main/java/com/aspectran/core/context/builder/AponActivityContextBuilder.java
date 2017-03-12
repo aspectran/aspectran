@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.importer.AponImportHandler;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 
 /**
  * The Class AponAspectranContextBuilder.
@@ -50,12 +50,12 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			getContextBuilderAssistant().setImportHandler(importHandler);
 			
-			Importer importer = resolveImporter(rootContext, ImportFileType.APON);
+			Importer importer = resolveImporter(rootContext, ImporterFileFormatType.APON);
 			importHandler.handle(importer);
 
 			return createActivityContext();
 		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build a APON Activity Context: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
 		}
 	}
 	

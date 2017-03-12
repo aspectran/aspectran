@@ -30,7 +30,7 @@ import com.aspectran.core.context.builder.assistant.AssistantLocal;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.assistant.ShallowContextBuilderAssistant;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
-import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImporterFileFormatType;
 import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
@@ -51,12 +51,12 @@ public class HybridImportHandler extends AbstractImportHandler {
 	
 	private RootAponDisassembler rootAponDisassembler;
 	
-	public HybridImportHandler(ActivityContextBuilder builder, String encoding, boolean hybridLoad) {
+	public HybridImportHandler(ActivityContextBuilder builder, String encoding, boolean hybridLoading) {
 		super(builder.getContextEnvironment());
 
 		this.assistant = builder.getContextBuilderAssistant();
 		this.encoding = encoding;
-		this.hybridLoad = hybridLoad;
+		this.hybridLoad = hybridLoading;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 
 		boolean hybridon = false;
 		
-		if (importer.getImportFileType() == ImportFileType.APON) {
+		if (importer.getImporterFileFormatType() == ImporterFileFormatType.APON) {
 			Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
 			
 			if (rootAponDisassembler == null) {
@@ -106,7 +106,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 		}
 		
 		if (!hybridon && hybridLoad) {
-			if (importer.getImporterType() == ImporterType.FILE && importer.getImportFileType() == ImportFileType.XML) {
+			if (importer.getImporterType() == ImporterType.FILE && importer.getImporterFileFormatType() == ImporterFileFormatType.XML) {
 				importer.setProfiles(null);
 				saveAsAponFormat((FileImporter)importer);
 			}
@@ -122,7 +122,6 @@ public class HybridImportHandler extends AbstractImportHandler {
 			aponFile = makeAponFile(fileImporter);
 			
 			AponWriter aponWriter;
-			
 			if (encoding != null) {
 				OutputStream outputStream = new FileOutputStream(aponFile);
 				aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
@@ -160,7 +159,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 	
 	private File makeAponFile(FileImporter fileImporter) {
 		String basePath = fileImporter.getBasePath();
-		String filePath = fileImporter.getFilePath() + "." + ImportFileType.APON.toString();
+		String filePath = fileImporter.getFilePath() + "." + ImporterFileFormatType.APON.toString();
 
 		return new File(basePath, filePath);
 	}

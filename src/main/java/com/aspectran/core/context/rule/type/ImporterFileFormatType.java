@@ -20,14 +20,14 @@ package com.aspectran.core.context.rule.type;
  * 
  * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
-public enum ImportFileType {
+public enum ImporterFileFormatType {
 
 	XML("xml"),
 	APON("apon");
 
 	private final String alias;
 
-	ImportFileType(String alias) {
+	ImporterFileFormatType(String alias) {
 		this.alias = alias;
 	}
 
@@ -43,8 +43,8 @@ public enum ImportFileType {
 	 * @param alias the import file type as a {@code String}
 	 * @return an {@code ImportFileType}, may be {@code null}
 	 */
-	public static ImportFileType resolve(String alias) {
-		for (ImportFileType type : values()) {
+	public static ImporterFileFormatType resolve(String alias) {
+		for (ImporterFileFormatType type : values()) {
 			if (type.alias.equals(alias)) {
 				return type;
 			}
