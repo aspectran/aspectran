@@ -24,20 +24,27 @@ import com.aspectran.core.context.rule.ability.Replicable;
  */
 public class AssistantLocal implements Replicable<AssistantLocal> {
 
+	private ContextBuilderAssistant assistant;
+
 	private String description;
 	
 	private DefaultSettings defaultSettings;
 	
 	private final int replicatedCount;
 	
-	public AssistantLocal() {
-		this(0);
+	public AssistantLocal(ContextBuilderAssistant assistant) {
+		this(assistant, 0);
 	}
 
-	private AssistantLocal(int replicatedCount) {
+	private AssistantLocal(ContextBuilderAssistant assistant, int replicatedCount) {
+		this.assistant = assistant;
 		this.replicatedCount = replicatedCount;
 	}
-	
+
+	public ContextBuilderAssistant getAssistant() {
+		return assistant;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -67,7 +74,7 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 
 	@Override
 	public AssistantLocal replicate() {
-		AssistantLocal al = new AssistantLocal(replicatedCount + 1);
+		AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
 		al.setDescription(getDescription());
 		DefaultSettings ds = getDefaultSettings();
 		if (ds != null) {

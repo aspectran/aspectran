@@ -40,10 +40,6 @@ public class TemplateRuleRegistry {
     public TemplateRuleRegistry() {
     }
 
-    public AssistantLocal getAssistantLocal() {
-		return assistantLocal;
-	}
-
 	public void setAssistantLocal(AssistantLocal assistantLocal) {
 		this.assistantLocal = assistantLocal;
 	}
@@ -67,7 +63,10 @@ public class TemplateRuleRegistry {
             	templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
             }
         }
-    	
+		if (templateRule.getEngine() != null) {
+			assistantLocal.getAssistant().reserveBeanReference(templateRule.getEngine(), templateRule);
+		}
+
         templateRuleMap.put(templateRule.getId(), templateRule);
 
         if (log.isTraceEnabled()) {

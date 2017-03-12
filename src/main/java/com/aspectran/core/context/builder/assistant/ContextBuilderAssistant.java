@@ -120,7 +120,7 @@ public class ContextBuilderAssistant {
 		settings = new HashMap<>();
 		environmentRules = new LinkedList<>();
 		typeAliases = new HashMap<>();
-		assistantLocal = new AssistantLocal();
+		assistantLocal = new AssistantLocal(this);
 
 		if (environment != null) {
 			aspectRuleRegistry = new AspectRuleRegistry();
@@ -133,6 +133,7 @@ public class ContextBuilderAssistant {
 			beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
 
 			scheduleRuleRegistry = new ScheduleRuleRegistry();
+			scheduleRuleRegistry.setAssistantLocal(assistantLocal);
 
 			templateRuleRegistry = new TemplateRuleRegistry();
 			templateRuleRegistry.setAssistantLocal(assistantLocal);
@@ -146,6 +147,10 @@ public class ContextBuilderAssistant {
 	}
 	
 	public void release() {
+		scheduleRuleRegistry.setAssistantLocal(null);
+		transletRuleRegistry.setAssistantLocal(null);
+		templateRuleRegistry.setAssistantLocal(null);
+
 		objectStack = null;
 		settings = null;
 		environmentRules = null;
@@ -357,11 +362,13 @@ public class ContextBuilderAssistant {
 	/**
 	 * Sets the assistant local.
 	 *
-	 * @param assistantLocal the new assistant local
+	 * @param newAssistantLocal the new assistant local
 	 */
-	public void setAssistantLocal(AssistantLocal assistantLocal) {
-		this.assistantLocal = assistantLocal;
-		transletRuleRegistry.setAssistantLocal(assistantLocal);
+	private void setAssistantLocal(AssistantLocal newAssistantLocal) {
+		this.assistantLocal = newAssistantLocal;
+		scheduleRuleRegistry.setAssistantLocal(newAssistantLocal);
+		transletRuleRegistry.setAssistantLocal(newAssistantLocal);
+		templateRuleRegistry.setAssistantLocal(newAssistantLocal);
 	}
 
 	/**
@@ -371,17 +378,18 @@ public class ContextBuilderAssistant {
 	 */
 	public AssistantLocal backupAssistantLocal() {
 		AssistantLocal oldAssistantLocal = assistantLocal;
-		setAssistantLocal(assistantLocal.replicate());
+		AssistantLocal newAssistantLocal = assistantLocal.replicate();
+		setAssistantLocal(newAssistantLocal);
 		return oldAssistantLocal;
 	}
 
 	/**
 	 * Restore assistant local.
 	 *
-	 * @param assistantLocal the assistant local
+	 * @param oldAssistantLocal the old assistant local
 	 */
-	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
-		setAssistantLocal(assistantLocal);
+	public void restoreAssistantLocal(AssistantLocal oldAssistantLocal) {
+		setAssistantLocal(oldAssistantLocal);
 	}
 
 	/**
@@ -391,7 +399,7 @@ public class ContextBuilderAssistant {
 	 */
 	public boolean isPointcutPatternVerifiable() {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		return defaultSettings == null || defaultSettings.isPointcutPatternVerifiable();
+		return (defaultSettings == null || defaultSettings.isPointcutPatternVerifiable());
 	}
 
 	/**
@@ -541,7 +549,7 @@ public class ContextBuilderAssistant {
 	/**
 	 * Adds the schedule rule.
 	 *
-	 * @param scheduleRule the aspect rule
+	 * @param scheduleRule the schedule rule
 	 */
 	public void addScheduleRule(ScheduleRule scheduleRule) {
 		scheduleRuleRegistry.addScheduleRule(scheduleRule);
