@@ -22,17 +22,17 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class SchedulerParameters extends AbstractParameters {
 
 	public static final ParameterDefinition bean;
-	public static final ParameterDefinition jobs;
+	public static final ParameterDefinition trigger;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
 		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		jobs = new ParameterDefinition("job", JobParameters.class, true, true);
+		trigger = new ParameterDefinition("trigger", TriggerParameters.class);
 
 		parameterDefinitions = new ParameterDefinition[] {
 			bean,
-			jobs
+			trigger
 		};
 	}
 

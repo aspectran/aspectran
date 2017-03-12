@@ -45,7 +45,7 @@ import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
-import com.aspectran.core.context.builder.apon.params.JobParameters;
+import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
@@ -75,10 +75,10 @@ import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -336,25 +336,25 @@ public class RootAponAssembler {
 		ScheduleParameters scheduleParameters = new ScheduleParameters();
 		scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
 		scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
-		
+
+		SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
+		schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
+
 		Parameters triggerParameters = scheduleRule.getTriggerParameters();
 		if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
 			triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-			scheduleParameters.putValue(ScheduleParameters.trigger, scheduleRule.getTriggerParameters());
+			schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
 		}
-		
-		SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
-		schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
-		
-		List<JobRule> jobRuleList = scheduleRule.getJobRuleList();
-		if (jobRuleList != null) {
-			for (JobRule jobRule : jobRuleList) {
-				JobParameters jobParameters = schedulerParameters.newParameters(SchedulerParameters.jobs);
-				jobParameters.putValue(JobParameters.translet, jobRule.getTransletName());
-				if (jobRule.getRequestMethod() != null) {
-					jobParameters.putValue(JobParameters.method, jobRule.getRequestMethod().toString());
+
+		List<ScheduleJobRule> scheduleJobRuleList = scheduleRule.getScheduleJobRuleList();
+		if (scheduleJobRuleList != null) {
+			for (ScheduleJobRule scheduleJobRule : scheduleJobRuleList) {
+				ScheduleJobParameters jobParameters = scheduleParameters.newParameters(ScheduleParameters.jobs);
+				jobParameters.putValue(ScheduleJobParameters.translet, scheduleJobRule.getTransletName());
+				if (scheduleJobRule.getRequestMethod() != null) {
+					jobParameters.putValue(ScheduleJobParameters.method, scheduleJobRule.getRequestMethod().toString());
 				}
-				jobParameters.putValueNonNull(JobParameters.disabled, jobRule.getDisabled());
+				jobParameters.putValueNonNull(ScheduleJobParameters.disabled, scheduleJobRule.getDisabled());
 			}
 		}
 		
@@ -469,7 +469,7 @@ public class RootAponAssembler {
 			importParameters.putValue(ImportParameters.resource, importer.getDistinguishedName());
 		} else if (importer.getImporterType() == ImporterType.URL) {
 			importParameters.putValue(ImportParameters.url, importer.getDistinguishedName());
-			importParameters.putValueNonNull(ImportParameters.fileType, importer.getImportFileType());
+			importParameters.putValueNonNull(ImportParameters.format, importer.getImporterFileFormatType());
 		}
 
 		if (importer.getProfiles() != null) {

@@ -20,9 +20,9 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class JobRule.
+ * The Class ScheduleJobRule.
  */
-public class JobRule {
+public class ScheduleJobRule {
 
 	private final ScheduleRule scheduleRule;
 	
@@ -32,7 +32,7 @@ public class JobRule {
 
 	private Boolean disabled;
 
-	public JobRule(ScheduleRule scheduleRule) {
+	public ScheduleJobRule(ScheduleRule scheduleRule) {
 		this.scheduleRule = scheduleRule;
 	}
 	
@@ -77,24 +77,24 @@ public class JobRule {
 		return tsb.toString();
 	}
 	
-	public static JobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
+	public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
 		if (transletName == null) {
 			throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
 		}
 
-		JobRule jobRule = new JobRule(scheduleRule);
-		jobRule.setTransletName(transletName);
-		jobRule.setDisabled(disabled);
+		ScheduleJobRule scheduleJobRule = new ScheduleJobRule(scheduleRule);
+		scheduleJobRule.setTransletName(transletName);
+		scheduleJobRule.setDisabled(disabled);
 
 		if (method != null) {
 			MethodType methodType = MethodType.resolve(method);
 			if (methodType == null) {
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
 			}
-			jobRule.setRequestMethod(methodType);
+			scheduleJobRule.setRequestMethod(methodType);
 		}
 
-		return jobRule;
+		return scheduleJobRule;
 	}
 	
 }

@@ -35,7 +35,7 @@ import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
-import com.aspectran.core.context.builder.apon.params.JobParameters;
+import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
@@ -62,10 +62,10 @@ import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.JobRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -165,12 +165,12 @@ public class RootAponDisassembler {
 		String file = importParameters.getString(ImportParameters.file);
 		String resource = importParameters.getString(ImportParameters.resource);
 		String url = importParameters.getString(ImportParameters.url);
-		String fileType = importParameters.getString(ImportParameters.fileType);
+		String format = importParameters.getString(ImportParameters.format);
 		String profile = importParameters.getString(ImportParameters.profile);
 
 		ImportHandler importHandler = assistant.getImportHandler();
 		if (importHandler != null) {
-			Importer importer = assistant.newImporter(file, resource, url, fileType, profile);
+			Importer importer = assistant.newImporter(file, resource, url, format, profile);
 			importHandler.pending(importer);
 		}
 	}
@@ -350,11 +350,6 @@ public class RootAponDisassembler {
 			scheduleRule.setDescription(description);
 		}
 	
-		Parameters triggerParameters = scheduleParameters.getParameters(ScheduleParameters.trigger);
-		if (triggerParameters != null) {
-			ScheduleRule.updateTrigger(scheduleRule, triggerParameters);
-		}
-
 		Parameters schedulerParameters = scheduleParameters.getParameters(ScheduleParameters.scheduler);
 		if (schedulerParameters != null) {
 			String schedulerBeanId = schedulerParameters.getString(SchedulerParameters.bean);
@@ -362,17 +357,22 @@ public class RootAponDisassembler {
 				scheduleRule.setSchedulerBeanId(schedulerBeanId);
 				assistant.resolveBeanClass(schedulerBeanId, scheduleRule);
 			}
-			List<Parameters> jobParametersList = schedulerParameters.getParametersList(SchedulerParameters.jobs);
+			Parameters triggerParameters = schedulerParameters.getParameters(SchedulerParameters.trigger);
+			if (triggerParameters != null) {
+				ScheduleRule.updateTrigger(scheduleRule, triggerParameters);
+			}
+
+			List<Parameters> jobParametersList = scheduleParameters.getParametersList(ScheduleParameters.jobs);
 			if (jobParametersList != null) {
 				for (Parameters jobParameters : jobParametersList) {
-					String translet = StringUtils.emptyToNull(jobParameters.getString(JobParameters.translet));
-					String method = StringUtils.emptyToNull(jobParameters.getString(JobParameters.method));
-					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+					String translet = StringUtils.emptyToNull(jobParameters.getString(ScheduleJobParameters.translet));
+					String method = StringUtils.emptyToNull(jobParameters.getString(ScheduleJobParameters.method));
+					Boolean disabled = jobParameters.getBoolean(ScheduleJobParameters.disabled);
 
 					translet = assistant.applyTransletNamePattern(translet);
 
-					JobRule jobRule = JobRule.newInstance(scheduleRule, translet, method, disabled);
-					scheduleRule.addJobRule(jobRule);
+					ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, translet, method, disabled);
+					scheduleRule.addScheduleJobRule(scheduleJobRule);
 				}
 			}
 		}

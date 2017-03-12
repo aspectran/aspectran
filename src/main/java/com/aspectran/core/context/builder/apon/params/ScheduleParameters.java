@@ -23,22 +23,22 @@ public class ScheduleParameters extends AbstractParameters {
 
 	public static final ParameterDefinition description;
 	public static final ParameterDefinition id;
-	public static final ParameterDefinition trigger;
 	public static final ParameterDefinition scheduler;
+	public static final ParameterDefinition jobs;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
 		description = new ParameterDefinition("description", ParameterValueType.TEXT);
 		id = new ParameterDefinition("id", ParameterValueType.STRING);
-		trigger = new ParameterDefinition("trigger", TriggerParameters.class);
 		scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
+		jobs = new ParameterDefinition("job", ScheduleJobParameters.class, true, true);
 
 		parameterDefinitions = new ParameterDefinition[] {
 			description,
 			id,
-			trigger,
-			scheduler
+			scheduler,
+			jobs
 		};
 	}
 

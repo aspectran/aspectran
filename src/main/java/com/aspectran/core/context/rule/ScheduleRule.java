@@ -31,14 +31,16 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <pre>
  * &lt;schedule id="schedule-1"&gt;
- *   &lt;trigger type="simple"&gt;
- *     startDelaySeconds: 10
- *     intervalInSeconds: 10
- *     repeatCount: 10
- *   &lt;/trigger&gt;
  *   &lt;scheduler bean="schedulerFactory"&gt;
- *     &lt;job translet="/a/b/c/action"/&gt;
+ *     &lt;trigger type="simple"&gt;
+ *       startDelaySeconds: 10
+ *       intervalInSeconds: 10
+ *       repeatCount: 10
+ *     &lt;/trigger&gt;
  *   &lt;/scheduler&gt;
+ *   &lt;job translet="/a/b/c/action1"/&gt;
+ *   &lt;job translet="/a/b/c/action2"/&gt;
+ *   &lt;job translet="/a/b/c/action3"/&gt;
  * &lt;schedule&gt;
  * </pre>
  */
@@ -56,7 +58,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
 	private Class<?> schedulerBeanClass;
 	
-	private List<JobRule> jobRuleList = new ArrayList<>();
+	private List<ScheduleJobRule> scheduleJobRuleList = new ArrayList<>();
 	
 	private String description;
 	
@@ -100,16 +102,16 @@ public class ScheduleRule implements BeanReferenceInspectable {
 		this.schedulerBeanClass = schedulerBeanClass;
 	}
 
-	public List<JobRule> getJobRuleList() {
-		return jobRuleList;
+	public List<ScheduleJobRule> getScheduleJobRuleList() {
+		return scheduleJobRuleList;
 	}
 
-	public void setJobRuleList(List<JobRule> jobRuleList) {
-		this.jobRuleList = jobRuleList;
+	public void setScheduleJobRuleList(List<ScheduleJobRule> scheduleJobRuleList) {
+		this.scheduleJobRuleList = scheduleJobRuleList;
 	}
 
-	public void addJobRule(JobRule jobRule) {
-		jobRuleList.add(jobRule);
+	public void addScheduleJobRule(ScheduleJobRule scheduleJobRule) {
+		scheduleJobRuleList.add(scheduleJobRule);
 	}
 
 	/**
@@ -139,9 +141,9 @@ public class ScheduleRule implements BeanReferenceInspectable {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", id);
-		tsb.append("trigger", triggerParameters);
 		tsb.append("scheduler", schedulerBeanId);
-		tsb.append("jobRules", jobRuleList);
+		tsb.append("trigger", triggerParameters);
+		tsb.append("jobs", scheduleJobRuleList);
 		return tsb.toString();
 	}
 	

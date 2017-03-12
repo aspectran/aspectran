@@ -16,8 +16,9 @@
 package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.JobRule;
+import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -56,14 +57,11 @@ class ScheduleNodeletAdder implements NodeletAdder {
 				scheduleRule.setDescription(text);
             }
         });
-		parser.addNodelet(xpath, "/schedule/trigger", (node, attributes, text) -> {
-            String type = StringUtils.emptyToNull(attributes.get("type"));
-
-			ScheduleRule scheduleRule = assistant.peekObject();
-			ScheduleRule.updateTrigger(scheduleRule, type, text);
-        });
 		parser.addNodelet(xpath, "/schedule/scheduler", (node, attributes, text) -> {
 			String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
+			if (beanIdOrClass == null) {
+				beanIdOrClass = (String)assistant.getSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN);
+			}
 
 			if (beanIdOrClass != null) {
 				ScheduleRule scheduleRule = assistant.peekObject();
@@ -71,8 +69,14 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
 				assistant.resolveBeanClass(beanIdOrClass, scheduleRule);
 			}
+		});
+		parser.addNodelet(xpath, "/schedule/scheduler/trigger", (node, attributes, text) -> {
+            String type = StringUtils.emptyToNull(attributes.get("type"));
+
+			ScheduleRule scheduleRule = assistant.peekObject();
+			ScheduleRule.updateTrigger(scheduleRule, type, text);
         });
-		parser.addNodelet(xpath, "/schedule/scheduler/job", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/schedule/job", (node, attributes, text) -> {
             String transletName = StringUtils.emptyToNull(attributes.get("translet"));
 			String method = StringUtils.emptyToNull(attributes.get("method"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
@@ -85,8 +89,8 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
 			ScheduleRule scheduleRule = assistant.peekObject();
 
-            JobRule jobRule = JobRule.newInstance(scheduleRule, transletName, method, disabled);
-			scheduleRule.addJobRule(jobRule);
+            ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, transletName, method, disabled);
+			scheduleRule.addScheduleJobRule(scheduleJobRule);
         });
 		parser.addNodelet(xpath, "/schedule/end()", (node, attributes, text) -> {
 			ScheduleRule scheduleRule = assistant.popObject();
