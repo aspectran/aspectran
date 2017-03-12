@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.terminal.internal.readline;
+package com.aspectran.console.inout;
 
 import java.io.IOException;
 
-import com.aspectran.console.inout.Jline3ConsoleInout;
-import com.aspectran.console.inout.ConsoleInout;
-
-/**
+/**‰
  * <p>Created: 2017. 3. 5.</p>
  */
-public class Jline3TerminalTest {
+public class Jline3ConsoleInoutTest {
 
 	public static void main(String argv[]) throws IOException {
-		ConsoleInout terminalInput = new Jline3ConsoleInout();
-		String prompt = "jline3 > ";
+		ConsoleInout consoleInout = new Jline3ConsoleInout();
+		String prompt = "JLine3 > ";
 		while (true) {
-			terminalInput.readLine(prompt);
+			consoleInout.readLine(prompt, 'd');
 		}
 	}
 
