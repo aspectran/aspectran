@@ -19,12 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.jline.reader.UserInterruptException;
-
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.console.inout.ConsoleInout;
+import com.aspectran.console.inout.ConsoleTerminatedException;
 import com.aspectran.console.inout.Jline3ConsoleInout;
 import com.aspectran.console.inout.SystemConsoleInout;
 import com.aspectran.console.service.command.CommandParser;
@@ -164,7 +163,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		try {
 			loop:
 			while (true) {
-				String command = consoleInout.readLine("Aspectran> ");
+				String command = consoleInout.readCommand();
 
 				if (command == null || command.isEmpty()) {
 					continue;
@@ -192,7 +191,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 				System.out.println();
 			}
-		} catch (UserInterruptException e) {
+		} catch (ConsoleTerminatedException e) {
 			//nothing
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,16 +231,22 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
 		consoleAspectranService.initialize(aspectranConfig);
 
-
 		Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
 		if (consoleConfig != null) {
 			String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
-			if("jline".equals(consoleMode)) {
-				consoleAspectranService.setConsoleInout(new Jline3ConsoleInout());
+			String commandPrompt = consoleConfig.getString(AspectranConsoleConfig.prompt);
+			ConsoleInout consoleInout;
+			if ("jline".equals(consoleMode)) {
+				consoleInout = new Jline3ConsoleInout();
+			} else {
+				consoleInout = new SystemConsoleInout();
 			}
+			if (commandPrompt != null) {
+				consoleInout.setCommandPrompt(commandPrompt);
+			}
+			consoleAspectranService.setConsoleInout(consoleInout);
 			consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
-		}
-		if (consoleAspectranService.getConsoleInout() == null) {
+		} else {
 			consoleAspectranService.setConsoleInout(new SystemConsoleInout());
 		}
 

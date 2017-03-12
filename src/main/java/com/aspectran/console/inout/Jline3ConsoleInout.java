@@ -24,13 +24,18 @@ import java.nio.charset.Charset;
 import org.jline.builtins.Options;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 /**
+ * Console I/O implementation that supports Jline.
+ *
  * <p>Created: 2017. 3. 4.</p>
  */
 public class Jline3ConsoleInout extends AbstractConsoleInout {
+
+	private static final Character MASK_CHAR = '*';
 
 	private static final String encoding = Charset.defaultCharset().name();
 
@@ -38,24 +43,84 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
 
 	private final LineReader reader;
 
+	private final LineReader commandReader;
+
 	public Jline3ConsoleInout() throws IOException {
 		this.terminal = TerminalBuilder.builder().encoding(encoding).build();
 		this.reader = LineReaderBuilder.builder().appName("Aspectran Console").terminal(terminal).build();
+		this.commandReader = LineReaderBuilder.builder().appName("Aspectran Console").terminal(terminal).build();
+	}
+
+	@Override
+	public String readCommand() {
+		try {
+			return commandReader.readLine(getCommandPrompt());
+		} catch (UserInterruptException e) {
+			if (confirmQuit()) {
+				throw new ConsoleTerminatedException();
+			} else {
+				return null;
+			}
+		}
+	}
+
+	private boolean confirmQuit() {
+		String yn = readLine("Are you sure you want to quit [Y/n]? ");
+		return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
 	}
 
 	@Override
 	public String readLine() {
-		return reader.readLine();
+		try {
+			return reader.readLine();
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
 	}
 
 	@Override
 	public String readLine(String prompt) {
-		return reader.readLine(prompt);
+		try {
+			return reader.readLine(prompt);
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
 	}
 
 	@Override
 	public String readLine(String format, Object... args) {
-		return reader.readLine(String.format(format, args));
+		try {
+			return reader.readLine(String.format(format, args));
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
+	}
+
+	@Override
+	public String readPassword() {
+		try {
+			return reader.readLine(MASK_CHAR);
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
+	}
+
+	@Override
+	public String readPassword(String prompt) {
+		try {
+			return reader.readLine(prompt, MASK_CHAR);
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
+	}
+
+	@Override
+	public String readPassword(String format, Object... args) {
+		try {
+			return reader.readLine(String.format(format, args), MASK_CHAR);
+		} catch (UserInterruptException e) {
+			throw new ConsoleTerminatedException();
+		}
 	}
 
 	@Override

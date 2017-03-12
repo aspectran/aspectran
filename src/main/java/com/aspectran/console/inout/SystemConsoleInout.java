@@ -20,9 +20,16 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
+ * Console I/O implementation that supports System Console.
+ *
  * <p>Created: 2017. 3. 4.</p>
  */
 public class SystemConsoleInout extends AbstractConsoleInout {
+
+	@Override
+	public String readCommand() {
+		return System.console().readLine(getCommandPrompt());
+	}
 
 	@Override
 	public String readLine() {
@@ -37,6 +44,21 @@ public class SystemConsoleInout extends AbstractConsoleInout {
 	@Override
 	public String readLine(String format, Object... args) {
 		return readLine(String.format(format, args));
+	}
+
+	@Override
+	public String readPassword() {
+		return new String(System.console().readPassword());
+	}
+
+	@Override
+	public String readPassword(String prompt) {
+		return new String(System.console().readPassword(prompt));
+	}
+
+	@Override
+	public String readPassword(String format, Object... args) {
+		return new String(System.console().readPassword(String.format(format, args)));
 	}
 
 	@Override

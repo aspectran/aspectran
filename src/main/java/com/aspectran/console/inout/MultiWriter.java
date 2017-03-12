@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
+ * The writer that handles multiple writers.
+ *
  * <p>Created: 2017. 3. 9.</p>
  */
 public class MultiWriter extends Writer {

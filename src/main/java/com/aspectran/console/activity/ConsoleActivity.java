@@ -23,9 +23,11 @@ import java.util.List;
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.console.inout.ConsoleInout;
+import com.aspectran.console.inout.ConsoleTerminatedException;
 import com.aspectran.console.inout.MultiWriter;
 import com.aspectran.console.service.ConsoleAspectranService;
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -37,6 +39,8 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ConsoleActivity.
@@ -44,6 +48,8 @@ import com.aspectran.core.util.StringUtils;
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity {
+
+	private static final Log log = LogFactory.getLog(ConsoleActivity.class);
 	
 	private final ConsoleAspectranService service;
 
@@ -119,12 +125,12 @@ public class ConsoleActivity extends CoreActivity {
 				consoleInout.writeLine("  %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
 			}
 
-			consoleInout.writeLine("Enter values for each parameter:");
+			consoleInout.writeLine("Enter a value for each parameter:");
 
 			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
 			if (missingItemRules != null) {
-				consoleInout.writeLine("Enter the missing values for each parameter:");
+				consoleInout.writeLine("Please enter a value for all required parameters:");
 
 				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
 
@@ -142,31 +148,36 @@ public class ConsoleActivity extends CoreActivity {
 	private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
 		ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
 
-		for (ItemRule itemRule : parameterItemRules) {
-			Token[] tokens = itemRule.getTokens();
-			int inputCount = 0;
+		try {
+			for (ItemRule itemRule : parameterItemRules) {
+				Token[] tokens = itemRule.getTokens();
+				int inputCount = 0;
 
-			if (tokens != null && tokens.length > 0) {
-				for (Token token : tokens) {
-					if (token.getType() == TokenType.PARAMETER) {
-						String input = consoleInout.readLine("    %s: ", token.stringify());
-						if (input != null && !input.isEmpty()) {
-							getRequestAdapter().setParameter(token.getName(), input);
-							inputCount++;
+				if (tokens != null && tokens.length > 0) {
+					for (Token token : tokens) {
+						if (token.getType() == TokenType.PARAMETER) {
+							String input = consoleInout.readLine("    %s: ", token.stringify());
+							if (input != null && !input.isEmpty()) {
+								getRequestAdapter().setParameter(token.getName(), input);
+								inputCount++;
+							}
 						}
 					}
+				} else {
+					String input = consoleInout.readLine("    $%s: ", itemRule.getName());
+					if (input != null && !input.isEmpty()) {
+						getRequestAdapter().setParameter(itemRule.getName(), input);
+						inputCount++;
+					}
 				}
-			} else {
-				String input = consoleInout.readLine("    $%s: ", itemRule.getName());
-				if (input != null && !input.isEmpty()) {
-					getRequestAdapter().setParameter(itemRule.getName(), input);
-					inputCount++;
-				}
-			}
 
-			if (itemRule.isMandatory() && inputCount == 0) {
-				missingItemRules.add(itemRule);
+				if (itemRule.isMandatory() && inputCount == 0) {
+					missingItemRules.add(itemRule);
+				}
 			}
+		} catch (ConsoleTerminatedException e) {
+			log.info("User interrupt occurred.");
+			throw new ActivityTerminatedException();
 		}
 
 		return (missingItemRules.isEmpty() ? null : missingItemRules);

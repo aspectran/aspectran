@@ -20,17 +20,33 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 /**
+ * The Interface for Console I/O.
+ *
  * <p>Created: 2017. 3. 5.</p>
  *
- * @since 3.4.0
+ * @since 4.0.0
  */
 public interface ConsoleInout {
+
+	String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
+
+	String getCommandPrompt();
+
+	void setCommandPrompt(String commandPrompt);
+
+	String readCommand();
 
 	String readLine();
 
 	String readLine(String prompt);
 
 	String readLine(String format, Object ...args);
+
+	String readPassword();
+
+	String readPassword(String prompt);
+
+	String readPassword(String format, Object ...args);
 
 	void write(String string);
 

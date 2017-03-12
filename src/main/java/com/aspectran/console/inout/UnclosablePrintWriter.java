@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 /**
- * The Class ConsolePrintWriter.
+ * The Class UnclosablePrintWriter.
  * 
  * @since 2016. 1. 22.
  */

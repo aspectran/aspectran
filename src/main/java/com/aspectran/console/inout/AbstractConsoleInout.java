@@ -19,6 +19,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 /**
+ * The Abstract Class for Console I / O.
+ *
  * <p>Created: 2017. 3. 4.</p>
  */
 public abstract class AbstractConsoleInout implements ConsoleInout {

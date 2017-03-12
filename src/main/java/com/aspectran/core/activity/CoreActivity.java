@@ -167,13 +167,15 @@ public class CoreActivity extends BasicActivity {
 				}
 				adapt();
 			}
-			
+
 			prepareAspectAdviceRule(transletRule);
 			parseRequest();
-			
+
 			if (forwardTransletName == null) {
 				resolveLocale();
 			}
+		} catch (ActivityTerminatedException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ActivityException("Activity failed to prepare.", e);
 		}
