@@ -95,7 +95,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
 	 * Creates a PebbleEngine instance.
 	 *
 	 * @return a PebbleEngine object that can be used to create PebbleTemplate objects
-	 * @throws IOException
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public PebbleEngine createPebbleEngine() throws IOException {
 		PebbleEngine.Builder builder = new PebbleEngine.Builder();
@@ -107,7 +107,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
 
 		if (templateLoaders == null) {
 			if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
-				List<Loader<?>> templateLoaderList = new ArrayList<Loader<?>>();
+				List<Loader<?>> templateLoaderList = new ArrayList<>();
 				for (String path : templateLoaderPaths) {
 					templateLoaderList.add(getTemplateLoaderForPath(path));
 				}

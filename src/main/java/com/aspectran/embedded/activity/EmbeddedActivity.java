@@ -45,6 +45,7 @@ public class EmbeddedActivity extends CoreActivity {
 	 * Instantiates a new embedded activity.
 	 *
 	 * @param service the embedded aspectran service
+	 * @param outputWriter the output writer
 	 */
 	public EmbeddedActivity(EmbeddedAspectranService service, Writer outputWriter) {
 		super(service.getActivityContext());
