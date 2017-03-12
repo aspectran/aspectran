@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.service;
+package com.aspectran.console.service.command;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.aspectran.console.service.command.CommandParser;
-import com.aspectran.console.service.command.CommandRedirection;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
