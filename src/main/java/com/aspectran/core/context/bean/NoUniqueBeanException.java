@@ -63,7 +63,7 @@ public class NoUniqueBeanException extends BeanException {
 
 	private static String getBeanDescriptions(BeanRule[] beanRules) {
 		String[] descrips = new String[beanRules.length];
-		for(int i = 0; i < descrips.length; i++) {
+		for (int i = 0; i < descrips.length; i++) {
 			descrips[i] = beanRules[i].toString();
 		}
 		return StringUtils.joinCommaDelimitedList(descrips);

@@ -124,10 +124,10 @@ public abstract class AbstractEnvironment implements Environment {
 	private void addProfile(Set<String> profiles, String profile) {
 		profile = StringUtils.trimWhitespace(profile);
 		if (profile.isEmpty()) {
-			throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
+			throw new IllegalArgumentException("Invalid profile [" + profile + "]; must contain text.");
 		}
 		if (profile.charAt(0) == '!') {
-			throw new IllegalArgumentException("Invalid profile [" + profile + "]: must not begin with ! operator");
+			throw new IllegalArgumentException("Invalid profile [" + profile + "]; must not begin with ! operator.");
 		}
 		profiles.add(profile);
 	}

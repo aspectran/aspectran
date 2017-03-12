@@ -54,7 +54,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
 			return createActivityContext();
 		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build a Hybrid Activity Context: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
 		}
 	}
 
