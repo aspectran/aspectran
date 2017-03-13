@@ -8,7 +8,7 @@
 	</description>
 
 	<settings>
-		<setting name="defaultTemplateEngine" value="freemarker"/>
+		<setting name="defaultTemplateEngineBean" value="freemarker"/>
 	</settings>
 
 	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
@@ -162,7 +162,9 @@
 				<item name="email">${email:jane@mail.com}</item>
 			</attributes>
 		</request>
-		<transform type="transform/text" template="sampleSql"/>
+		<transform type="transform/text">
+			<template ref="sampleSql"/>
+		</transform>
 	</translet>
 
 	<bean id="*" scan="test.**.*Advice" mask="test.**.*"/>

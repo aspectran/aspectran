@@ -30,6 +30,7 @@ public class TemplateParameters extends AbstractParameters {
 	public static final ParameterDefinition content;
 	public static final ParameterDefinition encoding;
 	public static final ParameterDefinition noCache;
+	public static final ParameterDefinition ref;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 
@@ -43,6 +44,7 @@ public class TemplateParameters extends AbstractParameters {
 		content = new ParameterDefinition("content", ParameterValueType.TEXT);
 		encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
 		noCache = new ParameterDefinition("noCache", ParameterValueType.BOOLEAN);
+		ref = new ParameterDefinition("ref", ParameterValueType.STRING);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			id,
@@ -53,7 +55,8 @@ public class TemplateParameters extends AbstractParameters {
 			url,
 			content,
 			encoding,
-			noCache
+			noCache,
+			ref
 		};
 	}
 	

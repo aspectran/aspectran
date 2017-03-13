@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
@@ -40,6 +39,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "internal";
 
+	private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
+
 	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
 	private String id;
@@ -58,25 +59,25 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	private String content;
 	
-	private Token[] contentTokens;
-	
 	private Boolean noCache;
 
-	private boolean builtin;
-
 	private String templateSource;
+	
+	private Token[] templateTokens;
+	
+	private boolean tokenize;
 
 	private volatile long lastModifiedTime;
 
 	private volatile boolean loaded;
 
+	private boolean builtin;
+
 	public TemplateRule() {
 	}
 
 	public TemplateRule(String engine) {
-		if (engine != null && !engine.isEmpty() && !engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
-			this.engine = engine;
-		}
+		setEngine(engine);
 	}
 
 	public String getId() {
@@ -92,15 +93,28 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public void setEngine(String engine) {
-    	if (engine == null || engine.isEmpty() || engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
-    		this.engine = null;
-    		this.contentTokens = null;
-    	} else {
-			if (this.content != null && !Objects.equals(this.engine, engine)) {
-				this.contentTokens = parseContentTokens(this.content);
+		if (engine != null) {
+			if (engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
+				this.engine = null;
+				this.tokenize = true;
+			} else if (engine.equals(NONE_TEMPLATE_ENGINE_NAME)) {
+				this.engine = null;
+				this.tokenize = false;
+			} else {
+				this.engine = engine;
+				this.tokenize = false;
 			}
-			this.engine = engine;
+		} else {
+			this.tokenize = false;
 		}
+	}
+	
+	public boolean isExternalEngine() {
+		return (this.engine != null);
+	}
+	
+	public boolean isTokenize() {
+		return this.tokenize;
 	}
 
 	public String getName() {
@@ -143,6 +157,14 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		this.encoding = encoding;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	protected void setContent(String content) {
+		this.content = content;
+	}
+	
 	public Boolean getNoCache() {
 		return noCache;
 	}
@@ -163,68 +185,15 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		this.builtin = builtin;
 	}
 
-	public boolean isUseExternalSource() {
+	public boolean isOutsourcing() {
 		return (name != null && file == null && resource == null && url == null);
 	}
 
-	public String getContent() {
-		return content;
+	protected String getTemplateSource() {
+		return templateSource;
 	}
-
-	public void setContent(String content) {
-		this.content = content;
-		this.contentTokens = parseContentTokens(content);
-	}
-
-	private void setContent(String content, Token[] contentTokens) {
-		this.content = content;
-		this.contentTokens = contentTokens;
-	}
-
-	public Token[] getContentTokens() {
-		return this.contentTokens;
-	}
-
-	protected void setContentTokens(Token[] contentTokens) {
-		this.contentTokens = contentTokens;
-	}
-
-	public Token[] getContentTokens(ApplicationAdapter applicationAdapter) throws IOException {
-		if (engine != null) {
-			throw new UnsupportedOperationException();
-		}
-
-		if (this.file != null || this.resource != null || this.url != null) {
-			if (this.noCache) {
-				String source = loadTemplateSource(applicationAdapter);
-				return parseContentTokens(source);
-			} else {
-				loadCachedTemplateSource(applicationAdapter);
-				return this.contentTokens;
-			}
-		} else {
-			return this.contentTokens;
-		}
-	}
-
-	private Token[] parseContentTokens(String content) {
-		if (this.engine != null || content == null || content.isEmpty()) {
-			return null;
-		}
-
-		List<Token> tokenList = Tokenizer.tokenize(content, false);
-		if (!tokenList.isEmpty()) {
-			return tokenList.toArray(new Token[tokenList.size()]);
-		} else {
-			return new Token[0];
-		}
-	}
-
+	
 	public String getTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
-		if (engine == null) {
-			throw new UnsupportedOperationException();
-		}
-
 		if (this.file != null || this.resource != null || this.url != null) {
 			if (this.noCache) {
 				return loadTemplateSource(applicationAdapter);
@@ -233,13 +202,73 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 				return this.templateSource;
 			}
 		} else {
-			return this.content;
+			return this.templateSource;
 		}
 	}
 
-	private void setTemplateSource(String templateSource) {
+	public void setTemplateSource(String templateSource) {
 		this.templateSource = templateSource;
-		this.contentTokens = parseContentTokens(templateSource);
+		if (isTokenize()) {
+			this.templateTokens = parseContentTokens(templateSource);
+		}
+	}
+
+	protected void setTemplateSource(String templateSource, Token[] templateTokens) {
+		this.templateSource = templateSource;
+		this.templateTokens = templateTokens;
+	}
+
+	public Token[] getTemplateTokens() {
+		return this.templateTokens;
+	}
+
+	public Token[] getTemplateTokens(ApplicationAdapter applicationAdapter) throws IOException {
+		if (isExternalEngine()) {
+			throw new UnsupportedOperationException();
+		}
+		if (this.file != null || this.resource != null || this.url != null) {
+			if (this.noCache) {
+				String source = loadTemplateSource(applicationAdapter);
+				return parseContentTokens(source);
+			} else {
+				loadCachedTemplateSource(applicationAdapter);
+				return this.templateTokens;
+			}
+		} else {
+			return this.templateTokens;
+		}
+	}
+
+	protected void setTemplateTokens(Token[] templateTokens) {
+		this.templateTokens = templateTokens;
+	}
+	
+	private Token[] parseContentTokens(String content) {
+		if (content == null || content.isEmpty()) {
+			return null;
+		}
+		List<Token> tokenList = Tokenizer.tokenize(content, false);
+		if (!tokenList.isEmpty()) {
+			return tokenList.toArray(new Token[tokenList.size()]);
+		} else {
+			return new Token[0];
+		}
+	}
+	
+	private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+		String templateSource = null;
+		if (this.file != null) {
+			File file = applicationAdapter.toRealPathAsFile(this.file);
+			templateSource = ResourceUtils.read(file, this.encoding);
+		} else if (this.resource != null) {
+			ClassLoader classLoader = applicationAdapter.getClassLoader();
+			URL url = classLoader.getResource(this.resource);
+			templateSource = ResourceUtils.read(url, this.encoding);
+		} else if (this.url != null) {
+			URL url = new URL(this.url);
+			templateSource = ResourceUtils.read(url, this.encoding);
+		}
+		return templateSource;
 	}
 
 	private void loadCachedTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
@@ -280,22 +309,6 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 				}
 			}
 		}
-	}
-
-	private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
-		String templateSource = null;
-		if (this.file != null) {
-			File file = applicationAdapter.toRealPathAsFile(this.file);
-			templateSource = ResourceUtils.read(file, this.encoding);
-		} else if (this.resource != null) {
-			ClassLoader classLoader = applicationAdapter.getClassLoader();
-			URL url = classLoader.getResource(this.resource);
-			templateSource = ResourceUtils.read(url, this.encoding);
-		} else if (this.url != null) {
-			URL url = new URL(this.url);
-			templateSource = ResourceUtils.read(url, this.encoding);
-		}
-		return templateSource;
 	}
 
 	@Override
@@ -344,6 +357,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setResource(resource);
 		tr.setUrl(url);
 		tr.setContent(content);
+		tr.setTemplateSource(content);
 		tr.setEncoding(encoding);
 		tr.setNoCache(noCache);
 		return tr;
@@ -357,6 +371,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setResource(resource);
 		tr.setUrl(url);
 		tr.setContent(content);
+		tr.setTemplateSource(content);
 		tr.setEncoding(encoding);
 		tr.setNoCache(noCache);
 		tr.setBuiltin(true);
@@ -370,8 +385,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setFile(templateRule.getFile());
 		tr.setResource(templateRule.getResource());
 		tr.setUrl(templateRule.getUrl());
+		tr.setContent(templateRule.getContent());
+		tr.setTemplateSource(templateRule.getTemplateSource(), templateRule.getTemplateTokens());
 		tr.setEncoding(templateRule.getEncoding());
-		tr.setContent(templateRule.getContent(), templateRule.getContentTokens());
 		tr.setNoCache(templateRule.getNoCache());
 		tr.setBuiltin(templateRule.isBuiltin());
 		return tr;

@@ -59,8 +59,9 @@ public class TemplateRuleRegistry {
     public void addTemplateRule(TemplateRule templateRule) {
         if (templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-            if (defaultSettings != null && defaultSettings.getDefaultTemplateEngine() != null) {
-            	templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
+            if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {
+            	templateRule.setEngine(defaultSettings.getDefaultTemplateEngineBean());
+            	templateRule.setTemplateSource(templateRule.getContent());
             }
         }
 		if (templateRule.getEngine() != null) {

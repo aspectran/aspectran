@@ -363,7 +363,8 @@ public class AnnotatedConfigParser {
 				String templateId = StringUtils.emptyToNull(transformAnno.templateId());
 				String characterEncoding = StringUtils.emptyToNull(transformAnno.characterEncoding());
 				boolean pretty = transformAnno.pretty();
-				TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, null, pretty);
+				TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, null, pretty);
+				tr.setTemplateId(templateId);
 				transletRule.setResponseRule(ResponseRule.newInstance(tr));
 			} else if (method.isAnnotationPresent(Forward.class)) {
 				Forward forwardAnno = method.getAnnotation(Forward.class);

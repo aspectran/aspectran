@@ -134,7 +134,7 @@ public class RootAponAssembler {
 			settingParameters.putValueNonNull(DefaultSettingsParameters.transletImplementationClass, defaultSettings.getTransletImplementationClassName());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
-			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngineBean, defaultSettings.getDefaultTemplateEngineBean());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultSchedulerBean, defaultSettings.getDefaultSchedulerBean());
 		}
 		
@@ -555,13 +555,13 @@ public class RootAponAssembler {
 		transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
 		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
 
-		if (transformRule.getTemplateRule() != null) {
-			transformParameters.putValue(TransformParameters.builtin, assembleTemplateParameters(transformRule.getTemplateRule()));
-		}
-
 		ActionList actionList = transformRule.getActionList();
 		if (actionList != null) {
 			assembleActionList(actionList, transformParameters, TransformParameters.actions);
+		}
+
+		if (transformRule.getTemplateRule() != null) {
+			transformParameters.putValue(TransformParameters.template, assembleTemplateParameters(transformRule.getTemplateRule()));
 		}
 
 		return transformParameters;

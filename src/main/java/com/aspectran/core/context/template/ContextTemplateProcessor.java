@@ -114,12 +114,10 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                 }
             }
 
-            String engineBeanId = templateRule.getEngine();
-
-            if (engineBeanId != null) {
-                TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
+            if (templateRule.isExternalEngine()) {
+                TemplateEngine engine = context.getBeanRegistry().getBean(templateRule.getEngine());
                 if (engine == null) {
-                    throw new IllegalArgumentException("No template engine bean registered for '" + engineBeanId + "'.");
+                    throw new IllegalArgumentException("No template engine bean registered for '" + templateRule.getEngine() + "'.");
                 }
 
                 if(model == null) {
@@ -130,7 +128,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     }
                 }
 
-                if (templateRule.isUseExternalSource()) {
+                if (templateRule.isOutsourcing()) {
                     String templateName = templateRule.getName();
                     Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
                     engine.process(templateName, model, writer, locale);
@@ -145,10 +143,12 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     }
                 }
             } else {
-                Token[] contentTokens = templateRule.getContentTokens(context.getApplicationAdapter());
-                if (contentTokens != null) {
+                Token[] templateTokens = templateRule.getTemplateTokens(context.getApplicationAdapter());
+                if (templateTokens != null) {
                     TokenEvaluator evaluator = new TokenExpressionParser(activity);
-                    evaluator.evaluate(contentTokens, writer);
+                    evaluator.evaluate(templateTokens, writer);
+                } else {
+                	writer.write(templateRule.getTemplateSource(context.getApplicationAdapter()));
                 }
             }
         } catch (Exception e) {

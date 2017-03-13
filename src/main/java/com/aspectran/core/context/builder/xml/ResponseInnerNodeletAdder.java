@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -53,12 +54,11 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/transform", (node, attributes, text) -> {
             String type = attributes.get("type");
             String contentType = attributes.get("contentType");
-            String templateId = attributes.get("template");
             String characterEncoding = attributes.get("characterEncoding");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
             Boolean pretty = BooleanUtils.toNullableBooleanObject(attributes.get("pretty"));
 
-            TransformRule tr = TransformRule.newInstance(type, contentType, templateId, characterEncoding, defaultResponse, pretty);
+            TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse, pretty);
             assistant.pushObject(tr);
 
             ActionList actionList = new ActionList();
@@ -66,25 +66,32 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", (node, attributes, text) -> {
-            String engine = attributes.get("engine");
-            String name = attributes.get("name");
-            String file = attributes.get("file");
-            String resource = attributes.get("resource");
-            String url = attributes.get("url");
-            String encoding = attributes.get("encoding");
-            Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
+            String templateId = StringUtils.emptyToNull(attributes.get("ref"));
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
+            if (templateId != null) {
+                TransformRule transformRule = assistant.peekObject(1);
+                transformRule.setTemplateId(templateId);
+            } else {
+                String engine = attributes.get("engine");
+                String name = attributes.get("name");
+                String file = attributes.get("file");
+                String resource = attributes.get("resource");
+                String url = attributes.get("url");
+                String encoding = attributes.get("encoding");
+                Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-            TransformRule transformRule = assistant.peekObject(1);
-            transformRule.setTemplateRule(templateRule);
-
-            if (templateRule.getContentTokens() != null) {
-                for (Token token : templateRule.getContentTokens()) {
-                    if (token.getType() == TokenType.BEAN) {
-						assistant.resolveBeanClass(token);
-                    }
-                }
+                TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
+                
+                TransformRule transformRule = assistant.peekObject(1);
+	            transformRule.setTemplateRule(templateRule);
+	
+	            if (templateRule.getTemplateTokens() != null) {
+	                for (Token token : templateRule.getTemplateTokens()) {
+	                    if (token.getType() == TokenType.BEAN) {
+							assistant.resolveBeanClass(token);
+	                    }
+	                }
+	            }
             }
         });
 		parser.addNodelet(xpath, "/transform/end()", (node, attributes, text) -> {

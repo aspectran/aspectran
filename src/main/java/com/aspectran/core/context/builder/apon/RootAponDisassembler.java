@@ -48,6 +48,7 @@ import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
@@ -74,6 +75,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -649,14 +651,13 @@ public class RootAponDisassembler {
 	private TransformRule disassembleTransformRule(Parameters transformParameters) {
 		String transformType = transformParameters.getString(TransformParameters.type);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
-		String templateId = transformParameters.getString(TransformParameters.template);
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
 		List<Parameters> actionParametersList = transformParameters.getParametersList(TransformParameters.actions);
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-		Parameters templateParameters = transformParameters.getParameters(TransformParameters.builtin);
+		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);
 
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, defaultResponse, pretty);
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
 		
 		if (actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();
@@ -667,16 +668,30 @@ public class RootAponDisassembler {
 		}
 		
 		if (templateParameters != null) {
-			String engine = templateParameters.getString(TemplateParameters.engine);
-			String name = templateParameters.getString(TemplateParameters.name);
-			String file = templateParameters.getString(TemplateParameters.file);
-			String resource = templateParameters.getString(TemplateParameters.resource);
-			String url = templateParameters.getString(TemplateParameters.url);
-			String content = templateParameters.getString(TemplateParameters.content);
-			String encoding = templateParameters.getString(TemplateParameters.encoding);
-			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
-			tr.setTemplateRule(templateRule);
+			String templateId = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.ref));
+			
+			if (templateId != null) {
+				tr.setTemplateId(templateId);
+			} else {
+				String engine = templateParameters.getString(TemplateParameters.engine);
+				String name = templateParameters.getString(TemplateParameters.name);
+				String file = templateParameters.getString(TemplateParameters.file);
+				String resource = templateParameters.getString(TemplateParameters.resource);
+				String url = templateParameters.getString(TemplateParameters.url);
+				String content = templateParameters.getString(TemplateParameters.content);
+				String encoding = templateParameters.getString(TemplateParameters.encoding);
+				Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
+				tr.setTemplateRule(templateRule);
+				
+	            if (templateRule.getTemplateTokens() != null) {
+	                for (Token token : templateRule.getTemplateTokens()) {
+	                    if (token.getType() == TokenType.BEAN) {
+							assistant.resolveBeanClass(token);
+	                    }
+	                }
+	            }
+			}
 		}
 		
 		return tr;
