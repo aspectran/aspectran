@@ -86,9 +86,10 @@ public class AponTransform extends TransformResponse {
 			ProcessResult processResult = activity.getProcessResult();
 
 			Parameters parameters = ContentsAponAssembler.assemble(processResult);
+			@SuppressWarnings("resource")
 			AponWriter aponWriter = new AponWriter(writer, pretty);
 			aponWriter.write(parameters);
-			aponWriter.flush();
+			aponWriter.flush(); // Never close at this time. Owner will be close.
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

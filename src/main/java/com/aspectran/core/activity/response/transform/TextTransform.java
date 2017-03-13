@@ -108,8 +108,9 @@ public class TextTransform extends TransformResponse {
 						}
 					}
 				}
-				writer.flush();
 			}
+			
+			writer.flush(); // Never close at this time. Owner will be close.
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

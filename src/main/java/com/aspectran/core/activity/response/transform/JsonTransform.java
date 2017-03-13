@@ -103,7 +103,7 @@ public class JsonTransform extends TransformResponse {
 				writer.write(ROUND_BRACKET_CLOSE);
 			}
 
-			writer.flush();
+			writer.flush(); // Never close at this time. Owner will be close.
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
