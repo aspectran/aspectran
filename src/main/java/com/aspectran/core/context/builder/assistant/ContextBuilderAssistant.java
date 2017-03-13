@@ -498,13 +498,30 @@ public class ContextBuilderAssistant {
 			reserveBeanReference(beanId, scheduleRule);
 		}
 	}
-	
+
+	/**
+	 * Resolve bean class for the template rule.
+	 *
+	 * @param beanId the bean id
+	 * @param templateRule the template rule
+	 */
+	public void resolveBeanClass(String beanId, TemplateRule templateRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+		if (beanClass != null) {
+			templateRule.setEngineBeanClass(beanClass);
+			reserveBeanReference(beanClass, templateRule);
+		} else {
+			reserveBeanReference(beanId, templateRule);
+		}
+	}
+
 	private Class<?> resolveBeanClass(String beanId) {
 		if (beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 			return loadClass(className);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private Class<?> loadClass(String className) {

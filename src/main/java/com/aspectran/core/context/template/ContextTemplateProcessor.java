@@ -115,7 +115,12 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             }
 
             if (templateRule.isExternalEngine()) {
-                TemplateEngine engine = context.getBeanRegistry().getBean(templateRule.getEngine());
+                TemplateEngine engine = null;
+                if (templateRule.getEngineBeanClass() != null) {
+                    engine = (TemplateEngine)activity.getBean(templateRule.getEngineBeanClass());
+                } else if (templateRule.getEngineBeanId() != null) {
+                    engine = activity.getBean(templateRule.getEngineBeanId());
+                }
                 if (engine == null) {
                     throw new IllegalArgumentException("No template engine bean registered for '" + templateRule.getEngine() + "'.");
                 }

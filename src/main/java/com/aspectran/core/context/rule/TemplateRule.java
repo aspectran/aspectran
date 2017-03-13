@@ -61,6 +61,10 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	
 	private Boolean noCache;
 
+	private String engineBeanId;
+
+	private Class<?> engineBeanClass;
+
 	private String templateSource;
 	
 	private Token[] templateTokens;
@@ -76,10 +80,6 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	public TemplateRule() {
 	}
 
-	public TemplateRule(String engine) {
-		setEngine(engine);
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -90,31 +90,6 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	public String getEngine() {
 		return engine;
-	}
-
-	public void setEngine(String engine) {
-		if (engine != null) {
-			if (engine.equals(INTERNAL_TEMPLATE_ENGINE_NAME)) {
-				this.engine = null;
-				this.tokenize = true;
-			} else if (engine.equals(NONE_TEMPLATE_ENGINE_NAME)) {
-				this.engine = null;
-				this.tokenize = false;
-			} else {
-				this.engine = engine;
-				this.tokenize = false;
-			}
-		} else {
-			this.tokenize = false;
-		}
-	}
-	
-	public boolean isExternalEngine() {
-		return (this.engine != null);
-	}
-	
-	public boolean isTokenize() {
-		return this.tokenize;
 	}
 
 	public String getName() {
@@ -164,7 +139,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	protected void setContent(String content) {
 		this.content = content;
 	}
-	
+
 	public Boolean getNoCache() {
 		return noCache;
 	}
@@ -187,6 +162,48 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	public boolean isOutsourcing() {
 		return (name != null && file == null && resource == null && url == null);
+	}
+
+	public String getEngineBeanId() {
+		return engineBeanId;
+	}
+
+	public void setEngineBeanId(String engineBeanId) {
+		this.engine = engineBeanId;
+		if (engineBeanId != null) {
+			switch (engineBeanId) {
+				case INTERNAL_TEMPLATE_ENGINE_NAME:
+					this.engineBeanId = null;
+					this.tokenize = true;
+					break;
+				case NONE_TEMPLATE_ENGINE_NAME:
+					this.engineBeanId = null;
+					this.tokenize = false;
+					break;
+				default:
+					this.engineBeanId = engineBeanId;
+					this.tokenize = false;
+					break;
+			}
+		} else {
+			this.tokenize = false;
+		}
+	}
+
+	public Class<?> getEngineBeanClass() {
+		return engineBeanClass;
+	}
+
+	public void setEngineBeanClass(Class<?> engineBeanClass) {
+		this.engineBeanClass = engineBeanClass;
+	}
+
+	public boolean isExternalEngine() {
+		return (this.engineBeanId != null);
+	}
+
+	public boolean isTokenize() {
+		return this.tokenize;
 	}
 
 	protected String getTemplateSource() {
@@ -239,10 +256,6 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		}
 	}
 
-	protected void setTemplateTokens(Token[] templateTokens) {
-		this.templateTokens = templateTokens;
-	}
-	
 	private Token[] parseContentTokens(String content) {
 		if (content == null || content.isEmpty()) {
 			return null;
@@ -350,8 +363,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
 		}
 		
-		TemplateRule tr = new TemplateRule(engine);
+		TemplateRule tr = new TemplateRule();
 		tr.setId(id);
+		tr.setEngineBeanId(engine);
 		tr.setName(name);
 		tr.setFile(file);
 		tr.setResource(resource);
@@ -365,7 +379,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, 
 			String resource, String url, String content, String encoding, Boolean noCache) {
-		TemplateRule tr = new TemplateRule(engine);
+		TemplateRule tr = new TemplateRule();
+		tr.setEngineBeanId(engine);
 		tr.setName(name);
 		tr.setFile(file);
 		tr.setResource(resource);
@@ -379,8 +394,10 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public static TemplateRule replicate(TemplateRule templateRule) {
-		TemplateRule tr = new TemplateRule(templateRule.getEngine());
+		TemplateRule tr = new TemplateRule();
 		tr.setId(templateRule.getId());
+		tr.setEngineBeanId(templateRule.getEngine());
+		tr.setEngineBeanClass(templateRule.getEngineBeanClass());
 		tr.setName(templateRule.getName());
 		tr.setFile(templateRule.getFile());
 		tr.setResource(templateRule.getResource());
