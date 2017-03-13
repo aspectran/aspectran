@@ -48,7 +48,7 @@ public class DefaultSettings {
 
 	private Boolean pointcutPatternVerifiable;
 
-	private String defaultTemplateEngine;
+	private String defaultTemplateEngineBean;
 
 	private String defaultSchedulerBean;
 
@@ -65,7 +65,7 @@ public class DefaultSettings {
 		this.transletImplementationClass = ds.getTransletImplementationClass();
 		this.beanProxifier = ds.getBeanProxifier();
 		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
-		this.defaultTemplateEngine = ds.getDefaultTemplateEngine();
+		this.defaultTemplateEngineBean = ds.getDefaultTemplateEngineBean();
 		this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
 	}
 	
@@ -168,12 +168,12 @@ public class DefaultSettings {
 		this.pointcutPatternVerifiable = pointcutPatternVerifiable;
 	}
 
-	public String getDefaultTemplateEngine() {
-		return defaultTemplateEngine;
+	public String getDefaultTemplateEngineBean() {
+		return defaultTemplateEngineBean;
 	}
 
-	public void setDefaultTemplateEngine(String defaultTemplateEngine) {
-		this.defaultTemplateEngine = defaultTemplateEngine;
+	public void setDefaultTemplateEngineBean(String defaultTemplateEngineBean) {
+		this.defaultTemplateEngineBean = defaultTemplateEngineBean;
 	}
 
 	public String getDefaultSchedulerBean() {
@@ -207,8 +207,8 @@ public class DefaultSettings {
 			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null
 					|| Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
 		}
-		if (settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null) {
-			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
+		if (settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN) != null) {
+			defaultTemplateEngineBean = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN);
 		}
 		if (settings.get(DefaultSettingType.DEFAULT_SCHEDULER_BEAN) != null) {
 			defaultSchedulerBean = settings.get(DefaultSettingType.DEFAULT_SCHEDULER_BEAN);
