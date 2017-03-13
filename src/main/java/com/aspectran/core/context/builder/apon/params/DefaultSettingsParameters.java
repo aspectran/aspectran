@@ -29,7 +29,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 	public static final ParameterDefinition transletImplementationClass;
 	public static final ParameterDefinition beanProxifier;
 	public static final ParameterDefinition pointcutPatternVerifiable;
-	public static final ParameterDefinition defaultTemplateEngine;
+	public static final ParameterDefinition defaultTemplateEngineBean;
 	public static final ParameterDefinition defaultSchedulerBean;
 
 	private static final ParameterDefinition[] parameterDefinitions;
@@ -42,7 +42,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 		transletImplementationClass = new ParameterDefinition(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS.toString(), ParameterValueType.STRING);
 		beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
 		pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.STRING);
-		defaultTemplateEngine = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE.toString(), ParameterValueType.STRING);
+		defaultTemplateEngineBean = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ParameterValueType.STRING);
 		defaultSchedulerBean = new ParameterDefinition(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ParameterValueType.STRING);
 
 		parameterDefinitions = new ParameterDefinition[] {
@@ -53,7 +53,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
 			transletImplementationClass,
 			beanProxifier,
 			pointcutPatternVerifiable,
-			defaultTemplateEngine,
+			defaultTemplateEngineBean,
 			defaultSchedulerBean
 		};
 	}
