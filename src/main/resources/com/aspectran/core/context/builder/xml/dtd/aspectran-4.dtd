@@ -105,6 +105,7 @@
   url      CDATA #IMPLIED
   encoding CDATA #IMPLIED
   noCache  (true | false) #IMPLIED
+  ref      CDATA #IMPLIED
 >
 
 <!ELEMENT schedule (description?, scheduler, job*)>
@@ -198,7 +199,6 @@
 <!ATTLIST transform
   type              CDATA #IMPLIED
   contentType       CDATA #IMPLIED
-  template          CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
   default           (true | false) #IMPLIED
   pretty            (true | false) #IMPLIED
@@ -262,6 +262,7 @@
 <!ELEMENT ref EMPTY>
 <!ATTLIST ref
   bean      CDATA #IMPLIED
+  template  CDATA #IMPLIED
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
   property  CDATA #IMPLIED
