@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule;
 
 import java.lang.reflect.Method;
 
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
@@ -51,8 +50,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	private ItemRuleMap propertyItemRuleMap;
 
 	private Boolean hidden;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	/**
 	 * Gets the action id.
@@ -179,24 +176,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		this.propertyItemRuleMap = propertyItemRuleMap;
 	}
 
-	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @return the aspect advice rule registry
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-
-	/**
-	 * Sets the aspect advice rule registry.
-	 *
-	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
-	 */
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
 		return BEAN_REFERRER_TYPE;
@@ -214,7 +193,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		if (propertyItemRuleMap != null) {
 			tsb.append("properties", propertyItemRuleMap.keySet());
 		}
-		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		tsb.append("hidden", hidden);
 		return tsb.toString();
 	}
