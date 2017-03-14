@@ -117,7 +117,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
 				String name = null;
 				Object value;
-				
+
 				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					if (name != null) {
 						sb.append(AMPERSAND_CHAR);
@@ -126,13 +126,18 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 					name = entry.getKey();
 					value = entry.getValue();
 
-					if (!redirectResponseRule.isExcludeNullParameter() || value != null) {
-						sb.append(name).append(EQUAL_CHAR);
+					String string = (value != null ? value.toString() : null);
 
-						if (value != null) {
-							value = URLEncoder.encode(value.toString(), characterEncoding);
-							sb.append(value.toString());
-						}
+					if (redirectResponseRule.isExcludeEmptyParameter() && string != null && !string.isEmpty()) {
+						sb.append(name).append(EQUAL_CHAR);
+					} else if (redirectResponseRule.isExcludeNullParameter() && string != null) {
+						sb.append(name).append(EQUAL_CHAR);
+					} else {
+						sb.append(name).append(EQUAL_CHAR);
+					}
+					if (string != null) {
+						string = URLEncoder.encode(string, characterEncoding);
+						sb.append(string);
 					}
 				}
 			}

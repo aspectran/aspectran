@@ -736,11 +736,13 @@ public class RootAponDisassembler {
 		String contentType = redirectParameters.getString(RedirectParameters.contentType);
 		String target = redirectParameters.getString(RedirectParameters.target);
 		ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
+		String characterEncoding = redirectParameters.getString(RedirectParameters.characterEncoding);
 		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
-		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
+		Boolean excludeEmptyParameter = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameter);
 		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
-		
-		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, excludeNullParameter, defaultResponse);
+		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
+
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, characterEncoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
 		
 		if (parameterItemHolderParametersList != null) {
 			ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParametersList);

@@ -606,7 +606,9 @@ public class RootAponAssembler {
 		RedirectParameters redirectParameters = new RedirectParameters();
 		redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
 		redirectParameters.putValueNonNull(RedirectParameters.target, redirectResponseRule.getTarget());
+		redirectParameters.putValueNonNull(RedirectParameters.characterEncoding, redirectResponseRule.getCharacterEncoding());
 		redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
+		redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameter, redirectResponseRule.getExcludeEmptyParameter());
 		redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
 		
 		ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();

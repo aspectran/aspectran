@@ -44,11 +44,13 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	private String target;
 	
 	private Token[] targetTokens;
-	
-	private Boolean excludeNullParameter;
 
 	private String characterEncoding;
-	
+
+	private Boolean excludeNullParameter;
+
+	private Boolean excludeEmptyParameter;
+
 	private ItemRuleMap parameterItemRuleMap;
 
 	private Boolean defaultResponse;
@@ -134,30 +136,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	}
 
 	/**
-	 * Gets the exclude null parameters.
-	 * 
-	 * @return the exclude null parameters
-	 */
-	public Boolean getExcludeNullParameter() {
-		return excludeNullParameter;
-	}
-
-	public boolean isExcludeNullParameter() {
-		return BooleanUtils.toBoolean(excludeNullParameter);
-	}
-
-	/**
-	 * Sets the exclude null parameters.
-	 * 
-	 * @param excludeNullParameter the new exclude null parameters
-	 */
-	public void setExcludeNullParameter(Boolean excludeNullParameter) {
-		this.excludeNullParameter = excludeNullParameter;
-	}
-
-	/**
 	 * Gets the character encoding.
-	 * 
+	 *
 	 * @return the character encoding
 	 */
 	public String getCharacterEncoding() {
@@ -166,11 +146,65 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 
 	/**
 	 * Sets the character encoding.
-	 * 
+	 *
 	 * @param characterEncoding the new character encoding
 	 */
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
+	}
+
+	/**
+	 * Gets whether to exclude parameters with null values.
+	 * 
+	 * @return whether to exclude parameters with null values
+	 */
+	public Boolean getExcludeNullParameter() {
+		return excludeNullParameter;
+	}
+
+	/**
+	 * Returns whether to exclude parameters with null values.
+	 *
+	 * @return whether to exclude parameters with null values
+	 */
+	public boolean isExcludeNullParameter() {
+		return BooleanUtils.toBoolean(excludeNullParameter);
+	}
+
+	/**
+	 * Sets whether to exclude parameters with null values.
+	 *
+	 * @param excludeNullParameter whether to exclude parameters with null values
+	 */
+	public void setExcludeNullParameter(Boolean excludeNullParameter) {
+		this.excludeNullParameter = excludeNullParameter;
+	}
+
+	/**
+	 * Gets whether to exclude parameters with empty values.
+	 *
+	 * @return whether to exclude parameters with empty values
+	 */
+	public Boolean getExcludeEmptyParameter() {
+		return excludeNullParameter;
+	}
+
+	/**
+	 * Returns whether to exclude parameters with empty values.
+	 *
+	 * @return whether to exclude parameters with empty values
+	 */
+	public boolean isExcludeEmptyParameter() {
+		return BooleanUtils.toBoolean(excludeEmptyParameter);
+	}
+
+	/**
+	 * Sets whether to exclude parameters with empty values.
+	 *
+	 * @param excludeEmptyParameter whether to exclude parameters with empty values
+	 */
+	public void setExcludeEmptyParameter(Boolean excludeEmptyParameter) {
+		this.excludeEmptyParameter = excludeEmptyParameter;
 	}
 
 	/**
@@ -261,20 +295,23 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.appendForce("responseType", RESPONSE_TYPE);
-		tsb.appendForce("target", target);
 		tsb.append("contentType", contentType);
+		tsb.appendForce("target", target);
+		tsb.appendForce("characterEncoding", characterEncoding);
 		tsb.append("excludeNullParameter", excludeNullParameter);
 		tsb.append("defaultResponse", defaultResponse);
 		return tsb.toString();
 	}
 	
-	public static RedirectResponseRule newInstance(String contentType, String target, Boolean excludeNullParameters, Boolean defaultResponse) {
+	public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding, Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(contentType);
 		if (target != null && target.length() > 0) {
 			rrr.setTarget(target);
 		}
-		rrr.setExcludeNullParameter(excludeNullParameters);
+		rrr.setCharacterEncoding(characterEncoding);
+		rrr.setExcludeNullParameter(excludeNullParameter);
+		rrr.setExcludeEmptyParameter(excludeEmptyParameter);
 		rrr.setDefaultResponse(defaultResponse);
 		return rrr;
 	}
@@ -292,8 +329,9 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(redirectResponseRule.getContentType());
 		rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
-		rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
 		rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
+		rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
+		rrr.setExcludeEmptyParameter(redirectResponseRule.getExcludeEmptyParameter());
 		rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
 		rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
 		rrr.setActionList(redirectResponseRule.getActionList());
