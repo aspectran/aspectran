@@ -120,14 +120,12 @@ public class TokenParser {
 	 */
 	public static Token[] makeTokens(String text, boolean tokenize) {
 		Token[] tokens;
-
 		if (tokenize) {
 			tokens = TokenParser.parse(text);
 		} else {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, text);
 		}
-
 		return tokens;
 	}
 
@@ -141,11 +139,9 @@ public class TokenParser {
 		if (tokens == null || tokens.length == 0) {
 			return StringUtils.EMPTY;
 		}
-
 		if (tokens.length == 1) {
 			return (tokens[0] == null ? StringUtils.EMPTY : tokens[0].stringify());
 		}
-
 		StringBuilder sb = new StringBuilder();
 		for (Token t : tokens) {
 			if (t != null) {

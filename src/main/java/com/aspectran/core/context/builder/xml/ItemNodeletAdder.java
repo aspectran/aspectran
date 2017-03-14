@@ -39,98 +39,98 @@ class ItemNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-    ItemNodeletAdder(ContextBuilderAssistant assistant) {
+	ItemNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
 	@Override
 	public void process(final String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/item", (node, attributes, text) -> {
-            String type = attributes.get("type");
-            String name = attributes.get("name");
-            String value = attributes.get("value");
-            String valueType = attributes.get("valueType");
-            String defaultValue = attributes.get("defaultValue");
-            Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
-            Boolean mandatory = BooleanUtils.toNullableBooleanObject(attributes.get("mandatory"));
+			String type = attributes.get("type");
+			String name = attributes.get("name");
+			String value = attributes.get("value");
+			String valueType = attributes.get("valueType");
+			String defaultValue = attributes.get("defaultValue");
+			Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
+			Boolean mandatory = BooleanUtils.toNullableBooleanObject(attributes.get("mandatory"));
 
-            if (StringUtils.hasText(text)) {
+			if (StringUtils.hasText(text)) {
 				value = text;
 			}
 
-            ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize, mandatory);
+			ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize, mandatory);
 
-            assistant.pushObject(itemRule);
+			assistant.pushObject(itemRule);
 
-            if (itemRule.getType() != ItemType.SINGLE) {
+			if (itemRule.getType() != ItemType.SINGLE) {
 				ItemRule.beginValueCollection(itemRule);
 			}
-        });
+		});
 		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
-            String name = attributes.get("name");
+			String name = attributes.get("name");
 
-            ItemRule itemRule = assistant.peekObject();
+			ItemRule itemRule = assistant.peekObject();
 
 			if (itemRule.getType() != ItemType.SINGLE) {
 				Token[] tokens = ItemRule.parseValue(itemRule, text);
 				assistant.pushObject(name);
 				assistant.pushObject(tokens);
 			}
-        });
+		});
 		parser.addNodelet(xpath, "/item/value/ref", (node, attributes, text) -> {
-            String parameter = attributes.get("parameter");
+			String parameter = attributes.get("parameter");
 			String attribute = attributes.get("attribute");
 			String bean= attributes.get("bean");
 			String property = attributes.get("property");
 
-            Object object = assistant.peekObject();
+			Object object = assistant.peekObject();
 
-            if (object != null && object instanceof ItemRule) {
-                ItemRule.updateReference((ItemRule)object, parameter, attribute, bean, property);
-            } else {
-                assistant.popObject(); // discard tokens
-                Token t = ItemRule.makeReferenceToken(parameter, attribute, bean, property);
-                Token[] tokens = new Token[] { t };
-                assistant.pushObject(tokens);
-            }
-        });
+			if (object != null && object instanceof ItemRule) {
+				ItemRule.updateReference((ItemRule)object, parameter, attribute, bean, property);
+			} else {
+				assistant.popObject(); // discard tokens
+				Token t = ItemRule.makeReferenceToken(parameter, attribute, bean, property);
+				Token[] tokens = new Token[] { t };
+				assistant.pushObject(tokens);
+			}
+		});
 		parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
-            Object object = assistant.peekObject();
+			Object object = assistant.peekObject();
 
-            if (object != null && !(object instanceof ItemRule)) {
-                // replace tokens to null
-                assistant.popObject();
-                assistant.pushObject(null);
-            }
-        });
+			if (object != null && !(object instanceof ItemRule)) {
+				// replace tokens to null
+				assistant.popObject();
+				assistant.pushObject(null);
+			}
+		});
 		parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
-            Object object = assistant.peekObject();
+			Object object = assistant.peekObject();
 
-            if (object == null || object instanceof Token[]) {
-                Token[] tokens = assistant.popObject();
-                String name = assistant.popObject();
-                ItemRule itemRule = assistant.peekObject();
+			if (object == null || object instanceof Token[]) {
+				Token[] tokens = assistant.popObject();
+				String name = assistant.popObject();
+				ItemRule itemRule = assistant.peekObject();
 
 				ItemRule.flushValueCollection(itemRule, name, tokens);
-            }
-        });
+			}
+		});
 		parser.addNodelet(xpath, "/item/ref", (node, attributes, text) -> {
-            String bean = StringUtils.emptyToNull(attributes.get("bean"));
-            String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
-            String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
-            String property = StringUtils.emptyToNull(attributes.get("property"));
+			String bean = StringUtils.emptyToNull(attributes.get("bean"));
+			String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
+			String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
+			String property = StringUtils.emptyToNull(attributes.get("property"));
 
-            ItemRule itemRule = assistant.peekObject();
-            ItemRule.updateReference(itemRule, parameter, attribute, bean, property);
-        });
+			ItemRule itemRule = assistant.peekObject();
+			ItemRule.updateReference(itemRule, parameter, attribute, bean, property);
+		});
 		parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
-            ItemRule itemRule = assistant.popObject();
-            ItemRuleMap itemRuleMap = assistant.peekObject();
+			ItemRule itemRule = assistant.popObject();
+			ItemRuleMap itemRuleMap = assistant.peekObject();
 
-            ItemRule.addItemRule(itemRule, itemRuleMap);
+			ItemRule.addItemRule(itemRule, itemRuleMap);
 
 			assistant.resolveBeanClass(itemRule);
-        });
+		});
 	}
 
 }

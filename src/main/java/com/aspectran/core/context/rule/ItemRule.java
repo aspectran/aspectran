@@ -101,10 +101,30 @@ public class ItemRule {
 	public String getName() {
 		return name;
 	}
-	
+
+	/**
+	 * Sets the name of a item.
+	 *
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		if (name.endsWith(ARRAY_SUFFIX)) {
+			this.name = name.substring(0, name.length() - 2);
+			type = ItemType.ARRAY;
+		} else if (name.endsWith(MAP_SUFFIX)) {
+			this.name = name.substring(0, name.length() - 2);
+			type = ItemType.MAP;
+		} else {
+			this.name = name;
+			if (type == null) {
+				type = ItemType.SINGLE;
+			}
+		}
+	}
+
 	/**
 	 * Returns the value of the item.
-	 * 
+	 *
 	 * @return the value of the item
 	 */
 	public String getValue() {
@@ -112,25 +132,147 @@ public class ItemRule {
 	}
 
 	/**
-	 * Gets the value type  of the item.
+	 * Gets the tokens.
 	 *
-	 * @return the value type of the item
+	 * @return the tokens
+	 */
+	public Token[] getTokens() {
+		return tokens;
+	}
+
+	/**
+	 * Gets the list of tokens.
+	 *
+	 * @return the tokens list
+	 */
+	public List<Token[]> getTokensList() {
+		return tokensList;
+	}
+
+	/**
+	 * Returns a list of string values of this item.
+	 *
+	 * @return a list of string values
+	 */
+	public List<String> getValueList() {
+		if (tokensList == null) {
+			return null;
+		}
+		if (tokensList.isEmpty()) {
+			return new ArrayList<>();
+		} else {
+			List<String> list = new ArrayList<>(tokensList.size());
+			for (Token[] tokens : tokensList) {
+				list.add(TokenParser.toString(tokens));
+			}
+			return list;
+		}
+	}
+
+	/**
+	 * Gets the tokens map.
+	 *
+	 * @return the tokens map
+	 */
+	public Map<String, Token[]> getTokensMap() {
+		return tokensMap;
+	}
+
+	/**
+	 * Returns a map of string values of this item.
+	 *
+	 * @return a map of string values
+	 */
+	public Map<String, String> getValueMap() {
+		if (tokensMap == null) {
+			return null;
+		}
+		if (tokensMap.isEmpty()) {
+			return new LinkedHashMap<>();
+		} else {
+			Map<String, String> map = new LinkedHashMap<>(tokensMap.size());
+			for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+				map.put(entry.getKey(), TokenParser.toString(entry.getValue()));
+			}
+			return map;
+		}
+	}
+
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
+	public void setValue(String value) {
+		Token[] tokens = TokenParser.makeTokens(value, isTokenize());
+		setValue(tokens);
+	}
+
+	/**
+	 * Sets the value.
+	 *
+	 * @param tokens the new value
+	 */
+	public void setValue(Token[] tokens) {
+		if (type == null) {
+			throw new IllegalArgumentException("The item type must be specified first.");
+		}
+		if (type != ItemType.SINGLE) {
+			throw new IllegalArgumentException("The item type must be 'single': " + this);
+		}
+		this.tokens = tokens;
+	}
+
+	/**
+	 * Sets the value.
+	 *
+	 * @param tokensList the new value
+	 */
+	public void setValue(List<Token[]> tokensList) {
+		if (type == null) {
+			throw new IllegalArgumentException("The item type must be specified first.");
+		}
+		if (!isListableType()) {
+			throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item: " + this);
+		}
+		this.tokensList = tokensList;
+	}
+
+	/**
+	 * Sets the value.
+	 *
+	 * @param tokensMap the tokens map
+	 */
+	public void setValue(Map<String, Token[]> tokensMap) {
+		if (type == null) {
+			throw new IllegalArgumentException("The item type must be specified first.");
+		}
+		if (!isMappableType()) {
+			throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item: " + this);
+		}
+		this.tokensMap = tokensMap;
+	}
+
+	/**
+	 * Gets the value type of this item.
+	 *
+	 * @return the value type of this item
 	 */
 	public ItemValueType getValueType() {
 		return valueType;
 	}
 
 	/**
-	 * Sets the value type of the item.
+	 * Sets the value type of this item.
 	 *
-	 * @param valueType the new value type of the item
+	 * @param valueType the new value type
 	 */
 	public void setValueType(ItemValueType valueType) {
 		this.valueType = valueType;
 	}
 
 	/**
-	 * Gets the default value.
+	 * Gets the default value of this item.
 	 *
 	 * @return the default value
 	 */
@@ -139,7 +281,7 @@ public class ItemRule {
 	}
 
 	/**
-	 * Sets the default value.
+	 * Sets the default value of this item.
 	 *
 	 * @param defaultValue the new default value
 	 */
@@ -157,89 +299,21 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Returns whether to tokenize.
+	 * Returns whether tokenize.
 	 *
-	 * @return whether to tokenize
+	 * @return whether tokenize
 	 */
 	public boolean isTokenize() {
 		return !(tokenize == Boolean.FALSE);
 	}
 	
 	/**
-	 * Sets whether to tokenize.
+	 * Sets whether tokenize.
 	 *
-	 * @param tokenize whether to tokenize
+	 * @param tokenize whether tokenize
 	 */
 	public void setTokenize(Boolean tokenize) {
 		this.tokenize = tokenize;
-	}
-	
-	/**
-	 * Gets the tokens.
-	 * 
-	 * @return the tokens
-	 */
-	public Token[] getTokens() {
-		return tokens;
-	}
-
-	/**
-	 * Gets the list of tokens.
-	 * 
-	 * @return the tokens list
-	 */
-	public List<Token[]> getTokensList() {
-		return tokensList;
-	}
-
-	/**
-	 * Gets the value list.
-	 *
-	 * @return the value list
-	 */
-	public List<String> getValueList() {
-		if (tokensList == null) {
-			return null;
-		}
-		
-		List<String> list = new ArrayList<>();
-		
-		if (tokensList.isEmpty()) {
-			return list;
-		}
-		
-		for (Token[] tokens : tokensList) {
-			list.add(TokenParser.toString(tokens));
-		}
-		
-		return list;
-	}
-	
-	/**
-	 * Gets the tokens map.
-	 * 
-	 * @return the tokens map
-	 */
-	public Map<String, Token[]> getTokensMap() {
-		return tokensMap;
-	}
-
-	public Map<String, String> getValueMap() {
-		if (tokensMap == null) {
-			return null;
-		}
-
-		Map<String, String> map = new LinkedHashMap<>();
-		
-		if (tokensMap.size() == 0) {
-			return map;
-		}
-		
-		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-			map.put(entry.getKey(), TokenParser.toString(entry.getValue()));
-		}
-		
-		return map;
 	}
 	
 	/**
@@ -261,104 +335,21 @@ public class ItemRule {
 	}
 
 	/**
-	 * Return whether the item is listable type.
+	 * Return whether this item is listable type.
 	 *
-	 * @return true, if the item is listable type
+	 * @return true, if this item is listable type
 	 */
 	public boolean isListableType() {
 		return (type == ItemType.ARRAY || type == ItemType.LIST || type == ItemType.SET);
 	}
 
 	/**
-	 * Return whether the item is mappable type.
+	 * Return whether this item is mappable type.
 	 *
-	 * @return true, if the item is mappable type
+	 * @return true, if this item is mappable type
 	 */
 	public boolean isMappableType() {
 		return (type == ItemType.MAP || type == ItemType.PROPERTIES);
-	}
-
-	/**
-	 * Sets the name of a item.
-	 * 
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		if (name.endsWith(ARRAY_SUFFIX)) {
-			this.name = name.substring(0, name.length() - 2);
-			type = ItemType.ARRAY;
-		} else if (name.endsWith(MAP_SUFFIX)) {
-			this.name = name.substring(0, name.length() - 2);
-			type = ItemType.MAP;
-		} else {
-			this.name = name;
-			if (type == null) {
-				type = ItemType.SINGLE;
-			}
-		}
-	}
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param value the new value
-	 */
-	public void setValue(String value) {
-		Token[] tokens;
-		
-		if (isTokenize()) {
-			tokens = TokenParser.parse(value);
-		} else {
-			tokens = new Token[1];
-			tokens[0] = new Token(TokenType.TEXT, value);
-		}
-
-		setValue(tokens);
-	}
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param tokens the new value
-	 */
-	public void setValue(Token[] tokens) {
-		if (type == null) {
-			throw new IllegalArgumentException("The item type must be specified first.");
-		}
-		if (type != ItemType.SINGLE) {
-			throw new IllegalArgumentException("The item type must be 'single': " + this);
-		}
-		this.tokens = tokens;
-	}
-	
-	/**
-	 * Sets the value.
-	 *
-	 * @param tokensList the new value
-	 */
-	public void setValue(List<Token[]> tokensList) {
-		if (type == null) {
-			throw new IllegalArgumentException("The item type must be specified first.");
-		}
-		if (!isListableType()) {
-			throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item: " + this);
-		}
-		this.tokensList = tokensList;
-	}
-	
-	/**
-	 * Sets the value.
-	 *
-	 * @param tokensMap the tokens map
-	 */
-	public void setValue(Map<String, Token[]> tokensMap) {
-		if (type == null) {
-			throw new IllegalArgumentException("The item type must be specified first.");
-		}
-		if (!isMappableType()) {
-			throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item: " + this);
-		}
-		this.tokensMap = tokensMap;
 	}
 
 	/**
@@ -382,7 +373,7 @@ public class ItemRule {
 	/**
 	 * Sets whether this item is mandatory.
 	 *
-	 * @param mandatory whether this item is mandatory
+	 * @param mandatory whether or not this item is mandatory
 	 */
 	public void setMandatory(Boolean mandatory) {
 		this.mandatory = mandatory;
@@ -473,6 +464,10 @@ public class ItemRule {
 			itemRule.setAutoGeneratedName(true);
 		}
 
+		if (tokenize != null) {
+			itemRule.setTokenize(tokenize);
+		}
+
 		if (value != null) {
 			itemRule.setValue(value);
 		}
@@ -486,9 +481,7 @@ public class ItemRule {
 		if (defaultValue != null) {
 			itemRule.setDefaultValue(defaultValue);
 		}
-		if (tokenize != null) {
-			itemRule.setTokenize(tokenize);
-		}
+
 		if (mandatory != null) {
 			itemRule.setMandatory(mandatory);
 		}
@@ -562,33 +555,28 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Parses the value.
+	 * Parses the value and returns an array of tokens.
 	 *
 	 * @param itemRule the item rule
-	 * @param valueText the value text
-	 * @return the token[]
+	 * @param valueText the value in text format
+	 * @return an array of tokens
 	 */
 	public static Token[] parseValue(ItemRule itemRule, String valueText) {
-		if (itemRule.getType() == ItemType.SINGLE) {
-			if (valueText != null) {
-				itemRule.setValue(valueText);
-			}
-			return null;
-		} else {
-			Token[] tokens = null;
-			if (itemRule.isListableType()) {
+		Token[] tokens = null;
+		if (itemRule.isMappableType()) {
+			if (!StringUtils.isEmpty(valueText)) {
 				tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
-			} else if (itemRule.isMappableType()) {
-				if (!StringUtils.isEmpty(valueText)) {
-					tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
-				}
 			}
-			return tokens;
+		} else {
+			if (valueText != null) {
+				tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
+			}
 		}
+		return tokens;
 	}
 	
 	/**
-	 * Begin value collection.
+	 * Begin collecting values.
 	 *
 	 * @param itemRule the item rule
 	 */
@@ -605,11 +593,11 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Finish value collection.
+	 * Finish collecting values.
 	 *
 	 * @param itemRule the item rule
-	 * @param name the name
-	 * @param tokens the tokens
+	 * @param name the name of the value
+	 * @param tokens the tokens of value; may be null
 	 */
 	public static void flushValueCollection(ItemRule itemRule, String name, Token[] tokens) {
 		if (itemRule.isListableType()) {
@@ -647,17 +635,14 @@ public class ItemRule {
 	 */
 	private static void generateItemName(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		int count = 1;
-		
 		for (ItemRule ir : itemRuleMap.values()) {
 			if (ir.isAutoGeneratedName() && ir.getType() == itemRule.getType()) {
 				count++;
-				
 				if (itemRule == ir) {
 					break;
 				}
 			}
 		}
-		
 		if (itemRule.getType() != ItemType.SINGLE || itemRule.getValueType() == null) {
 			String name = itemRule.getType().toString() + count;
 			itemRule.setName(name);
@@ -749,10 +734,9 @@ public class ItemRule {
 		} else {
 			if (itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);
-				parseValue(itemRule, value);
+				itemRule.setValue(value);
 			} else if (itemRule.isListableType()) {
 				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-				
 				if (stringList != null) {
 					beginValueCollection(itemRule);
 					for (String value : stringList) {
@@ -762,10 +746,8 @@ public class ItemRule {
 				}
 			} else if (itemRule.isMappableType()) {
 				Parameters parameters = itemParameters.getParameters(ItemParameters.value);
-
 				if (parameters != null) {
 					Set<String> parametersNames = parameters.getParameterNameSet();
-					
 					if (parametersNames != null) {
 						beginValueCollection(itemRule);
 						for (String valueName : parametersNames) {

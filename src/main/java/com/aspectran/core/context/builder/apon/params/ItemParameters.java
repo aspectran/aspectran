@@ -40,7 +40,7 @@ public class ItemParameters extends AbstractParameters {
 		defaultValue = new ParameterDefinition("defaultValue", ParameterValueType.STRING);
 		tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
 		mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
-		reference = new ParameterDefinition("reference", ReferenceParameters.class);
+		reference = new ParameterDefinition("ref", ReferenceParameters.class);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			type,
