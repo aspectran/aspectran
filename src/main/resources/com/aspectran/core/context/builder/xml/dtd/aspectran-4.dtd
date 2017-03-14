@@ -86,6 +86,7 @@
   singleton     (true | false) #IMPLIED
   lazyInit      (true | false) #IMPLIED
   important     (true | false) #IMPLIED
+  ref           CDATA #IMPLIED
 >
 
 <!ELEMENT filter (#PCDATA)>
@@ -200,7 +201,7 @@
   type              CDATA #IMPLIED
   contentType       CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  default           (true | false) #IMPLIED
+  defaultResponse   (true | false) #IMPLIED
   pretty            (true | false) #IMPLIED
 >
 
@@ -210,15 +211,17 @@
   dispatcher        CDATA #IMPLIED
   contentType       CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  default           (true | false) #IMPLIED
+  defaultResponse   (true | false) #IMPLIED
 >
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType           CDATA #IMPLIED
   target                CDATA #REQUIRED
-  excludeNullParameters CDATA #IMPLIED
-  default               (true | false) #IMPLIED
+  characterEncoding     CDATA #IMPLIED
+  excludeNullParameter  (true | false) #IMPLIED
+  excludeEmptyParameter (true | false) #IMPLIED
+  defaultResponse       (true | false) #IMPLIED
 >
 
 <!ELEMENT url (#PCDATA)>
@@ -243,8 +246,9 @@
 <!ELEMENT properties (#PCDATA | item)*>
 <!ELEMENT arguments  (#PCDATA | item)*>
 
-<!ELEMENT item (#PCDATA | value | ref | null)*>
+<!ELEMENT item (#PCDATA | value | bean | template | parameter | attribute | property | null)*>
 <!ATTLIST item
+
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
   type         (single | array | list | map | set | properties) #IMPLIED
@@ -254,9 +258,24 @@
   mandatory    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | ref | null)*>
+<!ELEMENT value (#PCDATA | bean | template | parameter | attribute | property | null)*>
 <!ATTLIST value
   name    CDATA #IMPLIED
+>
+
+<!ELEMENT parameter EMPTY>
+<!ATTLIST parameter
+  ref     CDATA #REQUIRED
+>
+
+<!ELEMENT attribute EMPTY>
+<!ATTLIST attribute
+  ref     CDATA #REQUIRED
+>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+  ref     CDATA #REQUIRED
 >
 
 <!ELEMENT ref EMPTY>
