@@ -45,12 +45,14 @@ public class Token implements BeanReferenceInspectable {
 
 	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TOKEN;
 
+	static final char BEAN_SYMBOL = '#';
+
+	static final char TEMPLATE_SYMBOL = '~';
+
 	static final char PARAMETER_SYMBOL = '$';
 
 	static final char ATTRIBUTE_SYMBOL = '@';
 
-	static final char BEAN_SYMBOL = '#';
-	
 	static final char PROPERTY_SYMBOL = '%';
 
 	static final char START_BRACKET = '{';
@@ -194,6 +196,40 @@ public class Token implements BeanReferenceInspectable {
 	public String stringify() {
 		if (type == TokenType.TEXT) {
 			return value;
+		} else if (type == TokenType.BEAN) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(BEAN_SYMBOL);
+			sb.append(START_BRACKET);
+			if (name != null) {
+				sb.append(name);
+			}
+			if (value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			if (getterName != null) {
+				sb.append(GETTER_SEPARATOR);
+				sb.append(getterName);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
+		} else if (type == TokenType.TEMPLATE) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(TEMPLATE_SYMBOL);
+			sb.append(START_BRACKET);
+			if (name != null) {
+				sb.append(name);
+			}
+			if (value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			if (getterName != null) {
+				sb.append(GETTER_SEPARATOR);
+				sb.append(getterName);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
 		} else if (type == TokenType.PARAMETER) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PARAMETER_SYMBOL);
@@ -221,23 +257,6 @@ public class Token implements BeanReferenceInspectable {
 			if (value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
-			}
-			sb.append(END_BRACKET);
-			return sb.toString();
-		} else if (type == TokenType.BEAN) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(BEAN_SYMBOL);
-			sb.append(START_BRACKET);
-			if (name != null) {
-				sb.append(name);
-			}
-			if (value != null) {
-				sb.append(VALUE_SEPARATOR);
-				sb.append(value);
-			}
-			if (getterName != null) {
-				sb.append(GETTER_SEPARATOR);
-				sb.append(getterName);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();

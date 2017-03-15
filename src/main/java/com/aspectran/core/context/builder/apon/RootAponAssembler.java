@@ -45,6 +45,7 @@ import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
+import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
@@ -550,7 +551,6 @@ public class RootAponAssembler {
 		}
 
 		transformParameters.putValueNonNull(TransformParameters.contentType, transformRule.getContentType());
-		transformParameters.putValueNonNull(TransformParameters.template, transformRule.getTemplateId());
 		transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
 		transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
 		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
@@ -560,7 +560,11 @@ public class RootAponAssembler {
 			assembleActionList(actionList, transformParameters, TransformParameters.actions);
 		}
 
-		if (transformRule.getTemplateRule() != null) {
+		if (transformRule.getTemplateId() != null) {
+			Parameters callParameters = transformParameters.newParameters(TransformParameters.call);
+			callParameters.putValue(CallParameters.template, transformRule.getTemplateId());
+			transformParameters.putValue(TransformParameters.call, callParameters);
+		} else if (transformRule.getTemplateRule() != null) {
 			transformParameters.putValue(TransformParameters.template, assembleTemplateParameters(transformRule.getTemplateRule()));
 		}
 

@@ -77,19 +77,20 @@ class ItemNodeletAdder implements NodeletAdder {
 				assistant.pushObject(tokens);
 			}
 		});
-		parser.addNodelet(xpath, "/item/value/ref", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/item/value/call", (node, attributes, text) -> {
+			String bean= attributes.get("bean");
+			String template= attributes.get("template");
 			String parameter = attributes.get("parameter");
 			String attribute = attributes.get("attribute");
-			String bean= attributes.get("bean");
 			String property = attributes.get("property");
 
 			Object object = assistant.peekObject();
 
 			if (object != null && object instanceof ItemRule) {
-				ItemRule.updateReference((ItemRule)object, parameter, attribute, bean, property);
+				ItemRule.updateReference((ItemRule)object, bean, template, parameter, attribute, property);
 			} else {
 				assistant.popObject(); // discard tokens
-				Token t = ItemRule.makeReferenceToken(parameter, attribute, bean, property);
+				Token t = ItemRule.makeReferenceToken(parameter, bean, template, attribute, property);
 				Token[] tokens = new Token[] { t };
 				assistant.pushObject(tokens);
 			}
@@ -114,14 +115,15 @@ class ItemNodeletAdder implements NodeletAdder {
 				ItemRule.flushValueCollection(itemRule, name, tokens);
 			}
 		});
-		parser.addNodelet(xpath, "/item/ref", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/item/call", (node, attributes, text) -> {
 			String bean = StringUtils.emptyToNull(attributes.get("bean"));
+			String template = StringUtils.emptyToNull(attributes.get("template"));
 			String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
 			String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
 			String property = StringUtils.emptyToNull(attributes.get("property"));
 
 			ItemRule itemRule = assistant.peekObject();
-			ItemRule.updateReference(itemRule, parameter, attribute, bean, property);
+			ItemRule.updateReference(itemRule, bean, template, parameter, attribute, property);
 		});
 		parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
 			ItemRule itemRule = assistant.popObject();

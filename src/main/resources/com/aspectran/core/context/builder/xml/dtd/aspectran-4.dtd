@@ -86,7 +86,6 @@
   singleton     (true | false) #IMPLIED
   lazyInit      (true | false) #IMPLIED
   important     (true | false) #IMPLIED
-  ref           CDATA #IMPLIED
 >
 
 <!ELEMENT filter (#PCDATA)>
@@ -106,7 +105,6 @@
   url      CDATA #IMPLIED
   encoding CDATA #IMPLIED
   noCache  (true | false) #IMPLIED
-  ref      CDATA #IMPLIED
 >
 
 <!ELEMENT schedule (description?, scheduler, job*)>
@@ -196,7 +194,7 @@
   characterEncoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((action? | include? | echo? | headers?)*, template?)>
+<!ELEMENT transform ((action? | include? | echo? | headers?)*, (template? | call?))>
 <!ATTLIST transform
   type              CDATA #IMPLIED
   contentType       CDATA #IMPLIED
@@ -246,9 +244,8 @@
 <!ELEMENT properties (#PCDATA | item)*>
 <!ELEMENT arguments  (#PCDATA | item)*>
 
-<!ELEMENT item (#PCDATA | value | bean | template | parameter | attribute | property | null)*>
+<!ELEMENT item (#PCDATA | value | call | null)*>
 <!ATTLIST item
-
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
   type         (single | array | list | map | set | properties) #IMPLIED
@@ -258,28 +255,13 @@
   mandatory    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | bean | template | parameter | attribute | property | null)*>
+<!ELEMENT value (#PCDATA | call | null)*>
 <!ATTLIST value
   name    CDATA #IMPLIED
 >
 
-<!ELEMENT parameter EMPTY>
-<!ATTLIST parameter
-  ref     CDATA #REQUIRED
->
-
-<!ELEMENT attribute EMPTY>
-<!ATTLIST attribute
-  ref     CDATA #REQUIRED
->
-
-<!ELEMENT property EMPTY>
-<!ATTLIST property
-  ref     CDATA #REQUIRED
->
-
-<!ELEMENT ref EMPTY>
-<!ATTLIST ref
+<!ELEMENT call EMPTY>
+<!ATTLIST call
   bean      CDATA #IMPLIED
   template  CDATA #IMPLIED
   parameter CDATA #IMPLIED

@@ -106,7 +106,7 @@ aspectran: {
 		transform: {
 			type: transform/text
 			contentType: text/plain
-			builtin: {
+			template: {
 				content: (1) Hello, World!
 			}
 		}
@@ -126,7 +126,7 @@ aspectran: {
 		transform: {
 			type: transform/text
 			contentType: text/plain
-			builtin: {
+			template: {
 				content: (2) Hello, World!
 			}
 		}

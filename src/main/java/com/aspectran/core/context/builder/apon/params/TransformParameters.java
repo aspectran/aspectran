@@ -28,6 +28,7 @@ public class TransformParameters extends AbstractParameters {
 	public static final ParameterDefinition defaultResponse;
 	public static final ParameterDefinition pretty;
 	public static final ParameterDefinition template;
+	public static final ParameterDefinition call;
 
 	private static final ParameterDefinition[] parameterDefinitions;
 	
@@ -39,6 +40,7 @@ public class TransformParameters extends AbstractParameters {
 		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
 		pretty = new ParameterDefinition("pretty", ParameterValueType.BOOLEAN);
 		template = new ParameterDefinition("template", TemplateParameters.class);
+		call = new ParameterDefinition("call", CallParameters.class);
 
 		parameterDefinitions = new ParameterDefinition[] {
 			actions,
@@ -47,7 +49,8 @@ public class TransformParameters extends AbstractParameters {
 			characterEncoding,
 			defaultResponse,
 			pretty,
-			template
+			template,
+			call
 		};
 	}
 	

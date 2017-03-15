@@ -35,6 +35,7 @@ import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
+import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
@@ -656,6 +657,7 @@ public class RootAponDisassembler {
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
 		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);
+		Parameters callParameters = transformParameters.getParameters(TransformParameters.call);
 
 		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
 		
@@ -666,31 +668,30 @@ public class RootAponDisassembler {
 			}
 			tr.setActionList(actionList);
 		}
-		
-		if (templateParameters != null) {
-			String templateId = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.ref));
-			
+
+		if (callParameters != null) {
+			String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
 			if (templateId != null) {
 				tr.setTemplateId(templateId);
-			} else {
-				String engine = templateParameters.getString(TemplateParameters.engine);
-				String name = templateParameters.getString(TemplateParameters.name);
-				String file = templateParameters.getString(TemplateParameters.file);
-				String resource = templateParameters.getString(TemplateParameters.resource);
-				String url = templateParameters.getString(TemplateParameters.url);
-				String content = templateParameters.getString(TemplateParameters.content);
-				String encoding = templateParameters.getString(TemplateParameters.encoding);
-				Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
-				tr.setTemplateRule(templateRule);
-				
-	            if (templateRule.getTemplateTokens() != null) {
-	                for (Token token : templateRule.getTemplateTokens()) {
-	                    if (token.getType() == TokenType.BEAN) {
-							assistant.resolveBeanClass(token);
-	                    }
-	                }
-	            }
+			}
+		} else {
+			String engine = templateParameters.getString(TemplateParameters.engine);
+			String name = templateParameters.getString(TemplateParameters.name);
+			String file = templateParameters.getString(TemplateParameters.file);
+			String resource = templateParameters.getString(TemplateParameters.resource);
+			String url = templateParameters.getString(TemplateParameters.url);
+			String content = templateParameters.getString(TemplateParameters.content);
+			String encoding = templateParameters.getString(TemplateParameters.encoding);
+			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
+			tr.setTemplateRule(templateRule);
+
+			if (templateRule.getTemplateTokens() != null) {
+				for (Token token : templateRule.getTemplateTokens()) {
+					if (token.getType() == TokenType.BEAN) {
+						assistant.resolveBeanClass(token);
+					}
+				}
 			}
 		}
 		

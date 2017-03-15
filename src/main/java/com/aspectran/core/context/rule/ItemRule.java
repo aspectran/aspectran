@@ -26,7 +26,7 @@ import java.util.Set;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
-import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
+import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -493,13 +493,14 @@ public class ItemRule {
 	 * Update reference.
 	 *
 	 * @param itemRule the item rule
+	 * @param bean the bean id
+	 * @param template the template id
 	 * @param parameter the parameter name
 	 * @param attribute the attribute name
-	 * @param bean the bean id
 	 * @param property the property name
 	 */
-	public static void updateReference(ItemRule itemRule, String parameter, String attribute, String bean, String property) {
-		Token token = makeReferenceToken(parameter, attribute, bean, property);
+	public static void updateReference(ItemRule itemRule, String bean, String template, String parameter, String attribute, String property) {
+		Token token = makeReferenceToken(bean, template, parameter, attribute, property);
 		if (token != null) {
 			itemRule.setValue(new Token[] { token });
 		}
@@ -508,21 +509,24 @@ public class ItemRule {
 	/**
 	 * Returns a made reference token.
 	 *
+	 * @param bean the bean id
+	 * @param template the template id
 	 * @param parameter the parameter name
 	 * @param attribute the attribute name
-	 * @param bean the bean id
 	 * @param property the property name
 	 * @return the token
 	 */
-	public static Token makeReferenceToken(String parameter, String attribute, String bean, String property) {
+	public static Token makeReferenceToken(String bean, String template, String parameter, String attribute, String property) {
 		Token token;
-		
-		if (parameter != null) {
+
+		if (bean != null) {
+			token = new Token(TokenType.BEAN, bean);
+		} else if (template != null) {
+			token = new Token(TokenType.TEMPLATE, template);
+		} else if (parameter != null) {
 			token = new Token(TokenType.PARAMETER, parameter);
 		} else if (attribute != null) {
 			token = new Token(TokenType.ATTRIBUTE, attribute);
-		} else if (bean != null) {
-			token = new Token(TokenType.BEAN, bean);
 		} else if (property != null) {
 			token = new Token(TokenType.PROPERTY, property);
 		} else {
@@ -720,17 +724,18 @@ public class ItemRule {
 		String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
 		Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
 		Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
-		Parameters referenceParameters = itemParameters.getParameters(ItemParameters.reference);
+		Parameters callParameters = itemParameters.getParameters(ItemParameters.call);
 		
 		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize, mandatory);
 		
-		if (referenceParameters != null) {
-			String parameter = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.parameter));
-			String attribute = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.attribute));
-			String bean = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.bean));
-			String property = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.property));
+		if (callParameters != null) {
+			String bean = StringUtils.emptyToNull(callParameters.getString(CallParameters.bean));
+			String template = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
+			String parameter = StringUtils.emptyToNull(callParameters.getString(CallParameters.parameter));
+			String attribute = StringUtils.emptyToNull(callParameters.getString(CallParameters.attribute));
+			String property = StringUtils.emptyToNull(callParameters.getString(CallParameters.property));
 			
-			updateReference(itemRule, parameter, attribute, bean, property);
+			updateReference(itemRule, bean, template, parameter, attribute, property);
 		} else {
 			if (itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);

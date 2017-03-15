@@ -66,32 +66,33 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", (node, attributes, text) -> {
-            String templateId = StringUtils.emptyToNull(attributes.get("ref"));
+			String engine = attributes.get("engine");
+			String name = attributes.get("name");
+			String file = attributes.get("file");
+			String resource = attributes.get("resource");
+			String url = attributes.get("url");
+			String encoding = attributes.get("encoding");
+			Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
+
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
+
+			TransformRule transformRule = assistant.peekObject(1);
+			transformRule.setTemplateRule(templateRule);
+
+			if (templateRule.getTemplateTokens() != null) {
+				for (Token token : templateRule.getTemplateTokens()) {
+					if (token.getType() == TokenType.BEAN) {
+						assistant.resolveBeanClass(token);
+					}
+				}
+			}
+        });
+		parser.addNodelet(xpath, "/transform/template/call", (node, attributes, text) -> {
+            String templateId = StringUtils.emptyToNull(attributes.get("template"));
 
             if (templateId != null) {
                 TransformRule transformRule = assistant.peekObject(1);
                 transformRule.setTemplateId(templateId);
-            } else {
-                String engine = attributes.get("engine");
-                String name = attributes.get("name");
-                String file = attributes.get("file");
-                String resource = attributes.get("resource");
-                String url = attributes.get("url");
-                String encoding = attributes.get("encoding");
-                Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
-
-                TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
-                
-                TransformRule transformRule = assistant.peekObject(1);
-	            transformRule.setTemplateRule(templateRule);
-	
-	            if (templateRule.getTemplateTokens() != null) {
-	                for (Token token : templateRule.getTemplateTokens()) {
-	                    if (token.getType() == TokenType.BEAN) {
-							assistant.resolveBeanClass(token);
-	                    }
-	                }
-	            }
             }
         });
 		parser.addNodelet(xpath, "/transform/end()", (node, attributes, text) -> {
