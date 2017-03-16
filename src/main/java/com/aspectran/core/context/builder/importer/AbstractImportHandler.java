@@ -46,7 +46,7 @@ abstract class AbstractImportHandler implements ImportHandler {
 		pendingList.add(importer);
 		
 		if (log.isDebugEnabled()) {
-			log.debug("Import pending " + importer);
+			log.debug("Pending import " + importer);
 		}
 	}
 	
