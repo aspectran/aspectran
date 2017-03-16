@@ -147,10 +147,6 @@ public class ContextBuilderAssistant {
 	}
 	
 	public void release() {
-		scheduleRuleRegistry.setAssistantLocal(null);
-		transletRuleRegistry.setAssistantLocal(null);
-		templateRuleRegistry.setAssistantLocal(null);
-
 		objectStack = null;
 		settings = null;
 		environmentRules = null;
@@ -158,6 +154,10 @@ public class ContextBuilderAssistant {
 		assistantLocal = null;
 
 		if (environment != null) {
+			scheduleRuleRegistry.setAssistantLocal(null);
+			transletRuleRegistry.setAssistantLocal(null);
+			templateRuleRegistry.setAssistantLocal(null);
+
 			aspectRuleRegistry = null;
 			beanRuleRegistry = null;
 			scheduleRuleRegistry = null;
