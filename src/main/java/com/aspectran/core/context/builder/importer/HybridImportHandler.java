@@ -77,7 +77,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 				File aponFile = makeAponFile((FileImporter)importer);
 
 				if (importer.getLastModified() == aponFile.lastModified()) {
-					log.info("Rapid loading for Aspectran Context Configuration: " + aponFile);
+					log.info("Rapid configuration loading with an APON file: " + aponFile);
 
 					hybridon = true;
 
@@ -100,7 +100,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 		
 		super.handle();
 
-		// First default setting is held after configuration loading is completed.
+		// The first default settings will remain after all configuration settings have been completed.
 		if (assistantLocal.getReplicatedCount() > 0) {
 			assistant.restoreAssistantLocal(assistantLocal);
 		}
@@ -114,7 +114,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 	}
 	
 	private void saveAsAponFormat(FileImporter fileImporter) throws Exception {
-		log.info("Save as Apon Format " + fileImporter);
+		log.info("Save as APON format " + fileImporter);
 		
 		File aponFile = null;
 		
@@ -153,7 +153,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 			
 			aponFile.setLastModified(fileImporter.getLastModified());
 		} catch (Exception e) {
-			log.error("Cannot save file " +  aponFile + " as APON Format.", e);
+			log.error("Failed to save the converted APON format to file: " + aponFile, e);
 		}
 	}
 	
