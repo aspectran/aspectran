@@ -674,7 +674,8 @@ public class RootAponDisassembler {
 			if (templateId != null) {
 				tr.setTemplateId(templateId);
 			}
-		} else {
+		}
+		if (templateParameters != null) {
 			String engine = templateParameters.getString(TemplateParameters.engine);
 			String name = templateParameters.getString(TemplateParameters.name);
 			String file = templateParameters.getString(TemplateParameters.file);
@@ -683,6 +684,7 @@ public class RootAponDisassembler {
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+
 			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 

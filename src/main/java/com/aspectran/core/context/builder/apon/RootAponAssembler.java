@@ -564,7 +564,8 @@ public class RootAponAssembler {
 			Parameters callParameters = transformParameters.newParameters(TransformParameters.call);
 			callParameters.putValue(CallParameters.template, transformRule.getTemplateId());
 			transformParameters.putValue(TransformParameters.call, callParameters);
-		} else if (transformRule.getTemplateRule() != null) {
+		}
+		if (transformRule.getTemplateRule() != null) {
 			transformParameters.putValue(TransformParameters.template, assembleTemplateParameters(transformRule.getTemplateRule()));
 		}
 
