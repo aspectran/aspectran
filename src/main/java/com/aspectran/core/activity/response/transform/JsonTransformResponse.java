@@ -29,13 +29,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class JsonTransform.
+ * The Class JsonTransformResponse.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class JsonTransform extends TransformResponse {
+public class JsonTransformResponse extends TransformResponse {
 	
-	private static final Log log = LogFactory.getLog(JsonTransform.class);
+	private static final Log log = LogFactory.getLog(JsonTransformResponse.class);
 	
 	private static final String CALLBACK_PARAM_NAME = "callback";
 
@@ -54,7 +54,7 @@ public class JsonTransform extends TransformResponse {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public JsonTransform(TransformRule transformRule) {
+	public JsonTransformResponse(TransformRule transformRule) {
 		super(transformRule);
 
 		this.characterEncoding = transformRule.getCharacterEncoding();
@@ -117,7 +117,7 @@ public class JsonTransform extends TransformResponse {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		return new JsonTransform(transformRule);
+		return new JsonTransformResponse(transformRule);
 	}
 
 }

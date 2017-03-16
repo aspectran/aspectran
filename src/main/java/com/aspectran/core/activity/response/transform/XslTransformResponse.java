@@ -47,11 +47,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class XslTransform.
+ * The Class XslTransformResponse.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class XslTransform extends TransformResponse {
+public class XslTransformResponse extends TransformResponse {
 	
 	private static final String OUTPUT_METHOD_XML = "xml";
 
@@ -59,7 +59,7 @@ public class XslTransform extends TransformResponse {
 	
 	private static final String OUTPUT_METHOD_TEXT = "text";
 	
-	private static final Log log = LogFactory.getLog(XslTransform.class);
+	private static final Log log = LogFactory.getLog(XslTransformResponse.class);
 	
 	private final TemplateRule templateRule;
 	
@@ -78,7 +78,7 @@ public class XslTransform extends TransformResponse {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public XslTransform(TransformRule transformRule) {
+	public XslTransformResponse(TransformRule transformRule) {
 		super(transformRule);
 		this.templateRule = transformRule.getTemplateRule();
 	}
@@ -126,7 +126,7 @@ public class XslTransform extends TransformResponse {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		return new XslTransform(transformRule);
+		return new XslTransformResponse(transformRule);
 	}
 	
 	private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
@@ -226,11 +226,11 @@ public class XslTransform extends TransformResponse {
 		String contentType = null;
 
 		if (outputMethod != null) {
-			if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_XML)) {
+			if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_XML)) {
 				contentType = ContentType.TEXT_XML.toString();
-			} else if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_HTML)) {
+			} else if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_HTML)) {
 				contentType = ContentType.TEXT_HTML.toString();
-			} else if (outputMethod.equalsIgnoreCase(XslTransform.OUTPUT_METHOD_TEXT)) {
+			} else if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_TEXT)) {
 				contentType = ContentType.TEXT_PLAIN.toString();
 			}
 		}

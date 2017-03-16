@@ -30,13 +30,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class AponTransform.
+ * The Class AponTransformResponse.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class AponTransform extends TransformResponse {
+public class AponTransformResponse extends TransformResponse {
 	
-	private static final Log log = LogFactory.getLog(AponTransform.class);
+	private static final Log log = LogFactory.getLog(AponTransformResponse.class);
 	
 	private final String characterEncoding;
 
@@ -49,7 +49,7 @@ public class AponTransform extends TransformResponse {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public AponTransform(TransformRule transformRule) {
+	public AponTransformResponse(TransformRule transformRule) {
 		super(transformRule);
 		
 		this.characterEncoding = transformRule.getCharacterEncoding();
@@ -103,7 +103,7 @@ public class AponTransform extends TransformResponse {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		return new AponTransform(transformRule);
+		return new AponTransformResponse(transformRule);
 	}
 	
 }

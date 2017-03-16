@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.activity.response;
 
-import com.aspectran.core.activity.response.transform.JsonTransform;
-import com.aspectran.core.activity.response.transform.TextTransform;
-import com.aspectran.core.activity.response.transform.XmlTransform;
-import com.aspectran.core.activity.response.transform.XslTransform;
+import com.aspectran.core.activity.response.transform.JsonTransformResponse;
+import com.aspectran.core.activity.response.transform.TextTransformResponse;
+import com.aspectran.core.activity.response.transform.XmlTransformResponse;
+import com.aspectran.core.activity.response.transform.XslTransformResponse;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.TransformType;
 
@@ -44,13 +44,13 @@ public class TransformResponseFactory {
 		Response res;
 		
 		if (type == TransformType.XML) {
-			res = new XmlTransform(transformRule);
+			res = new XmlTransformResponse(transformRule);
 		} else if (type == TransformType.XSL) {
-			res = new XslTransform(transformRule);
+			res = new XslTransformResponse(transformRule);
 		} else if (type == TransformType.JSON) {
-			res = new JsonTransform(transformRule);
+			res = new JsonTransformResponse(transformRule);
 		} else if (type == TransformType.TEXT) {
-			res = new TextTransform(transformRule);
+			res = new TextTransformResponse(transformRule);
 		} else {
 			throw new IllegalArgumentException("Invalid transform-type for transformRule: " + transformRule);
 		}

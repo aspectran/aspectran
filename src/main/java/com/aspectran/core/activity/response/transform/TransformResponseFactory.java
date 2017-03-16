@@ -31,37 +31,37 @@ public class TransformFactory {
 	 * Creates a new Transform object with specified TransformRule.
 	 *
 	 * @param transformRule the transform rule
-	 * @return the response
+	 * @return the transform response
 	 */
 	public static Response createTransform(TransformRule transformRule) {
 		TransformType tranformType = transformRule.getTransformType();
 		
-		Response transform;
+		Response transformResponse;
 		
 		if (tranformType == TransformType.XSL) {
-			transform = new XslTransform(transformRule);
+			transformResponse = new XslTransformResponse(transformRule);
 		} else if (tranformType == TransformType.XML) {
 			if (transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_XML.toString());
 			}
-			transform = new XmlTransform(transformRule);
+			transformResponse = new XmlTransformResponse(transformRule);
 		} else if (tranformType == TransformType.TEXT) {
-			transform = new TextTransform(transformRule);
+			transformResponse = new TextTransformResponse(transformRule);
 		} else if (tranformType == TransformType.JSON) {
 			if (transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			}
-			transform = new JsonTransform(transformRule);
+			transformResponse = new JsonTransformResponse(transformRule);
 		} else if (tranformType == TransformType.APON) {
 			if (transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			}
-			transform = new AponTransform(transformRule);
+			transformResponse = new AponTransformResponse(transformRule);
 		} else {
 			throw new TransformResponseException(transformRule, "Unknown transform type.");
 		}
 		
-		return transform;
+		return transformResponse;
 	}
 	
 }

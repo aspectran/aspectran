@@ -17,48 +17,57 @@ package com.aspectran.core.activity.response.transform;
 
 import java.io.Writer;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
+import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class TextTransform.
+ * The Class XmlTransformResponse.
  * 
- * <p>Created: 2008. 03. 22 PM 5:51:58</p>
+ * Created: 2008. 03. 22 PM 5:51:58
  */
-public class TextTransform extends TransformResponse {
+public class XmlTransformResponse extends TransformResponse {
 
-	private static final Log log = LogFactory.getLog(TextTransform.class);
+	private static final String OUTPUT_METHOD_XML = "xml";
 
-	private final String templateId;
+	private static final String OUTPUT_INDENT_YES = "yes";
 
-	private final TemplateRule templateRule;
+	private static final String INDENT_NUMBER_KEY = "indent-number";
+
+	private static final Integer INDENT_NUMBER_VAL = 1;
+
+	private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
 
 	private final String characterEncoding;
 
 	private final String contentType;
-	
+
+	private final boolean pretty;
+
 	/**
-	 * Instantiates a new TextTransform.
+	 * Instantiates a new XmlTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public TextTransform(TransformRule transformRule) {
+	public XmlTransformResponse(TransformRule transformRule) {
 		super(transformRule);
 
-		this.templateId = transformRule.getTemplateId();
-		this.templateRule = transformRule.getTemplateRule();
 		this.characterEncoding = transformRule.getCharacterEncoding();
 		this.contentType = transformRule.getContentType();
+		this.pretty = transformRule.isPretty();
 	}
 
 	@Override
@@ -73,13 +82,15 @@ public class TextTransform extends TransformResponse {
 		}
 
 		try {
+			String characterEncoding;
 			if (this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
+				characterEncoding = this.characterEncoding;
 			} else {
-				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
+				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+			}
+
+			if (characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 
 			if (contentType != null) {
@@ -87,30 +98,28 @@ public class TextTransform extends TransformResponse {
 			}
 
 			Writer writer = responseAdapter.getWriter();
+			ProcessResult processResult = activity.getProcessResult();
 
-			if (templateId != null) {
-				activity.getTemplateProcessor().process(templateId, activity);
-			} else if (templateRule != null) {
-				activity.getTemplateProcessor().process(templateRule, activity);
-			} else {
-				ProcessResult processResult = activity.getProcessResult();
-				if (processResult != null) {
-					int chunks = 0;
-					for (ContentResult contentResult : processResult) {
-						for (ActionResult actionResult : contentResult) {
-							Object resultValue = actionResult.getResultValue();
-							if (resultValue != null) {
-								if (chunks++ > 0) {
-									writer.write(ActivityContext.LINE_SEPARATOR);
-								}
-								writer.write(resultValue.toString());
-							}
-						}
-					}
-				}
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+			if (pretty) {
+				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
 			}
-			
-			writer.flush(); // Never close at this time. Owner will be close.
+
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
+
+			if (characterEncoding != null) {
+				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+			}
+
+			if (pretty) {
+				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
+			}
+
+			ContentsXMLReader xreader = new ContentsXMLReader();
+			ContentsInputSource isource = new ContentsInputSource(processResult);
+			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 		} catch (Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
@@ -124,7 +133,7 @@ public class TextTransform extends TransformResponse {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		return new TextTransform(transformRule);
+		return new XmlTransformResponse(transformRule);
 	}
 
 }
