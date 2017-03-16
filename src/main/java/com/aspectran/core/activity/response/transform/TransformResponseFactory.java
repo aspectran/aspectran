@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.type.TransformType;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformFactory {
+public class TransformResponseFactory {
 
 	/**
 	 * Creates a new Transform object with specified TransformRule.
@@ -33,7 +33,7 @@ public class TransformFactory {
 	 * @param transformRule the transform rule
 	 * @return the transform response
 	 */
-	public static Response createTransform(TransformRule transformRule) {
+	public static Response createTransformResponse(TransformRule transformRule) {
 		TransformType tranformType = transformRule.getTransformType();
 		
 		Response transformResponse;

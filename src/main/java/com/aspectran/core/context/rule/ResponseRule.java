@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.TransformFactory;
+import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -101,7 +101,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
 	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
-		Response response = TransformFactory.createTransform(transformRule);
+		Response response = TransformResponseFactory.createTransformResponse(transformRule);
 		this.response = response;
 		return response;
 	}

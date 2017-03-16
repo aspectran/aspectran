@@ -24,7 +24,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.TransformFactory;
+import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -95,7 +95,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
 	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
-		Response response = TransformFactory.createTransform(transformRule);
+		Response response = TransformResponseFactory.createTransformResponse(transformRule);
 		if (transformRule.getContentType() != null) {
 			responseMap.put(transformRule.getContentType(), response);
 		}
