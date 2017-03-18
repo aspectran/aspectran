@@ -55,7 +55,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
-	private final SessionAdapter sessionAdapter;
+	private SessionAdapter sessionAdapter;
 
 	private SessionScopeAdvisor sessionScopeAdvisor;
 	
@@ -65,24 +65,26 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 	private ConsoleAspectranService() throws IOException {
 		super(new ConsoleApplicationAdapter());
-		this.sessionAdapter = new ConsoleSessionAdapter();
 	}
 
 	@Override
-	public void afterStartup() {
-		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
+	public void afterContextLoaded() {
+		sessionAdapter = new ConsoleSessionAdapter();
+		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeBeforeAdvice();
 		}
 	}
 
 	@Override
-	public void beforeDestroy() {
+	public void beforeContextDestroy() {
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
-		Scope sessionScope = sessionAdapter.getSessionScope();
-		sessionScope.destroy();
+		if (sessionAdapter != null) {
+			Scope sessionScope = sessionAdapter.getSessionScope();
+			sessionScope.destroy();
+		}
 	}
 
 	public SessionAdapter getSessionAdapter() {
@@ -110,7 +112,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 		if (pauseTimeout != 0L) {
 			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				log.info("AspectranService has been paused, so did not respond to the command \"" + command + "\".");
+				if (pauseTimeout == -1L) {
+					log.info("AspectranService has been paused.");
+				} else {
+					long remains = pauseTimeout - System.currentTimeMillis();
+					if (remains > 0L) {
+						log.info("AspectranService has been paused and will resume after " + remains + " ms.");
+					} else {
+						log.info("AspectranService has been paused and will soon resume.");
+					}
+				}
 				return;
 			} else {
 				pauseTimeout = 0L;
@@ -192,12 +203,12 @@ public class ConsoleAspectranService extends BasicAspectranService {
 				consoleInout.writeLine();
 			}
 		} catch (ConsoleTerminatedException e) {
-			//nothing
+			// Do Nothing
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (isActive()) {
-				log.info("Do not terminate the application while destroying all scoped beans.");
+				log.info("Do not terminate this application while destroying all scoped beans.");
 				shutdown();
 			}
 		}

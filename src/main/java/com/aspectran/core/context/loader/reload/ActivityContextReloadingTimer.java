@@ -23,6 +23,9 @@ import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+/**
+ * Provides timer control to reload the ActivityContext.
+ */
 public class ActivityContextReloadingTimer {
 	
 	private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
@@ -44,7 +47,7 @@ public class ActivityContextReloadingTimer {
 	
 	private void init() {
 		if(log.isDebugEnabled()) {
-			log.debug("ActivityContextRefreshTimer is initialized.");
+			log.debug("ActivityContextReloadingTimer is initialized.");
 		}
 	}
 	
@@ -52,7 +55,7 @@ public class ActivityContextReloadingTimer {
 		stop();
 		
 		if(log.isDebugEnabled()) {
-			log.debug("Starting ActivityContextRefreshTimer...");
+			log.debug("Starting ActivityContextReloadingTimer...");
 		}
 		
 		timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
@@ -67,7 +70,7 @@ public class ActivityContextReloadingTimer {
 	
 	protected void stop() {
 		if (timer != null) {
-			log.debug("Stopping ActivityContextRefreshTimer...");
+			log.debug("Stopping ActivityContextReloadingTimer...");
 			
 			timer.cancel();
 			timer = null;

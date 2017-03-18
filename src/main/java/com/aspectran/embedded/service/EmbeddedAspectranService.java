@@ -61,7 +61,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 	
 	@Override
-	public void afterStartup() {
+	public void afterContextLoaded() {
 		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeBeforeAdvice();
@@ -69,7 +69,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 	}
 
 	@Override
-	public void beforeDestroy() {
+	public void beforeContextDestroy() {
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}

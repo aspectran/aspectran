@@ -141,7 +141,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				}
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
+			throw new SchedulerServiceException("Could not start QuartzSchedulerService.", e);
 		}
 	}
 
@@ -165,7 +165,7 @@ public class QuartzSchedulerService implements SchedulerService {
 			schedulerSet.clear();
 			schedulerMap.clear();
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService shutdown failed.", e);
+			throw new SchedulerServiceException("Could not shutdown QuartzSchedulerService.", e);
 		}
 	}
 
@@ -183,7 +183,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.pauseAll();
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService pause failed.", e);
+			throw new SchedulerServiceException("Could not pause all schedulers.", e);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService pause failed.", e);
+			throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'.", e);
 		}
 	}
 
@@ -206,7 +206,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.resumeAll();
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService resume failed.", e);
+			throw new SchedulerServiceException("Could not resume all schedulers.", e);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
 			}
 		} catch (Exception e) {
-			throw new SchedulerServiceException("QuartzSchedulerService resume failed.", e);
+			throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'.", e);
 		}
 	}
 

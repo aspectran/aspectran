@@ -21,6 +21,9 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
+/**
+ * Strategy interface for loading ActivityContext.
+ */
 public interface ActivityContextLoader {
 
 	ApplicationAdapter getApplicationAdapter();

@@ -147,9 +147,8 @@ public interface ActivityContext extends MessageSource {
 	 * It is set only once, just after the ActivityContext is created.
 	 *
 	 * @param rootAspectranService the origin aspectran service
-	 * @throws AspectranCheckedException if it has already been initialized, it throws an exception
 	 */
-	void initialize(AspectranService rootAspectranService) throws AspectranCheckedException;
+	void initialize(AspectranService rootAspectranService);
 
 	/**
 	 * Destroy the aspectran context. 

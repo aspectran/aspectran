@@ -72,7 +72,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 							modified = true;
 							
 							if (debugEnabled) {
-								log.debug("File Modification Detected: " + url);
+								log.debug("Detected modified file: " + url);
 							}
 							
 							break;
