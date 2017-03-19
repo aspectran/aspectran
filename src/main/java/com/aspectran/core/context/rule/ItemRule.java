@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
-import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -196,16 +196,6 @@ public class ItemRule {
 			}
 			return map;
 		}
-	}
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param value the new value
-	 */
-	public void setValue(String value) {
-		Token[] tokens = TokenParser.makeTokens(value, isTokenize());
-		setValue(tokens);
 	}
 
 	/**
@@ -438,14 +428,13 @@ public class ItemRule {
 	 *
 	 * @param type the type
 	 * @param name the name
-	 * @param value the value
 	 * @param valueType the value type
 	 * @param defaultValue the default value
 	 * @param tokenize whether to tokenize
 	 * @param mandatory whether or not the item is mandatory
 	 * @return the item rule
 	 */
-	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, Boolean tokenize, Boolean mandatory) {
+	public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize, Boolean mandatory) {
 		ItemRule itemRule = new ItemRule();
 		
 		ItemType itemType = ItemType.resolve(type);
@@ -468,10 +457,6 @@ public class ItemRule {
 			itemRule.setTokenize(tokenize);
 		}
 
-		if (value != null) {
-			itemRule.setValue(value);
-		}
-		
 		ItemValueType itemValueType = ItemValueType.resolve(valueType);
 		if (valueType != null && itemValueType == null) {
 			throw new IllegalArgumentException("No item value type registered for '" + valueType + "'.");
@@ -487,23 +472,6 @@ public class ItemRule {
 		}
 
 		return itemRule;
-	}
-	
-	/**
-	 * Update reference.
-	 *
-	 * @param itemRule the item rule
-	 * @param bean the bean id
-	 * @param template the template id
-	 * @param parameter the parameter name
-	 * @param attribute the attribute name
-	 * @param property the property name
-	 */
-	public static void updateReference(ItemRule itemRule, String bean, String template, String parameter, String attribute, String property) {
-		Token token = makeReferenceToken(bean, template, parameter, attribute, property);
-		if (token != null) {
-			itemRule.setValue(new Token[] { token });
-		}
 	}
 	
 	/**
@@ -547,74 +515,109 @@ public class ItemRule {
 		
 		if (itemRule.isListableType()) {
 			List<Token[]> list = itemRule.getTokensList();
-			iter = list.iterator();
+			if (list != null) {
+				iter = list.iterator();
+			}
 		} else if (itemRule.isMappableType()) {
 			Map<String, Token[]> map = itemRule.getTokensMap();
 			if (map != null) {
 				iter = map.values().iterator();
 			}
+		} else {
+			return new Iterator<Token[]>() {
+				private int count = 0;
+				@Override
+				public boolean hasNext() {
+					return (count++ < 1);
+				}
+				@Override
+				public Token[] next() {
+					return itemRule.getTokens();
+				}
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("Cannot remove an element of an array.");
+				}
+			};
 		}
 		
 		return iter;
 	}
-	
+
 	/**
-	 * Parses the value and returns an array of tokens.
+	 * Analyze the raw values and assign them to the values of the items.
 	 *
 	 * @param itemRule the item rule
-	 * @param valueText the value in text format
-	 * @return an array of tokens
+	 * @param text the raw value of the item
 	 */
-	public static Token[] parseValue(ItemRule itemRule, String valueText) {
-		Token[] tokens = null;
-		if (itemRule.isMappableType()) {
-			if (!StringUtils.isEmpty(valueText)) {
-				tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
-			}
-		} else {
-			if (valueText != null) {
-				tokens = TokenParser.makeTokens(valueText, itemRule.isTokenize());
-			}
-		}
-		return tokens;
+	public static void setValue(ItemRule itemRule, String text) {
+		Token[] tokens = TokenParser.makeTokens(text, itemRule.isTokenize());
+		itemRule.setValue(tokens);
 	}
-	
+
 	/**
-	 * Begin collecting values.
+	 * Analyze the raw values and assign them to the values of the items.
 	 *
 	 * @param itemRule the item rule
+	 * @param name the value name; may be null
+	 * @param text the raw value of the item
 	 */
-	public static void beginValueCollection(ItemRule itemRule) {
+	public static void addValue(ItemRule itemRule, String name, String text) {
+		Token[] tokens = TokenParser.makeTokens(text, itemRule.isTokenize());
+		addValue(itemRule, name, tokens);
+	}
+
+	/**
+	 * Analyze the raw values and assign them to the values of the items.
+	 *
+	 * @param itemRule the item rule
+	 * @param name the value name; may be null
+	 * @param tokens an array of tokens
+	 */
+	public static void addValue(ItemRule itemRule, String name, Token[] tokens) {
 		if (itemRule.isListableType()) {
-			List<Token[]> tokensList = new ArrayList<>();
-			itemRule.setValue(tokensList);
-		} else {
-			if (itemRule.isMappableType()) {
-				Map<String, Token[]> tokensMap = new LinkedHashMap<>();
+			List<Token[]> tokensList = itemRule.getTokensList();
+			if (tokensList == null) {
+				tokensList = new ArrayList<>();
+				itemRule.setValue(tokensList);
+			}
+			tokensList.add(tokens);
+		} else if (!StringUtils.isEmpty(name) && itemRule.isMappableType()) {
+			Map<String, Token[]> tokensMap = itemRule.getTokensMap();
+			if (tokensMap == null) {
+				tokensMap = new LinkedHashMap<>();
 				itemRule.setValue(tokensMap);
 			}
+			tokensMap.put(name, tokens);
+		} else {
+			itemRule.setValue(tokens);
 		}
 	}
-	
+
 	/**
-	 * Finish collecting values.
+	 * Analyze the raw values and assign them to the values of the items.
 	 *
 	 * @param itemRule the item rule
-	 * @param name the name of the value
-	 * @param tokens the tokens of value; may be null
+	 * @param name the value name; may be null
+	 * @param tokens the token values of the item
 	 */
-	public static void flushValueCollection(ItemRule itemRule, String name, Token[] tokens) {
+	public static void replaceValue(ItemRule itemRule, String name, Token[] tokens) {
 		if (itemRule.isListableType()) {
-			List<Token[]> list = itemRule.getTokensList();
-			list.add(tokens);
-		} else if (itemRule.isMappableType()) {
-			if (!StringUtils.isEmpty(name)) {
-				Map<String, Token[]> map = itemRule.getTokensMap();
-				map.put(name, tokens);
+			List<Token[]> tokensList = itemRule.getTokensList();
+			if (tokensList != null && !tokensList.isEmpty()) {
+				tokensList.remove(tokensList.size() - 1);
+				tokensList.add(tokens);
 			}
+		} else if (!StringUtils.isEmpty(name) && itemRule.isMappableType()) {
+			Map<String, Token[]> tokensMap = itemRule.getTokensMap();
+			if (tokensMap != null && tokensMap.containsKey(name)) {
+				tokensMap.put(name, tokens);
+			}
+		} else {
+			itemRule.setValue(tokens);
 		}
 	}
-	
+
 	/**
 	 * Adds the item rule.
 	 *
@@ -726,7 +729,7 @@ public class ItemRule {
 		Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
 		Parameters callParameters = itemParameters.getParameters(ItemParameters.call);
 		
-		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize, mandatory);
+		ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory);
 		
 		if (callParameters != null) {
 			String bean = StringUtils.emptyToNull(callParameters.getString(CallParameters.bean));
@@ -734,19 +737,21 @@ public class ItemRule {
 			String parameter = StringUtils.emptyToNull(callParameters.getString(CallParameters.parameter));
 			String attribute = StringUtils.emptyToNull(callParameters.getString(CallParameters.attribute));
 			String property = StringUtils.emptyToNull(callParameters.getString(CallParameters.property));
-			
-			updateReference(itemRule, bean, template, parameter, attribute, property);
+
+			Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
+			if (t != null) {
+				Token[] tokens = new Token[] {t};
+				ItemRule.replaceValue(itemRule, null, tokens);
+			}
 		} else {
 			if (itemRule.getType() == ItemType.SINGLE) {
-				String value = itemParameters.getString(ItemParameters.value);
-				itemRule.setValue(value);
+				String text = itemParameters.getString(ItemParameters.value);
+				setValue(itemRule, text);
 			} else if (itemRule.isListableType()) {
 				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
 				if (stringList != null) {
-					beginValueCollection(itemRule);
-					for (String value : stringList) {
-						Token[] tokens = parseValue(itemRule, value);
-						flushValueCollection(itemRule, name, tokens);
+					for (String text : stringList) {
+						addValue(itemRule, null, text);
 					}
 				}
 			} else if (itemRule.isMappableType()) {
@@ -754,10 +759,9 @@ public class ItemRule {
 				if (parameters != null) {
 					Set<String> parametersNames = parameters.getParameterNameSet();
 					if (parametersNames != null) {
-						beginValueCollection(itemRule);
 						for (String valueName : parametersNames) {
-							Token[] tokens = parseValue(itemRule, parameters.getString(valueName));
-							flushValueCollection(itemRule, valueName, tokens);
+							String text = parameters.getString(valueName);
+							addValue(itemRule, valueName, text);
 						}
 					}
 				} 

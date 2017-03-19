@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
+import com.aspectran.core.context.rule.type.TokenType;
 
 /**
  * The Class Tokenizer.
@@ -51,9 +51,16 @@ public class Tokenizer {
 	 * @return a list of tokens
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimText) {
-		List<Token> tokens = new ArrayList<>();
+		if (input == null) {
+			throw new IllegalArgumentException("The input argument must not be null.");
+		}
 
 		int inputLen = input.length();
+		if (inputLen == 0) {
+			List<Token> tokens = new ArrayList<>(1);
+			tokens.add(new Token(TokenType.TEXT, ""));
+			return tokens;
+		}
 
 		int status = AT_STRING;
 		int tokenStartOffset = 0; // start position of token in the stringBuffer
@@ -63,6 +70,8 @@ public class Tokenizer {
 		StringBuilder stringBuffer = new StringBuilder();
 		StringBuilder tokenNameBuffer = new StringBuilder();
 		StringBuilder defTextBuffer = new StringBuilder();
+
+		List<Token> tokens = new ArrayList<>();
 
 		for (int i = 0; i < inputLen; i++) {
 			c = input.charAt(i);

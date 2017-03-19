@@ -31,31 +31,34 @@ public class TokenParser {
 	/**
 	 * Returns an array of tokens that contains tokenized string.
 	 *
-	 * @param value the string to parse
+	 * @param text the string to parse
 	 * @return an array of tokens
 	 */
-	public static Token[] parse(String value) {
-		return parse(value, false);
+	public static Token[] parse(String text) {
+		return parse(text, false);
 	}
 
 	/**
 	 * Returns an array of tokens that contains tokenized string.
 	 *
-	 * @param value the string to parse
+	 * @param text the string to parse
 	 * @param optimize whether to optimize tokens
 	 * @return an array of tokens
 	 */
-	public static Token[] parse(String value, boolean optimize) {
-		if (value == null) {
+	public static Token[] parse(String text, boolean optimize) {
+		if (text == null) {
 			return null;
+		}
+		if (text.length() == 0) {
+			Token t = new Token(TokenType.TEXT, text);
+			return new Token[] {t};
 		}
 
 		Token[] tokens = null;
-		List<Token> tokenList = Tokenizer.tokenize(value, optimize);
+		List<Token> tokenList = Tokenizer.tokenize(text, optimize);
 
 		if (!tokenList.isEmpty()) {
 			tokens = tokenList.toArray(new Token[tokenList.size()]);
-			
 			if (optimize) {
 				tokens = Tokenizer.optimize(tokens);
 			}
@@ -64,12 +67,12 @@ public class TokenParser {
 		return tokens;
 	}
 	
-	public static List<Token[]> parseAsList(String value) {
-		if (value == null) {
+	public static List<Token[]> parseAsList(String text) {
+		if (text == null) {
 			return null;
 		}
 
-		List<Token> tokenList = Tokenizer.tokenize(value, true);
+		List<Token> tokenList = Tokenizer.tokenize(text, true);
 		List<Token[]> tokensList = null;
 
 		if (!tokenList.isEmpty()) {
@@ -89,12 +92,12 @@ public class TokenParser {
 		return (tokensList == null || tokensList.isEmpty() ? null : tokensList);
 	}
 	
-	public static Map<String, Token[]> parseAsMap(String value) {
-		if (value == null) {
+	public static Map<String, Token[]> parseAsMap(String text) {
+		if (text == null) {
 			return null;
 		}
 
-		List<Token> tokenList = Tokenizer.tokenize(value, true);
+		List<Token> tokenList = Tokenizer.tokenize(text, true);
 		Map<String, Token[]> tokensMap = null;
 
 		if (!tokenList.isEmpty()) {
@@ -115,13 +118,16 @@ public class TokenParser {
 	 * Convert the given string into tokens.
 	 *
 	 * @param text the text
-	 * @param tokenize whether tokenize
+	 * @param tokenize whether to tokenize
 	 * @return the token[]
 	 */
 	public static Token[] makeTokens(String text, boolean tokenize) {
+		if (text == null) {
+			return null;
+		}
 		Token[] tokens;
 		if (tokenize) {
-			tokens = TokenParser.parse(text);
+			tokens = parse(text);
 		} else {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, text);

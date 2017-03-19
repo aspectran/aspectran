@@ -57,7 +57,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -214,12 +213,11 @@ public class AnnotatedConfigParser {
 						if (value != null) {
 							Token[] tokens = TokenParser.parse(value);
 
+							assistant.resolveBeanClass(tokens);
+
 							if (tokens != null && tokens.length > 0) {
 								Token token = tokens[0];
-								if (token.getType() == TokenType.BEAN) {
-									assistant.resolveBeanClass(token);
-								}
-								
+
 								AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
 								autowireTargetRule.setTargetType(AutowireTargetType.VALUE);
 								autowireTargetRule.setTarget(field);

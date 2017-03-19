@@ -186,7 +186,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 					break;
 			}
 		} else {
-			this.tokenize = false;
+			this.engineBeanId = null;
+			this.tokenize = true;
 		}
 	}
 

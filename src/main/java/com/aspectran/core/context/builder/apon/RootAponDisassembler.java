@@ -25,22 +25,22 @@ import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
+import com.aspectran.core.context.builder.apon.params.CallParameters;
 import com.aspectran.core.context.builder.apon.params.ConstructorParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionThrownParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionThrownParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
-import com.aspectran.core.context.builder.apon.params.CallParameters;
-import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
+import com.aspectran.core.context.builder.apon.params.ScheduleJobParameters;
 import com.aspectran.core.context.builder.apon.params.ScheduleParameters;
 import com.aspectran.core.context.builder.apon.params.SchedulerParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
@@ -49,7 +49,6 @@ import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
@@ -76,7 +75,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -688,13 +686,7 @@ public class RootAponDisassembler {
 			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 
-			if (templateRule.getTemplateTokens() != null) {
-				for (Token token : templateRule.getTemplateTokens()) {
-					if (token.getType() == TokenType.BEAN) {
-						assistant.resolveBeanClass(token);
-					}
-				}
-			}
+			assistant.resolveBeanClass(templateRule.getTemplateTokens());
 		}
 		
 		return tr;

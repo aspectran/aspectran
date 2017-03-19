@@ -79,6 +79,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		if (itemType == ItemType.SINGLE) {
 			Token[] tokens = itemRule.getTokens();
 			value = evaluate(name, tokens, valueType);
+			if(value == null) {
+				value = itemRule.getDefaultValue();
+			}
 		} else if (itemType == ItemType.ARRAY) {
 			value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
 		} else if (itemType == ItemType.LIST) {
@@ -158,6 +161,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	@SuppressWarnings("all")
 	private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
 		List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
+		if(list == null) {
+			return null;
+		}
 		
 		if (valueType == ItemValueType.STRING) {
 			return list.toArray(new String[list.size()]);
@@ -191,11 +197,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		
 		for (Token[] tokens : tokensList) {
 			Object value = evaluate(parameterName, tokens);
-			
 			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
 			}
-			
 			valueList.add(value);
 		}
 		
@@ -211,11 +215,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 		for (Token[] tokens : tokensList) {
 			Object value = evaluate(parameterName, tokens);
-			
 			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
 			}
-			
 			valueSet.add(value);
 		}
 		
@@ -225,15 +227,12 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if (tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
-
 			if (value == null) {
 				return null;
 			}
-			
 			if (valueType != null) {
 				value = valuelize(value, valueType);
 			}
-			
 			Map<String, Object> valueMap = new LinkedHashMap<>();
 			valueMap.put(parameterName, value);
 			return valueMap;
@@ -243,11 +242,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = evaluate(entry.getKey(), entry.getValue());
-
 			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
 			}
-			
 			valueMap.put(entry.getKey(), value);
 		}
 		
@@ -257,15 +254,12 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if (tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
-
 			if (value == null) {
 				return null;
 			}
-
 			if (valueType != null) {
 				value = valuelize(value, valueType);
 			}
-
 			Properties prop = new Properties();
 			prop.put(parameterName, value);
 			return prop;
@@ -275,11 +269,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 		for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = evaluate(entry.getKey(), entry.getValue());
-
 			if (value != null && valueType != null) {
 				value = valuelize(value, valueType);
 			}
-
 			if (value != null) {
 				prop.put(entry.getKey(), value);
 			}
@@ -306,7 +298,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
-
 		if (values == null) {
 			return null;
 		}
@@ -326,7 +317,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 	
 	private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
-
 		if (values == null) {
 			return null;
 		}

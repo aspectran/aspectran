@@ -22,6 +22,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
@@ -252,8 +253,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 		for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
 			ItemRule ir = new ItemRule();
 			ir.setName(entry.getKey());
-			ir.setValue(entry.getValue());
-			ir.setTokenize(Boolean.FALSE);
+			ir.setValue(TokenParser.makeTokens(entry.getValue(), false));
 		}
 
 		this.parameterItemRuleMap = params;

@@ -459,8 +459,9 @@ public class ContextBuilderAssistant {
 		Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 		if (iter != null) {
 			while (iter.hasNext()) {
-				for (Token token : iter.next()) {
-					if (token.getType() == TokenType.BEAN) {
+				Token[] tokens = iter.next();
+				if (tokens != null) {
+					for (Token token : tokens) {
 						resolveBeanClass(token);
 					}
 				}
@@ -471,15 +472,30 @@ public class ContextBuilderAssistant {
 	/**
 	 * Resolve bean class for token.
 	 *
+	 * @param tokens an array of tokens
+	 */
+	public void resolveBeanClass(Token[] tokens) {
+		if (tokens != null) {
+			for (Token token : tokens) {
+				resolveBeanClass(token);
+			}
+		}
+	}
+
+	/**
+	 * Resolve bean class for token.
+	 *
 	 * @param token the token
 	 */
 	public void resolveBeanClass(Token token) {
-		if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-			Class<?> beanClass = loadClass(token.getValue());
-			token.setAlternativeValue(beanClass);
-			reserveBeanReference(beanClass, token);
-		} else {
-			reserveBeanReference(token.getName(), token);
+		if (token != null && token.getType() == TokenType.BEAN) {
+			if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
+				Class<?> beanClass = loadClass(token.getValue());
+				token.setAlternativeValue(beanClass);
+				reserveBeanReference(beanClass, token);
+			} else {
+				reserveBeanReference(token.getName(), token);
+			}
 		}
 	}
 

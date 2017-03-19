@@ -17,6 +17,7 @@ package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -58,24 +59,24 @@ class ItemNodeletAdder implements NodeletAdder {
 				value = text;
 			}
 
-			ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize, mandatory);
+			ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory);
+
+			if (value != null && itemRule.getType() == ItemType.SINGLE) {
+				ItemRule.setValue(itemRule, value);
+			}
 
 			assistant.pushObject(itemRule);
-
-			if (itemRule.getType() != ItemType.SINGLE) {
-				ItemRule.beginValueCollection(itemRule);
-			}
 		});
 		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
-			String name = attributes.get("name");
-
 			ItemRule itemRule = assistant.peekObject();
 
-			if (itemRule.getType() != ItemType.SINGLE) {
-				Token[] tokens = ItemRule.parseValue(itemRule, text);
-				assistant.pushObject(name);
-				assistant.pushObject(tokens);
-			}
+			String name = attributes.get("name");
+			boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attributes.get("tokenize")), itemRule.isTokenize());
+
+			Token[] tokens = TokenParser.makeTokens(text, tokenize);
+
+			assistant.pushObject(name);
+			assistant.pushObject(tokens);
 		});
 		parser.addNodelet(xpath, "/item/value/call", (node, attributes, text) -> {
 			String bean= attributes.get("bean");
@@ -84,36 +85,24 @@ class ItemNodeletAdder implements NodeletAdder {
 			String attribute = attributes.get("attribute");
 			String property = attributes.get("property");
 
-			Object object = assistant.peekObject();
+			Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
+			if (t != null) {
+				Token[] tokens = new Token[] {t};
 
-			if (object != null && object instanceof ItemRule) {
-				ItemRule.updateReference((ItemRule)object, bean, template, parameter, attribute, property);
-			} else {
-				assistant.popObject(); // discard tokens
-				Token t = ItemRule.makeReferenceToken(parameter, bean, template, attribute, property);
-				Token[] tokens = new Token[] { t };
+				assistant.popObject();
 				assistant.pushObject(tokens);
 			}
 		});
 		parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
-			Object object = assistant.peekObject();
-
-			if (object != null && !(object instanceof ItemRule)) {
-				// replace tokens to null
-				assistant.popObject();
-				assistant.pushObject(null);
-			}
+			assistant.popObject();
+			assistant.pushObject(null);
 		});
 		parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
-			Object object = assistant.peekObject();
+			Token[] tokens = assistant.popObject();
+			String name = assistant.popObject();
+			ItemRule itemRule = assistant.peekObject();
 
-			if (object == null || object instanceof Token[]) {
-				Token[] tokens = assistant.popObject();
-				String name = assistant.popObject();
-				ItemRule itemRule = assistant.peekObject();
-
-				ItemRule.flushValueCollection(itemRule, name, tokens);
-			}
+			ItemRule.addValue(itemRule, name, tokens);
 		});
 		parser.addNodelet(xpath, "/item/call", (node, attributes, text) -> {
 			String bean = StringUtils.emptyToNull(attributes.get("bean"));
@@ -123,7 +112,12 @@ class ItemNodeletAdder implements NodeletAdder {
 			String property = StringUtils.emptyToNull(attributes.get("property"));
 
 			ItemRule itemRule = assistant.peekObject();
-			ItemRule.updateReference(itemRule, bean, template, parameter, attribute, property);
+
+			Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
+			if (t != null) {
+				Token[] tokens = new Token[] {t};
+				ItemRule.addValue(itemRule, null, tokens);
+			}
 		});
 		parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
 			ItemRule itemRule = assistant.popObject();

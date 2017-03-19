@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -25,7 +24,6 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -79,13 +77,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 			TransformRule transformRule = assistant.peekObject(1);
 			transformRule.setTemplateRule(templateRule);
 
-			if (templateRule.getTemplateTokens() != null) {
-				for (Token token : templateRule.getTemplateTokens()) {
-					if (token.getType() == TokenType.BEAN) {
-						assistant.resolveBeanClass(token);
-					}
-				}
-			}
+			assistant.resolveBeanClass(templateRule.getTemplateTokens());
 		});
 		parser.addNodelet(xpath, "/transform/call", (node, attributes, text) -> {
 			String template = StringUtils.emptyToNull(attributes.get("template"));
@@ -176,13 +168,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 			ResponseRuleApplicable applicable = assistant.peekObject();
 			applicable.applyResponseRule(rrr);
 
-			if (rrr.getTargetTokens() != null) {
-				for (Token token : rrr.getTargetTokens()) {
-					if (token.getType() == TokenType.BEAN) {
-						assistant.resolveBeanClass(token);
-					}
-				}
-			}
+			assistant.resolveBeanClass(rrr.getTargetTokens());
 		});
 		parser.addNodelet(xpath, "/forward", (node, attributes, text) -> {
 			String contentType = attributes.get("contentType");
