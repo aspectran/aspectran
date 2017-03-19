@@ -1,0 +1,24 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <bean id="firstBean" class="test.count.FirstBean"/>
+    <bean id="secondBean" class="test.count.SecondBean"/>
+    <bean id="thirdBean" class="test.count.ThirdBean"/>
+
+    <bean id="totalBean" class="test.count.TotalBean">
+        <properties>
+            <item name="numerics" type="array">
+                <value><call bean="firstBean"/></value>
+                <value><call bean="secondBean"/></value>
+                <value><call bean="thirdBean"/></value>
+            </item>
+        </properties>
+    </bean>
+
+</aspectran>

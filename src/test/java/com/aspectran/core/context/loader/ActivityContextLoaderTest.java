@@ -24,10 +24,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
+
+import test.count.NumericBean;
+import test.count.TotalBean;
 
 /**
  * <p>Created: 2016. 3. 26.</p>
@@ -35,17 +39,21 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActivityContextLoaderTest {
 
+	private File base;
+
+	private ApplicationAdapter applicationAdapter;
+
 	@Before
-	public void ready() {
+	public void ready() throws IOException {
+		base = new File("./target/test-classes");
+		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
+		applicationAdapter.setBasePath(base.getCanonicalPath());
+		this.applicationAdapter = applicationAdapter;
 	}
 
 	@Test
 	public void test1HybridLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
 		System.out.println("================ HybridActivityContextLoading ===============");
-
-		File base = new File("./target/test-classes");
-		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-		applicationAdapter.setBasePath(base.getCanonicalPath());
 
 		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
 		activityContextLoader.setHybridLoad(true);
@@ -65,6 +73,22 @@ public class ActivityContextLoaderTest {
 		System.out.println("=============== reload ==============");
 
 		context = activityContextLoader.reload(false);
+		context.destroy();
+	}
+
+	@Test
+	public void testBeanCall() throws InvalidResourceException, ActivityContextBuilderException {
+		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
+		activityContextLoader.setHybridLoad(false);
+
+		ActivityContext context = activityContextLoader.load("/config/count-test-config.xml");
+		context.initialize();
+
+		TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
+		for (NumericBean o : totalBean.getNumerics()) {
+			System.out.println(o.getNumber() + " : " + o);
+		}
+
 		context.destroy();
 	}
 
