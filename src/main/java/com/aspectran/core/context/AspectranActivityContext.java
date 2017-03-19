@@ -204,16 +204,19 @@ public class AspectranActivityContext implements ActivityContext {
 		currentActivityHolder.remove();
 	}
 
+	@Override
+	public void initialize() {
+		initialize(null);
+	}
+
+	@Override
 	public void initialize(AspectranService rootAspectranService) {
-		if (rootAspectranService == null) {
-			throw new IllegalArgumentException("The rootAspectranService argument must not be null.");
+		if (rootAspectranService != null) {
+			if (this.rootAspectranService != null) {
+				throw new UnsupportedOperationException("ActivityContext has already been initialized.");
+			}
+			this.rootAspectranService = rootAspectranService;
 		}
-
-		if (this.rootAspectranService != null) {
-			throw new UnsupportedOperationException("ActivityContext has already been initialized.");
-		}
-
-		this.rootAspectranService = rootAspectranService;
 
 		Activity activity = new DefaultActivity(this);
 		setDefaultActivity(activity);

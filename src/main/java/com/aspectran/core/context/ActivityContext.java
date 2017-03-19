@@ -143,6 +143,11 @@ public interface ActivityContext extends MessageSource {
 
 	/**
 	 * Initializes the ActivityContext.
+	 */
+	void initialize();
+
+	/**
+	 * Initializes the ActivityContext.
 	 * Sets the Aspectran Service that created the current ActivityContext.
 	 * It is set only once, just after the ActivityContext is created.
 	 *
