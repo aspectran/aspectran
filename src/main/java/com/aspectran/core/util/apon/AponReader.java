@@ -106,7 +106,7 @@ public class AponReader extends AponFormat {
 			trim = line.trim();
 			tlen = trim.length();
 			
-			if (tlen == 0 || trim.charAt(0) == COMMENT_LINE_START) {
+			if (tlen == 0 || (trim.charAt(0) == COMMENT_LINE_START && openBracket != SQUARE_BRACKET_OPEN)) {
 				continue;
 			}
 
