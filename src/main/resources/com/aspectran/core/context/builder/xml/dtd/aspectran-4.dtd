@@ -246,9 +246,9 @@
 
 <!ELEMENT item (#PCDATA | value | call | null)*>
 <!ATTLIST item
+  type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
-  type         (single | array | list | map | set | properties) #IMPLIED
   valueType    (string | int | long | float | double | boolean | parameters | file | multipartFile) #IMPLIED
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
@@ -257,7 +257,8 @@
 
 <!ELEMENT value (#PCDATA | call | null)*>
 <!ATTLIST value
-  name    CDATA #IMPLIED
+  name     CDATA #IMPLIED
+  tokenize (true | false) #IMPLIED
 >
 
 <!ELEMENT call EMPTY>
