@@ -22,13 +22,14 @@ import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.apon.Parameters;
@@ -49,20 +50,25 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
 	private static final String DEFAULT_ROOT_CONTEXT = "classpath:embedded-aspectran-config.xml";
 
-	private final SessionAdapter sessionAdapter;
+	private SessionAdapter sessionAdapter;
 
 	private SessionScopeAdvisor sessionScopeAdvisor;
 
 	private long pauseTimeout;
 
-	private EmbeddedAspectranService() {
-		super(new EmbeddedApplicationAdapter());
+	public EmbeddedAspectranService() {
+		this(new EmbeddedApplicationAdapter());
+	}
+
+	public EmbeddedAspectranService(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
 		this.sessionAdapter = new EmbeddedSessionAdapter();
 	}
-	
+
 	@Override
 	public void afterContextLoaded() {
-		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), this.sessionAdapter);
+		sessionAdapter = new EmbeddedSessionAdapter();
+		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeBeforeAdvice();
 		}
@@ -73,8 +79,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 		if (sessionScopeAdvisor != null) {
 			sessionScopeAdvisor.executeAfterAdvice();
 		}
-		Scope sessionScope = sessionAdapter.getSessionScope();
-		sessionScope.destroy();
+		if (sessionAdapter != null) {
+			Scope sessionScope = sessionAdapter.getSessionScope();
+			sessionScope.destroy();
+		}
 	}
 
 	public SessionAdapter getSessionAdapter() {

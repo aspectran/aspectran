@@ -70,10 +70,15 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if (applicationAdapter == null) {
 			throw new IllegalArgumentException("The applicationAdapter argument must not be null.");
 		}
+
 		this.applicationAdapter = applicationAdapter;
 	}
 
 	AbstractAspectranService(AspectranService rootAspectranService) {
+		if (rootAspectranService == null) {
+			throw new IllegalArgumentException("The rootAspectranService argument must not be null.");
+		}
+
 		this.applicationAdapter = rootAspectranService.getApplicationAdapter();
 		this.activityContext = rootAspectranService.getActivityContext();
 		this.aspectranConfig = rootAspectranService.getAspectranConfig();
@@ -184,19 +189,13 @@ public abstract class AbstractAspectranService implements AspectranService {
 			throw new AspectranServiceException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading.");
 		}
 		
-		if (log.isDebugEnabled()) {
-			log.debug("Loading ActivityContext...");
-		}
-		
 		try {
-			ActivityContext newActivityContext = activityContextLoader.load(rootContext);
-			newActivityContext.initialize(this);
-
-			this.activityContext = newActivityContext;
+			activityContext = activityContextLoader.load(rootContext);
+			activityContext.initialize(this);
 
 			startReloadingTimer();
 
-			return this.activityContext;
+			return activityContext;
 		} catch (Exception e) {
 			throw new AspectranServiceException("Could not load ActivityContext.", e);
 		}
@@ -238,11 +237,11 @@ public abstract class AbstractAspectranService implements AspectranService {
 			activityContext.initialize(this);
 
 			startReloadingTimer();
+
+			return activityContext;
 		} catch (Exception e) {
 			throw new AspectranServiceException("Could not reload ActivityContext.", e);
 		}
-
-		return activityContext;
 	}
 	
 	protected void startSchedulerService() throws SchedulerServiceException {
@@ -256,10 +255,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
 
 		if (schedulerStartup) {
-			SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
+			SchedulerService newSchedulerService = new QuartzSchedulerService(activityContext);
 			
 			if (waitOnShutdown) {
-				schedulerService.setWaitOnShutdown(true);
+				newSchedulerService.setWaitOnShutdown(true);
 			}
 
 			if (startDelaySeconds == -1) {
@@ -267,10 +266,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 				startDelaySeconds = 5;
 			}
 
-			schedulerService.setExposals(exposals);
-			schedulerService.startup(startDelaySeconds);
+			newSchedulerService.setExposals(exposals);
+			newSchedulerService.startup(startDelaySeconds);
 
-			this.schedulerService = schedulerService;
+			schedulerService = newSchedulerService;
 
 			log.info("SchedulerService has been started.");
 		}

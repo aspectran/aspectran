@@ -68,14 +68,18 @@ public interface AspectranService extends AspectranServiceController {
 	 */
 	boolean isHardReload();
 	
-	@Override
-	void shutdown();
-
 	/**
 	 * Returns whether this AspectranService is currently active.
 	 *
 	 * @return whether the AspectranService is still active
 	 */
 	boolean isActive();
+
+	/**
+	 * Returns the aspectran service controller.
+	 *
+	 * @return the aspectran service controller
+	 */
+	AspectranServiceController getAspectranServiceController();
 
 }

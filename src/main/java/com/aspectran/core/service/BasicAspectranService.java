@@ -281,4 +281,9 @@ public class BasicAspectranService extends AbstractAspectranService {
 		return this.active.get();
 	}
 
+	@Override
+	public AspectranServiceController getAspectranServiceController() {
+		return this;
+	}
+
 }

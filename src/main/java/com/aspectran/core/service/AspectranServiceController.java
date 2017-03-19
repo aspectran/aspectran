@@ -58,9 +58,7 @@ public interface AspectranServiceController {
 	
 	/**
 	 * Destroys an Aspectran Service and any services that are dependent on this service.
-	 *
-	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	void shutdown() throws AspectranServiceException;
+	void shutdown();
 	
 }
