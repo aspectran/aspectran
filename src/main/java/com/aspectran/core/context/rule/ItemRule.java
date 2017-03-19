@@ -595,30 +595,6 @@ public class ItemRule {
 	}
 
 	/**
-	 * Analyze the raw values and assign them to the values of the items.
-	 *
-	 * @param itemRule the item rule
-	 * @param name the value name; may be null
-	 * @param tokens the token values of the item
-	 */
-	public static void replaceValue(ItemRule itemRule, String name, Token[] tokens) {
-		if (itemRule.isListableType()) {
-			List<Token[]> tokensList = itemRule.getTokensList();
-			if (tokensList != null && !tokensList.isEmpty()) {
-				tokensList.remove(tokensList.size() - 1);
-				tokensList.add(tokens);
-			}
-		} else if (!StringUtils.isEmpty(name) && itemRule.isMappableType()) {
-			Map<String, Token[]> tokensMap = itemRule.getTokensMap();
-			if (tokensMap != null && tokensMap.containsKey(name)) {
-				tokensMap.put(name, tokens);
-			}
-		} else {
-			itemRule.setValue(tokens);
-		}
-	}
-
-	/**
 	 * Adds the item rule.
 	 *
 	 * @param itemRuleMap the item rule map
@@ -632,7 +608,6 @@ public class ItemRule {
 		itemRuleMap.putItemRule(itemRule);
 	}
 
-	
 	/**
 	 * Auto-naming for unnamed item name.
 	 * Auto-naming if did not specify the name of the item.
@@ -741,7 +716,7 @@ public class ItemRule {
 			Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
 			if (t != null) {
 				Token[] tokens = new Token[] {t};
-				ItemRule.replaceValue(itemRule, null, tokens);
+				ItemRule.addValue(itemRule, null, tokens);
 			}
 		} else {
 			if (itemRule.getType() == ItemType.SINGLE) {
