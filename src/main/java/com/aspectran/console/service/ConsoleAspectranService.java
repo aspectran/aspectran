@@ -176,24 +176,28 @@ public class ConsoleAspectranService extends BasicAspectranService {
 			while (true) {
 				String command = consoleInout.readCommand();
 
-				if (command == null || command.isEmpty()) {
+				if (command == null) {
+					continue;
+				}
+				command = command.trim();
+				if (command.isEmpty()) {
 					continue;
 				}
 
 				switch (command) {
-					case "!restart":
+					case "restart":
 						log.info("Restarting the Aspectran Service...");
 						restart();
 						break;
-					case "!pause":
+					case "pause":
 						log.info("Pausing the Aspectran Service...");
 						pause();
 						break;
-					case "!resume":
+					case "resume":
 						log.info("Resuming the Aspectran Service...");
 						resume();
 						break;
-					case "!quit":
+					case "quit":
 						log.info("Goodbye.");
 						break loop;
 					default:
