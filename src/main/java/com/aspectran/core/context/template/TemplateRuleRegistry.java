@@ -61,7 +61,7 @@ public class TemplateRuleRegistry {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {
             	templateRule.setEngineBeanId(defaultSettings.getDefaultTemplateEngineBean());
-            	templateRule.setTemplateSource(templateRule.getContent());
+            	templateRule.setTemplateSource(templateRule.getTemplateSource());
             }
         }
 		if (templateRule.getEngineBeanId() != null) {

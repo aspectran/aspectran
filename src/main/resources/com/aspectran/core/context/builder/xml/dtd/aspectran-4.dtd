@@ -99,6 +99,7 @@
 <!ATTLIST template
   id       CDATA #IMPLIED
   engine   CDATA #IMPLIED
+  style    (apon | compact | compressed) #IMPLIED
   name     CDATA #IMPLIED
   file     CDATA #IMPLIED
   resource CDATA #IMPLIED

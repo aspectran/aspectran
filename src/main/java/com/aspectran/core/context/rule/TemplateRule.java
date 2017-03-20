@@ -21,11 +21,13 @@ import java.net.URL;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -58,6 +60,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	private String encoding;
 
 	private String content;
+
+	private ContentStyleType contentStyle;
 	
 	private Boolean noCache;
 
@@ -140,6 +144,14 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		this.content = content;
 	}
 
+	public ContentStyleType getContentStyle() {
+		return contentStyle;
+	}
+
+	protected void setContentStyle(ContentStyleType contentStyle) {
+		this.contentStyle = contentStyle;
+	}
+
 	public Boolean getNoCache() {
 		return noCache;
 	}
@@ -207,7 +219,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		return this.tokenize;
 	}
 
-	protected String getTemplateSource() {
+	public String getTemplateSource() {
 		return templateSource;
 	}
 	
@@ -359,11 +371,17 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public static TemplateRule newInstance(String id, String engine, String name, String file, 
-			String resource, String url, String content, String encoding, Boolean noCache) {
+			String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+
 		if (id == null) {
 			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
 		}
-		
+
+		ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
+		if (contentStyle != null && contentStyleType == null) {
+			throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+		}
+
 		TemplateRule tr = new TemplateRule();
 		tr.setId(id);
 		tr.setEngineBeanId(engine);
@@ -372,14 +390,23 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setResource(resource);
 		tr.setUrl(url);
 		tr.setContent(content);
-		tr.setTemplateSource(content);
+		tr.setContentStyle(contentStyleType);
 		tr.setEncoding(encoding);
 		tr.setNoCache(noCache);
+
+		updateTemplateSourceByStyle(tr);
+
 		return tr;
 	}
 
 	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, 
-			String resource, String url, String content, String encoding, Boolean noCache) {
+			String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+
+		ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
+		if (contentStyle != null && contentStyleType == null) {
+			throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+		}
+
 		TemplateRule tr = new TemplateRule();
 		tr.setEngineBeanId(engine);
 		tr.setName(name);
@@ -387,10 +414,13 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setResource(resource);
 		tr.setUrl(url);
 		tr.setContent(content);
-		tr.setTemplateSource(content);
+		tr.setContentStyle(contentStyleType);
 		tr.setEncoding(encoding);
 		tr.setNoCache(noCache);
 		tr.setBuiltin(true);
+
+		updateTemplateSourceByStyle(tr);
+
 		return tr;
 	}
 
@@ -404,11 +434,70 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 		tr.setResource(templateRule.getResource());
 		tr.setUrl(templateRule.getUrl());
 		tr.setContent(templateRule.getContent());
+		tr.setContentStyle(templateRule.getContentStyle());
 		tr.setTemplateSource(templateRule.getTemplateSource(), templateRule.getTemplateTokens());
 		tr.setEncoding(templateRule.getEncoding());
 		tr.setNoCache(templateRule.getNoCache());
 		tr.setBuiltin(templateRule.isBuiltin());
 		return tr;
 	}
-	
+
+	private static void updateTemplateSourceByStyle(TemplateRule templateRule) {
+		String content = templateRule.getContent();
+		if (content == null) {
+			return;
+		}
+		if (!content.isEmpty()) {
+			if (templateRule.getContentStyle() == ContentStyleType.APON) {
+				StringBuilder sb = new StringBuilder(content.length());
+				int start = 0;
+				for (int end = 0; end < content.length(); end++) {
+					char c = content.charAt(end);
+					if (c == '|') {
+						start = end + 1;
+						if (sb.length() > 0) {
+							sb.append(ActivityContext.LINE_SEPARATOR);
+						}
+					} else if (start > 0) {
+						if (c == '\n' || c == '\r') {
+							sb.append(content.substring(start, end));
+							start = 0;
+						}
+					}
+				}
+				if (start > 0) {
+					sb.append(content.substring(start));
+				}
+				templateRule.setTemplateSource(sb.toString());
+			} else if (templateRule.getContentStyle() == ContentStyleType.COMPACT ||
+					templateRule.getContentStyle() == ContentStyleType.COMPRESSED) {
+				content = content.trim();
+				StringBuilder sb = new StringBuilder(content.length());
+				int start = 0;
+				for (int end = 0; end < content.length(); end++) {
+					char c = content.charAt(end);
+					if (c == '\n' || c == '\r') {
+						if (start > -1) {
+							sb.append(content.substring(start, end).trim());
+							if (templateRule.getContentStyle() != ContentStyleType.COMPRESSED) {
+								sb.append(ActivityContext.LINE_SEPARATOR);
+							}
+							start = -1;
+						}
+					} else if (start == -1) {
+						start = end;
+					}
+				}
+				if (start > -1) {
+					sb.append(content.substring(start).trim());
+				}
+				templateRule.setTemplateSource(sb.toString());
+			} else {
+				templateRule.setTemplateSource(content);
+			}
+		} else {
+			templateRule.setTemplateSource(content);
+		}
+	}
+
 }

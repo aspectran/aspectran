@@ -28,6 +28,7 @@ public class TemplateParameters extends AbstractParameters {
 	public static final ParameterDefinition resource;
 	public static final ParameterDefinition url;
 	public static final ParameterDefinition content;
+	public static final ParameterDefinition style;
 	public static final ParameterDefinition encoding;
 	public static final ParameterDefinition noCache;
 
@@ -41,6 +42,7 @@ public class TemplateParameters extends AbstractParameters {
 		resource = new ParameterDefinition("resource", ParameterValueType.STRING);
 		url = new ParameterDefinition("url", ParameterValueType.STRING);
 		content = new ParameterDefinition("content", ParameterValueType.TEXT);
+		style = new ParameterDefinition("style", ParameterValueType.STRING);
 		encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
 		noCache = new ParameterDefinition("noCache", ParameterValueType.BOOLEAN);
 
@@ -52,6 +54,7 @@ public class TemplateParameters extends AbstractParameters {
 			resource,
 			url,
 			content,
+			style,
 			encoding,
 			noCache
 		};

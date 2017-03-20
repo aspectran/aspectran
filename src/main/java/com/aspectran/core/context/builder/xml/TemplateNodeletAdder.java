@@ -43,19 +43,20 @@ class TemplateNodeletAdder implements NodeletAdder {
 	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/template", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            String engine = StringUtils.emptyToNull(attributes.get("engine"));
-            String name = StringUtils.emptyToNull(attributes.get("name"));
-            String file = StringUtils.emptyToNull(attributes.get("file"));
-            String resource = StringUtils.emptyToNull(attributes.get("resource"));
-            String url = StringUtils.emptyToNull(attributes.get("url"));
-            String encoding = attributes.get("encoding");
-            Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
+			String id = StringUtils.emptyToNull(attributes.get("id"));
+			String engine = StringUtils.emptyToNull(attributes.get("engine"));
+			String name = StringUtils.emptyToNull(attributes.get("name"));
+			String file = StringUtils.emptyToNull(attributes.get("file"));
+			String resource = StringUtils.emptyToNull(attributes.get("resource"));
+			String url = StringUtils.emptyToNull(attributes.get("url"));
+			String style = attributes.get("style");
+			String encoding = attributes.get("encoding");
+			Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, style, encoding, noCache);
 
-            assistant.addTemplateRule(templateRule);
-        });
+			assistant.addTemplateRule(templateRule);
+		});
 	}
 
 }

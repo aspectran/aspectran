@@ -7,8 +7,32 @@
         This is an Aspectran configuration for testing template calls.
     </description>
 
-    <template id="template1">TEMPATE-1</template>
+    <template id="template-1">TEMPATE-1</template>
 
-    <template id="template2">~{template1}</template>
+    <template id="template-2">~{template-1}</template>
+
+    <template id="template-3" style="apon">
+        |TEMPATE-3
+    </template>
+
+    <template id="template-4">~{template-3}</template>
+
+    <template id="aponStyle" style="apon">
+        |line-1
+        |line-2
+        |line-3
+    </template>
+
+    <template id="compactStyle" style="compact">
+        line-1
+        line-2
+        line-3
+    </template>
+
+    <template id="compressedStyle" style="compressed">
+        line-1
+        line-2
+        line-3
+    </template>
 
 </aspectran>

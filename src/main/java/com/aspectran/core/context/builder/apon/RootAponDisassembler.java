@@ -680,10 +680,11 @@ public class RootAponDisassembler {
 			String resource = templateParameters.getString(TemplateParameters.resource);
 			String url = templateParameters.getString(TemplateParameters.url);
 			String content = templateParameters.getString(TemplateParameters.content);
+			String style = templateParameters.getString(TemplateParameters.style);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, style, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 
 			assistant.resolveBeanClass(templateRule.getTemplateTokens());
@@ -810,10 +811,11 @@ public class RootAponDisassembler {
 		String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
 		String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
 		String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+		String style = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.style));
 		String encoding = templateParameters.getString(TemplateParameters.encoding);
 		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
+		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, style, encoding, noCache);
 
 		assistant.addTemplateRule(templateRule);
 	}

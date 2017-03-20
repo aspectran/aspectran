@@ -69,10 +69,11 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 			String file = attributes.get("file");
 			String resource = attributes.get("resource");
 			String url = attributes.get("url");
+			String style = attributes.get("style");
 			String encoding = attributes.get("encoding");
 			Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, style, encoding, noCache);
 
 			TransformRule transformRule = assistant.peekObject(1);
 			transformRule.setTemplateRule(templateRule);

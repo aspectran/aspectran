@@ -638,6 +638,7 @@ public class RootAponAssembler {
 		templateParameters.putValueNonNull(TemplateParameters.resource, templateRule.getResource());
 		templateParameters.putValueNonNull(TemplateParameters.url, templateRule.getUrl());
 		templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getContent());
+		templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
 		templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
 		templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
 		

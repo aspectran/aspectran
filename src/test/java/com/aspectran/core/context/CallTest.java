@@ -15,24 +15,26 @@
  */
 package com.aspectran.core.context;
 
+import static junit.framework.TestCase.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.context.template.TemplateProcessor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+
 import test.call.NumericBean;
 import test.call.TotalBean;
-
-import java.io.File;
-import java.io.IOException;
-
-import static junit.framework.TestCase.assertEquals;
 
 /**
  * Test cases that call beans and templates.
@@ -72,10 +74,32 @@ public class CallTest {
 	@Test
 	public void testTemplateCall() throws InvalidResourceException, ActivityContextBuilderException {
 		TemplateProcessor templateProcessor = context.getTemplateProcessor();
-		String result = templateProcessor.process("template2");
+		String result1 = templateProcessor.process("template-2");
 
-		assertEquals("TEMPATE-1", result);
-		//System.out.println(result);
+		System.out.println("-------------------------------");
+		System.out.println(" Test cases for template calls");
+		System.out.println("-------------------------------");
+
+		assertEquals("TEMPATE-1", result1);
+		System.out.println(result1);
+
+		String result2 = templateProcessor.process("template-4");
+
+		assertEquals("TEMPATE-3", result2);
+		System.out.println(result2);
+
+		String result4 = templateProcessor.process("aponStyle");
+		System.out.println(" === aponStyle ===");
+		System.out.println(result4);
+
+		String result5 = templateProcessor.process("compactStyle");
+		System.out.println(" === compactStyle ===");
+		System.out.println(result5);
+
+		String result6 = templateProcessor.process("compressedStyle");
+		System.out.println(" === compressedStyle ===");
+		System.out.println(result6);
+
 	}
 
 	@After
