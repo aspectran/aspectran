@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
 
@@ -61,12 +63,14 @@ public class TokenExpressionParser implements TokenEvaluator {
 
 		if (tokenType == TokenType.TEXT) {
 			value = token.getValue();
+		} else if (tokenType == TokenType.BEAN) {
+			value = getBean(token);
+		} else if (tokenType == TokenType.TEMPLATE) {
+			value = getTemplate(token);
 		} else if (tokenType == TokenType.PARAMETER) {
 			value = getParameter(token.getName(), token.getValue());
 		} else if (tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
-		} else if (tokenType == TokenType.BEAN) {
-			value = getBean(token);
 		} else if (tokenType == TokenType.PROPERTY) {
 			value = getProperty(token);
 		}
@@ -368,7 +372,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 		Object value;
 
 		if (token.getAlternativeValue() != null) {
-			value = activity.getBean((Class<?>) token.getAlternativeValue());
+			value = activity.getBean((Class<?>)token.getAlternativeValue());
 		} else {
 			value = activity.getBean(token.getName());
 		}
@@ -421,22 +425,32 @@ public class TokenExpressionParser implements TokenEvaluator {
 			}
 
 			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : props;
-			if (value == null) {
-				value = token.getAlternativeValue();
-			}
-			return value;
+			return (value != null ? value : token.getAlternativeValue());
 		} else {
 			Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
 			if (value != null && token.getGetterName() != null) {
 				value = getBeanProperty(value, token.getGetterName());
 			}
-			if (value == null) {
-				value = token.getValue();
-			}
-			return value;
+			return (value != null ? value : token.getValue());
 		}
 	}
-	
+
+	/**
+	 * Executes template, returns the generated output.
+	 *
+	 * @param token the token
+	 * @return the generated output as {@code String}
+	 */
+	protected String getTemplate(Token token) {
+		TemplateProcessor templateProcessor = activity.getTemplateProcessor();
+
+		StringWriter writer = new StringWriter();
+		templateProcessor.process(token.getName(), activity, writer);
+
+		String result = writer.toString();
+		return (result != null ? result : token.getValue());
+	}
+
 	/**
 	 * This method will cast {@code Set<?>} to {@code List<T>}
 	 * assuming {@code ?} is castable to {@code T}.
