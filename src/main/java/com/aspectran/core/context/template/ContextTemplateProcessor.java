@@ -58,6 +58,13 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     }
 
     @Override
+    public String process(String templateId) {
+        StringWriter writer = new StringWriter();
+        process(templateId, null, null, writer);
+        return writer.toString();
+    }
+
+    @Override
     public String process(String templateId, Map<String, Object> model) {
         StringWriter writer = new StringWriter();
         process(templateId, null, model, writer);
@@ -84,6 +91,11 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     @Override
     public void process(String templateId, Activity activity, Map<String, Object> model) {
         process(templateId, activity, model, null);
+    }
+
+    @Override
+    public void process(String templateId, Activity activity, Writer writer) {
+        process(templateId, activity, null, writer);
     }
 
     @Override

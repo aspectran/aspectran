@@ -32,6 +32,14 @@ public interface TemplateProcessor {
 	 * Template processing with specified TemplateRule by its ID.
 	 *
 	 * @param templateId the template id
+	 * @return the output string of the template
+	 */
+	String process(String templateId);
+
+	/**
+	 * Template processing with specified TemplateRule by its ID.
+	 *
+	 * @param templateId the template id
 	 * @param model the holder of the variables visible from the template (name-value pairs)
 	 * @return the output string of the template
 	 */
@@ -70,6 +78,16 @@ public interface TemplateProcessor {
 	 * @param model the holder of the variables visible from the template (name-value pairs)
 	 */
 	void process(String templateId, Activity activity, Map<String, Object> model);
+
+	/**
+	 * Template processing with specified TemplateRule by its ID.
+	 *
+	 * @param templateId the template id
+	 * @param activity the activity
+	 * @param writer the {@link Writer} where the output of the template will go.
+	 * 		{@link Writer#close()} is not called.
+	 */
+	void process(String templateId, Activity activity, Writer writer);
 
 	/**
 	 * Template processing with specified TemplateRule.
