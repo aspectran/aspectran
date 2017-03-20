@@ -169,7 +169,7 @@ public class JoinpointRule {
 		if (type != null) {
 			joinpointType = JoinpointType.resolve(type);
 			if (joinpointType == null) {
-				throw new IllegalArgumentException("No joinpoint type registered for '" + type + "'.");
+				throw new IllegalArgumentException("No joinpoint type for '" + type + "'.");
 			}
 		} else {
 			joinpointType = JoinpointType.TRANSLET;
@@ -184,7 +184,7 @@ public class JoinpointRule {
 			for (String method : methods) {
 				MethodType methodType = MethodType.resolve(method);
 				if (methodType == null) {
-					throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+					throw new IllegalArgumentException("No request method type for '" + method + "'.");
 				}
 				methodTypes.add(methodType);
 			}

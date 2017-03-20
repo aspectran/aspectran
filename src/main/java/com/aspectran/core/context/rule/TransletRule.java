@@ -501,7 +501,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if (method != null) {
 			allowedMethods = MethodType.parse(method);
 			if (allowedMethods == null) {
-				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+				throw new IllegalArgumentException("No request method type for '" + method + "'.");
 			}
 		}
 

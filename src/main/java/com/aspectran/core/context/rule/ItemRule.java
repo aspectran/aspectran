@@ -439,7 +439,7 @@ public class ItemRule {
 		
 		ItemType itemType = ItemType.resolve(type);
 		if (type != null && itemType == null) {
-			throw new IllegalArgumentException("No item type registered for '" + type + "'.");
+			throw new IllegalArgumentException("No item type for '" + type + "'.");
 		}
 		if (itemType != null) {
 			itemRule.setType(itemType);
@@ -459,7 +459,7 @@ public class ItemRule {
 
 		ItemValueType itemValueType = ItemValueType.resolve(valueType);
 		if (valueType != null && itemValueType == null) {
-			throw new IllegalArgumentException("No item value type registered for '" + valueType + "'.");
+			throw new IllegalArgumentException("No item value type for '" + valueType + "'.");
 		}
 		itemRule.setValueType(itemValueType);
 

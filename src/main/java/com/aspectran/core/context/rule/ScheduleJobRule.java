@@ -89,7 +89,7 @@ public class ScheduleJobRule {
 		if (method != null) {
 			MethodType methodType = MethodType.resolve(method);
 			if (methodType == null) {
-				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+				throw new IllegalArgumentException("No request method type for '" + method + "'.");
 			}
 			scheduleJobRule.setRequestMethod(methodType);
 		}

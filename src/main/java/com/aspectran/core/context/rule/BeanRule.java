@@ -756,7 +756,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		ScopeType scopeType = ScopeType.resolve(scope);
 
 		if (scope != null && scopeType == null) {
-			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
+			throw new IllegalArgumentException("No scope type for '" + scope + "'.");
 		}
 
 		if (scopeType == null) {
@@ -799,7 +799,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		ScopeType scopeType = ScopeType.resolve(scope);
 		
 		if (scope != null && scopeType == null) {
-			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
+			throw new IllegalArgumentException("No scope type for '" + scope + "'.");
 		}
 		
 		if (scopeType == null) {
