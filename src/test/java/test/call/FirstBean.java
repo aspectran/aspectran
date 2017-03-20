@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.count;
+package test.call;
 
 /**
  * <p>Created: 2017. 3. 18.</p>
  */
-public class ThirdBean implements NumericBean {
+public class FirstBean implements NumericBean {
 
 	public int getNumber() {
-		return 3;
+		return 1;
 	}
 
 }

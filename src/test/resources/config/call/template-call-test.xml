@@ -1,0 +1,14 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        This is an Aspectran configuration for testing template calls.
+    </description>
+
+    <template id="template1">TEMPATE-1</template>
+
+    <template id="template2">~{template1}</template>
+
+</aspectran>

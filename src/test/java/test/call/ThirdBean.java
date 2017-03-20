@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean;
+package test.call;
 
-import com.aspectran.core.context.bean.annotation.Autowired;
+/**
+ * <p>Created: 2017. 3. 18.</p>
+ */
+public class ThirdBean implements NumericBean {
 
-public class FirstBean {
-
-	@Autowired
-	private SecondBean secondBean;
-
-	public String getMessage() {
-		return secondBean.getMessage();
+	public int getNumber() {
+		return 3;
 	}
-	
+
 }

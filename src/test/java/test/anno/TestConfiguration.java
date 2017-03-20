@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.count;
+package test.anno;
 
-/**
- * <p>Created: 2017. 3. 18.</p>
- */
-public class TotalBean {
+import com.aspectran.core.context.bean.annotation.Autowired;
+import com.aspectran.core.context.bean.annotation.Bean;
+import com.aspectran.core.context.bean.annotation.Configuration;
+import com.aspectran.core.context.rule.type.ScopeType;
 
-	private NumericBean[] numerics;
+@Configuration
+public class TestConfiguration {
 
-	public void setNumerics(NumericBean[] numerics) {
-		this.numerics = numerics;
+	@Autowired
+	private FirstBean firstBean;
+	
+	@Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
+	public FirstBean getThirdBean() {
+		return firstBean;
 	}
-
-	public NumericBean[] getNumerics() {
-		return numerics;
-	}
-
+	
 }

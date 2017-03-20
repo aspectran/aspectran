@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.count;
+package test.call;
 
 /**
  * <p>Created: 2017. 3. 18.</p>
  */
-public interface NumericBean {
+public class TotalBean {
 
-	int getNumber();
+	private NumericBean[] numerics;
+
+	public void setNumerics(NumericBean[] numerics) {
+		this.numerics = numerics;
+	}
+
+	public NumericBean[] getNumerics() {
+		return numerics;
+	}
 
 }

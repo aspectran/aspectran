@@ -1,0 +1,13 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        This is an Aspectran configuration for testing calls.
+    </description>
+
+    <import file="/config/call/bean-call-test.xml"/>
+    <import file="/config/call/template-call-test.xml"/>
+
+</aspectran>

@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean;
+package test.anno;
 
 import com.aspectran.core.context.bean.annotation.Autowired;
-import com.aspectran.core.context.bean.annotation.Bean;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.rule.type.ScopeType;
 
-@Configuration
-public class TestConfiguration {
+public class FirstBean {
 
 	@Autowired
-	private FirstBean firstBean;
-	
-	@Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
-	public FirstBean getThirdBean() {
-		return firstBean;
+	private SecondBean secondBean;
+
+	public String getMessage() {
+		return secondBean.getMessage();
 	}
 	
 }

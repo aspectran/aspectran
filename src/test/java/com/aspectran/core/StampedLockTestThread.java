@@ -64,7 +64,7 @@ public class StampedLockTestThread implements Runnable {
 
 			count++;
 
-			printMessage("==== count: " + count + " ====");
+			printMessage("==== call: " + count + " ====");
 		} finally {
 			lock.unlock(stamp);
 			printMessage("4. Releasing lock: " + stamp);

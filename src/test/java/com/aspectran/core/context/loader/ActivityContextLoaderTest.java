@@ -30,9 +30,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
-import test.count.NumericBean;
-import test.count.TotalBean;
-
 /**
  * <p>Created: 2016. 3. 26.</p>
  */
@@ -73,22 +70,6 @@ public class ActivityContextLoaderTest {
 		System.out.println("=============== reload ==============");
 
 		context = activityContextLoader.reload(false);
-		context.destroy();
-	}
-
-	@Test
-	public void testBeanCall() throws InvalidResourceException, ActivityContextBuilderException {
-		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
-		activityContextLoader.setHybridLoad(false);
-
-		ActivityContext context = activityContextLoader.load("/config/count-test-config.xml");
-		context.initialize();
-
-		TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
-		for (NumericBean o : totalBean.getNumerics()) {
-			System.out.println(o.getNumber() + " : " + o);
-		}
-
 		context.destroy();
 	}
 
