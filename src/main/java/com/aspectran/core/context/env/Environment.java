@@ -19,12 +19,12 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 
 public interface Environment {
 
-	ApplicationAdapter getApplicationAdapter();
+    ApplicationAdapter getApplicationAdapter();
 
-	String[] getActiveProfiles();
+    String[] getActiveProfiles();
 
-	String[] getDefaultProfiles();
+    String[] getDefaultProfiles();
 
-	boolean acceptsProfiles(String... profiles);	
+    boolean acceptsProfiles(String... profiles);
 
 }

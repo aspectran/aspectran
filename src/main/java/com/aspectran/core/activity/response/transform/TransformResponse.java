@@ -31,61 +31,61 @@ import com.aspectran.core.context.rule.type.TransformType;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public abstract class TransformResponse implements Response {
-	
-	protected final TransformRule transformRule;
-	
-	/**
-	 * Instantiates a new TransformResponse.
-	 * 
-	 * @param transformRule the transform rule
-	 */
-	public TransformResponse(TransformRule transformRule) {
-		this.transformRule = transformRule;
-	}
 
-	@Override
-	public ResponseType getResponseType() {
-		return TransformRule.RESPONSE_TYPE;
-	}
+    protected final TransformRule transformRule;
 
-	@Override
-	public String getContentType() {
-		return transformRule.getContentType();
-	}
+    /**
+     * Instantiates a new TransformResponse.
+     *
+     * @param transformRule the transform rule
+     */
+    public TransformResponse(TransformRule transformRule) {
+        this.transformRule = transformRule;
+    }
 
-	/**
-	 * Gets the transform type.
-	 * 
-	 * @return the transform type
-	 */
-	public TransformType getTransformType() {
-		return transformRule.getTransformType();
-	}
-	
-	/**
-	 * Gets the transform rule.
-	 * 
-	 * @return the transform rule
-	 */
-	public TransformRule getTransformRule() {
-		return transformRule;
-	}
+    @Override
+    public ResponseType getResponseType() {
+        return TransformRule.RESPONSE_TYPE;
+    }
 
-	/**
-	 * Gets the template as stream.
-	 * 
-	 * @param url the url of the template
-	 * @return the input stream of the template
-	 * @throws IOException if an I/O error has occurred
-	 */
-	protected InputStream getTemplateAsStream(URL url) throws IOException {
-		URLConnection conn = url.openConnection();
-		return conn.getInputStream();
-	}
+    @Override
+    public String getContentType() {
+        return transformRule.getContentType();
+    }
 
-	@Override
-	public String toString() {
-		return transformRule.toString();
-	}
-	
+    /**
+     * Gets the transform type.
+     *
+     * @return the transform type
+     */
+    public TransformType getTransformType() {
+        return transformRule.getTransformType();
+    }
+
+    /**
+     * Gets the transform rule.
+     *
+     * @return the transform rule
+     */
+    public TransformRule getTransformRule() {
+        return transformRule;
+    }
+
+    /**
+     * Gets the template as stream.
+     *
+     * @param url the url of the template
+     * @return the input stream of the template
+     * @throws IOException if an I/O error has occurred
+     */
+    protected InputStream getTemplateAsStream(URL url) throws IOException {
+        URLConnection conn = url.openConnection();
+        return conn.getInputStream();
+    }
+
+    @Override
+    public String toString() {
+        return transformRule.toString();
+    }
+
 }

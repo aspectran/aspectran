@@ -21,45 +21,45 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
-	public static final ParameterDefinition actions;
-	public static final ParameterDefinition contentType;
-	public static final ParameterDefinition target;
-	public static final ParameterDefinition characterEncoding;
-	public static final ParameterDefinition excludeNullParameter;
-	public static final ParameterDefinition excludeEmptyParameter;
-	public static final ParameterDefinition defaultResponse;
-	public static final ParameterDefinition parameters;
+    public static final ParameterDefinition actions;
+    public static final ParameterDefinition contentType;
+    public static final ParameterDefinition target;
+    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition excludeNullParameter;
+    public static final ParameterDefinition excludeEmptyParameter;
+    public static final ParameterDefinition defaultResponse;
+    public static final ParameterDefinition parameters;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
-		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-		target = new ParameterDefinition("target", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
-		excludeNullParameter = new ParameterDefinition("excludeNullParameter", ParameterValueType.BOOLEAN);
-		excludeEmptyParameter = new ParameterDefinition("excludeEmptyParameter", ParameterValueType.BOOLEAN);
-		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
-		parameters = new ParameterDefinition("parameter", ItemHolderParameters.class);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			actions,
-			contentType,
-			target,
-			characterEncoding,
-			excludeNullParameter,
-			excludeEmptyParameter,
-			defaultResponse,
-			parameters
-		};
-	}
-	
-	public RedirectParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public RedirectParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    static {
+        actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+        target = new ParameterDefinition("target", ParameterValueType.STRING);
+        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        excludeNullParameter = new ParameterDefinition("excludeNullParameter", ParameterValueType.BOOLEAN);
+        excludeEmptyParameter = new ParameterDefinition("excludeEmptyParameter", ParameterValueType.BOOLEAN);
+        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+        parameters = new ParameterDefinition("parameter", ItemHolderParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            actions,
+            contentType,
+            target,
+            characterEncoding,
+            excludeNullParameter,
+            excludeEmptyParameter,
+            defaultResponse,
+            parameters
+        };
+    }
+
+    public RedirectParameters() {
+        super(parameterDefinitions);
+    }
+
+    public RedirectParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

@@ -20,8 +20,8 @@ package test.call;
  */
 public class SecondBean implements NumericBean {
 
-	public int getNumber() {
-		return 2;
-	}
+    public int getNumber() {
+        return 2;
+    }
 
 }

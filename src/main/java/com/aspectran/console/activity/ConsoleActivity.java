@@ -49,146 +49,146 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ConsoleActivity extends CoreActivity {
 
-	private static final Log log = LogFactory.getLog(ConsoleActivity.class);
-	
-	private final ConsoleAspectranService service;
+    private static final Log log = LogFactory.getLog(ConsoleActivity.class);
 
-	private final ConsoleInout consoleInout;
+    private final ConsoleAspectranService service;
 
-	private final Writer[] redirectionWriters;
+    private final ConsoleInout consoleInout;
 
-	/**
-	 * Instantiates a new ConsoleActivity.
-	 *
-	 * @param service the console aspectran service
-	 * @param redirectionWriters the redirection writers
-	 */
-	public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
-		super(service.getActivityContext());
-		setSessionAdapter(service.getSessionAdapter());
+    private final Writer[] redirectionWriters;
 
-		this.service = service;
-		this.consoleInout = service.getConsoleInout();
-		this.redirectionWriters = redirectionWriters;
-	}
+    /**
+     * Instantiates a new ConsoleActivity.
+     *
+     * @param service the console aspectran service
+     * @param redirectionWriters the redirection writers
+     */
+    public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
+        super(service.getActivityContext());
+        setSessionAdapter(service.getSessionAdapter());
 
-	@Override
-	protected void adapt() throws AdapterException {
-		try {
-			RequestAdapter requestAdapter = new ConsoleRequestAdapter();
-			requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
-			setRequestAdapter(requestAdapter);
+        this.service = service;
+        this.consoleInout = service.getConsoleInout();
+        this.redirectionWriters = redirectionWriters;
+    }
 
-			Writer outputWriter;
-			if (redirectionWriters == null) {
-				outputWriter = consoleInout.getUnclosableWriter();
-			} else {
-				List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
-				writerList.add(consoleInout.getUnclosableWriter());
-				Collections.addAll(writerList, redirectionWriters);
-				outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
-			}
+    @Override
+    protected void adapt() throws AdapterException {
+        try {
+            RequestAdapter requestAdapter = new ConsoleRequestAdapter();
+            requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
+            setRequestAdapter(requestAdapter);
 
-			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(outputWriter);
-			responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
-			setResponseAdapter(responseAdapter);
-		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to console application activity.", e);
-		}
-	}
+            Writer outputWriter;
+            if (redirectionWriters == null) {
+                outputWriter = consoleInout.getUnclosableWriter();
+            } else {
+                List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
+                writerList.add(consoleInout.getUnclosableWriter());
+                Collections.addAll(writerList, redirectionWriters);
+                outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
+            }
 
-	@Override
-	protected void parseRequest() {
-		receiveRequiredParameters();
+            ResponseAdapter responseAdapter = new ConsoleResponseAdapter(outputWriter);
+            responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
+            setResponseAdapter(responseAdapter);
+        } catch (Exception e) {
+            throw new AdapterException("Could not adapt to console application activity.", e);
+        }
+    }
 
-		super.parseRequest();
-	}
+    @Override
+    protected void parseRequest() {
+        receiveRequiredParameters();
 
-	/**
-	 * Receive required input parameters.
-	 */
-	private void receiveRequiredParameters() {
-		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
+        super.parseRequest();
+    }
 
-		if (parameterItemRuleMap != null) {
-			ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
+    /**
+     * Receive required input parameters.
+     */
+    private void receiveRequiredParameters() {
+        ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
-			consoleInout.writeLine("Required parameters:");
+        if (parameterItemRuleMap != null) {
+            ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
 
-			for (ItemRule itemRule : parameterItemRules) {
-				Token[] tokens = itemRule.getTokens();
-				if (tokens == null) {
-					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
-				}
+            consoleInout.writeLine("Required parameters:");
 
-				String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
-				consoleInout.writeLine(" %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
-			}
+            for (ItemRule itemRule : parameterItemRules) {
+                Token[] tokens = itemRule.getTokens();
+                if (tokens == null) {
+                    tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
+                }
 
-			consoleInout.writeLine("Enter a value for each parameter:");
+                String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
+                consoleInout.writeLine(" %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+            }
 
-			ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
+            consoleInout.writeLine("Enter a value for each parameter:");
 
-			if (missingItemRules != null) {
-				consoleInout.writeLine("Please enter a value for all required parameters:");
+            ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
 
-				ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
+            if (missingItemRules != null) {
+                consoleInout.writeLine("Please enter a value for all required parameters:");
 
-				if (missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
-					String[] itemNames = missingItemRules2.getItemNames();
-					String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
-					consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
+                ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
 
-					terminate();
-				}
-			}
-		}
-	}
+                if (missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
+                    String[] itemNames = missingItemRules2.getItemNames();
+                    String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
+                    consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
 
-	private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
-		ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
+                    terminate();
+                }
+            }
+        }
+    }
 
-		try {
-			for (ItemRule itemRule : parameterItemRules) {
-				Token[] tokens = itemRule.getTokens();
-				int inputCount = 0;
+    private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
+        ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
 
-				if (tokens != null && tokens.length > 0) {
-					for (Token token : tokens) {
-						if (token.getType() == TokenType.PARAMETER) {
-							String input = consoleInout.readLine("   %s: ", token.stringify());
-							if (input != null && !input.isEmpty()) {
-								getRequestAdapter().setParameter(token.getName(), input);
-								inputCount++;
-							}
-						}
-					}
-				} else {
-					String input = consoleInout.readLine("   $%s: ", itemRule.getName());
-					if (input != null && !input.isEmpty()) {
-						getRequestAdapter().setParameter(itemRule.getName(), input);
-						inputCount++;
-					}
-				}
+        try {
+            for (ItemRule itemRule : parameterItemRules) {
+                Token[] tokens = itemRule.getTokens();
+                int inputCount = 0;
 
-				if (itemRule.isMandatory() && inputCount == 0) {
-					missingItemRules.add(itemRule);
-				}
-			}
-		} catch (ConsoleTerminatedException e) {
-			log.info("User interrupt occurred.");
-			throw new ActivityTerminatedException();
-		}
+                if (tokens != null && tokens.length > 0) {
+                    for (Token token : tokens) {
+                        if (token.getType() == TokenType.PARAMETER) {
+                            String input = consoleInout.readLine("   %s: ", token.stringify());
+                            if (input != null && !input.isEmpty()) {
+                                getRequestAdapter().setParameter(token.getName(), input);
+                                inputCount++;
+                            }
+                        }
+                    }
+                } else {
+                    String input = consoleInout.readLine("   $%s: ", itemRule.getName());
+                    if (input != null && !input.isEmpty()) {
+                        getRequestAdapter().setParameter(itemRule.getName(), input);
+                        inputCount++;
+                    }
+                }
 
-		return (missingItemRules.isEmpty() ? null : missingItemRules);
-	}
+                if (itemRule.isMandatory() && inputCount == 0) {
+                    missingItemRules.add(itemRule);
+                }
+            }
+        } catch (ConsoleTerminatedException e) {
+            log.info("User interrupt occurred.");
+            throw new ActivityTerminatedException();
+        }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		ConsoleActivity activity = new ConsoleActivity(service, redirectionWriters);
-		activity.setIncluded(true);
-		return (T)activity;
-	}
-	
+        return (missingItemRules.isEmpty() ? null : missingItemRules);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Activity> T newActivity() {
+        ConsoleActivity activity = new ConsoleActivity(service, redirectionWriters);
+        activity.setIncluded(true);
+        return (T)activity;
+    }
+
 }

@@ -2,45 +2,45 @@
                            "http://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
-	
-	<description>
-		Aspectran's AOP is simple and powerful.
-	</description>
 
-	<bean scan="com.aspectran.aop.*Action"/>
+    <description>
+        Aspectran's AOP is simple and powerful.
+    </description>
 
-	<bean id="simpleAopTestAdvice" class="com.aspectran.aop.SimpleAopTestAdvice"/>
+    <bean scan="com.aspectran.aop.*Action"/>
 
-	<aspect id="testAop">
-		<description>
-			요청 URI가 "/example/"로 시작하고,
-			helloworld.HelloWorldAction 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로
-			환영인사와 작별인사를 건넵니다.
-		</description>
-		<joinpoint type="translet">
-			pointcut: {
-				+: /aop/test/*
-			}
-		</joinpoint>
-		<advice bean="simpleAopTestAdvice">
-			<before>
-				<action method="begin"/>
-			</before>
-			<after>
-				<action method="end"/>
-			</after>
-			<finally>
-				<thrown>
-					<action method="thrown"/>
-				</thrown>
-				<action method="close"/>
-			</finally>
-		</advice>
-		<exception>
-			<thrown>
-				<action bean="simpleAopTestAdvice" method="globalExceptionHandling"/>
-			</thrown>
-		</exception>
-	</aspect>
+    <bean id="simpleAopTestAdvice" class="com.aspectran.aop.SimpleAopTestAdvice"/>
+
+    <aspect id="testAop">
+        <description>
+            요청 URI가 "/example/"로 시작하고,
+            helloworld.HelloWorldAction 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로
+            환영인사와 작별인사를 건넵니다.
+        </description>
+        <joinpoint type="translet">
+            pointcut: {
+                +: /aop/test/*
+            }
+        </joinpoint>
+        <advice bean="simpleAopTestAdvice">
+            <before>
+                <action method="begin"/>
+            </before>
+            <after>
+                <action method="end"/>
+            </after>
+            <finally>
+                <thrown>
+                    <action method="thrown"/>
+                </thrown>
+                <action method="close"/>
+            </finally>
+        </advice>
+        <exception>
+            <thrown>
+                <action bean="simpleAopTestAdvice" method="globalExceptionHandling"/>
+            </thrown>
+        </exception>
+    </aspect>
 
 </aspectran>

@@ -28,21 +28,21 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AponReadWriteTest {
 
-	@Test
-	public void writeTest() throws IOException {
-		File file = new File("./target/test-classes/config/apon/apon-test.apon");
-		Parameters parameters = AponReader.parse(file);
-		
-		File outputFile = new File("./target/test-classes/config/apon/apon-test-output.apon");
+    @Test
+    public void writeTest() throws IOException {
+        File file = new File("./target/test-classes/config/apon/apon-test.apon");
+        Parameters parameters = AponReader.parse(file);
 
-		AponWriter aponWriter = new AponWriter(outputFile);
-		aponWriter.setPrettyPrint(true);
-		aponWriter.setNoQuotes(true);
-		aponWriter.setNullWrite(true);
-		aponWriter.setTypeHintWrite(true);
-		aponWriter.setIndentString("  ");
-		aponWriter.write(parameters);
-		aponWriter.close();
-	}
+        File outputFile = new File("./target/test-classes/config/apon/apon-test-output.apon");
+
+        AponWriter aponWriter = new AponWriter(outputFile);
+        aponWriter.setPrettyPrint(true);
+        aponWriter.setNoQuotes(true);
+        aponWriter.setNullWrite(true);
+        aponWriter.setTypeHintWrite(true);
+        aponWriter.setIndentString("  ");
+        aponWriter.write(parameters);
+        aponWriter.close();
+    }
 
 }

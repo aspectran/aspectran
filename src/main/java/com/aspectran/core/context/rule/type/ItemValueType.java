@@ -22,48 +22,48 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ItemValueType {
 
-	STRING("string", java.lang.String.class),
-	INT("int", java.lang.Integer.class),
-	LONG("long", java.lang.Long.class),
-	FLOAT("float", java.lang.Float.class),
-	DOUBLE("double", java.lang.Double.class),
-	BOOLEAN("boolean", java.lang.Boolean.class),
-	PARAMETERS("parameters", com.aspectran.core.util.apon.Parameters.class),
-	FILE("file", java.io.File.class),
-	MULTIPART_FILE("multipartFile", com.aspectran.core.activity.request.parameter.FileParameter.class);
+    STRING("string", java.lang.String.class),
+    INT("int", java.lang.Integer.class),
+    LONG("long", java.lang.Long.class),
+    FLOAT("float", java.lang.Float.class),
+    DOUBLE("double", java.lang.Double.class),
+    BOOLEAN("boolean", java.lang.Boolean.class),
+    PARAMETERS("parameters", com.aspectran.core.util.apon.Parameters.class),
+    FILE("file", java.io.File.class),
+    MULTIPART_FILE("multipartFile", com.aspectran.core.activity.request.parameter.FileParameter.class);
 
-	private final String alias;
+    private final String alias;
 
-	private final Class<?> classType;
+    private final Class<?> classType;
 
-	ItemValueType(String alias, Class<?> classType) {
-		this.alias = alias;
-		this.classType = classType;
-	}
+    ItemValueType(String alias, Class<?> classType) {
+        this.alias = alias;
+        this.classType = classType;
+    }
 
-	public Class<?> getClassType() {
-		return classType;
-	}
+    public Class<?> getClassType() {
+        return classType;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code ItemValueType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the item value type as a {@code String}
-	 * @return an {@code ItemValueType}, may be {@code null}
-	 */
-	public static ItemValueType resolve(String alias) {
-		for (ItemValueType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code ItemValueType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the item value type as a {@code String}
+     * @return an {@code ItemValueType}, may be {@code null}
+     */
+    public static ItemValueType resolve(String alias) {
+        for (ItemValueType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

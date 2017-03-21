@@ -23,43 +23,43 @@ import com.aspectran.core.context.AspectranRuntimeException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ActivityException extends AspectranRuntimeException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -4400747654771758521L;
 
-	/**
-	 * Instantiates a new ActivityException.
-	 */
-	public ActivityException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -4400747654771758521L;
 
-	/**
-	 * Instantiates a new ActivityException.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public ActivityException(String msg) {
-		super(msg);
-	}
+    /**
+     * Instantiates a new ActivityException.
+     */
+    public ActivityException() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new ActivityException.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new ActivityException.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public ActivityException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Instantiates a new ActivityException.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Instantiates a new ActivityException.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ActivityException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Instantiates a new ActivityException.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ActivityException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

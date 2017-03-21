@@ -24,77 +24,77 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ScheduleJobRule {
 
-	private final ScheduleRule scheduleRule;
-	
-	private String transletName;
+    private final ScheduleRule scheduleRule;
 
-	private MethodType requestMethod;
+    private String transletName;
 
-	private Boolean disabled;
+    private MethodType requestMethod;
 
-	public ScheduleJobRule(ScheduleRule scheduleRule) {
-		this.scheduleRule = scheduleRule;
-	}
-	
-	public ScheduleRule getScheduleRule() {
-		return scheduleRule;
-	}
+    private Boolean disabled;
 
-	public String getTransletName() {
-		return transletName;
-	}
+    public ScheduleJobRule(ScheduleRule scheduleRule) {
+        this.scheduleRule = scheduleRule;
+    }
 
-	public void setTransletName(String transletName) {
-		this.transletName = transletName;
-	}
+    public ScheduleRule getScheduleRule() {
+        return scheduleRule;
+    }
 
-	public MethodType getRequestMethod() {
-		return requestMethod;
-	}
+    public String getTransletName() {
+        return transletName;
+    }
 
-	public void setRequestMethod(MethodType requestMethod) {
-		this.requestMethod = requestMethod;
-	}
+    public void setTransletName(String transletName) {
+        this.transletName = transletName;
+    }
 
-	public Boolean getDisabled() {
-		return disabled;
-	}
-	
-	public boolean isDisabled() {
-		return BooleanUtils.toBoolean(disabled);
-	}
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
 
-	public void setDisabled(Boolean disabled) {
-		this.disabled = disabled;
-	}
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("transletName", transletName);
-		tsb.append("method", requestMethod);
-		tsb.append("disabled", disabled);
-		return tsb.toString();
-	}
-	
-	public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
-		if (transletName == null) {
-			throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
-		}
+    public Boolean getDisabled() {
+        return disabled;
+    }
 
-		ScheduleJobRule scheduleJobRule = new ScheduleJobRule(scheduleRule);
-		scheduleJobRule.setTransletName(transletName);
-		scheduleJobRule.setDisabled(disabled);
+    public boolean isDisabled() {
+        return BooleanUtils.toBoolean(disabled);
+    }
 
-		if (method != null) {
-			MethodType methodType = MethodType.resolve(method);
-			if (methodType == null) {
-				throw new IllegalArgumentException("No request method type for '" + method + "'.");
-			}
-			scheduleJobRule.setRequestMethod(methodType);
-		}
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
 
-		return scheduleJobRule;
-	}
-	
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("transletName", transletName);
+        tsb.append("method", requestMethod);
+        tsb.append("disabled", disabled);
+        return tsb.toString();
+    }
+
+    public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
+        if (transletName == null) {
+            throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+        }
+
+        ScheduleJobRule scheduleJobRule = new ScheduleJobRule(scheduleRule);
+        scheduleJobRule.setTransletName(transletName);
+        scheduleJobRule.setDisabled(disabled);
+
+        if (method != null) {
+            MethodType methodType = MethodType.resolve(method);
+            if (methodType == null) {
+                throw new IllegalArgumentException("No request method type for '" + method + "'.");
+            }
+            scheduleJobRule.setRequestMethod(methodType);
+        }
+
+        return scheduleJobRule;
+    }
+
 }

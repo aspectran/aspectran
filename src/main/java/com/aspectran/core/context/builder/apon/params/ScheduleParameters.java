@@ -21,33 +21,33 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ScheduleParameters extends AbstractParameters {
 
-	public static final ParameterDefinition description;
-	public static final ParameterDefinition id;
-	public static final ParameterDefinition scheduler;
-	public static final ParameterDefinition jobs;
+    public static final ParameterDefinition description;
+    public static final ParameterDefinition id;
+    public static final ParameterDefinition scheduler;
+    public static final ParameterDefinition jobs;
 
-	private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
-	static {
-		description = new ParameterDefinition("description", ParameterValueType.TEXT);
-		id = new ParameterDefinition("id", ParameterValueType.STRING);
-		scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
-		jobs = new ParameterDefinition("job", ScheduleJobParameters.class, true, true);
+    static {
+        description = new ParameterDefinition("description", ParameterValueType.TEXT);
+        id = new ParameterDefinition("id", ParameterValueType.STRING);
+        scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
+        jobs = new ParameterDefinition("job", ScheduleJobParameters.class, true, true);
 
-		parameterDefinitions = new ParameterDefinition[] {
-			description,
-			id,
-			scheduler,
-			jobs
-		};
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            description,
+            id,
+            scheduler,
+            jobs
+        };
+    }
 
-	public ScheduleParameters() {
-		super(parameterDefinitions);
-	}
+    public ScheduleParameters() {
+        super(parameterDefinitions);
+    }
 
-	public ScheduleParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public ScheduleParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

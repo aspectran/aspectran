@@ -24,23 +24,23 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
  * @since 2008. 03. 23
  */
 public interface ViewDispatcher {
-	
-	String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
-	
-	/**
-	 * Dispatch to other resources as the given rule.
-	 *
-	 * @param activity the current activity
-	 * @param dispatchResponseRule the dispatch response rule
-	 * @throws ViewDispatchException the view dispatch exception
-	 */
-	void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
 
-	/**
-	 * Return whether this view dispatcher corresponds to a singleton instance.
-	 *
-	 * @return whether this view dispatcher corresponds to a singleton instance
+    String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
+
+    /**
+     * Dispatch to other resources as the given rule.
+     *
+     * @param activity the current activity
+     * @param dispatchResponseRule the dispatch response rule
+     * @throws ViewDispatchException the view dispatch exception
      */
-	boolean isSingleton();
-	
+    void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
+
+    /**
+     * Return whether this view dispatcher corresponds to a singleton instance.
+     *
+     * @return whether this view dispatcher corresponds to a singleton instance
+     */
+    boolean isSingleton();
+
 }

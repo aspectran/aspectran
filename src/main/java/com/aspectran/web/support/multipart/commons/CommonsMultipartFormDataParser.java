@@ -47,218 +47,218 @@ import com.aspectran.web.activity.request.MultipartRequestParseException;
  */
 public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
-	private static final Log log = LogFactory.getLog(CommonsMultipartFormDataParser.class);
+    private static final Log log = LogFactory.getLog(CommonsMultipartFormDataParser.class);
 
-	private String tempDirectoryPath;
+    private String tempDirectoryPath;
 
-	private long maxRequestSize = -1L;
+    private long maxRequestSize = -1L;
 
-	private long maxFileSize = -1L;
+    private long maxFileSize = -1L;
 
-	private int maxInMemorySize = -1;
+    private int maxInMemorySize = -1;
 
-	private String allowedFileExtensions;
+    private String allowedFileExtensions;
 
-	private String deniedFileExtensions;
+    private String deniedFileExtensions;
 
-	/**
-	 * Instantiates a new MultipartFormDataParser.
-	 */
-	public CommonsMultipartFormDataParser() {
-	}
+    /**
+     * Instantiates a new MultipartFormDataParser.
+     */
+    public CommonsMultipartFormDataParser() {
+    }
 
-	@Override
-	public String getTempDirectoryPath() {
-		return tempDirectoryPath;
-	}
+    @Override
+    public String getTempDirectoryPath() {
+        return tempDirectoryPath;
+    }
 
-	@Override
-	public void setTempDirectoryPath(String tempDirectoryPath) {
-		File tempDirectory = new File(tempDirectoryPath);
-		if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
-			throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
-		}
-		this.tempDirectoryPath = tempDirectoryPath;
-	}
+    @Override
+    public void setTempDirectoryPath(String tempDirectoryPath) {
+        File tempDirectory = new File(tempDirectoryPath);
+        if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
+            throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
+        }
+        this.tempDirectoryPath = tempDirectoryPath;
+    }
 
-	@Override
-	public void setMaxRequestSize(long maxRequestSize) {
-		this.maxRequestSize = maxRequestSize;
-	}
+    @Override
+    public void setMaxRequestSize(long maxRequestSize) {
+        this.maxRequestSize = maxRequestSize;
+    }
 
-	@Override
-	public void setMaxFileSize(long maxFileSize) {
-		this.maxFileSize = maxFileSize;
-	}
+    @Override
+    public void setMaxFileSize(long maxFileSize) {
+        this.maxFileSize = maxFileSize;
+    }
 
-	@Override
-	public void setMaxInMemorySize(int maxInMemorySize) {
-		this.maxInMemorySize = maxInMemorySize;
-	}
+    @Override
+    public void setMaxInMemorySize(int maxInMemorySize) {
+        this.maxInMemorySize = maxInMemorySize;
+    }
 
-	@Override
-	public void setAllowedFileExtensions(String allowedFileExtensions) {
-		this.allowedFileExtensions = allowedFileExtensions;
-	}
+    @Override
+    public void setAllowedFileExtensions(String allowedFileExtensions) {
+        this.allowedFileExtensions = allowedFileExtensions;
+    }
 
-	@Override
-	public void setDeniedFileExtensions(String deniedFileExtensions) {
-		this.deniedFileExtensions = deniedFileExtensions;
-	}
+    @Override
+    public void setDeniedFileExtensions(String deniedFileExtensions) {
+        this.deniedFileExtensions = deniedFileExtensions;
+    }
 
-	@Override
-	public void parse(RequestAdapter requestAdapter) {
-		try {
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			if (maxInMemorySize > -1) {
-				factory.setSizeThreshold(maxInMemorySize);
-			}
+    @Override
+    public void parse(RequestAdapter requestAdapter) {
+        try {
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            if (maxInMemorySize > -1) {
+                factory.setSizeThreshold(maxInMemorySize);
+            }
 
-			if (tempDirectoryPath != null) {
-				File repository = new File(tempDirectoryPath);
-				if (!repository.exists() && !repository.mkdirs()) {
-					throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
-				}
-				factory.setRepository(repository);
-			}
+            if (tempDirectoryPath != null) {
+                File repository = new File(tempDirectoryPath);
+                if (!repository.exists() && !repository.mkdirs()) {
+                    throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
+                }
+                factory.setRepository(repository);
+            }
 
-			FileUpload upload = new ServletFileUpload(factory);
-			upload.setHeaderEncoding(requestAdapter.getCharacterEncoding());
-			if (maxRequestSize > -1) {
-				upload.setSizeMax(maxRequestSize);
-			}
-			if (maxFileSize > -1){
-				upload.setFileSizeMax(maxFileSize);
-			}
+            FileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding(requestAdapter.getCharacterEncoding());
+            if (maxRequestSize > -1) {
+                upload.setSizeMax(maxRequestSize);
+            }
+            if (maxFileSize > -1){
+                upload.setFileSizeMax(maxFileSize);
+            }
 
-			Map<String, List<FileItem>> fileItemListMap;
+            Map<String, List<FileItem>> fileItemListMap;
 
-			try {
-				RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
-				fileItemListMap = upload.parseParameterMap(requestContext);
-			} catch (SizeLimitExceededException e) {
-				log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);
-				requestAdapter.setMaxLengthExceeded(true);
-				return;
-			}
+            try {
+                RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
+                fileItemListMap = upload.parseParameterMap(requestContext);
+            } catch (SizeLimitExceededException e) {
+                log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);
+                requestAdapter.setMaxLengthExceeded(true);
+                return;
+            }
 
-			parseMultipart(fileItemListMap, requestAdapter);
-		} catch (Exception e) {
-			throw new MultipartRequestParseException("Could not parse multipart servlet request.", e);
-		}
-	}
+            parseMultipart(fileItemListMap, requestAdapter);
+        } catch (Exception e) {
+            throw new MultipartRequestParseException("Could not parse multipart servlet request.", e);
+        }
+    }
 
-	/**
-	 * Parse form fields and file item.
-	 *
-	 * @param fileItemListMap the file item list map
-	 * @param requestAdapter the request adapter
-	 */
-	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) {
-		String characterEncoding = requestAdapter.getCharacterEncoding();
-		MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
-		MultiValueMap<String, FileParameter> fileParameterMap = new LinkedMultiValueMap<>();
+    /**
+     * Parse form fields and file item.
+     *
+     * @param fileItemListMap the file item list map
+     * @param requestAdapter the request adapter
+     */
+    private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) {
+        String characterEncoding = requestAdapter.getCharacterEncoding();
+        MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, FileParameter> fileParameterMap = new LinkedMultiValueMap<>();
 
-		for (Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
-			String fieldName = entry.getKey();
-			List<FileItem> fileItemList = entry.getValue();
+        for (Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
+            String fieldName = entry.getKey();
+            List<FileItem> fileItemList = entry.getValue();
 
-			if (fileItemList != null && !fileItemList.isEmpty()) {
-				for (FileItem fileItem : fileItemList) {
-					if (fileItem.isFormField()) {
-						String value = getString(fileItem, characterEncoding);
-						parameterMap.add(fieldName, value);
-					} else {
-						String fileName = fileItem.getName();
+            if (fileItemList != null && !fileItemList.isEmpty()) {
+                for (FileItem fileItem : fileItemList) {
+                    if (fileItem.isFormField()) {
+                        String value = getString(fileItem, characterEncoding);
+                        parameterMap.add(fieldName, value);
+                    } else {
+                        String fileName = fileItem.getName();
 
-						// Skip file uploads that don't have a file name - meaning that
-						// no file was selected.
-						if (fileName == null || StringUtils.isEmpty(fileName)) {
-							continue;
-						}
-						
-						boolean valid = FilenameUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
-						if (!valid) {
-							continue;
-						}
+                        // Skip file uploads that don't have a file name - meaning that
+                        // no file was selected.
+                        if (fileName == null || StringUtils.isEmpty(fileName)) {
+                            continue;
+                        }
 
-						CommonsMultipartFileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
-						fileParameterMap.add(fieldName, fileParameter);
+                        boolean valid = FilenameUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
+                        if (!valid) {
+                            continue;
+                        }
 
-						if (log.isDebugEnabled()) {
-							log.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
-									fileParameter.getFileSize() + " bytes, stored " +
-									fileParameter.getStorageDescription());
-						}
-					}
-				}
-			}
-		}
+                        CommonsMultipartFileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
+                        fileParameterMap.add(fieldName, fileParameter);
 
-		if (!parameterMap.isEmpty()) {
-			for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
-				String name = entry.getKey();
-				List<String> list = entry.getValue();
-				String[] values = list.toArray(new String[list.size()]);
-				requestAdapter.setParameter(name, values);
-			}
-		}
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
+                                    fileParameter.getFileSize() + " bytes, stored " +
+                                    fileParameter.getStorageDescription());
+                        }
+                    }
+                }
+            }
+        }
 
-		if (!fileParameterMap.isEmpty()) {
-			for (Map.Entry<String, List<FileParameter>> entry : fileParameterMap.entrySet()) {
-				String name = entry.getKey();
-				List<FileParameter> list = entry.getValue();
-				FileParameter[] values = list.toArray(new FileParameter[list.size()]);
-				requestAdapter.setFileParameter(name, values);
-			}
-		}
-	}
-	
-	private String getString(FileItem fileItem, String characterEncoding) {
-		String value;
-		if (characterEncoding != null) {
-			try {
-				value = fileItem.getString(characterEncoding);
-			} catch (UnsupportedEncodingException ex) {
-				log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
-						"' with encoding '" + characterEncoding + "': using platform default.");
-				value = fileItem.getString();
-			}
-		} else {
-			value = fileItem.getString();
-		}
-		return value;
-	}
+        if (!parameterMap.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+                String name = entry.getKey();
+                List<String> list = entry.getValue();
+                String[] values = list.toArray(new String[list.size()]);
+                requestAdapter.setParameter(name, values);
+            }
+        }
 
-	/**
-	 * Creates a RequestContext needed by Jakarta Commons Upload.
-	 * 
-	 * @param req the HTTP request.
-	 * @return a new request context.
-	 */
-	private RequestContext createRequestContext(final HttpServletRequest req) {
-		return new RequestContext() {
-			@Override
-			public String getCharacterEncoding() {
-				return req.getCharacterEncoding();
-			}
+        if (!fileParameterMap.isEmpty()) {
+            for (Map.Entry<String, List<FileParameter>> entry : fileParameterMap.entrySet()) {
+                String name = entry.getKey();
+                List<FileParameter> list = entry.getValue();
+                FileParameter[] values = list.toArray(new FileParameter[list.size()]);
+                requestAdapter.setFileParameter(name, values);
+            }
+        }
+    }
 
-			@Override
-			public String getContentType() {
-				return req.getContentType();
-			}
+    private String getString(FileItem fileItem, String characterEncoding) {
+        String value;
+        if (characterEncoding != null) {
+            try {
+                value = fileItem.getString(characterEncoding);
+            } catch (UnsupportedEncodingException ex) {
+                log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
+                        "' with encoding '" + characterEncoding + "': using platform default.");
+                value = fileItem.getString();
+            }
+        } else {
+            value = fileItem.getString();
+        }
+        return value;
+    }
 
-			@Override
-			@Deprecated
-			public int getContentLength() {
-				return req.getContentLength();
-			}
+    /**
+     * Creates a RequestContext needed by Jakarta Commons Upload.
+     *
+     * @param req the HTTP request.
+     * @return a new request context.
+     */
+    private RequestContext createRequestContext(final HttpServletRequest req) {
+        return new RequestContext() {
+            @Override
+            public String getCharacterEncoding() {
+                return req.getCharacterEncoding();
+            }
 
-			@Override
-			public InputStream getInputStream() throws IOException {
-				return req.getInputStream();
-			}
-		};
-	}
+            @Override
+            public String getContentType() {
+                return req.getContentType();
+            }
+
+            @Override
+            @Deprecated
+            public int getContentLength() {
+                return req.getContentLength();
+            }
+
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return req.getInputStream();
+            }
+        };
+    }
 
 }

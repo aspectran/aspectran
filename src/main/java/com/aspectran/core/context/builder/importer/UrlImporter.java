@@ -30,44 +30,44 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public class UrlImporter extends AbstractImporter {
-	
-	private final static ImporterType URL_IMPORTER = ImporterType.URL;
-	
-	private final String urlString;
 
-	public UrlImporter(String urlString, ImporterFileFormatType importerFileFormatType) {
-		super(URL_IMPORTER);
+    private final static ImporterType URL_IMPORTER = ImporterType.URL;
 
-		if (importerFileFormatType == null) {
-			importerFileFormatType = urlString.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
-		}
+    private final String urlString;
 
-		setImporterFileFormatType(importerFileFormatType);
-		
-		this.urlString = urlString;
-	}
-	
-	@Override
-	public String getDistinguishedName() {
-		return urlString;
-	}
+    public UrlImporter(String urlString, ImporterFileFormatType importerFileFormatType) {
+        super(URL_IMPORTER);
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		URL url = new URL(urlString);
-		URLConnection conn = url.openConnection();
-		setLastModified(conn.getLastModified());
+        if (importerFileFormatType == null) {
+            importerFileFormatType = urlString.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
+        }
 
-		return conn.getInputStream();
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("importerType", getImporterType());
-		tsb.append("url", urlString);
-		tsb.append("profile", getProfiles());
-		return tsb.toString();
-	}
-	
+        setImporterFileFormatType(importerFileFormatType);
+
+        this.urlString = urlString;
+    }
+
+    @Override
+    public String getDistinguishedName() {
+        return urlString;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        URL url = new URL(urlString);
+        URLConnection conn = url.openConnection();
+        setLastModified(conn.getLastModified());
+
+        return conn.getInputStream();
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("importerType", getImporterType());
+        tsb.append("url", urlString);
+        tsb.append("profile", getProfiles());
+        return tsb.toString();
+    }
+
 }

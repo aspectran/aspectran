@@ -24,43 +24,43 @@ import com.aspectran.core.context.AspectranRuntimeException;
  */
 public class TemplateException extends AspectranRuntimeException {
 
-	/** @serial */
-	private static final long serialVersionUID = -6904998412140480762L;
+    /** @serial */
+    private static final long serialVersionUID = -6904998412140480762L;
 
-	/**
-	 * Creates a new TemplateException without detail message.
-	 */
-	public TemplateException() {
-		super();
-	}
+    /**
+     * Creates a new TemplateException without detail message.
+     */
+    public TemplateException() {
+        super();
+    }
 
-	/**
-	 * Constructs a TemplateException with the specified detail message.
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public TemplateException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructs a TemplateException with the specified detail message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public TemplateException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public TemplateException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public TemplateException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructs a TemplateException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a TemplateException.
-	 *
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public TemplateException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
+    /**
+     * Constructs a TemplateException with the specified error message and also the specified root cause exception.
+     * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a TemplateException.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public TemplateException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

@@ -23,41 +23,41 @@ import com.aspectran.core.context.expr.token.Token;
  */
 public class TokenEvaluationException extends AspectranRuntimeException {
 
-	/** @serial */
-	private static final long serialVersionUID = 2303202652519466514L;
+    /** @serial */
+    private static final long serialVersionUID = 2303202652519466514L;
 
-	private Token token;
+    private Token token;
 
-	/**
-	 * Instantiates a new token evaluation exception.
-	 *
-	 * @param msg the detail message
-	 * @param token the token
-	 */
-	public TokenEvaluationException(String msg, Token token) {
-		super(msg + " " + token);
-		this.token = token;
-	}
+    /**
+     * Instantiates a new token evaluation exception.
+     *
+     * @param msg the detail message
+     * @param token the token
+     */
+    public TokenEvaluationException(String msg, Token token) {
+        super(msg + " " + token);
+        this.token = token;
+    }
 
-	/**
-	 * Instantiates a new token evaluation exception.
-	 *
-	 * @param msg the detail message
-	 * @param token the token
-	 * @param cause the root cause
-	 */
-	public TokenEvaluationException(String msg, Token token, Throwable cause) {
-		super(msg + " " + token, cause);
-		this.token = token;
-	}
+    /**
+     * Instantiates a new token evaluation exception.
+     *
+     * @param msg the detail message
+     * @param token the token
+     * @param cause the root cause
+     */
+    public TokenEvaluationException(String msg, Token token, Throwable cause) {
+        super(msg + " " + token, cause);
+        this.token = token;
+    }
 
-	/**
-	 * Gets the token which is failed to evaluate expression.
-	 *
-	 * @return the token
-	 */
-	public Token getToken() {
-		return this.token;
-	}
+    /**
+     * Gets the token which is failed to evaluate expression.
+     *
+     * @return the token
+     */
+    public Token getToken() {
+        return this.token;
+    }
 
 }

@@ -21,33 +21,33 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranSchedulerConfig extends AbstractParameters {
 
-	public static final ParameterDefinition exposals;
-	public static final ParameterDefinition startDelaySeconds;
-	public static final ParameterDefinition waitOnShutdown;
-	public static final ParameterDefinition startup;
+    public static final ParameterDefinition exposals;
+    public static final ParameterDefinition startDelaySeconds;
+    public static final ParameterDefinition waitOnShutdown;
+    public static final ParameterDefinition startup;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
-		startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
-		waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
-		startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			exposals,
-			startDelaySeconds,
-			waitOnShutdown,
-			startup
-		};
-	}
-	
-	public AspectranSchedulerConfig() {
-		super(parameterDefinitions);
-	}
-	
-	public AspectranSchedulerConfig(String plaintext) {
-		super(parameterDefinitions, plaintext);
-	}
-	
+    static {
+        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
+        startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            exposals,
+            startDelaySeconds,
+            waitOnShutdown,
+            startup
+        };
+    }
+
+    public AspectranSchedulerConfig() {
+        super(parameterDefinitions);
+    }
+
+    public AspectranSchedulerConfig(String plaintext) {
+        super(parameterDefinitions, plaintext);
+    }
+
 }

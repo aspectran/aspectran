@@ -33,96 +33,96 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
 public class IncludeAction extends AbstractAction {
-	
-	private static final Log log = LogFactory.getLog(IncludeAction.class);
 
-	private final IncludeActionRule includeActionRule;
+    private static final Log log = LogFactory.getLog(IncludeAction.class);
 
-	/**
-	 * Instantiates a new IncludeAction.
-	 * 
-	 * @param includeActionRule the process call action rule
-	 * @param parent the parent
-	 */
-	public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
-		super(parent);
-		this.includeActionRule = includeActionRule;
-	}
+    private final IncludeActionRule includeActionRule;
 
-	@Override
-	public Object execute(Activity activity) throws Exception {
-		Activity innerActivity = null;
-		
-		try {
-			innerActivity = activity.newActivity();
-			innerActivity.prepare(includeActionRule.getTransletName());
+    /**
+     * Instantiates a new IncludeAction.
+     *
+     * @param includeActionRule the process call action rule
+     * @param parent the parent
+     */
+    public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
+        super(parent);
+        this.includeActionRule = includeActionRule;
+    }
 
-			if(includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
-				ItemEvaluator evaluator = new ItemExpressionParser(activity);
+    @Override
+    public Object execute(Activity activity) throws Exception {
+        Activity innerActivity = null;
 
-				if (includeActionRule.getParameterItemRuleMap() != null) {
-					Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
-					for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-						innerActivity.getRequestAdapter().setParameter(entry.getKey(), entry.getValue().toString());
-					}
-				}
-				if (includeActionRule.getAttributeItemRuleMap() != null) {
-					Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
-					for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-						innerActivity.getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
-					}
-				}
-			}
+        try {
+            innerActivity = activity.newActivity();
+            innerActivity.prepare(includeActionRule.getTransletName());
 
-			innerActivity.perform();
-			
-			return innerActivity.getProcessResult();
-		} catch (Exception e) {
-			log.error("Failed to execute action that include other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
-			throw e;
-		} finally {
-			if (innerActivity != null) {
-				innerActivity.finish();
-			}
-		}
-	}
+            if(includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
+                ItemEvaluator evaluator = new ItemExpressionParser(activity);
 
-	/**
-	 * Returns the include action rule.
-	 * 
-	 * @return the include action rule
-	 */
-	public IncludeActionRule getIncludeActionRule() {
-		return includeActionRule;
-	}
+                if (includeActionRule.getParameterItemRuleMap() != null) {
+                    Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
+                    for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+                        innerActivity.getRequestAdapter().setParameter(entry.getKey(), entry.getValue().toString());
+                    }
+                }
+                if (includeActionRule.getAttributeItemRuleMap() != null) {
+                    Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
+                    for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+                        innerActivity.getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
 
-	@Override
-	public String getActionId() {
-		return includeActionRule.getActionId();
-	}
+            innerActivity.perform();
 
-	@Override
-	public boolean isHidden() {
-		return includeActionRule.isHidden();
-	}
+            return innerActivity.getProcessResult();
+        } catch (Exception e) {
+            log.error("Failed to execute action that include other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
+            throw e;
+        } finally {
+            if (innerActivity != null) {
+                innerActivity.finish();
+            }
+        }
+    }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.INCLUDE;
-	}
+    /**
+     * Returns the include action rule.
+     *
+     * @return the include action rule
+     */
+    public IncludeActionRule getIncludeActionRule() {
+        return includeActionRule;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getActionRule() {
-		return (T)includeActionRule;
-	}
+    @Override
+    public String getActionId() {
+        return includeActionRule.getActionId();
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("actionType", getActionType());
-		tsb.append("includeActionRule", includeActionRule);
-		return tsb.toString();
-	}
+    @Override
+    public boolean isHidden() {
+        return includeActionRule.isHidden();
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.INCLUDE;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getActionRule() {
+        return (T)includeActionRule;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("actionType", getActionType());
+        tsb.append("includeActionRule", includeActionRule);
+        return tsb.toString();
+    }
 
 }

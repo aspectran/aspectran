@@ -22,12 +22,12 @@ import java.io.IOException;
  */
 public class Jline3ConsoleInoutTest {
 
-	public static void main(String argv[]) throws IOException {
-		ConsoleInout consoleInout = new Jline3ConsoleInout();
-		String prompt = "JLine3 > ";
-		while (true) {
-			consoleInout.readLine(prompt, 'd');
-		}
-	}
+    public static void main(String argv[]) throws IOException {
+        ConsoleInout consoleInout = new Jline3ConsoleInout();
+        String prompt = "JLine3 > ";
+        while (true) {
+            consoleInout.readLine(prompt, 'd');
+        }
+    }
 
 }

@@ -26,38 +26,38 @@ import com.aspectran.core.context.rule.type.PointcutType;
  */
 public class PointcutFactory {
 
-	/**
-	 * Creates a new Pointcut instance.
-	 *
-	 * @param pointcutRule the pointcut rule
-	 * @return the pointcut
-	 */
-	public static Pointcut createPointcut(PointcutRule pointcutRule) {
-		if (pointcutRule.getPointcutType() == PointcutType.REGEXP) {
-			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
-		} else {
-			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
-		}
-	}
+    /**
+     * Creates a new Pointcut instance.
+     *
+     * @param pointcutRule the pointcut rule
+     * @return the pointcut
+     */
+    public static Pointcut createPointcut(PointcutRule pointcutRule) {
+        if (pointcutRule.getPointcutType() == PointcutType.REGEXP) {
+            return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
+        } else {
+            return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
+        }
+    }
 
-	/**
-	 * Creates a new WildcardPointcut instance.
-	 *
-	 * @param pointcutPatternRuleList the pointcut pattern rule list
-	 * @return the pointcut
-	 */
-	private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
-		return new WildcardPointcut(pointcutPatternRuleList);
-	}
+    /**
+     * Creates a new WildcardPointcut instance.
+     *
+     * @param pointcutPatternRuleList the pointcut pattern rule list
+     * @return the pointcut
+     */
+    private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+        return new WildcardPointcut(pointcutPatternRuleList);
+    }
 
-	/**
-	 * Creates a new RegexpPointcut instance.
-	 *
-	 * @param pointcutPatternRuleList the pointcut pattern rule list
-	 * @return the pointcut
-	 */
-	private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
-		return new RegexpPointcut(pointcutPatternRuleList);
-	}
-	
+    /**
+     * Creates a new RegexpPointcut instance.
+     *
+     * @param pointcutPatternRuleList the pointcut pattern rule list
+     * @return the pointcut
+     */
+    private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+        return new RegexpPointcut(pointcutPatternRuleList);
+    }
+
 }

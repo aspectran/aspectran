@@ -24,172 +24,172 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 06. 05 PM 9:25:40</p>
  */
 public class IncludeActionRule {
-	
-	private String actionId;
-	
-	private String transletName;
-	
-	private ItemRuleMap parameterItemRuleMap;
 
-	private ItemRuleMap attributeItemRuleMap;
+    private String actionId;
 
-	private Boolean hidden;
-	
-	/**
-	 * Gets the action id.
-	 *
-	 * @return the action id
-	 */
-	public String getActionId() {
-		return actionId;
-	}
+    private String transletName;
 
-	/**
-	 * Sets the id.
-	 *
-	 * @param actionId the new id
-	 */
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
-	
-	/**
-	 * Gets the translet name.
-	 *
-	 * @return the translet name
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
+    private ItemRuleMap parameterItemRuleMap;
 
-	/**
-	 * Sets the translet name.
-	 *
-	 * @param transletName the new translet name
-	 */
-	public void setTransletName(String transletName) {
-		this.transletName = transletName;
-	}
+    private ItemRuleMap attributeItemRuleMap;
 
-	/**
-	 * Gets the parameter item rule map.
-	 *
-	 * @return the parameter item rule map
-	 */
-	public ItemRuleMap getParameterItemRuleMap() {
-		return parameterItemRuleMap;
-	}
+    private Boolean hidden;
 
-	/**
-	 * Sets the attribute item rule map.
-	 *
-	 * @param parameterItemRuleMap the new attribute item rule map
-	 */
-	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
-		this.parameterItemRuleMap = parameterItemRuleMap;
-	}
+    /**
+     * Gets the action id.
+     *
+     * @return the action id
+     */
+    public String getActionId() {
+        return actionId;
+    }
 
-	/**
-	 * Adds the parameter item rule.
-	 *
-	 * @param parameterItemRule the parameter item rule
-	 */
-	public void addParameterItemRule(ItemRule parameterItemRule) {
-		if (parameterItemRuleMap == null) {
-			parameterItemRuleMap = new ItemRuleMap();
-		}
-		parameterItemRuleMap.putItemRule(parameterItemRule);
-	}
+    /**
+     * Sets the id.
+     *
+     * @param actionId the new id
+     */
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Gets the attribute item rule map.
-	 *
-	 * @return the attribute item rule map
-	 */
-	public ItemRuleMap getAttributeItemRuleMap() {
-		return attributeItemRuleMap;
-	}
+    /**
+     * Gets the translet name.
+     *
+     * @return the translet name
+     */
+    public String getTransletName() {
+        return transletName;
+    }
 
-	/**
-	 * Sets the attribute item rule map.
-	 *
-	 * @param attributeItemRuleMap the new attribute item rule map
-	 */
-	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
-		this.attributeItemRuleMap = attributeItemRuleMap;
-	}
+    /**
+     * Sets the translet name.
+     *
+     * @param transletName the new translet name
+     */
+    public void setTransletName(String transletName) {
+        this.transletName = transletName;
+    }
 
-	/**
-	 * Adds the attribute item rule.
-	 *
-	 * @param attributeItemRule the attribute item rule
-	 */
-	public void addAttributeItemRule(ItemRule attributeItemRule) {
-		if (attributeItemRuleMap == null) {
-			attributeItemRuleMap = new ItemRuleMap();
-		}
-		attributeItemRuleMap.putItemRule(attributeItemRule);
-	}
-	
-	/**
-	 * Returns whether to hide result of the action.
-	 * 
-	 * @return true, if this action is hidden
-	 */
-	public Boolean getHidden() {
-		return hidden;
-	}
+    /**
+     * Gets the parameter item rule map.
+     *
+     * @return the parameter item rule map
+     */
+    public ItemRuleMap getParameterItemRuleMap() {
+        return parameterItemRuleMap;
+    }
 
-	/**
-	 * Returns whether to hide result of the action.
-	 *
-	 * @return true, if this action is hidden
-	 */
-	public Boolean isHidden() {
-		return BooleanUtils.toBoolean(hidden);
-	}
+    /**
+     * Sets the attribute item rule map.
+     *
+     * @param parameterItemRuleMap the new attribute item rule map
+     */
+    public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
+        this.parameterItemRuleMap = parameterItemRuleMap;
+    }
 
-	/**
-	 * Sets whether to hide result of the action.
-	 * 
-	 * @param hidden whether to hide result of the action
-	 */
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", actionId);
-		tsb.append("translet", transletName);
-		if (parameterItemRuleMap != null) {
-			tsb.append("parameters", parameterItemRuleMap.keySet());
-		}
-		if (attributeItemRuleMap != null) {
-			tsb.append("attributes", attributeItemRuleMap.keySet());
-		}
-		return tsb.toString();
-	}
-	
-	/**
-	 * Returns a new instance of IncludeActionRule.
-	 *
-	 * @param id the action id
-	 * @param transletName the translet name
-	 * @param hidden whether to hide result of the action
-	 * @return the include action rule
-	 */
-	public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
-		if (transletName == null) {
-			throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute.");
-		}
+    /**
+     * Adds the parameter item rule.
+     *
+     * @param parameterItemRule the parameter item rule
+     */
+    public void addParameterItemRule(ItemRule parameterItemRule) {
+        if (parameterItemRuleMap == null) {
+            parameterItemRuleMap = new ItemRuleMap();
+        }
+        parameterItemRuleMap.putItemRule(parameterItemRule);
+    }
 
-		IncludeActionRule includeActionRule = new IncludeActionRule();
-		includeActionRule.setActionId(id);
-		includeActionRule.setTransletName(transletName);
-		includeActionRule.setHidden(hidden);
-		return includeActionRule;
-	}
+    /**
+     * Gets the attribute item rule map.
+     *
+     * @return the attribute item rule map
+     */
+    public ItemRuleMap getAttributeItemRuleMap() {
+        return attributeItemRuleMap;
+    }
+
+    /**
+     * Sets the attribute item rule map.
+     *
+     * @param attributeItemRuleMap the new attribute item rule map
+     */
+    public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
+        this.attributeItemRuleMap = attributeItemRuleMap;
+    }
+
+    /**
+     * Adds the attribute item rule.
+     *
+     * @param attributeItemRule the attribute item rule
+     */
+    public void addAttributeItemRule(ItemRule attributeItemRule) {
+        if (attributeItemRuleMap == null) {
+            attributeItemRuleMap = new ItemRuleMap();
+        }
+        attributeItemRuleMap.putItemRule(attributeItemRule);
+    }
+
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public Boolean isHidden() {
+        return BooleanUtils.toBoolean(hidden);
+    }
+
+    /**
+     * Sets whether to hide result of the action.
+     *
+     * @param hidden whether to hide result of the action
+     */
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", actionId);
+        tsb.append("translet", transletName);
+        if (parameterItemRuleMap != null) {
+            tsb.append("parameters", parameterItemRuleMap.keySet());
+        }
+        if (attributeItemRuleMap != null) {
+            tsb.append("attributes", attributeItemRuleMap.keySet());
+        }
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new instance of IncludeActionRule.
+     *
+     * @param id the action id
+     * @param transletName the translet name
+     * @param hidden whether to hide result of the action
+     * @return the include action rule
+     */
+    public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
+        if (transletName == null) {
+            throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute.");
+        }
+
+        IncludeActionRule includeActionRule = new IncludeActionRule();
+        includeActionRule.setActionId(id);
+        includeActionRule.setTransletName(transletName);
+        includeActionRule.setHidden(hidden);
+        return includeActionRule;
+    }
 
 }

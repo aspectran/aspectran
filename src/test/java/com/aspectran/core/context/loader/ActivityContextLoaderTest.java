@@ -36,97 +36,97 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActivityContextLoaderTest {
 
-	private File base;
+    private File base;
 
-	private ApplicationAdapter applicationAdapter;
+    private ApplicationAdapter applicationAdapter;
 
-	@Before
-	public void ready() throws IOException {
-		base = new File("./target/test-classes");
-		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-		applicationAdapter.setBasePath(base.getCanonicalPath());
-		this.applicationAdapter = applicationAdapter;
-	}
+    @Before
+    public void ready() throws IOException {
+        base = new File("./target/test-classes");
+        BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
+        applicationAdapter.setBasePath(base.getCanonicalPath());
+        this.applicationAdapter = applicationAdapter;
+    }
 
-	@Test
-	public void test1HybridLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
-		System.out.println("================ HybridActivityContextLoading ===============");
+    @Test
+    public void test1HybridLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
+        System.out.println("================ HybridActivityContextLoading ===============");
 
-		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
-		activityContextLoader.setHybridLoad(true);
-		activityContextLoader.setActiveProfiles("dev", "local");
+        ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
+        activityContextLoader.setHybridLoad(true);
+        activityContextLoader.setActiveProfiles("dev", "local");
 
-		File apon1 = new File(base, "config/test-config.xml.apon");
-		File apon2 = new File(base, "config/scheduler-config.xml.apon");
+        File apon1 = new File(base, "config/test-config.xml.apon");
+        File apon2 = new File(base, "config/scheduler-config.xml.apon");
 
-		apon1.delete();
-		apon2.delete();
-		
-		System.out.println("================ load ===============");
+        apon1.delete();
+        apon2.delete();
 
-		ActivityContext context = activityContextLoader.load("/config/test-config.xml");
-		context.destroy();
+        System.out.println("================ load ===============");
 
-		System.out.println("=============== reload ==============");
+        ActivityContext context = activityContextLoader.load("/config/test-config.xml");
+        context.destroy();
 
-		context = activityContextLoader.reload(false);
-		context.destroy();
-	}
+        System.out.println("=============== reload ==============");
 
-//	@Test
-//	public void test2XmlLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
-//		System.out.println("================ XMLActivityContextLoading ===============");
-//
-//		File file = new File("./target/test-classes");
-//		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-//		applicationAdapter.setBasePath(file.getCanonicalPath());
-//
-//		ActivityContextLoader activityContextLoader = new XmlActivityContextLoader(applicationAdapter);
-//
-//		System.out.println("================ load ===============");
-//
-//		activityContextLoader.load("/config/test-config.xml");
-//
-//		System.out.println("=============== reload ==============");
-//
-//		activityContextLoader.reload(false);
-//	}
-//
-//	@Test
-//	public void test3AponLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
-//		System.out.println("================ APONActivityContextLoading ===============");
-//
-//		File file = new File("./target/test-classes");
-//		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-//		applicationAdapter.setBasePath(file.getCanonicalPath());
-//
-//		ActivityContextLoader activityContextLoader = new AponActivityContextLoader(applicationAdapter);
-//
-//		System.out.println("================ load ===============");
-//
-//		activityContextLoader.load("/config/test-config.xml.apon");
-//
-//		System.out.println("=============== reload ==============");
-//
-//		activityContextLoader.reload(false);
-//	}
+        context = activityContextLoader.reload(false);
+        context.destroy();
+    }
 
-	@After
-	public void finish() {
-	}
-
-//	private File getResource(ClassLoader classLoader, String resouceName) {
-//		URL url = classLoader.getResource(resouceName);
-//		assert url != null;
-//		return new File(url.getFile());
-//	}
+//    @Test
+//    public void test2XmlLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
+//        System.out.println("================ XMLActivityContextLoading ===============");
 //
-//	private void deleteResource(ClassLoader classLoader, String resouceName) {
-//		URL url = classLoader.getResource(resouceName);
-//		if (url != null) {
-//			File file = new File(url.getFile());
-//			file.delete();
-//		}
-//	}
+//        File file = new File("./target/test-classes");
+//        BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
+//        applicationAdapter.setBasePath(file.getCanonicalPath());
+//
+//        ActivityContextLoader activityContextLoader = new XmlActivityContextLoader(applicationAdapter);
+//
+//        System.out.println("================ load ===============");
+//
+//        activityContextLoader.load("/config/test-config.xml");
+//
+//        System.out.println("=============== reload ==============");
+//
+//        activityContextLoader.reload(false);
+//    }
+//
+//    @Test
+//    public void test3AponLoading() throws ActivityContextBuilderException, InvalidResourceException, IOException {
+//        System.out.println("================ APONActivityContextLoading ===============");
+//
+//        File file = new File("./target/test-classes");
+//        BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
+//        applicationAdapter.setBasePath(file.getCanonicalPath());
+//
+//        ActivityContextLoader activityContextLoader = new AponActivityContextLoader(applicationAdapter);
+//
+//        System.out.println("================ load ===============");
+//
+//        activityContextLoader.load("/config/test-config.xml.apon");
+//
+//        System.out.println("=============== reload ==============");
+//
+//        activityContextLoader.reload(false);
+//    }
+
+    @After
+    public void finish() {
+    }
+
+//    private File getResource(ClassLoader classLoader, String resouceName) {
+//        URL url = classLoader.getResource(resouceName);
+//        assert url != null;
+//        return new File(url.getFile());
+//    }
+//
+//    private void deleteResource(ClassLoader classLoader, String resouceName) {
+//        URL url = classLoader.getResource(resouceName);
+//        if (url != null) {
+//            File file = new File(url.getFile());
+//            file.delete();
+//        }
+//    }
 
 }

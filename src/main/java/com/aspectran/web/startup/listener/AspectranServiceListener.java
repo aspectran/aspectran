@@ -28,31 +28,31 @@ import com.aspectran.web.service.WebAspectranService;
  */
 public class AspectranServiceListener implements ServletContextListener {
 
-	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
+    private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-	private AspectranService aspectranService;
+    private AspectranService aspectranService;
 
-	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		log.info("Initializing AspectranServiceListener...");
-		
-		try {
-			aspectranService = WebAspectranService.build(event.getServletContext());
-		} catch (Exception e) {
-			log.error("AspectranServiceListener initialization failed.", e);
-		}
-	}
-	
-	@Override
-	public void contextDestroyed(ServletContextEvent event) {
-		if (aspectranService != null) {
-			log.info("Do not terminate the server while the all scoped bean destroying.");
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+        log.info("Initializing AspectranServiceListener...");
 
-			aspectranService.getAspectranServiceController().shutdown();
-			aspectranService = null;
+        try {
+            aspectranService = WebAspectranService.build(event.getServletContext());
+        } catch (Exception e) {
+            log.error("AspectranServiceListener initialization failed.", e);
+        }
+    }
 
-			log.info("Successfully destroyed AspectranServiceListener: " + this);
-		}
-	}
-	
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        if (aspectranService != null) {
+            log.info("Do not terminate the server while the all scoped bean destroying.");
+
+            aspectranService.getAspectranServiceController().shutdown();
+            aspectranService = null;
+
+            log.info("Successfully destroyed AspectranServiceListener: " + this);
+        }
+    }
+
 }

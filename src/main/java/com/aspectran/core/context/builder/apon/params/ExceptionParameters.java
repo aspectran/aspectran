@@ -21,27 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ExceptionParameters extends AbstractParameters {
 
-	public static final ParameterDefinition description;
-	public static final ParameterDefinition throwns;
+    public static final ParameterDefinition description;
+    public static final ParameterDefinition throwns;
 
-	private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
-	static {
-		description = new ParameterDefinition("description", ParameterValueType.TEXT);
-		throwns = new ParameterDefinition("thrown", ExceptionThrownParameters.class, true, true);
+    static {
+        description = new ParameterDefinition("description", ParameterValueType.TEXT);
+        throwns = new ParameterDefinition("thrown", ExceptionThrownParameters.class, true, true);
 
-		parameterDefinitions = new ParameterDefinition[] {
-			description,
-			throwns
-		};
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            description,
+            throwns
+        };
+    }
 
-	public ExceptionParameters() {
-		super(parameterDefinitions);
-	}
+    public ExceptionParameters() {
+        super(parameterDefinitions);
+    }
 
-	public ExceptionParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public ExceptionParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

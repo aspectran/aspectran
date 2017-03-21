@@ -37,94 +37,94 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class TextTransformResponse extends TransformResponse {
 
-	private static final Log log = LogFactory.getLog(TextTransformResponse.class);
+    private static final Log log = LogFactory.getLog(TextTransformResponse.class);
 
-	private final String templateId;
+    private final String templateId;
 
-	private final TemplateRule templateRule;
+    private final TemplateRule templateRule;
 
-	private final String characterEncoding;
+    private final String characterEncoding;
 
-	private final String contentType;
-	
-	/**
-	 * Instantiates a new TextTransform.
-	 * 
-	 * @param transformRule the transform rule
-	 */
-	public TextTransformResponse(TransformRule transformRule) {
-		super(transformRule);
+    private final String contentType;
 
-		this.templateId = transformRule.getTemplateId();
-		this.templateRule = transformRule.getTemplateRule();
-		this.characterEncoding = transformRule.getCharacterEncoding();
-		this.contentType = transformRule.getContentType();
-	}
+    /**
+     * Instantiates a new TextTransform.
+     *
+     * @param transformRule the transform rule
+     */
+    public TextTransformResponse(TransformRule transformRule) {
+        super(transformRule);
 
-	@Override
-	public void response(Activity activity) throws TransformResponseException {
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null) {
-			return;
-		}
+        this.templateId = transformRule.getTemplateId();
+        this.templateRule = transformRule.getTemplateRule();
+        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.contentType = transformRule.getContentType();
+    }
 
-		if (log.isDebugEnabled()) {
-			log.debug("response " + transformRule);
-		}
+    @Override
+    public void response(Activity activity) throws TransformResponseException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            return;
+        }
 
-		try {
-			if (this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
-			} else {
-				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
+        if (log.isDebugEnabled()) {
+            log.debug("response " + transformRule);
+        }
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+        try {
+            if (this.characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            } else {
+                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-			Writer writer = responseAdapter.getWriter();
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
 
-			if (templateId != null) {
-				activity.getTemplateProcessor().process(templateId, activity);
-			} else if (templateRule != null) {
-				activity.getTemplateProcessor().process(templateRule, activity);
-			} else {
-				ProcessResult processResult = activity.getProcessResult();
-				if (processResult != null) {
-					int chunks = 0;
-					for (ContentResult contentResult : processResult) {
-						for (ActionResult actionResult : contentResult) {
-							Object resultValue = actionResult.getResultValue();
-							if (resultValue != null) {
-								if (chunks++ > 0) {
-									writer.write(ActivityContext.LINE_SEPARATOR);
-								}
-								writer.write(resultValue.toString());
-							}
-						}
-					}
-				}
-			}
-			
-			writer.flush(); // Never close at this time. Owner will be close.
-		} catch (Exception e) {
-			throw new TransformResponseException(transformRule, e);
-		}
-	}
+            Writer writer = responseAdapter.getWriter();
 
-	@Override
-	public ActionList getActionList() {
-		return transformRule.getActionList();
-	}
+            if (templateId != null) {
+                activity.getTemplateProcessor().process(templateId, activity);
+            } else if (templateRule != null) {
+                activity.getTemplateProcessor().process(templateRule, activity);
+            } else {
+                ProcessResult processResult = activity.getProcessResult();
+                if (processResult != null) {
+                    int chunks = 0;
+                    for (ContentResult contentResult : processResult) {
+                        for (ActionResult actionResult : contentResult) {
+                            Object resultValue = actionResult.getResultValue();
+                            if (resultValue != null) {
+                                if (chunks++ > 0) {
+                                    writer.write(ActivityContext.LINE_SEPARATOR);
+                                }
+                                writer.write(resultValue.toString());
+                            }
+                        }
+                    }
+                }
+            }
 
-	@Override
-	public Response replicate() {
-		TransformRule transformRule = getTransformRule().replicate();
-		return new TextTransformResponse(transformRule);
-	}
+            writer.flush(); // Never close at this time. Owner will be close.
+        } catch (Exception e) {
+            throw new TransformResponseException(transformRule, e);
+        }
+    }
+
+    @Override
+    public ActionList getActionList() {
+        return transformRule.getActionList();
+    }
+
+    @Override
+    public Response replicate() {
+        TransformRule transformRule = getTransformRule().replicate();
+        return new TextTransformResponse(transformRule);
+    }
 
 }

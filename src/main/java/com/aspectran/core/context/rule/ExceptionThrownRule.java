@@ -36,175 +36,175 @@ import com.aspectran.core.util.StringUtils;
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
 public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleApplicable {
-	
-	private String[] exceptionTypes;
 
-	private ResponseMap responseMap = new ResponseMap();
-	
-	private Response defaultResponse;
+    private String[] exceptionTypes;
 
-	private Executable action;
+    private ResponseMap responseMap = new ResponseMap();
 
-	public String[] getExceptionTypes() {
-		return exceptionTypes;
-	}
+    private Response defaultResponse;
 
-	public void setExceptionTypes(String[] exceptionTypes) {
-		this.exceptionTypes = exceptionTypes;
-	}
+    private Executable action;
 
-	public Response getResponse(String contentType) {
-		if (contentType != null) {
-			Response response = responseMap.get(contentType);
-			if (response != null) {
-				return response;
-			}
-		}
-		return getDefaultResponse();
-	}
-	
-	/**
-	 * Gets the response map.
-	 * 
-	 * @return the response map
-	 */
-	public ResponseMap getResponseMap() {
-		return responseMap;
-	}
-	
-	/**
-	 * Sets the response map.
-	 * 
-	 * @param responseMap the new response map
-	 */
-	public void setResponseMap(ResponseMap responseMap) {
-		this.responseMap = responseMap;
-	}
-	
-	public Response getDefaultResponse() {
-		if (defaultResponse == null && responseMap.size() == 1) {
-			return responseMap.getFirst();
-		} else {
-			return defaultResponse;
-		}
-	}
+    public String[] getExceptionTypes() {
+        return exceptionTypes;
+    }
 
-	public void setDefaultResponse(Response response) {
-		this.defaultResponse = response;
-	}
+    public void setExceptionTypes(String[] exceptionTypes) {
+        this.exceptionTypes = exceptionTypes;
+    }
 
-	@Override
-	public Response applyResponseRule(TransformRule transformRule) {
-		Response response = TransformResponseFactory.createTransformResponse(transformRule);
-		if (transformRule.getContentType() != null) {
-			responseMap.put(transformRule.getContentType(), response);
-		}
-		if (transformRule.isDefaultResponse()) {
-			defaultResponse = response;
-		}
-		if (defaultResponse == null && transformRule.getContentType() == null) {
-			defaultResponse = response;
-		}
-		return response;
-	}
+    public Response getResponse(String contentType) {
+        if (contentType != null) {
+            Response response = responseMap.get(contentType);
+            if (response != null) {
+                return response;
+            }
+        }
+        return getDefaultResponse();
+    }
 
-	@Override
-	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		Response response = new DispatchResponse(dispatchResponseRule);
-		if (dispatchResponseRule.getContentType() != null) {
-			responseMap.put(dispatchResponseRule.getContentType(), response);
-		}
-		if (dispatchResponseRule.isDefaultResponse()) {
-			defaultResponse = response;
-		}
-		if (defaultResponse == null && dispatchResponseRule.getContentType() == null) {
-			defaultResponse = response;
-		}
-		return response;
-	}
+    /**
+     * Gets the response map.
+     *
+     * @return the response map
+     */
+    public ResponseMap getResponseMap() {
+        return responseMap;
+    }
 
-	@Override
-	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		Response response = new RedirectResponse(redirectResponseRule);
-		if (redirectResponseRule.getContentType() != null) {
-			responseMap.put(redirectResponseRule.getContentType(), response);
-		}
-		if (redirectResponseRule.getDefaultResponse() == Boolean.TRUE) {
-			defaultResponse = response;
-		}
-		if (defaultResponse == null && redirectResponseRule.getContentType() == null) {
-			defaultResponse = response;
-		}
-		return response;
-	}
+    /**
+     * Sets the response map.
+     *
+     * @param responseMap the new response map
+     */
+    public void setResponseMap(ResponseMap responseMap) {
+        this.responseMap = responseMap;
+    }
 
-	@Override
-	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		Response response = new ForwardResponse(forwardResponseRule);
-		if (forwardResponseRule.getContentType() != null) {
-			responseMap.put(forwardResponseRule.getContentType(), response);
-		}
-		if (forwardResponseRule.isDefaultResponse()) {
-			defaultResponse = response;
-		}
-		if (defaultResponse == null && forwardResponseRule.getContentType() == null) {
-			defaultResponse = response;
-		}
-		return response;
-	}
+    public Response getDefaultResponse() {
+        if (defaultResponse == null && responseMap.size() == 1) {
+            return responseMap.getFirst();
+        } else {
+            return defaultResponse;
+        }
+    }
 
-	@Override
-	public void applyActionRule(BeanActionRule beanActionRule) {
-		action = new BeanAction(beanActionRule, null);
-	}
+    public void setDefaultResponse(Response response) {
+        this.defaultResponse = response;
+    }
 
-	@Override
-	public void applyActionRule(MethodActionRule methodActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Method Action Rule to the Exception Thrown Rule.");
-	}
+    @Override
+    public Response applyResponseRule(TransformRule transformRule) {
+        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        if (transformRule.getContentType() != null) {
+            responseMap.put(transformRule.getContentType(), response);
+        }
+        if (transformRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && transformRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
 
-	@Override
-	public void applyActionRule(IncludeActionRule includeActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Include Action Rule to the Exception Thrown Rule.");
-	}
+    @Override
+    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+        Response response = new DispatchResponse(dispatchResponseRule);
+        if (dispatchResponseRule.getContentType() != null) {
+            responseMap.put(dispatchResponseRule.getContentType(), response);
+        }
+        if (dispatchResponseRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && dispatchResponseRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
 
-	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		action = new EchoAction(echoActionRule, null);
-	}
+    @Override
+    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+        Response response = new RedirectResponse(redirectResponseRule);
+        if (redirectResponseRule.getContentType() != null) {
+            responseMap.put(redirectResponseRule.getContentType(), response);
+        }
+        if (redirectResponseRule.getDefaultResponse() == Boolean.TRUE) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && redirectResponseRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
 
-	@Override
-	public void applyActionRule(HeadingActionRule headingActionRule) {
-		action = new HeadingAction(headingActionRule, null);
-	}
+    @Override
+    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+        Response response = new ForwardResponse(forwardResponseRule);
+        if (forwardResponseRule.getContentType() != null) {
+            responseMap.put(forwardResponseRule.getContentType(), response);
+        }
+        if (forwardResponseRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && forwardResponseRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
 
-	/**
-	 * Returns the executable action.
-	 *
-	 * @return the executable action
-	 */
-	public Executable getExecutableAction() {
-		return action;
-	}
+    @Override
+    public void applyActionRule(BeanActionRule beanActionRule) {
+        action = new BeanAction(beanActionRule, null);
+    }
 
-	/**
-	 * Returns the action type of the executable action.
-	 *
-	 * @return the action type
-	 */
-	public ActionType getActionType() {
-		return (action != null ? action.getActionType() : null);
-	}
+    @Override
+    public void applyActionRule(MethodActionRule methodActionRule) {
+        throw new UnsupportedOperationException(
+                "Cannot apply the Method Action Rule to the Exception Thrown Rule.");
+    }
 
-	public static ExceptionThrownRule newInstance(String exceptionType) {
-		ExceptionThrownRule etr = new ExceptionThrownRule();
-		if (exceptionType != null) {
-			String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
-			etr.setExceptionTypes(exceptionTypes);
-		}
-		return etr;
-	}
-	
+    @Override
+    public void applyActionRule(IncludeActionRule includeActionRule) {
+        throw new UnsupportedOperationException(
+                "Cannot apply the Include Action Rule to the Exception Thrown Rule.");
+    }
+
+    @Override
+    public void applyActionRule(EchoActionRule echoActionRule) {
+        action = new EchoAction(echoActionRule, null);
+    }
+
+    @Override
+    public void applyActionRule(HeadingActionRule headingActionRule) {
+        action = new HeadingAction(headingActionRule, null);
+    }
+
+    /**
+     * Returns the executable action.
+     *
+     * @return the executable action
+     */
+    public Executable getExecutableAction() {
+        return action;
+    }
+
+    /**
+     * Returns the action type of the executable action.
+     *
+     * @return the action type
+     */
+    public ActionType getActionType() {
+        return (action != null ? action.getActionType() : null);
+    }
+
+    public static ExceptionThrownRule newInstance(String exceptionType) {
+        ExceptionThrownRule etr = new ExceptionThrownRule();
+        if (exceptionType != null) {
+            String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+            etr.setExceptionTypes(exceptionTypes);
+        }
+        return etr;
+    }
+
 }

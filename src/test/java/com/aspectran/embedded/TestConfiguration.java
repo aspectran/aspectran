@@ -23,13 +23,13 @@ import com.aspectran.core.context.bean.annotation.Qualifier;
 @Configuration
 public class TestConfiguration {
 
-	@Autowired
-	@Qualifier("FirstBean")
-	private FirstBean firstBean;
-	
-	@Bean(id = "thirdBean", lazyInit = true)
-	public FirstBean getThirdBean() {
-		return firstBean;
-	}
-	
+    @Autowired
+    @Qualifier("FirstBean")
+    private FirstBean firstBean;
+
+    @Bean(id = "thirdBean", lazyInit = true)
+    public FirstBean getThirdBean() {
+        return firstBean;
+    }
+
 }

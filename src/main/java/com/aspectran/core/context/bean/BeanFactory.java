@@ -24,20 +24,20 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface BeanFactory {
 
-	/**
-	 * Initialize the bean factory.
-	 *
-	 * @param context the activity context
-	 */
-	void initialize(ActivityContext context);
+    /**
+     * Initialize the bean factory.
+     *
+     * @param context the activity context
+     */
+    void initialize(ActivityContext context);
 
-	/**
-	 * Destroy all singleton beans in this factory.
-	 * To be called on shutdown of a factory.
-	 * <p>
-	 * Any exception that arises during destruction should be caught
-	 * and logged instead of propagated to the caller of this method.
-	 */
-	void destroy();
+    /**
+     * Destroy all singleton beans in this factory.
+     * To be called on shutdown of a factory.
+     * <p>
+     * Any exception that arises during destruction should be caught
+     * and logged instead of propagated to the caller of this method.
+     */
+    void destroy();
 
 }

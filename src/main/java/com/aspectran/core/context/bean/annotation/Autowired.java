@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Autowired {
 
-	boolean required() default true;
+    boolean required() default true;
 
 }

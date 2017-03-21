@@ -31,138 +31,138 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class AspectAdviceRule implements ActionRuleApplicable {
 
-	private final AspectRule aspectRule;
-	
-	private final String adviceBeanId;
-	
-	private final Class<?> adviceBeanClass;
+    private final AspectRule aspectRule;
 
-	private final AspectAdviceType aspectAdviceType;
+    private final String adviceBeanId;
 
-	private Executable action;
+    private final Class<?> adviceBeanClass;
 
-	private ExceptionRule exceptionRule;
+    private final AspectAdviceType aspectAdviceType;
 
-	private ExceptionThrownRule exceptionThrownRule;
+    private Executable action;
 
-	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
-		this.aspectRule = aspectRule;
-		this.adviceBeanId = aspectRule.getAdviceBeanId();
-		this.adviceBeanClass = aspectRule.getAdviceBeanClass();
-		this.aspectAdviceType = aspectAdviceType;
-	}
-	
-	public String getAspectId() {
-		return aspectRule.getId();
-	}
+    private ExceptionRule exceptionRule;
 
-	public AspectRule getAspectRule() {
-		return aspectRule;
-	}
+    private ExceptionThrownRule exceptionThrownRule;
 
-	public String getAdviceBeanId() {
-		return adviceBeanId;
-	}
+    public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+        this.aspectRule = aspectRule;
+        this.adviceBeanId = aspectRule.getAdviceBeanId();
+        this.adviceBeanClass = aspectRule.getAdviceBeanClass();
+        this.aspectAdviceType = aspectAdviceType;
+    }
 
-	public Class<?> getAdviceBeanClass() {
-		return adviceBeanClass;
-	}
+    public String getAspectId() {
+        return aspectRule.getId();
+    }
 
-	public AspectAdviceType getAspectAdviceType() {
-		return aspectAdviceType;
-	}
+    public AspectRule getAspectRule() {
+        return aspectRule;
+    }
 
-	@Override
-	public void applyActionRule(BeanActionRule beanActionRule) {
-		action = new BeanAction(beanActionRule, null);
-	}
+    public String getAdviceBeanId() {
+        return adviceBeanId;
+    }
 
-	@Override
-	public void applyActionRule(MethodActionRule methodActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Method Action Rule to the Aspect Advice Rule. " +
-				"AspecetAdvice is not support MethodAction.");
-	}
+    public Class<?> getAdviceBeanClass() {
+        return adviceBeanClass;
+    }
 
-	@Override
-	public void applyActionRule(IncludeActionRule includeActionRule) {
-		throw new UnsupportedOperationException(
-				"Cannot apply the Include Action Rule to the Aspect Advice Rule. " +
-				"AspecetAdvice is not support IncludeAction.");
-	}
+    public AspectAdviceType getAspectAdviceType() {
+        return aspectAdviceType;
+    }
 
-	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		action = new EchoAction(echoActionRule, null);
-	}
+    @Override
+    public void applyActionRule(BeanActionRule beanActionRule) {
+        action = new BeanAction(beanActionRule, null);
+    }
 
-	@Override
-	public void applyActionRule(HeadingActionRule headingActionRule) {
-		action = new HeadingAction(headingActionRule, null);
-	}
-	
-	public Executable getExecutableAction() {
-		return action;
-	}
-	
-	public ActionType getActionType() {
-		return (action != null ? action.getActionType() : null);
-	}
+    @Override
+    public void applyActionRule(MethodActionRule methodActionRule) {
+        throw new UnsupportedOperationException(
+                "Cannot apply the Method Action Rule to the Aspect Advice Rule. " +
+                "AspecetAdvice is not support MethodAction.");
+    }
 
-	public ExceptionRule getExceptionRule() {
-		return exceptionRule;
-	}
+    @Override
+    public void applyActionRule(IncludeActionRule includeActionRule) {
+        throw new UnsupportedOperationException(
+                "Cannot apply the Include Action Rule to the Aspect Advice Rule. " +
+                "AspecetAdvice is not support IncludeAction.");
+    }
 
-	public ExceptionThrownRule getExceptionThrownRule() {
-		return exceptionThrownRule;
-	}
+    @Override
+    public void applyActionRule(EchoActionRule echoActionRule) {
+        action = new EchoAction(echoActionRule, null);
+    }
 
-	public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
-		this.exceptionThrownRule = exceptionThrownRule;
-		this.exceptionRule = ExceptionRule.newInstance(exceptionThrownRule);
-	}
+    @Override
+    public void applyActionRule(HeadingActionRule headingActionRule) {
+        action = new HeadingAction(headingActionRule, null);
+    }
 
-	@Override
-	public String toString() {
-		return toString(false);
-	}
+    public Executable getExecutableAction() {
+        return action;
+    }
 
-	public String toString(boolean preventRecursive) {
-		ToStringBuilder tsb = new ToStringBuilder();
-		if (aspectRule != null) {
-			tsb.append("aspectId", aspectRule.getId());
-		}
-		tsb.append("aspectAdviceType", aspectAdviceType);
-		if (!preventRecursive) {
-			tsb.append("action", action);
-		}
-		return tsb.toString();
-	}
+    public ActionType getActionType() {
+        return (action != null ? action.getActionType() : null);
+    }
 
-	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
-		return new AspectAdviceRule(aspectRule, aspectAdviceType);
-	}
+    public ExceptionRule getExceptionRule() {
+        return exceptionRule;
+    }
 
-	public static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if (aspectAdviceRule.getAdviceBeanId() != null) {
-			if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
-				BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
-				updateAspectAdviceRule(aspectAdviceRule, beanAction);
-			}
-			if (aspectAdviceRule.getExceptionThrownRule() != null) {
-				Executable action = aspectAdviceRule.getExceptionThrownRule().getExecutableAction();
-				if (action != null && action.getActionType() == ActionType.BEAN) {
-					updateAspectAdviceRule(aspectAdviceRule, (BeanAction)action);
-				}
-			}
-		}
-	}
+    public ExceptionThrownRule getExceptionThrownRule() {
+        return exceptionThrownRule;
+    }
 
-	private static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule, BeanAction beanAction) {
-		BeanActionRule beanActionRule = beanAction.getBeanActionRule();
-		if (beanActionRule.getBeanId() == null) {
-			beanAction.setAspectAdviceRule(aspectAdviceRule);
-		}
-	}
+    public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+        this.exceptionThrownRule = exceptionThrownRule;
+        this.exceptionRule = ExceptionRule.newInstance(exceptionThrownRule);
+    }
+
+    @Override
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean preventRecursive) {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (aspectRule != null) {
+            tsb.append("aspectId", aspectRule.getId());
+        }
+        tsb.append("aspectAdviceType", aspectAdviceType);
+        if (!preventRecursive) {
+            tsb.append("action", action);
+        }
+        return tsb.toString();
+    }
+
+    public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+        return new AspectAdviceRule(aspectRule, aspectAdviceType);
+    }
+
+    public static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+        if (aspectAdviceRule.getAdviceBeanId() != null) {
+            if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
+                BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
+                updateAspectAdviceRule(aspectAdviceRule, beanAction);
+            }
+            if (aspectAdviceRule.getExceptionThrownRule() != null) {
+                Executable action = aspectAdviceRule.getExceptionThrownRule().getExecutableAction();
+                if (action != null && action.getActionType() == ActionType.BEAN) {
+                    updateAspectAdviceRule(aspectAdviceRule, (BeanAction)action);
+                }
+            }
+        }
+    }
+
+    private static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule, BeanAction beanAction) {
+        BeanActionRule beanActionRule = beanAction.getBeanActionRule();
+        if (beanActionRule.getBeanId() == null) {
+            beanAction.setAspectAdviceRule(aspectAdviceRule);
+        }
+    }
 
 }

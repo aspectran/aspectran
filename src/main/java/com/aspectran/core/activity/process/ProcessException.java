@@ -23,42 +23,42 @@ import com.aspectran.core.activity.ActivityException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ProcessException extends ActivityException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 7290974002627109441L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public ProcessException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 7290974002627109441L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * @param msg a message to associate with the exception
-	 */
-	public ProcessException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public ProcessException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public ProcessException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     * @param msg a message to associate with the exception
+     */
+    public ProcessException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public ProcessException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ProcessException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ProcessException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

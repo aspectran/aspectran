@@ -26,35 +26,35 @@ import com.aspectran.core.context.ActivityContext;
  */
 public class WildcardMaskerTest {
 
-	@Test
-	public void maskTest() {
-		assertEquals(mask("**.*", "com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
-		assertEquals(mask("**", "..com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
-		assertEquals(mask("com.aspectran.core.**.*", "com.aspectran.core.embedded.ABean"), "embedded.ABean");
-		assertEquals(mask("com.aspectran.core.embedded.*", "com.aspectran.core.embedded.ABean"), "ABean");
-		assertEquals(mask("com.aspectran.core.embedded.**", "com.aspectran.core.embedded.ABean"), "ABean");
-		assertEquals(mask("com.aspectran.core.embedded.**.*", "com.aspectran.core.embedded.ABean"), "ABean");
+    @Test
+    public void maskTest() {
+        assertEquals(mask("**.*", "com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
+        assertEquals(mask("**", "..com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
+        assertEquals(mask("com.aspectran.core.**.*", "com.aspectran.core.embedded.ABean"), "embedded.ABean");
+        assertEquals(mask("com.aspectran.core.embedded.*", "com.aspectran.core.embedded.ABean"), "ABean");
+        assertEquals(mask("com.aspectran.core.embedded.**", "com.aspectran.core.embedded.ABean"), "ABean");
+        assertEquals(mask("com.aspectran.core.embedded.**.*", "com.aspectran.core.embedded.ABean"), "ABean");
 
-//		List<String> list = new ArrayList<>();
-//		list.add(mask("**.*", "com.aspectran.core.embedded.ABean"));
-//		list.add(mask("**", "..com.aspectran.core.embedded.ABean"));
-//		list.add(mask("com.aspectran.core.**.*", "com.aspectran.core.embedded.ABean"));
-//		list.add(mask("com.aspectran.core.embedded.*", "com.aspectran.core.embedded.ABean"));
-//		list.add(mask("com.aspectran.core.embedded.**", "com.aspectran.core.embedded.ABean"));
-//		list.add(mask("com.aspectran.core.embedded.**.*", "com.aspectran.core.embedded.ABean"));
+//        List<String> list = new ArrayList<>();
+//        list.add(mask("**.*", "com.aspectran.core.embedded.ABean"));
+//        list.add(mask("**", "..com.aspectran.core.embedded.ABean"));
+//        list.add(mask("com.aspectran.core.**.*", "com.aspectran.core.embedded.ABean"));
+//        list.add(mask("com.aspectran.core.embedded.*", "com.aspectran.core.embedded.ABean"));
+//        list.add(mask("com.aspectran.core.embedded.**", "com.aspectran.core.embedded.ABean"));
+//        list.add(mask("com.aspectran.core.embedded.**.*", "com.aspectran.core.embedded.ABean"));
 //
-//		System.out.println("-------------------------------------");
-//		for(String string : list) {
-//			System.out.println(string);
-//		}
-//		System.out.println("-------------------------------------");
-	}
+//        System.out.println("-------------------------------------");
+//        for(String string : list) {
+//            System.out.println(string);
+//        }
+//        System.out.println("-------------------------------------");
+    }
 
 
 
-	private static String mask(String maskPattern, String nakedString) {
-		WildcardPattern pattern = new WildcardPattern(maskPattern, ActivityContext.ID_SEPARATOR_CHAR);
-		return pattern.mask(nakedString);
-	}
+    private static String mask(String maskPattern, String nakedString) {
+        WildcardPattern pattern = new WildcardPattern(maskPattern, ActivityContext.ID_SEPARATOR_CHAR);
+        return pattern.mask(nakedString);
+    }
 
 }

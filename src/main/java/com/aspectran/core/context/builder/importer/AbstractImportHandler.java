@@ -26,58 +26,58 @@ import com.aspectran.core.util.logging.LogFactory;
  * The Class AbstractImportHandler.
  */
 abstract class AbstractImportHandler implements ImportHandler {
-	
-	protected final Log log = LogFactory.getLog(getClass());
-	
-	private Environment environment;
-	
-	private List<Importer> pendingList;
 
-	AbstractImportHandler(Environment environment) {
-		this.environment = environment;
-	}
+    protected final Log log = LogFactory.getLog(getClass());
 
-	@Override
-	public void pending(Importer importer) {
-		if (pendingList == null) {
-			pendingList = new ArrayList<>();
-		}
-		
-		pendingList.add(importer);
-		
-		if (log.isDebugEnabled()) {
-			log.debug("Pending import " + importer);
-		}
-	}
-	
-	protected void handle() throws Exception {
-		if (pendingList != null) {
-			List<Importer> pendedList = pendingList;
-			pendingList = null;
-			
-			if (environment != null) {
-				for (Importer importer : pendedList) {
-					if (environment.acceptsProfiles(importer.getProfiles())) {
-						if (log.isDebugEnabled()) {
-							log.debug("Import " + importer);
-						}
-						handle(importer);
-					}
-				}
-			} else {
-				for (Importer importer : pendedList) {
-					if (log.isDebugEnabled()) {
-						log.debug("Import " + importer);
-					}
-					handle(importer);
-				}
-			}
-		}
-	}
+    private Environment environment;
 
-	@Override
-	public List<Importer> getPendingList() {
-		return pendingList;
-	}
+    private List<Importer> pendingList;
+
+    AbstractImportHandler(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public void pending(Importer importer) {
+        if (pendingList == null) {
+            pendingList = new ArrayList<>();
+        }
+
+        pendingList.add(importer);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Pending import " + importer);
+        }
+    }
+
+    protected void handle() throws Exception {
+        if (pendingList != null) {
+            List<Importer> pendedList = pendingList;
+            pendingList = null;
+
+            if (environment != null) {
+                for (Importer importer : pendedList) {
+                    if (environment.acceptsProfiles(importer.getProfiles())) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Import " + importer);
+                        }
+                        handle(importer);
+                    }
+                }
+            } else {
+                for (Importer importer : pendedList) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Import " + importer);
+                    }
+                    handle(importer);
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<Importer> getPendingList() {
+        return pendingList;
+    }
 
 }

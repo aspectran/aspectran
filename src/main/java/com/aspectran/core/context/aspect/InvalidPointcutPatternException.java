@@ -21,53 +21,53 @@ import com.aspectran.core.context.rule.AspectRule;
  * The Class InvalidPointcutPatternException.
  */
 public class InvalidPointcutPatternException extends AspectException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 3736262494374232352L;
 
-	/**
-	 * Creates a new InvalidPointcutPatternException without detail message.
-	 */
-	public InvalidPointcutPatternException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 3736262494374232352L;
 
-	/**
-	 * Constructs a InvalidPointcutPatternException with the specified detail message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public InvalidPointcutPatternException(String msg) {
-		super(msg);
-	}
+    /**
+     * Creates a new InvalidPointcutPatternException without detail message.
+     */
+    public InvalidPointcutPatternException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public InvalidPointcutPatternException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a InvalidPointcutPatternException with the specified detail message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public InvalidPointcutPatternException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructs a InvalidPointcutPatternException with the specified error message and also the specified root cause exception.
-	 *
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public InvalidPointcutPatternException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
-	/**
-	 * Instantiates a new InvalidPointcutPatternException.
-	 *
-	 * @param aspectRule the aspect rule
-	 * @param msg the msg
-	 */
-	public InvalidPointcutPatternException(AspectRule aspectRule, String msg) {
-		super(msg + " : aspectRule " + aspectRule);
-	}
-	
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public InvalidPointcutPatternException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a InvalidPointcutPatternException with the specified error message and also the specified root cause exception.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public InvalidPointcutPatternException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
+    /**
+     * Instantiates a new InvalidPointcutPatternException.
+     *
+     * @param aspectRule the aspect rule
+     * @param msg the msg
+     */
+    public InvalidPointcutPatternException(AspectRule aspectRule, String msg) {
+        super(msg + " : aspectRule " + aspectRule);
+    }
+
 }

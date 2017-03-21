@@ -27,43 +27,43 @@ import java.util.Map;
  */
 public class BasicApplicationAdapter extends AbstractApplicationAdapter {
 
-	private Map<String, Object> attributes = new HashMap<>();
+    private Map<String, Object> attributes = new HashMap<>();
 
-	/**
-	 * Instantiates a new BasicApplicationAdapter.
-	 */
-	public BasicApplicationAdapter() {
-		super(null);
-	}
-	
-	/**
-	 * Instantiates a new BasicApplicationAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public BasicApplicationAdapter(Object adaptee) {
-		super(adaptee);
-	}
+    /**
+     * Instantiates a new BasicApplicationAdapter.
+     */
+    public BasicApplicationAdapter() {
+        super(null);
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributes.get(name);
-	}
+    /**
+     * Instantiates a new BasicApplicationAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public BasicApplicationAdapter(Object adaptee) {
+        super(adaptee);
+    }
 
-	@Override
-	public void setAttribute(String name, Object value) {
-		attributes.put(name, value);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)attributes.get(name);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
-	}
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		attributes.remove(name);
-	}
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return Collections.enumeration(attributes.keySet());
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        attributes.remove(name);
+    }
 
 }

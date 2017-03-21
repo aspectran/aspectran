@@ -25,11 +25,11 @@ import com.aspectran.core.context.rule.type.ContentType;
  */
 public class QuartzJobResponseAdapter extends BasicResponseAdapter {
 
-	public QuartzJobResponseAdapter() {
-		super(null);
+    public QuartzJobResponseAdapter() {
+        super(null);
 
-		setContentType(ContentType.TEXT_PLAIN.toString());
-		setWriter(new QuartzJobOutputWriter());
-	}
+        setContentType(ContentType.TEXT_PLAIN.toString());
+        setWriter(new QuartzJobOutputWriter());
+    }
 
 }

@@ -43,54 +43,54 @@ import com.aspectran.core.util.StringUtils;
  */
 public class HttpPutFormContentParser {
 
-	private static final Charset DEFAULT_CHARSET = Charset.forName(ActivityContext.DEFAULT_ENCODING);
+    private static final Charset DEFAULT_CHARSET = Charset.forName(ActivityContext.DEFAULT_ENCODING);
 
-	private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 4096;
 
-	public static void parse(RequestAdapter requestAdapter) {
-		try {
-			HttpServletRequest request = requestAdapter.getAdaptee();
-			String requestEncoding = requestAdapter.getCharacterEncoding();
-			Charset charset = (requestEncoding != null) ? Charset.forName(requestEncoding) : DEFAULT_CHARSET;
-			String body = copyToString(request.getInputStream(), charset);
+    public static void parse(RequestAdapter requestAdapter) {
+        try {
+            HttpServletRequest request = requestAdapter.getAdaptee();
+            String requestEncoding = requestAdapter.getCharacterEncoding();
+            Charset charset = (requestEncoding != null) ? Charset.forName(requestEncoding) : DEFAULT_CHARSET;
+            String body = copyToString(request.getInputStream(), charset);
 
-			String[] pairs = StringUtils.tokenize(body, "&");
-			MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
+            String[] pairs = StringUtils.tokenize(body, "&");
+            MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
 
-			for (String pair : pairs) {
-				int idx = pair.indexOf('=');
-				if (idx == -1) {
-					String name = URLDecoder.decode(pair, charset.name());
-					parameterMap.add(name, null);
-				} else {
-					String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
-					String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
-					parameterMap.add(name, value);
-				}
-			}
+            for (String pair : pairs) {
+                int idx = pair.indexOf('=');
+                if (idx == -1) {
+                    String name = URLDecoder.decode(pair, charset.name());
+                    parameterMap.add(name, null);
+                } else {
+                    String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
+                    String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
+                    parameterMap.add(name, value);
+                }
+            }
 
-			if (!parameterMap.isEmpty()) {
-				for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
-					String name = entry.getKey();
-					List<String> list = entry.getValue();
-					String[] values = list.toArray(new String[list.size()]);
-					requestAdapter.setParameter(name, values);
-				}
-			}
-		} catch (Exception e) {
-			throw new RequestParseException("Could not parse multipart servlet request.", e);
-		}
-	}
+            if (!parameterMap.isEmpty()) {
+                for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+                    String name = entry.getKey();
+                    List<String> list = entry.getValue();
+                    String[] values = list.toArray(new String[list.size()]);
+                    requestAdapter.setParameter(name, values);
+                }
+            }
+        } catch (Exception e) {
+            throw new RequestParseException("Could not parse multipart servlet request.", e);
+        }
+    }
 
-	private static String copyToString(InputStream in, Charset charset) throws IOException {
-		StringBuilder out = new StringBuilder();
-		InputStreamReader reader = new InputStreamReader(in, charset);
-		char[] buffer = new char[BUFFER_SIZE];
-		int bytesRead = -1;
-		while ((bytesRead = reader.read(buffer)) != -1) {
-			out.append(buffer, 0, bytesRead);
-		}
-		return out.toString();
-	}
+    private static String copyToString(InputStream in, Charset charset) throws IOException {
+        StringBuilder out = new StringBuilder();
+        InputStreamReader reader = new InputStreamReader(in, charset);
+        char[] buffer = new char[BUFFER_SIZE];
+        int bytesRead = -1;
+        while ((bytesRead = reader.read(buffer)) != -1) {
+            out.append(buffer, 0, bytesRead);
+        }
+        return out.toString();
+    }
 
 }

@@ -29,8 +29,8 @@ import java.util.WeakHashMap;
 
 public class PropertiesLoaderUtils {
 
-	private static final String XML_FILE_EXTENSION = ".xml";
-	
+    private static final String XML_FILE_EXTENSION = ".xml";
+
     /**
      * Indicates whether properties should be cached for improved performance.
      * <p>
@@ -58,9 +58,9 @@ public class PropertiesLoaderUtils {
 
     /**
      * Load all properties from the specified class path resource
-	 * (in ISO-8859-1 encoding), using the given class loader.
-	 * <p>Merges properties if more than one resource of the same name
-	 * found in the class path.
+     * (in ISO-8859-1 encoding), using the given class loader.
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.
      *
      * @param resourceName the name of the class path resource
      * @param classLoader the class loader
@@ -68,32 +68,32 @@ public class PropertiesLoaderUtils {
      * @throws IOException if loading failed
      */
     public static synchronized Properties loadProperties(String resourceName, ClassLoader classLoader) throws IOException {
-    	Properties props = getCachedProperties(resourceName);
-    	if (props != null) {
-			return props;
-		}
-    	
-    	Enumeration<URL> urls = classLoader.getResources(resourceName);
-		props = new Properties();
-		
-		while (urls.hasMoreElements()) {
-			URL url = urls.nextElement();
-			URLConnection con = url.openConnection();
-			InputStream is = con.getInputStream();
-			try {
-				if (resourceName.endsWith(XML_FILE_EXTENSION)) {
-					props.loadFromXML(is);
-				} else {
-					props.load(is);
-				}
-			} finally {
-				is.close();
-			}
-		}
-		
-		cacheMethod(resourceName, props);
-		
-		return props;
+        Properties props = getCachedProperties(resourceName);
+        if (props != null) {
+            return props;
+        }
+
+        Enumeration<URL> urls = classLoader.getResources(resourceName);
+        props = new Properties();
+
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            URLConnection con = url.openConnection();
+            InputStream is = con.getInputStream();
+            try {
+                if (resourceName.endsWith(XML_FILE_EXTENSION)) {
+                    props.loadFromXML(is);
+                } else {
+                    props.load(is);
+                }
+            } finally {
+                is.close();
+            }
+        }
+
+        cacheMethod(resourceName, props);
+
+        return props;
     }
     
     /**
@@ -121,7 +121,7 @@ public class PropertiesLoaderUtils {
     private static void cacheMethod(String resourceName, Properties props) {
         if (cacheEnabled) {
             if (props != null) {
-            	cache.put(resourceName, new WeakReference<>(props));
+                cache.put(resourceName, new WeakReference<>(props));
             }
         }
     }
@@ -134,7 +134,7 @@ public class PropertiesLoaderUtils {
      * cached for greater performance, otherwise <code>false</code>
      */
     public static synchronized void setCacheEnabled(boolean cacheEnabling) {
-    	cacheEnabled = cacheEnabling;
+        cacheEnabled = cacheEnabling;
         if (!cacheEnabled) {
             clearCache();
         }

@@ -23,50 +23,50 @@ import com.aspectran.core.util.StringUtils;
  */
 public class NoUniqueBeanException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = 8350428939010030065L;
-	
-	private Class<?> requiredType;
-	
-	private BeanRule[] beanRules;
+    /** @serial */
+    private static final long serialVersionUID = 8350428939010030065L;
 
-	/**
-	 * Instantiates a new BeanNotFoundException.
-	 *
-	 * @param requiredType the required type
-	 * @param beanRules the bean rules
-	 */
-	public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
-		super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " +
-				beanRules.length + ": " + getBeanDescriptions(beanRules));
-		this.requiredType = requiredType;
-		this.beanRules = beanRules;
-	}
+    private Class<?> requiredType;
 
-	/**
-	 * Gets the required type.
-	 *
-	 * @return the required type
-	 */
-	public Class<?> getRequiredType() {
-		return requiredType;
-	}
+    private BeanRule[] beanRules;
 
-	/**
-	 * Gets the bean rules.
-	 *
-	 * @return the bean rules
-	 */
-	public BeanRule[] getBeanRules() {
-		return beanRules;
-	}
+    /**
+     * Instantiates a new BeanNotFoundException.
+     *
+     * @param requiredType the required type
+     * @param beanRules the bean rules
+     */
+    public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
+        super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " +
+                beanRules.length + ": " + getBeanDescriptions(beanRules));
+        this.requiredType = requiredType;
+        this.beanRules = beanRules;
+    }
 
-	private static String getBeanDescriptions(BeanRule[] beanRules) {
-		String[] descrips = new String[beanRules.length];
-		for (int i = 0; i < descrips.length; i++) {
-			descrips[i] = beanRules[i].toString();
-		}
-		return StringUtils.joinCommaDelimitedList(descrips);
-	}
-	
+    /**
+     * Gets the required type.
+     *
+     * @return the required type
+     */
+    public Class<?> getRequiredType() {
+        return requiredType;
+    }
+
+    /**
+     * Gets the bean rules.
+     *
+     * @return the bean rules
+     */
+    public BeanRule[] getBeanRules() {
+        return beanRules;
+    }
+
+    private static String getBeanDescriptions(BeanRule[] beanRules) {
+        String[] descrips = new String[beanRules.length];
+        for (int i = 0; i < descrips.length; i++) {
+            descrips[i] = beanRules[i].toString();
+        }
+        return StringUtils.joinCommaDelimitedList(descrips);
+    }
+
 }

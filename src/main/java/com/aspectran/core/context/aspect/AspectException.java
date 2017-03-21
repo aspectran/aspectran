@@ -21,43 +21,43 @@ import com.aspectran.core.context.AspectranRuntimeException;
  * This class is the basic exception that gets thrown from the aspect pacakge.
  */
 public class AspectException extends AspectranRuntimeException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 3778865608683444815L;
 
-	/**
-	 * Creates a new AspectException without detail message.
-	 */
-	public AspectException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 3778865608683444815L;
 
-	/**
-	 * Constructs a AspectException with the specified detail message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public AspectException(String msg) {
-		super(msg);
-	}
+    /**
+     * Creates a new AspectException without detail message.
+     */
+    public AspectException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AspectException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a AspectException with the specified detail message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public AspectException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructs a AspectException with the specified error message and also the specified root cause exception.
-	 *
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public AspectException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AspectException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a AspectException with the specified error message and also the specified root cause exception.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public AspectException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

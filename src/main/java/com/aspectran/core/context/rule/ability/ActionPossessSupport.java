@@ -21,17 +21,17 @@ import com.aspectran.core.activity.process.ActionList;
  * The Class ActionPossessSupport.
  */
 public abstract class ActionPossessSupport implements ActionPossessable {
-	
-	private ActionList actionList;
-	
-	@Override
-	public ActionList getActionList() {
-		return actionList;
-	}
 
-	@Override
-	public void setActionList(ActionList actionList) {
-		this.actionList = actionList;
-	}
+    private ActionList actionList;
+
+    @Override
+    public ActionList getActionList() {
+        return actionList;
+    }
+
+    @Override
+    public void setActionList(ActionList actionList) {
+        this.actionList = actionList;
+    }
 
 }

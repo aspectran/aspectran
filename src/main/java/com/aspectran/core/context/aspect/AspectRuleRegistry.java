@@ -28,49 +28,49 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class AspectRuleRegistry {
 
-	private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
+    private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
 
-	private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
-	
-	private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
-	
-	public AspectRuleRegistry() {
-	}
-	
-	public Map<String, AspectRule> getAspectRuleMap() {
-		return aspectRuleMap;
-	}
+    private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
 
-	public boolean contains(String aspectId) {
-		return aspectRuleMap.containsKey(aspectId);
-	}
-	
-	public AspectRule getAspectRule(String aspectId) {
-		return aspectRuleMap.get(aspectId);
-	}
+    private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
 
-	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.put(aspectRule.getId(), aspectRule);
-		
-		if (log.isTraceEnabled()) {
-			log.trace("add AspectRule " + aspectRule);
-		}
-	}
+    public AspectRuleRegistry() {
+    }
 
-	public Collection<AspectRule> getAspectRules() {
-		return aspectRuleMap.values();
-	}
+    public Map<String, AspectRule> getAspectRuleMap() {
+        return aspectRuleMap;
+    }
 
-	public void clear() {
-		aspectRuleMap.clear();
-	}
+    public boolean contains(String aspectId) {
+        return aspectRuleMap.containsKey(aspectId);
+    }
 
-	public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
-		return sessionAspectAdviceRuleRegistry;
-	}
+    public AspectRule getAspectRule(String aspectId) {
+        return aspectRuleMap.get(aspectId);
+    }
 
-	public void setSessionAspectAdviceRuleRegistry(AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry) {
-		this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
-	}
+    public void addAspectRule(AspectRule aspectRule) {
+        aspectRuleMap.put(aspectRule.getId(), aspectRule);
+
+        if (log.isTraceEnabled()) {
+            log.trace("add AspectRule " + aspectRule);
+        }
+    }
+
+    public Collection<AspectRule> getAspectRules() {
+        return aspectRuleMap.values();
+    }
+
+    public void clear() {
+        aspectRuleMap.clear();
+    }
+
+    public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
+        return sessionAspectAdviceRuleRegistry;
+    }
+
+    public void setSessionAspectAdviceRuleRegistry(AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry) {
+        this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
+    }
 
 }

@@ -24,35 +24,35 @@ import com.aspectran.core.context.AspectranCheckedException;
  */
 public class TemplateEngineProcessException extends AspectranCheckedException {
 
-	/** @serial */
-	private static final long serialVersionUID = 3136366504332981036L;
+    /** @serial */
+    private static final long serialVersionUID = 3136366504332981036L;
 
-	/**
-	 * Instantiates a new TemplateEngineProcessException.
-	 *
-	 * @param msg the detail message
-	 */
-	public TemplateEngineProcessException(String msg) {
-		super(msg);
-	}
+    /**
+     * Instantiates a new TemplateEngineProcessException.
+     *
+     * @param msg the detail message
+     */
+    public TemplateEngineProcessException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Instantiates a new TemplateEngineProcessException.
-	 *
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public TemplateEngineProcessException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Instantiates a new TemplateEngineProcessException.
+     *
+     * @param msg the detail message
+     * @param cause the root cause
+     */
+    public TemplateEngineProcessException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
-	/**
-	 * Instantiates a new TemplateEngineProcessException.
-	 *
-	 * @param cause the root cause
-	 */
-	public TemplateEngineProcessException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new TemplateEngineProcessException.
+     *
+     * @param cause the root cause
+     */
+    public TemplateEngineProcessException(Throwable cause) {
+        super(cause);
+    }
 
 }

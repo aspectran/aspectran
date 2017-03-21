@@ -28,44 +28,44 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  * @since 2.3.0
  */
 public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
-	
-	private final Map<String, Object> attributes = new HashMap<>();
 
-	private final SessionScope sessionScope = new SessionScope();
+    private final Map<String, Object> attributes = new HashMap<>();
 
-	/**
-	 * Instantiates a new BasicSessionAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public BasicSessionAdapter(Object adaptee) {
-		super(adaptee);
-	}
+    private final SessionScope sessionScope = new SessionScope();
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributes.get(name);
-	}
+    /**
+     * Instantiates a new BasicSessionAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public BasicSessionAdapter(Object adaptee) {
+        super(adaptee);
+    }
 
-	@Override
-	public void setAttribute(String name, Object value) {
-		attributes.put(name, value);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)attributes.get(name);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
-	}
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		attributes.remove(name);
-	}
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return Collections.enumeration(attributes.keySet());
+    }
 
-	@Override
-	public SessionScope getSessionScope() {
-		return sessionScope;
-	}
+    @Override
+    public void removeAttribute(String name) {
+        attributes.remove(name);
+    }
+
+    @Override
+    public SessionScope getSessionScope() {
+        return sessionScope;
+    }
 
 }

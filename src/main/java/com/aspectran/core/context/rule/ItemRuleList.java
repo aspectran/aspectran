@@ -25,27 +25,27 @@ import java.util.Collection;
  */
 public class ItemRuleList extends ArrayList<ItemRule> {
 
-	/** @serial */
-	private static final long serialVersionUID = -7578440777195693622L;
+    /** @serial */
+    private static final long serialVersionUID = -7578440777195693622L;
 
-	public ItemRuleList() {
-		super();
-	}
+    public ItemRuleList() {
+        super();
+    }
 
-	public ItemRuleList(int initialCapacity) {
-		super(initialCapacity);
-	}
+    public ItemRuleList(int initialCapacity) {
+        super(initialCapacity);
+    }
 
-	public ItemRuleList(Collection<ItemRule> itemRules) {
-		super(itemRules);
-	}
+    public ItemRuleList(Collection<ItemRule> itemRules) {
+        super(itemRules);
+    }
 
-	public String[] getItemNames() {
-		String[] itemNames = new String[size()];
-		for (int i = 0; i < itemNames.length; i++) {
-			itemNames[i] = get(i).getName();
-		}
-		return itemNames;
-	}
+    public String[] getItemNames() {
+        String[] itemNames = new String[size()];
+        for (int i = 0; i < itemNames.length; i++) {
+            itemNames[i] = get(i).getName();
+        }
+        return itemNames;
+    }
 
 }

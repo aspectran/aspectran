@@ -25,20 +25,20 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AponReaderTest {
 
-	public static void main(String argv[]) {
-		try {
-			Reader reader = new FileReader(new File(argv[0]));
+    public static void main(String argv[]) {
+        try {
+            Reader reader = new FileReader(new File(argv[0]));
 
-			Parameters aspectranConfig = new AspectranConfig();
-			
-			AponReader aponReader = new AponReader(reader);
-			aponReader.read(aspectranConfig);
-			aponReader.close();
+            Parameters aspectranConfig = new AspectranConfig();
 
-			System.out.println(aspectranConfig);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            AponReader aponReader = new AponReader(reader);
+            aponReader.read(aspectranConfig);
+            aponReader.close();
+
+            System.out.println(aspectranConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

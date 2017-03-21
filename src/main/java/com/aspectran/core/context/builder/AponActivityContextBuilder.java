@@ -28,35 +28,35 @@ import com.aspectran.core.context.rule.type.ImporterFileFormatType;
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
-	
-	private final String encoding;
-	
-	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
-	}
-	
-	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		super(applicationAdapter);
-		this.encoding = encoding;
-	}
 
-	@Override
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
-		try {
-			if (rootContext == null) {
-				throw new IllegalArgumentException("The rootContext argument must not be null.");
-			}
+    private final String encoding;
 
-			ImportHandler importHandler = new AponImportHandler(this, encoding);
-			getContextBuilderAssistant().setImportHandler(importHandler);
-			
-			Importer importer = resolveImporter(rootContext, ImporterFileFormatType.APON);
-			importHandler.handle(importer);
+    public AponActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+        this(applicationAdapter, null);
+    }
 
-			return createActivityContext();
-		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
-		}
-	}
-	
+    public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
+        super(applicationAdapter);
+        this.encoding = encoding;
+    }
+
+    @Override
+    public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+        try {
+            if (rootContext == null) {
+                throw new IllegalArgumentException("The rootContext argument must not be null.");
+            }
+
+            ImportHandler importHandler = new AponImportHandler(this, encoding);
+            getContextBuilderAssistant().setImportHandler(importHandler);
+
+            Importer importer = resolveImporter(rootContext, ImporterFileFormatType.APON);
+            importHandler.handle(importer);
+
+            return createActivityContext();
+        } catch (Exception e) {
+            throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
+        }
+    }
+
 }

@@ -36,257 +36,257 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class DispatchResponseRule extends ActionPossessSupport implements Replicable<DispatchResponseRule> {
-	
-	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
-	
-	private String name;
 
-	private Token[] nameTokens;
-	
-	private String dispatcher;
+    public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 
-	private String contentType;
+    private String name;
 
-	private String characterEncoding;
-	
-	private Boolean defaultResponse;
+    private Token[] nameTokens;
 
-	/**
-	 * Gets the dispatch name.
-	 *
-	 * @return the dispatch name
-	 */
-	public String getName() {
-		return name;
-	}
+    private String dispatcher;
 
-	/**
-	 * Gets the dispatch name.
-	 *
-	 * @param activity the activity
-	 * @return the dispatch name
-	 */
-	public String getName(Activity activity) {
-		if (nameTokens != null && nameTokens.length > 0) {
-			TokenEvaluator evaluator = new TokenExpressionParser(activity);
-			return evaluator.evaluateAsString(nameTokens);
-		} else {
-			return name;
-		}
-	}
+    private String contentType;
 
-	/**
-	 * Sets the dispatch name.
-	 *
-	 * @param name the new dispatch name
-	 */
-	public void setName(String name) {
-		this.name = name;
+    private String characterEncoding;
 
-		List<Token> tokens = Tokenizer.tokenize(name, true);
-		int tokenCount = 0;
+    private Boolean defaultResponse;
 
-		for (Token t : tokens) {
-			if (t.getType() != TokenType.TEXT) {
-				tokenCount++;
-			}
-		}
+    /**
+     * Gets the dispatch name.
+     *
+     * @return the dispatch name
+     */
+    public String getName() {
+        return name;
+    }
 
-		if (tokenCount > 0) {
-			this.nameTokens = tokens.toArray(new Token[tokens.size()]);
-		} else {
-			this.nameTokens = null;
-		}
-	}
+    /**
+     * Gets the dispatch name.
+     *
+     * @param activity the activity
+     * @return the dispatch name
+     */
+    public String getName(Activity activity) {
+        if (nameTokens != null && nameTokens.length > 0) {
+            TokenEvaluator evaluator = new TokenExpressionParser(activity);
+            return evaluator.evaluateAsString(nameTokens);
+        } else {
+            return name;
+        }
+    }
 
-	public void setName(String name, Token[] nameTokens) {
-		this.name = name;
-		this.nameTokens = nameTokens;
-	}
+    /**
+     * Sets the dispatch name.
+     *
+     * @param name the new dispatch name
+     */
+    public void setName(String name) {
+        this.name = name;
 
-	/**
-	 * Gets the tokens of the dispatch name.
-	 *
-	 * @return the tokens of the dispatch name
-	 */
-	public Token[] getNameTokens() {
-		return nameTokens;
-	}
+        List<Token> tokens = Tokenizer.tokenize(name, true);
+        int tokenCount = 0;
 
-	/**
-	 * Gets the id or class name of the view dispatcher bean that
-	 * implements {@link ViewDispatcher}.
-	 *
-	 * @return the id or class name of the view dispatcher bean
-	 */
-	public String getDispatcher() {
-		return dispatcher;
-	}
+        for (Token t : tokens) {
+            if (t.getType() != TokenType.TEXT) {
+                tokenCount++;
+            }
+        }
 
-	/**
-	 * Gets the id or class name of the view dispatcher bean that
-	 * implements {@link ViewDispatcher}.
-	 *
-	 * @param dispatcher the id or class name of the view dispatcher bean
-	 */
-	public void setDispatcher(String dispatcher) {
-		this.dispatcher = dispatcher;
-	}
+        if (tokenCount > 0) {
+            this.nameTokens = tokens.toArray(new Token[tokens.size()]);
+        } else {
+            this.nameTokens = null;
+        }
+    }
 
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		return contentType;
-	}
+    public void setName(String name, Token[] nameTokens) {
+        this.name = name;
+        this.nameTokens = nameTokens;
+    }
 
-	/**
-	 * Sets the content type.
-	 * 
-	 * @param contentType the new content type
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-	
-	/**
-	 * Gets the character encoding.
-	 * 
-	 * @return the characterEncoding
-	 */
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    /**
+     * Gets the tokens of the dispatch name.
+     *
+     * @return the tokens of the dispatch name
+     */
+    public Token[] getNameTokens() {
+        return nameTokens;
+    }
 
-	/**
-	 * Sets the character encoding.
-	 * 
-	 * @param characterEncoding the characterEncoding to set
-	 */
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    /**
+     * Gets the id or class name of the view dispatcher bean that
+     * implements {@link ViewDispatcher}.
+     *
+     * @return the id or class name of the view dispatcher bean
+     */
+    public String getDispatcher() {
+        return dispatcher;
+    }
 
-	/**
-	 * Gets the default response.
-	 *
-	 * @return the default response
-	 */
-	public Boolean getDefaultResponse() {
-		return defaultResponse;
-	}
+    /**
+     * Gets the id or class name of the view dispatcher bean that
+     * implements {@link ViewDispatcher}.
+     *
+     * @param dispatcher the id or class name of the view dispatcher bean
+     */
+    public void setDispatcher(String dispatcher) {
+        this.dispatcher = dispatcher;
+    }
 
-	/**
-	 * Returns whether the default response.
-	 *
-	 * @return true, if is default response
-	 */
-	public boolean isDefaultResponse() {
-		return BooleanUtils.toBoolean(defaultResponse);
-	}
+    /**
+     * Gets the content type.
+     *
+     * @return the content type
+     */
+    public String getContentType() {
+        return contentType;
+    }
 
-	/**
-	 * Sets whether the default response.
-	 *
-	 * @param defaultResponse whether the default response
-	 */
-	public void setDefaultResponse(Boolean defaultResponse) {
-		this.defaultResponse = defaultResponse;
-	}
+    /**
+     * Sets the content type.
+     *
+     * @param contentType the new content type
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	@Override
-	public DispatchResponseRule replicate() {
-		return replicate(this);
-	}
-	
-	@Override
-	public String toString() {
-		return toString(null, null);
-	}
+    /**
+     * Gets the character encoding.
+     *
+     * @return the characterEncoding
+     */
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	/**
-	 * Returns a string representation of <code>DispatchResponseRule</code> with used <code>Dispatcher</code>.
-	 *
-	 * @param viewDispatcher the view dispatcher
-	 * @param dispatchName the new dispatch name
-	 * @return a string representation of <code>DispatchResponseRule</code>.
-	 */
-	public String toString(ViewDispatcher viewDispatcher, String dispatchName) {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.appendForce("responseType", RESPONSE_TYPE);
-		tsb.appendForce("name", name);
-		tsb.append("dispatchName", dispatchName);
-		tsb.append("contentType", contentType);
-		tsb.append("characterEncoding", characterEncoding);
-		tsb.append("defaultResponse", defaultResponse);
-		tsb.append("viewDispatcher", viewDispatcher);
-		return tsb.toString();
-	}
+    /**
+     * Sets the character encoding.
+     *
+     * @param characterEncoding the characterEncoding to set
+     */
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	/**
-	 * Returns a new instance of DispatchResponseRule.
-	 *
-	 * @param name the dispatch name
-	 * @param dispatcher the id or class name of the view dispatcher bean
-	 * @param contentType the content type
-	 * @param characterEncoding the character encoding
-	 * @param defaultResponse the default response
-	 * @return an instance of DispatchResponseRule
-	 */
-	public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding, Boolean defaultResponse) {
-		DispatchResponseRule drr = new DispatchResponseRule();
-		drr.setName(name);
-		drr.setDispatcher(dispatcher);
-		drr.setContentType(contentType);
-		drr.setCharacterEncoding(characterEncoding);
-		drr.setDefaultResponse(defaultResponse);
-		return drr;
-	}
+    /**
+     * Gets the default response.
+     *
+     * @return the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
 
-	/**
-	 * Returns a new instance of DispatchResponseRule.
-	 *
-	 * @param name the dispatch name
-	 * @param dispatcher the id or class name of the view dispatcher bean
-	 * @param contentType the content type
-	 * @param characterEncoding the character encoding
-	 * @return the dispatch response rule
-	 */
-	public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding) {
-		return newInstance(name, dispatcher, contentType, characterEncoding, null);
-	}
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
 
-	/**
-	 * Returns a new instance of DispatchResponseRule.
-	 *
-	 * @param name the dispatch name
-	 * @return the dispatch response rule
-	 */
-	public static DispatchResponseRule newInstance(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("The name argument must not be null.");
-		}
-		DispatchResponseRule drr = new DispatchResponseRule();
-		drr.setName(name);
-		return drr;
-	}
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
 
-	/**
-	 * Returns a new derived instance of DispatchResponseRule.
-	 *
-	 * @param dispatchResponseRule an instance of DispatchResponseRulethe
-	 * @return the dispatch response rule
-	 */
-	public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
-		DispatchResponseRule drr = new DispatchResponseRule();
-		drr.setName(dispatchResponseRule.getName(), dispatchResponseRule.getNameTokens());
-		drr.setContentType(dispatchResponseRule.getContentType());
-		drr.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
-		drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
-		drr.setActionList(dispatchResponseRule.getActionList());
-		return drr;
-	}
+    @Override
+    public DispatchResponseRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        return toString(null, null);
+    }
+
+    /**
+     * Returns a string representation of <code>DispatchResponseRule</code> with used <code>Dispatcher</code>.
+     *
+     * @param viewDispatcher the view dispatcher
+     * @param dispatchName the new dispatch name
+     * @return a string representation of <code>DispatchResponseRule</code>.
+     */
+    public String toString(ViewDispatcher viewDispatcher, String dispatchName) {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.appendForce("name", name);
+        tsb.append("dispatchName", dispatchName);
+        tsb.append("contentType", contentType);
+        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("viewDispatcher", viewDispatcher);
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new instance of DispatchResponseRule.
+     *
+     * @param name the dispatch name
+     * @param dispatcher the id or class name of the view dispatcher bean
+     * @param contentType the content type
+     * @param characterEncoding the character encoding
+     * @param defaultResponse the default response
+     * @return an instance of DispatchResponseRule
+     */
+    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding, Boolean defaultResponse) {
+        DispatchResponseRule drr = new DispatchResponseRule();
+        drr.setName(name);
+        drr.setDispatcher(dispatcher);
+        drr.setContentType(contentType);
+        drr.setCharacterEncoding(characterEncoding);
+        drr.setDefaultResponse(defaultResponse);
+        return drr;
+    }
+
+    /**
+     * Returns a new instance of DispatchResponseRule.
+     *
+     * @param name the dispatch name
+     * @param dispatcher the id or class name of the view dispatcher bean
+     * @param contentType the content type
+     * @param characterEncoding the character encoding
+     * @return the dispatch response rule
+     */
+    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding) {
+        return newInstance(name, dispatcher, contentType, characterEncoding, null);
+    }
+
+    /**
+     * Returns a new instance of DispatchResponseRule.
+     *
+     * @param name the dispatch name
+     * @return the dispatch response rule
+     */
+    public static DispatchResponseRule newInstance(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("The name argument must not be null.");
+        }
+        DispatchResponseRule drr = new DispatchResponseRule();
+        drr.setName(name);
+        return drr;
+    }
+
+    /**
+     * Returns a new derived instance of DispatchResponseRule.
+     *
+     * @param dispatchResponseRule an instance of DispatchResponseRulethe
+     * @return the dispatch response rule
+     */
+    public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
+        DispatchResponseRule drr = new DispatchResponseRule();
+        drr.setName(dispatchResponseRule.getName(), dispatchResponseRule.getNameTokens());
+        drr.setContentType(dispatchResponseRule.getContentType());
+        drr.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
+        drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
+        drr.setActionList(dispatchResponseRule.getActionList());
+        return drr;
+    }
 
 }

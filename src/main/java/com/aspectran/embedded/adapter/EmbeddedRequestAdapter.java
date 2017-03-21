@@ -22,21 +22,21 @@ import com.aspectran.core.adapter.BasicRequestAdapter;
  * The Class EmbeddedRequestAdapter.
  */
 public class EmbeddedRequestAdapter extends BasicRequestAdapter {
-	
-	/**
-	 * Instantiates a new EmbeddedRequestAdapter.
-	 */
-	public EmbeddedRequestAdapter() {
-		super(null);
-	}
 
-	/**
-	 * Instantiates a new EmbeddedRequestAdapter.
-	 *
-	 * @param parameterMap the parameter map
-	 */
-	public EmbeddedRequestAdapter(ParameterMap parameterMap) {
-		super(null, parameterMap);
-	}
+    /**
+     * Instantiates a new EmbeddedRequestAdapter.
+     */
+    public EmbeddedRequestAdapter() {
+        super(null);
+    }
+
+    /**
+     * Instantiates a new EmbeddedRequestAdapter.
+     *
+     * @param parameterMap the parameter map
+     */
+    public EmbeddedRequestAdapter(ParameterMap parameterMap) {
+        super(null, parameterMap);
+    }
 
 }

@@ -38,119 +38,119 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class JspViewDispatcher implements ViewDispatcher {
 
-	private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
+    private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
 
-	private static final boolean debugEnabled = log.isDebugEnabled();
-	
-	private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
-	
-	private String prefix;
+    private static final boolean debugEnabled = log.isDebugEnabled();
 
-	private String suffix;
-	
-	/**
-	 * Sets the prefix for the template name.
-	 *
-	 * @param prefix the new prefix for the template name
-	 */
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+    private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
-	/**
-	 * Sets the suffix for the template name.
-	 *
-	 * @param suffix the new suffix for the template name
-	 */
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
+    private String prefix;
 
-	@Override
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
-		String dispatchName = null;
+    private String suffix;
 
-		try {
-			dispatchName = dispatchResponseRule.getName(activity);
-			if (dispatchName == null) {
-				throw new IllegalArgumentException("No specified dispatch name.");
-			}
+    /**
+     * Sets the prefix for the template name.
+     *
+     * @param prefix the new prefix for the template name
+     */
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
-			if (prefix != null && suffix != null) {
-				dispatchName = prefix + dispatchName + suffix;
-			} else if (prefix != null) {
-				dispatchName = prefix + dispatchName;
-			} else if (suffix != null) {
-				dispatchName = dispatchName + suffix;
-			}
-			
-			RequestAdapter requestAdapter = activity.getRequestAdapter();
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
+    /**
+     * Sets the suffix for the template name.
+     *
+     * @param suffix the new suffix for the template name
+     */
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
-			String contentType = dispatchResponseRule.getContentType();
-			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
+    @Override
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+        String dispatchName = null;
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			} else {
-				responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
-			}
+        try {
+            dispatchName = dispatchResponseRule.getName(activity);
+            if (dispatchName == null) {
+                throw new IllegalArgumentException("No specified dispatch name.");
+            }
 
-			if (characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
-			} else {
-				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
-			
-			ProcessResult processResult = activity.getProcessResult();
+            if (prefix != null && suffix != null) {
+                dispatchName = prefix + dispatchName + suffix;
+            } else if (prefix != null) {
+                dispatchName = prefix + dispatchName;
+            } else if (suffix != null) {
+                dispatchName = dispatchName + suffix;
+            }
 
-			if (processResult != null) {
-				setAttribute(requestAdapter, processResult);
-			}
+            RequestAdapter requestAdapter = activity.getRequestAdapter();
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-			HttpServletRequest request = requestAdapter.getAdaptee();
-			HttpServletResponse response = responseAdapter.getAdaptee();
-			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
-			requestDispatcher.forward(request, response);
+            String contentType = dispatchResponseRule.getContentType();
+            String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if (debugEnabled) {
-				log.debug("Dispatch to a JSP [" + dispatchName + "]");
-			}
-		} catch (Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
-		}
-	}
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            } else {
+                responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
+            }
 
-	/**
-	 * Stores an attribute in request.
-	 *
-	 * @param requestAdapter the request adapter
-	 * @param processResult the process result
-	 */
-	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
-		for (ContentResult contentResult : processResult) {
-			for (ActionResult actionResult : contentResult) {
-				Object actionResultValue = actionResult.getResultValue();
+            if (characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(characterEncoding);
+            } else {
+                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-				if (actionResultValue instanceof ProcessResult) {
-					setAttribute(requestAdapter, (ProcessResult)actionResultValue);
-				} else {
-					String actionId = actionResult.getActionId();
-					if (actionId != null) {
-						requestAdapter.setAttribute(actionId, actionResultValue);
-					}
-				}
-			}
-		}
-	}
+            ProcessResult processResult = activity.getProcessResult();
 
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
+            if (processResult != null) {
+                setAttribute(requestAdapter, processResult);
+            }
+
+            HttpServletRequest request = requestAdapter.getAdaptee();
+            HttpServletResponse response = responseAdapter.getAdaptee();
+
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
+            requestDispatcher.forward(request, response);
+
+            if (debugEnabled) {
+                log.debug("Dispatch to a JSP [" + dispatchName + "]");
+            }
+        } catch (Exception e) {
+            throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
+        }
+    }
+
+    /**
+     * Stores an attribute in request.
+     *
+     * @param requestAdapter the request adapter
+     * @param processResult the process result
+     */
+    private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
+        for (ContentResult contentResult : processResult) {
+            for (ActionResult actionResult : contentResult) {
+                Object actionResultValue = actionResult.getResultValue();
+
+                if (actionResultValue instanceof ProcessResult) {
+                    setAttribute(requestAdapter, (ProcessResult)actionResultValue);
+                } else {
+                    String actionId = actionResult.getActionId();
+                    if (actionId != null) {
+                        requestAdapter.setAttribute(actionId, actionResultValue);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
 }

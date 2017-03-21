@@ -35,42 +35,42 @@ package com.aspectran.core.context;
  */
 public class AspectranRuntimeException extends RuntimeException {
 
-	/** @serial */
-	private static final long serialVersionUID = -6919564121302478697L;
+    /** @serial */
+    private static final long serialVersionUID = -6919564121302478697L;
 
-	/**
-	 * Constructs a AspectranCheckedException.
-	 */
-	public AspectranRuntimeException() {
-		super();
-	}
+    /**
+     * Constructs a AspectranCheckedException.
+     */
+    public AspectranRuntimeException() {
+        super();
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the specified message.
-	 * 
-	 * @param msg the specific message
-	 */
-	public AspectranRuntimeException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the specified message.
+     *
+     * @param msg the specific message
+     */
+    public AspectranRuntimeException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the wrapped exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranRuntimeException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the wrapped exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AspectranRuntimeException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the specified message and wrapped exception.
-	 * 
-	 * @param msg the specific message
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranRuntimeException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the specified message and wrapped exception.
+     *
+     * @param msg the specific message
+     * @param cause the real cause of the exception
+     */
+    public AspectranRuntimeException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

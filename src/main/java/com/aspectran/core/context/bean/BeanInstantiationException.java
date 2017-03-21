@@ -35,51 +35,51 @@ package com.aspectran.core.context.bean;
  */
 public class BeanInstantiationException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = 387409430536237392L;
-	
-	private Class<?> beanClass;
+    /** @serial */
+    private static final long serialVersionUID = 387409430536237392L;
 
-	/**
-	 * Create a new BeanInstantiationException.
-	 *
-	 * @param beanClass the offending bean class
-	 * @param cause the root cause
-	 */
-	public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
-		this(cause.getMessage(), beanClass, cause);
-	}
+    private Class<?> beanClass;
 
-	/**
-	 * Create a new BeanInstantiationException.
-	 *
-	 * @param msg the detail message
-	 * @param beanClass the offending bean class
-	 * @param cause the root cause
-	 */
-	public BeanInstantiationException(String msg, Class<?> beanClass, Throwable cause) {
-		super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
-		this.beanClass = beanClass;
-	}
+    /**
+     * Create a new BeanInstantiationException.
+     *
+     * @param beanClass the offending bean class
+     * @param cause the root cause
+     */
+    public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
+        this(cause.getMessage(), beanClass, cause);
+    }
 
-	/**
-	 * Create a new BeanInstantiationException.
-	 *
-	 * @param msg the detail message
-	 * @param beanClass the offending bean class
-	 */
-	public BeanInstantiationException(String msg, Class<?> beanClass) {
-		super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
-		this.beanClass = beanClass;
-	}
+    /**
+     * Create a new BeanInstantiationException.
+     *
+     * @param msg the detail message
+     * @param beanClass the offending bean class
+     * @param cause the root cause
+     */
+    public BeanInstantiationException(String msg, Class<?> beanClass, Throwable cause) {
+        super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
+        this.beanClass = beanClass;
+    }
 
-	/**
-	 * Return the offending bean class.
-	 *
-	 * @return the bean class
-	 */
-	public Class<?> getBeanClass() {
-		return beanClass;
-	}
+    /**
+     * Create a new BeanInstantiationException.
+     *
+     * @param msg the detail message
+     * @param beanClass the offending bean class
+     */
+    public BeanInstantiationException(String msg, Class<?> beanClass) {
+        super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
+        this.beanClass = beanClass;
+    }
+
+    /**
+     * Return the offending bean class.
+     *
+     * @return the bean class
+     */
+    public Class<?> getBeanClass() {
+        return beanClass;
+    }
 
 }

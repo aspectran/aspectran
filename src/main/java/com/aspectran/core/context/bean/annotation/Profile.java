@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Profile {
 
-	String[] value();
+    String[] value();
 
 }

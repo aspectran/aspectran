@@ -36,90 +36,90 @@ import freemarker.template.Template;
  */
 public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
-	private static final Log log = LogFactory.getLog(FreeMarkerViewDispatcher.class);
+    private static final Log log = LogFactory.getLog(FreeMarkerViewDispatcher.class);
 
-	private static final boolean debugEnabled = log.isDebugEnabled();
-	
-	private Configuration configuration;
+    private static final boolean debugEnabled = log.isDebugEnabled();
 
-	private String prefix;
+    private Configuration configuration;
 
-	private String suffix;
+    private String prefix;
 
-	public FreeMarkerViewDispatcher(Configuration configuration) {
-		this.configuration = configuration;
-	}
+    private String suffix;
 
-	/**
-	 * Sets the prefix for the template name.
-	 *
-	 * @param prefix the new prefix for the template name
-	 */
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+    public FreeMarkerViewDispatcher(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
-	/**
-	 * Sets the suffix for the template name.
-	 *
-	 * @param suffix the new suffix for the template name
-	 */
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
+    /**
+     * Sets the prefix for the template name.
+     *
+     * @param prefix the new prefix for the template name
+     */
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
-	@Override
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
-		String dispatchName = null;
+    /**
+     * Sets the suffix for the template name.
+     *
+     * @param suffix the new suffix for the template name
+     */
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
-		try {
-			dispatchName = dispatchResponseRule.getName(activity);
-			if (dispatchName == null) {
-				throw new IllegalArgumentException("No specified dispatch name.");
-			}
+    @Override
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+        String dispatchName = null;
 
-			if (prefix != null && suffix != null) {
-				dispatchName = prefix + dispatchName + suffix;
-			} else if (prefix != null) {
-				dispatchName = prefix + dispatchName;
-			} else if (suffix != null) {
-				dispatchName = dispatchName + suffix;
-			}
-			
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        try {
+            dispatchName = dispatchResponseRule.getName(activity);
+            if (dispatchName == null) {
+                throw new IllegalArgumentException("No specified dispatch name.");
+            }
 
-			String contentType = dispatchResponseRule.getContentType();
-			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
+            if (prefix != null && suffix != null) {
+                dispatchName = prefix + dispatchName + suffix;
+            } else if (prefix != null) {
+                dispatchName = prefix + dispatchName;
+            } else if (suffix != null) {
+                dispatchName = dispatchName + suffix;
+            }
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-			if (characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
-			} else {
-				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
-			
-			TemplateDataMap model = new TemplateDataMap(activity);
+            String contentType = dispatchResponseRule.getContentType();
+            String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			Template template = configuration.getTemplate(dispatchName);
-			template.process(model, responseAdapter.getWriter());
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
 
-			if (debugEnabled) {
-				log.debug("Dispatch to a FreeMarker template page [" + dispatchName + "]");
-			}
-		} catch (Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this, dispatchName), e);
-		}
-	}
+            if (characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(characterEncoding);
+            } else {
+                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
+            TemplateDataMap model = new TemplateDataMap(activity);
+
+            Template template = configuration.getTemplate(dispatchName);
+            template.process(model, responseAdapter.getWriter());
+
+            if (debugEnabled) {
+                log.debug("Dispatch to a FreeMarker template page [" + dispatchName + "]");
+            }
+        } catch (Exception e) {
+            throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this, dispatchName), e);
+        }
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
 }

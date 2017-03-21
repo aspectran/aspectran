@@ -28,83 +28,83 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class WildcardPointcut extends AbstractPointcut {
 
-	private static final String OR_MATCH_DELIMITER = "|";
-	
-	private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
-	
-	public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
-		super(pointcutPatternRuleList);
-	}
+    private static final String OR_MATCH_DELIMITER = "|";
 
-	@Override
-	public boolean patternMatches(String pattern, String compareString) {
-		if (pattern.contains(OR_MATCH_DELIMITER)) {
-			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
-			while (parser.hasMoreTokens()) {
-				String patternToken = parser.nextToken();
-				if (wildcardPatternMatches(patternToken, compareString)) {
-					return true;
-				}
-			}
-			return false;
-		} else {
-			return wildcardPatternMatches(pattern, compareString);
-		}
-	}
+    private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
 
-	@Override
-	public boolean patternMatches(String pattern, String compareString, char separator) {
-		if (pattern.contains(OR_MATCH_DELIMITER)) {
-			StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
-			while (parser.hasMoreTokens()) {
-				String patternToken = parser.nextToken();
-				if (wildcardPatternMatches(patternToken, compareString, separator)) {
-					return true;
-				}
-			}
-			return false;
-		} else {
-			return wildcardPatternMatches(pattern, compareString, separator);
-		}
-	}
-	
-	private boolean wildcardPatternMatches(String pattern, String compareString) {
-		if (!WildcardPattern.hasWildcards(pattern)) {
-			return pattern.equals(compareString);
-		}
+    public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+        super(pointcutPatternRuleList);
+    }
 
-		WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
-		if (wildcardPattern == null) {
-			synchronized (wildcardPatternCache) {
-				wildcardPattern = wildcardPatternCache.get(pattern);
-				if (wildcardPattern == null) {
-					wildcardPattern = new WildcardPattern(pattern);
-					wildcardPatternCache.put(pattern, wildcardPattern);
-				}
-			}
-		}
+    @Override
+    public boolean patternMatches(String pattern, String compareString) {
+        if (pattern.contains(OR_MATCH_DELIMITER)) {
+            StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
+            while (parser.hasMoreTokens()) {
+                String patternToken = parser.nextToken();
+                if (wildcardPatternMatches(patternToken, compareString)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return wildcardPatternMatches(pattern, compareString);
+        }
+    }
 
-		return wildcardPattern.matches(compareString);
-	}
+    @Override
+    public boolean patternMatches(String pattern, String compareString, char separator) {
+        if (pattern.contains(OR_MATCH_DELIMITER)) {
+            StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
+            while (parser.hasMoreTokens()) {
+                String patternToken = parser.nextToken();
+                if (wildcardPatternMatches(patternToken, compareString, separator)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return wildcardPatternMatches(pattern, compareString, separator);
+        }
+    }
 
-	private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
-		String patternKey = pattern + separator;
-		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternKey);
-		if (wildcardPattern == null) {
-			synchronized (wildcardPatternCache) {
-				wildcardPattern = wildcardPatternCache.get(patternKey);
-				if (wildcardPattern == null) {
-					wildcardPattern = new WildcardPattern(pattern, separator);
-					wildcardPatternCache.put(patternKey, wildcardPattern);
-				}
-			}
-		}
-		return wildcardPattern.matches(compareString);
-	}
+    private boolean wildcardPatternMatches(String pattern, String compareString) {
+        if (!WildcardPattern.hasWildcards(pattern)) {
+            return pattern.equals(compareString);
+        }
 
-	@Override
-	public void clear() {
-		wildcardPatternCache.clear();
-	}
-	
+        WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
+        if (wildcardPattern == null) {
+            synchronized (wildcardPatternCache) {
+                wildcardPattern = wildcardPatternCache.get(pattern);
+                if (wildcardPattern == null) {
+                    wildcardPattern = new WildcardPattern(pattern);
+                    wildcardPatternCache.put(pattern, wildcardPattern);
+                }
+            }
+        }
+
+        return wildcardPattern.matches(compareString);
+    }
+
+    private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
+        String patternKey = pattern + separator;
+        WildcardPattern wildcardPattern = wildcardPatternCache.get(patternKey);
+        if (wildcardPattern == null) {
+            synchronized (wildcardPatternCache) {
+                wildcardPattern = wildcardPatternCache.get(patternKey);
+                if (wildcardPattern == null) {
+                    wildcardPattern = new WildcardPattern(pattern, separator);
+                    wildcardPatternCache.put(patternKey, wildcardPattern);
+                }
+            }
+        }
+        return wildcardPattern.matches(compareString);
+    }
+
+    @Override
+    public void clear() {
+        wildcardPatternCache.clear();
+    }
+
 }

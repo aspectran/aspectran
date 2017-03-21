@@ -38,283 +38,283 @@ import com.aspectran.core.util.MultiValueMap;
  */
 public abstract class AbstractAdaptiveRequest {
 
-	private MethodType requestMethod;
+    private MethodType requestMethod;
 
-	private MultiValueMap<String, String> headers;
+    private MultiValueMap<String, String> headers;
 
-	private ParameterMap parameterMap;
+    private ParameterMap parameterMap;
 
-	private FileParameterMap fileParameterMap;
+    private FileParameterMap fileParameterMap;
 
-	private Locale locale;
+    private Locale locale;
 
-	private TimeZone timeZone;
+    private TimeZone timeZone;
 
-	private boolean maxLengthExceeded;
+    private boolean maxLengthExceeded;
 
-	public AbstractAdaptiveRequest() {
-	}
+    public AbstractAdaptiveRequest() {
+    }
 
-	public AbstractAdaptiveRequest(Map<String, String[]> parameterMap) {
-		if (parameterMap != null && !parameterMap.isEmpty()) {
-			this.parameterMap = new ParameterMap(parameterMap);
-		}
-	}
+    public AbstractAdaptiveRequest(Map<String, String[]> parameterMap) {
+        if (parameterMap != null && !parameterMap.isEmpty()) {
+            this.parameterMap = new ParameterMap(parameterMap);
+        }
+    }
 
-	public MethodType getRequestMethod() {
-		return requestMethod;
-	}
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
 
-	protected void setRequestMethod(MethodType requestMethod) {
-		this.requestMethod = requestMethod;
-	}
+    protected void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
 
-	/**
-	 * Returns a map of the request headers that can be modified.
-	 * If not yet instantiated then create a new one.
-	 *
-	 * @return an {@code MultiValueMap} object, may not be {@code null}
-	 */
-	protected MultiValueMap<String, String> touchHeaders() {
-		if (headers == null) {
-			headers = new LinkedCaseInsensitiveMultiValueMap<String>(12);
-		}
-		return headers;
-	}
+    /**
+     * Returns a map of the request headers that can be modified.
+     * If not yet instantiated then create a new one.
+     *
+     * @return an {@code MultiValueMap} object, may not be {@code null}
+     */
+    protected MultiValueMap<String, String> touchHeaders() {
+        if (headers == null) {
+            headers = new LinkedCaseInsensitiveMultiValueMap<String>(12);
+        }
+        return headers;
+    }
 
-	protected boolean isHeadersInstantiated() {
-		return (headers != null);
-	}
+    protected boolean isHeadersInstantiated() {
+        return (headers != null);
+    }
 
-	/**
-	 * Returns a map of the request headers that can be modified.
-	 *
-	 * @return an {@code MultiValueMap} object, may be {@code null}
-	 */
-	public MultiValueMap<String, String> getHeaders() {
-		return touchHeaders();
-	}
+    /**
+     * Returns a map of the request headers that can be modified.
+     *
+     * @return an {@code MultiValueMap} object, may be {@code null}
+     */
+    public MultiValueMap<String, String> getHeaders() {
+        return touchHeaders();
+    }
 
-	/**
-	 * Returns the value of the response header with the given name.
-	 *
-	 * <p>If a response header with the given name exists and contains
-	 * multiple values, the value that was added first will be returned.
-	 *
-	 * @param name the name of the response header whose value to return
-	 * @return the value of the response header with the given name,
-	 * 		or {@code null} if no header with the given name has been set
-	 * 		on this response
-	 */
-	public String getHeader(String name) {
-		return touchHeaders().getFirst(name);
-	}
+    /**
+     * Returns the value of the response header with the given name.
+     *
+     * <p>If a response header with the given name exists and contains
+     * multiple values, the value that was added first will be returned.
+     *
+     * @param name the name of the response header whose value to return
+     * @return the value of the response header with the given name,
+     *         or {@code null} if no header with the given name has been set
+     *         on this response
+     */
+    public String getHeader(String name) {
+        return touchHeaders().getFirst(name);
+    }
 
-	/**
-	 * Returns the values of the response header with the given name.
-	 *
-	 * @param name the name of the response header whose values to return
-	 * @return a (possibly empty) {@code Collection} of the values
-	 * 		of the response header with the given name
-	 */
-	public Collection<String> getHeaders(String name) {
-		return touchHeaders().get(name);
-	}
+    /**
+     * Returns the values of the response header with the given name.
+     *
+     * @param name the name of the response header whose values to return
+     * @return a (possibly empty) {@code Collection} of the values
+     *         of the response header with the given name
+     */
+    public Collection<String> getHeaders(String name) {
+        return touchHeaders().get(name);
+    }
 
-	/**
-	 * Returns the names of the headers of this response.
-	 *
-	 * @return a (possibly empty) {@code Collection} of the names
-	 * 		of the headers of this response
-	 */
-	public Collection<String> getHeaderNames() {
-		return touchHeaders().keySet();
-	}
+    /**
+     * Returns the names of the headers of this response.
+     *
+     * @return a (possibly empty) {@code Collection} of the names
+     *         of the headers of this response
+     */
+    public Collection<String> getHeaderNames() {
+        return touchHeaders().keySet();
+    }
 
-	/**
-	 * Returns a boolean indicating whether the named response header
-	 * has already been set.
-	 *
-	 * @param name the header name
-	 * @return {@code true} if the named response header
-	 * 		has already been set; {@code false} otherwise
-	 */
-	public boolean containsHeader(String name) {
-		List<String> values = touchHeaders().get(name);
-		return (values != null && !values.isEmpty());
-	}
+    /**
+     * Returns a boolean indicating whether the named response header
+     * has already been set.
+     *
+     * @param name the header name
+     * @return {@code true} if the named response header
+     *         has already been set; {@code false} otherwise
+     */
+    public boolean containsHeader(String name) {
+        List<String> values = touchHeaders().get(name);
+        return (values != null && !values.isEmpty());
+    }
 
-	/**
-	 * Set the given single header value under the given header name.
-	 *
-	 * @param name the header name
-	 * @param value the header value to set
-	 */
-	public void setHeader(String name, String value) {
-		touchHeaders().set(name, value);
-	}
+    /**
+     * Set the given single header value under the given header name.
+     *
+     * @param name the header name
+     * @param value the header value to set
+     */
+    public void setHeader(String name, String value) {
+        touchHeaders().set(name, value);
+    }
 
-	/**
-	 * Add the given single header value to the current list of values
-	 * for the given header.
-	 *
-	 * @param name the header name
-	 * @param value the header value to be added
-	 */
-	public void addHeader(String name, String value) {
-		touchHeaders().add(name, value);
-	}
+    /**
+     * Add the given single header value to the current list of values
+     * for the given header.
+     *
+     * @param name the header name
+     * @param value the header value to be added
+     */
+    public void addHeader(String name, String value) {
+        touchHeaders().add(name, value);
+    }
 
-	public String getParameter(String name) {
-		return (parameterMap != null ? parameterMap.getParameter(name) : null);
-	}
+    public String getParameter(String name) {
+        return (parameterMap != null ? parameterMap.getParameter(name) : null);
+    }
 
-	public void setParameter(String name, String value) {
-		touchParameterMap().setParameter(name, value);
-	}
+    public void setParameter(String name, String value) {
+        touchParameterMap().setParameter(name, value);
+    }
 
-	public String[] getParameterValues(String name) {
-		return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
-	}
+    public String[] getParameterValues(String name) {
+        return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
+    }
 
-	public void setParameter(String name, String[] values) {
-		touchParameterMap().put(name, values);
-	}
+    public void setParameter(String name, String[] values) {
+        touchParameterMap().put(name, values);
+    }
 
-	private ParameterMap touchParameterMap() {
-		if (this.parameterMap == null) {
-			this.parameterMap = new ParameterMap();
-		}
-		return this.parameterMap;
-	}
+    private ParameterMap touchParameterMap() {
+        if (this.parameterMap == null) {
+            this.parameterMap = new ParameterMap();
+        }
+        return this.parameterMap;
+    }
 
-	public Map<String, Object> getParameterMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		fillPrameterMap(params);
-		return params;
-	}
+    public Map<String, Object> getParameterMap() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        fillPrameterMap(params);
+        return params;
+    }
 
-	public Enumeration<String> getParameterNames() {
-		return (parameterMap != null ? parameterMap.getParameterNames() : null);
-	}
+    public Enumeration<String> getParameterNames() {
+        return (parameterMap != null ? parameterMap.getParameterNames() : null);
+    }
 
-	public void fillPrameterMap(Map<String, Object> targetParameterMap) {
-		if (this.parameterMap != null) {
-			for (Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
-				String name = entry.getKey();
-				String[] values = entry.getValue();
-				if (values.length == 1) {
-					targetParameterMap.put(name, values[0]);
-				} else {
-					targetParameterMap.put(name, values);
-				}
-			}
-		}
-	}
+    public void fillPrameterMap(Map<String, Object> targetParameterMap) {
+        if (this.parameterMap != null) {
+            for (Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
+                String name = entry.getKey();
+                String[] values = entry.getValue();
+                if (values.length == 1) {
+                    targetParameterMap.put(name, values[0]);
+                } else {
+                    targetParameterMap.put(name, values);
+                }
+            }
+        }
+    }
 
-	public FileParameter getFileParameter(String name) {
-		return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
-	}
-	
-	public FileParameter[] getFileParameterValues(String name) {
-		return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
-	}
+    public FileParameter getFileParameter(String name) {
+        return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
+    }
 
-	public void setFileParameter(String name, FileParameter fileParameter) {
-		touchFileParameterMap().setFileParameter(name, fileParameter);
-	}
-	
-	public void setFileParameter(String name, FileParameter[] fileParameters) {
-		touchFileParameterMap().setFileParameter(name, fileParameters);
-	}
-	
-	public Enumeration<String> getFileParameterNames() {
-		FileParameterMap fileParameterMap = touchFileParameterMap();
-		return (fileParameterMap != null ? Collections.enumeration(fileParameterMap.keySet()) : null);
-	}
-	
-	public FileParameter[] removeFileParameter(String name) {
-		return (fileParameterMap != null ? fileParameterMap.remove(name) : null);
-	}
-	
-	private FileParameterMap touchFileParameterMap() {
-		if (fileParameterMap == null) {
-			fileParameterMap = new FileParameterMap();
-		}
-		return fileParameterMap;
-	}
+    public FileParameter[] getFileParameterValues(String name) {
+        return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
+    }
 
-	public Map<String, Object> getAttributeMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		fillAttributeMap(params);
-		return params;
-	}
+    public void setFileParameter(String name, FileParameter fileParameter) {
+        touchFileParameterMap().setFileParameter(name, fileParameter);
+    }
 
-	public void fillAttributeMap(Map<String, Object> targetAttributeMap) {
-		if (targetAttributeMap != null) {
-			Enumeration<String> enm = getAttributeNames();
+    public void setFileParameter(String name, FileParameter[] fileParameters) {
+        touchFileParameterMap().setFileParameter(name, fileParameters);
+    }
 
-			while (enm.hasMoreElements()) {
-				String name = enm.nextElement();
-				Object value = getAttribute(name);
-				targetAttributeMap.put(name, value);
-			}
-		}
-	}
+    public Enumeration<String> getFileParameterNames() {
+        FileParameterMap fileParameterMap = touchFileParameterMap();
+        return (fileParameterMap != null ? Collections.enumeration(fileParameterMap.keySet()) : null);
+    }
 
-	public abstract <T> T getAttribute(String name);
+    public FileParameter[] removeFileParameter(String name) {
+        return (fileParameterMap != null ? fileParameterMap.remove(name) : null);
+    }
 
-	public abstract void setAttribute(String name, Object value);
+    private FileParameterMap touchFileParameterMap() {
+        if (fileParameterMap == null) {
+            fileParameterMap = new FileParameterMap();
+        }
+        return fileParameterMap;
+    }
 
-	public abstract Enumeration<String> getAttributeNames();
+    public Map<String, Object> getAttributeMap() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        fillAttributeMap(params);
+        return params;
+    }
 
-	/**
-	 * Sets whether the request header has exceeded the maximum length.
-	 *
-	 * @param maxLengthExceeded whether the request header has exceeded the maximum length
-	 */
-	public void setMaxLengthExceeded(boolean maxLengthExceeded) {
-		this.maxLengthExceeded = maxLengthExceeded;
-	}
+    public void fillAttributeMap(Map<String, Object> targetAttributeMap) {
+        if (targetAttributeMap != null) {
+            Enumeration<String> enm = getAttributeNames();
 
-	/**
-	 * Returns whether request header has exceed the maximum length.
-	 *
-	 * @return true, if is max length exceeded
-	 */
-	public boolean isMaxLengthExceeded() {
-		return maxLengthExceeded;
-	}
+            while (enm.hasMoreElements()) {
+                String name = enm.nextElement();
+                Object value = getAttribute(name);
+                targetAttributeMap.put(name, value);
+            }
+        }
+    }
 
-	public Locale getLocale() {
-		return locale;
-	}
+    public abstract <T> T getAttribute(String name);
 
-	/**
-	 * Sets the locale.
-	 *
-	 * @param locale the locale
-	 */
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+    public abstract void setAttribute(String name, Object value);
 
-	/**
-	 * Gets the time zone.
-	 *
-	 * @return the time zone
-	 */
-	public TimeZone getTimeZone() {
-		return timeZone;
-	}
+    public abstract Enumeration<String> getAttributeNames();
 
-	/**
-	 * Sets the time zone.
-	 *
-	 * @param timeZone the time zone
-	 */
-	public void setTimeZone(TimeZone timeZone) {
-		this.timeZone = timeZone;
-	}
+    /**
+     * Sets whether the request header has exceeded the maximum length.
+     *
+     * @param maxLengthExceeded whether the request header has exceeded the maximum length
+     */
+    public void setMaxLengthExceeded(boolean maxLengthExceeded) {
+        this.maxLengthExceeded = maxLengthExceeded;
+    }
+
+    /**
+     * Returns whether request header has exceed the maximum length.
+     *
+     * @return true, if is max length exceeded
+     */
+    public boolean isMaxLengthExceeded() {
+        return maxLengthExceeded;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets the locale.
+     *
+     * @param locale the locale
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    /**
+     * Gets the time zone.
+     *
+     * @return the time zone
+     */
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    /**
+     * Sets the time zone.
+     *
+     * @param timeZone the time zone
+     */
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
 
 }

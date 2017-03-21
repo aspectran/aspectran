@@ -35,75 +35,75 @@ import com.aspectran.core.util.logging.LogFactory;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class AponTransformResponse extends TransformResponse {
-	
-	private static final Log log = LogFactory.getLog(AponTransformResponse.class);
-	
-	private final String characterEncoding;
 
-	private final String contentType;
+    private static final Log log = LogFactory.getLog(AponTransformResponse.class);
 
-	private boolean pretty;
-	
-	/**
-	 * Instantiates a new AponTransform.
-	 * 
-	 * @param transformRule the transform rule
-	 */
-	public AponTransformResponse(TransformRule transformRule) {
-		super(transformRule);
-		
-		this.characterEncoding = transformRule.getCharacterEncoding();
-		this.contentType = transformRule.getContentType();
-		this.pretty = transformRule.isPretty();
-	}
+    private final String characterEncoding;
 
-	@Override
-	public void response(Activity activity) throws TransformResponseException {
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null) {
-			return;
-		}
+    private final String contentType;
 
-		if (log.isDebugEnabled()) {
-			log.debug("response " + transformRule);
-		}
-		
-		try {
-			if (this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
-			} else {
-				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
+    private boolean pretty;
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+    /**
+     * Instantiates a new AponTransform.
+     *
+     * @param transformRule the transform rule
+     */
+    public AponTransformResponse(TransformRule transformRule) {
+        super(transformRule);
 
-			Writer writer = responseAdapter.getWriter();
-			ProcessResult processResult = activity.getProcessResult();
+        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.contentType = transformRule.getContentType();
+        this.pretty = transformRule.isPretty();
+    }
 
-			Parameters parameters = ContentsAponAssembler.assemble(processResult);
-			@SuppressWarnings("resource")
-			AponWriter aponWriter = new AponWriter(writer, pretty);
-			aponWriter.write(parameters);
-			aponWriter.flush(); // Never close at this time. Owner will be close.
-		} catch (Exception e) {
-			throw new TransformResponseException(transformRule, e);
-		}
-	}
+    @Override
+    public void response(Activity activity) throws TransformResponseException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            return;
+        }
 
-	@Override
-	public ActionList getActionList() {
-		return transformRule.getActionList();
-	}
-	
-	@Override
-	public Response replicate() {
-		TransformRule transformRule = getTransformRule().replicate();
-		return new AponTransformResponse(transformRule);
-	}
-	
+        if (log.isDebugEnabled()) {
+            log.debug("response " + transformRule);
+        }
+
+        try {
+            if (this.characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            } else {
+                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
+
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
+
+            Writer writer = responseAdapter.getWriter();
+            ProcessResult processResult = activity.getProcessResult();
+
+            Parameters parameters = ContentsAponAssembler.assemble(processResult);
+            @SuppressWarnings("resource")
+            AponWriter aponWriter = new AponWriter(writer, pretty);
+            aponWriter.write(parameters);
+            aponWriter.flush(); // Never close at this time. Owner will be close.
+        } catch (Exception e) {
+            throw new TransformResponseException(transformRule, e);
+        }
+    }
+
+    @Override
+    public ActionList getActionList() {
+        return transformRule.getActionList();
+    }
+
+    @Override
+    public Response replicate() {
+        TransformRule transformRule = getTransformRule().replicate();
+        return new AponTransformResponse(transformRule);
+    }
+
 }

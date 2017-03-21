@@ -21,59 +21,59 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ActionParameters extends AbstractParameters {
 
-	public static final ParameterDefinition id;
-	
-	public static final ParameterDefinition bean;
-	public static final ParameterDefinition methodName;
-	public static final ParameterDefinition hidden;
+    public static final ParameterDefinition id;
 
-	public static final ParameterDefinition arguments;
-	public static final ParameterDefinition properties;
-	
-	public static final ParameterDefinition include;
-	public static final ParameterDefinition parameters;
-	public static final ParameterDefinition attributes;
+    public static final ParameterDefinition bean;
+    public static final ParameterDefinition methodName;
+    public static final ParameterDefinition hidden;
 
-	public static final ParameterDefinition echo;
-	
-	public static final ParameterDefinition headers;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
+    public static final ParameterDefinition arguments;
+    public static final ParameterDefinition properties;
 
-	static {
-		id = new ParameterDefinition("id", ParameterValueType.STRING);
-		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		methodName = new ParameterDefinition("method", ParameterValueType.STRING);
-		hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
-		arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
-		properties = new ParameterDefinition("properties", ItemHolderParameters.class);
-		include = new ParameterDefinition("include", ParameterValueType.STRING);
-		parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
-		attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
-		echo = new ParameterDefinition("echo", ItemHolderParameters.class);
-		headers = new ParameterDefinition("headers", ItemHolderParameters.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			id,
-			bean,
-			methodName,
-			hidden,
-			arguments,
-			properties,
-			include,
-			parameters,
-			attributes,
-			echo,
-			headers
-		};
-	}
-	
-	public ActionParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ActionParameters(String plaintext) {
-		super(parameterDefinitions, plaintext);
-	}
-	
+    public static final ParameterDefinition include;
+    public static final ParameterDefinition parameters;
+    public static final ParameterDefinition attributes;
+
+    public static final ParameterDefinition echo;
+
+    public static final ParameterDefinition headers;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        id = new ParameterDefinition("id", ParameterValueType.STRING);
+        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+        methodName = new ParameterDefinition("method", ParameterValueType.STRING);
+        hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
+        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
+        properties = new ParameterDefinition("properties", ItemHolderParameters.class);
+        include = new ParameterDefinition("include", ParameterValueType.STRING);
+        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        echo = new ParameterDefinition("echo", ItemHolderParameters.class);
+        headers = new ParameterDefinition("headers", ItemHolderParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            id,
+            bean,
+            methodName,
+            hidden,
+            arguments,
+            properties,
+            include,
+            parameters,
+            attributes,
+            echo,
+            headers
+        };
+    }
+
+    public ActionParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ActionParameters(String plaintext) {
+        super(parameterDefinitions, plaintext);
+    }
+
 }

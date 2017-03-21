@@ -26,50 +26,50 @@ import com.aspectran.core.context.rule.type.ActionType;
  */
 public interface Executable {
 
-	/**
-	 * Gets the action id.
-	 * 
-	 * @return the action id
-	 */
-	String getActionId();
+    /**
+     * Gets the action id.
+     *
+     * @return the action id
+     */
+    String getActionId();
 
-	/**
-	 * Execute this action.
-	 *
-	 * @param activity the activity
-	 * @return the result of action execution
-	 * @throws Exception the exception
-	 * @throws ActionExecutionException the action execution exception
-	 */
-	Object execute(Activity activity) throws Exception;
-	
-	/**
-	 * Returns whether this action is hidden.
-	 * 
-	 * @return true, if is hidden action
-	 */
-	boolean isHidden();
-	
-	/**
-	 * Gets the action list.
-	 * 
-	 * @return the action list
-	 */
-	ActionList getParent();
-	
-	/**
-	 * Gets the Action Type.
-	 *
-	 * @return the Action Type
-	 */
-	ActionType getActionType();
-	
-	/**
-	 * Gets the action rule.
-	 *
-	 * @param <T> the generic type
-	 * @return the action rule
-	 */
-	<T> T getActionRule();
-	
+    /**
+     * Execute this action.
+     *
+     * @param activity the activity
+     * @return the result of action execution
+     * @throws Exception the exception
+     * @throws ActionExecutionException the action execution exception
+     */
+    Object execute(Activity activity) throws Exception;
+
+    /**
+     * Returns whether this action is hidden.
+     *
+     * @return true, if is hidden action
+     */
+    boolean isHidden();
+
+    /**
+     * Gets the action list.
+     *
+     * @return the action list
+     */
+    ActionList getParent();
+
+    /**
+     * Gets the Action Type.
+     *
+     * @return the Action Type
+     */
+    ActionType getActionType();
+
+    /**
+     * Gets the action rule.
+     *
+     * @param <T> the generic type
+     * @return the action rule
+     */
+    <T> T getActionRule();
+
 }

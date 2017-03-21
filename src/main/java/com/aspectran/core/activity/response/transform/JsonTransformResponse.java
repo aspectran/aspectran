@@ -34,90 +34,90 @@ import com.aspectran.core.util.logging.LogFactory;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class JsonTransformResponse extends TransformResponse {
-	
-	private static final Log log = LogFactory.getLog(JsonTransformResponse.class);
-	
-	private static final String CALLBACK_PARAM_NAME = "callback";
 
-	private static final String ROUND_BRACKET_OPEN = "(";
+    private static final Log log = LogFactory.getLog(JsonTransformResponse.class);
 
-	private static final String ROUND_BRACKET_CLOSE = ")";
+    private static final String CALLBACK_PARAM_NAME = "callback";
 
-	private final String characterEncoding;
+    private static final String ROUND_BRACKET_OPEN = "(";
 
-	private final String contentType;
+    private static final String ROUND_BRACKET_CLOSE = ")";
 
-	private final boolean pretty;
-	
-	/**
-	 * Instantiates a new JsonTransform.
-	 * 
-	 * @param transformRule the transform rule
-	 */
-	public JsonTransformResponse(TransformRule transformRule) {
-		super(transformRule);
+    private final String characterEncoding;
 
-		this.characterEncoding = transformRule.getCharacterEncoding();
-		this.contentType = transformRule.getContentType();
-		this.pretty = transformRule.isPretty();
-	}
+    private final String contentType;
 
-	@Override
-	public void response(Activity activity) throws TransformResponseException {
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null) {
-			return;
-		}
+    private final boolean pretty;
 
-		if (log.isDebugEnabled()) {
-			log.debug("response " + transformRule);
-		}
-		
-		try {
-			if (this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
-			} else {
-				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
+    /**
+     * Instantiates a new JsonTransform.
+     *
+     * @param transformRule the transform rule
+     */
+    public JsonTransformResponse(TransformRule transformRule) {
+        super(transformRule);
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.contentType = transformRule.getContentType();
+        this.pretty = transformRule.isPretty();
+    }
 
-			Writer writer = responseAdapter.getWriter();
-			ProcessResult processResult = activity.getProcessResult();
+    @Override
+    public void response(Activity activity) throws TransformResponseException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            return;
+        }
 
-			// support for jsonp
-			String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
-			if (callback != null) {
-				writer.write(callback + ROUND_BRACKET_OPEN);
-			}
-			
-			JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
-			jsonWriter.write(processResult);
+        if (log.isDebugEnabled()) {
+            log.debug("response " + transformRule);
+        }
 
-			if (callback != null) {
-				writer.write(ROUND_BRACKET_CLOSE);
-			}
+        try {
+            if (this.characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            } else {
+                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-			writer.flush(); // Never close at this time. Owner will be close.
-		} catch (Exception e) {
-			throw new TransformResponseException(transformRule, e);
-		}
-	}
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
 
-	@Override
-	public ActionList getActionList() {
-		return transformRule.getActionList();
-	}
+            Writer writer = responseAdapter.getWriter();
+            ProcessResult processResult = activity.getProcessResult();
 
-	@Override
-	public Response replicate() {
-		TransformRule transformRule = getTransformRule().replicate();
-		return new JsonTransformResponse(transformRule);
-	}
+            // support for jsonp
+            String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
+            if (callback != null) {
+                writer.write(callback + ROUND_BRACKET_OPEN);
+            }
+
+            JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
+            jsonWriter.write(processResult);
+
+            if (callback != null) {
+                writer.write(ROUND_BRACKET_CLOSE);
+            }
+
+            writer.flush(); // Never close at this time. Owner will be close.
+        } catch (Exception e) {
+            throw new TransformResponseException(transformRule, e);
+        }
+    }
+
+    @Override
+    public ActionList getActionList() {
+        return transformRule.getActionList();
+    }
+
+    @Override
+    public Response replicate() {
+        TransformRule transformRule = getTransformRule().replicate();
+        return new JsonTransformResponse(transformRule);
+    }
 
 }

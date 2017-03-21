@@ -22,38 +22,38 @@ package com.aspectran.core.context.rule.type;
  */
 public enum BeanReferrerType {
 
-	ASPECT_RULE("aspectRule"),
-	SCHEDULE_RULE("scheduleRule"),
-	BEAN_ACTION_RULE("beanActionRule"),
-	BEAN_RULE("beanRule"),
-	TOKEN("token"),
-	TEMPLATE_RULE("templateRule");
+    ASPECT_RULE("aspectRule"),
+    SCHEDULE_RULE("scheduleRule"),
+    BEAN_ACTION_RULE("beanActionRule"),
+    BEAN_RULE("beanRule"),
+    TOKEN("token"),
+    TEMPLATE_RULE("templateRule");
 
-	private final String alias;
+    private final String alias;
 
-	BeanReferrerType(String alias) {
-		this.alias = alias;
-	}
+    BeanReferrerType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code BeanReferrerType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the bean referrer type as a {@code String}
-	 * @return a {@code BeanReferrerType}, may be {@code null}
-	 */
-	public static BeanReferrerType resolve(String alias) {
-		for (BeanReferrerType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code BeanReferrerType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the bean referrer type as a {@code String}
+     * @return a {@code BeanReferrerType}, may be {@code null}
+     */
+    public static BeanReferrerType resolve(String alias) {
+        for (BeanReferrerType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

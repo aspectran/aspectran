@@ -28,30 +28,30 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AponWriterTest {
 
-	public static void main(String argv[]) {
-		try {
-			// 먼저 AponWriter를 사용해서 파일로 저장된 APON 문서를 읽어서 Parameters 객체로 변환합니다.
-			Reader reader = new FileReader(new File(argv[0]));
+    public static void main(String argv[]) {
+        try {
+            // 먼저 AponWriter를 사용해서 파일로 저장된 APON 문서를 읽어서 Parameters 객체로 변환합니다.
+            Reader reader = new FileReader(new File(argv[0]));
 
-			Parameters aspectranConfig = new AspectranConfig();
-			
-			AponReader aponReader = new AponReader(reader);
-			aponReader.read(aspectranConfig);
-			aponReader.close();
-			
-			System.out.println(aspectranConfig);
-			
-			Writer writer = new StringWriter();
-			
-			AponWriter aponWriter = new AponWriter(writer);
-			aponWriter.write(aspectranConfig);
-			aponWriter.close();
-			
-			System.out.println(writer.toString());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            Parameters aspectranConfig = new AspectranConfig();
+
+            AponReader aponReader = new AponReader(reader);
+            aponReader.read(aspectranConfig);
+            aponReader.close();
+
+            System.out.println(aspectranConfig);
+
+            Writer writer = new StringWriter();
+
+            AponWriter aponWriter = new AponWriter(writer);
+            aponWriter.write(aspectranConfig);
+            aponWriter.close();
+
+            System.out.println(writer.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

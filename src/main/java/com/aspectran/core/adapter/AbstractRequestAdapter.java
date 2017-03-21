@@ -27,53 +27,53 @@ import com.aspectran.core.context.bean.scope.RequestScope;
 */
 public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest implements RequestAdapter {
 
-	protected final Object adaptee;
+    protected final Object adaptee;
 
-	private RequestScope requestScope;
+    private RequestScope requestScope;
 
-	/**
-	 * Instantiates a new AbstractRequestAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public AbstractRequestAdapter(Object adaptee) {
-		super();
-		this.adaptee = adaptee;
-	}
+    /**
+     * Instantiates a new AbstractRequestAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public AbstractRequestAdapter(Object adaptee) {
+        super();
+        this.adaptee = adaptee;
+    }
 
-	/**
-	 * Instantiates a new AbstractRequestAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 * @param parameterMap the parameter map
-	 */
-	public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
-		super(parameterMap);
-		this.adaptee = adaptee;
-	}
+    /**
+     * Instantiates a new AbstractRequestAdapter.
+     *
+     * @param adaptee the adaptee object
+     * @param parameterMap the parameter map
+     */
+    public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
+        super(parameterMap);
+        this.adaptee = adaptee;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAdaptee() {
-		return (T)adaptee;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAdaptee() {
+        return (T)adaptee;
+    }
 
-	@Override
-	public RequestScope getRequestScope() {
-		return getRequestScope(true);
-	}
+    @Override
+    public RequestScope getRequestScope() {
+        return getRequestScope(true);
+    }
 
-	@Override
-	public RequestScope getRequestScope(boolean create) {
-		if (requestScope == null && create) {
-			requestScope = new RequestScope();
-		}
-		return requestScope;
-	}
+    @Override
+    public RequestScope getRequestScope(boolean create) {
+        if (requestScope == null && create) {
+            requestScope = new RequestScope();
+        }
+        return requestScope;
+    }
 
-	@Override
-	public void setRequestScope(RequestScope requestScope) {
-		this.requestScope = requestScope;
-	}
+    @Override
+    public void setRequestScope(RequestScope requestScope) {
+        this.requestScope = requestScope;
+    }
 
 }

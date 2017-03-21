@@ -22,30 +22,30 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
  * The Class AspectAdviceException.
  */
 public class AspectAdviceException extends AspectException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 6813516429436576091L;
 
-	private AspectAdviceRule aspectAdviceRule;
+    /** @serial */
+    private static final long serialVersionUID = 6813516429436576091L;
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 *
-	 * @param msg a message to associate with the exception
-	 * @param aspectAdviceRule the aspect advice rule
-	 * @param cause the real cause of the exception
-	 */
-	public AspectAdviceException(String msg, AspectAdviceRule aspectAdviceRule, Throwable cause) {
-		super(msg, cause);
-		this.aspectAdviceRule = aspectAdviceRule;
-	}
+    private AspectAdviceRule aspectAdviceRule;
 
-	/**
-	 * Returns the aspect advice rule.
-	 *
-	 * @return the aspect advice rule
-	 */
-	public AspectAdviceRule getAspectAdviceRule() {
-		return aspectAdviceRule;
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg a message to associate with the exception
+     * @param aspectAdviceRule the aspect advice rule
+     * @param cause the real cause of the exception
+     */
+    public AspectAdviceException(String msg, AspectAdviceRule aspectAdviceRule, Throwable cause) {
+        super(msg, cause);
+        this.aspectAdviceRule = aspectAdviceRule;
+    }
+
+    /**
+     * Returns the aspect advice rule.
+     *
+     * @return the aspect advice rule
+     */
+    public AspectAdviceRule getAspectAdviceRule() {
+        return aspectAdviceRule;
+    }
 }

@@ -23,27 +23,27 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
  * The Interface Pointcut.
  */
 public interface Pointcut {
-	
-	List<PointcutPatternRule> getPointcutPatternRuleList();
-	
-	boolean isExistsBeanMethodNamePattern();
-	
-	boolean matches(String transletName);
-	
-	boolean matches(String transletName, String beanId, String className);
-	
-	boolean matches(String transletName, String beanId, String className, String methodName);
 
-	boolean exists(String transletName);
-	
-	boolean exists(String transletName, String beanId, String className);
-	
-	boolean exists(String transletName, String beanId, String className, String methodName);
+    List<PointcutPatternRule> getPointcutPatternRuleList();
 
-	boolean patternMatches(String pattern, String compareString);
-	
-	boolean patternMatches(String pattern, String compareString, char separator);
+    boolean isExistsBeanMethodNamePattern();
 
-	void clear();
-	
+    boolean matches(String transletName);
+
+    boolean matches(String transletName, String beanId, String className);
+
+    boolean matches(String transletName, String beanId, String className, String methodName);
+
+    boolean exists(String transletName);
+
+    boolean exists(String transletName, String beanId, String className);
+
+    boolean exists(String transletName, String beanId, String className, String methodName);
+
+    boolean patternMatches(String pattern, String compareString);
+
+    boolean patternMatches(String pattern, String compareString, char separator);
+
+    void clear();
+
 }

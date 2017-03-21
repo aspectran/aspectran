@@ -22,35 +22,35 @@ package com.aspectran.core.context.rule.type;
  */
 public enum BeanProxifierType {
 
-	CGLIB("cglib"),
-	JAVASSIST("javassist"),
-	JDK("jdk");
+    CGLIB("cglib"),
+    JAVASSIST("javassist"),
+    JDK("jdk");
 
-	private final String alias;
+    private final String alias;
 
-	BeanProxifierType(String alias) {
-		this.alias = alias;
-	}
+    BeanProxifierType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code BeanProxifierType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the bean proxifier type as a {@code String}
-	 * @return a {@code BeanProxifierType}, may be {@code null}
-	 */
-	public static BeanProxifierType resolve(String alias) {
-		for (BeanProxifierType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code BeanProxifierType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the bean proxifier type as a {@code String}
+     * @return a {@code BeanProxifierType}, may be {@code null}
+     */
+    public static BeanProxifierType resolve(String alias) {
+        for (BeanProxifierType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

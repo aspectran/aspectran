@@ -39,7 +39,7 @@ import freemarker.template.TemplateModelException;
 public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveModel {
 
     @SuppressWarnings("rawtypes")
-	@Override
+    @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
         if (body == null) {
             return;
@@ -66,7 +66,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @throws TemplateModelException the template model exception
      */
     @SuppressWarnings("rawtypes")
-	abstract protected Trimmer getTrimmer(Map params) throws TemplateModelException;
+    abstract protected Trimmer getTrimmer(Map params) throws TemplateModelException;
 
     /**
      * Parse string parameter.
@@ -76,7 +76,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the string
      */
     @SuppressWarnings("rawtypes")
-	protected String parseStringParameter(Map params, String paramName) {
+    protected String parseStringParameter(Map params, String paramName) {
         Object paramModel = params.get(paramName);
 
         if (paramModel == null) {
@@ -99,7 +99,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @throws TemplateModelException the template model exception
      */
     @SuppressWarnings("rawtypes")
-	protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
+    protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
         Object paramModel = params.get(paramName);
 
         if (paramModel == null) {

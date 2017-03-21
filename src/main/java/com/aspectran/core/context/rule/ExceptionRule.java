@@ -26,118 +26,118 @@ import java.util.Map;
  */
 public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
-	private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(4);
+    private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(4);
 
-	private ExceptionThrownRule defaultExceptionThrownRule;
+    private ExceptionThrownRule defaultExceptionThrownRule;
 
-	private String description;
+    private String description;
 
-	/**
-	 * Puts the exception thrown rule.
-	 *
-	 * @param exceptionThrownRule the exception thrown rule
-	 */
-	public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
-		String[] exceptionTypes = exceptionThrownRule.getExceptionTypes();
-		if (exceptionTypes != null) {
-			for (String exceptionType : exceptionTypes) {
-				if (exceptionType != null) {
-					if (!exceptionThrownRuleMap.containsKey(exceptionType)) {
-						exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
-					}
-				}
-			}
-		} else {
-			defaultExceptionThrownRule = exceptionThrownRule;
-		}
-	}
-	
-	/**
-	 * Gets the exception thrown rule as specified exception.
-	 *
-	 * @param ex the exception
-	 * @return the exception thrown rule
-	 */
-	public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
-		ExceptionThrownRule exceptionThrownRule = null;
-		int deepest = Integer.MAX_VALUE;
+    /**
+     * Puts the exception thrown rule.
+     *
+     * @param exceptionThrownRule the exception thrown rule
+     */
+    public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+        String[] exceptionTypes = exceptionThrownRule.getExceptionTypes();
+        if (exceptionTypes != null) {
+            for (String exceptionType : exceptionTypes) {
+                if (exceptionType != null) {
+                    if (!exceptionThrownRuleMap.containsKey(exceptionType)) {
+                        exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
+                    }
+                }
+            }
+        } else {
+            defaultExceptionThrownRule = exceptionThrownRule;
+        }
+    }
 
-		for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
-			int depth = getMatchedDepth(entry.getKey(), ex);
-			if (depth >= 0 && depth < deepest) {
-				deepest = depth;
-				exceptionThrownRule = entry.getValue();
-			}
-		}
+    /**
+     * Gets the exception thrown rule as specified exception.
+     *
+     * @param ex the exception
+     * @return the exception thrown rule
+     */
+    public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
+        ExceptionThrownRule exceptionThrownRule = null;
+        int deepest = Integer.MAX_VALUE;
 
-		return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
-	}
+        for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
+            int depth = getMatchedDepth(entry.getKey(), ex);
+            if (depth >= 0 && depth < deepest) {
+                deepest = depth;
+                exceptionThrownRule = entry.getValue();
+            }
+        }
 
-	/**
-	 * Returns the matched depth.
-	 *
-	 * @param exceptionType the exception type
-	 * @param ex the throwable exception
-	 * @return the matched depth
-	 */
-	private int getMatchedDepth(String exceptionType, Throwable ex) {
-		Throwable t = ex.getCause();
-		if (t != null) {
-			return getMatchedDepth(exceptionType, t);
-		} else {
-			return getMatchedDepth(exceptionType, ex.getClass(), 0);
-		}
-	}
+        return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
+    }
 
-	/**
-	 * Returns the matched depth.
-	 *
-	 * @param exceptionType the exception type
-	 * @param exceptionClass the exception class
-	 * @param depth the depth
-	 * @return the matched depth
-	 */
-	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
-		if (exceptionClass.getName().equals(exceptionType)) {
-			return depth;
-		}
-		if (exceptionClass.equals(Throwable.class)) {
-			return -1;
-		}
-		return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
-	}
+    /**
+     * Returns the matched depth.
+     *
+     * @param exceptionType the exception type
+     * @param ex the throwable exception
+     * @return the matched depth
+     */
+    private int getMatchedDepth(String exceptionType, Throwable ex) {
+        Throwable t = ex.getCause();
+        if (t != null) {
+            return getMatchedDepth(exceptionType, t);
+        } else {
+            return getMatchedDepth(exceptionType, ex.getClass(), 0);
+        }
+    }
 
-	@Override
-	public Iterator<ExceptionThrownRule> iterator() {
-		return exceptionThrownRuleMap.values().iterator();
-	}
+    /**
+     * Returns the matched depth.
+     *
+     * @param exceptionType the exception type
+     * @param exceptionClass the exception class
+     * @param depth the depth
+     * @return the matched depth
+     */
+    private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
+        if (exceptionClass.getName().equals(exceptionType)) {
+            return depth;
+        }
+        if (exceptionClass.equals(Throwable.class)) {
+            return -1;
+        }
+        return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
+    }
 
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+    @Override
+    public Iterator<ExceptionThrownRule> iterator() {
+        return exceptionThrownRuleMap.values().iterator();
+    }
 
-	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	public static ExceptionRule newInstance() {
-		return new ExceptionRule();
-	}
+    /**
+     * Sets the description.
+     *
+     * @param description the new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public static ExceptionRule newInstance(ExceptionThrownRule exceptionThrownRule) {
-		ExceptionRule exceptionRule = new ExceptionRule();
-		exceptionRule.putExceptionThrownRule(exceptionThrownRule);
-		return exceptionRule;
-	}
+    public static ExceptionRule newInstance() {
+        return new ExceptionRule();
+    }
+
+    public static ExceptionRule newInstance(ExceptionThrownRule exceptionThrownRule) {
+        ExceptionRule exceptionRule = new ExceptionRule();
+        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
+        return exceptionRule;
+    }
 
 }

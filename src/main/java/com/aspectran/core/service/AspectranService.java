@@ -25,61 +25,61 @@ import com.aspectran.core.context.loader.resource.AspectranClassLoader;
  */
 public interface AspectranService extends AspectranServiceController {
 
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	ApplicationAdapter getApplicationAdapter();
-	
-	/**
-	 * Gets the activity context.
-	 *
-	 * @return the activity context
-	 */
-	ActivityContext getActivityContext();
+    /**
+     * Gets the application adapter.
+     *
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
 
-	/**
-	 * Gets the aspectran class loader.
-	 *
-	 * @return the aspectran class loader
-	 */
-	AspectranClassLoader getAspectranClassLoader();
+    /**
+     * Gets the activity context.
+     *
+     * @return the activity context
+     */
+    ActivityContext getActivityContext();
 
-	/**
-	 * Returns the Aspectran configuration parameters used to generate the AspectranContext.
-	 *
-	 * @return the Aspectran Configuration Parameters
-	 */
-	AspectranConfig getAspectranConfig();
+    /**
+     * Gets the aspectran class loader.
+     *
+     * @return the aspectran class loader
+     */
+    AspectranClassLoader getAspectranClassLoader();
 
-	/**
-	 * Sets the aspectran service life-cycle listener.
-	 *
-	 * @param aspectranServiceLifeCycleListener the new aspectran service life-cycle listener
-	 */
-	void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener);
-	
-	/**
-	 * Returns whether or not the java classes to be reload when the activity context is reloading.
-	 * you reload Java classes and activitiesyou reload Java classes and activitiesreload only the activity context.
-	 *
-	 * @return true, if the java classes and activity context is to be reload both
-	 */
-	boolean isHardReload();
-	
-	/**
-	 * Returns whether this AspectranService is currently active.
-	 *
-	 * @return whether the AspectranService is still active
-	 */
-	boolean isActive();
+    /**
+     * Returns the Aspectran configuration parameters used to generate the AspectranContext.
+     *
+     * @return the Aspectran Configuration Parameters
+     */
+    AspectranConfig getAspectranConfig();
 
-	/**
-	 * Returns the aspectran service controller.
-	 *
-	 * @return the aspectran service controller
-	 */
-	AspectranServiceController getAspectranServiceController();
+    /**
+     * Sets the aspectran service life-cycle listener.
+     *
+     * @param aspectranServiceLifeCycleListener the new aspectran service life-cycle listener
+     */
+    void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener);
+
+    /**
+     * Returns whether or not the java classes to be reload when the activity context is reloading.
+     * you reload Java classes and activitiesyou reload Java classes and activitiesreload only the activity context.
+     *
+     * @return true, if the java classes and activity context is to be reload both
+     */
+    boolean isHardReload();
+
+    /**
+     * Returns whether this AspectranService is currently active.
+     *
+     * @return whether the AspectranService is still active
+     */
+    boolean isActive();
+
+    /**
+     * Returns the aspectran service controller.
+     *
+     * @return the aspectran service controller
+     */
+    AspectranServiceController getAspectranServiceController();
 
 }

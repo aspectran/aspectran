@@ -22,41 +22,41 @@ import com.aspectran.core.context.bean.BeanException;
  */
 public class BeanClassScanFailedException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = -1301450076259511066L;
+    /** @serial */
+    private static final long serialVersionUID = -1301450076259511066L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public BeanClassScanFailedException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public BeanClassScanFailedException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public BeanClassScanFailedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public BeanClassScanFailedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public BeanClassScanFailedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public BeanClassScanFailedException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 * @param cause the real cause of the exception
-	 */
-	public BeanClassScanFailedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg a message to associate with the exception
+     * @param cause the real cause of the exception
+     */
+    public BeanClassScanFailedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

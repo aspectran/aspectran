@@ -24,27 +24,27 @@ import com.aspectran.console.service.ConsoleAspectranService;
  */
 public class AspectranConsole {
 
-	private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
+    private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
-	public static void main(String[] args) {
-		String aspectranConfigFile;
+    public static void main(String[] args) {
+        String aspectranConfigFile;
 
-		if (args.length > 0) {
-			aspectranConfigFile = args[0];
-		} else {
-			aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
-		}
+        if (args.length > 0) {
+            aspectranConfigFile = args[0];
+        } else {
+            aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
+        }
 
-		int exitStatus = 0;
+        int exitStatus = 0;
 
-		try {
-			ConsoleAspectranService.build(aspectranConfigFile).service();
-		} catch (Exception e) {
-			e.printStackTrace();
-			exitStatus = 1;
-		}
+        try {
+            ConsoleAspectranService.build(aspectranConfigFile).service();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exitStatus = 1;
+        }
 
-		System.exit(exitStatus);
-	}
+        System.exit(exitStatus);
+    }
 
 }

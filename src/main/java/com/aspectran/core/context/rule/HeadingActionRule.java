@@ -26,111 +26,111 @@ import com.aspectran.core.util.ToStringBuilder;
  * @since 3.0.0
  */
 public class HeadingActionRule {
-	
-	private String actionId;
-	
-	private ItemRuleMap headerItemRuleMap;
 
-	private Boolean hidden;
-	
-	/**
-	 * Gets the action id.
-	 * 
-	 * @return the action id
-	 */
-	public String getActionId() {
-		return actionId;
-	}
+    private String actionId;
 
-	/**
-	 * Sets the action id.
-	 * 
-	 * @param actionId the new action id
-	 */
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
+    private ItemRuleMap headerItemRuleMap;
 
-	/**
-	 * Gets the header item rule map.
-	 *
-	 * @return the header item rule map
-	 */
-	public ItemRuleMap getHeaderItemRuleMap() {
-		return headerItemRuleMap;
-	}
+    private Boolean hidden;
 
-	/**
-	 * Sets the header rule map.
-	 *
-	 * @param headerItemRuleMap the new header item rule map
-	 */
-	public void setHeaderItemRuleMap(ItemRuleMap headerItemRuleMap) {
-		this.headerItemRuleMap = headerItemRuleMap;
-	}
+    /**
+     * Gets the action id.
+     *
+     * @return the action id
+     */
+    public String getActionId() {
+        return actionId;
+    }
 
-	/**
-	 * Adds the header item rule.
-	 *
-	 * @param headerItemRule the header item rule
-	 */
-	public void addItemRule(ItemRule headerItemRule) {
-		if (headerItemRuleMap == null) {
-			headerItemRuleMap = new ItemRuleMap();
-		}
-		headerItemRuleMap.putItemRule(headerItemRule);
-	}
-	
-	/**
-	 * Returns whether to hide result of the action.
-	 * 
-	 * @return true, if this action is hidden
-	 */
-	public Boolean getHidden() {
-		return hidden;
-	}
+    /**
+     * Sets the action id.
+     *
+     * @param actionId the new action id
+     */
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Returns whether to hide result of the action.
-	 *
-	 * @return true, if this action is hidden
-	 */
-	public boolean isHidden() {
-		return BooleanUtils.toBoolean(hidden, true);
-	}
+    /**
+     * Gets the header item rule map.
+     *
+     * @return the header item rule map
+     */
+    public ItemRuleMap getHeaderItemRuleMap() {
+        return headerItemRuleMap;
+    }
 
-	/**
-	 * Sets whether to hide result of the action.
-	 * 
-	 * @param hidden whether to hide result of the action
-	 */
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", actionId);
-		if (headerItemRuleMap != null) {
-			tsb.append("headers", headerItemRuleMap.keySet());
-		}
-		tsb.append("hidden", hidden);
-		return tsb.toString();
-	}
-	
-	/**
-	 * Returns a new derived instance of EchoActionRule.
-	 *
-	 * @param id the action id
-	 * @param hidden whether to hide result of the action
-	 * @return the echo action rule
-	 */
-	public static HeadingActionRule newInstance(String id, Boolean hidden) {
-		HeadingActionRule echoActionRule = new HeadingActionRule();
-		echoActionRule.setActionId(id);
-		echoActionRule.setHidden(hidden);
-		return echoActionRule;
-	}
-	
+    /**
+     * Sets the header rule map.
+     *
+     * @param headerItemRuleMap the new header item rule map
+     */
+    public void setHeaderItemRuleMap(ItemRuleMap headerItemRuleMap) {
+        this.headerItemRuleMap = headerItemRuleMap;
+    }
+
+    /**
+     * Adds the header item rule.
+     *
+     * @param headerItemRule the header item rule
+     */
+    public void addItemRule(ItemRule headerItemRule) {
+        if (headerItemRuleMap == null) {
+            headerItemRuleMap = new ItemRuleMap();
+        }
+        headerItemRuleMap.putItemRule(headerItemRule);
+    }
+
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public boolean isHidden() {
+        return BooleanUtils.toBoolean(hidden, true);
+    }
+
+    /**
+     * Sets whether to hide result of the action.
+     *
+     * @param hidden whether to hide result of the action
+     */
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", actionId);
+        if (headerItemRuleMap != null) {
+            tsb.append("headers", headerItemRuleMap.keySet());
+        }
+        tsb.append("hidden", hidden);
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new derived instance of EchoActionRule.
+     *
+     * @param id the action id
+     * @param hidden whether to hide result of the action
+     * @return the echo action rule
+     */
+    public static HeadingActionRule newInstance(String id, Boolean hidden) {
+        HeadingActionRule echoActionRule = new HeadingActionRule();
+        echoActionRule.setActionId(id);
+        echoActionRule.setHidden(hidden);
+        return echoActionRule;
+    }
+
 }

@@ -22,24 +22,24 @@ import com.aspectran.core.activity.Translet;
  */
 public class SimpleAopTestAdvice {
 
-	public void begin(Translet translet) {
-		System.out.println("[SimpleAopTest] Begin");
-	}
+    public void begin(Translet translet) {
+        System.out.println("[SimpleAopTest] Begin");
+    }
 
-	public void end(Translet translet) {
-		System.out.println("[SimpleAopTest] End");
-	}
+    public void end(Translet translet) {
+        System.out.println("[SimpleAopTest] End");
+    }
 
-	public void thrown(Translet translet) {
-		System.out.println("[SimpleAopTest] Thrown - " + translet.getOriginRaisedException());
-	}
+    public void thrown(Translet translet) {
+        System.out.println("[SimpleAopTest] Thrown - " + translet.getOriginRaisedException());
+    }
 
-	public void close(Translet translet) {
-		System.out.println("[SimpleAopTest] Close");
-	}
+    public void close(Translet translet) {
+        System.out.println("[SimpleAopTest] Close");
+    }
 
-	public void globalExceptionHandling(Translet translet) {
-		System.out.println("[SimpleAopTest] globalExceptionHandling");
-	}
+    public void globalExceptionHandling(Translet translet) {
+        System.out.println("[SimpleAopTest] globalExceptionHandling");
+    }
 
 }

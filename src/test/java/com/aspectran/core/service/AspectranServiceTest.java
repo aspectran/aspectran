@@ -34,28 +34,28 @@ import com.aspectran.core.util.apon.AponWriter;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AspectranServiceTest {
 
-	@Before
-	public void ready() {
-	}
+    @Before
+    public void ready() {
+    }
 
-	@Test
-	public void aspectranConfigTest() throws IOException {
-		File file = new File("./target/test-classes/config/aspectran-config-test.apon");
-		AspectranConfig aspectranConfig = new AspectranConfig();
-		AponReader.parse(file, aspectranConfig);
-		
-		File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
+    @Test
+    public void aspectranConfigTest() throws IOException {
+        File file = new File("./target/test-classes/config/aspectran-config-test.apon");
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        AponReader.parse(file, aspectranConfig);
 
-		AponWriter aponWriter = new AponWriter(outputFile);
-		aponWriter.setPrettyPrint(true);
-		aponWriter.setIndentString("  ");
-		aponWriter.setNoQuotes(true);
-		aponWriter.write(aspectranConfig);
-		aponWriter.close();
-	}
+        File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 
-	@After
-	public void finish() {
-	}
+        AponWriter aponWriter = new AponWriter(outputFile);
+        aponWriter.setPrettyPrint(true);
+        aponWriter.setIndentString("  ");
+        aponWriter.setNoQuotes(true);
+        aponWriter.write(aspectranConfig);
+        aponWriter.close();
+    }
+
+    @After
+    public void finish() {
+    }
 
 }

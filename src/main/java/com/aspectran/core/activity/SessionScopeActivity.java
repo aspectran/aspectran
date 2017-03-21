@@ -25,15 +25,15 @@ import com.aspectran.core.context.ActivityContext;
  */
 public final class SessionScopeActivity extends DefaultActivity {
 
-	/**
-	 * Instantiates a new session scope activity.
-	 *
-	 * @param context the activity context
-	 * @param sessionAdapter the session adapter
-	 */
-	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
-		super(context);
-		setSessionAdapter(sessionAdapter);
-	}
+    /**
+     * Instantiates a new session scope activity.
+     *
+     * @param context the activity context
+     * @param sessionAdapter the session adapter
+     */
+    public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
+        super(context);
+        setSessionAdapter(sessionAdapter);
+    }
 
 }

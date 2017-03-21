@@ -24,32 +24,32 @@ import com.aspectran.core.util.logging.LogFactory;
  * Helpers for java.lang.System.
  */
 public class SystemUtils {
-	
-	private static final Log log = LogFactory.getLog(SystemUtils.class);
-	
-	public static String getProperty(String name) {
-		try {
-			return System.getProperty(name);
-		} catch (AccessControlException ex) {
-			log.info(String.format(
-					"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
-					name, ex.getMessage()));
-		}
-		return null;
-	}
 
-	public static String getProperty(String name, String defVal) {
-		String val = null;
-		try {
-			val = System.getProperty(name);
-		} catch (AccessControlException ex) {
-			if (log.isDebugEnabled()) {
-				log.debug(String.format(
-						"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
-						name, ex.getMessage()));
-			}
-		}
-		return (val != null ? val : defVal);
-	}
+    private static final Log log = LogFactory.getLog(SystemUtils.class);
+
+    public static String getProperty(String name) {
+        try {
+            return System.getProperty(name);
+        } catch (AccessControlException ex) {
+            log.info(String.format(
+                    "Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
+                    name, ex.getMessage()));
+        }
+        return null;
+    }
+
+    public static String getProperty(String name, String defVal) {
+        String val = null;
+        try {
+            val = System.getProperty(name);
+        } catch (AccessControlException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format(
+                        "Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
+                        name, ex.getMessage()));
+            }
+        }
+        return (val != null ? val : defVal);
+    }
 
 }

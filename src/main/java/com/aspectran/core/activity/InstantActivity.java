@@ -36,130 +36,130 @@ import com.aspectran.core.util.StringOutputWriter;
  */
 public class InstantActivity extends BasicActivity {
 
-	private ParameterMap parameterMap;
+    private ParameterMap parameterMap;
 
-	private Map<String, Object> attributeMap;
+    private Map<String, Object> attributeMap;
 
-	/**
-	 * Instantiates a new instant activity.
-	 *
-	 * @param context the activity context
-	 */
-	public InstantActivity(ActivityContext context) {
-		super(context);
-	}
+    /**
+     * Instantiates a new instant activity.
+     *
+     * @param context the activity context
+     */
+    public InstantActivity(ActivityContext context) {
+        super(context);
+    }
 
-	/**
-	 * Instantiates a new instant activity.
-	 *
-	 * @param context the activity context
-	 * @param sessionAdapter the session adapter
-	 */
-	public InstantActivity(ActivityContext context, SessionAdapter sessionAdapter) {
-		super(context);
-		setSessionAdapter(sessionAdapter);
-	}
+    /**
+     * Instantiates a new instant activity.
+     *
+     * @param context the activity context
+     * @param sessionAdapter the session adapter
+     */
+    public InstantActivity(ActivityContext context, SessionAdapter sessionAdapter) {
+        super(context);
+        setSessionAdapter(sessionAdapter);
+    }
 
-	/**
-	 * Sets the parameter map.
-	 *
-	 * @param parameterMap the parameter map
-	 */
-	public void setParameterMap(ParameterMap parameterMap) {
-		this.parameterMap = parameterMap;
-	}
+    /**
+     * Sets the parameter map.
+     *
+     * @param parameterMap the parameter map
+     */
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
+    }
 
-	/**
-	 * Sets the attribute map.
-	 *
-	 * @param attributeMap the attribute map
-	 */
-	public void setAttributeMap(Map<String, Object> attributeMap) {
-		this.attributeMap = attributeMap;
-	}
+    /**
+     * Sets the attribute map.
+     *
+     * @param attributeMap the attribute map
+     */
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributeMap = attributeMap;
+    }
 
-	public void adapt() throws AdapterException {
-		try {
-			RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
-			setRequestAdapter(requestAdapter);
+    public void adapt() throws AdapterException {
+        try {
+            RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
+            setRequestAdapter(requestAdapter);
 
-			Writer writer = new StringOutputWriter();
-			ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
-			setResponseAdapter(responseAdapter);
+            Writer writer = new StringOutputWriter();
+            ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+            setResponseAdapter(responseAdapter);
 
-			if(attributeMap != null) {
-				for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-				}
-			}
-		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to the Instant Activity.", e);
-		}
-	}
+            if(attributeMap != null) {
+                for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+                    requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+                }
+            }
+        } catch (Exception e) {
+            throw new AdapterException("Could not adapt to the Instant Activity.", e);
+        }
+    }
 
-	@Override
-	public <T extends Activity> T newActivity() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public <T extends Activity> T newActivity() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void prepare(String transletName) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void prepare(String transletName, String requestMethod) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName, String requestMethod) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void prepare(String transletName, MethodType requestMethod) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName, MethodType requestMethod) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void perform() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void perform() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void performWithoutResponse() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void performWithoutResponse() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void finish() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void finish() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public MethodType getRequestMethod() {
-		return null;
-	}
+    @Override
+    public MethodType getRequestMethod() {
+        return null;
+    }
 
-	@Override
-	public String getTransletName() {
-		return null;
-	}
+    @Override
+    public String getTransletName() {
+        return null;
+    }
 
-	@Override
-	public Translet getTranslet() {
-		return null;
-	}
+    @Override
+    public Translet getTranslet() {
+        return null;
+    }
 
-	@Override
-	public ProcessResult getProcessResult() {
-		return null;
-	}
+    @Override
+    public ProcessResult getProcessResult() {
+        return null;
+    }
 
-	@Override
-	public Object getProcessResult(String actionId) {
-		return null;
-	}
+    @Override
+    public Object getProcessResult(String actionId) {
+        return null;
+    }
 
-	@Override
-	public boolean isResponseReserved() {
-		return false;
-	}
+    @Override
+    public boolean isResponseReserved() {
+        return false;
+    }
 
 }

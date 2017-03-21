@@ -105,7 +105,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
 
     @Override
     public void process(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
-    	TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
+        TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
         if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
@@ -165,7 +165,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     TokenEvaluator evaluator = new TokenExpressionParser(activity);
                     evaluator.evaluate(templateTokens, writer);
                 } else {
-                	writer.write(templateRule.getTemplateSource(context.getApplicationAdapter()));
+                    writer.write(templateRule.getTemplateSource(context.getApplicationAdapter()));
                 }
             }
         } catch (Exception e) {

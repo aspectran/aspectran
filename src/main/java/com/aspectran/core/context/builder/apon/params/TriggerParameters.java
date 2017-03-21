@@ -21,48 +21,48 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class TriggerParameters extends AbstractParameters {
 
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition expression;
-	public static final ParameterDefinition startDelaySeconds;
-	public static final ParameterDefinition intervalInMilliseconds;
-	public static final ParameterDefinition intervalInMinutes;
-	public static final ParameterDefinition intervalInSeconds;
-	public static final ParameterDefinition intervalInHours;
-	public static final ParameterDefinition repeatCount;
-	public static final ParameterDefinition repeatForever;
+    public static final ParameterDefinition type;
+    public static final ParameterDefinition expression;
+    public static final ParameterDefinition startDelaySeconds;
+    public static final ParameterDefinition intervalInMilliseconds;
+    public static final ParameterDefinition intervalInMinutes;
+    public static final ParameterDefinition intervalInSeconds;
+    public static final ParameterDefinition intervalInHours;
+    public static final ParameterDefinition repeatCount;
+    public static final ParameterDefinition repeatForever;
 
-	private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
-	static {
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		expression = new ParameterDefinition("expression", ParameterValueType.STRING);
-		startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
-		intervalInMilliseconds = new ParameterDefinition("intervalInMilliseconds", ParameterValueType.LONG);
-		intervalInMinutes = new ParameterDefinition("intervalInMinutes", ParameterValueType.INT);
-		intervalInSeconds = new ParameterDefinition("intervalInSeconds", ParameterValueType.INT);
-		intervalInHours = new ParameterDefinition("intervalInHours", ParameterValueType.INT);
-		repeatCount = new ParameterDefinition("repeatCount", ParameterValueType.INT);
-		repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
+    static {
+        type = new ParameterDefinition("type", ParameterValueType.STRING);
+        expression = new ParameterDefinition("expression", ParameterValueType.STRING);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+        intervalInMilliseconds = new ParameterDefinition("intervalInMilliseconds", ParameterValueType.LONG);
+        intervalInMinutes = new ParameterDefinition("intervalInMinutes", ParameterValueType.INT);
+        intervalInSeconds = new ParameterDefinition("intervalInSeconds", ParameterValueType.INT);
+        intervalInHours = new ParameterDefinition("intervalInHours", ParameterValueType.INT);
+        repeatCount = new ParameterDefinition("repeatCount", ParameterValueType.INT);
+        repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
 
-		parameterDefinitions = new ParameterDefinition[] {
-			type,
-			expression,
-			startDelaySeconds,
-			intervalInMilliseconds,
-			intervalInMinutes,
-			intervalInSeconds,
-			intervalInHours,
-			repeatCount,
-			repeatForever
-		};
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            type,
+            expression,
+            startDelaySeconds,
+            intervalInMilliseconds,
+            intervalInMinutes,
+            intervalInSeconds,
+            intervalInHours,
+            repeatCount,
+            repeatForever
+        };
+    }
 
-	public TriggerParameters() {
-		super(parameterDefinitions);
-	}
+    public TriggerParameters() {
+        super(parameterDefinitions);
+    }
 
-	public TriggerParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public TriggerParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

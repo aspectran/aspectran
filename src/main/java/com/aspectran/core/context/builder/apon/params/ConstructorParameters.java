@@ -20,24 +20,24 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class ConstructorParameters extends AbstractParameters {
 
-	public static final ParameterDefinition arguments;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			arguments
-		};
-	}
-	
-	public ConstructorParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ConstructorParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition arguments;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            arguments
+        };
+    }
+
+    public ConstructorParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ConstructorParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

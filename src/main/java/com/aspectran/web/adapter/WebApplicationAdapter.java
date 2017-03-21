@@ -27,36 +27,36 @@ import com.aspectran.core.adapter.AbstractApplicationAdapter;
  * @since 2011. 3. 13.
  */
 public class WebApplicationAdapter extends AbstractApplicationAdapter {
-	
-	/**
-	 * Instantiates a new WebApplicationAdapter.
-	 *
-	 * @param servletContext the servlet context
-	 */
-	public WebApplicationAdapter(ServletContext servletContext) {
-		super(servletContext);
-		super.setBasePath(servletContext.getRealPath("/"));
-	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)((ServletContext)adaptee).getAttribute(name);
-	}
+    /**
+     * Instantiates a new WebApplicationAdapter.
+     *
+     * @param servletContext the servlet context
+     */
+    public WebApplicationAdapter(ServletContext servletContext) {
+        super(servletContext);
+        super.setBasePath(servletContext.getRealPath("/"));
+    }
 
-	@Override
-	public void setAttribute(String name, Object o) {
-		((ServletContext)adaptee).setAttribute(name, o);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)((ServletContext)adaptee).getAttribute(name);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return ((ServletContext)adaptee).getAttributeNames();
-	}
+    @Override
+    public void setAttribute(String name, Object o) {
+        ((ServletContext)adaptee).setAttribute(name, o);
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		((ServletContext)adaptee).removeAttribute(name);
-	}
-	
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return ((ServletContext)adaptee).getAttributeNames();
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        ((ServletContext)adaptee).removeAttribute(name);
+    }
+
 }

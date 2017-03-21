@@ -19,82 +19,82 @@ import com.aspectran.core.util.ToStringBuilder;
 
 public class ParameterDefinition {
 
-	private final String name;
-	
-	private final ParameterValueType parameterValueType;
-	
-	private final Class<? extends AbstractParameters> parametersClass;
-	
-	private final boolean array;
-	
-	private final boolean noBracket;
-	
-	public ParameterDefinition(String name, ParameterValueType parameterValueType) {
-		this(name, parameterValueType, false);
-	}
-	
-	public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array) {
-		this(name, parameterValueType, array, false);
-	}
-	
-	public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
-		this.name = name;
-		this.parameterValueType = parameterValueType;
-		this.parametersClass = null;
-		this.array = array;
-		this.noBracket = (array && parameterValueType == ParameterValueType.PARAMETERS && noBracket);
-	}
+    private final String name;
 
-	public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass) {
-		this(name, parametersClass, false);
-	}
-	
-	public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
-		this(name, parametersClass, array, false);
-	}
-	
-	public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
-		this.name = name;
-		this.parameterValueType = ParameterValueType.PARAMETERS;
-		this.parametersClass = parametersClass;
-		this.array = array;
-		this.noBracket = (array && noBracket);
-	}
-	
-	public String getName() {
-		return name;
-	}
+    private final ParameterValueType parameterValueType;
 
-	public ParameterValueType getParameterValueType() {
-		return parameterValueType;
-	}
+    private final Class<? extends AbstractParameters> parametersClass;
 
-	public boolean isArray() {
-		return array;
-	}
-	
-	public boolean isNoBracket() {
-		return noBracket;
-	}
+    private final boolean array;
 
-	public ParameterValue newParameterValue() {
-		ParameterValue parameterValue;
-		if (parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
-			parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
-		} else {
-			parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);
-		}
-		return parameterValue;
-	}
+    private final boolean noBracket;
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("parameterValueType", parameterValueType);
-		tsb.append("parametersClass", parametersClass);
-		tsb.append("array", array);
-		return tsb.toString();
-	}
+    public ParameterDefinition(String name, ParameterValueType parameterValueType) {
+        this(name, parameterValueType, false);
+    }
+
+    public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array) {
+        this(name, parameterValueType, array, false);
+    }
+
+    public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
+        this.name = name;
+        this.parameterValueType = parameterValueType;
+        this.parametersClass = null;
+        this.array = array;
+        this.noBracket = (array && parameterValueType == ParameterValueType.PARAMETERS && noBracket);
+    }
+
+    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass) {
+        this(name, parametersClass, false);
+    }
+
+    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+        this(name, parametersClass, array, false);
+    }
+
+    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
+        this.name = name;
+        this.parameterValueType = ParameterValueType.PARAMETERS;
+        this.parametersClass = parametersClass;
+        this.array = array;
+        this.noBracket = (array && noBracket);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ParameterValueType getParameterValueType() {
+        return parameterValueType;
+    }
+
+    public boolean isArray() {
+        return array;
+    }
+
+    public boolean isNoBracket() {
+        return noBracket;
+    }
+
+    public ParameterValue newParameterValue() {
+        ParameterValue parameterValue;
+        if (parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
+            parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
+        } else {
+            parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);
+        }
+        return parameterValue;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("parameterValueType", parameterValueType);
+        tsb.append("parametersClass", parametersClass);
+        tsb.append("array", array);
+        return tsb.toString();
+    }
 
 }

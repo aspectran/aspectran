@@ -37,51 +37,51 @@ import com.aspectran.core.context.bean.BeanException;
  */
 public class ProxyBeanInstantiationException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = -3560168431550039638L;
-	
-	private Class<?> beanClass;
+    /** @serial */
+    private static final long serialVersionUID = -3560168431550039638L;
 
-	/**
-	 * Create a new ProxyBeanInstantiationException.
-	 *
-	 * @param beanClass the offending bean class
-	 * @param cause the root cause
-	 */
-	public ProxyBeanInstantiationException(Class<?> beanClass, Throwable cause) {
-		this(beanClass, cause.getMessage(), cause);
-	}
+    private Class<?> beanClass;
 
-	/**
-	 * Create a new ProxyBeanInstantiationException.
-	 *
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
-	 */
-	public ProxyBeanInstantiationException(Class<?> beanClass, String msg) {
-		super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg);
-		this.beanClass = beanClass;
-	}
+    /**
+     * Create a new ProxyBeanInstantiationException.
+     *
+     * @param beanClass the offending bean class
+     * @param cause the root cause
+     */
+    public ProxyBeanInstantiationException(Class<?> beanClass, Throwable cause) {
+        this(beanClass, cause.getMessage(), cause);
+    }
 
-	/**
-	 * Create a new ProxyBeanInstantiationException.
-	 *
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public ProxyBeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
-		super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg, cause);
-		this.beanClass = beanClass;
-	}
+    /**
+     * Create a new ProxyBeanInstantiationException.
+     *
+     * @param beanClass the offending bean class
+     * @param msg the detail message
+     */
+    public ProxyBeanInstantiationException(Class<?> beanClass, String msg) {
+        super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg);
+        this.beanClass = beanClass;
+    }
 
-	/**
-	 * Return the offending bean class.
-	 *
-	 * @return the bean class
-	 */
-	public Class<?> getBeanClass() {
-		return beanClass;
-	}
+    /**
+     * Create a new ProxyBeanInstantiationException.
+     *
+     * @param beanClass the offending bean class
+     * @param msg the detail message
+     * @param cause the root cause
+     */
+    public ProxyBeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
+        super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg, cause);
+        this.beanClass = beanClass;
+    }
+
+    /**
+     * Return the offending bean class.
+     *
+     * @return the bean class
+     */
+    public Class<?> getBeanClass() {
+        return beanClass;
+    }
 
 }

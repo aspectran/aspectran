@@ -22,69 +22,69 @@ import com.aspectran.core.adapter.RequestAdapter;
  */
 public interface MultipartFormDataParser {
 
-	/**
-	 * Returns the directory path used for temporary files.
-	 *
-	 * @return the directory path used for temporary files
-	 */
-	String getTempDirectoryPath();
+    /**
+     * Returns the directory path used for temporary files.
+     *
+     * @return the directory path used for temporary files
+     */
+    String getTempDirectoryPath();
 
-	/**
-	 * Sets the directory path used to temporarily files.
-	 *
-	 * @param tempDirectoryPath the directory path used for temporary files
-	 */
-	void setTempDirectoryPath(String tempDirectoryPath);
+    /**
+     * Sets the directory path used to temporarily files.
+     *
+     * @param tempDirectoryPath the directory path used for temporary files
+     */
+    void setTempDirectoryPath(String tempDirectoryPath);
 
-	/**
-	 * Sets the maximum length of HTTP GET Request
-	 * -1 indicates no limit (the default).
-	 *
-	 * @param maxRequestSize the maximum length of HTTP GET Request
-	 * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
-	 */
-	void setMaxRequestSize(long maxRequestSize);
+    /**
+     * Sets the maximum length of HTTP GET Request
+     * -1 indicates no limit (the default).
+     *
+     * @param maxRequestSize the maximum length of HTTP GET Request
+     * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
+     */
+    void setMaxRequestSize(long maxRequestSize);
 
-	/**
-	 * Set the maximum allowed size (in bytes) for each individual file before
-	 * an upload gets rejected. -1 indicates no limit (the default).
-	 *
-	 * @param maxFileSize the maximum upload size per file
-	 * @since 3.0.0
-	 * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
-	 */
-	void setMaxFileSize(long maxFileSize);
+    /**
+     * Set the maximum allowed size (in bytes) for each individual file before
+     * an upload gets rejected. -1 indicates no limit (the default).
+     *
+     * @param maxFileSize the maximum upload size per file
+     * @since 3.0.0
+     * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
+     */
+    void setMaxFileSize(long maxFileSize);
 
-	/**
-	 * Set the maximum allowed size (in bytes) before uploads are written to disk.
-	 * Uploaded files will still be received past this amount, but they will not be
-	 * stored in memory. Default is 10240, according to Commons FileUpload.
-	 *
-	 * @param maxInMemorySize the maximum in memory size allowed
-	 * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
-	 */
-	void setMaxInMemorySize(int maxInMemorySize);
+    /**
+     * Set the maximum allowed size (in bytes) before uploads are written to disk.
+     * Uploaded files will still be received past this amount, but they will not be
+     * stored in memory. Default is 10240, according to Commons FileUpload.
+     *
+     * @param maxInMemorySize the maximum in memory size allowed
+     * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
+     */
+    void setMaxInMemorySize(int maxInMemorySize);
 
-	/**
-	 * Sets the allowed file extensions.
-	 *
-	 * @param allowedFileExtensions the allowed file extensions
-	 */
-	void setAllowedFileExtensions(String allowedFileExtensions);
+    /**
+     * Sets the allowed file extensions.
+     *
+     * @param allowedFileExtensions the allowed file extensions
+     */
+    void setAllowedFileExtensions(String allowedFileExtensions);
 
-	/**
-	 * Sets the denied file extensions.
-	 *
-	 * @param deniedFileExtensions the denied file extensions
-	 */
-	void setDeniedFileExtensions(String deniedFileExtensions);
+    /**
+     * Sets the denied file extensions.
+     *
+     * @param deniedFileExtensions the denied file extensions
+     */
+    void setDeniedFileExtensions(String deniedFileExtensions);
 
-	/**
-	 * Parse the given servlet request, resolving its multipart elements.
-	 *
-	 * @param requestAdapter the request adapter
-	 * @throws MultipartRequestParseException if multipart resolution failed
-	 */
-	void parse(RequestAdapter requestAdapter);
+    /**
+     * Parse the given servlet request, resolving its multipart elements.
+     *
+     * @param requestAdapter the request adapter
+     * @throws MultipartRequestParseException if multipart resolution failed
+     */
+    void parse(RequestAdapter requestAdapter);
 
 }

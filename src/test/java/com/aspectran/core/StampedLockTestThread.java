@@ -23,76 +23,76 @@ import java.util.concurrent.locks.StampedLock;
 
 public class StampedLockTestThread implements Runnable {
 
-	private Monitor monitor;
+    private Monitor monitor;
 
-	private static int count;
+    private static int count;
 
-	public StampedLockTestThread(Monitor monitor) {
-		super();
-		this.monitor = monitor;
-	}
+    public StampedLockTestThread(Monitor monitor) {
+        super();
+        this.monitor = monitor;
+    }
 
-	@Override
-	public void run() {
-		printMessage("1. Entered run method");
+    @Override
+    public void run() {
+        printMessage("1. Entered run method");
 
-		StampedLock lock = monitor.getStampedLock();
-		long stamp = lock.readLock();
+        StampedLock lock = monitor.getStampedLock();
+        long stamp = lock.readLock();
 
-		printMessage("2. readLock: " + stamp);
+        printMessage("2. readLock: " + stamp);
 
-		try {
-			long tryStamp = lock.tryConvertToWriteLock(stamp);
+        try {
+            long tryStamp = lock.tryConvertToWriteLock(stamp);
 
-			if (tryStamp != 0L) {
-				stamp = tryStamp;
-				printMessage("3. tryConvertToWriteLock: " + stamp);
-			} else {
-				lock.unlockRead(stamp);
-				printMessage("3-1. unlockRead: " + stamp);
+            if (tryStamp != 0L) {
+                stamp = tryStamp;
+                printMessage("3. tryConvertToWriteLock: " + stamp);
+            } else {
+                lock.unlockRead(stamp);
+                printMessage("3-1. unlockRead: " + stamp);
 
-				stamp = lock.writeLock();
-				printMessage("3-2. writeLock: " + stamp);
-			}
+                stamp = lock.writeLock();
+                printMessage("3-2. writeLock: " + stamp);
+            }
 
-			try {
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+            try {
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-			count++;
+            count++;
 
-			printMessage("==== call: " + count + " ====");
-		} finally {
-			lock.unlock(stamp);
-			printMessage("4. Releasing lock: " + stamp);
-		}
+            printMessage("==== call: " + count + " ====");
+        } finally {
+            lock.unlock(stamp);
+            printMessage("4. Releasing lock: " + stamp);
+        }
 
-		printMessage("5. End of run method");
-	}
+        printMessage("5. End of run method");
+    }
 
-	private void printMessage(String msg){
-		System.out.println(Thread.currentThread().getName() + " - " + msg);
-	}
+    private void printMessage(String msg){
+        System.out.println(Thread.currentThread().getName() + " - " + msg);
+    }
 
-	static class Monitor {
-		final StampedLock lock = new StampedLock();
+    static class Monitor {
+        final StampedLock lock = new StampedLock();
 
-		public StampedLock getStampedLock() {
-			return lock;
-		}
-	}
+        public StampedLock getStampedLock() {
+            return lock;
+        }
+    }
 
-	public static void main(String[] args) {
-		String[] myThreads = { "Therad ONE", "Thread TWO", "Thread THREE", "Thread FOUR" };
+    public static void main(String[] args) {
+        String[] myThreads = { "Therad ONE", "Thread TWO", "Thread THREE", "Thread FOUR" };
 
-		Monitor monitor = new Monitor();
+        Monitor monitor = new Monitor();
 
-		for (String threadName : myThreads) {
-			new Thread(new StampedLockTestThread(monitor), threadName).start();
-		}
-	}
+        for (String threadName : myThreads) {
+            new Thread(new StampedLockTestThread(monitor), threadName).start();
+        }
+    }
 
 }

@@ -20,8 +20,8 @@ package test.call;
  */
 public class ThirdBean implements NumericBean {
 
-	public int getNumber() {
-		return 3;
-	}
+    public int getNumber() {
+        return 3;
+    }
 
 }

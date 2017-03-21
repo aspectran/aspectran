@@ -26,52 +26,52 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class RelevantAspectRuleHolder {
 
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
-	private List<AspectRule> dynamicAspectRuleList;
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @return the aspect advice rule registry
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
+    private List<AspectRule> dynamicAspectRuleList;
 
-	/**
-	 * Sets the aspect advice rule registry.
-	 *
-	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
-	 */
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
+    /**
+     * Gets the aspect advice rule registry.
+     *
+     * @return the aspect advice rule registry
+     */
+    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+        return aspectAdviceRuleRegistry;
+    }
 
-	/**
-	 * Gets the dynamic aspect rule list.
-	 *
-	 * @return the dynamic aspect rule list
-	 */
-	public List<AspectRule> getDynamicAspectRuleList() {
-		return dynamicAspectRuleList;
-	}
+    /**
+     * Sets the aspect advice rule registry.
+     *
+     * @param aspectAdviceRuleRegistry the new aspect advice rule registry
+     */
+    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    }
 
-	/**
-	 * Sets the relevant aspect rule list.
-	 *
-	 * @param dynamicAspectRuleList the new relevant aspect rule list
-	 */
-	public void setDynamicAspectRuleList(List<AspectRule> dynamicAspectRuleList) {
-		this.dynamicAspectRuleList = dynamicAspectRuleList;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-		tsb.append("dynamicAspectRuleList", dynamicAspectRuleList);
-		return tsb.toString();
-	}
-	
+    /**
+     * Gets the dynamic aspect rule list.
+     *
+     * @return the dynamic aspect rule list
+     */
+    public List<AspectRule> getDynamicAspectRuleList() {
+        return dynamicAspectRuleList;
+    }
+
+    /**
+     * Sets the relevant aspect rule list.
+     *
+     * @param dynamicAspectRuleList the new relevant aspect rule list
+     */
+    public void setDynamicAspectRuleList(List<AspectRule> dynamicAspectRuleList) {
+        this.dynamicAspectRuleList = dynamicAspectRuleList;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+        tsb.append("dynamicAspectRuleList", dynamicAspectRuleList);
+        return tsb.toString();
+    }
+
 }

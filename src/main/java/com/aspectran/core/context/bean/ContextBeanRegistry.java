@@ -33,187 +33,187 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class ContextBeanRegistry extends AbstractBeanRegistry {
 
-	private final ReadWriteLock singletonScopeLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock singletonScopeLock = new ReentrantReadWriteLock();
 
-	public ContextBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
-		super(beanRuleRegistry, beanProxifierType);
-	}
+    public ContextBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+        super(beanRuleRegistry, beanProxifierType);
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getBean(BeanRule beanRule) {
-		if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-			// Does not manage the complete lifecycle of a prototype bean.
-			return (T)getPrototypeScopeBean(beanRule);
-		} else if (beanRule.getScopeType() == ScopeType.SINGLETON) {
-			return (T)getSingletonScopeBean(beanRule);
-		} else if (beanRule.getScopeType() == ScopeType.REQUEST) {
-			return (T)getRequestScopeBean(beanRule);
-		} else if (beanRule.getScopeType() == ScopeType.SESSION) {
-			return (T)getSessionScopeBean(beanRule);
-		} else if (beanRule.getScopeType() == ScopeType.APPLICATION) {
-			return (T)getApplicationScopeBean(beanRule);
-		}
-		
-		throw new BeanException();
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getBean(BeanRule beanRule) {
+        if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+            // Does not manage the complete lifecycle of a prototype bean.
+            return (T)getPrototypeScopeBean(beanRule);
+        } else if (beanRule.getScopeType() == ScopeType.SINGLETON) {
+            return (T)getSingletonScopeBean(beanRule);
+        } else if (beanRule.getScopeType() == ScopeType.REQUEST) {
+            return (T)getRequestScopeBean(beanRule);
+        } else if (beanRule.getScopeType() == ScopeType.SESSION) {
+            return (T)getSessionScopeBean(beanRule);
+        } else if (beanRule.getScopeType() == ScopeType.APPLICATION) {
+            return (T)getApplicationScopeBean(beanRule);
+        }
 
-	private Object getPrototypeScopeBean(BeanRule beanRule) {
-		Object bean = createBean(beanRule);
-		if (bean != null && beanRule.isFactoryProductionRequired()) {
-			bean = getFactoryProducedObject(beanRule, bean);
-		}
-		return bean;
-	}
+        throw new BeanException();
+    }
 
-	private Object getSingletonScopeBean(BeanRule beanRule) {
-		boolean readLocked = true;
-		singletonScopeLock.readLock().lock();
-		Object bean;
+    private Object getPrototypeScopeBean(BeanRule beanRule) {
+        Object bean = createBean(beanRule);
+        if (bean != null && beanRule.isFactoryProductionRequired()) {
+            bean = getFactoryProducedObject(beanRule, bean);
+        }
+        return bean;
+    }
 
-		try {
-			InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
-			if (instantiatedBean == null) {
-				readLocked = false;
-				singletonScopeLock.readLock().unlock();
-				singletonScopeLock.writeLock().lock();
+    private Object getSingletonScopeBean(BeanRule beanRule) {
+        boolean readLocked = true;
+        singletonScopeLock.readLock().lock();
+        Object bean;
 
-				try {
-					instantiatedBean = beanRule.getInstantiatedBean();
-					if (instantiatedBean == null) {
-						bean = createBean(beanRule);
-					} else {
-						bean = instantiatedBean.getBean();
-					}
-					if (bean != null && beanRule.isFactoryProductionRequired()) {
-						bean = getFactoryProducedObject(beanRule, bean);
-					}
-				} finally {
-					singletonScopeLock.writeLock().unlock();
-				}
-			} else {
-				instantiatedBean = beanRule.getInstantiatedBean();
-				bean = instantiatedBean.getBean();
-				if (bean != null && beanRule.isFactoryProductionRequired()) {
-					readLocked = false;
-					singletonScopeLock.readLock().unlock();
-					singletonScopeLock.writeLock().lock();
+        try {
+            InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
+            if (instantiatedBean == null) {
+                readLocked = false;
+                singletonScopeLock.readLock().unlock();
+                singletonScopeLock.writeLock().lock();
 
-					try {
-						bean = getFactoryProducedObject(beanRule, bean);
-					} finally {
-						singletonScopeLock.writeLock().unlock();
-					}
-				}
-			}
-		} finally {
-			if (readLocked) {
-				singletonScopeLock.readLock().unlock();
-			}
-		}
+                try {
+                    instantiatedBean = beanRule.getInstantiatedBean();
+                    if (instantiatedBean == null) {
+                        bean = createBean(beanRule);
+                    } else {
+                        bean = instantiatedBean.getBean();
+                    }
+                    if (bean != null && beanRule.isFactoryProductionRequired()) {
+                        bean = getFactoryProducedObject(beanRule, bean);
+                    }
+                } finally {
+                    singletonScopeLock.writeLock().unlock();
+                }
+            } else {
+                instantiatedBean = beanRule.getInstantiatedBean();
+                bean = instantiatedBean.getBean();
+                if (bean != null && beanRule.isFactoryProductionRequired()) {
+                    readLocked = false;
+                    singletonScopeLock.readLock().unlock();
+                    singletonScopeLock.writeLock().lock();
 
-		return bean;
-	}
+                    try {
+                        bean = getFactoryProducedObject(beanRule, bean);
+                    } finally {
+                        singletonScopeLock.writeLock().unlock();
+                    }
+                }
+            }
+        } finally {
+            if (readLocked) {
+                singletonScopeLock.readLock().unlock();
+            }
+        }
 
-	private Object getRequestScopeBean(BeanRule beanRule) {
-		Scope scope = getRequestScope();
-		if (scope == null) {
-			throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
-		}
-		return getScopedBean(scope, beanRule);
-	}
-	
-	private Object getSessionScopeBean(BeanRule beanRule) {
-		Scope scope = getSessionScope();
-		if (scope == null) {
-			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
-		}
-		return getScopedBean(scope, beanRule);
-	}
+        return bean;
+    }
 
-	private Object getApplicationScopeBean(BeanRule beanRule) {
-		Scope scope = getApplicationScope();
-		if (scope == null) {
-			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
-		}
-		return getScopedBean(scope, beanRule);
-	}
-	
-	private Object getScopedBean(Scope scope, BeanRule beanRule) {
-		ReadWriteLock scopeLock = scope.getScopeLock();
+    private Object getRequestScopeBean(BeanRule beanRule) {
+        Scope scope = getRequestScope();
+        if (scope == null) {
+            throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
+        }
+        return getScopedBean(scope, beanRule);
+    }
 
-		boolean readLocked = true;
-		scopeLock.readLock().lock();
-		Object bean;
+    private Object getSessionScopeBean(BeanRule beanRule) {
+        Scope scope = getSessionScope();
+        if (scope == null) {
+            throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
+        }
+        return getScopedBean(scope, beanRule);
+    }
 
-		try {
-			InstantiatedBean instantiatedBean = scope.getInstantiatedBean(beanRule);
-			if (instantiatedBean == null) {
-				readLocked = false;
-				scopeLock.readLock().unlock();
-				scopeLock.writeLock().lock();
+    private Object getApplicationScopeBean(BeanRule beanRule) {
+        Scope scope = getApplicationScope();
+        if (scope == null) {
+            throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
+        }
+        return getScopedBean(scope, beanRule);
+    }
 
-				try {
-					instantiatedBean = scope.getInstantiatedBean(beanRule);
-					if (instantiatedBean == null) {
-						bean = createBean(beanRule);
-						scope.putInstantiatedBean(beanRule, new InstantiatedBean(bean));
-					} else {
-						bean = instantiatedBean.getBean();
-					}
-					if(beanRule.isFactoryProductionRequired()) {
-						bean = getFactoryProducedObject(beanRule, bean);
-					}
-				} finally {
-					scopeLock.writeLock().unlock();
-				}
-			} else {
-				bean = instantiatedBean.getBean();
-				if (bean != null && beanRule.isFactoryProductionRequired()) {
-					readLocked = false;
-					scopeLock.readLock().unlock();
-					scopeLock.writeLock().lock();
+    private Object getScopedBean(Scope scope, BeanRule beanRule) {
+        ReadWriteLock scopeLock = scope.getScopeLock();
 
-					try {
-						bean = getFactoryProducedObject(beanRule, bean);
-					} finally {
-						scopeLock.writeLock().unlock();
-					}
-				}
-			}
-		} finally {
-			if (readLocked) {
-				scopeLock.readLock().unlock();
-			}
-		}
+        boolean readLocked = true;
+        scopeLock.readLock().lock();
+        Object bean;
 
-		return bean;
-	}
+        try {
+            InstantiatedBean instantiatedBean = scope.getInstantiatedBean(beanRule);
+            if (instantiatedBean == null) {
+                readLocked = false;
+                scopeLock.readLock().unlock();
+                scopeLock.writeLock().lock();
 
-	private Scope getRequestScope() {
-		Activity activity = context.getCurrentActivity();
-		if (activity != null) {
-			RequestAdapter requestAdapter = activity.getRequestAdapter();
-			if (requestAdapter != null) {
-				return requestAdapter.getRequestScope();
-			}
-		}
-		return null;
-	}
+                try {
+                    instantiatedBean = scope.getInstantiatedBean(beanRule);
+                    if (instantiatedBean == null) {
+                        bean = createBean(beanRule);
+                        scope.putInstantiatedBean(beanRule, new InstantiatedBean(bean));
+                    } else {
+                        bean = instantiatedBean.getBean();
+                    }
+                    if(beanRule.isFactoryProductionRequired()) {
+                        bean = getFactoryProducedObject(beanRule, bean);
+                    }
+                } finally {
+                    scopeLock.writeLock().unlock();
+                }
+            } else {
+                bean = instantiatedBean.getBean();
+                if (bean != null && beanRule.isFactoryProductionRequired()) {
+                    readLocked = false;
+                    scopeLock.readLock().unlock();
+                    scopeLock.writeLock().lock();
 
-	private Scope getSessionScope() {
-		Activity activity = context.getCurrentActivity();
-		if (activity != null) {
-			SessionAdapter sessionAdapter = activity.getSessionAdapter();
-			if (sessionAdapter != null) {
-				return sessionAdapter.getSessionScope();
-			}
-		}
-		return null;
-	}
-	
-	private Scope getApplicationScope() {
-		return context.getApplicationAdapter().getApplicationScope();
-	}
-	
+                    try {
+                        bean = getFactoryProducedObject(beanRule, bean);
+                    } finally {
+                        scopeLock.writeLock().unlock();
+                    }
+                }
+            }
+        } finally {
+            if (readLocked) {
+                scopeLock.readLock().unlock();
+            }
+        }
+
+        return bean;
+    }
+
+    private Scope getRequestScope() {
+        Activity activity = context.getCurrentActivity();
+        if (activity != null) {
+            RequestAdapter requestAdapter = activity.getRequestAdapter();
+            if (requestAdapter != null) {
+                return requestAdapter.getRequestScope();
+            }
+        }
+        return null;
+    }
+
+    private Scope getSessionScope() {
+        Activity activity = context.getCurrentActivity();
+        if (activity != null) {
+            SessionAdapter sessionAdapter = activity.getSessionAdapter();
+            if (sessionAdapter != null) {
+                return sessionAdapter.getSessionScope();
+            }
+        }
+        return null;
+    }
+
+    private Scope getApplicationScope() {
+        return context.getApplicationAdapter().getApplicationScope();
+    }
+
 }

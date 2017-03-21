@@ -22,11 +22,11 @@ package com.aspectran.core.context.bean.ablility;
  */
 public interface InitializableBean {
 
-	/**
-	 * Invoke on initialization after it has set all bean properties supplied.
-	 *
-	 * @throws Exception if initialization fails
-	 */
-	void initialize() throws Exception;
+    /**
+     * Invoke on initialization after it has set all bean properties supplied.
+     *
+     * @throws Exception if initialization fails
+     */
+    void initialize() throws Exception;
 
 }

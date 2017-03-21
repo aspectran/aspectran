@@ -28,90 +28,90 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  */
 public class BasicResponseAdapter extends AbstractResponseAdapter {
 
-	private String characterEncoding;
+    private String characterEncoding;
 
-	private String contentType;
+    private String contentType;
 
-	private OutputStream outputStream;
+    private OutputStream outputStream;
 
-	private Writer writer;
+    private Writer writer;
 
-	/**
-	 * Instantiates a new Basic response adapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public BasicResponseAdapter(Object adaptee) {
-		super(adaptee);
-	}
+    /**
+     * Instantiates a new Basic response adapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public BasicResponseAdapter(Object adaptee) {
+        super(adaptee);
+    }
 
-	/**
-	 * Instantiates a new Basic response adapter.
-	 *
-	 * @param adaptee the adaptee object
-	 * @param writer the writer to output
-	 */
-	public BasicResponseAdapter(Object adaptee, Writer writer) {
-		super(adaptee);
-		setWriter(writer);
-	}
+    /**
+     * Instantiates a new Basic response adapter.
+     *
+     * @param adaptee the adaptee object
+     * @param writer the writer to output
+     */
+    public BasicResponseAdapter(Object adaptee, Writer writer) {
+        super(adaptee);
+        setWriter(writer);
+    }
 
-	@Override
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    @Override
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	@Override
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    @Override
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	@Override
-	public String getContentType() {
-		return contentType;
-	}
+    @Override
+    public String getContentType() {
+        return contentType;
+    }
 
-	@Override
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    @Override
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	@Override
-	public OutputStream getOutputStream() throws IOException {
-		if(outputStream == null) {
-			throw new UnsupportedOperationException();
-		}
-		return outputStream;
-	}
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        if(outputStream == null) {
+            throw new UnsupportedOperationException();
+        }
+        return outputStream;
+    }
 
-	protected void setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
-	}
+    protected void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
 
-	@Override
-	public Writer getWriter() throws IOException {
-		if (writer == null) {
-			throw new UnsupportedOperationException();
-		}
-		return writer;
-	}
+    @Override
+    public Writer getWriter() throws IOException {
+        if (writer == null) {
+            throw new UnsupportedOperationException();
+        }
+        return writer;
+    }
 
-	protected void setWriter(Writer writer) {
-		this.writer = writer;
-	}
+    protected void setWriter(Writer writer) {
+        this.writer = writer;
+    }
 
-	@Override
-	public void redirect(String target) throws IOException {
-	}
+    @Override
+    public void redirect(String target) throws IOException {
+    }
 
-	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule) {
-		throw new UnsupportedOperationException("redirect");
-	}
+    @Override
+    public String redirect(RedirectResponseRule redirectResponseRule) {
+        throw new UnsupportedOperationException("redirect");
+    }
 
-	@Override
-	public void flush() {
-		// nothing to do
-	}
+    @Override
+    public void flush() {
+        // nothing to do
+    }
 
 }

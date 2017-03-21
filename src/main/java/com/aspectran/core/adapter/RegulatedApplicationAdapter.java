@@ -28,69 +28,69 @@ import com.aspectran.core.context.bean.scope.ApplicationScope;
  */
 public class RegulatedApplicationAdapter implements ApplicationAdapter {
 
-	private ApplicationAdapter applicationAdapter;
+    private ApplicationAdapter applicationAdapter;
 
-	/**
-	 * Instantiates a new Regulated application adapter.
-	 *
-	 * @param applicationAdapter the application adapter
-	 */
-	public RegulatedApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
+    /**
+     * Instantiates a new Regulated application adapter.
+     *
+     * @param applicationAdapter the application adapter
+     */
+    public RegulatedApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
 
-	@Override
-	public <T> T getAdaptee() {
-		return applicationAdapter.getAdaptee();
-	}
+    @Override
+    public <T> T getAdaptee() {
+        return applicationAdapter.getAdaptee();
+    }
 
-	@Override
-	public ApplicationScope getApplicationScope() {
-		return applicationAdapter.getApplicationScope();
-	}
+    @Override
+    public ApplicationScope getApplicationScope() {
+        return applicationAdapter.getApplicationScope();
+    }
 
-	@Override
-	public <T> T getAttribute(String name) {
-		return applicationAdapter.getAttribute(name);
-	}
+    @Override
+    public <T> T getAttribute(String name) {
+        return applicationAdapter.getAttribute(name);
+    }
 
-	@Override
-	public void setAttribute(String name, Object value) {
-		applicationAdapter.setAttribute(name, value);
-	}
+    @Override
+    public void setAttribute(String name, Object value) {
+        applicationAdapter.setAttribute(name, value);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return applicationAdapter.getAttributeNames();
-	}
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return applicationAdapter.getAttributeNames();
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		applicationAdapter.removeAttribute(name);
-	}
+    @Override
+    public void removeAttribute(String name) {
+        applicationAdapter.removeAttribute(name);
+    }
 
-	@Override
-	public ClassLoader getClassLoader() {
-		return applicationAdapter.getClassLoader();
-	}
+    @Override
+    public ClassLoader getClassLoader() {
+        return applicationAdapter.getClassLoader();
+    }
 
-	@Override
-	public void setClassLoader(ClassLoader classLoader) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getBasePath() {
-		return applicationAdapter.getBasePath();
-	}
+    public String getBasePath() {
+        return applicationAdapter.getBasePath();
+    }
 
-	@Override
-	public String toRealPath(String filePath) throws IOException {
-		return applicationAdapter.toRealPath(filePath);
-	}
+    @Override
+    public String toRealPath(String filePath) throws IOException {
+        return applicationAdapter.toRealPath(filePath);
+    }
 
-	@Override
-	public File toRealPathAsFile(String filePath) throws IOException {
-		return applicationAdapter.toRealPathAsFile(filePath);
-	}
+    @Override
+    public File toRealPathAsFile(String filePath) throws IOException {
+        return applicationAdapter.toRealPathAsFile(filePath);
+    }
 
 }

@@ -21,39 +21,39 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class DispatchParameters extends AbstractParameters {
 
-	public static final ParameterDefinition actions;
-	public static final ParameterDefinition name;
-	public static final ParameterDefinition dispatcher;
-	public static final ParameterDefinition contentType;
-	public static final ParameterDefinition characterEncoding;
-	public static final ParameterDefinition defaultResponse;
+    public static final ParameterDefinition actions;
+    public static final ParameterDefinition name;
+    public static final ParameterDefinition dispatcher;
+    public static final ParameterDefinition contentType;
+    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition defaultResponse;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
-		name = new ParameterDefinition("name", ParameterValueType.STRING);
-		dispatcher = new ParameterDefinition("dispatcher", ParameterValueType.STRING);
-		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
-		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			actions,
-			name,
-			dispatcher,
-			contentType,
-			characterEncoding,
-			defaultResponse
-		};
-	}
-	
-	public DispatchParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public DispatchParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    static {
+        actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+        name = new ParameterDefinition("name", ParameterValueType.STRING);
+        dispatcher = new ParameterDefinition("dispatcher", ParameterValueType.STRING);
+        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            actions,
+            name,
+            dispatcher,
+            contentType,
+            characterEncoding,
+            defaultResponse
+        };
+    }
+
+    public DispatchParameters() {
+        super(parameterDefinitions);
+    }
+
+    public DispatchParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

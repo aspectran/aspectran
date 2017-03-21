@@ -42,153 +42,153 @@ import com.mitchellbosecke.pebble.loader.StringLoader;
  */
 public class PebbleEngineFactory implements ApplicationAdapterAware {
 
-	private final Log log = LogFactory.getLog(PebbleEngineFactory.class);
+    private final Log log = LogFactory.getLog(PebbleEngineFactory.class);
 
-	private ApplicationAdapter applicationAdapter;
+    private ApplicationAdapter applicationAdapter;
 
-	private Locale defaultLocale;
+    private Locale defaultLocale;
 
-	private boolean strictVariables;
+    private boolean strictVariables;
 
-	private String[] templateLoaderPaths;
+    private String[] templateLoaderPaths;
 
-	private Loader<?>[] templateLoaders;
+    private Loader<?>[] templateLoaders;
 
-	@Override
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
 
-	public void setDefaultLocale(String defaultLocale) {
-		this.defaultLocale = StringUtils.parseLocaleString(defaultLocale);
-	}
+    public void setDefaultLocale(String defaultLocale) {
+        this.defaultLocale = StringUtils.parseLocaleString(defaultLocale);
+    }
 
-	public void setStrictVariables(boolean strictVariables) {
-		this.strictVariables = strictVariables;
-	}
+    public void setStrictVariables(boolean strictVariables) {
+        this.strictVariables = strictVariables;
+    }
 
-	public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
-		this.templateLoaderPaths = new String[] { templateLoaderPath };
-	}
+    public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
+        this.templateLoaderPaths = new String[] { templateLoaderPath };
+    }
 
-	public void setTemplateLoaderPath(String[] templateLoaderPaths) {
-		this.templateLoaderPaths = templateLoaderPaths;
-	}
+    public void setTemplateLoaderPath(String[] templateLoaderPaths) {
+        this.templateLoaderPaths = templateLoaderPaths;
+    }
 
-	public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
-		this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
-	}
+    public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
+        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
+    }
 
-	public void setTemplateLoader(Loader<?> templateLoaders) {
-		this.templateLoaders = new Loader<?>[] {templateLoaders};
-	}
+    public void setTemplateLoader(Loader<?> templateLoaders) {
+        this.templateLoaders = new Loader<?>[] {templateLoaders};
+    }
 
-	public void setTemplateLoader(Loader<?>[] templateLoaders) {
-		this.templateLoaders = templateLoaders;
-	}
+    public void setTemplateLoader(Loader<?>[] templateLoaders) {
+        this.templateLoaders = templateLoaders;
+    }
 
-	public void setTemplateLoader(List<Loader<?>> templateLoaderList) {
-		this.templateLoaders = templateLoaderList.toArray(new Loader<?>[templateLoaderList.size()]);
-	}
+    public void setTemplateLoader(List<Loader<?>> templateLoaderList) {
+        this.templateLoaders = templateLoaderList.toArray(new Loader<?>[templateLoaderList.size()]);
+    }
 
-	/**
-	 * Creates a PebbleEngine instance.
-	 *
-	 * @return a PebbleEngine object that can be used to create PebbleTemplate objects
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public PebbleEngine createPebbleEngine() throws IOException {
-		PebbleEngine.Builder builder = new PebbleEngine.Builder();
-		builder.strictVariables(strictVariables);
+    /**
+     * Creates a PebbleEngine instance.
+     *
+     * @return a PebbleEngine object that can be used to create PebbleTemplate objects
+     * @throws IOException if an I/O error has occurred
+     */
+    public PebbleEngine createPebbleEngine() throws IOException {
+        PebbleEngine.Builder builder = new PebbleEngine.Builder();
+        builder.strictVariables(strictVariables);
 
-		if (defaultLocale != null) {
-			builder.defaultLocale(defaultLocale);
-		}
+        if (defaultLocale != null) {
+            builder.defaultLocale(defaultLocale);
+        }
 
-		if (templateLoaders == null) {
-			if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
-				List<Loader<?>> templateLoaderList = new ArrayList<>();
-				for (String path : templateLoaderPaths) {
-					templateLoaderList.add(getTemplateLoaderForPath(path));
-				}
-				setTemplateLoader(templateLoaderList);
-			}
-		}
+        if (templateLoaders == null) {
+            if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
+                List<Loader<?>> templateLoaderList = new ArrayList<>();
+                for (String path : templateLoaderPaths) {
+                    templateLoaderList.add(getTemplateLoaderForPath(path));
+                }
+                setTemplateLoader(templateLoaderList);
+            }
+        }
 
-		Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
-		builder.loader(templateLoader);
+        Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
+        builder.loader(templateLoader);
 
-		return builder.build();
-	}
+        return builder.build();
+    }
 
-	/**
-	 * Return a Template Loader based on the given Template Loader list.
-	 * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
-	 *
-	 * @param templateLoaders the final List of TemplateLoader instances
-	 * @return the aggregate TemplateLoader
-	 */
-	protected Loader<?> getAggregateTemplateLoader(Loader<?>[] templateLoaders) {
-		int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
-		switch (loaderCount) {
-			case 0:
-				// Register default template loaders.
-				Loader<?> stringLoader = new StringLoader();
-				if (log.isDebugEnabled()) {
-					log.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
-				}
-				return stringLoader;
-			case 1:
-				if (log.isDebugEnabled()) {
-					log.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
-				}
-				return templateLoaders[0];
-			default:
-				List<Loader<?>> defaultLoadingStrategies = new ArrayList<Loader<?>>();
-				Collections.addAll(defaultLoadingStrategies, templateLoaders);
-				Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
-				if (log.isDebugEnabled()) {
-					log.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
-				}
-				return delegatingLoader;
-		}
-	}
+    /**
+     * Return a Template Loader based on the given Template Loader list.
+     * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
+     *
+     * @param templateLoaders the final List of TemplateLoader instances
+     * @return the aggregate TemplateLoader
+     */
+    protected Loader<?> getAggregateTemplateLoader(Loader<?>[] templateLoaders) {
+        int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
+        switch (loaderCount) {
+            case 0:
+                // Register default template loaders.
+                Loader<?> stringLoader = new StringLoader();
+                if (log.isDebugEnabled()) {
+                    log.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
+                }
+                return stringLoader;
+            case 1:
+                if (log.isDebugEnabled()) {
+                    log.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
+                }
+                return templateLoaders[0];
+            default:
+                List<Loader<?>> defaultLoadingStrategies = new ArrayList<Loader<?>>();
+                Collections.addAll(defaultLoadingStrategies, templateLoaders);
+                Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
+                if (log.isDebugEnabled()) {
+                    log.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
+                }
+                return delegatingLoader;
+        }
+    }
 
-	/**
-	 * Determine a Pebble Engine Template Loader for the given path.
-	 *
-	 * @param templateLoaderPath the path to load templates from
-	 * @return an appropriate Template Loader
-	 * @throws IOException if an I/O error has occurred
-	 */
-	protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
-		if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			if (log.isDebugEnabled()) {
-				log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
-			}
-			ClasspathLoader loader = new ClasspathLoader(applicationAdapter.getClassLoader());
-			loader.setPrefix(basePackagePath);
-			return loader;
-		} else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-			File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
-			String prefix = file.getAbsolutePath();
-			if (log.isDebugEnabled()) {
-				log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
-			}
-			FileLoader loader = new FileLoader();
-			loader.setPrefix(prefix);
-			return loader;
-		} else {
-			File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
-			String prefix = file.getAbsolutePath();
-			if (log.isDebugEnabled()) {
-				log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
-			}
-			FileLoader loader = new FileLoader();
-			loader.setPrefix(prefix);
-			return loader;
-		}
-	}
+    /**
+     * Determine a Pebble Engine Template Loader for the given path.
+     *
+     * @param templateLoaderPath the path to load templates from
+     * @return an appropriate Template Loader
+     * @throws IOException if an I/O error has occurred
+     */
+    protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
+        if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+            if (log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
+            }
+            ClasspathLoader loader = new ClasspathLoader(applicationAdapter.getClassLoader());
+            loader.setPrefix(basePackagePath);
+            return loader;
+        } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
+            String prefix = file.getAbsolutePath();
+            if (log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+            }
+            FileLoader loader = new FileLoader();
+            loader.setPrefix(prefix);
+            return loader;
+        } else {
+            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
+            String prefix = file.getAbsolutePath();
+            if (log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+            }
+            FileLoader loader = new FileLoader();
+            loader.setPrefix(prefix);
+            return loader;
+        }
+    }
 
 }

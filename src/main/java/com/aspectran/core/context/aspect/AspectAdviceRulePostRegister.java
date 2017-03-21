@@ -21,19 +21,19 @@ import com.aspectran.core.context.rule.AspectRule;
  * The Class AspectAdviceRulePostRegister.
  */
 public class AspectAdviceRulePostRegister {
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
-	public AspectAdviceRuleRegistry register(AspectRule aspectRule) {
-		if (aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		aspectAdviceRuleRegistry.register(aspectRule);
-		return aspectAdviceRuleRegistry;
-	}
-	
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-	
+
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+    public AspectAdviceRuleRegistry register(AspectRule aspectRule) {
+        if (aspectAdviceRuleRegistry == null) {
+            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+        }
+        aspectAdviceRuleRegistry.register(aspectRule);
+        return aspectAdviceRuleRegistry;
+    }
+
+    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+        return aspectAdviceRuleRegistry;
+    }
+
 }

@@ -46,452 +46,452 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractActivity implements Activity {
 
-	private static final Log log = LogFactory.getLog(AbstractActivity.class);
-	
-	private final ActivityContext context;
+    private static final Log log = LogFactory.getLog(AbstractActivity.class);
 
-	private boolean included;
+    private final ActivityContext context;
 
-	private Activity outerActivity;
-	
-	private Throwable raisedException;
+    private boolean included;
 
-	private SessionAdapter sessionAdapter;
-	
-	private RequestAdapter requestAdapter;
+    private Activity outerActivity;
 
-	private ResponseAdapter responseAdapter;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+    private Throwable raisedException;
 
-	private AspectAdviceResult aspectAdviceResult;
+    private SessionAdapter sessionAdapter;
 
-	/**
-	 * Instantiates a new abstract activity.
-	 *
-	 * @param context the activity context
-	 */
-	protected AbstractActivity(ActivityContext context) {
-		this.context = context;
-	}
+    private RequestAdapter requestAdapter;
 
-	@Override
-	public ActivityContext getActivityContext() {
-		return context;
-	}
+    private ResponseAdapter responseAdapter;
 
-	@Override
-	public ClassLoader getClassLoader() {
-		return context.getClassLoader();
-	}
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	/**
-	 * Gets the current activity.
-	 *
-	 * @return the current activity
-	 */
-	protected Activity getCurrentActivity() {
-		return context.getCurrentActivity();
-	}
-	
-	/**
-	 * Sets the current activity.
-	 *
-	 * @param activity the new current activity
-	 */
-	protected void setCurrentActivity(Activity activity) {
-		context.setCurrentActivity(activity);
-	}
+    private AspectAdviceResult aspectAdviceResult;
 
-	/**
-	 * Backups the current activity.
-	 */
-	protected void backupCurrentActivity() {
-		outerActivity = getCurrentActivity();
-		setCurrentActivity(this);
-	}
+    /**
+     * Instantiates a new abstract activity.
+     *
+     * @param context the activity context
+     */
+    protected AbstractActivity(ActivityContext context) {
+        this.context = context;
+    }
 
-	/**
-	 * Removes the current activity.
-	 */
-	protected void removeCurrentActivity() {
-		if (outerActivity != null) {
-			setCurrentActivity(outerActivity);
-		} else {
-			context.removeCurrentActivity();
-		}
-	}
-	
-	/**
-	 * Returns whether or not contained in other activity.
-	 *
-	 * @return true, if this activity is included in the other activity
-	 */
-	public boolean isIncluded() {
-		return included;
-	}
+    @Override
+    public ActivityContext getActivityContext() {
+        return context;
+    }
 
-	/**
-	 * Sets whether this activity is included in other activity.
-	 *
-	 * @param included whether or not included in other activity
-	 */
-	public void setIncluded(boolean included) {
-		this.included = included;
-	}
+    @Override
+    public ClassLoader getClassLoader() {
+        return context.getClassLoader();
+    }
 
-	@Override
-	public Throwable getRaisedException() {
-		return raisedException;
-	}
+    /**
+     * Gets the current activity.
+     *
+     * @return the current activity
+     */
+    protected Activity getCurrentActivity() {
+        return context.getCurrentActivity();
+    }
 
-	@Override
-	public void setRaisedException(Throwable raisedException) {
-		if (this.raisedException == null) {
-			if (log.isDebugEnabled()) {
-				log.error("Raised exception: ", raisedException);
-			}
-			this.raisedException = raisedException;
-		}
-	}
+    /**
+     * Sets the current activity.
+     *
+     * @param activity the new current activity
+     */
+    protected void setCurrentActivity(Activity activity) {
+        context.setCurrentActivity(activity);
+    }
 
-	@Override
-	public boolean isExceptionRaised() {
-		return (this.raisedException != null);
-	}
+    /**
+     * Backups the current activity.
+     */
+    protected void backupCurrentActivity() {
+        outerActivity = getCurrentActivity();
+        setCurrentActivity(this);
+    }
 
-	@Override
-	public Throwable getOriginRaisedException() {
-		if (raisedException != null) {
-			for (Throwable t = raisedException; t != null; t = t.getCause()) {
-				if (t.getCause() == null) {
-					return t;
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Removes the current activity.
+     */
+    protected void removeCurrentActivity() {
+        if (outerActivity != null) {
+            setCurrentActivity(outerActivity);
+        } else {
+            context.removeCurrentActivity();
+        }
+    }
 
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	@Override
-	public ApplicationAdapter getApplicationAdapter() {
-		return context.getApplicationAdapter();
-	}
+    /**
+     * Returns whether or not contained in other activity.
+     *
+     * @return true, if this activity is included in the other activity
+     */
+    public boolean isIncluded() {
+        return included;
+    }
 
-	/**
-	 * Gets the session adapter.
-	 *
-	 * @return the session adapter
-	 */
-	@Override
-	public SessionAdapter getSessionAdapter() {
-		return sessionAdapter;
-	}
-	
-	/**
-	 * Sets the session adapter.
-	 *
-	 * @param sessionAdapter the new session adapter
-	 */
-	protected void setSessionAdapter(SessionAdapter sessionAdapter) {
-		this.sessionAdapter = sessionAdapter;
-	}
+    /**
+     * Sets whether this activity is included in other activity.
+     *
+     * @param included whether or not included in other activity
+     */
+    public void setIncluded(boolean included) {
+        this.included = included;
+    }
 
-	/**
-	 * Gets the request adapter.
-	 *
-	 * @return the request adapter
-	 */
-	@Override
-	public RequestAdapter getRequestAdapter() {
-		return requestAdapter;
-	}
-	
-	/**
-	 * Sets the request adapter.
-	 *
-	 * @param requestAdapter the new request adapter
-	 */
-	protected void setRequestAdapter(RequestAdapter requestAdapter) {
-		this.requestAdapter = requestAdapter;
-	}
-	
-	/**
-	 * Gets the response adapter.
-	 *
-	 * @return the response adapter
-	 */
-	@Override
-	public ResponseAdapter getResponseAdapter() {
-		return responseAdapter;
-	}
+    @Override
+    public Throwable getRaisedException() {
+        return raisedException;
+    }
 
-	/**
-	 * Sets the response adapter.
-	 *
-	 * @param responseAdapter the new response adapter
-	 */
-	protected void setResponseAdapter(ResponseAdapter responseAdapter) {
-		this.responseAdapter = responseAdapter;
-	}
+    @Override
+    public void setRaisedException(Throwable raisedException) {
+        if (this.raisedException == null) {
+            if (log.isDebugEnabled()) {
+                log.error("Raised exception: ", raisedException);
+            }
+            this.raisedException = raisedException;
+        }
+    }
 
-	protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return aspectAdviceRuleRegistry;
-	}
-	
-	protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if (aspectAdviceRuleRegistry != null) {
-			return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public boolean isExceptionRaised() {
+        return (this.raisedException != null);
+    }
 
-	protected List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if (aspectAdviceRuleRegistry != null) {
-			return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-		} else {
-			return null;
-		}
-	}
-	
-	protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if (aspectAdviceRuleRegistry != null) {
-			return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public Throwable getOriginRaisedException() {
+        if (raisedException != null) {
+            for (Throwable t = raisedException; t != null; t = t.getCause()) {
+                if (t.getCause() == null) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
 
-	protected List<ExceptionRule> getExceptionRuleList() {
-		if (aspectAdviceRuleRegistry != null) {
-			return aspectAdviceRuleRegistry.getExceptionRuleList();
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Gets the application adapter.
+     *
+     * @return the application adapter
+     */
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return context.getApplicationAdapter();
+    }
 
-	@Override
-	public <T> T getSetting(String settingName) {
-		return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
-	}
+    /**
+     * Gets the session adapter.
+     *
+     * @return the session adapter
+     */
+    @Override
+    public SessionAdapter getSessionAdapter() {
+        return sessionAdapter;
+    }
 
-	/**
-	 * Gets the aspect advice bean.
-	 *
-	 * @param <T> the generic type
-	 * @param aspectId the aspect id
-	 * @return the aspect advice bean
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getAspectAdviceBean(String aspectId) {
-		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
-	}
+    /**
+     * Sets the session adapter.
+     *
+     * @param sessionAdapter the new session adapter
+     */
+    protected void setSessionAdapter(SessionAdapter sessionAdapter) {
+        this.sessionAdapter = sessionAdapter;
+    }
 
-	/**
-	 * Put aspect advice bean.
-	 *
-	 * @param aspectId the aspect id
-	 * @param adviceBean the advice bean
-	 */
-	protected void putAspectAdviceBean(String aspectId, Object adviceBean) {
-		if (aspectAdviceResult == null) {
-			aspectAdviceResult = new AspectAdviceResult();
-		}
-		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
-	}
+    /**
+     * Gets the request adapter.
+     *
+     * @return the request adapter
+     */
+    @Override
+    public RequestAdapter getRequestAdapter() {
+        return requestAdapter;
+    }
 
-	/**
-	 * Gets the before advice result.
-	 *
-	 * @param <T> the generic type
-	 * @param aspectId the aspect id
-	 * @return the before advice result
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getBeforeAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
-	}
+    /**
+     * Sets the request adapter.
+     *
+     * @param requestAdapter the new request adapter
+     */
+    protected void setRequestAdapter(RequestAdapter requestAdapter) {
+        this.requestAdapter = requestAdapter;
+    }
 
-	/**
-	 * Gets the after advice result.
-	 *
-	 * @param <T> the generic type
-	 * @param aspectId the aspect id
-	 * @return the after advice result
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getAfterAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
-	}
+    /**
+     * Gets the response adapter.
+     *
+     * @return the response adapter
+     */
+    @Override
+    public ResponseAdapter getResponseAdapter() {
+        return responseAdapter;
+    }
 
-	/**
-	 * Gets the finally advice result.
-	 *
-	 * @param <T> the generic type
-	 * @param aspectId the aspect id
-	 * @return the finally advice result
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getFinallyAdviceResult(String aspectId) {
-		return (aspectAdviceResult != null ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
-	}
+    /**
+     * Sets the response adapter.
+     *
+     * @param responseAdapter the new response adapter
+     */
+    protected void setResponseAdapter(ResponseAdapter responseAdapter) {
+        this.responseAdapter = responseAdapter;
+    }
 
-	/**
-	 * Put advice result.
-	 *
-	 * @param aspectAdviceRule the aspect advice rule
-	 * @param adviceActionResult the advice action result
-	 */
-	protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-		if (aspectAdviceResult == null) {
-			aspectAdviceResult = new AspectAdviceResult();
-		}
-		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
-	}
+    protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+        if (aspectAdviceRuleRegistry == null) {
+            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+        }
+        return aspectAdviceRuleRegistry;
+    }
 
-	/**
-	 * Gets the aspect rule registry.
-	 *
-	 * @return the aspect rule registry
-	 */
-	protected AspectRuleRegistry getAspectRuleRegistry() {
-		return context.getAspectRuleRegistry();
-	}
+    protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
+        if (aspectAdviceRuleRegistry != null) {
+            return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * Gets the translet rule registry.
-	 *
-	 * @return the translet rule registry
-	 */
-	protected TransletRuleRegistry getTransletRuleRegistry() {
-		return context.getTransletRuleRegistry();
-	}
+    protected List<AspectAdviceRule> getAfterAdviceRuleList() {
+        if (aspectAdviceRuleRegistry != null) {
+            return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public TemplateProcessor getTemplateProcessor() {
-		return context.getTemplateProcessor();
-	}
+    protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
+        if (aspectAdviceRuleRegistry != null) {
+            return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public BeanRegistry getBeanRegistry() {
-		return context.getBeanRegistry();
-	}
+    protected List<ExceptionRule> getExceptionRuleList() {
+        if (aspectAdviceRuleRegistry != null) {
+            return aspectAdviceRuleRegistry.getExceptionRuleList();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public <T> T getBean(String id) {
-		return context.getBeanRegistry().getBean(id);
-	}
+    @Override
+    public <T> T getSetting(String settingName) {
+        return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
+    }
 
-	@Override
-	public <T> T getBean(Class<T> requiredType) {
-		return context.getBeanRegistry().getBean(requiredType);
-	}
+    /**
+     * Gets the aspect advice bean.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the aspect advice bean
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getAspectAdviceBean(String aspectId) {
+        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
+    }
 
-	@Override
-	public <T> T getBean(String id, Class<T> requiredType) {
-		return context.getBeanRegistry().getBean(id, requiredType);
-	}
+    /**
+     * Put aspect advice bean.
+     *
+     * @param aspectId the aspect id
+     * @param adviceBean the advice bean
+     */
+    protected void putAspectAdviceBean(String aspectId, Object adviceBean) {
+        if (aspectAdviceResult == null) {
+            aspectAdviceResult = new AspectAdviceResult();
+        }
+        aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
+    }
 
-	@Override
-	public <T> T getBean(Class<T> requiredType, String id) {
-		return context.getBeanRegistry().getBean(requiredType, id);
-	}
+    /**
+     * Gets the before advice result.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the before advice result
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getBeforeAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
+    }
 
-	@Override
-	public <T> T getConfigBean(Class<T> classType) {
-		return context.getBeanRegistry().getConfigBean(classType);
-	}
+    /**
+     * Gets the after advice result.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the after advice result
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getAfterAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
+    }
 
-	@Override
-	public boolean containsBean(String id) {
-		return context.getBeanRegistry().containsBean(id);
-	}
+    /**
+     * Gets the finally advice result.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the finally advice result
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getFinallyAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
+    }
 
-	@Override
-	public boolean containsBean(Class<?> requiredType) {
-		return context.getBeanRegistry().containsBean(requiredType);
-	}
+    /**
+     * Put advice result.
+     *
+     * @param aspectAdviceRule the aspect advice rule
+     * @param adviceActionResult the advice action result
+     */
+    protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+        if (aspectAdviceResult == null) {
+            aspectAdviceResult = new AspectAdviceResult();
+        }
+        aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
+    }
 
-	@Override
-	public void terminate() {
-		throw new ActivityTerminatedException();
-	}
+    /**
+     * Gets the aspect rule registry.
+     *
+     * @return the aspect rule registry
+     */
+    protected AspectRuleRegistry getAspectRuleRegistry() {
+        return context.getAspectRuleRegistry();
+    }
 
-	@Override
-	public void registerAspectRule(AspectRule aspectRule) {
-		if (!isAcceptable(aspectRule)) {
-			return;
-		}
+    /**
+     * Gets the translet rule registry.
+     *
+     * @return the translet rule registry
+     */
+    protected TransletRuleRegistry getTransletRuleRegistry() {
+        return context.getTransletRuleRegistry();
+    }
 
-		if (log.isDebugEnabled()) {
-			log.debug("register AspectRule " + aspectRule);
-		}
+    @Override
+    public TemplateProcessor getTemplateProcessor() {
+        return context.getTemplateProcessor();
+    }
 
-		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-		if (aspectAdviceRuleList != null) {
-			for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-				if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-					executeAdvice(aspectAdviceRule);
-				}
-			}
-		}
+    @Override
+    public BeanRegistry getBeanRegistry() {
+        return context.getBeanRegistry();
+    }
 
-		/*
-		 * The before advice is excluded because it was already executed.
-		 */
-		touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
-	}
-	
-	protected void prepareAspectAdviceRule(TransletRule transletRule) {
-		if (transletRule.getNameTokens() == null) {
-			this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
-		} else {
-			AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
-			for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
-				JoinpointType joinpointType = aspectRule.getJoinpointType();
-				if (!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
-					if (isAcceptable(aspectRule)) {
-						Pointcut pointcut = aspectRule.getPointcut();
-						if (pointcut == null || pointcut.matches(transletRule.getName())) {
-							if (log.isDebugEnabled()) {
-								log.debug("register AspectRule " + aspectRule);
-							}
-							aarPostRegister.register(aspectRule);
-						}
-					}
-				}
-			}
-			this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
-		}
-	}
-	
-	private boolean isAcceptable(AspectRule aspectRule) {
-		if (aspectRule.getTargetMethods() != null) {
-			if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods())) {
-				return false;
-			}
-		}
-		if (aspectRule.getTargetHeaders() != null) {
-			boolean contained = false;
-			for (String header : aspectRule.getTargetHeaders()) {
-				if (getRequestAdapter().containsHeader(header)) {
-					contained = true;
-					break;
-				}
-			}
-			if (!contained) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public <T> T getBean(String id) {
+        return context.getBeanRegistry().getBean(id);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType) {
+        return context.getBeanRegistry().getBean(requiredType);
+    }
+
+    @Override
+    public <T> T getBean(String id, Class<T> requiredType) {
+        return context.getBeanRegistry().getBean(id, requiredType);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType, String id) {
+        return context.getBeanRegistry().getBean(requiredType, id);
+    }
+
+    @Override
+    public <T> T getConfigBean(Class<T> classType) {
+        return context.getBeanRegistry().getConfigBean(classType);
+    }
+
+    @Override
+    public boolean containsBean(String id) {
+        return context.getBeanRegistry().containsBean(id);
+    }
+
+    @Override
+    public boolean containsBean(Class<?> requiredType) {
+        return context.getBeanRegistry().containsBean(requiredType);
+    }
+
+    @Override
+    public void terminate() {
+        throw new ActivityTerminatedException();
+    }
+
+    @Override
+    public void registerAspectRule(AspectRule aspectRule) {
+        if (!isAcceptable(aspectRule)) {
+            return;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("register AspectRule " + aspectRule);
+        }
+
+        List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+        if (aspectAdviceRuleList != null) {
+            for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+                if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+                    executeAdvice(aspectAdviceRule);
+                }
+            }
+        }
+
+        /*
+         * The before advice is excluded because it was already executed.
+         */
+        touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
+    }
+
+    protected void prepareAspectAdviceRule(TransletRule transletRule) {
+        if (transletRule.getNameTokens() == null) {
+            this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
+        } else {
+            AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
+            for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
+                JoinpointType joinpointType = aspectRule.getJoinpointType();
+                if (!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
+                    if (isAcceptable(aspectRule)) {
+                        Pointcut pointcut = aspectRule.getPointcut();
+                        if (pointcut == null || pointcut.matches(transletRule.getName())) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("register AspectRule " + aspectRule);
+                            }
+                            aarPostRegister.register(aspectRule);
+                        }
+                    }
+                }
+            }
+            this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
+        }
+    }
+
+    private boolean isAcceptable(AspectRule aspectRule) {
+        if (aspectRule.getTargetMethods() != null) {
+            if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods())) {
+                return false;
+            }
+        }
+        if (aspectRule.getTargetHeaders() != null) {
+            boolean contained = false;
+            for (String header : aspectRule.getTargetHeaders()) {
+                if (getRequestAdapter().containsHeader(header)) {
+                    contained = true;
+                    break;
+                }
+            }
+            if (!contained) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

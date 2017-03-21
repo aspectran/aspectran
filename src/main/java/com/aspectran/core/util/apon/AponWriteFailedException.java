@@ -19,42 +19,42 @@ package com.aspectran.core.util.apon;
  * The Class AponWriteFailedException.
  */
 public class AponWriteFailedException extends AponException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -7808057204325308915L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public AponWriteFailedException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -7808057204325308915L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public AponWriteFailedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public AponWriteFailedException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AponWriteFailedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public AponWriteFailedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public AponWriteFailedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AponWriteFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public AponWriteFailedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

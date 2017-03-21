@@ -21,36 +21,36 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition pluses;
-	public static final ParameterDefinition minuses;
-	public static final ParameterDefinition includes;
-	public static final ParameterDefinition execludes;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		pluses = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
-		minuses = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
-		includes = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);
-		execludes = new ParameterDefinition("execlude", PointcutTargetParameters.class, true, true);
-	
-		parameterDefinitions = new ParameterDefinition[] {
-			type,
-			pluses,
-			minuses,
-			includes,
-			execludes
-		};
-	}
-	
-	public PointcutParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public PointcutParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition type;
+    public static final ParameterDefinition pluses;
+    public static final ParameterDefinition minuses;
+    public static final ParameterDefinition includes;
+    public static final ParameterDefinition execludes;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        type = new ParameterDefinition("type", ParameterValueType.STRING);
+        pluses = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
+        minuses = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
+        includes = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);
+        execludes = new ParameterDefinition("execlude", PointcutTargetParameters.class, true, true);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            type,
+            pluses,
+            minuses,
+            includes,
+            execludes
+        };
+    }
+
+    public PointcutParameters() {
+        super(parameterDefinitions);
+    }
+
+    public PointcutParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

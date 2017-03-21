@@ -29,77 +29,77 @@ import com.aspectran.core.util.ResourceUtils;
 /**
  * The Class LocalResourceManager.
  *
- * <p>Created: 2014. 12. 18 PM 5:51:13</p>	
+ * <p>Created: 2014. 12. 18 PM 5:51:13</p>
  */
 public class LocalResourceManager extends ResourceManager {
-	
-	private final String resourceLocation;
-	
-	private final int resourceLocationSubLen;
-	
-	private final AspectranClassLoader owner;
-	
-	public LocalResourceManager(AspectranClassLoader owner) {
-		super();
-		
-		this.owner = owner;
-		this.resourceLocation = null;
-		this.resourceLocationSubLen = 0;
-	}
-	
-	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
-		super();
-		
-		this.owner = owner;
-		
-		if (resourceLocation != null) {
-			File file = new File(resourceLocation);
-			this.resourceLocation = file.getAbsolutePath();
-			this.resourceLocationSubLen = this.resourceLocation.length() + 1;
-			
-			if (!file.isDirectory()
-					&& (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
-				throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
-			}
-			
-			findResource(file);
-		} else {
-			this.resourceLocation = null;
-			this.resourceLocationSubLen = 0;
-		}
-	}
 
-	@Override
-	public void reset() throws InvalidResourceException {
-		super.reset();
-		
-		if (resourceLocation != null) {
-			findResource(new File(resourceLocation));
-		}
-	}
-	
-	private void findResource(File file) throws InvalidResourceException {
-		try {
-			if (file.isDirectory()) {
-				List<File> jarFileList = new ArrayList<>();
-				
-				findResource(file, jarFileList);
-				
-				if (jarFileList.size() > 0) {
-					for (File jarFile : jarFileList) {
-						owner.wishBrother(jarFile.getAbsolutePath());
-					}
-				}
-			} else {
-				findResourceFromJAR(file);
-			}
-		} catch (Exception e) {
-			throw new InvalidResourceException("Faild to find resource from [" + resourceLocation + "]", e);
-		}
-	}
-	
-	private void findResource(File target, List<File> jarFileList) {
-		target.listFiles(file -> {
+    private final String resourceLocation;
+
+    private final int resourceLocationSubLen;
+
+    private final AspectranClassLoader owner;
+
+    public LocalResourceManager(AspectranClassLoader owner) {
+        super();
+
+        this.owner = owner;
+        this.resourceLocation = null;
+        this.resourceLocationSubLen = 0;
+    }
+
+    public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
+        super();
+
+        this.owner = owner;
+
+        if (resourceLocation != null) {
+            File file = new File(resourceLocation);
+            this.resourceLocation = file.getAbsolutePath();
+            this.resourceLocationSubLen = this.resourceLocation.length() + 1;
+
+            if (!file.isDirectory()
+                    && (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
+                throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
+            }
+
+            findResource(file);
+        } else {
+            this.resourceLocation = null;
+            this.resourceLocationSubLen = 0;
+        }
+    }
+
+    @Override
+    public void reset() throws InvalidResourceException {
+        super.reset();
+
+        if (resourceLocation != null) {
+            findResource(new File(resourceLocation));
+        }
+    }
+
+    private void findResource(File file) throws InvalidResourceException {
+        try {
+            if (file.isDirectory()) {
+                List<File> jarFileList = new ArrayList<>();
+
+                findResource(file, jarFileList);
+
+                if (jarFileList.size() > 0) {
+                    for (File jarFile : jarFileList) {
+                        owner.wishBrother(jarFile.getAbsolutePath());
+                    }
+                }
+            } else {
+                findResourceFromJAR(file);
+            }
+        } catch (Exception e) {
+            throw new InvalidResourceException("Faild to find resource from [" + resourceLocation + "]", e);
+        }
+    }
+
+    private void findResource(File target, List<File> jarFileList) {
+        target.listFiles(file -> {
             String filePath = file.getAbsolutePath();
 
             String resourceName = filePath.substring(resourceLocationSubLen);
@@ -120,27 +120,27 @@ public class LocalResourceManager extends ResourceManager {
 
             return false;
         });
-	}
-	
-	private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
-		JarFile jarFile = null;
-		
-		try {
-			jarFile = new JarFile(target);
-			
-			for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
-				JarEntry entry = entries.nextElement();
-				resourceEntries.putResource(target, entry);
-			}
-		} finally {
-			if (jarFile != null) {
-				try {
-					jarFile.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-	}
+    }
+
+    private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
+        JarFile jarFile = null;
+
+        try {
+            jarFile = new JarFile(target);
+
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+                JarEntry entry = entries.nextElement();
+                resourceEntries.putResource(target, entry);
+            }
+        } finally {
+            if (jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
+    }
 
 }

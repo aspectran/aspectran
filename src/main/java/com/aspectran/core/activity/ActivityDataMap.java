@@ -28,111 +28,111 @@ import com.aspectran.core.adapter.RequestAdapter;
  */
 public class ActivityDataMap extends HashMap<String, Object> {
 
-	/** @serial */
-	private static final long serialVersionUID = -4557424414862800204L;
+    /** @serial */
+    private static final long serialVersionUID = -4557424414862800204L;
 
-	protected final Activity activity;
+    protected final Activity activity;
 
-	protected RequestAdapter requestAdapter;
+    protected RequestAdapter requestAdapter;
 
-	/**
-	 * Instantiates a new activity data map.
-	 *
-	 * @param activity the activity
-	 */
-	public ActivityDataMap(Activity activity) {
-		this(activity, false);
-	}
+    /**
+     * Instantiates a new activity data map.
+     *
+     * @param activity the activity
+     */
+    public ActivityDataMap(Activity activity) {
+        this(activity, false);
+    }
 
-	/**
-	 * Instantiates a new activity data map.
-	 *
-	 * @param activity the activity
-	 * @param prefill whether or not to pre-fill the data
-	 */
-	public ActivityDataMap(Activity activity, boolean prefill) {
-		this.activity = activity;
-		this.requestAdapter = activity.getRequestAdapter();
-		
-		if (prefill) {
-			prefillData();
-		}
-	}
-	
-	private void prefillData() {
-		if (requestAdapter != null) {
-			requestAdapter.fillPrameterMap(this);
-			requestAdapter.fillAttributeMap(this);
-		}
-		if (activity.getProcessResult() != null) {
-			for (ContentResult cr : activity.getProcessResult()) {
-				for (ActionResult ar : cr) {
-					if (ar.getActionId() != null) {
-						put(ar.getActionId(), ar.getResultValue());
-					}
-				}
-			}
-		}
-	}
-	
-	@Override
-	public Object get(Object key) {
-		Object value = super.get(key);
-		if (value != null) {
-			return value;
-		}
-		if (key != null) {
-			String name = key.toString();
+    /**
+     * Instantiates a new activity data map.
+     *
+     * @param activity the activity
+     * @param prefill whether or not to pre-fill the data
+     */
+    public ActivityDataMap(Activity activity, boolean prefill) {
+        this.activity = activity;
+        this.requestAdapter = activity.getRequestAdapter();
 
-			value = getActionResultWithoutCache(name);
-			if (value != null) {
-				put(name, value);
-				return value;
-			}
+        if (prefill) {
+            prefillData();
+        }
+    }
 
-			value = getAttributeWithoutCache(name);
-			if (value != null) {
-				put(name, value);
-				return value;
-			}
+    private void prefillData() {
+        if (requestAdapter != null) {
+            requestAdapter.fillPrameterMap(this);
+            requestAdapter.fillAttributeMap(this);
+        }
+        if (activity.getProcessResult() != null) {
+            for (ContentResult cr : activity.getProcessResult()) {
+                for (ActionResult ar : cr) {
+                    if (ar.getActionId() != null) {
+                        put(ar.getActionId(), ar.getResultValue());
+                    }
+                }
+            }
+        }
+    }
 
-			value = getParameterWithoutCache(name);
-			if (value != null) {
-				put(name, value);
-				return value;
-			}
-		}
-		return null;
-	}
+    @Override
+    public Object get(Object key) {
+        Object value = super.get(key);
+        if (value != null) {
+            return value;
+        }
+        if (key != null) {
+            String name = key.toString();
 
-	public Object getParameterWithoutCache(String name) {
-		if (requestAdapter != null) {
-			String[] values = requestAdapter.getParameterValues(name);
-			if (values != null) {
-				if (values.length == 1) {
-					return values[0];
-				} else {
-					return values;
-				}
-			}
-		}
-		return null;
-	}
+            value = getActionResultWithoutCache(name);
+            if (value != null) {
+                put(name, value);
+                return value;
+            }
 
-	public Object getAttributeWithoutCache(String name) {
-		if (requestAdapter != null) {
-			return requestAdapter.getAttribute(name);
-		} else {
-			return null;
-		}
-	}
+            value = getAttributeWithoutCache(name);
+            if (value != null) {
+                put(name, value);
+                return value;
+            }
 
-	public Object getActionResultWithoutCache(String name) {
-		if (activity.getProcessResult() != null) {
-			return activity.getProcessResult().getResultValue(name);
-		} else {
-			return null;
-		}
-	}
+            value = getParameterWithoutCache(name);
+            if (value != null) {
+                put(name, value);
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public Object getParameterWithoutCache(String name) {
+        if (requestAdapter != null) {
+            String[] values = requestAdapter.getParameterValues(name);
+            if (values != null) {
+                if (values.length == 1) {
+                    return values[0];
+                } else {
+                    return values;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Object getAttributeWithoutCache(String name) {
+        if (requestAdapter != null) {
+            return requestAdapter.getAttribute(name);
+        } else {
+            return null;
+        }
+    }
+
+    public Object getActionResultWithoutCache(String name) {
+        if (activity.getProcessResult() != null) {
+            return activity.getProcessResult().getResultValue(name);
+        } else {
+            return null;
+        }
+    }
 
 }

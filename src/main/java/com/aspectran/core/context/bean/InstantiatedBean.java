@@ -24,14 +24,14 @@ package com.aspectran.core.context.bean;
  */
 public class InstantiatedBean {
 
-	private Object bean;
+    private Object bean;
 
-	public InstantiatedBean(Object bean) {
-		this.bean = bean;
-	}
+    public InstantiatedBean(Object bean) {
+        this.bean = bean;
+    }
 
-	public Object getBean() {
-		return bean;
-	}
+    public Object getBean() {
+        return bean;
+    }
 
 }

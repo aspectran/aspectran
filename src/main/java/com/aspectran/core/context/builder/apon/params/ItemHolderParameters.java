@@ -20,24 +20,24 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class ItemHolderParameters extends AbstractParameters {
 
-	public static final ParameterDefinition item;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		item = new ParameterDefinition("item", ItemParameters.class, true, true);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			item
-		};
-	}
-	
-	public ItemHolderParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ItemHolderParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition item;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        item = new ParameterDefinition("item", ItemParameters.class, true, true);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            item
+        };
+    }
+
+    public ItemHolderParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ItemHolderParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

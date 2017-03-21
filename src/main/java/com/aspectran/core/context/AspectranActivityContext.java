@@ -43,249 +43,249 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class AspectranActivityContext implements ActivityContext {
 
-	private final Log log = LogFactory.getLog(AspectranActivityContext.class);
+    private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
-	private final ThreadLocal<Activity> defaultActivityHolder = new ThreadLocal<>();
+    private final ThreadLocal<Activity> defaultActivityHolder = new ThreadLocal<>();
 
-	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
+    private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
-	private final ContextEnvironment contextEnvironment;
-	
-	private final ApplicationAdapter applicationAdapter;
+    private final ContextEnvironment contextEnvironment;
 
-	private AspectranService rootAspectranService;
+    private final ApplicationAdapter applicationAdapter;
 
-	private AspectRuleRegistry aspectRuleRegistry;
+    private AspectranService rootAspectranService;
 
-	private ContextBeanRegistry contextBeanRegistry;
+    private AspectRuleRegistry aspectRuleRegistry;
 
-	private ScheduleRuleRegistry scheduleRuleRegistry;
+    private ContextBeanRegistry contextBeanRegistry;
 
-	private ContextTemplateProcessor contextTemplateProcessor;
-	
-	private TransletRuleRegistry transletRuleRegistry;
+    private ScheduleRuleRegistry scheduleRuleRegistry;
 
-	private MessageSource messageSource;
+    private ContextTemplateProcessor contextTemplateProcessor;
 
-	/**
-	 * Instantiates a new AspectranActivityContext.
-	 *
-	 * @param applicationAdapter the application adapter
-	 */
-	public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-		this.contextEnvironment = new ContextEnvironment(this);
-	}
+    private TransletRuleRegistry transletRuleRegistry;
 
-	@Override
-	public ContextEnvironment getContextEnvironment() {
-		return contextEnvironment;
-	}
+    private MessageSource messageSource;
 
-	@Override
-	public ClassLoader getClassLoader() {
-		return applicationAdapter.getClassLoader();
-	}
-	
-	@Override
-	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
-	}
+    /**
+     * Instantiates a new AspectranActivityContext.
+     *
+     * @param applicationAdapter the application adapter
+     */
+    public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+        this.contextEnvironment = new ContextEnvironment(this);
+    }
 
-	@Override
-	public AspectranService getRootAspectranService() {
-		return rootAspectranService;
-	}
+    @Override
+    public ContextEnvironment getContextEnvironment() {
+        return contextEnvironment;
+    }
 
-	@Override
-	public AspectRuleRegistry getAspectRuleRegistry() {
-		return aspectRuleRegistry;
-	}
+    @Override
+    public ClassLoader getClassLoader() {
+        return applicationAdapter.getClassLoader();
+    }
 
-	public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
-		this.aspectRuleRegistry = aspectRuleRegistry;
-	}
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
+    }
 
-	@Override
-	public BeanRegistry getBeanRegistry() {
-		return contextBeanRegistry;
-	}
+    @Override
+    public AspectranService getRootAspectranService() {
+        return rootAspectranService;
+    }
 
-	/**
-	 * Sets the context bean registry.
-	 *
-	 * @param contextBeanRegistry the new context bean registry
-	 */
-	public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
-		this.contextBeanRegistry = contextBeanRegistry;
-	}
+    @Override
+    public AspectRuleRegistry getAspectRuleRegistry() {
+        return aspectRuleRegistry;
+    }
 
-	@Override
-	public ScheduleRuleRegistry getScheduleRuleRegistry() {
-		return scheduleRuleRegistry;
-	}
+    public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
+        this.aspectRuleRegistry = aspectRuleRegistry;
+    }
 
-	public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
-		this.scheduleRuleRegistry = scheduleRuleRegistry;
-	}
+    @Override
+    public BeanRegistry getBeanRegistry() {
+        return contextBeanRegistry;
+    }
 
-	@Override
-	public TemplateProcessor getTemplateProcessor() {
-		return contextTemplateProcessor;
-	}
+    /**
+     * Sets the context bean registry.
+     *
+     * @param contextBeanRegistry the new context bean registry
+     */
+    public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
+        this.contextBeanRegistry = contextBeanRegistry;
+    }
 
-	/**
-	 * Sets the template processor.
-	 *
-	 * @param contextTemplateProcessor the new template processor
-	 */
-	public void setContextTemplateProcessor(ContextTemplateProcessor contextTemplateProcessor) {
-		this.contextTemplateProcessor = contextTemplateProcessor;
-	}
+    @Override
+    public ScheduleRuleRegistry getScheduleRuleRegistry() {
+        return scheduleRuleRegistry;
+    }
 
-	@Override
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
-	}
+    public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
+        this.scheduleRuleRegistry = scheduleRuleRegistry;
+    }
 
-	/**
-	 * Sets the translet rule registry.
-	 *
-	 * @param transletRuleRegistry the new translet rule registry
-	 */
-	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
-		this.transletRuleRegistry = transletRuleRegistry;
-	}
+    @Override
+    public TemplateProcessor getTemplateProcessor() {
+        return contextTemplateProcessor;
+    }
 
-	@Override
-	public MessageSource getMessageSource() {
-		if (this.messageSource == null) {
-			throw new IllegalStateException("MessageSource not initialized.");
-		}
-		return messageSource;
-	}
+    /**
+     * Sets the template processor.
+     *
+     * @param contextTemplateProcessor the new template processor
+     */
+    public void setContextTemplateProcessor(ContextTemplateProcessor contextTemplateProcessor) {
+        this.contextTemplateProcessor = contextTemplateProcessor;
+    }
 
-	@Override
-	public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
-		return getMessageSource().getMessage(code, args, defaultMessage, locale);
-	}
+    @Override
+    public TransletRuleRegistry getTransletRuleRegistry() {
+        return transletRuleRegistry;
+    }
 
-	@Override
-	public String getMessage(String code, Object args[], Locale locale) throws NoSuchMessageException {
-		return getMessageSource().getMessage(code, args, locale);
-	}
+    /**
+     * Sets the translet rule registry.
+     *
+     * @param transletRuleRegistry the new translet rule registry
+     */
+    public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
+        this.transletRuleRegistry = transletRuleRegistry;
+    }
 
-	@Override
-	public Activity getDefaultActivity() {
-		return defaultActivityHolder.get();
-	}
+    @Override
+    public MessageSource getMessageSource() {
+        if (this.messageSource == null) {
+            throw new IllegalStateException("MessageSource not initialized.");
+        }
+        return messageSource;
+    }
 
-	private void setDefaultActivity(Activity activity) {
-		defaultActivityHolder.set(activity);
-	}
+    @Override
+    public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
+        return getMessageSource().getMessage(code, args, defaultMessage, locale);
+    }
 
-	private void removeDefaultActivity() {
-		defaultActivityHolder.remove();
-	}
+    @Override
+    public String getMessage(String code, Object args[], Locale locale) throws NoSuchMessageException {
+        return getMessageSource().getMessage(code, args, locale);
+    }
 
-	@Override
-	public Activity getCurrentActivity() {
-		Activity activity = currentActivityHolder.get();
-		return (activity != null ? activity : getDefaultActivity());
-	}
+    @Override
+    public Activity getDefaultActivity() {
+        return defaultActivityHolder.get();
+    }
 
-	@Override
-	public void setCurrentActivity(Activity activity) {
-		currentActivityHolder.set(activity);
-	}
+    private void setDefaultActivity(Activity activity) {
+        defaultActivityHolder.set(activity);
+    }
 
-	@Override
-	public void removeCurrentActivity() {
-		currentActivityHolder.remove();
-	}
+    private void removeDefaultActivity() {
+        defaultActivityHolder.remove();
+    }
 
-	@Override
-	public void initialize() {
-		initialize(null);
-	}
+    @Override
+    public Activity getCurrentActivity() {
+        Activity activity = currentActivityHolder.get();
+        return (activity != null ? activity : getDefaultActivity());
+    }
 
-	@Override
-	public void initialize(AspectranService rootAspectranService) {
-		if (rootAspectranService != null) {
-			if (this.rootAspectranService != null) {
-				throw new UnsupportedOperationException("ActivityContext has already been initialized.");
-			}
-			this.rootAspectranService = rootAspectranService;
-		}
+    @Override
+    public void setCurrentActivity(Activity activity) {
+        currentActivityHolder.set(activity);
+    }
 
-		Activity activity = new DefaultActivity(this);
-		setDefaultActivity(activity);
+    @Override
+    public void removeCurrentActivity() {
+        currentActivityHolder.remove();
+    }
 
-		if (contextBeanRegistry != null) {
-			contextBeanRegistry.initialize(this);
-		}
-		if (contextTemplateProcessor != null) {
-			contextTemplateProcessor.initialize(this);
-		}
-		if (contextBeanRegistry != null) {
-			initMessageSource();
-		}
-	}
+    @Override
+    public void initialize() {
+        initialize(null);
+    }
 
-	@Override
-	public void destroy() {
-		if (contextTemplateProcessor != null) {
-			contextTemplateProcessor.destroy();
-			contextTemplateProcessor = null;
-		}
-		if (transletRuleRegistry != null) {
-			transletRuleRegistry.clear();
-			transletRuleRegistry = null;
-		}
-		if (aspectRuleRegistry != null) {
-			aspectRuleRegistry.clear();
-			aspectRuleRegistry = null;
-		}
-		if (contextBeanRegistry != null) {
-			contextBeanRegistry.destroy();
-			contextBeanRegistry = null;
-		}
+    @Override
+    public void initialize(AspectranService rootAspectranService) {
+        if (rootAspectranService != null) {
+            if (this.rootAspectranService != null) {
+                throw new UnsupportedOperationException("ActivityContext has already been initialized.");
+            }
+            this.rootAspectranService = rootAspectranService;
+        }
 
-		removeDefaultActivity();
-	}
+        Activity activity = new DefaultActivity(this);
+        setDefaultActivity(activity);
 
-	/**
-	 * Initialize the MessageSource.
-	 * Use parent's if none defined in this context.
-	 */
-	private void initMessageSource() {
-		if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
-			messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
-			if (log.isDebugEnabled()) {
-				log.debug("Using MessageSource [" + messageSource + "]");
-			}
-		} else {
-			// Use empty MessageSource to be able to accept getMessage calls.
-			messageSource = new DelegatingMessageSource();
-			if (log.isDebugEnabled()) {
-				log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
-						"': using default [" + messageSource + "]");
-			}
-		}
-	}
+        if (contextBeanRegistry != null) {
+            contextBeanRegistry.initialize(this);
+        }
+        if (contextTemplateProcessor != null) {
+            contextTemplateProcessor.initialize(this);
+        }
+        if (contextBeanRegistry != null) {
+            initMessageSource();
+        }
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("activeProfiles", contextEnvironment.getActiveProfiles());
-		tsb.append("defaultProfiles", contextEnvironment.getDefaultProfiles());
-		tsb.append("applicationAdapter", applicationAdapter);
-		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
-		tsb.append("beanRegistry", contextBeanRegistry);
-		tsb.append("transletRuleRegistry", transletRuleRegistry);
-		tsb.append("templateProcessor", contextTemplateProcessor);
-		tsb.append("messageSource", messageSource);
-		return tsb.toString();
-	}
-	
+    @Override
+    public void destroy() {
+        if (contextTemplateProcessor != null) {
+            contextTemplateProcessor.destroy();
+            contextTemplateProcessor = null;
+        }
+        if (transletRuleRegistry != null) {
+            transletRuleRegistry.clear();
+            transletRuleRegistry = null;
+        }
+        if (aspectRuleRegistry != null) {
+            aspectRuleRegistry.clear();
+            aspectRuleRegistry = null;
+        }
+        if (contextBeanRegistry != null) {
+            contextBeanRegistry.destroy();
+            contextBeanRegistry = null;
+        }
+
+        removeDefaultActivity();
+    }
+
+    /**
+     * Initialize the MessageSource.
+     * Use parent's if none defined in this context.
+     */
+    private void initMessageSource() {
+        if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
+            messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
+            if (log.isDebugEnabled()) {
+                log.debug("Using MessageSource [" + messageSource + "]");
+            }
+        } else {
+            // Use empty MessageSource to be able to accept getMessage calls.
+            messageSource = new DelegatingMessageSource();
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
+                        "': using default [" + messageSource + "]");
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("activeProfiles", contextEnvironment.getActiveProfiles());
+        tsb.append("defaultProfiles", contextEnvironment.getDefaultProfiles());
+        tsb.append("applicationAdapter", applicationAdapter);
+        tsb.append("aspectRuleRegistry", aspectRuleRegistry);
+        tsb.append("beanRegistry", contextBeanRegistry);
+        tsb.append("transletRuleRegistry", transletRuleRegistry);
+        tsb.append("templateProcessor", contextTemplateProcessor);
+        tsb.append("messageSource", messageSource);
+        return tsb.toString();
+    }
+
 }

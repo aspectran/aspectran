@@ -24,28 +24,28 @@ import com.aspectran.core.context.rule.TemplateRule;
  */
 public class TemplateProcessorException extends TemplateRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = -1495281620922964138L;
+    /** @serial */
+    private static final long serialVersionUID = -1495281620922964138L;
 
-	/**
-	 * Instantiates a new TemplateProcessorException.
-	 *
-	 * @param msg the detail message
-	 * @param templateRule the template rule
-	 */
-	public TemplateProcessorException(String msg, TemplateRule templateRule) {
-		super(msg, templateRule);
-	}
+    /**
+     * Instantiates a new TemplateProcessorException.
+     *
+     * @param msg the detail message
+     * @param templateRule the template rule
+     */
+    public TemplateProcessorException(String msg, TemplateRule templateRule) {
+        super(msg, templateRule);
+    }
 
-	/**
-	 * Instantiates a new TemplateProcessorException.
-	 *
-	 * @param msg the detail message
-	 * @param templateRule the template rule
-	 * @param cause the root cause
-	 */
-	public TemplateProcessorException(String msg, TemplateRule templateRule, Throwable cause) {
-		super(msg, templateRule, cause);
-	}
+    /**
+     * Instantiates a new TemplateProcessorException.
+     *
+     * @param msg the detail message
+     * @param templateRule the template rule
+     * @param cause the root cause
+     */
+    public TemplateProcessorException(String msg, TemplateRule templateRule, Throwable cause) {
+        super(msg, templateRule, cause);
+    }
 
 }

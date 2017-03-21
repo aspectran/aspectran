@@ -30,69 +30,69 @@ import com.aspectran.core.context.rule.type.AutowireTargetType;
  */
 public class AutowireTargetRule {
 
-	private AutowireTargetType targetType;
-	
-	private Object target;
+    private AutowireTargetType targetType;
 
-	private Class<?>[] types;
+    private Object target;
 
-	private String[] qualifiers;
+    private Class<?>[] types;
 
-	private Token token;
+    private String[] qualifiers;
 
-	private boolean required;
+    private Token token;
 
-	public AutowireTargetType getTargetType() {
-		return targetType;
-	}
+    private boolean required;
 
-	public void setTargetType(AutowireTargetType targetType) {
-		this.targetType = targetType;
-	}
+    public AutowireTargetType getTargetType() {
+        return targetType;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T getTarget() {
-		return (T)target;
-	}
+    public void setTargetType(AutowireTargetType targetType) {
+        this.targetType = targetType;
+    }
 
-	public void setTarget(Field field) {
-		this.target = field;
-	}
+    @SuppressWarnings("unchecked")
+    public <T> T getTarget() {
+        return (T)target;
+    }
 
-	public void setTarget(Method method) {
-		this.target = method;
-	}
+    public void setTarget(Field field) {
+        this.target = field;
+    }
 
-	public Class<?>[] getTypes() {
-		return types;
-	}
+    public void setTarget(Method method) {
+        this.target = method;
+    }
 
-	public void setTypes(Class<?>... types) {
-		this.types = types;
-	}
+    public Class<?>[] getTypes() {
+        return types;
+    }
 
-	public String[] getQualifiers() {
-		return qualifiers;
-	}
+    public void setTypes(Class<?>... types) {
+        this.types = types;
+    }
 
-	public void setQualifiers(String... qualifiers) {
-		this.qualifiers = qualifiers;
-	}
+    public String[] getQualifiers() {
+        return qualifiers;
+    }
 
-	public Token getToken() {
-		return token;
-	}
+    public void setQualifiers(String... qualifiers) {
+        this.qualifiers = qualifiers;
+    }
 
-	public void setToken(Token token) {
-		this.token = token;
-	}
+    public Token getToken() {
+        return token;
+    }
 
-	public boolean isRequired() {
-		return required;
-	}
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-	
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
 }

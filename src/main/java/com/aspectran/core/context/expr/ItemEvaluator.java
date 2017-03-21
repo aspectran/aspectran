@@ -27,15 +27,15 @@ import com.aspectran.core.util.MultiValueMap;
  * @since 2010. 5. 6.
  */
 public interface ItemEvaluator {
-	
-	Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
-	
-	void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
-	
-	<T> T evaluate(ItemRule itemRule);
 
-	MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
-	
-	String[] evaluateAsStringArray(ItemRule itemRule);
-	
+    Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
+
+    void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
+
+    <T> T evaluate(ItemRule itemRule);
+
+    MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
+
+    String[] evaluateAsStringArray(ItemRule itemRule);
+
 }

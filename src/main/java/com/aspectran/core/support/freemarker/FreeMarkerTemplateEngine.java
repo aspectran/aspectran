@@ -44,8 +44,8 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer)
             throws TemplateEngineProcessException {
         try {
-        	Reader reader = new StringReader(templateSource);
-        	Template template = new Template(templateName, reader, configuration);
+            Reader reader = new StringReader(templateSource);
+            Template template = new Template(templateName, reader, configuration);
             template.process(model, writer);
             writer.flush();
         } catch (Exception e) {

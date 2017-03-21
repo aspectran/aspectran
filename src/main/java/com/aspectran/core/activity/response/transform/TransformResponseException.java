@@ -24,88 +24,88 @@ import com.aspectran.core.context.rule.TransformRule;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class TransformResponseException extends ResponseException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -2902489274291058715L;
-	
-	private TransformRule transformRule;
 
-	/**
-	 * Instantiates a new TransformResponseException.
-	 */
-	public TransformResponseException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -2902489274291058715L;
 
-	/**
-	 * Instantiates a new TransformResponseException.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public TransformResponseException(String msg) {
-		super(msg);
-	}
+    private TransformRule transformRule;
 
-	/**
-	 * Instantiates a new TransformResponseException.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public TransformResponseException(Throwable cause) {
-		super(cause);
-	}
-	
-	/**
-	 * Instantiates a new TransformResponseException.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public TransformResponseException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
-	/**
-	 * Instantiates a new TransformResponseException.
-	 *
-	 * @param transformRule the transform rule
-	 * @param cause the real cause of the exception
-	 */
-	public TransformResponseException(TransformRule transformRule, Throwable cause) {
-		super("Failed to transform " + transformRule, cause);
-		this.transformRule = transformRule;
-	}
-	
-	/**
-	 * Instantiates a new TransformResponseException.
-	 *
-	 * @param transformRule the transform rule
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public TransformResponseException(TransformRule transformRule, String msg, Throwable cause) {
-		super(msg + " " + transformRule, cause);
-		this.transformRule = transformRule;
-	}
+    /**
+     * Instantiates a new TransformResponseException.
+     */
+    public TransformResponseException() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new TransformResponseException.
-	 *
-	 * @param transformRule the transform rule
-	 * @param msg the detail message
-	 */
-	public TransformResponseException(TransformRule transformRule, String msg) {
-		super(msg + " " + transformRule);
-		this.transformRule = transformRule;
-	}
-	
-	/**
-	 * Gets the transform rule.
-	 *
-	 * @return the transform rule
-	 */
-	public TransformRule getTransformRule() {
-		return transformRule;
-	}
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public TransformResponseException(String msg) {
+        super(msg);
+    }
+
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param cause the real cause of the exception
+     */
+    public TransformResponseException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public TransformResponseException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param transformRule the transform rule
+     * @param cause the real cause of the exception
+     */
+    public TransformResponseException(TransformRule transformRule, Throwable cause) {
+        super("Failed to transform " + transformRule, cause);
+        this.transformRule = transformRule;
+    }
+
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param transformRule the transform rule
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public TransformResponseException(TransformRule transformRule, String msg, Throwable cause) {
+        super(msg + " " + transformRule, cause);
+        this.transformRule = transformRule;
+    }
+
+    /**
+     * Instantiates a new TransformResponseException.
+     *
+     * @param transformRule the transform rule
+     * @param msg the detail message
+     */
+    public TransformResponseException(TransformRule transformRule, String msg) {
+        super(msg + " " + transformRule);
+        this.transformRule = transformRule;
+    }
+
+    /**
+     * Gets the transform rule.
+     *
+     * @return the transform rule
+     */
+    public TransformRule getTransformRule() {
+        return transformRule;
+    }
 
 }

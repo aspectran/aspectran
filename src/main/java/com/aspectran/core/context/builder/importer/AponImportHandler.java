@@ -27,35 +27,35 @@ import com.aspectran.core.util.apon.Parameters;
  * The Class AponImportHandler.
  */
 public class AponImportHandler extends AbstractImportHandler {
-	
-	private final ContextBuilderAssistant assistant;
-	
-	private final String encoding;
-	
-	private RootAponDisassembler rootAponDisassembler;
-	
-	public AponImportHandler(ActivityContextBuilder builder, String encoding) {
-		super(builder.getContextEnvironment());
 
-		this.assistant = builder.getContextBuilderAssistant();
-		this.encoding = encoding;
-		this.rootAponDisassembler = new RootAponDisassembler(assistant);
-	}
+    private final ContextBuilderAssistant assistant;
 
-	@Override
-	public void handle(Importer importer) throws Exception {
-		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
-		
-		Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
-		
-		rootAponDisassembler.disassembleRoot(rootParameters);
+    private final String encoding;
 
-		super.handle();
+    private RootAponDisassembler rootAponDisassembler;
 
-		// First default setting is held after configuration loading is completed.
-		if (assistantLocal.getReplicatedCount() > 0) {
-			assistant.restoreAssistantLocal(assistantLocal);
-		}
-	}
+    public AponImportHandler(ActivityContextBuilder builder, String encoding) {
+        super(builder.getContextEnvironment());
+
+        this.assistant = builder.getContextBuilderAssistant();
+        this.encoding = encoding;
+        this.rootAponDisassembler = new RootAponDisassembler(assistant);
+    }
+
+    @Override
+    public void handle(Importer importer) throws Exception {
+        AssistantLocal assistantLocal = assistant.backupAssistantLocal();
+
+        Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
+
+        rootAponDisassembler.disassembleRoot(rootParameters);
+
+        super.handle();
+
+        // First default setting is held after configuration loading is completed.
+        if (assistantLocal.getReplicatedCount() > 0) {
+            assistant.restoreAssistantLocal(assistantLocal);
+        }
+    }
 
 }

@@ -25,15 +25,15 @@ import com.aspectran.core.context.rule.type.ContentType;
  */
 public class EmbeddedResponseAdapter extends BasicResponseAdapter {
 
-	/**
-	 * Instantiates a new EmbeddedResponseAdapter.
-	 * 
-	 * @param outputWriter the writer for output
-	 */
-	public EmbeddedResponseAdapter(Writer outputWriter) {
-		super(null, outputWriter);
+    /**
+     * Instantiates a new EmbeddedResponseAdapter.
+     *
+     * @param outputWriter the writer for output
+     */
+    public EmbeddedResponseAdapter(Writer outputWriter) {
+        super(null, outputWriter);
 
-		setContentType(ContentType.TEXT_PLAIN.toString());
-	}
+        setContentType(ContentType.TEXT_PLAIN.toString());
+    }
 
 }

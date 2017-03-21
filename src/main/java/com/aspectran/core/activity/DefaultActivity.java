@@ -23,79 +23,79 @@ import com.aspectran.core.context.rule.type.MethodType;
  * The Class DefaultActivity
  */
 public class DefaultActivity extends BasicActivity {
-	
-	/**
-	 * Instantiates a new default activity.
-	 *
-	 * @param context the activity context
-	 */
-	public DefaultActivity(ActivityContext context) {
-		super(context);
-	}
 
-	@Override
-	public <T extends Activity> T newActivity() {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Instantiates a new default activity.
+     *
+     * @param context the activity context
+     */
+    public DefaultActivity(ActivityContext context) {
+        super(context);
+    }
 
-	@Override
-	public void prepare(String transletName) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public <T extends Activity> T newActivity() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void prepare(String transletName, String requestMethod) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void prepare(String transletName, MethodType requestMethod) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName, String requestMethod) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void perform() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void prepare(String transletName, MethodType requestMethod) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void performWithoutResponse() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void perform() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void finish() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void performWithoutResponse() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public MethodType getRequestMethod() {
-		return null;
-	}
+    @Override
+    public void finish() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public String getTransletName() {
-		return null;
-	}
+    @Override
+    public MethodType getRequestMethod() {
+        return null;
+    }
 
-	@Override
-	public Translet getTranslet() {
-		return null;
-	}
+    @Override
+    public String getTransletName() {
+        return null;
+    }
 
-	@Override
-	public ProcessResult getProcessResult() {
-		return null;
-	}
+    @Override
+    public Translet getTranslet() {
+        return null;
+    }
 
-	@Override
-	public Object getProcessResult(String actionId) {
-		return null;
-	}
+    @Override
+    public ProcessResult getProcessResult() {
+        return null;
+    }
 
-	@Override
-	public boolean isResponseReserved() {
-		return false;
-	}
+    @Override
+    public Object getProcessResult(String actionId) {
+        return null;
+    }
+
+    @Override
+    public boolean isResponseReserved() {
+        return false;
+    }
 
 }

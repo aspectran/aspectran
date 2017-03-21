@@ -27,16 +27,16 @@ import com.aspectran.core.context.bean.aware.ActivityContextAware;
  */
 public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<String> {
 
-	private String basePath;
+    private String basePath;
 
-	@Override
-	public void setActivityContext(ActivityContext context) {
-		this.basePath = context.getApplicationAdapter().getBasePath();
-	}
+    @Override
+    public void setActivityContext(ActivityContext context) {
+        this.basePath = context.getApplicationAdapter().getBasePath();
+    }
 
-	@Override
-	public String getObject() throws Exception {
-		return basePath;
-	}
+    @Override
+    public String getObject() throws Exception {
+        return basePath;
+    }
 
 }

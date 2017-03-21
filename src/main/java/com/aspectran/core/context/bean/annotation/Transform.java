@@ -28,14 +28,14 @@ import com.aspectran.core.context.rule.type.TransformType;
 @Documented
 public @interface Transform {
 
-	TransformType transformType();
+    TransformType transformType();
 
-	String contentType() default "";
-	
-	String templateId() default "";
-	
-	String characterEncoding() default "";
-	
-	boolean pretty() default false;
+    String contentType() default "";
+
+    String templateId() default "";
+
+    String characterEncoding() default "";
+
+    boolean pretty() default false;
 
 }

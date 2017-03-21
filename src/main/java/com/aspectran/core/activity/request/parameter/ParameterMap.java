@@ -27,105 +27,105 @@ import java.util.Map;
  */
 public class ParameterMap extends LinkedHashMap<String, String[]> {
 
-	/** @serial */
-	private static final long serialVersionUID = 1709146569240133920L;
+    /** @serial */
+    private static final long serialVersionUID = 1709146569240133920L;
 
-	/**
-	 * Instantiates a new Parameter map.
-	 */
-	public ParameterMap() {
-		super();
-	}
+    /**
+     * Instantiates a new Parameter map.
+     */
+    public ParameterMap() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new Parameter map.
-	 *
-	 * @param  initialCapacity the initial capacity
-	 */
-	public ParameterMap(int initialCapacity) {
-		super(initialCapacity);
-	}
+    /**
+     * Instantiates a new Parameter map.
+     *
+     * @param  initialCapacity the initial capacity
+     */
+    public ParameterMap(int initialCapacity) {
+        super(initialCapacity);
+    }
 
-	/**
-	 * Instantiates a new Parameter map.
-	 *
-	 * @param params the other parameter map
-	 */
-	public ParameterMap(Map<String, String[]> params) {
-		super(params);
-	}
+    /**
+     * Instantiates a new Parameter map.
+     *
+     * @param params the other parameter map
+     */
+    public ParameterMap(Map<String, String[]> params) {
+        super(params);
+    }
 
-	/**
-	 * Returns the string value to which the specified name is mapped,
-	 * or {@code null} if this map contains no mapping for the name.
-	 * 
-	 * @param name the parameter name
-	 * @return a {@code String} representing the
-	 *			single value of the parameter
-	 */
-	public String getParameter(String name) {
-		String[] values = get(name);
-		return (values != null && values.length > 0 ? values[0] : null);
-	}
-	
-	/**
-	 * Returns the string values to which the specified name is mapped,
-	 * or {@code null} if this map contains no mapping for the name.
-	 *
-	 * @param name the parameter name
-	 * @return an array of {@code String} objects
-	 *			containing the parameter's values
-	 */
-	public String[] getParameterValues(String name) {
-		return get(name);
-	}
+    /**
+     * Returns the string value to which the specified name is mapped,
+     * or {@code null} if this map contains no mapping for the name.
+     *
+     * @param name the parameter name
+     * @return a {@code String} representing the
+     *            single value of the parameter
+     */
+    public String getParameter(String name) {
+        String[] values = get(name);
+        return (values != null && values.length > 0 ? values[0] : null);
+    }
 
-	/**
-	 * Sets the value to the parameter with the given name.
-	 *
-	 * @param name a {@code String} specifying the name of the parameter
-	 * @param value a {@code String} representing the
-	 *			single value of the parameter
-	 * @see #setParameterValues(String, String[])
-	 */
-	public void setParameter(String name, String value) {
-		put(name, new String[] { value });
-	}
+    /**
+     * Returns the string values to which the specified name is mapped,
+     * or {@code null} if this map contains no mapping for the name.
+     *
+     * @param name the parameter name
+     * @return an array of {@code String} objects
+     *            containing the parameter's values
+     */
+    public String[] getParameterValues(String name) {
+        return get(name);
+    }
 
-	/**
-	 * Sets the values to the parameter with the given name.
-	 *
-	 * @param name a {@code String} specifying the name of the parameter
-	 * @param values an array of {@code String} objects
-	 *			containing the parameter's values
-	 * @see #setParameter
-	 */
-	public void setParameterValues(String name, String[] values) {
-		put(name, values);
-	}
+    /**
+     * Sets the value to the parameter with the given name.
+     *
+     * @param name a {@code String} specifying the name of the parameter
+     * @param value a {@code String} representing the
+     *            single value of the parameter
+     * @see #setParameterValues(String, String[])
+     */
+    public void setParameter(String name, String value) {
+        put(name, new String[] { value });
+    }
 
-	/**
-	 * Returns an {@code Enumeration} of {@code String} objects containing
-	 * the names of the parameters.
-	 * If no parameters, the method returns an empty {@code Enumeration}.
-	 *
-	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
-	 * 			containing the name of a parameter;
-	 * 			or an empty {@code Enumeration} if no parameters
-	 */
-	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(keySet());
-	}
+    /**
+     * Sets the values to the parameter with the given name.
+     *
+     * @param name a {@code String} specifying the name of the parameter
+     * @param values an array of {@code String} objects
+     *            containing the parameter's values
+     * @see #setParameter
+     */
+    public void setParameterValues(String name, String[] values) {
+        put(name, values);
+    }
 
-	/**
-	 * Set the given parameters under.
-	 *
-	 * @param params the values
-	 */
-	public void setAll(Map<String, String> params) {
-		for (Map.Entry<String, String> entry : params.entrySet()) {
-			setParameter(entry.getKey(), entry.getValue());
-		}
-	}
+    /**
+     * Returns an {@code Enumeration} of {@code String} objects containing
+     * the names of the parameters.
+     * If no parameters, the method returns an empty {@code Enumeration}.
+     *
+     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     *             containing the name of a parameter;
+     *             or an empty {@code Enumeration} if no parameters
+     */
+    public Enumeration<String> getParameterNames() {
+        return Collections.enumeration(keySet());
+    }
+
+    /**
+     * Set the given parameters under.
+     *
+     * @param params the values
+     */
+    public void setAll(Map<String, String> params) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            setParameter(entry.getKey(), entry.getValue());
+        }
+    }
 
 }

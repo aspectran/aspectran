@@ -28,27 +28,27 @@ import com.aspectran.core.context.rule.type.ImporterType;
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public interface Importer {
-	
-	ImporterType getImporterType();
 
-	ImporterFileFormatType getImporterFileFormatType();
+    ImporterType getImporterType();
 
-	void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType);
+    ImporterFileFormatType getImporterFileFormatType();
 
-	String[] getProfiles();
+    void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType);
 
-	void setProfiles(String[] profiles);
-	
-	long getLastModified();
+    String[] getProfiles();
 
-	void setLastModified(long lastModified);
+    void setProfiles(String[] profiles);
 
-	String getDistinguishedName();
-	
-	InputStream getInputStream() throws IOException;
-	
-	Reader getReader() throws IOException;
-	
-	Reader getReader(String encoding) throws IOException;
-	
+    long getLastModified();
+
+    void setLastModified(long lastModified);
+
+    String getDistinguishedName();
+
+    InputStream getInputStream() throws IOException;
+
+    Reader getReader() throws IOException;
+
+    Reader getReader(String encoding) throws IOException;
+
 }

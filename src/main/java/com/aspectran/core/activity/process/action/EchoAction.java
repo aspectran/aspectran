@@ -32,72 +32,72 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class EchoAction extends AbstractAction {
 
-	private static final Log log = LogFactory.getLog(EchoAction.class);
-	
-	private final EchoActionRule echoActionRule;
-	
-	/**
-	 * Instantiates a new EchoAction.
-	 * 
-	 * @param echoActionRule the echo action rule
-	 * @param parent the parent
-	 */
-	public EchoAction(EchoActionRule echoActionRule, ActionList parent) {
-		super(parent);
-		this.echoActionRule = echoActionRule;
-	}
+    private static final Log log = LogFactory.getLog(EchoAction.class);
 
-	@Override
-	public Object execute(Activity activity) throws Exception {
-		if (echoActionRule.getAttributeItemRuleMap() == null) {
-			return null;
-		}
-		
-		try {
-			ItemEvaluator evaluator = new ItemExpressionParser(activity);
-			return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
-		} catch (Exception e) {
-			log.error("Failed to execute echo action " + echoActionRule + " Cause: " + e.toString());
-			throw e;
-		}
-	}
-	
-	/**
-	 * Returns the echo action rule.
-	 * 
-	 * @return the echoActionRule
-	 */
-	public EchoActionRule getEchoActionRule() {
-		return echoActionRule;
-	}
+    private final EchoActionRule echoActionRule;
 
-	@Override
-	public String getActionId() {
-		return echoActionRule.getActionId();
-	}
+    /**
+     * Instantiates a new EchoAction.
+     *
+     * @param echoActionRule the echo action rule
+     * @param parent the parent
+     */
+    public EchoAction(EchoActionRule echoActionRule, ActionList parent) {
+        super(parent);
+        this.echoActionRule = echoActionRule;
+    }
 
-	@Override
-	public boolean isHidden() {
-		return echoActionRule.isHidden();
-	}
+    @Override
+    public Object execute(Activity activity) throws Exception {
+        if (echoActionRule.getAttributeItemRuleMap() == null) {
+            return null;
+        }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.ECHO;
-	}
+        try {
+            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
+        } catch (Exception e) {
+            log.error("Failed to execute echo action " + echoActionRule + " Cause: " + e.toString());
+            throw e;
+        }
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getActionRule() {
-		return (T)echoActionRule;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("actionType", getActionType());
-		tsb.append("echoActionRule", echoActionRule);
-		return tsb.toString();
-	}
+    /**
+     * Returns the echo action rule.
+     *
+     * @return the echoActionRule
+     */
+    public EchoActionRule getEchoActionRule() {
+        return echoActionRule;
+    }
+
+    @Override
+    public String getActionId() {
+        return echoActionRule.getActionId();
+    }
+
+    @Override
+    public boolean isHidden() {
+        return echoActionRule.isHidden();
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.ECHO;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getActionRule() {
+        return (T)echoActionRule;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("actionType", getActionType());
+        tsb.append("echoActionRule", echoActionRule);
+        return tsb.toString();
+    }
 
 }

@@ -24,18 +24,18 @@ import com.aspectran.core.context.rule.ItemRuleMap;
  */
 public interface ArgumentPossessable {
 
-	/**
-	 * Gets the argument item rule map.
-	 *
-	 * @return the argument item rule map
-	 */
-	ItemRuleMap getArgumentItemRuleMap();
-	
-	/**
-	 * Sets the argument item rule map.
-	 *
-	 * @param argumentItemRuleMap the new argument item rule map
-	 */
-	void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap);
+    /**
+     * Gets the argument item rule map.
+     *
+     * @return the argument item rule map
+     */
+    ItemRuleMap getArgumentItemRuleMap();
+
+    /**
+     * Sets the argument item rule map.
+     *
+     * @param argumentItemRuleMap the new argument item rule map
+     */
+    void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap);
 
 }

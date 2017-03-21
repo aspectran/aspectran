@@ -23,43 +23,43 @@ import com.aspectran.core.context.AspectranRuntimeException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class BeanException extends AspectranRuntimeException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 2598750999734896601L;
 
-	/**
-	 * Creates a new BeanException without detail message.
-	 */
-	public BeanException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 2598750999734896601L;
 
-	/**
-	 * Constructs a BeanException with the specified detail message.
-	 * 
-	 * @param msg the detail message
-	 */
-	public BeanException(String msg) {
-		super(msg);
-	}
+    /**
+     * Creates a new BeanException without detail message.
+     */
+    public BeanException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public BeanException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a BeanException with the specified detail message.
+     *
+     * @param msg the detail message
+     */
+    public BeanException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 *
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public BeanException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public BeanException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a BeanException with the specified error message and also the specified root cause exception.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public BeanException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

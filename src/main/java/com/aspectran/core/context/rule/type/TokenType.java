@@ -22,38 +22,38 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TokenType {
 
-	TEXT("text"),
-	BEAN("bean"),
-	TEMPLATE("template"),
-	PARAMETER("parameter"),
-	ATTRIBUTE("attribute"),
-	PROPERTY("property");
+    TEXT("text"),
+    BEAN("bean"),
+    TEMPLATE("template"),
+    PARAMETER("parameter"),
+    ATTRIBUTE("attribute"),
+    PROPERTY("property");
 
-	private final String alias;
+    private final String alias;
 
-	TokenType(String alias) {
-		this.alias = alias;
-	}
+    TokenType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code TokenType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the token type as a {@code String}
-	 * @return a {@code TokenType}, may be {@code null}
-	 */
-	public static TokenType resolve(String alias) {
-		for (TokenType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code TokenType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the token type as a {@code String}
+     * @return a {@code TokenType}, may be {@code null}
+     */
+    public static TokenType resolve(String alias) {
+        for (TokenType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

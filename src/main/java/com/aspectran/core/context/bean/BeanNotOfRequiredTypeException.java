@@ -37,29 +37,29 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class BeanNotOfRequiredTypeException extends BeanRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = -6483506119764294512L;
+    /** @serial */
+    private static final long serialVersionUID = -6483506119764294512L;
 
-	private Class<?> requiredType;
-	
-	/**
-	 * Create a new BeanNotOfRequiredTypeException.
-	 *
-	 * @param requiredType the required type
-	 * @param beanRule the bean rule
-	 */
-	public BeanNotOfRequiredTypeException(Class<?> requiredType, BeanRule beanRule) {
-		super("Bean named '" + beanRule.getId() + "' must be of type [" + requiredType.getName() + "]", beanRule);
-		this.requiredType = requiredType;
-	}
+    private Class<?> requiredType;
 
-	/**
-	 * Gets the required type.
-	 *
-	 * @return the required type
-	 */
-	public Class<?> getRequiredType() {
-		return requiredType;
-	}
-	
+    /**
+     * Create a new BeanNotOfRequiredTypeException.
+     *
+     * @param requiredType the required type
+     * @param beanRule the bean rule
+     */
+    public BeanNotOfRequiredTypeException(Class<?> requiredType, BeanRule beanRule) {
+        super("Bean named '" + beanRule.getId() + "' must be of type [" + requiredType.getName() + "]", beanRule);
+        this.requiredType = requiredType;
+    }
+
+    /**
+     * Gets the required type.
+     *
+     * @return the required type
+     */
+    public Class<?> getRequiredType() {
+        return requiredType;
+    }
+
 }

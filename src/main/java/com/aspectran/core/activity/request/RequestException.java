@@ -23,43 +23,43 @@ import com.aspectran.core.activity.ActivityException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class RequestException extends ActivityException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -890371130094039206L;
 
-	/**
-	 * Instantiates a new RequestException.
-	 */
-	public RequestException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -890371130094039206L;
 
-	/**
-	 * Instantiates a new RequestException.
-	 * 
-	 * @param msg the detail message
-	 */
-	public RequestException(String msg) {
-		super(msg);
-	}
+    /**
+     * Instantiates a new RequestException.
+     */
+    public RequestException() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new RequestException.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public RequestException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new RequestException.
+     *
+     * @param msg the detail message
+     */
+    public RequestException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Instantiates a new RequestException.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public RequestException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Instantiates a new RequestException.
+     *
+     * @param cause the real cause of the exception
+     */
+    public RequestException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Instantiates a new RequestException.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public RequestException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

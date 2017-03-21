@@ -24,63 +24,63 @@ import com.aspectran.core.context.rule.ability.Replicable;
  */
 public class AssistantLocal implements Replicable<AssistantLocal> {
 
-	private ContextBuilderAssistant assistant;
+    private ContextBuilderAssistant assistant;
 
-	private String description;
-	
-	private DefaultSettings defaultSettings;
-	
-	private final int replicatedCount;
-	
-	public AssistantLocal(ContextBuilderAssistant assistant) {
-		this(assistant, 0);
-	}
+    private String description;
 
-	private AssistantLocal(ContextBuilderAssistant assistant, int replicatedCount) {
-		this.assistant = assistant;
-		this.replicatedCount = replicatedCount;
-	}
+    private DefaultSettings defaultSettings;
 
-	public ContextBuilderAssistant getAssistant() {
-		return assistant;
-	}
+    private final int replicatedCount;
 
-	public String getDescription() {
-		return description;
-	}
+    public AssistantLocal(ContextBuilderAssistant assistant) {
+        this(assistant, 0);
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    private AssistantLocal(ContextBuilderAssistant assistant, int replicatedCount) {
+        this.assistant = assistant;
+        this.replicatedCount = replicatedCount;
+    }
 
-	public DefaultSettings getDefaultSettings() {
-		return defaultSettings;
-	}
+    public ContextBuilderAssistant getAssistant() {
+        return assistant;
+    }
 
-	public DefaultSettings touchDefaultSettings() {
-		if (defaultSettings == null) {
-			defaultSettings = new DefaultSettings();
-		}
-		return defaultSettings;
-	}
-	
-	public void setDefaultSettings(DefaultSettings defaultSettings) {
-		this.defaultSettings = defaultSettings;
-	}
-	
-	public int getReplicatedCount() {
-		return replicatedCount;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public AssistantLocal replicate() {
-		AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
-		al.setDescription(getDescription());
-		DefaultSettings ds = getDefaultSettings();
-		if (ds != null) {
-			al.setDefaultSettings(new DefaultSettings(ds));
-		}
-		return al;
-	}
-	
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public DefaultSettings getDefaultSettings() {
+        return defaultSettings;
+    }
+
+    public DefaultSettings touchDefaultSettings() {
+        if (defaultSettings == null) {
+            defaultSettings = new DefaultSettings();
+        }
+        return defaultSettings;
+    }
+
+    public void setDefaultSettings(DefaultSettings defaultSettings) {
+        this.defaultSettings = defaultSettings;
+    }
+
+    public int getReplicatedCount() {
+        return replicatedCount;
+    }
+
+    @Override
+    public AssistantLocal replicate() {
+        AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
+        al.setDescription(getDescription());
+        DefaultSettings ds = getDefaultSettings();
+        if (ds != null) {
+            al.setDefaultSettings(new DefaultSettings(ds));
+        }
+        return al;
+    }
+
 }

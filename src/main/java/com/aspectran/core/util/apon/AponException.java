@@ -19,43 +19,43 @@ package com.aspectran.core.util.apon;
  * The Class AponException.
  */
 public class AponException extends RuntimeException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 5698948413246117426L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public AponException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 5698948413246117426L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public AponException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public AponException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AponException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public AponException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public AponException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AponException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public AponException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

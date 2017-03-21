@@ -23,43 +23,43 @@ import com.aspectran.core.context.ActivityContextException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ActivityContextBuilderException extends ActivityContextException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 5702282474852901391L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public ActivityContextBuilderException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 5702282474852901391L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg the specific message
-	 */
-	public ActivityContextBuilderException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public ActivityContextBuilderException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityContextBuilderException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg the specific message
+     */
+    public ActivityContextBuilderException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the specific message
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityContextBuilderException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ActivityContextBuilderException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the specific message
+     * @param cause the real cause of the exception
+     */
+    public ActivityContextBuilderException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

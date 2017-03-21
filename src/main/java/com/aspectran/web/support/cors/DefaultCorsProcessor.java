@@ -35,152 +35,152 @@ import com.aspectran.web.support.http.HttpHeaders;
  * @since 2.3.0
  */
 public class DefaultCorsProcessor extends AbstractCorsProcessor {
-	
-	private static final Log log = LogFactory.getLog(DefaultCorsProcessor.class);
-	
-	/**
-	 * ""CORS.HTTP_STATUS_CODE"" attribute name.
-	 */
-	private static final String CORS_HTTP_STATUS_CODE = "CORS.HTTP_STATUS_CODE";
 
-	/**
-	 * "CORS.HTTP_STATUS_TEXT" attribute name.
-	 */
-	private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
+    private static final Log log = LogFactory.getLog(DefaultCorsProcessor.class);
 
-	@Override
-	public void processActualRequest(Translet translet) throws CorsException, IOException {
-		HttpServletRequest req = translet.getRequestAdaptee();
-		HttpServletResponse res = translet.getResponseAdaptee();
-		
-		if (!isCorsRequest(req)) {
-			return;
-		}
-		
-		if (!checkProcessable(res)) {
-			return;
-		}
-		
-		if (!isAllowedMethod(req.getMethod())) {
-			rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
-		}
+    /**
+     * ""CORS.HTTP_STATUS_CODE"" attribute name.
+     */
+    private static final String CORS_HTTP_STATUS_CODE = "CORS.HTTP_STATUS_CODE";
 
-		String origin = req.getHeader(HttpHeaders.ORIGIN);
+    /**
+     * "CORS.HTTP_STATUS_TEXT" attribute name.
+     */
+    private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
 
-		if (!isAllowedOrigin(origin)) {
-			rejectRequest(translet, CorsException.ORIGIN_DENIED);
-		}
+    @Override
+    public void processActualRequest(Translet translet) throws CorsException, IOException {
+        HttpServletRequest req = translet.getRequestAdaptee();
+        HttpServletResponse res = translet.getResponseAdaptee();
 
-		if (isAllowCredentials()) {
-			// Must be exact origin (not '*') in case of credentials
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-			res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
-		} else {
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
-			res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
-		}
+        if (!isCorsRequest(req)) {
+            return;
+        }
 
-		if (getExposedHeadersString() != null) {
-			res.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, getExposedHeadersString());
-		}
-	}
+        if (!checkProcessable(res)) {
+            return;
+        }
 
-	@Override
-	public void processPreflightRequest(Translet translet) throws CorsException, IOException {
-		HttpServletRequest req = translet.getRequestAdaptee();
-		HttpServletResponse res = translet.getResponseAdaptee();
+        if (!isAllowedMethod(req.getMethod())) {
+            rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
+        }
 
-		if (!isPreFlightRequest(req)) {
-			rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
-		}
+        String origin = req.getHeader(HttpHeaders.ORIGIN);
 
-		if (!checkProcessable(res)) {
-			return;
-		}
-		
-		String requestedMethod = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
-		if (!isAllowedMethod(requestedMethod)) {
-			rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
-		}
-		
-		String rawRequestHeadersString = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
-		if (rawRequestHeadersString != null) {
-			String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
-			if (hasAllowedHeaders() && requestHeaders.length > 0) {
-				for (String requestHeader : requestHeaders) {
-					if (!isAllowedHeader(requestHeader)) {
-						rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);
-					}
-				}
-			}
-		}
-		
-		String origin = req.getHeader(HttpHeaders.ORIGIN);
-		if (origin != null) {
-			if (isAllowCredentials()) {
-				// Must be exact origin (not '*') in case of credentials
-				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-				res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
-			} else {
-				res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
-				res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
-			}
-		}
+        if (!isAllowedOrigin(origin)) {
+            rejectRequest(translet, CorsException.ORIGIN_DENIED);
+        }
 
-		if (getAllowedMethodsString() != null) {
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
-		}
+        if (isAllowCredentials()) {
+            // Must be exact origin (not '*') in case of credentials
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+        } else {
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
+            res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+        }
 
-		if (getAllowedHeadersString() != null) {
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
-		} else if (rawRequestHeadersString != null) {
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
-		}
+        if (getExposedHeadersString() != null) {
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, getExposedHeadersString());
+        }
+    }
 
-		if (getMaxAgeSeconds() > 0) {
-			res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
-		}
-	}
+    @Override
+    public void processPreflightRequest(Translet translet) throws CorsException, IOException {
+        HttpServletRequest req = translet.getRequestAdaptee();
+        HttpServletResponse res = translet.getResponseAdaptee();
 
-	@Override
-	public void sendError(Translet translet) throws IOException {
-		Throwable t = translet.getOriginRaisedException();
+        if (!isPreFlightRequest(req)) {
+            rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
+        }
 
-		if (t instanceof CorsException) {
-			CorsException corsException = (CorsException)t;
+        if (!checkProcessable(res)) {
+            return;
+        }
 
-			HttpServletResponse res = translet.getResponseAdaptee();
-			res.sendError(corsException.getHttpStatusCode(), corsException.getMessage());
-		}
-	}
-	
-	/**
-	 * Invoked when one of the CORS checks failed.
-	 * The default implementation sets the response status to 403.
-	 * 
-	 * @param translet the translet
-	 * @param ce the CORS Exception
-	 * @throws CorsException if the request is denied.
-	 */
-	protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
-		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(ce.getHttpStatusCode());
+        String requestedMethod = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
+        if (!isAllowedMethod(requestedMethod)) {
+            rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
+        }
 
-		translet.setAttribute(CORS_HTTP_STATUS_CODE, ce.getHttpStatusCode());
-		translet.setAttribute(CORS_HTTP_STATUS_TEXT, ce.getMessage());
-		
-		throw ce;
-	}
-	
-	protected boolean checkProcessable(HttpServletResponse res) {
-		if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
-			log.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+        String rawRequestHeadersString = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
+        if (rawRequestHeadersString != null) {
+            String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
+            if (hasAllowedHeaders() && requestHeaders.length > 0) {
+                for (String requestHeader : requestHeaders) {
+                    if (!isAllowedHeader(requestHeader)) {
+                        rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);
+                    }
+                }
+            }
+        }
+
+        String origin = req.getHeader(HttpHeaders.ORIGIN);
+        if (origin != null) {
+            if (isAllowCredentials()) {
+                // Must be exact origin (not '*') in case of credentials
+                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+            } else {
+                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
+                res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+            }
+        }
+
+        if (getAllowedMethodsString() != null) {
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
+        }
+
+        if (getAllowedHeadersString() != null) {
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
+        } else if (rawRequestHeadersString != null) {
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
+        }
+
+        if (getMaxAgeSeconds() > 0) {
+            res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
+        }
+    }
+
+    @Override
+    public void sendError(Translet translet) throws IOException {
+        Throwable t = translet.getOriginRaisedException();
+
+        if (t instanceof CorsException) {
+            CorsException corsException = (CorsException)t;
+
+            HttpServletResponse res = translet.getResponseAdaptee();
+            res.sendError(corsException.getHttpStatusCode(), corsException.getMessage());
+        }
+    }
+
+    /**
+     * Invoked when one of the CORS checks failed.
+     * The default implementation sets the response status to 403.
+     *
+     * @param translet the translet
+     * @param ce the CORS Exception
+     * @throws CorsException if the request is denied.
+     */
+    protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
+        HttpServletResponse res = translet.getResponseAdaptee();
+        res.setStatus(ce.getHttpStatusCode());
+
+        translet.setAttribute(CORS_HTTP_STATUS_CODE, ce.getHttpStatusCode());
+        translet.setAttribute(CORS_HTTP_STATUS_TEXT, ce.getMessage());
+
+        throw ce;
+    }
+
+    protected boolean checkProcessable(HttpServletResponse res) {
+        if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
+            log.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

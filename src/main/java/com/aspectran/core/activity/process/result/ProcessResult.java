@@ -26,76 +26,76 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ProcessResult extends ArrayList<ContentResult> {
 
-	/** @serial */
-	private static final long serialVersionUID = 4734650376929217378L;
+    /** @serial */
+    private static final long serialVersionUID = 4734650376929217378L;
 
-	private String name;
-	
-	private boolean omittable;
-	
-	public ProcessResult() {
-	}
-	
-	public ProcessResult(int initialCapacity) {
-		super(initialCapacity);
-	}
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    private boolean omittable;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public ProcessResult() {
+    }
 
-	public boolean isOmittable() {
-		return omittable;
-	}
+    public ProcessResult(int initialCapacity) {
+        super(initialCapacity);
+    }
 
-	public void setOmittable(boolean omittable) {
-		this.omittable = omittable;
-	}
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Adds the content result.
-	 * 
-	 * @param contentResult the content result
-	 */
-	public void addContentResult(ContentResult contentResult) {
-		add(contentResult);
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public ActionResult getActionResult(String actionId) {
-		for (ContentResult contentResult : this) {
-			ActionResult actionResult = contentResult.getActionResult(actionId);
-			if (actionResult != null) {
-				return actionResult;
-			}
-		}
-		return null;
-	}
+    public boolean isOmittable() {
+        return omittable;
+    }
 
-	/**
-	 * Gets the result value of an action.
-	 *
-	 * @param actionId the action id
-	 * @return the result value of an action
-	 */
-	public Object getResultValue(String actionId) {
-		ActionResult actionResult = getActionResult(actionId);
-		if (actionResult != null) {
-			return actionResult.getResultValue();
-		}
-		return null;
-	}
+    public void setOmittable(boolean omittable) {
+        this.omittable = omittable;
+    }
 
-	public String describe() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("omittable", omittable);
-		tsb.appendSize("size", this);
-		tsb.append("values", this);
-		return tsb.toString();
-	}
-	
+    /**
+     * Adds the content result.
+     *
+     * @param contentResult the content result
+     */
+    public void addContentResult(ContentResult contentResult) {
+        add(contentResult);
+    }
+
+    public ActionResult getActionResult(String actionId) {
+        for (ContentResult contentResult : this) {
+            ActionResult actionResult = contentResult.getActionResult(actionId);
+            if (actionResult != null) {
+                return actionResult;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the result value of an action.
+     *
+     * @param actionId the action id
+     * @return the result value of an action
+     */
+    public Object getResultValue(String actionId) {
+        ActionResult actionResult = getActionResult(actionId);
+        if (actionResult != null) {
+            return actionResult.getResultValue();
+        }
+        return null;
+    }
+
+    public String describe() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("omittable", omittable);
+        tsb.appendSize("size", this);
+        tsb.append("values", this);
+        return tsb.toString();
+    }
+
 }

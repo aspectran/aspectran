@@ -29,47 +29,47 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
 
-	private static final Log log = LogFactory.getLog(HttpSessionScope.class);
-	
-	private SessionAdapter sessionAdapter;
-	
-	private SessionScopeAdvisor advisor;
-	
-	/**
-	 * Instantiates a new HttpSessionScope.
-	 *
-	 * @param sessionAdapter the session adapter
-	 * @param advisor the session scope advisor
-	 */
-	public HttpSessionScope(SessionAdapter sessionAdapter, SessionScopeAdvisor advisor) {
-		this.sessionAdapter = sessionAdapter;
-		this.advisor = advisor;
-	}
+    private static final Log log = LogFactory.getLog(HttpSessionScope.class);
 
-	@Override
-	public void valueBound(HttpSessionBindingEvent event) {
-		if (log.isDebugEnabled()) {
-			log.debug("New HttpSessionScope bound in session " + sessionAdapter);
-		}
-		
-		if (advisor != null) {
-			advisor.executeBeforeAdvice();
-		}
-	}
+    private SessionAdapter sessionAdapter;
 
-	@Override
-	public void valueUnbound(HttpSessionBindingEvent event) {
-		sessionAdapter.release();
+    private SessionScopeAdvisor advisor;
 
-		if (log.isDebugEnabled()) {
-			log.debug("HttpSessionScope removed from session " + sessionAdapter);
-		}
-		
-		if (advisor != null) {
-			advisor.executeAfterAdvice();
-		}
-		
-		this.destroy();
-	}
-	
+    /**
+     * Instantiates a new HttpSessionScope.
+     *
+     * @param sessionAdapter the session adapter
+     * @param advisor the session scope advisor
+     */
+    public HttpSessionScope(SessionAdapter sessionAdapter, SessionScopeAdvisor advisor) {
+        this.sessionAdapter = sessionAdapter;
+        this.advisor = advisor;
+    }
+
+    @Override
+    public void valueBound(HttpSessionBindingEvent event) {
+        if (log.isDebugEnabled()) {
+            log.debug("New HttpSessionScope bound in session " + sessionAdapter);
+        }
+
+        if (advisor != null) {
+            advisor.executeBeforeAdvice();
+        }
+    }
+
+    @Override
+    public void valueUnbound(HttpSessionBindingEvent event) {
+        sessionAdapter.release();
+
+        if (log.isDebugEnabled()) {
+            log.debug("HttpSessionScope removed from session " + sessionAdapter);
+        }
+
+        if (advisor != null) {
+            advisor.executeAfterAdvice();
+        }
+
+        this.destroy();
+    }
+
 }

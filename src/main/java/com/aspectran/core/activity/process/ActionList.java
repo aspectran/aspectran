@@ -38,111 +38,111 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
-	
-	/** @serial */
-	private static final long serialVersionUID = 4636431127789162551L;
 
-	private String name;
-	
-	private Boolean hidden;
-	
-	private Boolean omittable;
-	
-	/**
-	 * Instantiates a new ActionList.
-	 */
-	public ActionList() {
-		super(5);
-	}
-	
-	public String getName() {
-		return name;
-	}
+    /** @serial */
+    private static final long serialVersionUID = 4636431127789162551L;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private String name;
 
-	public boolean isHidden() {
-		return BooleanUtils.toBoolean(hidden);
-	}
+    private Boolean hidden;
 
-	public Boolean getHidden() {
-		return hidden;
-	}
+    private Boolean omittable;
 
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
-	}
+    /**
+     * Instantiates a new ActionList.
+     */
+    public ActionList() {
+        super(5);
+    }
 
-	public boolean isOmittable() {
-		return BooleanUtils.toBoolean(omittable);
-	}
-	
-	public Boolean getOmittable() {
-		return omittable;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setOmittable(Boolean omittable) {
-		this.omittable = omittable;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getVisibleCount() {
-		int count = 0;
-		for (Executable action : this) {
-			if (!action.isHidden()) {
-				count++;
-			}
-		}
-		return count;
-	}
+    public boolean isHidden() {
+        return BooleanUtils.toBoolean(hidden);
+    }
 
-	@Override
-	public void applyActionRule(BeanActionRule beanActionRule) {
-		BeanAction beanAction = new BeanAction(beanActionRule, this);
-		add(beanAction);
-	}
+    public Boolean getHidden() {
+        return hidden;
+    }
 
-	@Override
-	public void applyActionRule(MethodActionRule methodActionRule) {
-		MethodAction methodAction = new MethodAction(methodActionRule, this);
-		add(methodAction);
-	}
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
 
-	@Override
-	public void applyActionRule(IncludeActionRule includeActionRule) {
-		IncludeAction includeAction = new IncludeAction(includeActionRule, this);
-		add(includeAction);
-	}
+    public boolean isOmittable() {
+        return BooleanUtils.toBoolean(omittable);
+    }
 
-	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		EchoAction echoAction = new EchoAction(echoActionRule, this);
-		add(echoAction);
-	}
+    public Boolean getOmittable() {
+        return omittable;
+    }
 
-	@Override
-	public void applyActionRule(HeadingActionRule headingActionRule) {
-		HeadingAction headingAction = new HeadingAction(headingActionRule, this);
-		add(headingAction);
-	}
+    public void setOmittable(Boolean omittable) {
+        this.omittable = omittable;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("hidden", hidden);
-		tsb.append("omittable", omittable);
-		tsb.append("actions", this);
-		return tsb.toString();
-	}
-	
-	public static ActionList newInstance(String name, Boolean omittable, Boolean hidden) {
-		ActionList actionList = new ActionList();
-		actionList.setName(name);
-		actionList.setOmittable(omittable);
-		actionList.setHidden(hidden);
-		return actionList;
-	}
-	
+    public int getVisibleCount() {
+        int count = 0;
+        for (Executable action : this) {
+            if (!action.isHidden()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public void applyActionRule(BeanActionRule beanActionRule) {
+        BeanAction beanAction = new BeanAction(beanActionRule, this);
+        add(beanAction);
+    }
+
+    @Override
+    public void applyActionRule(MethodActionRule methodActionRule) {
+        MethodAction methodAction = new MethodAction(methodActionRule, this);
+        add(methodAction);
+    }
+
+    @Override
+    public void applyActionRule(IncludeActionRule includeActionRule) {
+        IncludeAction includeAction = new IncludeAction(includeActionRule, this);
+        add(includeAction);
+    }
+
+    @Override
+    public void applyActionRule(EchoActionRule echoActionRule) {
+        EchoAction echoAction = new EchoAction(echoActionRule, this);
+        add(echoAction);
+    }
+
+    @Override
+    public void applyActionRule(HeadingActionRule headingActionRule) {
+        HeadingAction headingAction = new HeadingAction(headingActionRule, this);
+        add(headingAction);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("hidden", hidden);
+        tsb.append("omittable", omittable);
+        tsb.append("actions", this);
+        return tsb.toString();
+    }
+
+    public static ActionList newInstance(String name, Boolean omittable, Boolean hidden) {
+        ActionList actionList = new ActionList();
+        actionList.setName(name);
+        actionList.setOmittable(omittable);
+        actionList.setHidden(hidden);
+        return actionList;
+    }
+
 }

@@ -20,24 +20,24 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class RootParameters extends AbstractParameters {
 
-	public static final ParameterDefinition aspectran;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			aspectran
-		};
-	}
-	
-	public RootParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public RootParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition aspectran;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            aspectran
+        };
+    }
+
+    public RootParameters() {
+        super(parameterDefinitions);
+    }
+
+    public RootParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

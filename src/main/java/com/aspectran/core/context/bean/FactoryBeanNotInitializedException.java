@@ -24,26 +24,26 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class FactoryBeanNotInitializedException extends BeanRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = 5961471681939634699L;
+    /** @serial */
+    private static final long serialVersionUID = 5961471681939634699L;
 
-	/**
-	 * Instantiates a new FactoryBeanNotInitializedException.
-	 *
-	 * @param beanRule the bean rule
-	 */
-	public FactoryBeanNotInitializedException(BeanRule beanRule) {
-		super("FactoryBean is not fully initialized yet", beanRule);
-	}
+    /**
+     * Instantiates a new FactoryBeanNotInitializedException.
+     *
+     * @param beanRule the bean rule
+     */
+    public FactoryBeanNotInitializedException(BeanRule beanRule) {
+        super("FactoryBean is not fully initialized yet", beanRule);
+    }
 
-	/**
-	 * Instantiates a new FactoryBeanNotInitializedException.
-	 *
-	 * @param msg the detail message
-	 * @param beanRule the bean rule
-	 */
-	public FactoryBeanNotInitializedException(String msg, BeanRule beanRule) {
-		super(msg, beanRule);
-	}
+    /**
+     * Instantiates a new FactoryBeanNotInitializedException.
+     *
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     */
+    public FactoryBeanNotInitializedException(String msg, BeanRule beanRule) {
+        super(msg, beanRule);
+    }
 
 }

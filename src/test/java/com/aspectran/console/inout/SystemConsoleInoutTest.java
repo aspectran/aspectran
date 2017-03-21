@@ -22,12 +22,12 @@ import java.io.IOException;
  */
 public class SystemConsoleInoutTest {
 
-	public static void main(String argv[]) throws IOException {
-		ConsoleInout consoleInout = new SystemConsoleInout();
-		String prompt = "System > ";
-		while (true) {
-			consoleInout.readPassword(prompt);
-		}
-	}
+    public static void main(String argv[]) throws IOException {
+        ConsoleInout consoleInout = new SystemConsoleInout();
+        String prompt = "System > ";
+        while (true) {
+            consoleInout.readPassword(prompt);
+        }
+    }
 
 }

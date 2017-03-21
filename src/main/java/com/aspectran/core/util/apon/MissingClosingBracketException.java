@@ -19,53 +19,53 @@ package com.aspectran.core.util.apon;
  * This exception will be thrown when missing closing brackets.
  */
 public class MissingClosingBracketException extends InvalidParameterException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -6294265620028959255L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public MissingClosingBracketException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -6294265620028959255L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public MissingClosingBracketException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public MissingClosingBracketException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param bracketShape the bracket character
-	 * @param name the parameter name
-	 * @param parameterValue the parameter value
-	 */
-	public MissingClosingBracketException(String bracketShape, String name, ParameterValue parameterValue) {
-		super("The end of the string was reached with no closing " + bracketShape + " bracket found: " + (parameterValue == null ? name : parameterValue));
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public MissingClosingBracketException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public MissingClosingBracketException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param bracketShape the bracket character
+     * @param name the parameter name
+     * @param parameterValue the parameter value
+     */
+    public MissingClosingBracketException(String bracketShape, String name, ParameterValue parameterValue) {
+        super("The end of the string was reached with no closing " + bracketShape + " bracket found: " + (parameterValue == null ? name : parameterValue));
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 * @param cause the real cause of the exception
-	 */
-	public MissingClosingBracketException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public MissingClosingBracketException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg a message to associate with the exception
+     * @param cause the real cause of the exception
+     */
+    public MissingClosingBracketException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

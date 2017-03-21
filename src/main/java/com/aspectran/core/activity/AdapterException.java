@@ -24,42 +24,42 @@ import com.aspectran.core.context.AspectranCheckedException;
  */
 public class AdapterException extends AspectranCheckedException {
 
-	/** @serial */
-	private static final long serialVersionUID = -4222246026009174749L;
+    /** @serial */
+    private static final long serialVersionUID = -4222246026009174749L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public AdapterException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public AdapterException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public AdapterException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public AdapterException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public AdapterException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AdapterException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 *
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public AdapterException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public AdapterException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

@@ -46,167 +46,167 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class ScheduleRule implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.SCHEDULE_RULE;
+    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.SCHEDULE_RULE;
 
-	private String id;
-	
-	private TriggerType triggerType;
-	
-	private Parameters triggerParameters;
+    private String id;
 
-	private String schedulerBeanId;
+    private TriggerType triggerType;
 
-	private Class<?> schedulerBeanClass;
-	
-	private List<ScheduleJobRule> scheduleJobRuleList = new ArrayList<>();
-	
-	private String description;
-	
-	public String getId() {
-		return id;
-	}
+    private Parameters triggerParameters;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private String schedulerBeanId;
 
-	public TriggerType getTriggerType() {
-		return triggerType;
-	}
+    private Class<?> schedulerBeanClass;
 
-	public void setTriggerType(TriggerType triggerType) {
-		this.triggerType = triggerType;
-	}
+    private List<ScheduleJobRule> scheduleJobRuleList = new ArrayList<>();
 
-	public Parameters getTriggerParameters() {
-		return triggerParameters;
-	}
+    private String description;
 
-	public void setTriggerParameters(Parameters triggerParameters) {
-		this.triggerParameters = triggerParameters;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getSchedulerBeanId() {
-		return schedulerBeanId;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setSchedulerBeanId(String schedulerBeanId) {
-		this.schedulerBeanId = schedulerBeanId;
-	}
+    public TriggerType getTriggerType() {
+        return triggerType;
+    }
 
-	public Class<?> getSchedulerBeanClass() {
-		return schedulerBeanClass;
-	}
+    public void setTriggerType(TriggerType triggerType) {
+        this.triggerType = triggerType;
+    }
 
-	public void setSchedulerBeanClass(Class<?> schedulerBeanClass) {
-		this.schedulerBeanClass = schedulerBeanClass;
-	}
+    public Parameters getTriggerParameters() {
+        return triggerParameters;
+    }
 
-	public List<ScheduleJobRule> getScheduleJobRuleList() {
-		return scheduleJobRuleList;
-	}
+    public void setTriggerParameters(Parameters triggerParameters) {
+        this.triggerParameters = triggerParameters;
+    }
 
-	public void setScheduleJobRuleList(List<ScheduleJobRule> scheduleJobRuleList) {
-		this.scheduleJobRuleList = scheduleJobRuleList;
-	}
+    public String getSchedulerBeanId() {
+        return schedulerBeanId;
+    }
 
-	public void addScheduleJobRule(ScheduleJobRule scheduleJobRule) {
-		scheduleJobRuleList.add(scheduleJobRule);
-	}
+    public void setSchedulerBeanId(String schedulerBeanId) {
+        this.schedulerBeanId = schedulerBeanId;
+    }
 
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+    public Class<?> getSchedulerBeanClass() {
+        return schedulerBeanClass;
+    }
 
-	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setSchedulerBeanClass(Class<?> schedulerBeanClass) {
+        this.schedulerBeanClass = schedulerBeanClass;
+    }
 
-	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERRER_TYPE;
-	}
+    public List<ScheduleJobRule> getScheduleJobRuleList() {
+        return scheduleJobRuleList;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", id);
-		tsb.append("scheduler", schedulerBeanId);
-		tsb.append("trigger", triggerParameters);
-		tsb.append("jobs", scheduleJobRuleList);
-		return tsb.toString();
-	}
-	
-	public static ScheduleRule newInstance(String id) {
+    public void setScheduleJobRuleList(List<ScheduleJobRule> scheduleJobRuleList) {
+        this.scheduleJobRuleList = scheduleJobRuleList;
+    }
+
+    public void addScheduleJobRule(ScheduleJobRule scheduleJobRule) {
+        scheduleJobRuleList.add(scheduleJobRule);
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public BeanReferrerType getBeanReferrerType() {
+        return BEAN_REFERRER_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", id);
+        tsb.append("scheduler", schedulerBeanId);
+        tsb.append("trigger", triggerParameters);
+        tsb.append("jobs", scheduleJobRuleList);
+        return tsb.toString();
+    }
+
+    public static ScheduleRule newInstance(String id) {
         if (id == null) {
-			throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
-		}
+            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+        }
 
-		ScheduleRule scheduleRule = new ScheduleRule();
-		scheduleRule.setId(id);
-		return scheduleRule;
-	}
+        ScheduleRule scheduleRule = new ScheduleRule();
+        scheduleRule.setId(id);
+        return scheduleRule;
+    }
 
-	public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) {
-		updateTriggerType(scheduleRule, type);
-		updateTrigger(scheduleRule, text);
-	}
-	
-	public static void updateTrigger(ScheduleRule scheduleRule, String text) {
-		if (StringUtils.hasText(text)) {
-			Parameters triggerParameters = new TriggerParameters(text);
-			updateTrigger(scheduleRule, triggerParameters);
-		}
-	}
+    public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) {
+        updateTriggerType(scheduleRule, type);
+        updateTrigger(scheduleRule, text);
+    }
 
-	public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
-		if (scheduleRule.getTriggerType() == null) {
-			String type = triggerParameters.getString(TriggerParameters.type);
-			updateTriggerType(scheduleRule, type);
-		}
-		if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
-			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
-			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
-			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-			if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
-				throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
-						"Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
-			}
-			scheduleRule.setTriggerParameters(triggerParameters);
-		} else {
-			String expression = triggerParameters.getString(TriggerParameters.expression);
-			
-			String[] fields = StringUtils.tokenize(expression, " ");
-			if (fields.length != 6) {
-				throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
-			}
-			triggerParameters.putValue(TriggerParameters.expression, StringUtils.arrayToDelimitedString(fields, " "));
-			scheduleRule.setTriggerParameters(triggerParameters);
-		}
-	}
+    public static void updateTrigger(ScheduleRule scheduleRule, String text) {
+        if (StringUtils.hasText(text)) {
+            Parameters triggerParameters = new TriggerParameters(text);
+            updateTrigger(scheduleRule, triggerParameters);
+        }
+    }
 
-	public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
-		TriggerType triggerType;
-		if (type != null) {
-			triggerType = TriggerType.resolve(type);
-			if (triggerType == null) {
-				throw new IllegalArgumentException("Unknown trigger type '" + type + "'. Trigger type for Scheduler must be 'cron' or 'simple'.");
-			}
-		} else {
-			triggerType = TriggerType.CRON;
-		}
-		scheduleRule.setTriggerType(triggerType);
-	}
+    public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
+        if (scheduleRule.getTriggerType() == null) {
+            String type = triggerParameters.getString(TriggerParameters.type);
+            updateTriggerType(scheduleRule, type);
+        }
+        if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+            Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
+            Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
+            Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
+            Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
+            if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
+                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
+                        "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
+            }
+            scheduleRule.setTriggerParameters(triggerParameters);
+        } else {
+            String expression = triggerParameters.getString(TriggerParameters.expression);
+
+            String[] fields = StringUtils.tokenize(expression, " ");
+            if (fields.length != 6) {
+                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
+            }
+            triggerParameters.putValue(TriggerParameters.expression, StringUtils.arrayToDelimitedString(fields, " "));
+            scheduleRule.setTriggerParameters(triggerParameters);
+        }
+    }
+
+    public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
+        TriggerType triggerType;
+        if (type != null) {
+            triggerType = TriggerType.resolve(type);
+            if (triggerType == null) {
+                throw new IllegalArgumentException("Unknown trigger type '" + type + "'. Trigger type for Scheduler must be 'cron' or 'simple'.");
+            }
+        } else {
+            triggerType = TriggerType.CRON;
+        }
+        scheduleRule.setTriggerType(triggerType);
+    }
 
 }

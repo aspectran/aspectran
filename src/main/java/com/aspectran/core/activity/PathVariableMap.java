@@ -30,7 +30,7 @@ import com.aspectran.core.context.rule.type.TokenType;
  */
 public class PathVariableMap extends HashMap<Token, String> {
 
-	private static final long serialVersionUID = -3327966082696522044L;
+    private static final long serialVersionUID = -3327966082696522044L;
 
     public PathVariableMap(int initialCapacity) {
         super(initialCapacity);
@@ -50,14 +50,14 @@ public class PathVariableMap extends HashMap<Token, String> {
     public static PathVariableMap newInstance(Token[] nameTokens, String requestTransletRuleName) {
         PathVariableMap pathVariableMap = new PathVariableMap(nameTokens.length);
 
-		/*
-			/example/customers/123-567/approval
-			/example/customers/
-			${id1}
-			-
-			${id2}
-			/approval
-		*/
+        /*
+            /example/customers/123-567/approval
+            /example/customers/
+            ${id1}
+            -
+            ${id2}
+            /approval
+        */
         int beginIndex = 0;
         int endIndex;
         Token prevToken = null;

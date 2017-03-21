@@ -27,30 +27,30 @@ import com.aspectran.core.util.StringUtils;
  */
 public class MissingMandatoryParametersException extends RequestException {
 
-	/** @serial */
-	private static final long serialVersionUID = 6311784727928597298L;
+    /** @serial */
+    private static final long serialVersionUID = 6311784727928597298L;
 
-	private ItemRuleList itemRuleList;
+    private ItemRuleList itemRuleList;
 
-	/**
-	 * Creates a new MissingMandatoryParametersException referencing
-	 * the specified parameter.
-	 *
-	 * @param itemRuleList an item rule list that represents missing parameters
-	 */
-	public MissingMandatoryParametersException(ItemRuleList itemRuleList) {
-		super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRuleList));
+    /**
+     * Creates a new MissingMandatoryParametersException referencing
+     * the specified parameter.
+     *
+     * @param itemRuleList an item rule list that represents missing parameters
+     */
+    public MissingMandatoryParametersException(ItemRuleList itemRuleList) {
+        super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRuleList));
 
-		this.itemRuleList = itemRuleList;
-	}
+        this.itemRuleList = itemRuleList;
+    }
 
-	/**
-	 * Returns an item rule list that represents missing parameters.
-	 *
-	 * @return an item rule list that represents missing parameters
-	 */
-	public ItemRuleList getItemRuleList() {
-		return itemRuleList;
-	}
+    /**
+     * Returns an item rule list that represents missing parameters.
+     *
+     * @return an item rule list that represents missing parameters
+     */
+    public ItemRuleList getItemRuleList() {
+        return itemRuleList;
+    }
 
 }

@@ -22,34 +22,34 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TokenDirectiveType {
 
-	CLASS("class"),
-	CLASSPATH("classpath");
+    CLASS("class"),
+    CLASSPATH("classpath");
 
-	private final String alias;
+    private final String alias;
 
-	TokenDirectiveType(String alias) {
-		this.alias = alias;
-	}
+    TokenDirectiveType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code TokenDirectiveType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the token directive type as a {@code String}
-	 * @return a {@code TokenDirectiveType}, may be {@code null}
-	 */
-	public static TokenDirectiveType resolve(String alias) {
-		for (TokenDirectiveType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code TokenDirectiveType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the token directive type as a {@code String}
+     * @return a {@code TokenDirectiveType}, may be {@code null}
+     */
+    public static TokenDirectiveType resolve(String alias) {
+        for (TokenDirectiveType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

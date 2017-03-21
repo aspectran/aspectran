@@ -20,14 +20,14 @@ package test.call;
  */
 public class TotalBean {
 
-	private NumericBean[] numerics;
+    private NumericBean[] numerics;
 
-	public void setNumerics(NumericBean[] numerics) {
-		this.numerics = numerics;
-	}
+    public void setNumerics(NumericBean[] numerics) {
+        this.numerics = numerics;
+    }
 
-	public NumericBean[] getNumerics() {
-		return numerics;
-	}
+    public NumericBean[] getNumerics() {
+        return numerics;
+    }
 
 }

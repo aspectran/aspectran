@@ -22,33 +22,33 @@ import com.aspectran.core.activity.request.RequestException;
  */
 public class RequestParseException extends RequestException {
 
-	/** @serial */
-	private static final long serialVersionUID = -2918986957102012812L;
+    /** @serial */
+    private static final long serialVersionUID = -2918986957102012812L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public RequestParseException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public RequestParseException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public RequestParseException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public RequestParseException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 *
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public RequestParseException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public RequestParseException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

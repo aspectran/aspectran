@@ -23,7 +23,7 @@ package com.aspectran.core.context.rule.ability;
  * @since 2.0.0
  */
 public interface Replicable<T> {
-	
-	T replicate();
+
+    T replicate();
 
 }

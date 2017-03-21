@@ -24,17 +24,17 @@ import java.util.LinkedHashMap;
  */
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
-	/** @serial */
-	private static final long serialVersionUID = 192817512158305803L;
+    /** @serial */
+    private static final long serialVersionUID = 192817512158305803L;
 
-	/**
-	 * Adds a item rule.
-	 * 
-	 * @param itemRule the item rule
-	 * @return the item rule
-	 */
-	public ItemRule putItemRule(ItemRule itemRule) {
-		return put(itemRule.getName(), itemRule);
-	}
+    /**
+     * Adds a item rule.
+     *
+     * @param itemRule the item rule
+     * @return the item rule
+     */
+    public ItemRule putItemRule(ItemRule itemRule) {
+        return put(itemRule.getName(), itemRule);
+    }
 
 }

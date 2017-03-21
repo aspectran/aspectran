@@ -48,283 +48,283 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class ContentsXMLReader implements XMLReader {
 
-	private static final String CONTENTS_TAG = "contents";
+    private static final String CONTENTS_TAG = "contents";
 
-	private static final String CONTENT_TAG = "content";
+    private static final String CONTENT_TAG = "content";
 
-	private static final String ROWS_TAG = "rows";
+    private static final String ROWS_TAG = "rows";
 
-	private static final String ROW_TAG = "row";
+    private static final String ROW_TAG = "row";
 
-	private static final String EMPTY_TAG = "empty";
-	
-	private static final Attributes NULL_ATTRS = new AttributesImpl();
+    private static final String EMPTY_TAG = "empty";
 
-	protected ContentHandler handler;
+    private static final Attributes NULL_ATTRS = new AttributesImpl();
 
-	/**
-	 * Instantiates a new ContentsXMLReader.
-	 */
-	public ContentsXMLReader() {
-	}
+    protected ContentHandler handler;
 
-	@Override
-	public void setContentHandler(ContentHandler handler) {
-		this.handler = handler;
-	}
+    /**
+     * Instantiates a new ContentsXMLReader.
+     */
+    public ContentsXMLReader() {
+    }
 
-	@Override
-	public ContentHandler getContentHandler() {
-		return handler;
-	}
+    @Override
+    public void setContentHandler(ContentHandler handler) {
+        this.handler = handler;
+    }
 
-	@Override
-	public void setErrorHandler(ErrorHandler errorhandler) {
-	}
+    @Override
+    public ContentHandler getContentHandler() {
+        return handler;
+    }
 
-	@Override
-	public ErrorHandler getErrorHandler() {
-		return null;
-	}
+    @Override
+    public void setErrorHandler(ErrorHandler errorhandler) {
+    }
 
-	@Override
-	public void parse(String s) throws IOException, SAXException {
-	}
+    @Override
+    public ErrorHandler getErrorHandler() {
+        return null;
+    }
 
-	@Override
-	public DTDHandler getDTDHandler() {
-		return null;
-	}
+    @Override
+    public void parse(String s) throws IOException, SAXException {
+    }
 
-	@Override
-	public EntityResolver getEntityResolver() {
-		return null;
-	}
+    @Override
+    public DTDHandler getDTDHandler() {
+        return null;
+    }
 
-	@Override
-	public void setEntityResolver(EntityResolver entityresolver) {
-	}
+    @Override
+    public EntityResolver getEntityResolver() {
+        return null;
+    }
 
-	@Override
-	public void setDTDHandler(DTDHandler dtdhandler) {
-	}
+    @Override
+    public void setEntityResolver(EntityResolver entityresolver) {
+    }
 
-	@Override
-	public Object getProperty(String name) {
-		return null;
-	}
+    @Override
+    public void setDTDHandler(DTDHandler dtdhandler) {
+    }
 
-	@Override
-	public void setProperty(String s, Object obj) {
-	}
+    @Override
+    public Object getProperty(String name) {
+        return null;
+    }
 
-	@Override
-	public void setFeature(String s, boolean flag) {
-	}
+    @Override
+    public void setProperty(String s, Object obj) {
+    }
 
-	@Override
-	public boolean getFeature(String name) {
-		return false;
-	}
+    @Override
+    public void setFeature(String s, boolean flag) {
+    }
 
-	/**
-	 * Outputs a string.
-	 * 
-	 * @param s the input string
-	 * @throws SAXException the SAX exception
-	 */
-	protected void outputString(String s) throws SAXException {
-		handler.characters(s.toCharArray(), 0, s.length());
-	}
+    @Override
+    public boolean getFeature(String name) {
+        return false;
+    }
 
-	/**
-	 * Output a ignorable whitespace string.
-	 * 
-	 * @param s the whitespace string
-	 * @throws SAXException the SAX exception
-	 */
-	protected void outputIgnorableWhitespace(String s) throws SAXException {
-		handler.characters(s.toCharArray(), 0, s.length());
-	}
+    /**
+     * Outputs a string.
+     *
+     * @param s the input string
+     * @throws SAXException the SAX exception
+     */
+    protected void outputString(String s) throws SAXException {
+        handler.characters(s.toCharArray(), 0, s.length());
+    }
 
-	@Override
-	public void parse(InputSource is) throws IOException, SAXException {
-		if (handler == null)
-			throw new SAXException("No XML ContentHandler");
+    /**
+     * Output a ignorable whitespace string.
+     *
+     * @param s the whitespace string
+     * @throws SAXException the SAX exception
+     */
+    protected void outputIgnorableWhitespace(String s) throws SAXException {
+        handler.characters(s.toCharArray(), 0, s.length());
+    }
 
-		try {
-			ContentsInputSource cis = (ContentsInputSource)is;
-			ProcessResult processResult = cis.getProcessResult();
+    @Override
+    public void parse(InputSource is) throws IOException, SAXException {
+        if (handler == null)
+            throw new SAXException("No XML ContentHandler");
 
-			handler.startDocument();
+        try {
+            ContentsInputSource cis = (ContentsInputSource)is;
+            ProcessResult processResult = cis.getProcessResult();
 
-			if (processResult != null && !processResult.isEmpty()) {
-				String contentsName = processResult.getName();
-				
-				if (!processResult.isOmittable()) {
-					if (contentsName != null) {
-						handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
-					} else {
-						handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
-					}
-				}
-				
-				parse(processResult);
+            handler.startDocument();
 
-				if (!processResult.isOmittable()) {
-					if (contentsName != null) {
-						handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
-					} else {
-						handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
-					}
-				}
-			} else {
-				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
-				handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
-			}
+            if (processResult != null && !processResult.isEmpty()) {
+                String contentsName = processResult.getName();
 
-			handler.endDocument();
-		} catch (InvocationTargetException e) {
-			throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
-		} catch (IOException | SAXException e) {
-			throw e;
-		}
-	}
+                if (!processResult.isOmittable()) {
+                    if (contentsName != null) {
+                        handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
+                    } else {
+                        handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
+                    }
+                }
 
-	/**
-	 * Parses a {@code ProcessResult} object.
-	 * 
-	 * @param processResult a {@code ProcessResult} object
-	 * @throws IOException if an I/O error has occurred
-	 * @throws SAXException the SAX exception
-	 * @throws InvocationTargetException the invocation target exception
-	 */
-	private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
-		for (ContentResult contentResult : processResult) {
-			String contentName = contentResult.getName();
-			
-			if (!contentResult.isOmittable()) {
-				if (contentName != null) {
-					handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
-				} else {
-					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
-				}
-			}
+                parse(processResult);
 
-			for (ActionResult actionResult : contentResult) {
-				String actionId = actionResult.getActionId();
-				Object resultValue = actionResult.getResultValue();
+                if (!processResult.isOmittable()) {
+                    if (contentsName != null) {
+                        handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
+                    } else {
+                        handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
+                    }
+                }
+            } else {
+                handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
+                handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
+            }
 
-				if (resultValue instanceof ProcessResult) {
-					parse((ProcessResult)resultValue);
-				} else {
-					if (actionId != null) {
-						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-					}
+            handler.endDocument();
+        } catch (InvocationTargetException e) {
+            throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
+        } catch (IOException | SAXException e) {
+            throw e;
+        }
+    }
 
-					parse(resultValue);
+    /**
+     * Parses a {@code ProcessResult} object.
+     *
+     * @param processResult a {@code ProcessResult} object
+     * @throws IOException if an I/O error has occurred
+     * @throws SAXException the SAX exception
+     * @throws InvocationTargetException the invocation target exception
+     */
+    private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
+        for (ContentResult contentResult : processResult) {
+            String contentName = contentResult.getName();
 
-					if (actionId != null) {
-						handler.endElement(StringUtils.EMPTY, actionId, actionId);
-					}
-				}
-			}
+            if (!contentResult.isOmittable()) {
+                if (contentName != null) {
+                    handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
+                } else {
+                    handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
+                }
+            }
 
-			if (!contentResult.isOmittable()) {
-				if (contentResult.getName() != null) {
-					handler.endElement(StringUtils.EMPTY, contentName, contentName);
-				} else {
-					handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
-				}
-			}
-		}
-	}
+            for (ActionResult actionResult : contentResult) {
+                String actionId = actionResult.getActionId();
+                Object resultValue = actionResult.getResultValue();
 
-	/**
-	 * Parses an object.
-	 * 
-	 * @param object the object
-	 * @throws IOException if an I/O error has occurred
-	 * @throws SAXException the SAX exception
-	 * @throws InvocationTargetException the invocation target exception
-	 */
-	@SuppressWarnings("unchecked")
-	private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
-		if (object == null) {
-			return;
-		} else if (object instanceof ProcessResult) {
-			parse((ProcessResult)object);
-		} else if (object instanceof String
-				|| object instanceof Number
-				|| object instanceof Boolean
-				|| object instanceof Date) {
-			outputString(object.toString());
-		} else if (object instanceof Parameters) {
-			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
-			for (Parameter p: params.values()) {
-				String name = p.getName();
-				Object value = p.getValue();
-				checkCircularReference(object, value);
+                if (resultValue instanceof ProcessResult) {
+                    parse((ProcessResult)resultValue);
+                } else {
+                    if (actionId != null) {
+                        handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
+                    }
 
-				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-				parse(value);
-				handler.endElement(StringUtils.EMPTY, name, name);
-			}
-		} else if (object instanceof Map<?, ?>) {
-			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
-				String name = entry.getKey().toString();
-				Object value = entry.getValue();
-				checkCircularReference(object, value);
+                    parse(resultValue);
 
-				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-				parse(value);
-				handler.endElement(StringUtils.EMPTY, name, name);
-			}
-		} else if (object instanceof Collection<?>) {
-			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
+                    if (actionId != null) {
+                        handler.endElement(StringUtils.EMPTY, actionId, actionId);
+                    }
+                }
+            }
 
-			for (Object value : ((Collection<Object>) object)) {
-				checkCircularReference(object, value);
+            if (!contentResult.isOmittable()) {
+                if (contentResult.getName() != null) {
+                    handler.endElement(StringUtils.EMPTY, contentName, contentName);
+                } else {
+                    handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+                }
+            }
+        }
+    }
 
-				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-				parse(value);
-				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
-			}
+    /**
+     * Parses an object.
+     *
+     * @param object the object
+     * @throws IOException if an I/O error has occurred
+     * @throws SAXException the SAX exception
+     * @throws InvocationTargetException the invocation target exception
+     */
+    @SuppressWarnings("unchecked")
+    private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
+        if (object == null) {
+            return;
+        } else if (object instanceof ProcessResult) {
+            parse((ProcessResult)object);
+        } else if (object instanceof String
+                || object instanceof Number
+                || object instanceof Boolean
+                || object instanceof Date) {
+            outputString(object.toString());
+        } else if (object instanceof Parameters) {
+            Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
+            for (Parameter p: params.values()) {
+                String name = p.getName();
+                Object value = p.getValue();
+                checkCircularReference(object, value);
 
-			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
-		} else if (object.getClass().isArray()) {
-			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
+                handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
+                parse(value);
+                handler.endElement(StringUtils.EMPTY, name, name);
+            }
+        } else if (object instanceof Map<?, ?>) {
+            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+                String name = entry.getKey().toString();
+                Object value = entry.getValue();
+                checkCircularReference(object, value);
 
-			int len = Array.getLength(object);
-			for (int i = 0; i < len; i++) {
-				Object value = Array.get(object, i);
-				checkCircularReference(object, value);
+                handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
+                parse(value);
+                handler.endElement(StringUtils.EMPTY, name, name);
+            }
+        } else if (object instanceof Collection<?>) {
+            handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
-				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-				parse(value);
-				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
-			}
+            for (Object value : ((Collection<Object>) object)) {
+                checkCircularReference(object, value);
 
-			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
-		} else {
-			String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
-			if (readableProperyNames != null && readableProperyNames.length > 0) {
-				for (String name : readableProperyNames) {
-					Object value = BeanUtils.getObject(object, name);
-					checkCircularReference(object, value);
+                handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
+                parse(value);
+                handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
+            }
 
-					handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-					parse(value);
-					handler.endElement(StringUtils.EMPTY, name, name);
-				}
-			}
-		}
-	}
+            handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else if (object.getClass().isArray()) {
+            handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
-	private void checkCircularReference(Object wrapper, Object member) {
-		if (wrapper.equals(member)) {
-			throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
-		}
-	}
+            int len = Array.getLength(object);
+            for (int i = 0; i < len; i++) {
+                Object value = Array.get(object, i);
+                checkCircularReference(object, value);
+
+                handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
+                parse(value);
+                handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
+            }
+
+            handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else {
+            String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
+            if (readableProperyNames != null && readableProperyNames.length > 0) {
+                for (String name : readableProperyNames) {
+                    Object value = BeanUtils.getObject(object, name);
+                    checkCircularReference(object, value);
+
+                    handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
+                    parse(value);
+                    handler.endElement(StringUtils.EMPTY, name, name);
+                }
+            }
+        }
+    }
+
+    private void checkCircularReference(Object wrapper, Object member) {
+        if (wrapper.equals(member)) {
+            throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+        }
+    }
 
 }

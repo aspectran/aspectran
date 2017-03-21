@@ -21,45 +21,45 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class TransformParameters extends AbstractParameters {
 
-	public static final ParameterDefinition actions;
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition contentType;
-	public static final ParameterDefinition characterEncoding;
-	public static final ParameterDefinition defaultResponse;
-	public static final ParameterDefinition pretty;
-	public static final ParameterDefinition template;
-	public static final ParameterDefinition call;
+    public static final ParameterDefinition actions;
+    public static final ParameterDefinition type;
+    public static final ParameterDefinition contentType;
+    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition defaultResponse;
+    public static final ParameterDefinition pretty;
+    public static final ParameterDefinition template;
+    public static final ParameterDefinition call;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
-		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
-		pretty = new ParameterDefinition("pretty", ParameterValueType.BOOLEAN);
-		template = new ParameterDefinition("template", TemplateParameters.class);
-		call = new ParameterDefinition("call", CallParameters.class);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			actions,
-			type,
-			contentType,
-			characterEncoding,
-			defaultResponse,
-			pretty,
-			template,
-			call
-		};
-	}
-	
-	public TransformParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public TransformParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    static {
+        actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+        type = new ParameterDefinition("type", ParameterValueType.STRING);
+        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+        pretty = new ParameterDefinition("pretty", ParameterValueType.BOOLEAN);
+        template = new ParameterDefinition("template", TemplateParameters.class);
+        call = new ParameterDefinition("call", CallParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            actions,
+            type,
+            contentType,
+            characterEncoding,
+            defaultResponse,
+            pretty,
+            template,
+            call
+        };
+    }
+
+    public TransformParameters() {
+        super(parameterDefinitions);
+    }
+
+    public TransformParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

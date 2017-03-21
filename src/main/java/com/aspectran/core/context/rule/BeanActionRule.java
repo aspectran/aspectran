@@ -31,192 +31,192 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
-	private String actionId;
+    private String actionId;
 
-	private String beanId;
+    private String beanId;
 
-	private Class<?> beanClass;
+    private Class<?> beanClass;
 
-	private String methodName;
+    private String methodName;
 
-	private Method method;
-	
-	private boolean requiresTranslet;
+    private Method method;
 
-	private ItemRuleMap argumentItemRuleMap;
+    private boolean requiresTranslet;
 
-	private ItemRuleMap propertyItemRuleMap;
+    private ItemRuleMap argumentItemRuleMap;
 
-	private Boolean hidden;
+    private ItemRuleMap propertyItemRuleMap;
 
-	/**
-	 * Gets the action id.
-	 * 
-	 * @return the action id
-	 */
-	public String getActionId() {
-		return actionId;
-	}
+    private Boolean hidden;
 
-	/**
-	 * Sets the action id.
-	 * 
-	 * @param actionId the new action id
-	 */
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
+    /**
+     * Gets the action id.
+     *
+     * @return the action id
+     */
+    public String getActionId() {
+        return actionId;
+    }
 
-	/**
-	 * Gets bean id.
-	 *
-	 * @return the bean id
-	 */
-	public String getBeanId() {
-		return beanId;
-	}
+    /**
+     * Sets the action id.
+     *
+     * @param actionId the new action id
+     */
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Sets bean id.
-	 *
-	 * @param beanId the bean id
-	 */
-	public void setBeanId(String beanId) {
-		this.beanId = beanId;
-	}
+    /**
+     * Gets bean id.
+     *
+     * @return the bean id
+     */
+    public String getBeanId() {
+        return beanId;
+    }
 
-	public Class<?> getBeanClass() {
-		return beanClass;
-	}
+    /**
+     * Sets bean id.
+     *
+     * @param beanId the bean id
+     */
+    public void setBeanId(String beanId) {
+        this.beanId = beanId;
+    }
 
-	public void setBeanClass(Class<?> beanClass) {
-		this.beanClass = beanClass;
-	}
+    public Class<?> getBeanClass() {
+        return beanClass;
+    }
 
-	/**
-	 * Gets the action method name.
-	 * 
-	 * @return the action method name
-	 */
-	public String getMethodName() {
-		return methodName;
-	}
+    public void setBeanClass(Class<?> beanClass) {
+        this.beanClass = beanClass;
+    }
 
-	/**
-	 * Sets the action method name.
-	 * 
-	 * @param methodName the new action method name
-	 */
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
+    /**
+     * Gets the action method name.
+     *
+     * @return the action method name
+     */
+    public String getMethodName() {
+        return methodName;
+    }
 
-	public boolean isRequiresTranslet() {
-		return requiresTranslet;
-	}
+    /**
+     * Sets the action method name.
+     *
+     * @param methodName the new action method name
+     */
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
 
-	public void setRequiresTranslet(boolean requiresTranslet) {
-		this.requiresTranslet = requiresTranslet;
-	}
+    public boolean isRequiresTranslet() {
+        return requiresTranslet;
+    }
 
-	public Method getMethod() {
-		return method;
-	}
+    public void setRequiresTranslet(boolean requiresTranslet) {
+        this.requiresTranslet = requiresTranslet;
+    }
 
-	public void setMethod(Method method) {
-		this.method = method;
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	/**
-	 * Returns whether to hide result of the action.
-	 *
-	 * @return true, if this action is hidden
-	 */
-	public Boolean getHidden() {
-		return hidden;
-	}
+    public void setMethod(Method method) {
+        this.method = method;
+    }
 
-	/**
-	 * Returns whether to hide result of the action.
-	 *
-	 * @return true, if this action is hidden
-	 */
-	public boolean isHidden() {
-		return BooleanUtils.toBoolean(hidden);
-	}
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public Boolean getHidden() {
+        return hidden;
+    }
 
-	/**
-	 * Sets whether to hide result of the action.
-	 * 
-	 * @param hidden whether to hide result of the action
-	 */
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
-	}
+    /**
+     * Returns whether to hide result of the action.
+     *
+     * @return true, if this action is hidden
+     */
+    public boolean isHidden() {
+        return BooleanUtils.toBoolean(hidden);
+    }
 
-	@Override
-	public ItemRuleMap getArgumentItemRuleMap() {
-		return argumentItemRuleMap;
-	}
+    /**
+     * Sets whether to hide result of the action.
+     *
+     * @param hidden whether to hide result of the action
+     */
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
 
-	@Override
-	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
-		this.argumentItemRuleMap = argumentItemRuleMap;
-	}
+    @Override
+    public ItemRuleMap getArgumentItemRuleMap() {
+        return argumentItemRuleMap;
+    }
 
-	@Override
-	public ItemRuleMap getPropertyItemRuleMap() {
-		return propertyItemRuleMap;
-	}
+    @Override
+    public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
+        this.argumentItemRuleMap = argumentItemRuleMap;
+    }
 
-	@Override
-	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-		this.propertyItemRuleMap = propertyItemRuleMap;
-	}
+    @Override
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
 
-	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERRER_TYPE;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", actionId);
-		tsb.append("bean", beanId);
-		tsb.append("method", methodName);
-		if (argumentItemRuleMap != null) {
-			tsb.append("arguments", argumentItemRuleMap.keySet());
-		}
-		if (propertyItemRuleMap != null) {
-			tsb.append("properties", propertyItemRuleMap.keySet());
-		}
-		tsb.append("hidden", hidden);
-		return tsb.toString();
-	}
-	
-	/**
-	 * Returns a new instance of BeanActionRule.
-	 *
-	 * @param id the action id
-	 * @param beanId the bean id
-	 * @param methodName the method name
-	 * @param hidden whether to hide result of the action
-	 * @return the bean action rule
-	 */
-	public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
-		if (methodName == null) {
-			throw new IllegalArgumentException("The 'action' element requires an 'method' attribute.");
-		}
+    @Override
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
 
-		BeanActionRule beanActionRule = new BeanActionRule();
-		beanActionRule.setActionId(id);
-		beanActionRule.setBeanId(beanId);
-		beanActionRule.setMethodName(methodName);
-		beanActionRule.setHidden(hidden);
-		return beanActionRule;
-	}
-	
+    @Override
+    public BeanReferrerType getBeanReferrerType() {
+        return BEAN_REFERRER_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", actionId);
+        tsb.append("bean", beanId);
+        tsb.append("method", methodName);
+        if (argumentItemRuleMap != null) {
+            tsb.append("arguments", argumentItemRuleMap.keySet());
+        }
+        if (propertyItemRuleMap != null) {
+            tsb.append("properties", propertyItemRuleMap.keySet());
+        }
+        tsb.append("hidden", hidden);
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new instance of BeanActionRule.
+     *
+     * @param id the action id
+     * @param beanId the bean id
+     * @param methodName the method name
+     * @param hidden whether to hide result of the action
+     * @return the bean action rule
+     */
+    public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
+        if (methodName == null) {
+            throw new IllegalArgumentException("The 'action' element requires an 'method' attribute.");
+        }
+
+        BeanActionRule beanActionRule = new BeanActionRule();
+        beanActionRule.setActionId(id);
+        beanActionRule.setBeanId(beanId);
+        beanActionRule.setMethodName(methodName);
+        beanActionRule.setHidden(hidden);
+        return beanActionRule;
+    }
+
 }

@@ -20,28 +20,28 @@ package com.aspectran.core.context.bean;
  */
 public class BeanNotFoundException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = 1866105813455720749L;
-	
-	private String beanId;
+    /** @serial */
+    private static final long serialVersionUID = 1866105813455720749L;
 
-	/**
-	 * Instantiates a new BeanNotFoundException.
-	 *
-	 * @param beanId the bean id
-	 */
-	public BeanNotFoundException(String beanId) {
-		super("No bean named '" + beanId + "' is defined.");
-		this.beanId = beanId;
-	}
+    private String beanId;
 
-	/**
-	 * Gets the bean id.
-	 *
-	 * @return the bean id
-	 */
-	public String getBeanId() {
-		return beanId;
-	}
-	
+    /**
+     * Instantiates a new BeanNotFoundException.
+     *
+     * @param beanId the bean id
+     */
+    public BeanNotFoundException(String beanId) {
+        super("No bean named '" + beanId + "' is defined.");
+        this.beanId = beanId;
+    }
+
+    /**
+     * Gets the bean id.
+     *
+     * @return the bean id
+     */
+    public String getBeanId() {
+        return beanId;
+    }
+
 }

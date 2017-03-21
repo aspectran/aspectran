@@ -26,24 +26,24 @@ import com.aspectran.core.activity.process.result.ProcessResult;
  */
 public class ContentsInputSource extends InputSource {
 
-	private ProcessResult processResult;
-	
-	/**
-	 * Instantiates a new ContentsInputSource.
-	 * 
-	 * @param processResult a {@code ProcessResult} object
-	 */
-	public ContentsInputSource(ProcessResult processResult) {
-		this.processResult = processResult;
-	}
-	
-	/**
-	 * Returns a {@code ProcessResult} object.
-	 * 
-	 * @return a {@code ProcessResult} object
-	 */
-	public ProcessResult getProcessResult() {
-		return processResult;
-	}
+    private ProcessResult processResult;
+
+    /**
+     * Instantiates a new ContentsInputSource.
+     *
+     * @param processResult a {@code ProcessResult} object
+     */
+    public ContentsInputSource(ProcessResult processResult) {
+        this.processResult = processResult;
+    }
+
+    /**
+     * Returns a {@code ProcessResult} object.
+     *
+     * @return a {@code ProcessResult} object
+     */
+    public ProcessResult getProcessResult() {
+        return processResult;
+    }
 
 }

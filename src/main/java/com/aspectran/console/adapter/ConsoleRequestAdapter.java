@@ -24,11 +24,11 @@ import com.aspectran.core.adapter.BasicRequestAdapter;
  */
 public class ConsoleRequestAdapter extends BasicRequestAdapter {
 
-	/**
-	 * Instantiates a new ConsoleRequestAdapter.
-	 */
-	public ConsoleRequestAdapter() {
-		super(null);
-	}
+    /**
+     * Instantiates a new ConsoleRequestAdapter.
+     */
+    public ConsoleRequestAdapter() {
+        super(null);
+    }
 
 }

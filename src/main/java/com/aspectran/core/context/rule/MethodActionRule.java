@@ -30,122 +30,122 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class MethodActionRule {
 
-	private String actionId;
+    private String actionId;
 
-	private Class<?> configBeanClass;
+    private Class<?> configBeanClass;
 
-	private Method method;
+    private Method method;
 
-	private boolean requiresTranslet;
+    private boolean requiresTranslet;
 
-	private AspectAdviceRule aspectAdviceRule;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+    private AspectAdviceRule aspectAdviceRule;
 
-	public String getActionId() {
-		return actionId;
-	}
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
+    public String getActionId() {
+        return actionId;
+    }
 
-	public Class<?> getConfigBeanClass() {
-		return configBeanClass;
-	}
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	public void setConfigBeanClass(Class<?> configBeanClass) {
-		this.configBeanClass = configBeanClass;
-	}
+    public Class<?> getConfigBeanClass() {
+        return configBeanClass;
+    }
 
-	public Method getMethod() {
-		return method;
-	}
+    public void setConfigBeanClass(Class<?> configBeanClass) {
+        this.configBeanClass = configBeanClass;
+    }
 
-	public void setMethod(Method method) {
-		this.method = method;
-		this.requiresTranslet = isRequiresTranslet(method);
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	public String getMethodName() {
-		if (method != null)
-			return method.getName();
-		return null;
-	}
+    public void setMethod(Method method) {
+        this.method = method;
+        this.requiresTranslet = isRequiresTranslet(method);
+    }
 
-	public boolean isRequiresTranslet() {
-		return requiresTranslet;
-	}
+    public String getMethodName() {
+        if (method != null)
+            return method.getName();
+        return null;
+    }
 
-	public void setRequiresTranslet(boolean requiresTranslet) {
-		this.requiresTranslet = requiresTranslet;
-	}
+    public boolean isRequiresTranslet() {
+        return requiresTranslet;
+    }
 
-	/**
-	 * Gets the aspect advice rule.
-	 *
-	 * @return the aspect advice rule
-	 */
-	public AspectAdviceRule getAspectAdviceRule() {
-		return aspectAdviceRule;
-	}
+    public void setRequiresTranslet(boolean requiresTranslet) {
+        this.requiresTranslet = requiresTranslet;
+    }
 
-	/**
-	 * Sets the aspect advice rule.
-	 *
-	 * @param aspectAdviceRule the new aspect advice rule
-	 */
-	public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		this.aspectAdviceRule = aspectAdviceRule;
-	}
+    /**
+     * Gets the aspect advice rule.
+     *
+     * @return the aspect advice rule
+     */
+    public AspectAdviceRule getAspectAdviceRule() {
+        return aspectAdviceRule;
+    }
 
-	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @return the aspect advice rule registry
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
+    /**
+     * Sets the aspect advice rule.
+     *
+     * @param aspectAdviceRule the new aspect advice rule
+     */
+    public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+        this.aspectAdviceRule = aspectAdviceRule;
+    }
 
-	/**
-	 * Sets the aspect advice rule registry.
-	 *
-	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
-	 */
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		if (configBeanClass != null) {
-			tsb.append("class", configBeanClass.getName());
-		}
-		tsb.append("method", method);
-		tsb.append("aspectAdviceRule", aspectAdviceRule);
-		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-		return tsb.toString();
-	}
+    /**
+     * Gets the aspect advice rule registry.
+     *
+     * @return the aspect advice rule registry
+     */
+    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+        return aspectAdviceRuleRegistry;
+    }
 
-	/**
-	 * Returns a new derived instance of MethodActionRule.
-	 *
-	 * @param actionClass the action class
-	 * @param method the method
-	 * @return the method action rule
-	 */
-	public static MethodActionRule newInstance(Class<?> actionClass, Method method) {
-		MethodActionRule methodActionRule = new MethodActionRule();
-		methodActionRule.setConfigBeanClass(actionClass);
-		methodActionRule.setMethod(method);
-		return methodActionRule;
-	}
-	
-	public static boolean isRequiresTranslet(Method method) {
-		Class<?>[] paramTypes = method.getParameterTypes();
-		return (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
-	}
+    /**
+     * Sets the aspect advice rule registry.
+     *
+     * @param aspectAdviceRuleRegistry the new aspect advice rule registry
+     */
+    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (configBeanClass != null) {
+            tsb.append("class", configBeanClass.getName());
+        }
+        tsb.append("method", method);
+        tsb.append("aspectAdviceRule", aspectAdviceRule);
+        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new derived instance of MethodActionRule.
+     *
+     * @param actionClass the action class
+     * @param method the method
+     * @return the method action rule
+     */
+    public static MethodActionRule newInstance(Class<?> actionClass, Method method) {
+        MethodActionRule methodActionRule = new MethodActionRule();
+        methodActionRule.setConfigBeanClass(actionClass);
+        methodActionRule.setMethod(method);
+        return methodActionRule;
+    }
+
+    public static boolean isRequiresTranslet(Method method) {
+        Class<?>[] paramTypes = method.getParameterTypes();
+        return (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
+    }
 
 }

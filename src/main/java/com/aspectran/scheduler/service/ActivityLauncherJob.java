@@ -34,40 +34,40 @@ import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
  * The Class ActivityLauncherJob.
  */
 public class ActivityLauncherJob implements Job {
-	
-	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		try {
-			JobDetail jobDetail = jobExecutionContext.getJobDetail();
-			JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ACTIVITY_CONTEXT_DATA_KEY);
-			String transletName = jobDetail.getKey().getName();
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        try {
+            JobDetail jobDetail = jobExecutionContext.getJobDetail();
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-			Activity activity = runActivity(context, transletName, jobExecutionContext);
-			jobExecutionContext.put(QuartzSchedulerService.ACTIVITY_DATA_KEY, activity);
-		} catch (Exception e) {
-			throw new JobExecutionException(e);
-		}
-	}
-	
-	private Activity runActivity(ActivityContext context, String transletName, JobExecutionContext jobExecutionContext) throws ActivityException {
-		RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
-		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
+            ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ACTIVITY_CONTEXT_DATA_KEY);
+            String transletName = jobDetail.getKey().getName();
 
-		Activity activity = null;
+            Activity activity = runActivity(context, transletName, jobExecutionContext);
+            jobExecutionContext.put(QuartzSchedulerService.ACTIVITY_DATA_KEY, activity);
+        } catch (Exception e) {
+            throw new JobExecutionException(e);
+        }
+    }
 
-		try {
-			activity = new JobActivity(context, requestAdapter, responseAdapter);
-			activity.prepare(transletName);
-			activity.perform();
-		} finally {
-			if (activity != null) {
-				activity.finish();
-			}
-		}
+    private Activity runActivity(ActivityContext context, String transletName, JobExecutionContext jobExecutionContext) throws ActivityException {
+        RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
+        ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
 
-		return activity;
-	}
-	
+        Activity activity = null;
+
+        try {
+            activity = new JobActivity(context, requestAdapter, responseAdapter);
+            activity.prepare(transletName);
+            activity.perform();
+        } finally {
+            if (activity != null) {
+                activity.finish();
+            }
+        }
+
+        return activity;
+    }
+
 }

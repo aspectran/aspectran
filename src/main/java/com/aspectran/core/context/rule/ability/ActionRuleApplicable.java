@@ -28,39 +28,39 @@ import com.aspectran.core.context.rule.MethodActionRule;
  */
 public interface ActionRuleApplicable {
 
-	/**
-	 * Adds the bean action.
-	 *
-	 * @param beanActionRule the bean action rule
-	 */
-	void applyActionRule(BeanActionRule beanActionRule);
+    /**
+     * Adds the bean action.
+     *
+     * @param beanActionRule the bean action rule
+     */
+    void applyActionRule(BeanActionRule beanActionRule);
 
-	/**
-	 * Adds the method action.
-	 *
-	 * @param methodActionRule the bean action rule
-	 */
-	void applyActionRule(MethodActionRule methodActionRule);
+    /**
+     * Adds the method action.
+     *
+     * @param methodActionRule the bean action rule
+     */
+    void applyActionRule(MethodActionRule methodActionRule);
 
-	/**
-	 * Adds the process-call action.
-	 * 
-	 * @param includeActionRule the process call action rule
-	 */
-	void applyActionRule(IncludeActionRule includeActionRule);
+    /**
+     * Adds the process-call action.
+     *
+     * @param includeActionRule the process call action rule
+     */
+    void applyActionRule(IncludeActionRule includeActionRule);
 
-	/**
-	 * Adds the echo action.
-	 * 
-	 * @param echoActionRule the echo action rule
-	 */
-	void applyActionRule(EchoActionRule echoActionRule);
-	
-	/**
-	 * Adds the heading action.
-	 * 
-	 * @param headingActionRule the heading action rule
-	 */
-	void applyActionRule(HeadingActionRule headingActionRule);
+    /**
+     * Adds the echo action.
+     *
+     * @param echoActionRule the echo action rule
+     */
+    void applyActionRule(EchoActionRule echoActionRule);
+
+    /**
+     * Adds the heading action.
+     *
+     * @param headingActionRule the heading action rule
+     */
+    void applyActionRule(HeadingActionRule headingActionRule);
 
 }

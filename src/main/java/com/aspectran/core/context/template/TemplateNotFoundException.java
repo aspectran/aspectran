@@ -20,38 +20,38 @@ package com.aspectran.core.context.template;
  */
 public class TemplateNotFoundException extends TemplateException {
 
-	/** @serial */
-	private static final long serialVersionUID = 7022297599581677022L;
+    /** @serial */
+    private static final long serialVersionUID = 7022297599581677022L;
 
-	private String templateId;
+    private String templateId;
 
-	/**
-	 * Instantiates a new TemplateNotFoundException.
-	 *
-	 * @param templateId the template id
-	 */
-	public TemplateNotFoundException(String templateId) {
-		this(templateId, null);
-	}
+    /**
+     * Instantiates a new TemplateNotFoundException.
+     *
+     * @param templateId the template id
+     */
+    public TemplateNotFoundException(String templateId) {
+        this(templateId, null);
+    }
 
-	/**
-	 * Instantiates a new TemplateNotFoundException.
-	 *
-	 * @param templateId the template id
-	 * @param cause the root cause
-	 */
-	public TemplateNotFoundException(String templateId, Throwable cause) {
-		super("No template named '" + templateId + "' is defined");
-		this.templateId = templateId;
-	}
+    /**
+     * Instantiates a new TemplateNotFoundException.
+     *
+     * @param templateId the template id
+     * @param cause the root cause
+     */
+    public TemplateNotFoundException(String templateId, Throwable cause) {
+        super("No template named '" + templateId + "' is defined");
+        this.templateId = templateId;
+    }
 
-	/**
-	 * Gets the template id.
-	 *
-	 * @return the template id
-	 */
-	public String getTemplateId() {
-		return templateId;
-	}
-	
+    /**
+     * Gets the template id.
+     *
+     * @return the template id
+     */
+    public String getTemplateId() {
+        return templateId;
+    }
+
 }

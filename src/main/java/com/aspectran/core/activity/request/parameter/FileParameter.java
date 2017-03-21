@@ -33,230 +33,230 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class FileParameter {
 
-	private static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
 
-	private final File file;
-	
-	private boolean refused;
-	
-	protected File savedFile;
-	
-	/**
-	 * Instantiates a new FileParameter.
-	 */
-	protected FileParameter() {
-		this.file = null;
-	}
-	
-	/**
-	 * Instantiates a new FileParameter.
-	 *
-	 * @param file the file
-	 */
-	public FileParameter(File file) {
-		this.file = file;
-	}
+    private final File file;
 
-	public File getFile() {
-		return file;
-	}
+    private boolean refused;
 
-	/**
-	 * Gets the actual name of the file uploaded.
-	 * 
-	 * @return the actual name of the file uploaded
-	 */
-	public String getFileName() {
-		return (file != null ? file.getName() : null);
-	}
+    protected File savedFile;
 
-	/**
-	 * Gets the size of the file uploaded.
-	 * 
-	 * @return the size of the file uploaded
-	 */
-	public long getFileSize() {
-		return (file != null ? file.length() : -1);
-	}
+    /**
+     * Instantiates a new FileParameter.
+     */
+    protected FileParameter() {
+        this.file = null;
+    }
 
-	/**
-	 * Gets the the content type of the file.
-	 * 
-	 * @return the content type of the file
-	 */
-	public String getContentType() {
-		return null;
-	}
+    /**
+     * Instantiates a new FileParameter.
+     *
+     * @param file the file
+     */
+    public FileParameter(File file) {
+        this.file = file;
+    }
 
-	/**
-	 * Returns an {@code InputStream} object of the file.
-	 * 
-	 * @return an {@link java.io.OutputStream OutputStream} that can be used
-	 *         for storing the contensts of the file.
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public InputStream getInputStream() throws IOException {
-		if(file == null) {
-			throw new IOException("No file specified for the file parameter: " + this);
-		}
-		return new FileInputStream(file);
-	}
+    public File getFile() {
+        return file;
+    }
 
-	/**
-	 * Returns the contents of the file in a byte array.
-	 * Can not use a large array of memory than the JVM Heap deal.
-	 *
-	 * @return a byte array
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public byte[] getBytes() throws IOException {
-		InputStream input = getInputStream();
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		
-		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-		int len;
+    /**
+     * Gets the actual name of the file uploaded.
+     *
+     * @return the actual name of the file uploaded
+     */
+    public String getFileName() {
+        return (file != null ? file.getName() : null);
+    }
 
-		try {
-			while ((len = input.read(buffer)) != -1) {
-				output.write(buffer, 0, len);
-			}
-		} finally {
-			try {
-				output.close();
-			} catch (IOException e) {
-				// ignore
-			}
-			try {
-				input.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+    /**
+     * Gets the size of the file uploaded.
+     *
+     * @return the size of the file uploaded
+     */
+    public long getFileSize() {
+        return (file != null ? file.length() : -1);
+    }
 
-		return output.toByteArray();
-	}
-	
-	/**
-	 * Checks if the file is refused.
-	 * 
-	 * @return true, if the file is refused
-	 */
-	public boolean isRefused() {
-		return refused;
-	}
+    /**
+     * Gets the the content type of the file.
+     *
+     * @return the content type of the file
+     */
+    public String getContentType() {
+        return null;
+    }
 
-	/**
-	 * Sets whether the refused file.
-	 * 
-	 * @param refused whether the refused file
-	 */
-	public void setRefused(boolean refused) {
-		this.refused = refused;
-	}
-	
-	/**
-	 * Save an uploaded file as a given destination file.
-	 * If the file already exists in directory the save with a different name.
-	 *
-	 * @param destFile the destination file
-	 * @return a saved file
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public File saveAs(File destFile) throws IOException {
-		return saveAs(destFile, false);
-	}
+    /**
+     * Returns an {@code InputStream} object of the file.
+     *
+     * @return an {@link java.io.OutputStream OutputStream} that can be used
+     *         for storing the contensts of the file.
+     * @throws IOException if an I/O error has occurred
+     */
+    public InputStream getInputStream() throws IOException {
+        if(file == null) {
+            throw new IOException("No file specified for the file parameter: " + this);
+        }
+        return new FileInputStream(file);
+    }
 
-	/**
-	 * Save an file as a given destination file.
-	 *
-	 * @param destFile the destination file
-	 * @param overwrite whether to overwrite if it already exists
-	 * @return a saved file
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public File saveAs(File destFile, boolean overwrite) throws IOException {
-		if (destFile == null) {
-			throw new IllegalArgumentException("The destFile argument must not be null.");
-		}
+    /**
+     * Returns the contents of the file in a byte array.
+     * Can not use a large array of memory than the JVM Heap deal.
+     *
+     * @return a byte array
+     * @throws IOException if an I/O error has occurred
+     */
+    public byte[] getBytes() throws IOException {
+        InputStream input = getInputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		if (!overwrite) {
-			File newFile = FilenameUtils.seekUniqueFile(destFile);
-			if (destFile != newFile) {
-				destFile = newFile;
-			}
-		} else {
-			if (destFile.exists() && !destFile.delete()) {
-				throw new IOException("Destination file [" + destFile.getAbsolutePath() +
-						"] already exists and could not be deleted.");
-			}
-		}
-		
-		InputStream input = getInputStream();
-		OutputStream output = new FileOutputStream(destFile);
+        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        int len;
 
-		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-		int len;
+        try {
+            while ((len = input.read(buffer)) != -1) {
+                output.write(buffer, 0, len);
+            }
+        } finally {
+            try {
+                output.close();
+            } catch (IOException e) {
+                // ignore
+            }
+            try {
+                input.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
 
-		try {
-			while ((len = input.read(buffer)) != -1) {
-				output.write(buffer, 0, len);
-			}
-		} finally {
-			try {
-				output.close();
-			} catch (IOException e) {
-				// ignore
-			}
-			try {
-				input.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+        return output.toByteArray();
+    }
 
-		savedFile = destFile;
-		
-		return destFile;
-	}
-	
-	public File getSavedFile() {
-		return savedFile;
-	}
+    /**
+     * Checks if the file is refused.
+     *
+     * @return true, if the file is refused
+     */
+    public boolean isRefused() {
+        return refused;
+    }
 
-	/**
-	 * Delete a file.
-	 */
-	public void delete() {
-		if (file != null) {
-			file.delete();
-		}
-	}
-	
-	/**
-	 * Delete a saved file.
-	 */
-	public void rollback() {
-		if (savedFile != null) {
-			savedFile.delete();
-		}
-	}
-	
-	public void release() {
-		if (file != null) {
-			file.setWritable(true);
-		}
-		if (savedFile != null) {
-			savedFile.setWritable(true);
-		}
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("file", file);
-		tsb.append("savedFile", savedFile);
-		tsb.append("refused", refused);
-		return tsb.toString();
-	}
+    /**
+     * Sets whether the refused file.
+     *
+     * @param refused whether the refused file
+     */
+    public void setRefused(boolean refused) {
+        this.refused = refused;
+    }
+
+    /**
+     * Save an uploaded file as a given destination file.
+     * If the file already exists in directory the save with a different name.
+     *
+     * @param destFile the destination file
+     * @return a saved file
+     * @throws IOException if an I/O error has occurred
+     */
+    public File saveAs(File destFile) throws IOException {
+        return saveAs(destFile, false);
+    }
+
+    /**
+     * Save an file as a given destination file.
+     *
+     * @param destFile the destination file
+     * @param overwrite whether to overwrite if it already exists
+     * @return a saved file
+     * @throws IOException if an I/O error has occurred
+     */
+    public File saveAs(File destFile, boolean overwrite) throws IOException {
+        if (destFile == null) {
+            throw new IllegalArgumentException("The destFile argument must not be null.");
+        }
+
+        if (!overwrite) {
+            File newFile = FilenameUtils.seekUniqueFile(destFile);
+            if (destFile != newFile) {
+                destFile = newFile;
+            }
+        } else {
+            if (destFile.exists() && !destFile.delete()) {
+                throw new IOException("Destination file [" + destFile.getAbsolutePath() +
+                        "] already exists and could not be deleted.");
+            }
+        }
+
+        InputStream input = getInputStream();
+        OutputStream output = new FileOutputStream(destFile);
+
+        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        int len;
+
+        try {
+            while ((len = input.read(buffer)) != -1) {
+                output.write(buffer, 0, len);
+            }
+        } finally {
+            try {
+                output.close();
+            } catch (IOException e) {
+                // ignore
+            }
+            try {
+                input.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+
+        savedFile = destFile;
+
+        return destFile;
+    }
+
+    public File getSavedFile() {
+        return savedFile;
+    }
+
+    /**
+     * Delete a file.
+     */
+    public void delete() {
+        if (file != null) {
+            file.delete();
+        }
+    }
+
+    /**
+     * Delete a saved file.
+     */
+    public void rollback() {
+        if (savedFile != null) {
+            savedFile.delete();
+        }
+    }
+
+    public void release() {
+        if (file != null) {
+            file.setWritable(true);
+        }
+        if (savedFile != null) {
+            savedFile.setWritable(true);
+        }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("file", file);
+        tsb.append("savedFile", savedFile);
+        tsb.append("refused", refused);
+        return tsb.toString();
+    }
 
 }

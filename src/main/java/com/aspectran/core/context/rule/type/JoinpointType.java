@@ -20,35 +20,35 @@ package com.aspectran.core.context.rule.type;
  */
 public enum JoinpointType {
 
-	SESSION("session"),
-	TRANSLET("translet"),
-	BEAN("bean");
+    SESSION("session"),
+    TRANSLET("translet"),
+    BEAN("bean");
 
-	private final String alias;
+    private final String alias;
 
-	JoinpointType(String alias) {
-		this.alias = alias;
-	}
+    JoinpointType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code JoinpointType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the join-point type as a {@code String}
-	 * @return a {@code JoinpointType}, may be {@code null}
-	 */
-	public static JoinpointType resolve(String alias) {
-		for (JoinpointType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code JoinpointType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the join-point type as a {@code String}
+     * @return a {@code JoinpointType}, may be {@code null}
+     */
+    public static JoinpointType resolve(String alias) {
+        for (JoinpointType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

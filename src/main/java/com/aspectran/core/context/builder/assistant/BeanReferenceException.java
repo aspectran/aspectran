@@ -25,63 +25,63 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class BeanReferenceException extends ActivityContextBuilderException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -244633940486989865L;
-	
-	private BeanReferenceInspector beanReferenceInspector;
 
-	/**
-	 * Simple constructor.
-	 */
-	public BeanReferenceException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -244633940486989865L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param unknownBeanIdList the unknown bean id list
-	 */
-	public BeanReferenceException(List<Object> unknownBeanIdList) {
-		super(getMessage(unknownBeanIdList));
-	}
-	
-	/**
-	 * Returns a bean reference inspector.
-	 *
-	 * @return the bean reference inspector
-	 */
-	public BeanReferenceInspector getBeanReferenceInspector() {
-		return beanReferenceInspector;
-	}
+    private BeanReferenceInspector beanReferenceInspector;
 
-	/**
-	 * Sets the bean reference inspector.
-	 *
-	 * @param beanReferenceInspector the new bean reference inspector
-	 */
-	public void setBeanReferenceInspector(BeanReferenceInspector beanReferenceInspector) {
-		this.beanReferenceInspector = beanReferenceInspector;
-	}
+    /**
+     * Simple constructor.
+     */
+    public BeanReferenceException() {
+        super();
+    }
 
-	/**
-	 * Gets the message.
-	 *
-	 * @param unknownBeanIdList the unknown bean id list
-	 * @return the message
-	 */
-	private static String getMessage(List<Object> unknownBeanIdList) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Cannot resolve reference to bean [");
-		for (int i = 0; i < unknownBeanIdList.size(); i++) {
-			if (i > 0) {
-				sb.append(", ");
-			}
-			sb.append(unknownBeanIdList.get(i));
-		}
-		sb.append("]");
-		return sb.toString();
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param unknownBeanIdList the unknown bean id list
+     */
+    public BeanReferenceException(List<Object> unknownBeanIdList) {
+        super(getMessage(unknownBeanIdList));
+    }
+
+    /**
+     * Returns a bean reference inspector.
+     *
+     * @return the bean reference inspector
+     */
+    public BeanReferenceInspector getBeanReferenceInspector() {
+        return beanReferenceInspector;
+    }
+
+    /**
+     * Sets the bean reference inspector.
+     *
+     * @param beanReferenceInspector the new bean reference inspector
+     */
+    public void setBeanReferenceInspector(BeanReferenceInspector beanReferenceInspector) {
+        this.beanReferenceInspector = beanReferenceInspector;
+    }
+
+    /**
+     * Gets the message.
+     *
+     * @param unknownBeanIdList the unknown bean id list
+     * @return the message
+     */
+    private static String getMessage(List<Object> unknownBeanIdList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Cannot resolve reference to bean [");
+        for (int i = 0; i < unknownBeanIdList.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(unknownBeanIdList.get(i));
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 
 }

@@ -19,44 +19,44 @@ package com.aspectran.core.util.apon;
  * The Class UnknownParameterException.
  */
 public class UnknownParameterException extends InvalidParameterException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 6446576507072773588L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public UnknownParameterException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 6446576507072773588L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param parameterName the parameter name
-	 * @param parameters the parameters
-	 */
-	public UnknownParameterException(String parameterName, Parameters parameters) {
-		super("Unknown parameter \"" + parameterName + "\" from " + parameters);
-	}
+    /**
+     * Simple constructor.
+     */
+    public UnknownParameterException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public UnknownParameterException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param parameterName the parameter name
+     * @param parameters the parameters
+     */
+    public UnknownParameterException(String parameterName, Parameters parameters) {
+        super("Unknown parameter \"" + parameterName + "\" from " + parameters);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public UnknownParameterException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public UnknownParameterException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public UnknownParameterException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

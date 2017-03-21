@@ -31,50 +31,50 @@ import com.aspectran.core.util.StringUtils;
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {
 
-	/** @serial */
-	private static final long serialVersionUID = -6936820061673430782L;
-	
-	public ResourceEntries() {
-		super();
-	}
-	
-	public void putResource(String resourceName, File file) throws InvalidResourceException {
-		URL url;
-		
-		try {
-			url = file.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new InvalidResourceException("Invalid resource file: " + file, e);
-		}
-		
-		put(resourceName, url);
-	}
-	
-	public void putResource(File file, JarEntry entry) throws InvalidResourceException {
-		String resourceName = entry.getName();
-		URL url;
-		
-		try {
-			//"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
-			url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
-		} catch (MalformedURLException e) {
-			throw new InvalidResourceException("Invalid resource jar file: " + file, e);
-		}
-		
-		put(resourceName, url);
-	}
-	
-	@Override
-	public URL put(String resourceName, URL url) {
-		if (resourceName.indexOf('\\') != -1) {
-			resourceName = resourceName.replace('\\', ResourceUtils.PATH_SPEPARATOR_CHAR);
-		}
-		
-		if (StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
-			resourceName = resourceName.substring(0, resourceName.length() - 1);
-		}
-		
-		return super.put(resourceName, url);
-	}
-		
+    /** @serial */
+    private static final long serialVersionUID = -6936820061673430782L;
+
+    public ResourceEntries() {
+        super();
+    }
+
+    public void putResource(String resourceName, File file) throws InvalidResourceException {
+        URL url;
+
+        try {
+            url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new InvalidResourceException("Invalid resource file: " + file, e);
+        }
+
+        put(resourceName, url);
+    }
+
+    public void putResource(File file, JarEntry entry) throws InvalidResourceException {
+        String resourceName = entry.getName();
+        URL url;
+
+        try {
+            //"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
+            url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
+        } catch (MalformedURLException e) {
+            throw new InvalidResourceException("Invalid resource jar file: " + file, e);
+        }
+
+        put(resourceName, url);
+    }
+
+    @Override
+    public URL put(String resourceName, URL url) {
+        if (resourceName.indexOf('\\') != -1) {
+            resourceName = resourceName.replace('\\', ResourceUtils.PATH_SPEPARATOR_CHAR);
+        }
+
+        if (StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
+            resourceName = resourceName.substring(0, resourceName.length() - 1);
+        }
+
+        return super.put(resourceName, url);
+    }
+
 }

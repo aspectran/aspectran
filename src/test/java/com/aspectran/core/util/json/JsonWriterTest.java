@@ -24,35 +24,35 @@ import com.aspectran.core.util.apon.test.Customer;
 
 public class JsonWriterTest {
 
-	public static void main(String argv[]) {
-		try {
-			Map<String, Object> map = new LinkedHashMap<String, Object>();
-			map.put("locale", "Start Testing Now!");
-			map.put("one", 1);
-			map.put("two", 2);
-			map.put("three", 3);
-			map.put("four", 4);
+    public static void main(String argv[]) {
+        try {
+            Map<String, Object> map = new LinkedHashMap<String, Object>();
+            map.put("locale", "Start Testing Now!");
+            map.put("one", 1);
+            map.put("two", 2);
+            map.put("three", 3);
+            map.put("four", 4);
 
-			List<Customer> customerList = new ArrayList<Customer>();
-			
-			for (int i = 1; i <= 10; i++) {
-				Customer customer = new Customer();
-				customer.putValue(Customer.id, "guest-" + i);
-				customer.putValue(Customer.name, "Guest" + i);
-				customer.putValue(Customer.age, 20 + i);
-				customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
-				customer.putValue(Customer.approved, true);
-				
-				customerList.add(customer);
-			}			
+            List<Customer> customerList = new ArrayList<Customer>();
 
-			map.put("customers", customerList);
+            for (int i = 1; i <= 10; i++) {
+                Customer customer = new Customer();
+                customer.putValue(Customer.id, "guest-" + i);
+                customer.putValue(Customer.name, "Guest" + i);
+                customer.putValue(Customer.age, 20 + i);
+                customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
+                customer.putValue(Customer.approved, true);
 
-			System.out.println(JsonWriter.stringify(map, true, "  "));
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+                customerList.add(customer);
+            }
+
+            map.put("customers", customerList);
+
+            System.out.println(JsonWriter.stringify(map, true, "  "));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

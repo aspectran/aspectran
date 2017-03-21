@@ -39,41 +39,41 @@ import com.aspectran.core.context.ActivityContextException;
  */
 public class InvalidResourceException extends ActivityContextException {
 
-	/** @serial */
-	private static final long serialVersionUID = -8749285705396087498L;
+    /** @serial */
+    private static final long serialVersionUID = -8749285705396087498L;
 
-	/**
-	 * Simple constructor
-	 */
-	public InvalidResourceException() {
-	}
+    /**
+     * Simple constructor
+     */
+    public InvalidResourceException() {
+    }
 
-	/**
-	 * Constructor to create exception with a message
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public InvalidResourceException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message
+     *
+     * @param msg a message to associate with the exception
+     */
+    public InvalidResourceException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public InvalidResourceException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception
+     *
+     * @param cause the real cause of the exception
+     */
+    public InvalidResourceException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public InvalidResourceException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a
+     * message
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public InvalidResourceException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

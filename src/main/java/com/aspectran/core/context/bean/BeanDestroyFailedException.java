@@ -22,47 +22,47 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class BeanDestroyFailedException extends BeanRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = -2416583532228763870L;
-	
-	/**
-	 * Create a new BeanDestroyFailedException.
-	 *
-	 * @param beanRule the bean rule
-	 */
-	public BeanDestroyFailedException(BeanRule beanRule) {
-		this("Cannot destroy a bean", beanRule);
-	}
+    /** @serial */
+    private static final long serialVersionUID = -2416583532228763870L;
 
-	/**
-	 * Create a new BeanDestroyFailedException.
-	 *
-	 * @param msg the detail message
-	 * @param beanRule the bean rule
-	 */
-	public BeanDestroyFailedException(String msg, BeanRule beanRule) {
-		super(msg, beanRule);
-	}
+    /**
+     * Create a new BeanDestroyFailedException.
+     *
+     * @param beanRule the bean rule
+     */
+    public BeanDestroyFailedException(BeanRule beanRule) {
+        this("Cannot destroy a bean", beanRule);
+    }
 
-	/**
-	 * Create a new BeanDestroyFailedException.
-	 *
-	 * @param beanRule the bean rule
-	 * @param cause the root cause
-	 */
-	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
-		this("Cannot destroy a bean", beanRule, cause);
-	}
+    /**
+     * Create a new BeanDestroyFailedException.
+     *
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     */
+    public BeanDestroyFailedException(String msg, BeanRule beanRule) {
+        super(msg, beanRule);
+    }
 
-	/**
-	 * Create a new BeanDestroyFailedException.
-	 *
-	 * @param msg the detail message
-	 * @param beanRule the bean rule
-	 * @param cause the root cause
-	 */
-	public BeanDestroyFailedException(String msg, BeanRule beanRule, Throwable cause) {
-		super(msg, beanRule, cause);
-	}
+    /**
+     * Create a new BeanDestroyFailedException.
+     *
+     * @param beanRule the bean rule
+     * @param cause the root cause
+     */
+    public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
+        this("Cannot destroy a bean", beanRule, cause);
+    }
+
+    /**
+     * Create a new BeanDestroyFailedException.
+     *
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     * @param cause the root cause
+     */
+    public BeanDestroyFailedException(String msg, BeanRule beanRule, Throwable cause) {
+        super(msg, beanRule, cause);
+    }
 
 }

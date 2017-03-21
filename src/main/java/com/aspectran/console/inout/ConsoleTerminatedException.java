@@ -22,42 +22,42 @@ import com.aspectran.core.context.AspectranRuntimeException;
  */
 public class ConsoleTerminatedException extends AspectranRuntimeException {
 
-	/** @serial */
-	private static final long serialVersionUID = -8812494142589655857L;
+    /** @serial */
+    private static final long serialVersionUID = -8812494142589655857L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public ConsoleTerminatedException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public ConsoleTerminatedException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public ConsoleTerminatedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public ConsoleTerminatedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public ConsoleTerminatedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ConsoleTerminatedException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 *
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public ConsoleTerminatedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ConsoleTerminatedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

@@ -31,75 +31,75 @@ import com.aspectran.core.context.rule.ExceptionRule;
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
 
-	private final ActivityContext context;
+    private final ActivityContext context;
 
-	private final BeanRule beanRule;
+    private final BeanRule beanRule;
 
-	private final Object bean;
-	
-	protected JdkDynamicBeanProxy(ActivityContext context, BeanRule beanRule, Object bean) {
-		super(context.getAspectRuleRegistry());
+    private final Object bean;
 
-		this.context = context;
-		this.beanRule = beanRule;
-		this.bean = bean;
-	}
+    protected JdkDynamicBeanProxy(ActivityContext context, BeanRule beanRule, Object bean) {
+        super(context.getAspectRuleRegistry());
 
-	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		Activity activity = context.getCurrentActivity();
+        this.context = context;
+        this.beanRule = beanRule;
+        this.bean = bean;
+    }
 
-		String transletName = activity.getTransletName();
-		String beanId = beanRule.getId();
-		String className = beanRule.getClassName();
-		String methodName = method.getName();
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Activity activity = context.getCurrentActivity();
 
-		AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
+        String transletName = activity.getTransletName();
+        String beanId = beanRule.getId();
+        String className = beanRule.getClassName();
+        String methodName = method.getName();
 
-		if (aarr == null) {
-			return method.invoke(bean, args);
-		}
+        AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
 
-		try {
-			try {
-				if (aarr.getBeforeAdviceRuleList() != null) {
-					activity.executeAdvice(aarr.getBeforeAdviceRuleList());
-				}
+        if (aarr == null) {
+            return method.invoke(bean, args);
+        }
 
-				if (log.isDebugEnabled()) {
-					log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
-				}
+        try {
+            try {
+                if (aarr.getBeforeAdviceRuleList() != null) {
+                    activity.executeAdvice(aarr.getBeforeAdviceRuleList());
+                }
 
-				Object result = method.invoke(bean, args);
+                if (log.isDebugEnabled()) {
+                    log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
+                }
 
-				if (aarr.getAfterAdviceRuleList() != null) {
-					activity.executeAdvice(aarr.getAfterAdviceRuleList());
-				}
+                Object result = method.invoke(bean, args);
 
-				return result;
-			} finally {
-				if (aarr.getFinallyAdviceRuleList() != null) {
-					activity.executeAdviceWithoutThrow(aarr.getFinallyAdviceRuleList());
-				}
-			}
-		} catch (Exception e) {
-			activity.setRaisedException(e);
+                if (aarr.getAfterAdviceRuleList() != null) {
+                    activity.executeAdvice(aarr.getAfterAdviceRuleList());
+                }
 
-			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
-			if (exceptionRuleList != null) {
-				activity.handleException(exceptionRuleList);
-				if (activity.isResponseReserved()) {
-					return null;
-				}
-			}
+                return result;
+            } finally {
+                if (aarr.getFinallyAdviceRuleList() != null) {
+                    activity.executeAdviceWithoutThrow(aarr.getFinallyAdviceRuleList());
+                }
+            }
+        } catch (Exception e) {
+            activity.setRaisedException(e);
 
-			throw e;
-		}
-	}
-	
-	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
-		JdkDynamicBeanProxy proxy = new JdkDynamicBeanProxy(context, beanRule, bean);
-		return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(), beanRule.getBeanClass().getInterfaces(), proxy);
-	}
-	
+            List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
+            if (exceptionRuleList != null) {
+                activity.handleException(exceptionRuleList);
+                if (activity.isResponseReserved()) {
+                    return null;
+                }
+            }
+
+            throw e;
+        }
+    }
+
+    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
+        JdkDynamicBeanProxy proxy = new JdkDynamicBeanProxy(context, beanRule, bean);
+        return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(), beanRule.getBeanClass().getInterfaces(), proxy);
+    }
+
 }

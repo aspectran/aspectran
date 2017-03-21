@@ -22,47 +22,47 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class BeanCreationException extends BeanRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = -4711272699122321571L;
+    /** @serial */
+    private static final long serialVersionUID = -4711272699122321571L;
 
-	/**
-	 * Instantiates a new BeanCreationException.
-	 *
-	 * @param beanRule the bean rule
-	 */
-	public BeanCreationException(BeanRule beanRule) {
-		super("Cannot create a bean", beanRule);
-	}
+    /**
+     * Instantiates a new BeanCreationException.
+     *
+     * @param beanRule the bean rule
+     */
+    public BeanCreationException(BeanRule beanRule) {
+        super("Cannot create a bean", beanRule);
+    }
 
-	/**
-	 * Instantiates a new BeanCreationException.
-	 *
-	 * @param msg The detail message
-	 * @param beanRule the bean rule
-	 */
-	public BeanCreationException(String msg, BeanRule beanRule) {
-		super(msg, beanRule);
-	}
+    /**
+     * Instantiates a new BeanCreationException.
+     *
+     * @param msg The detail message
+     * @param beanRule the bean rule
+     */
+    public BeanCreationException(String msg, BeanRule beanRule) {
+        super(msg, beanRule);
+    }
 
-	/**
-	 * Instantiates a new BeanCreationException.
-	 *
-	 * @param beanRule the bean rule
-	 * @param cause the root cause
-	 */
-	public BeanCreationException(BeanRule beanRule, Throwable cause) {
-		super("Cannot create a bean", beanRule, cause);
-	}
+    /**
+     * Instantiates a new BeanCreationException.
+     *
+     * @param beanRule the bean rule
+     * @param cause the root cause
+     */
+    public BeanCreationException(BeanRule beanRule, Throwable cause) {
+        super("Cannot create a bean", beanRule, cause);
+    }
 
-	/**
-	 * Instantiates a new BeanCreationException.
-	 *
-	 * @param msg the detail message
-	 * @param beanRule the bean rule
-	 * @param cause the root cause
-	 */
-	public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
-		super(msg, beanRule, cause);
-	}
+    /**
+     * Instantiates a new BeanCreationException.
+     *
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     * @param cause the root cause
+     */
+    public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
+        super(msg, beanRule, cause);
+    }
 
 }

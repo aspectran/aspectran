@@ -22,86 +22,86 @@ package com.aspectran.core.util.apon;
  */
 public enum ParameterValueType {
 
-	STRING("string"),
-	TEXT("text"),
-	INT("int"),
-	LONG("long"),
-	FLOAT("float"),
-	DOUBLE("double"),
-	BOOLEAN("boolean"),
-	VARIABLE("variable"),
-	PARAMETERS("parameters");
+    STRING("string"),
+    TEXT("text"),
+    INT("int"),
+    LONG("long"),
+    FLOAT("float"),
+    DOUBLE("double"),
+    BOOLEAN("boolean"),
+    VARIABLE("variable"),
+    PARAMETERS("parameters");
 
-	private final String alias;
+    private final String alias;
 
-	ParameterValueType(String alias) {
-		this.alias = alias;
-	}
+    ParameterValueType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a ParameterValueType with a value represented by the specified String.
-	 *
-	 * @param alias the specified String
-	 * @return the parameter value type
-	 */
-	public static ParameterValueType resolve(String alias) {
-		for (ParameterValueType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a ParameterValueType with a value represented by the specified String.
+     *
+     * @param alias the specified String
+     * @return the parameter value type
+     */
+    public static ParameterValueType resolve(String alias) {
+        for (ParameterValueType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
-	public static ParameterValueType resolveByHint(String name) {
-		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		if (hintStartIndex > 0) {
-			int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
-			if (hintEndIndex > hintStartIndex) {
-				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
-				return resolve(typeHint);
-			}
-		}
-		return null;
-	}
-	
-	public static String stripHintedValueType(String name) {
-		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-		if (hintStartIndex > 0) {
-			return name.substring(0, hintStartIndex);
-		}
-		return name;
-	}
+    public static ParameterValueType resolveByHint(String name) {
+        int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
+        if (hintStartIndex > 0) {
+            int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
+            if (hintEndIndex > hintStartIndex) {
+                String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
+                return resolve(typeHint);
+            }
+        }
+        return null;
+    }
 
-	public static ParameterValueType determineType(Object value) {
-		ParameterValueType type;
-		if (value instanceof String) {
-			if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
-				type = ParameterValueType.STRING;
-			} else {
-				type = ParameterValueType.TEXT;
-			}
-		} else if (value instanceof Integer) {
-			type = ParameterValueType.INT;
-		} else if (value instanceof Long) {
-			type = ParameterValueType.LONG;
-		} else if (value instanceof Float) {
-			type = ParameterValueType.FLOAT;
-		} else if (value instanceof Double) {
-			type = ParameterValueType.DOUBLE;
-		} else if (value instanceof Boolean) {
-			type = ParameterValueType.BOOLEAN;
-		} else if (value instanceof Parameters) {
-			type = ParameterValueType.PARAMETERS;
-		} else {
-			type = ParameterValueType.STRING;
-		}
-		return type;
-	}
-	
+    public static String stripHintedValueType(String name) {
+        int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
+        if (hintStartIndex > 0) {
+            return name.substring(0, hintStartIndex);
+        }
+        return name;
+    }
+
+    public static ParameterValueType determineType(Object value) {
+        ParameterValueType type;
+        if (value instanceof String) {
+            if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
+                type = ParameterValueType.STRING;
+            } else {
+                type = ParameterValueType.TEXT;
+            }
+        } else if (value instanceof Integer) {
+            type = ParameterValueType.INT;
+        } else if (value instanceof Long) {
+            type = ParameterValueType.LONG;
+        } else if (value instanceof Float) {
+            type = ParameterValueType.FLOAT;
+        } else if (value instanceof Double) {
+            type = ParameterValueType.DOUBLE;
+        } else if (value instanceof Boolean) {
+            type = ParameterValueType.BOOLEAN;
+        } else if (value instanceof Parameters) {
+            type = ParameterValueType.PARAMETERS;
+        } else {
+            type = ParameterValueType.STRING;
+        }
+        return type;
+    }
+
 }

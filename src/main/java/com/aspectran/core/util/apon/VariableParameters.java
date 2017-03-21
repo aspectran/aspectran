@@ -22,40 +22,40 @@ import java.io.Serializable;
  */
 public class VariableParameters extends AbstractParameters implements Serializable {
 
-	/** @serial */
-	private static final long serialVersionUID = 4492298345259110525L;
+    /** @serial */
+    private static final long serialVersionUID = 4492298345259110525L;
 
-	public VariableParameters() {
-		this(null, null);
-	}
-	
-	public VariableParameters(String text) {
-		this(null, text);
-	}
+    public VariableParameters() {
+        this(null, null);
+    }
 
-	public VariableParameters(ParameterDefinition[] parameterDefinitions) {
-		this(parameterDefinitions, null);
-	}
-	
-	public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
-		super(parameterDefinitions, text);
-	}
-	
-	@Override
-	public void putValue(String name, Object value) {
-		Parameter p = touchParameterValue(name, value);
-		p.putValue(value);
-	}
-	
-	private Parameter touchParameterValue(String name, Object value) {
-		Parameter p = getParameterValueMap().get(name);
-		if (p == null && isAddable()) {
-			p = newParameterValue(name, ParameterValueType.determineType(value));
-		}
-		if (p == null) {
-			throw new UnknownParameterException(name, this);
-		}
-		return p;
-	}
+    public VariableParameters(String text) {
+        this(null, text);
+    }
+
+    public VariableParameters(ParameterDefinition[] parameterDefinitions) {
+        this(parameterDefinitions, null);
+    }
+
+    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
+        super(parameterDefinitions, text);
+    }
+
+    @Override
+    public void putValue(String name, Object value) {
+        Parameter p = touchParameterValue(name, value);
+        p.putValue(value);
+    }
+
+    private Parameter touchParameterValue(String name, Object value) {
+        Parameter p = getParameterValueMap().get(name);
+        if (p == null && isAddable()) {
+            p = newParameterValue(name, ParameterValueType.determineType(value));
+        }
+        if (p == null) {
+            throw new UnknownParameterException(name, this);
+        }
+        return p;
+    }
 
 }

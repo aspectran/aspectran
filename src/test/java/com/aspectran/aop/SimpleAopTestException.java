@@ -21,8 +21,8 @@ package com.aspectran.aop;
 @SuppressWarnings("serial")
 public class SimpleAopTestException extends RuntimeException {
 
-	public SimpleAopTestException() {
-		super("************************ Exception generation for testing ************************");
-	}
+    public SimpleAopTestException() {
+        super("************************ Exception generation for testing ************************");
+    }
 
 }

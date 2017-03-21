@@ -34,78 +34,78 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ForwardResponse implements Response {
 
-	private final Log log = LogFactory.getLog(ForwardResponse.class);
-	
-	private final boolean debugEnabled = log.isDebugEnabled();
-	
-	private final ForwardResponseRule forwardResponseRule;
-	
-	/**
-	 * Instantiates a new ForwardResponse.
-	 * 
-	 * @param forwardResponseRule the forward response rule
-	 */
-	public ForwardResponse(ForwardResponseRule forwardResponseRule) {
-		this.forwardResponseRule = forwardResponseRule;
-	}
-	
-	@Override
-	public void response(Activity activity) {
-		RequestAdapter requestAdapter = activity.getRequestAdapter();
-		if (requestAdapter == null) {
-			return;
-		}
+    private final Log log = LogFactory.getLog(ForwardResponse.class);
 
-		if (debugEnabled) {
-			log.debug("response " + forwardResponseRule);
-		}
+    private final boolean debugEnabled = log.isDebugEnabled();
 
-		if (forwardResponseRule.getAttributeItemRuleMap() != null) {
-			ItemEvaluator evaluator = new ItemExpressionParser(activity);
-			Map<String, Object> valueMap = evaluator.evaluate(forwardResponseRule.getAttributeItemRuleMap());
+    private final ForwardResponseRule forwardResponseRule;
 
-			for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-			}
-		}
-	}
-	
-	@Override
-	public ResponseType getResponseType() {
-		return ForwardResponseRule.RESPONSE_TYPE;
-	}
+    /**
+     * Instantiates a new ForwardResponse.
+     *
+     * @param forwardResponseRule the forward response rule
+     */
+    public ForwardResponse(ForwardResponseRule forwardResponseRule) {
+        this.forwardResponseRule = forwardResponseRule;
+    }
 
-	@Override
-	public String getContentType() {
-		if (forwardResponseRule == null) {
-			return null;
-		}
-		return forwardResponseRule.getContentType();
-	}
+    @Override
+    public void response(Activity activity) {
+        RequestAdapter requestAdapter = activity.getRequestAdapter();
+        if (requestAdapter == null) {
+            return;
+        }
 
-	@Override
-	public ActionList getActionList() {
-		return forwardResponseRule.getActionList();
-	}
+        if (debugEnabled) {
+            log.debug("response " + forwardResponseRule);
+        }
 
-	@Override
-	public Response replicate() {
-		ForwardResponseRule frr = forwardResponseRule.replicate();
-		return new ForwardResponse(frr);
-	}
+        if (forwardResponseRule.getAttributeItemRuleMap() != null) {
+            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            Map<String, Object> valueMap = evaluator.evaluate(forwardResponseRule.getAttributeItemRuleMap());
 
-	/**
-	 * Returns the forward response rule.
-	 * 
-	 * @return the forward response rule
-	 */
-	public ForwardResponseRule getForwardResponseRule() {
-		return forwardResponseRule;
-	}
+            for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+                requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 
-	@Override
-	public String toString() {
-		return forwardResponseRule.toString();
-	}
+    @Override
+    public ResponseType getResponseType() {
+        return ForwardResponseRule.RESPONSE_TYPE;
+    }
+
+    @Override
+    public String getContentType() {
+        if (forwardResponseRule == null) {
+            return null;
+        }
+        return forwardResponseRule.getContentType();
+    }
+
+    @Override
+    public ActionList getActionList() {
+        return forwardResponseRule.getActionList();
+    }
+
+    @Override
+    public Response replicate() {
+        ForwardResponseRule frr = forwardResponseRule.replicate();
+        return new ForwardResponse(frr);
+    }
+
+    /**
+     * Returns the forward response rule.
+     *
+     * @return the forward response rule
+     */
+    public ForwardResponseRule getForwardResponseRule() {
+        return forwardResponseRule;
+    }
+
+    @Override
+    public String toString() {
+        return forwardResponseRule.toString();
+    }
 
 }

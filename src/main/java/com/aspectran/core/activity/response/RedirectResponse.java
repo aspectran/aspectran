@@ -29,88 +29,88 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class RedirectResponse implements Response {
-	
-	private final Log log = LogFactory.getLog(RedirectResponse.class);
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+    private final Log log = LogFactory.getLog(RedirectResponse.class);
 
-	private final RedirectResponseRule redirectResponseRule;
+    private final boolean debugEnabled = log.isDebugEnabled();
 
-	private final String characterEncoding;
+    private final RedirectResponseRule redirectResponseRule;
 
-	/**
-	 * Instantiates a new RedirectResponse.
-	 * 
-	 * @param redirectResponseRule the redirect response rule
-	 */
-	public RedirectResponse(RedirectResponseRule redirectResponseRule) {
-		this.redirectResponseRule = redirectResponseRule;
-		this.characterEncoding = redirectResponseRule.getCharacterEncoding();
-	}
+    private final String characterEncoding;
 
-	@Override
-	public void response(Activity activity) throws ResponseException {
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null) {
-			return;
-		}
-		
-		if (debugEnabled) {
-			log.debug("response " + redirectResponseRule);
-		}
-		
-		try {
-			if (this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
-			} else {
-				String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
-			
-			responseAdapter.redirect(redirectResponseRule);
-		} catch (Exception e) {
-			throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
-		}
-	}
+    /**
+     * Instantiates a new RedirectResponse.
+     *
+     * @param redirectResponseRule the redirect response rule
+     */
+    public RedirectResponse(RedirectResponseRule redirectResponseRule) {
+        this.redirectResponseRule = redirectResponseRule;
+        this.characterEncoding = redirectResponseRule.getCharacterEncoding();
+    }
 
-	@Override
-	public ResponseType getResponseType() {
-		return RedirectResponseRule.RESPONSE_TYPE;
-	}
+    @Override
+    public void response(Activity activity) throws ResponseException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            return;
+        }
 
-	@Override
-	public String getContentType() {
-		if (redirectResponseRule == null) {
-			return null;
-		}
-		return redirectResponseRule.getContentType();
-	}
+        if (debugEnabled) {
+            log.debug("response " + redirectResponseRule);
+        }
 
-	@Override
-	public ActionList getActionList() {
-		return redirectResponseRule.getActionList();
-	}
+        try {
+            if (this.characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            } else {
+                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-	@Override
-	public Response replicate() {
-		RedirectResponseRule rrr = redirectResponseRule.replicate();
-		return new RedirectResponse(rrr);
-	}
-	
-	/**
-	 * Returns the redirect response rule.
-	 * 
-	 * @return the redirect response rule
-	 */
-	public RedirectResponseRule getRedirectResponseRule() {
-		return redirectResponseRule;
-	}
+            responseAdapter.redirect(redirectResponseRule);
+        } catch (Exception e) {
+            throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
+        }
+    }
 
-	@Override
-	public String toString() {
-		return redirectResponseRule.toString();
-	}
+    @Override
+    public ResponseType getResponseType() {
+        return RedirectResponseRule.RESPONSE_TYPE;
+    }
+
+    @Override
+    public String getContentType() {
+        if (redirectResponseRule == null) {
+            return null;
+        }
+        return redirectResponseRule.getContentType();
+    }
+
+    @Override
+    public ActionList getActionList() {
+        return redirectResponseRule.getActionList();
+    }
+
+    @Override
+    public Response replicate() {
+        RedirectResponseRule rrr = redirectResponseRule.replicate();
+        return new RedirectResponse(rrr);
+    }
+
+    /**
+     * Returns the redirect response rule.
+     *
+     * @return the redirect response rule
+     */
+    public RedirectResponseRule getRedirectResponseRule() {
+        return redirectResponseRule;
+    }
+
+    @Override
+    public String toString() {
+        return redirectResponseRule.toString();
+    }
 
 }

@@ -30,55 +30,55 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ScheduleRuleRegistry {
 
-	private final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
+    private final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
 
-	private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
+    private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
 
-	private AssistantLocal assistantLocal;
+    private AssistantLocal assistantLocal;
 
-	public ScheduleRuleRegistry() {
-	}
+    public ScheduleRuleRegistry() {
+    }
 
-	public void setAssistantLocal(AssistantLocal assistantLocal) {
-		this.assistantLocal = assistantLocal;
-	}
+    public void setAssistantLocal(AssistantLocal assistantLocal) {
+        this.assistantLocal = assistantLocal;
+    }
 
-	public Map<String, ScheduleRule> getScheduleRuleMap() {
-		return scheduleRuleMap;
-	}
+    public Map<String, ScheduleRule> getScheduleRuleMap() {
+        return scheduleRuleMap;
+    }
 
-	public boolean contains(String scheduleId) {
-		return scheduleRuleMap.containsKey(scheduleId);
-	}
-	
-	public ScheduleRule getScheduleRule(String scheduleId) {
-		return scheduleRuleMap.get(scheduleId);
-	}
+    public boolean contains(String scheduleId) {
+        return scheduleRuleMap.containsKey(scheduleId);
+    }
 
-	public void addScheduleRule(ScheduleRule scheduleRule) {
-		if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
-			DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-			if(defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
-				scheduleRule.setSchedulerBeanId(defaultSettings.getDefaultSchedulerBean());
-			}
-		}
-		if (scheduleRule.getSchedulerBeanId() != null) {
-			assistantLocal.getAssistant().resolveBeanClass(scheduleRule.getSchedulerBeanId(), scheduleRule);
-		}
+    public ScheduleRule getScheduleRule(String scheduleId) {
+        return scheduleRuleMap.get(scheduleId);
+    }
 
-		scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
-		
-		if (log.isTraceEnabled()) {
-			log.trace("add ScheduleRule " + scheduleRule);
-		}
-	}
+    public void addScheduleRule(ScheduleRule scheduleRule) {
+        if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
+            DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+            if(defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
+                scheduleRule.setSchedulerBeanId(defaultSettings.getDefaultSchedulerBean());
+            }
+        }
+        if (scheduleRule.getSchedulerBeanId() != null) {
+            assistantLocal.getAssistant().resolveBeanClass(scheduleRule.getSchedulerBeanId(), scheduleRule);
+        }
 
-	public Collection<ScheduleRule> getScheduleRules() {
-		return scheduleRuleMap.values();
-	}
+        scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
 
-	public void clear() {
-		scheduleRuleMap.clear();
-	}
+        if (log.isTraceEnabled()) {
+            log.trace("add ScheduleRule " + scheduleRule);
+        }
+    }
+
+    public Collection<ScheduleRule> getScheduleRules() {
+        return scheduleRuleMap.values();
+    }
+
+    public void clear() {
+        scheduleRuleMap.clear();
+    }
 
 }

@@ -24,18 +24,18 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public interface ActionPossessable {
 
-	/**
-	 * Gets the action list.
-	 *
-	 * @return the action list
-	 */
-	ActionList getActionList();
-	
-	/**
-	 * Sets the action list.
-	 *
-	 * @param actionList the new action list
-	 */
-	void setActionList(ActionList actionList);
+    /**
+     * Gets the action list.
+     *
+     * @return the action list
+     */
+    ActionList getActionList();
+
+    /**
+     * Sets the action list.
+     *
+     * @param actionList the new action list
+     */
+    void setActionList(ActionList actionList);
 
 }

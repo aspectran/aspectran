@@ -21,30 +21,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ExcludeTargetParameters extends AbstractParameters {
 
-	public static final ParameterDefinition translet;
-	public static final ParameterDefinition bean;
-	public static final ParameterDefinition method;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		method = new ParameterDefinition("method", ParameterValueType.STRING);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			translet,
-			bean,
-			method
-		};
-	}
-	
-	public ExcludeTargetParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ExcludeTargetParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition translet;
+    public static final ParameterDefinition bean;
+    public static final ParameterDefinition method;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+        method = new ParameterDefinition("method", ParameterValueType.STRING);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            translet,
+            bean,
+            method
+        };
+    }
+
+    public ExcludeTargetParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ExcludeTargetParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

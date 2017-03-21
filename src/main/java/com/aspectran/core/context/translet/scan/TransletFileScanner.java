@@ -36,130 +36,130 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class TransletFileScanner extends FileScanner {
 
-	private final Log log = LogFactory.getLog(TransletFileScanner.class);
-	
-	private final ClassLoader classLoader;
-	
-	private Parameters filterParameters;
-	
-	private TransletFileScanFilter templateFileScanFilter;
-	
-	private WildcardPattern transletNameMaskPattern;
-	
-	private Map<String, WildcardPattern> excludePatternCache = new HashMap<String, WildcardPattern>();
+    private final Log log = LogFactory.getLog(TransletFileScanner.class);
 
-	public TransletFileScanner(String basePath, ClassLoader classLoader) {
-		super(basePath);
-		this.classLoader = classLoader;
-	}
-	
-	public Parameters getFilterParameters() {
-		return filterParameters;
-	}
+    private final ClassLoader classLoader;
 
-	public void setFilterParameters(Parameters filterParameters) {
-		this.filterParameters = filterParameters;
-		
-		String templateFileScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-		if (templateFileScanFilterClassName != null) {
-			setTemplateFileScanFilter(templateFileScanFilterClassName);
-		}
-	}
+    private Parameters filterParameters;
 
-	public TransletFileScanFilter getTemplateFileScanFilter() {
-		return templateFileScanFilter;
-	}
+    private TransletFileScanFilter templateFileScanFilter;
 
-	public void setTemplateFileScanFilter(TransletFileScanFilter templateFileScanFilter) {
-		this.templateFileScanFilter = templateFileScanFilter;
-	}
-	
-	public void setTemplateFileScanFilter(Class<?> templateFileScanFilterClass) {
-		try {
-			templateFileScanFilter = (TransletFileScanFilter)templateFileScanFilterClass.newInstance();
-		} catch (Exception e) {
-			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
-		}
-	}
+    private WildcardPattern transletNameMaskPattern;
 
-	public WildcardPattern getTransletNameMaskPattern() {
-		return transletNameMaskPattern;
-	}
+    private Map<String, WildcardPattern> excludePatternCache = new HashMap<String, WildcardPattern>();
 
-	public void setTransletNameMaskPattern(WildcardPattern transletNameMaskPattern) {
-		this.transletNameMaskPattern = transletNameMaskPattern;
-	}
+    public TransletFileScanner(String basePath, ClassLoader classLoader) {
+        super(basePath);
+        this.classLoader = classLoader;
+    }
 
-	public void setTransletNameMaskPattern(String transletNameMaskPattern) {
-		this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
-	}
-	
-	public void setTemplateFileScanFilter(String templateFileScanFilterClassName) {
-		Class<?> filterClass;
-		try {
-			filterClass = classLoader.loadClass(templateFileScanFilterClassName);
-		} catch (ClassNotFoundException e) {
-			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClassName + "]", e);
-		}
-		setTemplateFileScanFilter(filterClass);
-	}
+    public Parameters getFilterParameters() {
+        return filterParameters;
+    }
 
-	@Override
-	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
-		super.scan(targetPath, matcher, new InnerSaveHandler(saveHandler));
-	}
+    public void setFilterParameters(Parameters filterParameters) {
+        this.filterParameters = filterParameters;
 
-	private class InnerSaveHandler implements SaveHandler {
+        String templateFileScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+        if (templateFileScanFilterClassName != null) {
+            setTemplateFileScanFilter(templateFileScanFilterClassName);
+        }
+    }
 
-		private SaveHandler saveHandler;
+    public TransletFileScanFilter getTemplateFileScanFilter() {
+        return templateFileScanFilter;
+    }
 
-		public InnerSaveHandler(SaveHandler saveHandler) {
-			this.saveHandler = saveHandler;
-		}
+    public void setTemplateFileScanFilter(TransletFileScanFilter templateFileScanFilter) {
+        this.templateFileScanFilter = templateFileScanFilter;
+    }
 
-		@Override
-		public void save(String filePath, File scannedFile) {
-			String transletName = filePath;
+    public void setTemplateFileScanFilter(Class<?> templateFileScanFilterClass) {
+        try {
+            templateFileScanFilter = (TransletFileScanFilter)templateFileScanFilterClass.newInstance();
+        } catch (Exception e) {
+            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
+        }
+    }
 
-			if (transletNameMaskPattern != null) {
-				String maskedTransletName = transletNameMaskPattern.mask(transletName);
-				if (maskedTransletName != null) {
-					transletName = maskedTransletName;
-				}  else {
-					log.warn("Unmatched the pattern can not be masking. filePath: " + transletName + " (maskPattern: " + transletNameMaskPattern + ")");
-				}
-			}
+    public WildcardPattern getTransletNameMaskPattern() {
+        return transletNameMaskPattern;
+    }
 
-			if (templateFileScanFilter != null) {
-				boolean pass = templateFileScanFilter.filter(transletName, scannedFile);
-				if (!pass) {
-					return;
-				}
-			}
+    public void setTransletNameMaskPattern(WildcardPattern transletNameMaskPattern) {
+        this.transletNameMaskPattern = transletNameMaskPattern;
+    }
 
-			if (filterParameters != null) {
-				String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+    public void setTransletNameMaskPattern(String transletNameMaskPattern) {
+        this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+    }
 
-				if (excludePatterns != null) {
-					for (String excludePattern : excludePatterns) {
-						WildcardPattern pattern = excludePatternCache.get(excludePattern);
-						if (pattern == null) {
-							pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-							excludePatternCache.put(excludePattern, pattern);
-						}
-						if (pattern.matches(filePath)) {
-							return;
-						}
-					}
-				}
-			}
+    public void setTemplateFileScanFilter(String templateFileScanFilterClassName) {
+        Class<?> filterClass;
+        try {
+            filterClass = classLoader.loadClass(templateFileScanFilterClassName);
+        } catch (ClassNotFoundException e) {
+            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClassName + "]", e);
+        }
+        setTemplateFileScanFilter(filterClass);
+    }
 
-			saveHandler.save(transletName, scannedFile);
+    @Override
+    protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
+        super.scan(targetPath, matcher, new InnerSaveHandler(saveHandler));
+    }
 
-			if (log.isTraceEnabled()) {
-				log.trace("scanned template file: " + filePath);
-			}
-		}
-	}
+    private class InnerSaveHandler implements SaveHandler {
+
+        private SaveHandler saveHandler;
+
+        public InnerSaveHandler(SaveHandler saveHandler) {
+            this.saveHandler = saveHandler;
+        }
+
+        @Override
+        public void save(String filePath, File scannedFile) {
+            String transletName = filePath;
+
+            if (transletNameMaskPattern != null) {
+                String maskedTransletName = transletNameMaskPattern.mask(transletName);
+                if (maskedTransletName != null) {
+                    transletName = maskedTransletName;
+                }  else {
+                    log.warn("Unmatched the pattern can not be masking. filePath: " + transletName + " (maskPattern: " + transletNameMaskPattern + ")");
+                }
+            }
+
+            if (templateFileScanFilter != null) {
+                boolean pass = templateFileScanFilter.filter(transletName, scannedFile);
+                if (!pass) {
+                    return;
+                }
+            }
+
+            if (filterParameters != null) {
+                String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+
+                if (excludePatterns != null) {
+                    for (String excludePattern : excludePatterns) {
+                        WildcardPattern pattern = excludePatternCache.get(excludePattern);
+                        if (pattern == null) {
+                            pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+                            excludePatternCache.put(excludePattern, pattern);
+                        }
+                        if (pattern.matches(filePath)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            saveHandler.save(transletName, scannedFile);
+
+            if (log.isTraceEnabled()) {
+                log.trace("scanned template file: " + filePath);
+            }
+        }
+    }
 
 }

@@ -36,159 +36,159 @@ import com.aspectran.core.util.StringUtils;
  */
 public class CommandParser {
 
-	private static final Pattern redirectionOperatorPattern = Pattern.compile("(>>)|(>)|(\")|(\')");
+    private static final Pattern redirectionOperatorPattern = Pattern.compile("(>>)|(>)|(\")|(\')");
 
-	private static final char ESCAPE = '\\';
+    private static final char ESCAPE = '\\';
 
-	private MethodType requestMethod;
+    private MethodType requestMethod;
 
-	private String transletName;
+    private String transletName;
 
-	private List<CommandRedirection> redirectionList;
+    private List<CommandRedirection> redirectionList;
 
-	/**
-	 * Instantiates a new Command parser.
-	 */
-	private CommandParser() {
-	}
+    /**
+     * Instantiates a new Command parser.
+     */
+    private CommandParser() {
+    }
 
-	/**
-	 * Gets the request method.
-	 *
-	 * @return the request method
-	 */
-	public MethodType getRequestMethod() {
-		return requestMethod;
-	}
+    /**
+     * Gets the request method.
+     *
+     * @return the request method
+     */
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
 
-	/**
-	 * Gets the translet name.
-	 *
-	 * @return the translet name
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
+    /**
+     * Gets the translet name.
+     *
+     * @return the translet name
+     */
+    public String getTransletName() {
+        return transletName;
+    }
 
-	public List<CommandRedirection> getRedirectionList() {
-		return redirectionList;
-	}
+    public List<CommandRedirection> getRedirectionList() {
+        return redirectionList;
+    }
 
-	public Writer[] getRedirectionWriters(ConsoleInout consoleInout) throws FileNotFoundException, UnsupportedEncodingException {
-		if (redirectionList != null) {
-			List<Writer> writerList = new ArrayList<>(redirectionList.size());
-			for (CommandRedirection redirection : redirectionList) {
-				File file = new File(redirection.getOperand());
-				boolean append = (redirection.getOperator() == CommandRedirection.Operator.APPEND_OUT);
-				OutputStream stream = new FileOutputStream(file, append);
-				writerList.add(new OutputStreamWriter(stream, consoleInout.getEncoding()));
-			}
-			return writerList.toArray(new Writer[writerList.size()]);
-		} else {
-			return null;
-		}
-	}
+    public Writer[] getRedirectionWriters(ConsoleInout consoleInout) throws FileNotFoundException, UnsupportedEncodingException {
+        if (redirectionList != null) {
+            List<Writer> writerList = new ArrayList<>(redirectionList.size());
+            for (CommandRedirection redirection : redirectionList) {
+                File file = new File(redirection.getOperand());
+                boolean append = (redirection.getOperator() == CommandRedirection.Operator.APPEND_OUT);
+                OutputStream stream = new FileOutputStream(file, append);
+                writerList.add(new OutputStreamWriter(stream, consoleInout.getEncoding()));
+            }
+            return writerList.toArray(new Writer[writerList.size()]);
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * Parse the command.
-	 *
-	 * @param command the command
-	 */
-	private void parse(String command) {
-		String[] tokens = StringUtils.tokenize(command, " ", true);
+    /**
+     * Parse the command.
+     *
+     * @param command the command
+     */
+    private void parse(String command) {
+        String[] tokens = StringUtils.tokenize(command, " ", true);
 
-		if (tokens.length > 1) {
-			requestMethod = MethodType.resolve(tokens[0]);
-			if (requestMethod != null) {
-				transletName = command.substring(tokens[0].length()).trim();
-			}
-		}
+        if (tokens.length > 1) {
+            requestMethod = MethodType.resolve(tokens[0]);
+            if (requestMethod != null) {
+                transletName = command.substring(tokens[0].length()).trim();
+            }
+        }
 
-		if (requestMethod == null) {
-			transletName = command;
-		}
+        if (requestMethod == null) {
+            transletName = command;
+        }
 
-		parseRedirection(transletName);
-	}
+        parseRedirection(transletName);
+    }
 
-	/**
-	 * Parse translet name and find all CommandRedirections
-	 * 
-	 * @param buffer the translet name to parse
-	 */
-	private void parseRedirection(String buffer) {
-		Matcher matcher = redirectionOperatorPattern.matcher(buffer);
-		List<CommandRedirection> redirectionList = new ArrayList<>();
-		CommandRedirection prevRedirectionOperation = null;
-		boolean haveDoubleQuote = false;
-		boolean haveSingleQuote = false;
+    /**
+     * Parse translet name and find all CommandRedirections
+     *
+     * @param buffer the translet name to parse
+     */
+    private void parseRedirection(String buffer) {
+        Matcher matcher = redirectionOperatorPattern.matcher(buffer);
+        List<CommandRedirection> redirectionList = new ArrayList<>();
+        CommandRedirection prevRedirectionOperation = null;
+        boolean haveDoubleQuote = false;
+        boolean haveSingleQuote = false;
 
-		while(matcher.find()) {
-			if(matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
-				String string = buffer.substring(0, matcher.start(1)).trim();
-				if (prevRedirectionOperation != null) {
-					prevRedirectionOperation.setOperand(string);
-				} else {
-					this.transletName = string;
-				}
-				prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.APPEND_OUT);
-				redirectionList.add(prevRedirectionOperation);
-				buffer = buffer.substring(matcher.end(1));
-				matcher = redirectionOperatorPattern.matcher(buffer);
-			}
-			else if(matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
-				String string = buffer.substring(0, matcher.start(2)).trim();
-				if (prevRedirectionOperation != null) {
-					prevRedirectionOperation.setOperand(string);
-				} else {
-					this.transletName = string;
-				}
-				prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.OVERWRITE_OUT);
-				redirectionList.add(prevRedirectionOperation);
-				buffer = buffer.substring(matcher.end(2));
-				matcher = redirectionOperatorPattern.matcher(buffer);
-			}
-			else if(matcher.group(3) != null) {
-				if((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
-					haveDoubleQuote = !haveDoubleQuote;
-				}
-			}
-			else if(matcher.group(4) != null) {
-				if((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) && !haveDoubleQuote) {
-					haveSingleQuote = !haveSingleQuote;
-				}
-			}
-		}
+        while(matcher.find()) {
+            if(matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
+                String string = buffer.substring(0, matcher.start(1)).trim();
+                if (prevRedirectionOperation != null) {
+                    prevRedirectionOperation.setOperand(string);
+                } else {
+                    this.transletName = string;
+                }
+                prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.APPEND_OUT);
+                redirectionList.add(prevRedirectionOperation);
+                buffer = buffer.substring(matcher.end(1));
+                matcher = redirectionOperatorPattern.matcher(buffer);
+            }
+            else if(matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
+                String string = buffer.substring(0, matcher.start(2)).trim();
+                if (prevRedirectionOperation != null) {
+                    prevRedirectionOperation.setOperand(string);
+                } else {
+                    this.transletName = string;
+                }
+                prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.OVERWRITE_OUT);
+                redirectionList.add(prevRedirectionOperation);
+                buffer = buffer.substring(matcher.end(2));
+                matcher = redirectionOperatorPattern.matcher(buffer);
+            }
+            else if(matcher.group(3) != null) {
+                if((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
+                    haveDoubleQuote = !haveDoubleQuote;
+                }
+            }
+            else if(matcher.group(4) != null) {
+                if((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) && !haveDoubleQuote) {
+                    haveSingleQuote = !haveSingleQuote;
+                }
+            }
+        }
 
-		if (prevRedirectionOperation != null) {
-			prevRedirectionOperation.setOperand(buffer.trim());
-		}
+        if (prevRedirectionOperation != null) {
+            prevRedirectionOperation.setOperand(buffer.trim());
+        }
 
-		this.redirectionList = (redirectionList.size() > 0 ? redirectionList : null);
-	}
-	
-	/**
-	 * Returns the command parser.
-	 *
-	 * @param command the command
-	 * @return the command parser
-	 */
-	public static CommandParser parseCommand(String command) {
-		CommandParser parser = new CommandParser();
-		parser.parse(command);
-		return parser;
-	}
+        this.redirectionList = (redirectionList.size() > 0 ? redirectionList : null);
+    }
 
-	public static String serialize(List<CommandRedirection> redirectionList) {
-		StringBuilder sb = new StringBuilder();
-		for (CommandRedirection redirection : redirectionList) {
-			if(sb.length() > 0) {
-				sb.append(" ");
-			}
-			sb.append(redirection.getOperator()).append(" ");
-			sb.append(redirection.getOperand());
-		}
-		return sb.toString();
-	}
+    /**
+     * Returns the command parser.
+     *
+     * @param command the command
+     * @return the command parser
+     */
+    public static CommandParser parseCommand(String command) {
+        CommandParser parser = new CommandParser();
+        parser.parse(command);
+        return parser;
+    }
+
+    public static String serialize(List<CommandRedirection> redirectionList) {
+        StringBuilder sb = new StringBuilder();
+        for (CommandRedirection redirection : redirectionList) {
+            if(sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(redirection.getOperator()).append(" ");
+            sb.append(redirection.getOperand());
+        }
+        return sb.toString();
+    }
 
 }

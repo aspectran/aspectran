@@ -25,16 +25,16 @@ import com.aspectran.core.adapter.BasicResponseAdapter;
  * @since 2016. 1. 18.
  */
 public class ConsoleResponseAdapter extends BasicResponseAdapter {
-	
-	/**
-	 * Instantiates a new ConsoleResponseAdapter.
-	 *
-	 * @param writer the writer to output
-	 */
-	public ConsoleResponseAdapter(Writer writer) {
-		super(null);
 
-		setWriter(writer);
-	}
+    /**
+     * Instantiates a new ConsoleResponseAdapter.
+     *
+     * @param writer the writer to output
+     */
+    public ConsoleResponseAdapter(Writer writer) {
+        super(null);
+
+        setWriter(writer);
+    }
 
 }

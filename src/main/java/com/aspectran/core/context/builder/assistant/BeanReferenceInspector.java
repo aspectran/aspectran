@@ -36,81 +36,81 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class BeanReferenceInspector {
 
-	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
-	
-	private final Map<Object, Set<BeanReferenceInspectable>> relationMap;
-	
-	public BeanReferenceInspector() {
-		relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
-	}
-	
-	/**
-	 * Reserves to bean reference inspection.
-	 *
-	 * @param beanIdOrClass the bean id or class
-	 * @param someRule the some rule
-	 */
-	public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
-		Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
-		
-		if (ruleSet == null) {
-			ruleSet = new LinkedHashSet<BeanReferenceInspectable>();
-			ruleSet.add(someRule);
-			relationMap.put(beanIdOrClass, ruleSet);
-		} else {
-			ruleSet.add(someRule);
-		}
-	}
-	
-	/**
-	 * Inspect bean reference.
-	 *
-	 * @param beanRuleRegistry the bean rule registry
-	 * @throws BeanReferenceException the bean reference exception
-	 */
-	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
-		List<Object> unknownBeanIdList = new ArrayList<Object>();
-		
-		for (Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
-			Object beanIdOrClass = entry.getKey();
-			Set<BeanReferenceInspectable> set = entry.getValue();
+    private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 
-			BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
+    private final Map<Object, Set<BeanReferenceInspectable>> relationMap;
 
-			if (beanRule == null && beanIdOrClass instanceof Class<?>) {
-				beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>) beanIdOrClass);
-			}
-			
-			if (beanRule == null) {
-				unknownBeanIdList.add(beanIdOrClass);
+    public BeanReferenceInspector() {
+        relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
+    }
 
-				for (BeanReferenceInspectable o : set) {
-					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
-							"' on " + o.getBeanReferrerType() + " " + o);
-				}
-			} else {
-				for (BeanReferenceInspectable o : set) {
-					if (o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
-						BeanRuleAnalyzer.checkTransletActionParameter((BeanActionRule)o, beanRule);
-					}
-				}
-			}
-		}
-		
-		if (!unknownBeanIdList.isEmpty()) {
-			for (Object beanIdOrClass : unknownBeanIdList) {
-				relationMap.remove(beanIdOrClass);
-			}
-			
-			BeanReferenceException bre = new BeanReferenceException(unknownBeanIdList);
-			bre.setBeanReferenceInspector(this);
-			
-			throw bre;
-		}
-	}
-	
-	public Map<Object, Set<BeanReferenceInspectable>> getRelationMap() {
-		return relationMap;
-	}
-	
+    /**
+     * Reserves to bean reference inspection.
+     *
+     * @param beanIdOrClass the bean id or class
+     * @param someRule the some rule
+     */
+    public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+        Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
+
+        if (ruleSet == null) {
+            ruleSet = new LinkedHashSet<BeanReferenceInspectable>();
+            ruleSet.add(someRule);
+            relationMap.put(beanIdOrClass, ruleSet);
+        } else {
+            ruleSet.add(someRule);
+        }
+    }
+
+    /**
+     * Inspect bean reference.
+     *
+     * @param beanRuleRegistry the bean rule registry
+     * @throws BeanReferenceException the bean reference exception
+     */
+    public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
+        List<Object> unknownBeanIdList = new ArrayList<Object>();
+
+        for (Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
+            Object beanIdOrClass = entry.getKey();
+            Set<BeanReferenceInspectable> set = entry.getValue();
+
+            BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
+
+            if (beanRule == null && beanIdOrClass instanceof Class<?>) {
+                beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>) beanIdOrClass);
+            }
+
+            if (beanRule == null) {
+                unknownBeanIdList.add(beanIdOrClass);
+
+                for (BeanReferenceInspectable o : set) {
+                    log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
+                            "' on " + o.getBeanReferrerType() + " " + o);
+                }
+            } else {
+                for (BeanReferenceInspectable o : set) {
+                    if (o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
+                        BeanRuleAnalyzer.checkTransletActionParameter((BeanActionRule)o, beanRule);
+                    }
+                }
+            }
+        }
+
+        if (!unknownBeanIdList.isEmpty()) {
+            for (Object beanIdOrClass : unknownBeanIdList) {
+                relationMap.remove(beanIdOrClass);
+            }
+
+            BeanReferenceException bre = new BeanReferenceException(unknownBeanIdList);
+            bre.setBeanReferenceInspector(this);
+
+            throw bre;
+        }
+    }
+
+    public Map<Object, Set<BeanReferenceInspectable>> getRelationMap() {
+        return relationMap;
+    }
+
 }

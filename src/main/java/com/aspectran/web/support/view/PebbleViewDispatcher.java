@@ -35,89 +35,89 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  */
 public class PebbleViewDispatcher implements ViewDispatcher {
 
-	private static final Log log = LogFactory.getLog(PebbleViewDispatcher.class);
+    private static final Log log = LogFactory.getLog(PebbleViewDispatcher.class);
 
-	private static final boolean debugEnabled = log.isDebugEnabled();
+    private static final boolean debugEnabled = log.isDebugEnabled();
 
-	private final PebbleEngine pebbleEngine;
+    private final PebbleEngine pebbleEngine;
 
-	private String templateNamePrefix;
+    private String templateNamePrefix;
 
-	private String templateNameSuffix;
+    private String templateNameSuffix;
 
-	public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
-		this.pebbleEngine = pebbleEngine;
-	}
-	/**
-	 * Sets the prefix for the template name.
-	 *
-	 * @param templateNamePrefix the new prefix for the template name
-	 */
-	public void setTemplateNamePrefix(String templateNamePrefix) {
-		this.templateNamePrefix = templateNamePrefix;
-	}
+    public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
+        this.pebbleEngine = pebbleEngine;
+    }
+    /**
+     * Sets the prefix for the template name.
+     *
+     * @param templateNamePrefix the new prefix for the template name
+     */
+    public void setTemplateNamePrefix(String templateNamePrefix) {
+        this.templateNamePrefix = templateNamePrefix;
+    }
 
-	/**
-	 * Sets the suffix for the template name.
-	 *
-	 * @param templateNameSuffix the new suffix for the template name
-	 */
-	public void setTemplateNameSuffix(String templateNameSuffix) {
-		this.templateNameSuffix = templateNameSuffix;
-	}
+    /**
+     * Sets the suffix for the template name.
+     *
+     * @param templateNameSuffix the new suffix for the template name
+     */
+    public void setTemplateNameSuffix(String templateNameSuffix) {
+        this.templateNameSuffix = templateNameSuffix;
+    }
 
-	@Override
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
-		String dispatchName = null;
+    @Override
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+        String dispatchName = null;
 
-		try {
-			dispatchName = dispatchResponseRule.getName();
-			if (dispatchName == null) {
-				throw new IllegalArgumentException("No specified dispatch name.");
-			}
+        try {
+            dispatchName = dispatchResponseRule.getName();
+            if (dispatchName == null) {
+                throw new IllegalArgumentException("No specified dispatch name.");
+            }
 
-			if (templateNamePrefix != null && templateNameSuffix != null) {
-				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
-			} else if (templateNamePrefix != null) {
-				dispatchName = templateNamePrefix + dispatchName;
-			} else if (templateNameSuffix != null) {
-				dispatchName = dispatchName + templateNameSuffix;
-			}
+            if (templateNamePrefix != null && templateNameSuffix != null) {
+                dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
+            } else if (templateNamePrefix != null) {
+                dispatchName = templateNamePrefix + dispatchName;
+            } else if (templateNameSuffix != null) {
+                dispatchName = dispatchName + templateNameSuffix;
+            }
 
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-			String contentType = dispatchResponseRule.getContentType();
-			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
+            String contentType = dispatchResponseRule.getContentType();
+            String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
 
-			if (characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
-			} else {
-				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-				if (characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-				}
-			}
+            if (characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(characterEncoding);
+            } else {
+                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                if (characterEncoding != null) {
+                    responseAdapter.setCharacterEncoding(characterEncoding);
+                }
+            }
 
-			TemplateDataMap model = new TemplateDataMap(activity);
+            TemplateDataMap model = new TemplateDataMap(activity);
 
-			PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
-			compiledTemplate.evaluate(responseAdapter.getWriter(), model);
+            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
+            compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 
-			if (debugEnabled) {
-				log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
-			}
-		} catch (Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);
-		}
-	}
+            if (debugEnabled) {
+                log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
+            }
+        } catch (Exception e) {
+            throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);
+        }
+    }
 
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
 }

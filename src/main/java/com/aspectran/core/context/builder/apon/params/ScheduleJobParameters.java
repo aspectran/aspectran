@@ -21,30 +21,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ScheduleJobParameters extends AbstractParameters {
 
-	public static final ParameterDefinition translet;
-	public static final ParameterDefinition method;
-	public static final ParameterDefinition disabled;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-		method = new ParameterDefinition("method", ParameterValueType.STRING);
-		disabled = new ParameterDefinition("disabled", ParameterValueType.BOOLEAN);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			translet,
-			method,
-			disabled
-		};
-	}
-	
-	public ScheduleJobParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ScheduleJobParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition translet;
+    public static final ParameterDefinition method;
+    public static final ParameterDefinition disabled;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+        method = new ParameterDefinition("method", ParameterValueType.STRING);
+        disabled = new ParameterDefinition("disabled", ParameterValueType.BOOLEAN);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            translet,
+            method,
+            disabled
+        };
+    }
+
+    public ScheduleJobParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ScheduleJobParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

@@ -23,100 +23,100 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ActionResult {
-	
-	public static final Object NO_RESULT = new Object();
 
-	private final ContentResult parent;
+    public static final Object NO_RESULT = new Object();
 
-	private String actionId;
+    private final ContentResult parent;
 
-	private Object resultValue;
+    private String actionId;
 
-	private boolean hidden;
+    private Object resultValue;
 
-	/**
-	 * Instantiates a new Action result.
-	 *
-	 * @param parent the parent
-	 */
-	public ActionResult(ContentResult parent) {
-		this.parent = parent;
-		
-		if (parent != null) {
-			parent.addActionResult(this);
-		}
-	}
+    private boolean hidden;
 
-	/**
-	 * Gets the parent.
-	 *
-	 * @return the parent
-	 */
-	public ContentResult getParent() {
-		return parent;
-	}
+    /**
+     * Instantiates a new Action result.
+     *
+     * @param parent the parent
+     */
+    public ActionResult(ContentResult parent) {
+        this.parent = parent;
 
-	/**
-	 * Gets the action id.
-	 * 
-	 * @return the action id
-	 */
-	public String getActionId() {
-		return actionId;
-	}
+        if (parent != null) {
+            parent.addActionResult(this);
+        }
+    }
 
-	/**
-	 * Sets the action id.
-	 * 
-	 * @param actionId the new action id
-	 */
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
+    /**
+     * Gets the parent.
+     *
+     * @return the parent
+     */
+    public ContentResult getParent() {
+        return parent;
+    }
 
-	/**
-	 * Gets the result value of an action.
-	 * 
-	 * @return the result value of an action
-	 */
-	public Object getResultValue() {
-		return resultValue;
-	}
+    /**
+     * Gets the action id.
+     *
+     * @return the action id
+     */
+    public String getActionId() {
+        return actionId;
+    }
 
-	/**
-	 * Sets the result value of an action.
-	 * 
-	 * @param resultValue the new result value of an action
-	 */
-	public void setResultValue(Object resultValue) {
-		this.resultValue = resultValue;
-	}
+    /**
+     * Sets the action id.
+     *
+     * @param actionId the new action id
+     */
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Returns whether or not to hide this action result.
-	 *
-	 * @return true if hide this action result, otherwise false
-	 */
-	public boolean isHidden() {
-		return hidden;
-	}
+    /**
+     * Gets the result value of an action.
+     *
+     * @return the result value of an action
+     */
+    public Object getResultValue() {
+        return resultValue;
+    }
 
-	/**
-	 * Sets whether or not to hide this action result.
-	 *
-	 * @param hidden whether to hide this action result
-	 */
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
+    /**
+     * Sets the result value of an action.
+     *
+     * @param resultValue the new result value of an action
+     */
+    public void setResultValue(Object resultValue) {
+        this.resultValue = resultValue;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("actionId", actionId);
-		tsb.append("resultValue", resultValue);
-		tsb.append("hidden", hidden);
-		return tsb.toString();
-	}
+    /**
+     * Returns whether or not to hide this action result.
+     *
+     * @return true if hide this action result, otherwise false
+     */
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    /**
+     * Sets whether or not to hide this action result.
+     *
+     * @param hidden whether to hide this action result
+     */
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("actionId", actionId);
+        tsb.append("resultValue", resultValue);
+        tsb.append("hidden", hidden);
+        return tsb.toString();
+    }
 
 }

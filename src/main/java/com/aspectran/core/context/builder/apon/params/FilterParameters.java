@@ -21,27 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class FilterParameters extends AbstractParameters {
 
-	public static final ParameterDefinition filterClass;
-	public static final ParameterDefinition exclude;
+    public static final ParameterDefinition filterClass;
+    public static final ParameterDefinition exclude;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		filterClass = new ParameterDefinition("class", ParameterValueType.STRING);
-		exclude = new ParameterDefinition("exclude", ParameterValueType.STRING, true);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			filterClass,
-			exclude
-		};
-	}
-	
-	public FilterParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public FilterParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        filterClass = new ParameterDefinition("class", ParameterValueType.STRING);
+        exclude = new ParameterDefinition("exclude", ParameterValueType.STRING, true);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            filterClass,
+            exclude
+        };
+    }
+
+    public FilterParameters() {
+        super(parameterDefinitions);
+    }
+
+    public FilterParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

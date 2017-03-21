@@ -22,35 +22,35 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ContentStyleType {
 
-	APON("apon"),
-	COMPACT("compact"),
-	COMPRESSED("compressed");
+    APON("apon"),
+    COMPACT("compact"),
+    COMPRESSED("compressed");
 
-	private final String alias;
+    private final String alias;
 
-	ContentStyleType(String alias) {
-		this.alias = alias;
-	}
+    ContentStyleType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code TemplateStyleType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the action type as a {@code String}
-	 * @return an {@code TemplateStyleType}, may be {@code null}
-	 */
-	public static ContentStyleType resolve(String alias) {
-		for (ContentStyleType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code TemplateStyleType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the action type as a {@code String}
+     * @return an {@code TemplateStyleType}, may be {@code null}
+     */
+    public static ContentStyleType resolve(String alias) {
+        for (ContentStyleType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

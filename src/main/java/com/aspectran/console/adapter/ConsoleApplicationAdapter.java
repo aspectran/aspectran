@@ -27,23 +27,23 @@ import com.aspectran.core.util.SystemUtils;
  * @since 2016. 1. 18.
  */
 public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
-	
-	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.console.workingDir";
 
-	/**
-	 * Instantiates a new ConsoleApplicationAdapter.
-	 *
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public ConsoleApplicationAdapter() throws IOException {
-		super(null);
-		
-		String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-		if (basePath == null) {
-			basePath = new File(".").getCanonicalPath();
-		}
+    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.console.workingDir";
 
-		super.setBasePath(basePath);
-	}
+    /**
+     * Instantiates a new ConsoleApplicationAdapter.
+     *
+     * @throws IOException if an I/O error has occurred
+     */
+    public ConsoleApplicationAdapter() throws IOException {
+        super(null);
+
+        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+        if (basePath == null) {
+            basePath = new File(".").getCanonicalPath();
+        }
+
+        super.setBasePath(basePath);
+    }
 
 }

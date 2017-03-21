@@ -39,465 +39,465 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
 
-	private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "internal";
+    private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "internal";
 
-	private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
+    private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
 
-	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
+    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
-	private String id;
+    private String id;
 
-	private String engine;
+    private String engine;
 
-	private String name;
+    private String name;
 
-	private String file;
+    private String file;
 
-	private String resource;
+    private String resource;
 
-	private String url;
+    private String url;
 
-	private String encoding;
+    private String encoding;
 
-	private String content;
+    private String content;
 
-	private ContentStyleType contentStyle;
-	
-	private Boolean noCache;
+    private ContentStyleType contentStyle;
 
-	private String engineBeanId;
+    private Boolean noCache;
 
-	private Class<?> engineBeanClass;
+    private String engineBeanId;
 
-	private String templateSource;
-	
-	private Token[] templateTokens;
-	
-	private boolean tokenize;
+    private Class<?> engineBeanClass;
 
-	private volatile long lastModifiedTime;
+    private String templateSource;
 
-	private volatile boolean loaded;
+    private Token[] templateTokens;
 
-	private boolean builtin;
+    private boolean tokenize;
 
-	public TemplateRule() {
-	}
+    private volatile long lastModifiedTime;
 
-	public String getId() {
-		return id;
-	}
+    private volatile boolean loaded;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private boolean builtin;
 
-	public String getEngine() {
-		return engine;
-	}
+    public TemplateRule() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getFile() {
-		return file;
-	}
+    public String getEngine() {
+        return engine;
+    }
 
-	public void setFile(String file) {
-		this.file = file;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getResource() {
-		return resource;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setResource(String resource) {
-		this.resource = resource;
-	}
+    public String getFile() {
+        return file;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public void setFile(String file) {
+        this.file = file;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public String getResource() {
+        return resource;
+    }
 
-	public String getEncoding() {
-		return encoding;
-	}
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
 
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	protected void setContent(String content) {
-		this.content = content;
-	}
-
-	public ContentStyleType getContentStyle() {
-		return contentStyle;
-	}
-
-	protected void setContentStyle(ContentStyleType contentStyle) {
-		this.contentStyle = contentStyle;
-	}
-
-	public Boolean getNoCache() {
-		return noCache;
-	}
-
-	public boolean isNoCache() {
-		return BooleanUtils.toBoolean(noCache);
-	}
-
-	public void setNoCache(Boolean noCache) {
-		this.noCache = noCache;
-	}
-
-	public boolean isBuiltin() {
-		return builtin;
-	}
-
-	public void setBuiltin(boolean builtin) {
-		this.builtin = builtin;
-	}
-
-	public boolean isOutsourcing() {
-		return (name != null && file == null && resource == null && url == null);
-	}
-
-	public String getEngineBeanId() {
-		return engineBeanId;
-	}
-
-	public void setEngineBeanId(String engineBeanId) {
-		this.engine = engineBeanId;
-		if (engineBeanId != null) {
-			switch (engineBeanId) {
-				case INTERNAL_TEMPLATE_ENGINE_NAME:
-					this.engineBeanId = null;
-					this.tokenize = true;
-					break;
-				case NONE_TEMPLATE_ENGINE_NAME:
-					this.engineBeanId = null;
-					this.tokenize = false;
-					break;
-				default:
-					this.engineBeanId = engineBeanId;
-					this.tokenize = false;
-					break;
-			}
-		} else {
-			this.engineBeanId = null;
-			this.tokenize = true;
-		}
-	}
-
-	public Class<?> getEngineBeanClass() {
-		return engineBeanClass;
-	}
-
-	public void setEngineBeanClass(Class<?> engineBeanClass) {
-		this.engineBeanClass = engineBeanClass;
-	}
-
-	public boolean isExternalEngine() {
-		return (this.engineBeanId != null);
-	}
-
-	public boolean isTokenize() {
-		return this.tokenize;
-	}
-
-	public String getTemplateSource() {
-		return templateSource;
-	}
-	
-	public String getTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
-		if (this.file != null || this.resource != null || this.url != null) {
-			if (this.noCache) {
-				return loadTemplateSource(applicationAdapter);
-			} else {
-				loadCachedTemplateSource(applicationAdapter);
-				return this.templateSource;
-			}
-		} else {
-			return this.templateSource;
-		}
-	}
-
-	public void setTemplateSource(String templateSource) {
-		this.templateSource = templateSource;
-		if (isTokenize()) {
-			this.templateTokens = parseContentTokens(templateSource);
-		}
-	}
-
-	protected void setTemplateSource(String templateSource, Token[] templateTokens) {
-		this.templateSource = templateSource;
-		this.templateTokens = templateTokens;
-	}
-
-	public Token[] getTemplateTokens() {
-		return this.templateTokens;
-	}
-
-	public Token[] getTemplateTokens(ApplicationAdapter applicationAdapter) throws IOException {
-		if (isExternalEngine()) {
-			throw new UnsupportedOperationException();
-		}
-		if (this.file != null || this.resource != null || this.url != null) {
-			if (this.noCache) {
-				String source = loadTemplateSource(applicationAdapter);
-				return parseContentTokens(source);
-			} else {
-				loadCachedTemplateSource(applicationAdapter);
-				return this.templateTokens;
-			}
-		} else {
-			return this.templateTokens;
-		}
-	}
-
-	private Token[] parseContentTokens(String content) {
-		if (content == null || content.isEmpty()) {
-			return null;
-		}
-		List<Token> tokenList = Tokenizer.tokenize(content, false);
-		if (!tokenList.isEmpty()) {
-			return tokenList.toArray(new Token[tokenList.size()]);
-		} else {
-			return new Token[0];
-		}
-	}
-	
-	private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
-		String templateSource = null;
-		if (this.file != null) {
-			File file = applicationAdapter.toRealPathAsFile(this.file);
-			templateSource = ResourceUtils.read(file, this.encoding);
-		} else if (this.resource != null) {
-			ClassLoader classLoader = applicationAdapter.getClassLoader();
-			URL url = classLoader.getResource(this.resource);
-			templateSource = ResourceUtils.read(url, this.encoding);
-		} else if (this.url != null) {
-			URL url = new URL(this.url);
-			templateSource = ResourceUtils.read(url, this.encoding);
-		}
-		return templateSource;
-	}
-
-	private void loadCachedTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
-		if (this.file != null) {
-			File file = applicationAdapter.toRealPathAsFile(this.file);
-			long lastModifiedTime = file.lastModified();
-			if (lastModifiedTime > this.lastModifiedTime) {
-				synchronized (this) {
-					lastModifiedTime = file.lastModified();
-					if (lastModifiedTime > this.lastModifiedTime) {
-						String template = ResourceUtils.read(file, this.encoding);
-						setTemplateSource(template);
-						this.lastModifiedTime = lastModifiedTime;
-					}
-				}
-			}
-		} else if (this.resource != null) {
-			if (!this.loaded) {
-				synchronized (this) {
-					if (!this.loaded) {
-						ClassLoader classLoader = applicationAdapter.getClassLoader();
-						URL url = classLoader.getResource(this.resource);
-						String template = ResourceUtils.read(url, this.encoding);
-						setTemplateSource(template);
-						this.loaded = true;
-					}
-				}
-			}
-		} else if (this.url != null) {
-			if (!this.loaded) {
-				synchronized (this) {
-					if (!this.loaded) {
-						URL url = new URL(this.url);
-						String template = ResourceUtils.read(url, this.encoding);
-						setTemplateSource(template);
-						this.loaded = true;
-					}
-				}
-			}
-		}
-	}
-
-	@Override
-	public TemplateRule replicate() {
-		return replicate(this);
-	}
-
-	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERRER_TYPE;
-	}
-
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		if (!builtin) {
-			tsb.append("id", id);
-		}
-		tsb.append("engine", engine);
-		if (file != null) {
-			tsb.append("file", file);
-		} else if (resource != null) {
-			tsb.append("resource", resource);
-		} else if (url != null) {
-			tsb.append("url", url);
-		} else if (name != null) {
-			tsb.append("name", name);
-		} else {
-			tsb.appendSize("contentLength", content);
-		}
-		tsb.append("encoding", encoding);
-		tsb.append("noCache", noCache);
-		return tsb.toString();
-	}
-
-	public static TemplateRule newInstance(String id, String engine, String name, String file, 
-			String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
-
-		if (id == null) {
-			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
-		}
-
-		ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
-		if (contentStyle != null && contentStyleType == null) {
-			throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
-		}
-
-		TemplateRule tr = new TemplateRule();
-		tr.setId(id);
-		tr.setEngineBeanId(engine);
-		tr.setName(name);
-		tr.setFile(file);
-		tr.setResource(resource);
-		tr.setUrl(url);
-		tr.setContent(content);
-		tr.setContentStyle(contentStyleType);
-		tr.setEncoding(encoding);
-		tr.setNoCache(noCache);
-
-		updateTemplateSourceByStyle(tr);
-
-		return tr;
-	}
-
-	public static TemplateRule newInstanceForBuiltin(String engine, String name, String file, 
-			String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
-
-		ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
-		if (contentStyle != null && contentStyleType == null) {
-			throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
-		}
-
-		TemplateRule tr = new TemplateRule();
-		tr.setEngineBeanId(engine);
-		tr.setName(name);
-		tr.setFile(file);
-		tr.setResource(resource);
-		tr.setUrl(url);
-		tr.setContent(content);
-		tr.setContentStyle(contentStyleType);
-		tr.setEncoding(encoding);
-		tr.setNoCache(noCache);
-		tr.setBuiltin(true);
-
-		updateTemplateSourceByStyle(tr);
-
-		return tr;
-	}
-
-	public static TemplateRule replicate(TemplateRule templateRule) {
-		TemplateRule tr = new TemplateRule();
-		tr.setId(templateRule.getId());
-		tr.setEngineBeanId(templateRule.getEngine());
-		tr.setEngineBeanClass(templateRule.getEngineBeanClass());
-		tr.setName(templateRule.getName());
-		tr.setFile(templateRule.getFile());
-		tr.setResource(templateRule.getResource());
-		tr.setUrl(templateRule.getUrl());
-		tr.setContent(templateRule.getContent());
-		tr.setContentStyle(templateRule.getContentStyle());
-		tr.setTemplateSource(templateRule.getTemplateSource(), templateRule.getTemplateTokens());
-		tr.setEncoding(templateRule.getEncoding());
-		tr.setNoCache(templateRule.getNoCache());
-		tr.setBuiltin(templateRule.isBuiltin());
-		return tr;
-	}
-
-	private static void updateTemplateSourceByStyle(TemplateRule templateRule) {
-		String content = templateRule.getContent();
-		if (content == null) {
-			return;
-		}
-		if (!content.isEmpty()) {
-			if (templateRule.getContentStyle() == ContentStyleType.APON) {
-				StringBuilder sb = new StringBuilder(content.length());
-				int start = 0;
-				for (int end = 0; end < content.length(); end++) {
-					char c = content.charAt(end);
-					if (c == '|') {
-						start = end + 1;
-						if (sb.length() > 0) {
-							sb.append(ActivityContext.LINE_SEPARATOR);
-						}
-					} else if (start > 0) {
-						if (c == '\n' || c == '\r') {
-							sb.append(content.substring(start, end));
-							start = 0;
-						}
-					}
-				}
-				if (start > 0) {
-					sb.append(content.substring(start));
-				}
-				templateRule.setTemplateSource(sb.toString());
-			} else if (templateRule.getContentStyle() == ContentStyleType.COMPACT ||
-					templateRule.getContentStyle() == ContentStyleType.COMPRESSED) {
-				content = content.trim();
-				StringBuilder sb = new StringBuilder(content.length());
-				int start = 0;
-				for (int end = 0; end < content.length(); end++) {
-					char c = content.charAt(end);
-					if (c == '\n' || c == '\r') {
-						if (start > -1) {
-							sb.append(content.substring(start, end).trim());
-							if (templateRule.getContentStyle() != ContentStyleType.COMPRESSED) {
-								sb.append(ActivityContext.LINE_SEPARATOR);
-							}
-							start = -1;
-						}
-					} else if (start == -1) {
-						start = end;
-					}
-				}
-				if (start > -1) {
-					sb.append(content.substring(start).trim());
-				}
-				templateRule.setTemplateSource(sb.toString());
-			} else {
-				templateRule.setTemplateSource(content);
-			}
-		} else {
-			templateRule.setTemplateSource(content);
-		}
-	}
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    protected void setContent(String content) {
+        this.content = content;
+    }
+
+    public ContentStyleType getContentStyle() {
+        return contentStyle;
+    }
+
+    protected void setContentStyle(ContentStyleType contentStyle) {
+        this.contentStyle = contentStyle;
+    }
+
+    public Boolean getNoCache() {
+        return noCache;
+    }
+
+    public boolean isNoCache() {
+        return BooleanUtils.toBoolean(noCache);
+    }
+
+    public void setNoCache(Boolean noCache) {
+        this.noCache = noCache;
+    }
+
+    public boolean isBuiltin() {
+        return builtin;
+    }
+
+    public void setBuiltin(boolean builtin) {
+        this.builtin = builtin;
+    }
+
+    public boolean isOutsourcing() {
+        return (name != null && file == null && resource == null && url == null);
+    }
+
+    public String getEngineBeanId() {
+        return engineBeanId;
+    }
+
+    public void setEngineBeanId(String engineBeanId) {
+        this.engine = engineBeanId;
+        if (engineBeanId != null) {
+            switch (engineBeanId) {
+                case INTERNAL_TEMPLATE_ENGINE_NAME:
+                    this.engineBeanId = null;
+                    this.tokenize = true;
+                    break;
+                case NONE_TEMPLATE_ENGINE_NAME:
+                    this.engineBeanId = null;
+                    this.tokenize = false;
+                    break;
+                default:
+                    this.engineBeanId = engineBeanId;
+                    this.tokenize = false;
+                    break;
+            }
+        } else {
+            this.engineBeanId = null;
+            this.tokenize = true;
+        }
+    }
+
+    public Class<?> getEngineBeanClass() {
+        return engineBeanClass;
+    }
+
+    public void setEngineBeanClass(Class<?> engineBeanClass) {
+        this.engineBeanClass = engineBeanClass;
+    }
+
+    public boolean isExternalEngine() {
+        return (this.engineBeanId != null);
+    }
+
+    public boolean isTokenize() {
+        return this.tokenize;
+    }
+
+    public String getTemplateSource() {
+        return templateSource;
+    }
+
+    public String getTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+        if (this.file != null || this.resource != null || this.url != null) {
+            if (this.noCache) {
+                return loadTemplateSource(applicationAdapter);
+            } else {
+                loadCachedTemplateSource(applicationAdapter);
+                return this.templateSource;
+            }
+        } else {
+            return this.templateSource;
+        }
+    }
+
+    public void setTemplateSource(String templateSource) {
+        this.templateSource = templateSource;
+        if (isTokenize()) {
+            this.templateTokens = parseContentTokens(templateSource);
+        }
+    }
+
+    protected void setTemplateSource(String templateSource, Token[] templateTokens) {
+        this.templateSource = templateSource;
+        this.templateTokens = templateTokens;
+    }
+
+    public Token[] getTemplateTokens() {
+        return this.templateTokens;
+    }
+
+    public Token[] getTemplateTokens(ApplicationAdapter applicationAdapter) throws IOException {
+        if (isExternalEngine()) {
+            throw new UnsupportedOperationException();
+        }
+        if (this.file != null || this.resource != null || this.url != null) {
+            if (this.noCache) {
+                String source = loadTemplateSource(applicationAdapter);
+                return parseContentTokens(source);
+            } else {
+                loadCachedTemplateSource(applicationAdapter);
+                return this.templateTokens;
+            }
+        } else {
+            return this.templateTokens;
+        }
+    }
+
+    private Token[] parseContentTokens(String content) {
+        if (content == null || content.isEmpty()) {
+            return null;
+        }
+        List<Token> tokenList = Tokenizer.tokenize(content, false);
+        if (!tokenList.isEmpty()) {
+            return tokenList.toArray(new Token[tokenList.size()]);
+        } else {
+            return new Token[0];
+        }
+    }
+
+    private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+        String templateSource = null;
+        if (this.file != null) {
+            File file = applicationAdapter.toRealPathAsFile(this.file);
+            templateSource = ResourceUtils.read(file, this.encoding);
+        } else if (this.resource != null) {
+            ClassLoader classLoader = applicationAdapter.getClassLoader();
+            URL url = classLoader.getResource(this.resource);
+            templateSource = ResourceUtils.read(url, this.encoding);
+        } else if (this.url != null) {
+            URL url = new URL(this.url);
+            templateSource = ResourceUtils.read(url, this.encoding);
+        }
+        return templateSource;
+    }
+
+    private void loadCachedTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+        if (this.file != null) {
+            File file = applicationAdapter.toRealPathAsFile(this.file);
+            long lastModifiedTime = file.lastModified();
+            if (lastModifiedTime > this.lastModifiedTime) {
+                synchronized (this) {
+                    lastModifiedTime = file.lastModified();
+                    if (lastModifiedTime > this.lastModifiedTime) {
+                        String template = ResourceUtils.read(file, this.encoding);
+                        setTemplateSource(template);
+                        this.lastModifiedTime = lastModifiedTime;
+                    }
+                }
+            }
+        } else if (this.resource != null) {
+            if (!this.loaded) {
+                synchronized (this) {
+                    if (!this.loaded) {
+                        ClassLoader classLoader = applicationAdapter.getClassLoader();
+                        URL url = classLoader.getResource(this.resource);
+                        String template = ResourceUtils.read(url, this.encoding);
+                        setTemplateSource(template);
+                        this.loaded = true;
+                    }
+                }
+            }
+        } else if (this.url != null) {
+            if (!this.loaded) {
+                synchronized (this) {
+                    if (!this.loaded) {
+                        URL url = new URL(this.url);
+                        String template = ResourceUtils.read(url, this.encoding);
+                        setTemplateSource(template);
+                        this.loaded = true;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public TemplateRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public BeanReferrerType getBeanReferrerType() {
+        return BEAN_REFERRER_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (!builtin) {
+            tsb.append("id", id);
+        }
+        tsb.append("engine", engine);
+        if (file != null) {
+            tsb.append("file", file);
+        } else if (resource != null) {
+            tsb.append("resource", resource);
+        } else if (url != null) {
+            tsb.append("url", url);
+        } else if (name != null) {
+            tsb.append("name", name);
+        } else {
+            tsb.appendSize("contentLength", content);
+        }
+        tsb.append("encoding", encoding);
+        tsb.append("noCache", noCache);
+        return tsb.toString();
+    }
+
+    public static TemplateRule newInstance(String id, String engine, String name, String file,
+            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
+        }
+
+        ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
+        if (contentStyle != null && contentStyleType == null) {
+            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+        }
+
+        TemplateRule tr = new TemplateRule();
+        tr.setId(id);
+        tr.setEngineBeanId(engine);
+        tr.setName(name);
+        tr.setFile(file);
+        tr.setResource(resource);
+        tr.setUrl(url);
+        tr.setContent(content);
+        tr.setContentStyle(contentStyleType);
+        tr.setEncoding(encoding);
+        tr.setNoCache(noCache);
+
+        updateTemplateSourceByStyle(tr);
+
+        return tr;
+    }
+
+    public static TemplateRule newInstanceForBuiltin(String engine, String name, String file,
+            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+
+        ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
+        if (contentStyle != null && contentStyleType == null) {
+            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+        }
+
+        TemplateRule tr = new TemplateRule();
+        tr.setEngineBeanId(engine);
+        tr.setName(name);
+        tr.setFile(file);
+        tr.setResource(resource);
+        tr.setUrl(url);
+        tr.setContent(content);
+        tr.setContentStyle(contentStyleType);
+        tr.setEncoding(encoding);
+        tr.setNoCache(noCache);
+        tr.setBuiltin(true);
+
+        updateTemplateSourceByStyle(tr);
+
+        return tr;
+    }
+
+    public static TemplateRule replicate(TemplateRule templateRule) {
+        TemplateRule tr = new TemplateRule();
+        tr.setId(templateRule.getId());
+        tr.setEngineBeanId(templateRule.getEngine());
+        tr.setEngineBeanClass(templateRule.getEngineBeanClass());
+        tr.setName(templateRule.getName());
+        tr.setFile(templateRule.getFile());
+        tr.setResource(templateRule.getResource());
+        tr.setUrl(templateRule.getUrl());
+        tr.setContent(templateRule.getContent());
+        tr.setContentStyle(templateRule.getContentStyle());
+        tr.setTemplateSource(templateRule.getTemplateSource(), templateRule.getTemplateTokens());
+        tr.setEncoding(templateRule.getEncoding());
+        tr.setNoCache(templateRule.getNoCache());
+        tr.setBuiltin(templateRule.isBuiltin());
+        return tr;
+    }
+
+    private static void updateTemplateSourceByStyle(TemplateRule templateRule) {
+        String content = templateRule.getContent();
+        if (content == null) {
+            return;
+        }
+        if (!content.isEmpty()) {
+            if (templateRule.getContentStyle() == ContentStyleType.APON) {
+                StringBuilder sb = new StringBuilder(content.length());
+                int start = 0;
+                for (int end = 0; end < content.length(); end++) {
+                    char c = content.charAt(end);
+                    if (c == '|') {
+                        start = end + 1;
+                        if (sb.length() > 0) {
+                            sb.append(ActivityContext.LINE_SEPARATOR);
+                        }
+                    } else if (start > 0) {
+                        if (c == '\n' || c == '\r') {
+                            sb.append(content.substring(start, end));
+                            start = 0;
+                        }
+                    }
+                }
+                if (start > 0) {
+                    sb.append(content.substring(start));
+                }
+                templateRule.setTemplateSource(sb.toString());
+            } else if (templateRule.getContentStyle() == ContentStyleType.COMPACT ||
+                    templateRule.getContentStyle() == ContentStyleType.COMPRESSED) {
+                content = content.trim();
+                StringBuilder sb = new StringBuilder(content.length());
+                int start = 0;
+                for (int end = 0; end < content.length(); end++) {
+                    char c = content.charAt(end);
+                    if (c == '\n' || c == '\r') {
+                        if (start > -1) {
+                            sb.append(content.substring(start, end).trim());
+                            if (templateRule.getContentStyle() != ContentStyleType.COMPRESSED) {
+                                sb.append(ActivityContext.LINE_SEPARATOR);
+                            }
+                            start = -1;
+                        }
+                    } else if (start == -1) {
+                        start = end;
+                    }
+                }
+                if (start > -1) {
+                    sb.append(content.substring(start).trim());
+                }
+                templateRule.setTemplateSource(sb.toString());
+            } else {
+                templateRule.setTemplateSource(content);
+            }
+        } else {
+            templateRule.setTemplateSource(content);
+        }
+    }
 
 }

@@ -27,163 +27,163 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardResponseRule extends ActionPossessSupport implements Replicable<ForwardResponseRule> {
-	
-	public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
-	private String contentType;
-	
-	private String transletName;
-	
-	private ItemRuleMap attributeItemRuleMap;
+    public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
-	private Boolean defaultResponse;
+    private String contentType;
 
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		return contentType;
-	}
+    private String transletName;
 
-	/**
-	 * Sets the content type.
-	 * 
-	 * @param contentType the new content type
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    private ItemRuleMap attributeItemRuleMap;
 
-	/**
-	 * Gets the translet name.
-	 *
-	 * @return the translet name
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
+    private Boolean defaultResponse;
 
-	/**
-	 * Sets the translet name.
-	 *
-	 * @param transletName the new translet name
-	 */
-	public void setTransletName(String transletName) {
-		this.transletName = transletName;
-	}
+    /**
+     * Gets the content type.
+     *
+     * @return the content type
+     */
+    public String getContentType() {
+        return contentType;
+    }
 
-	/**
-	 * Gets the attribute item rule map.
-	 *
-	 * @return the attribute item rule map
-	 */
-	public ItemRuleMap getAttributeItemRuleMap() {
-		return attributeItemRuleMap;
-	}
+    /**
+     * Sets the content type.
+     *
+     * @param contentType the new content type
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	/**
-	 * Sets the attribute item rule map.
-	 *
-	 * @param attributeItemRuleMap the new attribute item rule map
-	 */
-	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
-		this.attributeItemRuleMap = attributeItemRuleMap;
-	}
-	
-	/**
-	 * Adds the attribute value rule.
-	 *
-	 * @param attributeItemRule the attribute item rule
-	 */
-	public void addAttributeValueRule(ItemRule attributeItemRule) {
-		if (attributeItemRuleMap == null) {
-			attributeItemRuleMap = new ItemRuleMap();
-		}
-		attributeItemRuleMap.putItemRule(attributeItemRule);
-	}
+    /**
+     * Gets the translet name.
+     *
+     * @return the translet name
+     */
+    public String getTransletName() {
+        return transletName;
+    }
 
-	/**
-	 * Returns whether the default response.
-	 *
-	 * @return whether the default response
-	 */
-	public Boolean getDefaultResponse() {
-		return defaultResponse;
-	}
+    /**
+     * Sets the translet name.
+     *
+     * @param transletName the new translet name
+     */
+    public void setTransletName(String transletName) {
+        this.transletName = transletName;
+    }
 
-	/**
-	 * Returns whether the default response.
-	 *
-	 * @return true, if is default response
-	 */
-	public boolean isDefaultResponse() {
-		return BooleanUtils.toBoolean(defaultResponse);
-	}
+    /**
+     * Gets the attribute item rule map.
+     *
+     * @return the attribute item rule map
+     */
+    public ItemRuleMap getAttributeItemRuleMap() {
+        return attributeItemRuleMap;
+    }
 
-	/**
-	 * Sets whether the default response.
-	 *
-	 * @param defaultResponse whether the default response
-	 */
-	public void setDefaultResponse(Boolean defaultResponse) {
-		this.defaultResponse = defaultResponse;
-	}
+    /**
+     * Sets the attribute item rule map.
+     *
+     * @param attributeItemRuleMap the new attribute item rule map
+     */
+    public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
+        this.attributeItemRuleMap = attributeItemRuleMap;
+    }
 
-	@Override
-	public ForwardResponseRule replicate() {
-		return replicate(this);
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.appendForce("responseType", RESPONSE_TYPE);
-		tsb.append("translet", transletName);
-		tsb.append("contentType", contentType);
-		tsb.append("defaultResponse", defaultResponse);
-		return tsb.toString();
-	}
-	
-	/**
-	 * Returns a new instance of ForwardResponseRule.
-	 *
-	 * @param contentType the content type
-	 * @param transletName the translet name
-	 * @param defaultResponse whether the default response
-	 * @return an instance of ForwardResponseRule
-	 */
-	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
-		if (transletName == null) {
-			throw new IllegalArgumentException("The 'forward' element requires a 'translet' attribute.");
-		}
+    /**
+     * Adds the attribute value rule.
+     *
+     * @param attributeItemRule the attribute item rule
+     */
+    public void addAttributeValueRule(ItemRule attributeItemRule) {
+        if (attributeItemRuleMap == null) {
+            attributeItemRuleMap = new ItemRuleMap();
+        }
+        attributeItemRuleMap.putItemRule(attributeItemRule);
+    }
 
-		ForwardResponseRule frr = new ForwardResponseRule();
-		frr.setContentType(contentType);
-		frr.setTransletName(transletName);
-		frr.setDefaultResponse(defaultResponse);
-		return frr;
-	}
-	
-	public static ForwardResponseRule newInstance(String transletName) {
-		if (transletName == null) {
-			throw new IllegalArgumentException("'Translet name must not be null.");
-		}
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
 
-		ForwardResponseRule frr = new ForwardResponseRule();
-		frr.setTransletName(transletName);
-		return frr;
-	}
-	
-	public static ForwardResponseRule replicate(ForwardResponseRule forwardResponseRule) {
-		ForwardResponseRule frr = new ForwardResponseRule();
-		frr.setContentType(forwardResponseRule.getContentType());
-		frr.setTransletName(forwardResponseRule.getTransletName());
-		frr.setAttributeItemRuleMap(forwardResponseRule.getAttributeItemRuleMap());
-		frr.setDefaultResponse(forwardResponseRule.getDefaultResponse());
-		frr.setActionList(forwardResponseRule.getActionList());
-		return frr;
-	}
-	
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
+    @Override
+    public ForwardResponseRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.append("translet", transletName);
+        tsb.append("contentType", contentType);
+        tsb.append("defaultResponse", defaultResponse);
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new instance of ForwardResponseRule.
+     *
+     * @param contentType the content type
+     * @param transletName the translet name
+     * @param defaultResponse whether the default response
+     * @return an instance of ForwardResponseRule
+     */
+    public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
+        if (transletName == null) {
+            throw new IllegalArgumentException("The 'forward' element requires a 'translet' attribute.");
+        }
+
+        ForwardResponseRule frr = new ForwardResponseRule();
+        frr.setContentType(contentType);
+        frr.setTransletName(transletName);
+        frr.setDefaultResponse(defaultResponse);
+        return frr;
+    }
+
+    public static ForwardResponseRule newInstance(String transletName) {
+        if (transletName == null) {
+            throw new IllegalArgumentException("'Translet name must not be null.");
+        }
+
+        ForwardResponseRule frr = new ForwardResponseRule();
+        frr.setTransletName(transletName);
+        return frr;
+    }
+
+    public static ForwardResponseRule replicate(ForwardResponseRule forwardResponseRule) {
+        ForwardResponseRule frr = new ForwardResponseRule();
+        frr.setContentType(forwardResponseRule.getContentType());
+        frr.setTransletName(forwardResponseRule.getTransletName());
+        frr.setAttributeItemRuleMap(forwardResponseRule.getAttributeItemRuleMap());
+        frr.setDefaultResponse(forwardResponseRule.getDefaultResponse());
+        frr.setActionList(forwardResponseRule.getActionList());
+        return frr;
+    }
+
 }

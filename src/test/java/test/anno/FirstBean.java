@@ -19,11 +19,11 @@ import com.aspectran.core.context.bean.annotation.Autowired;
 
 public class FirstBean {
 
-	@Autowired
-	private SecondBean secondBean;
+    @Autowired
+    private SecondBean secondBean;
 
-	public String getMessage() {
-		return secondBean.getMessage();
-	}
-	
+    public String getMessage() {
+        return secondBean.getMessage();
+    }
+
 }

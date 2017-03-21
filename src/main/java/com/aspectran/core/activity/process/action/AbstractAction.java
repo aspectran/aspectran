@@ -24,23 +24,23 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public abstract class AbstractAction implements Executable {
 
-	protected final ActionList parent;
-	
-	/**
-	 * Instantiates a new AbstractAction.
-	 *
-	 * @param parent the parent
-	 */
-	public AbstractAction(ActionList parent) {
-		this.parent = parent;
-	}
-	
-	@Override
-	public ActionList getParent() {
-		return parent;
-	}
-	
-	@Override
-	public abstract String getActionId();
+    protected final ActionList parent;
+
+    /**
+     * Instantiates a new AbstractAction.
+     *
+     * @param parent the parent
+     */
+    public AbstractAction(ActionList parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public ActionList getParent() {
+        return parent;
+    }
+
+    @Override
+    public abstract String getActionId();
 
 }

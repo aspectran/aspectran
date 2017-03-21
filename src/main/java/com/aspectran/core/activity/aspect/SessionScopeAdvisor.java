@@ -29,39 +29,39 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
  */
 public class SessionScopeAdvisor {
 
-	private final SessionScopeActivity activity;
-	
-	private final List<AspectAdviceRule> beforeAdviceRuleList;
-	
-	private final List<AspectAdviceRule> afterAdviceRuleList;
-	
-	private SessionScopeAdvisor(SessionScopeActivity activity, AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.activity = activity;
-		this.beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		this.afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-	}
-	
-	public void executeBeforeAdvice() {
-		if (beforeAdviceRuleList != null) {
-			activity.executeAdvice(beforeAdviceRuleList);
-		}
-	}
-	
-	public void executeAfterAdvice() {
-		if (afterAdviceRuleList != null) {
-			activity.executeAdviceWithoutThrow(afterAdviceRuleList);
-		}
-	}
-	
-	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
-		AspectRuleRegistry aspectRuleRegistry = context.getAspectRuleRegistry();
-		AspectAdviceRuleRegistry aarr = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
-		if (aarr != null) {
-			SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
-			return new SessionScopeAdvisor(activity, aarr);
-		} else {
-			return null;
-		}
-	}
-	
+    private final SessionScopeActivity activity;
+
+    private final List<AspectAdviceRule> beforeAdviceRuleList;
+
+    private final List<AspectAdviceRule> afterAdviceRuleList;
+
+    private SessionScopeAdvisor(SessionScopeActivity activity, AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+        this.activity = activity;
+        this.beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+        this.afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+    }
+
+    public void executeBeforeAdvice() {
+        if (beforeAdviceRuleList != null) {
+            activity.executeAdvice(beforeAdviceRuleList);
+        }
+    }
+
+    public void executeAfterAdvice() {
+        if (afterAdviceRuleList != null) {
+            activity.executeAdviceWithoutThrow(afterAdviceRuleList);
+        }
+    }
+
+    public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
+        AspectRuleRegistry aspectRuleRegistry = context.getAspectRuleRegistry();
+        AspectAdviceRuleRegistry aarr = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
+        if (aarr != null) {
+            SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
+            return new SessionScopeAdvisor(activity, aarr);
+        } else {
+            return null;
+        }
+    }
+
 }

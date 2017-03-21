@@ -32,83 +32,83 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
-	/** @serial */
-	private static final long serialVersionUID = -2369788867122156319L;
+    /** @serial */
+    private static final long serialVersionUID = -2369788867122156319L;
 
-	private final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
-	
-	private boolean debugEnabled = log.isDebugEnabled();
-	
-	private static final String DELIMITERS = " ,;\t\n\r\f";
-	
-	private Set<String> allowedAddresses;
-	
-	/**
-	 * Instantiates a new SpecificIPAllowedWebActivityServlet.
-	 */
-	public SpecificIPAllowedWebActivityServlet() {
-		super();
-	}
+    private final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
 
-	@Override
-	public void init() throws ServletException {
-		String addresses = getServletConfig().getInitParameter("allowedAddresses");
+    private boolean debugEnabled = log.isDebugEnabled();
 
-		if (addresses != null) {
-			allowedAddresses = new HashSet<String>();
+    private static final String DELIMITERS = " ,;\t\n\r\f";
 
-			StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
-			
-			while (st.hasMoreTokens()) {
-				String token = st.nextToken();
-				allowedAddresses.add(token);			
-			}
-		}
-		
-		super.init();
-	}
+    private Set<String> allowedAddresses;
 
-	@Override
-	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		String remoteAddr = req.getRemoteAddr();
-		
-		if (!isAllowedAdress(remoteAddr)) {
-			if (debugEnabled) {
-				log.debug("Access denied '" + remoteAddr + "'.");
-			}
-				
-			res.sendError(HttpServletResponse.SC_FORBIDDEN);
-			return;
-		}
+    /**
+     * Instantiates a new SpecificIPAllowedWebActivityServlet.
+     */
+    public SpecificIPAllowedWebActivityServlet() {
+        super();
+    }
 
-		super.service(req, res);
-	}
-	
-	/**
-	 * Returns whether IP address is valid.
-	 * 
-	 * @param ipAddress the IP address
-	 * 
-	 * @return true if IP address is a valid, otherwise false
-	 */
-	private boolean isAllowedAdress(String ipAddress) {
-		if (allowedAddresses == null) {
-			return false;
-		}
-		
-		// IPv4
-		int offset = ipAddress.lastIndexOf('.');
-		if (offset == -1) {
-			// IPv6
-			offset = ipAddress.lastIndexOf(':');
-			if (offset == -1) {
-				return false;
-			}
-		}
-		
-		String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
+    @Override
+    public void init() throws ServletException {
+        String addresses = getServletConfig().getInitParameter("allowedAddresses");
 
-		return (allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress));
-	}
-	
+        if (addresses != null) {
+            allowedAddresses = new HashSet<String>();
+
+            StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
+
+            while (st.hasMoreTokens()) {
+                String token = st.nextToken();
+                allowedAddresses.add(token);
+            }
+        }
+
+        super.init();
+    }
+
+    @Override
+    public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String remoteAddr = req.getRemoteAddr();
+
+        if (!isAllowedAdress(remoteAddr)) {
+            if (debugEnabled) {
+                log.debug("Access denied '" + remoteAddr + "'.");
+            }
+
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        super.service(req, res);
+    }
+
+    /**
+     * Returns whether IP address is valid.
+     *
+     * @param ipAddress the IP address
+     *
+     * @return true if IP address is a valid, otherwise false
+     */
+    private boolean isAllowedAdress(String ipAddress) {
+        if (allowedAddresses == null) {
+            return false;
+        }
+
+        // IPv4
+        int offset = ipAddress.lastIndexOf('.');
+        if (offset == -1) {
+            // IPv6
+            offset = ipAddress.lastIndexOf(':');
+            if (offset == -1) {
+                return false;
+            }
+        }
+
+        String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
+
+        return (allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress));
+    }
+
 }

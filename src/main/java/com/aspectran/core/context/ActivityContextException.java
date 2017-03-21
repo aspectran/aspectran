@@ -37,41 +37,41 @@ package com.aspectran.core.context;
  */
 public class ActivityContextException extends AspectranCheckedException {
 
-	/** @serial */
-	private static final long serialVersionUID = 5842257746374237516L;
+    /** @serial */
+    private static final long serialVersionUID = 5842257746374237516L;
 
-	/**
-	 * Simple constructor
-	 */
-	public ActivityContextException() {
-		super();
-	}
+    /**
+     * Simple constructor
+     */
+    public ActivityContextException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public ActivityContextException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message
+     *
+     * @param msg a message to associate with the exception
+     */
+    public ActivityContextException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityContextException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception
+     *
+     * @param cause the real cause of the exception
+     */
+    public ActivityContextException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message
-	 * 
-	 * @param msg a message to associate with the exception
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityContextException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message
+     *
+     * @param msg a message to associate with the exception
+     * @param cause the real cause of the exception
+     */
+    public ActivityContextException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

@@ -32,62 +32,62 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
  * The Class EmbeddedActivity.
  */
 public class EmbeddedActivity extends CoreActivity {
-	
-	private final EmbeddedAspectranService service;
 
-	private final Writer outputWriter;
+    private final EmbeddedAspectranService service;
 
-	private ParameterMap parameterMap;
+    private final Writer outputWriter;
 
-	private Map<String, Object> attributeMap;
+    private ParameterMap parameterMap;
 
-	/**
-	 * Instantiates a new embedded activity.
-	 *
-	 * @param service the embedded aspectran service
-	 * @param outputWriter the output writer
-	 */
-	public EmbeddedActivity(EmbeddedAspectranService service, Writer outputWriter) {
-		super(service.getActivityContext());
-		setSessionAdapter(service.getSessionAdapter());
+    private Map<String, Object> attributeMap;
 
-		this.service = service;
-		this.outputWriter = outputWriter;
-	}
+    /**
+     * Instantiates a new embedded activity.
+     *
+     * @param service the embedded aspectran service
+     * @param outputWriter the output writer
+     */
+    public EmbeddedActivity(EmbeddedAspectranService service, Writer outputWriter) {
+        super(service.getActivityContext());
+        setSessionAdapter(service.getSessionAdapter());
 
-	public void setParameterMap(ParameterMap parameterMap) {
-		this.parameterMap = parameterMap;
-	}
+        this.service = service;
+        this.outputWriter = outputWriter;
+    }
 
-	public void setAttributeMap(Map<String, Object> attributeMap) {
-		this.attributeMap = attributeMap;
-	}
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
+    }
 
-	@Override
-	protected void adapt() throws AdapterException {
-		try {
-			RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
-			setRequestAdapter(requestAdapter);
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributeMap = attributeMap;
+    }
 
-			ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
-			setResponseAdapter(responseAdapter);
+    @Override
+    protected void adapt() throws AdapterException {
+        try {
+            RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
+            setRequestAdapter(requestAdapter);
 
-			if(attributeMap != null) {
-				for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-				}
-			}
-		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to embedded application activity.", e);
-		}
-	}
+            ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
+            setResponseAdapter(responseAdapter);
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		EmbeddedActivity activity = new EmbeddedActivity(service, outputWriter);
-		activity.setIncluded(true);
-		return (T)activity;
-	}
+            if(attributeMap != null) {
+                for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+                    requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+                }
+            }
+        } catch (Exception e) {
+            throw new AdapterException("Could not adapt to embedded application activity.", e);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Activity> T newActivity() {
+        EmbeddedActivity activity = new EmbeddedActivity(service, outputWriter);
+        activity.setIncluded(true);
+        return (T)activity;
+    }
 
 }

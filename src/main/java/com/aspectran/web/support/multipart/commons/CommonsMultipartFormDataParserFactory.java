@@ -25,124 +25,124 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  * @since 2.0.0
  */
 public class CommonsMultipartFormDataParserFactory {
-	
-	private String tempDirectoryPath;
-	
-	private long maxRequestSize = -1L;
 
-	private String allowedFileExtensions;
+    private String tempDirectoryPath;
 
-	private String deniedFileExtensions;
+    private long maxRequestSize = -1L;
 
-	/**
-	 * Instantiates a new Multipart request wrapper resolver.
-	 */
-	public CommonsMultipartFormDataParserFactory() {
-	}
+    private String allowedFileExtensions;
 
-	/**
-	 * Gets the temporary file path.
-	 *
-	 * @return the temporary file path
-	 */
-	public String getTempDirectoryPath() {
-		return tempDirectoryPath;
-	}
+    private String deniedFileExtensions;
 
-	/**
-	 * Sets the temporary directory path.
-	 *
-	 * @param tempDirectoryPath the temporary directory path
-	 */
-	public void setTempDirectoryPath(String tempDirectoryPath) {
-		this.tempDirectoryPath = tempDirectoryPath;
-	}
+    /**
+     * Instantiates a new Multipart request wrapper resolver.
+     */
+    public CommonsMultipartFormDataParserFactory() {
+    }
 
-	/**
-	 * Gets the maximum size of the request.
-	 *
-	 * @return the maximum size of the request
-	 */
-	public long getMaxRequestSize() {
-		return maxRequestSize;
-	}
+    /**
+     * Gets the temporary file path.
+     *
+     * @return the temporary file path
+     */
+    public String getTempDirectoryPath() {
+        return tempDirectoryPath;
+    }
 
-	/**
-	 * Sets the maximum size of the request.
-	 *
-	 * @param maxRequestSize the maximum size of the request
-	 */
-	public void setMaxRequestSize(long maxRequestSize) {
-		this.maxRequestSize = maxRequestSize;
-	}
+    /**
+     * Sets the temporary directory path.
+     *
+     * @param tempDirectoryPath the temporary directory path
+     */
+    public void setTempDirectoryPath(String tempDirectoryPath) {
+        this.tempDirectoryPath = tempDirectoryPath;
+    }
 
-	/**
-	 * Sets the maximum size of the request.
-	 *
-	 * @param maxRequestSize the maximum size of the request
-	 */
-	public void setMaxRequestSize(String maxRequestSize) {
-		this.maxRequestSize = StringUtils.convertToMachineFriendlyByteSize(maxRequestSize);
-	}
+    /**
+     * Gets the maximum size of the request.
+     *
+     * @return the maximum size of the request
+     */
+    public long getMaxRequestSize() {
+        return maxRequestSize;
+    }
 
-	/**
-	 * Gets the allowed file extensions.
-	 *
-	 * @return the allowed file extensions
-	 */
-	public String getAllowedFileExtensions() {
-		return allowedFileExtensions;
-	}
+    /**
+     * Sets the maximum size of the request.
+     *
+     * @param maxRequestSize the maximum size of the request
+     */
+    public void setMaxRequestSize(long maxRequestSize) {
+        this.maxRequestSize = maxRequestSize;
+    }
 
-	/**
-	 * Sets the allowed file extensions.
-	 *
-	 * @param allowedFileExtensions the allowed file extensions
-	 */
-	public void setAllowedFileExtensions(String allowedFileExtensions) {
-		this.allowedFileExtensions = allowedFileExtensions;
-	}
+    /**
+     * Sets the maximum size of the request.
+     *
+     * @param maxRequestSize the maximum size of the request
+     */
+    public void setMaxRequestSize(String maxRequestSize) {
+        this.maxRequestSize = StringUtils.convertToMachineFriendlyByteSize(maxRequestSize);
+    }
 
-	/**
-	 * Gets the denied file extensions.
-	 *
-	 * @return the denied file extensions
-	 */
-	public String getDeniedFileExtensions() {
-		return deniedFileExtensions;
-	}
+    /**
+     * Gets the allowed file extensions.
+     *
+     * @return the allowed file extensions
+     */
+    public String getAllowedFileExtensions() {
+        return allowedFileExtensions;
+    }
 
-	/**
-	 * Sets the denied file extensions.
-	 *
-	 * @param deniedFileExtensions the denied file extensions
-	 */
-	public void setDeniedFileExtensions(String deniedFileExtensions) {
-		this.deniedFileExtensions = deniedFileExtensions;
-	}
+    /**
+     * Sets the allowed file extensions.
+     *
+     * @param allowedFileExtensions the allowed file extensions
+     */
+    public void setAllowedFileExtensions(String allowedFileExtensions) {
+        this.allowedFileExtensions = allowedFileExtensions;
+    }
 
-	/**
-	 * Creates a new MultipartFormDataParser object.
-	 *
-	 * @return the multipart form data parser
-	 */
-	public MultipartFormDataParser createMultipartFormDataParser() {
-		MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
+    /**
+     * Gets the denied file extensions.
+     *
+     * @return the denied file extensions
+     */
+    public String getDeniedFileExtensions() {
+        return deniedFileExtensions;
+    }
 
-		if (maxRequestSize > -1) {
-			parser.setMaxRequestSize(maxRequestSize);
-		}
+    /**
+     * Sets the denied file extensions.
+     *
+     * @param deniedFileExtensions the denied file extensions
+     */
+    public void setDeniedFileExtensions(String deniedFileExtensions) {
+        this.deniedFileExtensions = deniedFileExtensions;
+    }
 
-		if (tempDirectoryPath != null) {
-			parser.setTempDirectoryPath(tempDirectoryPath);
-		} else {
-			parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
-		}
+    /**
+     * Creates a new MultipartFormDataParser object.
+     *
+     * @return the multipart form data parser
+     */
+    public MultipartFormDataParser createMultipartFormDataParser() {
+        MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
 
-		parser.setAllowedFileExtensions(allowedFileExtensions);
-		parser.setDeniedFileExtensions(deniedFileExtensions);
+        if (maxRequestSize > -1) {
+            parser.setMaxRequestSize(maxRequestSize);
+        }
 
-		return parser;
-	}
+        if (tempDirectoryPath != null) {
+            parser.setTempDirectoryPath(tempDirectoryPath);
+        } else {
+            parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
+        }
+
+        parser.setAllowedFileExtensions(allowedFileExtensions);
+        parser.setDeniedFileExtensions(deniedFileExtensions);
+
+        return parser;
+    }
 
 }

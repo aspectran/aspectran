@@ -28,28 +28,28 @@ import com.aspectran.core.context.rule.type.ImporterFileFormatType;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
-	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter);
-	}
 
-	@Override
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
-		try {
-			if (rootContext == null) {
-				throw new IllegalArgumentException("The rootContext argument must not be null.");
-			}
+    public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+        super(applicationAdapter);
+    }
 
-			ImportHandler importHandler = new XmlImportHandler(this);
-			getContextBuilderAssistant().setImportHandler(importHandler);
-			
-			Importer importer = resolveImporter(rootContext, ImporterFileFormatType.XML);
-			importHandler.handle(importer);
+    @Override
+    public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+        try {
+            if (rootContext == null) {
+                throw new IllegalArgumentException("The rootContext argument must not be null.");
+            }
 
-			return createActivityContext();
-		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + rootContext, e);
-		}
-	}
-	
+            ImportHandler importHandler = new XmlImportHandler(this);
+            getContextBuilderAssistant().setImportHandler(importHandler);
+
+            Importer importer = resolveImporter(rootContext, ImporterFileFormatType.XML);
+            importHandler.handle(importer);
+
+            return createActivityContext();
+        } catch (Exception e) {
+            throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + rootContext, e);
+        }
+    }
+
 }

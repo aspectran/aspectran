@@ -21,74 +21,74 @@ import com.aspectran.core.context.rule.type.MethodType;
  * Exception thrown when a request handler does not allow a specific request method.
  */
 public class RequestMethodNotAllowedException extends RequestException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 4068498460127610368L;
-	
-	private MethodType requestMethod;
 
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 */
-	public RequestMethodNotAllowedException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 4068498460127610368L;
 
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public RequestMethodNotAllowedException(String msg) {
-		super(msg);
-	}
+    private MethodType requestMethod;
 
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public RequestMethodNotAllowedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     */
+    public RequestMethodNotAllowedException() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public RequestMethodNotAllowedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 *
-	 * @param requestMethod the request method
-	 * @param msg the detail message
-	 */
-	public RequestMethodNotAllowedException(MethodType requestMethod, String msg) {
-		super(msg);
-		this.requestMethod = requestMethod;
-	}
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public RequestMethodNotAllowedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Instantiates a new RequestMethodNotAllowedException.
-	 *
-	 * @param requestMethod the request method
-	 */
-	public RequestMethodNotAllowedException(MethodType requestMethod) {
-		this(requestMethod, "Request method '" + requestMethod + "' not allowed.");
-	}
-	
-	/**
-	 * Gets the request method type.
-	 *
-	 * @return the request method type
-	 */
-	public MethodType getRequestMethod() {
-		return requestMethod;
-	}
-	
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     *
+     * @param cause the real cause of the exception
+     */
+    public RequestMethodNotAllowedException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public RequestMethodNotAllowedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     *
+     * @param requestMethod the request method
+     * @param msg the detail message
+     */
+    public RequestMethodNotAllowedException(MethodType requestMethod, String msg) {
+        super(msg);
+        this.requestMethod = requestMethod;
+    }
+
+    /**
+     * Instantiates a new RequestMethodNotAllowedException.
+     *
+     * @param requestMethod the request method
+     */
+    public RequestMethodNotAllowedException(MethodType requestMethod) {
+        this(requestMethod, "Request method '" + requestMethod + "' not allowed.");
+    }
+
+    /**
+     * Gets the request method type.
+     *
+     * @return the request method type
+     */
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
 }

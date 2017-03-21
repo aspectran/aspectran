@@ -29,33 +29,33 @@ import com.aspectran.core.context.rule.type.TransformType;
  */
 public class TransformResponseFactory {
 
-	/**
-	 * Creates a new TransformResponse object.
-	 *
-	 * @param transformRule the transform rule
-	 * @return the transform response
-	 */
-	public static Response createTransformResponse(TransformRule transformRule) {
-		if (transformRule == null) {
-			throw new IllegalArgumentException("The transformRule argument must not be null.");
-		}
-		
-		TransformType type = transformRule.getTransformType();
-		Response res;
-		
-		if (type == TransformType.XML) {
-			res = new XmlTransformResponse(transformRule);
-		} else if (type == TransformType.XSL) {
-			res = new XslTransformResponse(transformRule);
-		} else if (type == TransformType.JSON) {
-			res = new JsonTransformResponse(transformRule);
-		} else if (type == TransformType.TEXT) {
-			res = new TextTransformResponse(transformRule);
-		} else {
-			throw new IllegalArgumentException("Invalid transform-type for transformRule: " + transformRule);
-		}
-		
-		return res;
-	}
-	
+    /**
+     * Creates a new TransformResponse object.
+     *
+     * @param transformRule the transform rule
+     * @return the transform response
+     */
+    public static Response createTransformResponse(TransformRule transformRule) {
+        if (transformRule == null) {
+            throw new IllegalArgumentException("The transformRule argument must not be null.");
+        }
+
+        TransformType type = transformRule.getTransformType();
+        Response res;
+
+        if (type == TransformType.XML) {
+            res = new XmlTransformResponse(transformRule);
+        } else if (type == TransformType.XSL) {
+            res = new XslTransformResponse(transformRule);
+        } else if (type == TransformType.JSON) {
+            res = new JsonTransformResponse(transformRule);
+        } else if (type == TransformType.TEXT) {
+            res = new TextTransformResponse(transformRule);
+        } else {
+            throw new IllegalArgumentException("Invalid transform-type for transformRule: " + transformRule);
+        }
+
+        return res;
+    }
+
 }

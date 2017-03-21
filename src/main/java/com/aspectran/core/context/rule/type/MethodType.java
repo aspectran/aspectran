@@ -26,144 +26,144 @@ import java.util.StringTokenizer;
  */
 public enum MethodType {
 
-	ALL,
-	
-	/**
-	 * retrieves a representation of a resource without side-effects
-	 * (nothing changes on the server).
-	 */
-	GET,
+    ALL,
 
-	/**
-	 * creates a resource.
-	 */
-	POST,
-	
-	/**
-	 * (completely) replaces an existing resource.
-	 */
-	PUT,
+    /**
+     * retrieves a representation of a resource without side-effects
+     * (nothing changes on the server).
+     */
+    GET,
 
-	/**
-	 * partial modification of a resource.
-	 */
-	PATCH,
+    /**
+     * creates a resource.
+     */
+    POST,
 
-	/**
-	 * deletes a resource.
-	 */
-	DELETE,
-	
-	/**
-	 * retrieves just the resource meta-information (headers)
-	 * i.e. same as GET but without the response body - also without side-effects.
-	 */
-	HEAD,
+    /**
+     * (completely) replaces an existing resource.
+     */
+    PUT,
 
-	/**
-	 * returns the actions supported for specified the resource - also without side-effects.
-	 */
-	OPTIONS,
+    /**
+     * partial modification of a resource.
+     */
+    PATCH,
 
-	TRACE;
+    /**
+     * deletes a resource.
+     */
+    DELETE,
 
-	private static final int MAX_COUNT = 9;
-	
-	private static final Map<String, MethodType> mappings = new HashMap<>(MAX_COUNT);
+    /**
+     * retrieves just the resource meta-information (headers)
+     * i.e. same as GET but without the response body - also without side-effects.
+     */
+    HEAD,
 
-	static {
-		for (MethodType type : values()) {
-			mappings.put(type.name(), type);
-		}
-	}
-	
-	public boolean containsTo(MethodType[] types) {
-		for (MethodType type : types) {
-			if (equals(type) || ALL.equals(type)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * returns the actions supported for specified the resource - also without side-effects.
+     */
+    OPTIONS,
 
-	public boolean matches(String type) {
-		return name().equals(type);
-	}
+    TRACE;
 
-	/**
-	 * Returns a {@code MethodType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param methodType the method type as a {@code String}
-	 * @return a {@code MethodType}, may be {@code null}
-	 */
-	public static MethodType resolve(String methodType) {
-		return (methodType != null ? mappings.get(methodType) : null);
-	}
+    private static final int MAX_COUNT = 9;
 
-	/**
-	 * Returns an array of {@code MethodType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param value the method type as a {@code String}
-	 * @return a {@code MethodType}, may be {@code null}
-	 */
-	public static MethodType[] parse(String value) {
-		MethodType[] types = new MethodType[MAX_COUNT];
-		int count = 0;
+    private static final Map<String, MethodType> mappings = new HashMap<>(MAX_COUNT);
 
-		StringTokenizer st = new StringTokenizer(value, ", ");
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			if (!token.isEmpty()) {
-				MethodType type = resolve(token);
-				if (type != null) {
-					int ord = type.ordinal();
-					if (ord == 0) {
-						return new MethodType[] { ALL };
-					} else {
-						if (types[ord] == null) {
-							types[ord] = type;
-							count++;
-						}
-					}
-				}
-			}
-		}
+    static {
+        for (MethodType type : values()) {
+            mappings.put(type.name(), type);
+        }
+    }
 
-		if (count == 0)
-			return null;
+    public boolean containsTo(MethodType[] types) {
+        for (MethodType type : types) {
+            if (equals(type) || ALL.equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		MethodType[] orderedTypes = new MethodType[count];
+    public boolean matches(String type) {
+        return name().equals(type);
+    }
 
-		for (int i = 1, seq = 0; i < MAX_COUNT; i++) {
-			if (types[i] != null) {
-				orderedTypes[seq++] = types[i];
-			}
-		}
+    /**
+     * Returns a {@code MethodType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param methodType the method type as a {@code String}
+     * @return a {@code MethodType}, may be {@code null}
+     */
+    public static MethodType resolve(String methodType) {
+        return (methodType != null ? mappings.get(methodType) : null);
+    }
 
-		return orderedTypes;
-	}
+    /**
+     * Returns an array of {@code MethodType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param value the method type as a {@code String}
+     * @return a {@code MethodType}, may be {@code null}
+     */
+    public static MethodType[] parse(String value) {
+        MethodType[] types = new MethodType[MAX_COUNT];
+        int count = 0;
 
-	/**
-	 * Converts an array of {@code MethodType} to a comma separated {@code String}.
-	 *
-	 * @param types an array of {@code MethodType}
-	 * @return a comma separated {@code String}
-	 */
-	public static String stringify(MethodType[] types) {
-		if (types == null || types.length == 0) {
-			return null;
-		}
-		
-		StringBuilder sb = new StringBuilder(types.length * 7);
-		for (int i = 0; i < types.length; i++) {
-			if (i > 0) {
-				sb.append(",");
-			}
-			sb.append(types[i]);
-		}
-		return sb.toString();
-	}
+        StringTokenizer st = new StringTokenizer(value, ", ");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if (!token.isEmpty()) {
+                MethodType type = resolve(token);
+                if (type != null) {
+                    int ord = type.ordinal();
+                    if (ord == 0) {
+                        return new MethodType[] { ALL };
+                    } else {
+                        if (types[ord] == null) {
+                            types[ord] = type;
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count == 0)
+            return null;
+
+        MethodType[] orderedTypes = new MethodType[count];
+
+        for (int i = 1, seq = 0; i < MAX_COUNT; i++) {
+            if (types[i] != null) {
+                orderedTypes[seq++] = types[i];
+            }
+        }
+
+        return orderedTypes;
+    }
+
+    /**
+     * Converts an array of {@code MethodType} to a comma separated {@code String}.
+     *
+     * @param types an array of {@code MethodType}
+     * @return a comma separated {@code String}
+     */
+    public static String stringify(MethodType[] types) {
+        if (types == null || types.length == 0) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder(types.length * 7);
+        for (int i = 0; i < types.length; i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(types[i]);
+        }
+        return sb.toString();
+    }
 
 }

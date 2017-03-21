@@ -27,39 +27,39 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
  * The Class RegexpPointcut.
  */
 public class RegexpPointcut extends AbstractPointcut {
-	
-	private final Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
 
-	public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
-		super(pointcutPatternRuleList);
-	}
+    private final Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
 
-	@Override
-	public boolean patternMatches(String regex, String compareString) {
-		Pattern pattern = regexpPatternCache.get(regex);
+    public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+        super(pointcutPatternRuleList);
+    }
 
-		if (pattern == null) {
-			synchronized (regexpPatternCache) {
-				pattern = regexpPatternCache.get(regex);
-				if (pattern == null) {
-					pattern = Pattern.compile(regex);
-					regexpPatternCache.put(regex, pattern);
-				}
-			}
-		}
+    @Override
+    public boolean patternMatches(String regex, String compareString) {
+        Pattern pattern = regexpPatternCache.get(regex);
 
-		Matcher matcher = pattern.matcher(compareString);
-		return matcher.matches();
-	}
+        if (pattern == null) {
+            synchronized (regexpPatternCache) {
+                pattern = regexpPatternCache.get(regex);
+                if (pattern == null) {
+                    pattern = Pattern.compile(regex);
+                    regexpPatternCache.put(regex, pattern);
+                }
+            }
+        }
 
-	@Override
-	public boolean patternMatches(String regex, String compareString, char separator) {
-		return patternMatches(regex, compareString);
-	}
+        Matcher matcher = pattern.matcher(compareString);
+        return matcher.matches();
+    }
 
-	@Override
-	public void clear() {
-		regexpPatternCache.clear();
-	}
+    @Override
+    public boolean patternMatches(String regex, String compareString, char separator) {
+        return patternMatches(regex, compareString);
+    }
+
+    @Override
+    public void clear() {
+        regexpPatternCache.clear();
+    }
 
 }

@@ -32,74 +32,74 @@ import org.xml.sax.SAXException;
  */
 class AspectranDtdResolver implements EntityResolver {
 
-	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-4.dtd";
+    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-4.dtd";
 
-	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
+    private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
-	private final boolean validating;
-	
-	static {
-		doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN".toUpperCase(), ASPECTRAN_DTD);
-		doctypeMap.put("aspectran-4.dtd".toUpperCase(), ASPECTRAN_DTD);
-	}
+    private final boolean validating;
 
-	AspectranDtdResolver() {
-		this(true);
-	}
-	
-	AspectranDtdResolver(boolean validating) {
-		this.validating = validating;
-	}
-	
-	/**
-	 * Converts a public DTD into a local one.
-	 * 
-	 * @param publicId Unused but required by EntityResolver interface
-	 * @param systemId The DTD that is being requested
-	 * @return The InputSource for the DTD
-	 * @throws SAXException If anything goes wrong
-	 */
-	@Override
-	public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-		if (validating) {
-			try {
-				InputSource source = null;
-	
-				if (publicId != null) {
-					String path = doctypeMap.get(publicId.toUpperCase());
-					source = getInputSource(path);
-				}
-				
-				if (source == null && systemId != null) {
-					String path = doctypeMap.get(systemId.toUpperCase());
-					source = getInputSource(path);
-				}
-	
-				return source;
-			} catch (Exception e) {
-				throw new SAXException(e.toString());
-			}
-		} else {
-			return new InputSource(new StringReader(""));
-		}
-	}
+    static {
+        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("aspectran-4.dtd".toUpperCase(), ASPECTRAN_DTD);
+    }
 
-	/**
-	 * Gets the input source.
-	 *
-	 * @param path the path
-	 * @return the input source
-	 * @throws IOException if an I/O error has occurred
-	 */
-	private InputSource getInputSource(String path) throws IOException {
-		InputSource source = null;
-		
-		if (path != null) {
-			InputStream in = getClass().getResourceAsStream(path);
-			source = new InputSource(in);
-		}
-		
-		return source;
-	}
+    AspectranDtdResolver() {
+        this(true);
+    }
+
+    AspectranDtdResolver(boolean validating) {
+        this.validating = validating;
+    }
+
+    /**
+     * Converts a public DTD into a local one.
+     *
+     * @param publicId Unused but required by EntityResolver interface
+     * @param systemId The DTD that is being requested
+     * @return The InputSource for the DTD
+     * @throws SAXException If anything goes wrong
+     */
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+        if (validating) {
+            try {
+                InputSource source = null;
+
+                if (publicId != null) {
+                    String path = doctypeMap.get(publicId.toUpperCase());
+                    source = getInputSource(path);
+                }
+
+                if (source == null && systemId != null) {
+                    String path = doctypeMap.get(systemId.toUpperCase());
+                    source = getInputSource(path);
+                }
+
+                return source;
+            } catch (Exception e) {
+                throw new SAXException(e.toString());
+            }
+        } else {
+            return new InputSource(new StringReader(""));
+        }
+    }
+
+    /**
+     * Gets the input source.
+     *
+     * @param path the path
+     * @return the input source
+     * @throws IOException if an I/O error has occurred
+     */
+    private InputSource getInputSource(String path) throws IOException {
+        InputSource source = null;
+
+        if (path != null) {
+            InputStream in = getClass().getResourceAsStream(path);
+            source = new InputSource(in);
+        }
+
+        return source;
+    }
 
 }

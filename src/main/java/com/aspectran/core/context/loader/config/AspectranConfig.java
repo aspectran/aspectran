@@ -21,45 +21,45 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranConfig extends AbstractParameters {
 
-	public static final ParameterDefinition context;
-	public static final ParameterDefinition scheduler;
-	public static final ParameterDefinition console;
-	public static final ParameterDefinition web;
+    public static final ParameterDefinition context;
+    public static final ParameterDefinition scheduler;
+    public static final ParameterDefinition console;
+    public static final ParameterDefinition web;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		context = new ParameterDefinition("context", AspectranContextConfig.class);
-		scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
-		console = new ParameterDefinition("console", AspectranConsoleConfig.class);
-		web = new ParameterDefinition("web", AspectranWebConfig.class);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			context,
-			scheduler,
-			console,
-			web
-		};
-	}
-	
-	public AspectranConfig() {
-		super(parameterDefinitions);
-	}
-	
-	public AspectranConfig(String text) {
-		super(parameterDefinitions, text);
-	}
-	
-	public void updateRootContextLocation(String rootContextLocation) {
-		Parameters contextParameters = touchParameters(context);
-		contextParameters.putValue(AspectranContextConfig.root, rootContextLocation);
-	}
+    static {
+        context = new ParameterDefinition("context", AspectranContextConfig.class);
+        scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
+        console = new ParameterDefinition("console", AspectranConsoleConfig.class);
+        web = new ParameterDefinition("web", AspectranWebConfig.class);
 
-	public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
-		Parameters schedulerParameters = touchParameters(scheduler);
-		schedulerParameters.putValue(AspectranSchedulerConfig.startDelaySeconds, startDelaySeconds);
-		schedulerParameters.putValue(AspectranSchedulerConfig.waitOnShutdown, waitOnShutdown);
-		schedulerParameters.putValue(AspectranSchedulerConfig.startup, startup);
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            context,
+            scheduler,
+            console,
+            web
+        };
+    }
+
+    public AspectranConfig() {
+        super(parameterDefinitions);
+    }
+
+    public AspectranConfig(String text) {
+        super(parameterDefinitions, text);
+    }
+
+    public void updateRootContextLocation(String rootContextLocation) {
+        Parameters contextParameters = touchParameters(context);
+        contextParameters.putValue(AspectranContextConfig.root, rootContextLocation);
+    }
+
+    public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
+        Parameters schedulerParameters = touchParameters(scheduler);
+        schedulerParameters.putValue(AspectranSchedulerConfig.startDelaySeconds, startDelaySeconds);
+        schedulerParameters.putValue(AspectranSchedulerConfig.waitOnShutdown, waitOnShutdown);
+        schedulerParameters.putValue(AspectranSchedulerConfig.startup, startup);
+    }
 
 }

@@ -40,11 +40,11 @@ public class TemplateRuleRegistry {
     public TemplateRuleRegistry() {
     }
 
-	public void setAssistantLocal(AssistantLocal assistantLocal) {
-		this.assistantLocal = assistantLocal;
-	}
+    public void setAssistantLocal(AssistantLocal assistantLocal) {
+        this.assistantLocal = assistantLocal;
+    }
 
-	public Map<String, TemplateRule> getTemplateRuleMap() {
+    public Map<String, TemplateRule> getTemplateRuleMap() {
         return templateRuleMap;
     }
 
@@ -60,19 +60,19 @@ public class TemplateRuleRegistry {
         if (templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {
-            	templateRule.setEngineBeanId(defaultSettings.getDefaultTemplateEngineBean());
-            	templateRule.setTemplateSource(templateRule.getTemplateSource());
+                templateRule.setEngineBeanId(defaultSettings.getDefaultTemplateEngineBean());
+                templateRule.setTemplateSource(templateRule.getTemplateSource());
             }
         }
-		if (templateRule.getEngineBeanId() != null) {
-			assistantLocal.getAssistant().resolveBeanClass(templateRule.getEngineBeanId(), templateRule);
-		}
+        if (templateRule.getEngineBeanId() != null) {
+            assistantLocal.getAssistant().resolveBeanClass(templateRule.getEngineBeanId(), templateRule);
+        }
 
         templateRuleMap.put(templateRule.getId(), templateRule);
 
         if (log.isTraceEnabled()) {
-			log.trace("add TemplateRule " + templateRule);
-		}
+            log.trace("add TemplateRule " + templateRule);
+        }
     }
 
     public void clear() {

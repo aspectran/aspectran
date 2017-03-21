@@ -22,37 +22,37 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ActionType {
 
-	BEAN("bean"),
-	METHOD("method"),
-	INCLUDE("include"),
-	ECHO("echo"),
-	HEADERS("headers");
+    BEAN("bean"),
+    METHOD("method"),
+    INCLUDE("include"),
+    ECHO("echo"),
+    HEADERS("headers");
 
-	private final String alias;
+    private final String alias;
 
-	ActionType(String alias) {
-		this.alias = alias;
-	}
+    ActionType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code ActionType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the action type as a {@code String}
-	 * @return an {@code ActionType}, may be {@code null}
-	 */
-	public static ActionType resolve(String alias) {
-		for (ActionType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code ActionType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the action type as a {@code String}
+     * @return an {@code ActionType}, may be {@code null}
+     */
+    public static ActionType resolve(String alias) {
+        for (ActionType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

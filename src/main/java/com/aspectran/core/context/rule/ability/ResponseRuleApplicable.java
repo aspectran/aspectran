@@ -26,36 +26,36 @@ import com.aspectran.core.context.rule.TransformRule;
  */
 public interface ResponseRuleApplicable {
 
-	/**
-	 * Apply the dispatch response rule to the response rule.
-	 *
-	 * @param dispatchResponseRule the dispatch response rule
-	 * @return the response
-	 */
-	Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
+    /**
+     * Apply the dispatch response rule to the response rule.
+     *
+     * @param dispatchResponseRule the dispatch response rule
+     * @return the response
+     */
+    Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
 
-	/**
-	 * Apply the tranform response rule to the response rule.
-	 *
-	 * @param transformRule the transform rule
-	 * @return the response
-	 */
-	Response applyResponseRule(TransformRule transformRule);
-	
-	/**
-	 * Apply the forward response rule to the response rule.
-	 *
-	 * @param forwardResponseRule the forward response rule
-	 * @return the response
-	 */
-	Response applyResponseRule(ForwardResponseRule forwardResponseRule);
-	
-	/**
-	 * Apply the redirect response rule to the response rule.
-	 *
-	 * @param redirectResponseRule the redirect response rule
-	 * @return the response
-	 */
-	Response applyResponseRule(RedirectResponseRule redirectResponseRule);
-	
+    /**
+     * Apply the tranform response rule to the response rule.
+     *
+     * @param transformRule the transform rule
+     * @return the response
+     */
+    Response applyResponseRule(TransformRule transformRule);
+
+    /**
+     * Apply the forward response rule to the response rule.
+     *
+     * @param forwardResponseRule the forward response rule
+     * @return the response
+     */
+    Response applyResponseRule(ForwardResponseRule forwardResponseRule);
+
+    /**
+     * Apply the redirect response rule to the response rule.
+     *
+     * @param redirectResponseRule the redirect response rule
+     * @return the response
+     */
+    Response applyResponseRule(RedirectResponseRule redirectResponseRule);
+
 }

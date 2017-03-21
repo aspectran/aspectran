@@ -23,41 +23,41 @@ import com.aspectran.core.util.ToStringBuilder;
  * @since 2011. 3. 13.
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
-	
-	protected Object adaptee;
-	
-	/**
-	 * Instantiates a new AbstractSessionAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public AbstractSessionAdapter(Object adaptee) {
-		this.adaptee = adaptee;
-	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAdaptee() {
-		return (T)adaptee;
-	}
+    protected Object adaptee;
 
-	@Override
-	public void release() {
-		adaptee = null;
-	}
-	
-	@Override
-	public String toString() {
-		if (adaptee == null) {
-			return super.toString();
-		}
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", getId());
-		tsb.append("creationTime", getCreationTime());
-		tsb.append("lastAccessedTime", getLastAccessedTime());
-		tsb.append("maxInactiveInterval", getMaxInactiveInterval());
-		tsb.append("attributeNames", getAttributeNames());
-		return tsb.toString();
-	}
-	
+    /**
+     * Instantiates a new AbstractSessionAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public AbstractSessionAdapter(Object adaptee) {
+        this.adaptee = adaptee;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAdaptee() {
+        return (T)adaptee;
+    }
+
+    @Override
+    public void release() {
+        adaptee = null;
+    }
+
+    @Override
+    public String toString() {
+        if (adaptee == null) {
+            return super.toString();
+        }
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", getId());
+        tsb.append("creationTime", getCreationTime());
+        tsb.append("lastAccessedTime", getLastAccessedTime());
+        tsb.append("maxInactiveInterval", getMaxInactiveInterval());
+        tsb.append("attributeNames", getAttributeNames());
+        return tsb.toString();
+    }
+
 }

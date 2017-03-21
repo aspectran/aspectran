@@ -25,39 +25,39 @@ import java.io.Writer;
  */
 public class MultiWriter extends Writer {
 
-	private final Writer[] writers;
+    private final Writer[] writers;
 
-	public MultiWriter(Writer[] writers) {
-		this.writers = writers;
-	}
+    public MultiWriter(Writer[] writers) {
+        this.writers = writers;
+    }
 
-	@Override
-	public void write(char[] cbuf, int off, int len) throws IOException {
-		for (Writer writer : writers) {
-			writer.write(cbuf, off, len);
-		}
-	}
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        for (Writer writer : writers) {
+            writer.write(cbuf, off, len);
+        }
+    }
 
-	@Override
-	public void flush() throws IOException {
-		for (Writer writer : writers) {
-			writer.flush();
-		}
-	}
+    @Override
+    public void flush() throws IOException {
+        for (Writer writer : writers) {
+            writer.flush();
+        }
+    }
 
-	@Override
-	public void close() throws IOException {
-		int unclosed = 0;
-		for (Writer writer : writers) {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				unclosed++;
-			}
-		}
-		if (unclosed > 0) {
-			throw new IOException("Failed to close the multi-writer.");
-		}
-	}
+    @Override
+    public void close() throws IOException {
+        int unclosed = 0;
+        for (Writer writer : writers) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                unclosed++;
+            }
+        }
+        if (unclosed > 0) {
+            throw new IOException("Failed to close the multi-writer.");
+        }
+    }
 
 }

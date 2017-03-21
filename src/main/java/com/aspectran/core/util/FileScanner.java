@@ -30,93 +30,93 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class FileScanner {
 
-	private static final char FILE_SEPARATOR = '/';
-	
-	private final String basePath;
-	
-	public FileScanner() {
-		this(null);
-	}
-	
-	public FileScanner(String basePath) {
-		this.basePath = basePath;
-	}
+    private static final char FILE_SEPARATOR = '/';
 
-	public Map<String, File> scan(String filePathPattern) {
-		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		scan(filePathPattern, scannedFiles);
-		return scannedFiles;
-	}
+    private final String basePath;
 
-	public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
-		scan(filePathPattern, (filePath, scannedFile) -> {
+    public FileScanner() {
+        this(null);
+    }
+
+    public FileScanner(String basePath) {
+        this.basePath = basePath;
+    }
+
+    public Map<String, File> scan(String filePathPattern) {
+        final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+        scan(filePathPattern, scannedFiles);
+        return scannedFiles;
+    }
+
+    public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
+        scan(filePathPattern, (filePath, scannedFile) -> {
             scannedFiles.put(filePath, scannedFile);
         });
-	}
+    }
 
-	public void scan(String filePathPattern, SaveHandler saveHandler) {
-		if (filePathPattern == null) {
-			throw new IllegalArgumentException("The filePathPattern argument must not be null.");
-		}
+    public void scan(String filePathPattern, SaveHandler saveHandler) {
+        if (filePathPattern == null) {
+            throw new IllegalArgumentException("The filePathPattern argument must not be null.");
+        }
 
-		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
-		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		matcher.separate(filePathPattern);
+        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
+        WildcardMatcher matcher = new WildcardMatcher(pattern);
+        matcher.separate(filePathPattern);
 
-		StringBuilder sb = new StringBuilder();
-		
-		while (matcher.hasNext()) {
-			String term = matcher.next();
-			if (term.length() > 0) {
-				if (!WildcardPattern.hasWildcards(term)) {
-					if (sb.length() > 0)
-						sb.append(FILE_SEPARATOR);
-					sb.append(term);
-				} else {
-					break;
-				}
-			} else {
-				sb.append(FILE_SEPARATOR);
-			}
-		}
-		
-		String basePath = sb.toString();
-		
-		scan(basePath, matcher, saveHandler);
-	}
-	
-	public Map<String, File> scan(String basePath, String filePathPattern) {
-		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		scan(basePath, filePathPattern, scannedFiles);
-		return scannedFiles;
-	}
-	
-	public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
-		scan(basePath, filePathPattern, (filePath, scannedFile) -> {
+        StringBuilder sb = new StringBuilder();
+
+        while (matcher.hasNext()) {
+            String term = matcher.next();
+            if (term.length() > 0) {
+                if (!WildcardPattern.hasWildcards(term)) {
+                    if (sb.length() > 0)
+                        sb.append(FILE_SEPARATOR);
+                    sb.append(term);
+                } else {
+                    break;
+                }
+            } else {
+                sb.append(FILE_SEPARATOR);
+            }
+        }
+
+        String basePath = sb.toString();
+
+        scan(basePath, matcher, saveHandler);
+    }
+
+    public Map<String, File> scan(String basePath, String filePathPattern) {
+        final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+        scan(basePath, filePathPattern, scannedFiles);
+        return scannedFiles;
+    }
+
+    public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
+        scan(basePath, filePathPattern, (filePath, scannedFile) -> {
             scannedFiles.put(filePath, scannedFile);
         });
-	}
+    }
 
-	public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
-		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
-		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		if (basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
-			basePath = basePath.substring(0, basePath.length() - 1);
-		}
-		scan(basePath, matcher, saveHandler);
-	}
+    public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
+        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
+        WildcardMatcher matcher = new WildcardMatcher(pattern);
+        if (basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
+            basePath = basePath.substring(0, basePath.length() - 1);
+        }
+        scan(basePath, matcher, saveHandler);
+    }
 
-	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
-		final File target;
-		if (basePath != null) {
-			target = new File(basePath, targetPath);
-		} else {
-			target = new File(targetPath);
-		}
-		if (!target.exists()) {
-			return;
-		}
-		target.listFiles(file -> {
+    protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
+        final File target;
+        if (basePath != null) {
+            target = new File(basePath, targetPath);
+        } else {
+            target = new File(targetPath);
+        }
+        if (!target.exists()) {
+            return;
+        }
+        target.listFiles(file -> {
             String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
             if (file.isDirectory()) {
@@ -128,10 +128,10 @@ public class FileScanner {
             }
             return false;
         });
-	}
-	
-	public interface SaveHandler {
-		void save(String filePath, File scannedFile);
-	}
+    }
+
+    public interface SaveHandler {
+        void save(String filePath, File scannedFile);
+    }
 
 }

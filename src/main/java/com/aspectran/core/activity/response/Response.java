@@ -26,42 +26,42 @@ import com.aspectran.core.context.rule.type.ResponseType;
  * <p>Created: 2008. 03. 23 PM 12:52:04</p>
  */
 public interface Response extends Replicable<Response> {
-	
-	/**
-	 * Response.
-	 * 
-	 * @param activity the current Activity
-	 * 
-	 * @throws ResponseException the response exception
-	 */
-	void response(Activity activity) throws ResponseException;
-	
-	/**
-	 * Gets the response type.
-	 * 
-	 * @return the response type
-	 */
-	ResponseType getResponseType();
 
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	String getContentType();
-	
-	/**
-	 * Gets the action list.
-	 *
-	 * @return the action list
-	 */
-	ActionList getActionList();
+    /**
+     * Response.
+     *
+     * @param activity the current Activity
+     *
+     * @throws ResponseException the response exception
+     */
+    void response(Activity activity) throws ResponseException;
 
-	/**
-	 * Replicate this response.
-	 *
-	 * @return the new response
-	 */
-	Response replicate();
-	
+    /**
+     * Gets the response type.
+     *
+     * @return the response type
+     */
+    ResponseType getResponseType();
+
+    /**
+     * Gets the content type.
+     *
+     * @return the content type
+     */
+    String getContentType();
+
+    /**
+     * Gets the action list.
+     *
+     * @return the action list
+     */
+    ActionList getActionList();
+
+    /**
+     * Replicate this response.
+     *
+     * @return the new response
+     */
+    Response replicate();
+
 }

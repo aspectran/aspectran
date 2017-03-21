@@ -22,34 +22,34 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ImporterFileFormatType {
 
-	XML("xml"),
-	APON("apon");
+    XML("xml"),
+    APON("apon");
 
-	private final String alias;
+    private final String alias;
 
-	ImporterFileFormatType(String alias) {
-		this.alias = alias;
-	}
+    ImporterFileFormatType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code ImportFileType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the import file type as a {@code String}
-	 * @return an {@code ImportFileType}, may be {@code null}
-	 */
-	public static ImporterFileFormatType resolve(String alias) {
-		for (ImporterFileFormatType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code ImportFileType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the import file type as a {@code String}
+     * @return an {@code ImportFileType}, may be {@code null}
+     */
+    public static ImporterFileFormatType resolve(String alias) {
+        for (ImporterFileFormatType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

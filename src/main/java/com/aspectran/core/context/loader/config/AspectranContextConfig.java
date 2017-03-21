@@ -21,39 +21,39 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextConfig extends AbstractParameters {
 
-	public static final ParameterDefinition root;
-	public static final ParameterDefinition encoding;
-	public static final ParameterDefinition resources;
-	public static final ParameterDefinition hybridLoad;
-	public static final ParameterDefinition autoReload;
-	public static final ParameterDefinition profiles;
-	
-	private final static ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		root = new ParameterDefinition("root", ParameterValueType.STRING);
-		encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-		resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
-		hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
-		autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
-		profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			root,
-			encoding,
-			resources,
-			hybridLoad,
-			autoReload,
-			profiles
-		};
-	}
-	
-	public AspectranContextConfig() {
-		super(parameterDefinitions);
-	}
-	
-	public AspectranContextConfig(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition root;
+    public static final ParameterDefinition encoding;
+    public static final ParameterDefinition resources;
+    public static final ParameterDefinition hybridLoad;
+    public static final ParameterDefinition autoReload;
+    public static final ParameterDefinition profiles;
+
+    private final static ParameterDefinition[] parameterDefinitions;
+
+    static {
+        root = new ParameterDefinition("root", ParameterValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
+        resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
+        hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
+        autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
+        profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            root,
+            encoding,
+            resources,
+            hybridLoad,
+            autoReload,
+            profiles
+        };
+    }
+
+    public AspectranContextConfig() {
+        super(parameterDefinitions);
+    }
+
+    public AspectranContextConfig(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

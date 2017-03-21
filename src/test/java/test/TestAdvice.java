@@ -20,25 +20,25 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 public class TestAdvice {
-	
-	private final Log log = LogFactory.getLog(TestAdvice.class);
 
-	public String welcome(Translet translet) {
-		String msg = "Welcome to Aspectran!";
-		
-		log.info(msg);
-		
-		return msg;
-	}
-	
-	public String goodbye(Translet translet) {
-		log.info("activityDataMap " + translet.getActivityDataMap(true));
+    private final Log log = LogFactory.getLog(TestAdvice.class);
 
-		String msg = "Goodbye!";
-		
-		log.info(msg);
-		
-		return msg;
-	}
-	
+    public String welcome(Translet translet) {
+        String msg = "Welcome to Aspectran!";
+
+        log.info(msg);
+
+        return msg;
+    }
+
+    public String goodbye(Translet translet) {
+        log.info("activityDataMap " + translet.getActivityDataMap(true));
+
+        String msg = "Goodbye!";
+
+        log.info(msg);
+
+        return msg;
+    }
+
 }

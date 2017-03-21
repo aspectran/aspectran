@@ -26,106 +26,106 @@ import com.aspectran.core.util.apon.Parameters;
  * The Class PointcutRule.
  */
 public class PointcutRule {
-	
-	private final PointcutType pointcutType;
-	
-	private List<PointcutPatternRule> pointcutPatternRuleList;
-	
-	private List<String> plusPatternStringList;
 
-	private List<String> minusPatternStringList;
+    private final PointcutType pointcutType;
 
-	private List<Parameters> includeTargetParametersList;
+    private List<PointcutPatternRule> pointcutPatternRuleList;
 
-	private List<Parameters> execludeTargetParametersList;
+    private List<String> plusPatternStringList;
 
-	
-	public PointcutRule(PointcutType pointcutType) {
-		this.pointcutType = pointcutType;
-	}
-	
-	public PointcutType getPointcutType() {
-		return pointcutType;
-	}
+    private List<String> minusPatternStringList;
 
-	public List<PointcutPatternRule> getPointcutPatternRuleList() {
-		return pointcutPatternRuleList;
-	}
+    private List<Parameters> includeTargetParametersList;
 
-	public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule, List<PointcutPatternRule> excludePointcutPatternRuleList) {
-		pointcutPatternRule.setPointcutType(pointcutType);
-		if (excludePointcutPatternRuleList != null) {
-			pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
-		}
-		touchPointcutPatternRuleList().add(pointcutPatternRule);
-	}
-	
-	public List<PointcutPatternRule> touchPointcutPatternRuleList() {
-		if (pointcutPatternRuleList == null) {
-			pointcutPatternRuleList = newPointcutPatternRuleList();
-		}
-		return pointcutPatternRuleList;
-	}
+    private List<Parameters> execludeTargetParametersList;
 
-	public List<PointcutPatternRule> newPointcutPatternRuleList() {
-		return new ArrayList<PointcutPatternRule>();
-	}
-	
-	public List<PointcutPatternRule> newPointcutPatternRuleList(int initialCapacity) {
-		return new ArrayList<PointcutPatternRule>(initialCapacity);
-	}
 
-	public List<String> getPlusPatternStringList() {
-		return plusPatternStringList;
-	}
+    public PointcutRule(PointcutType pointcutType) {
+        this.pointcutType = pointcutType;
+    }
 
-	public void setPlusPatternStringList(List<String> plusPatternStringList) {
-		this.plusPatternStringList = plusPatternStringList;
-	}
+    public PointcutType getPointcutType() {
+        return pointcutType;
+    }
 
-	public List<String> getMinusPatternStringList() {
-		return minusPatternStringList;
-	}
+    public List<PointcutPatternRule> getPointcutPatternRuleList() {
+        return pointcutPatternRuleList;
+    }
 
-	public void setMinusPatternStringList(List<String> minusPatternStringList) {
-		this.minusPatternStringList = minusPatternStringList;
-	}
+    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule, List<PointcutPatternRule> excludePointcutPatternRuleList) {
+        pointcutPatternRule.setPointcutType(pointcutType);
+        if (excludePointcutPatternRuleList != null) {
+            pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+        }
+        touchPointcutPatternRuleList().add(pointcutPatternRule);
+    }
 
-	public List<Parameters> getIncludeTargetParametersList() {
-		return includeTargetParametersList;
-	}
+    public List<PointcutPatternRule> touchPointcutPatternRuleList() {
+        if (pointcutPatternRuleList == null) {
+            pointcutPatternRuleList = newPointcutPatternRuleList();
+        }
+        return pointcutPatternRuleList;
+    }
 
-	public void setIncludeTargetParametersList(List<Parameters> includeTargetParametersList) {
-		this.includeTargetParametersList = includeTargetParametersList;
-	}
+    public List<PointcutPatternRule> newPointcutPatternRuleList() {
+        return new ArrayList<PointcutPatternRule>();
+    }
 
-	public List<Parameters> getExecludeTargetParametersList() {
-		return execludeTargetParametersList;
-	}
+    public List<PointcutPatternRule> newPointcutPatternRuleList(int initialCapacity) {
+        return new ArrayList<PointcutPatternRule>(initialCapacity);
+    }
 
-	public void setExecludeTargetParametersList(List<Parameters> execludeTargetParametersList) {
-		this.execludeTargetParametersList = execludeTargetParametersList;
-	}
+    public List<String> getPlusPatternStringList() {
+        return plusPatternStringList;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("pointcutType", pointcutType);
-		tsb.append("pointcutPatternRule", pointcutPatternRuleList);
-		return tsb.toString();
-	}
-	
-	public static PointcutRule newInstance(String type) {
-		PointcutType pointcutType = null;
-		
-		if (type != null) {
-			pointcutType = PointcutType.resolve(type);
-			if (pointcutType == null) {
-				throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
-			}
-		}
-		
-		return new PointcutRule(pointcutType);
-	}
+    public void setPlusPatternStringList(List<String> plusPatternStringList) {
+        this.plusPatternStringList = plusPatternStringList;
+    }
+
+    public List<String> getMinusPatternStringList() {
+        return minusPatternStringList;
+    }
+
+    public void setMinusPatternStringList(List<String> minusPatternStringList) {
+        this.minusPatternStringList = minusPatternStringList;
+    }
+
+    public List<Parameters> getIncludeTargetParametersList() {
+        return includeTargetParametersList;
+    }
+
+    public void setIncludeTargetParametersList(List<Parameters> includeTargetParametersList) {
+        this.includeTargetParametersList = includeTargetParametersList;
+    }
+
+    public List<Parameters> getExecludeTargetParametersList() {
+        return execludeTargetParametersList;
+    }
+
+    public void setExecludeTargetParametersList(List<Parameters> execludeTargetParametersList) {
+        this.execludeTargetParametersList = execludeTargetParametersList;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("pointcutType", pointcutType);
+        tsb.append("pointcutPatternRule", pointcutPatternRuleList);
+        return tsb.toString();
+    }
+
+    public static PointcutRule newInstance(String type) {
+        PointcutType pointcutType = null;
+
+        if (type != null) {
+            pointcutType = PointcutType.resolve(type);
+            if (pointcutType == null) {
+                throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
+            }
+        }
+
+        return new PointcutRule(pointcutType);
+    }
 
 }

@@ -22,35 +22,35 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ImporterType {
 
-	FILE("file"),
-	RESOURCE("resource"),
-	URL("url");
+    FILE("file"),
+    RESOURCE("resource"),
+    URL("url");
 
-	private final String alias;
+    private final String alias;
 
-	ImporterType(String alias) {
-		this.alias = alias;
-	}
+    ImporterType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code ImporterType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the importer type as a {@code String}
-	 * @return an {@code ImporterType}, may be {@code null}
-	 */
-	public static ImporterType resolve(String alias) {
-		for (ImporterType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code ImporterType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the importer type as a {@code String}
+     * @return an {@code ImporterType}, may be {@code null}
+     */
+    public static ImporterType resolve(String alias) {
+        for (ImporterType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

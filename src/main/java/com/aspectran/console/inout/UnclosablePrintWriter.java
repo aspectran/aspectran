@@ -28,13 +28,13 @@ import java.io.UnsupportedEncodingException;
  */
 public class UnclosablePrintWriter extends PrintWriter {
 
-	public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
-		super(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)), true);
-	}
-	
-	@Override
-	public void close() {
-		// Do not close the console output stream until the application is terminated.
-	}
+    public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
+        super(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)), true);
+    }
+
+    @Override
+    public void close() {
+        // Do not close the console output stream until the application is terminated.
+    }
 
 }

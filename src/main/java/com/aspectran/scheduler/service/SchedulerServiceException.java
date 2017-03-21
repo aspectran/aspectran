@@ -39,42 +39,42 @@ import com.aspectran.core.service.AspectranServiceException;
  */
 public class SchedulerServiceException extends AspectranServiceException {
 
-	/** @serial */
-	private static final long serialVersionUID = -6814416137683710109L;
+    /** @serial */
+    private static final long serialVersionUID = -6814416137683710109L;
 
-	/**
-	 * Simple constructor
-	 */
-	public SchedulerServiceException() {
-		super();
-	}
+    /**
+     * Simple constructor
+     */
+    public SchedulerServiceException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public SchedulerServiceException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message
+     *
+     * @param msg a message to associate with the exception
+     */
+    public SchedulerServiceException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public SchedulerServiceException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception
+     *
+     * @param cause the real cause of the exception
+     */
+    public SchedulerServiceException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message
-	 *
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public SchedulerServiceException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public SchedulerServiceException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

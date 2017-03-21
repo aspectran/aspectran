@@ -25,50 +25,50 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
  * @since 2.3.0
  */
 public class ConsoleSessionAdapter extends BasicSessionAdapter {
-	
-	private final long creationTime = System.currentTimeMillis();
 
-	private final String id = generateSessionId();
-	
-	/**
-	 * Instantiates a new ConsoleSessionAdapter.
-	 */
-	public ConsoleSessionAdapter() {
-		super(null);
-	}
+    private final long creationTime = System.currentTimeMillis();
 
-	@Override
-	public String getId() {
-		return id;
-	}
+    private final String id = generateSessionId();
 
-	@Override
-	public long getCreationTime() {
-		return creationTime;
-	}
+    /**
+     * Instantiates a new ConsoleSessionAdapter.
+     */
+    public ConsoleSessionAdapter() {
+        super(null);
+    }
 
-	@Override
-	public long getLastAccessedTime() {
-		return -1L;
-	}
+    @Override
+    public String getId() {
+        return id;
+    }
 
-	@Override
-	public int getMaxInactiveInterval() {
-		return 0;
-	}
+    @Override
+    public long getCreationTime() {
+        return creationTime;
+    }
 
-	@Override
-	public void invalidate() {
-		// nothing to do
-	}
-	
-	private String generateSessionId() {
-		long seed = creationTime;
-		seed ^= Runtime.getRuntime().freeMemory();
+    @Override
+    public long getLastAccessedTime() {
+        return -1L;
+    }
 
-		Random rnd = new Random(seed);
-		
-		return Long.toString(Math.abs(rnd.nextLong()),16);
-	} 
+    @Override
+    public int getMaxInactiveInterval() {
+        return 0;
+    }
+
+    @Override
+    public void invalidate() {
+        // nothing to do
+    }
+
+    private String generateSessionId() {
+        long seed = creationTime;
+        seed ^= Runtime.getRuntime().freeMemory();
+
+        Random rnd = new Random(seed);
+
+        return Long.toString(Math.abs(rnd.nextLong()),16);
+    }
 
 }

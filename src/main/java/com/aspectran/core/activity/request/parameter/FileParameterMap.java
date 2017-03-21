@@ -23,25 +23,25 @@ import java.util.LinkedHashMap;
  * <p>Created: 2008. 03. 29 PM 6:23:00</p>
  */
 public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
-	
-	/** @serial */
-	private static final long serialVersionUID = -2589963778315184242L;
 
-	public FileParameter getFileParameter(String name) {
-		FileParameter[] fileParameters = get(name);
-		return (fileParameters != null && fileParameters.length > 0 ? fileParameters[0] : null);
-	}
-	
-	public FileParameter[] getFileParameterValues(String name) {
-		return get(name);
-	}
-	
-	public void setFileParameter(String name, FileParameter fileParameter) {
-		put(name, new FileParameter[] { fileParameter });
-	}
-	
-	public void setFileParameter(String name, FileParameter[] fileParameters) {
-		put(name, fileParameters);
-	}
+    /** @serial */
+    private static final long serialVersionUID = -2589963778315184242L;
+
+    public FileParameter getFileParameter(String name) {
+        FileParameter[] fileParameters = get(name);
+        return (fileParameters != null && fileParameters.length > 0 ? fileParameters[0] : null);
+    }
+
+    public FileParameter[] getFileParameterValues(String name) {
+        return get(name);
+    }
+
+    public void setFileParameter(String name, FileParameter fileParameter) {
+        put(name, new FileParameter[] { fileParameter });
+    }
+
+    public void setFileParameter(String name, FileParameter[] fileParameters) {
+        put(name, fileParameters);
+    }
 
 }

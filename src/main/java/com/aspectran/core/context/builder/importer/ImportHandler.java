@@ -22,10 +22,10 @@ import java.util.List;
  */
 public interface ImportHandler {
 
-	void pending(Importer importer);
-	
-	void handle(Importer importer) throws Exception;
-	
-	List<Importer> getPendingList();
-	
+    void pending(Importer importer);
+
+    void handle(Importer importer) throws Exception;
+
+    List<Importer> getPendingList();
+
 }

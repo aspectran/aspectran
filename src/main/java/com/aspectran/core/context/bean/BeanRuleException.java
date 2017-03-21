@@ -22,41 +22,41 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class BeanRuleException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = -8362121026201328444L;
+    /** @serial */
+    private static final long serialVersionUID = -8362121026201328444L;
 
-	private final BeanRule beanRule;
+    private final BeanRule beanRule;
 
-	/**
-	 * Instantiates a new BeanRuleException.
-	 *
-	 * @param msg the detail message
-	 * @param beanRule the bean rule
-	 */
-	public BeanRuleException(String msg, BeanRule beanRule) {
-		super(msg + " " + beanRule);
-		this.beanRule = beanRule;
-	}
+    /**
+     * Instantiates a new BeanRuleException.
+     *
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     */
+    public BeanRuleException(String msg, BeanRule beanRule) {
+        super(msg + " " + beanRule);
+        this.beanRule = beanRule;
+    }
 
-	/**
-	 * Instantiates a new BeanRuleException.
-	 *
-	 * @param beanRule the bean rule
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public BeanRuleException(String msg, BeanRule beanRule, Throwable cause) {
-		super(msg + " " + beanRule, cause);
-		this.beanRule = beanRule;
-	}
+    /**
+     * Instantiates a new BeanRuleException.
+     *
+     * @param beanRule the bean rule
+     * @param msg the detail message
+     * @param cause the root cause
+     */
+    public BeanRuleException(String msg, BeanRule beanRule, Throwable cause) {
+        super(msg + " " + beanRule, cause);
+        this.beanRule = beanRule;
+    }
 
-	/**
-	 * Gets bean rule.
-	 *
-	 * @return the bean rule
-	 */
-	public BeanRule getBeanRule() {
-		return beanRule;
-	}
+    /**
+     * Gets bean rule.
+     *
+     * @return the bean rule
+     */
+    public BeanRule getBeanRule() {
+        return beanRule;
+    }
 
 }

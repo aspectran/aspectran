@@ -29,206 +29,206 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TransformRule extends ActionPossessSupport implements Replicable<TransformRule> {
-	
-	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-	private TransformType transformType;
+    public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-	private String contentType;
+    private TransformType transformType;
 
-	private String characterEncoding;
+    private String contentType;
 
-	private Boolean defaultResponse;
-	
-	private Boolean pretty;
+    private String characterEncoding;
 
-	private String templateId;
-	
-	private TemplateRule templateRule;
+    private Boolean defaultResponse;
 
-	public TransformRule() {
-	}
-	
-	/**
-	 * Gets the transform type.
-	 * 
-	 * @return the transform type
-	 */
-	public TransformType getTransformType() {
-		return transformType;
-	}
-	
-	/**
-	 * Sets the transform type.
-	 * 
-	 * @param transformType the transformType to set
-	 */
-	public void setTransformType(TransformType transformType) {
-		this.transformType = transformType;
-		
-		if (contentType == null) {
-			if (transformType == TransformType.TEXT) {
-				contentType = ContentType.TEXT_PLAIN.toString();
-			} else if (transformType == TransformType.JSON) {
-				contentType = ContentType.TEXT_JSON.toString();
-			} else if (transformType == TransformType.XML) {
-				contentType = ContentType.TEXT_XML.toString();
-			}
-		}
-	}
+    private Boolean pretty;
 
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		return contentType;
-	}
+    private String templateId;
 
-	/**
-	 * Sets the content type.
-	 * 
-	 * @param contentType the new content type
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-	
-	/**
-	 * Gets the character encoding.
-	 * 
-	 * @return the characterEncoding
-	 */
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    private TemplateRule templateRule;
 
-	/**
-	 * Sets the character encoding.
-	 * 
-	 * @param characterEncoding the characterEncoding to set
-	 */
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    public TransformRule() {
+    }
 
-	public Boolean getDefaultResponse() {
-		return defaultResponse;
-	}
+    /**
+     * Gets the transform type.
+     *
+     * @return the transform type
+     */
+    public TransformType getTransformType() {
+        return transformType;
+    }
 
-	public boolean isDefaultResponse() {
-		return BooleanUtils.toBoolean(defaultResponse);
-	}
+    /**
+     * Sets the transform type.
+     *
+     * @param transformType the transformType to set
+     */
+    public void setTransformType(TransformType transformType) {
+        this.transformType = transformType;
 
-	public void setDefaultResponse(Boolean defaultResponse) {
-		this.defaultResponse = defaultResponse;
-	}
+        if (contentType == null) {
+            if (transformType == TransformType.TEXT) {
+                contentType = ContentType.TEXT_PLAIN.toString();
+            } else if (transformType == TransformType.JSON) {
+                contentType = ContentType.TEXT_JSON.toString();
+            } else if (transformType == TransformType.XML) {
+                contentType = ContentType.TEXT_XML.toString();
+            }
+        }
+    }
 
-	public Boolean getPretty() {
-		return pretty;
-	}
+    /**
+     * Gets the content type.
+     *
+     * @return the content type
+     */
+    public String getContentType() {
+        return contentType;
+    }
 
-	public boolean isPretty() {
-		return BooleanUtils.toBoolean(pretty);
-	}
+    /**
+     * Sets the content type.
+     *
+     * @param contentType the new content type
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	public void setPretty(Boolean pretty) {
-		this.pretty = pretty;
-	}
+    /**
+     * Gets the character encoding.
+     *
+     * @return the characterEncoding
+     */
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	public String getTemplateId() {
-		return templateId;
-	}
+    /**
+     * Sets the character encoding.
+     *
+     * @param characterEncoding the characterEncoding to set
+     */
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	public void setTemplateId(String templateId) {
-		this.templateId = templateId;
-	}
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
 
-	public TemplateRule getTemplateRule() {
-		return templateRule;
-	}
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
 
-	public void setTemplateRule(TemplateRule templateRule) {
-		this.templateRule = templateRule;
-		if (templateRule != null) {
-			if (templateRule.getEncoding() != null && this.characterEncoding == null) {
-				this.characterEncoding = templateRule.getEncoding();
-			}
-		}
-	}
-	
-	@Override
-	public TransformRule replicate() {
-		return replicate(this);
-	}
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.appendForce("responseType", RESPONSE_TYPE);
-		tsb.append("transformType", transformType);
-		tsb.append("contentType", contentType);
-		tsb.append("characterEncoding", characterEncoding);
-		tsb.append("defaultResponse", defaultResponse);
-		tsb.append("pretty", pretty);
-		tsb.append("template", templateId);
-		tsb.append("template", templateRule);
-		return tsb.toString();
-	}
-	
-	public static TransformRule newInstance(String type, String contentType, 
-			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		TransformType transformType = TransformType.resolve(type);
-		if (transformType == null && contentType != null) {
-			transformType = TransformType.resolve(ContentType.resolve(contentType));
-		}
-		if (transformType == null) {
-			throw new IllegalArgumentException("No transform type for '" + type + "'.");
-		}
-		TransformRule tr = new TransformRule();
-		tr.setTransformType(transformType);
-		if (contentType != null) {
-			tr.setContentType(contentType);
-		}
-		tr.setCharacterEncoding(characterEncoding);
-		tr.setDefaultResponse(defaultResponse);
-		tr.setPretty(pretty);
-		return tr;
-	}
+    public Boolean getPretty() {
+        return pretty;
+    }
 
-	public static TransformRule newInstance(TransformType transformType, String contentType, 
-			String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		if (transformType == null && contentType != null) {
-			transformType = TransformType.resolve(ContentType.resolve(contentType));
-		}
-		if (transformType == null) {
-			throw new IllegalArgumentException("Transform Type is not specified.");
-		}
-		TransformRule tr = new TransformRule();
-		tr.setTransformType(transformType);
-		if (contentType != null) {
-			tr.setContentType(contentType);
-		}
-		tr.setCharacterEncoding(characterEncoding);
-		tr.setDefaultResponse(defaultResponse);
-		tr.setPretty(pretty);
-		return tr;
-	}
+    public boolean isPretty() {
+        return BooleanUtils.toBoolean(pretty);
+    }
 
-	public static TransformRule replicate(TransformRule transformRule) {
-		TransformRule tr = new TransformRule();
-		tr.setTransformType(transformRule.getTransformType());
-		tr.setContentType(transformRule.getContentType());
-		tr.setCharacterEncoding(transformRule.getCharacterEncoding());
-		tr.setDefaultResponse(transformRule.getDefaultResponse());
-		tr.setPretty(transformRule.getPretty());
-		tr.setActionList(transformRule.getActionList());
-		TemplateRule templateRule = transformRule.getTemplateRule();
-		if (templateRule != null) {
-			tr.setTemplateRule(templateRule.replicate());
-		}
-		return tr;
-	}
-	
+    public void setPretty(Boolean pretty) {
+        this.pretty = pretty;
+    }
+
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
+    }
+
+    public TemplateRule getTemplateRule() {
+        return templateRule;
+    }
+
+    public void setTemplateRule(TemplateRule templateRule) {
+        this.templateRule = templateRule;
+        if (templateRule != null) {
+            if (templateRule.getEncoding() != null && this.characterEncoding == null) {
+                this.characterEncoding = templateRule.getEncoding();
+            }
+        }
+    }
+
+    @Override
+    public TransformRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.append("transformType", transformType);
+        tsb.append("contentType", contentType);
+        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("pretty", pretty);
+        tsb.append("template", templateId);
+        tsb.append("template", templateRule);
+        return tsb.toString();
+    }
+
+    public static TransformRule newInstance(String type, String contentType,
+            String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+        TransformType transformType = TransformType.resolve(type);
+        if (transformType == null && contentType != null) {
+            transformType = TransformType.resolve(ContentType.resolve(contentType));
+        }
+        if (transformType == null) {
+            throw new IllegalArgumentException("No transform type for '" + type + "'.");
+        }
+        TransformRule tr = new TransformRule();
+        tr.setTransformType(transformType);
+        if (contentType != null) {
+            tr.setContentType(contentType);
+        }
+        tr.setCharacterEncoding(characterEncoding);
+        tr.setDefaultResponse(defaultResponse);
+        tr.setPretty(pretty);
+        return tr;
+    }
+
+    public static TransformRule newInstance(TransformType transformType, String contentType,
+            String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+        if (transformType == null && contentType != null) {
+            transformType = TransformType.resolve(ContentType.resolve(contentType));
+        }
+        if (transformType == null) {
+            throw new IllegalArgumentException("Transform Type is not specified.");
+        }
+        TransformRule tr = new TransformRule();
+        tr.setTransformType(transformType);
+        if (contentType != null) {
+            tr.setContentType(contentType);
+        }
+        tr.setCharacterEncoding(characterEncoding);
+        tr.setDefaultResponse(defaultResponse);
+        tr.setPretty(pretty);
+        return tr;
+    }
+
+    public static TransformRule replicate(TransformRule transformRule) {
+        TransformRule tr = new TransformRule();
+        tr.setTransformType(transformRule.getTransformType());
+        tr.setContentType(transformRule.getContentType());
+        tr.setCharacterEncoding(transformRule.getCharacterEncoding());
+        tr.setDefaultResponse(transformRule.getDefaultResponse());
+        tr.setPretty(transformRule.getPretty());
+        tr.setActionList(transformRule.getActionList());
+        TemplateRule templateRule = transformRule.getTemplateRule();
+        if (templateRule != null) {
+            tr.setTemplateRule(templateRule.replicate());
+        }
+        return tr;
+    }
+
 }

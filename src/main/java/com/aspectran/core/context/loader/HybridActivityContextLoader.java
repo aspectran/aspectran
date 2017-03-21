@@ -25,53 +25,53 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
 public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
-	private final String encoding;
+    private final String encoding;
 
-	private String rootContext;
+    private String rootContext;
 
-	public HybridActivityContextLoader() {
-		this(new BasicApplicationAdapter());
-	}
-	
-	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter);
-		this.encoding = ActivityContext.DEFAULT_ENCODING;
-	}
-	
-	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
-		super(applicationAdapter);
-		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
-	}
+    public HybridActivityContextLoader() {
+        this(new BasicApplicationAdapter());
+    }
 
-	@Override
-	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
-		this.rootContext = rootContext;
+    public HybridActivityContextLoader(ApplicationAdapter applicationAdapter) {
+        super(applicationAdapter);
+        this.encoding = ActivityContext.DEFAULT_ENCODING;
+    }
 
-		log.info("Loading ActivityContext with root configuration: " + rootContext);
+    public HybridActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
+        super(applicationAdapter);
+        this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
+    }
 
-		long startTime = System.currentTimeMillis();
+    @Override
+    public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
+        this.rootContext = rootContext;
 
-		ActivityContextBuilder builder = new HybridActivityContextBuilder(getApplicationAdapter(), encoding);
-		builder.setActiveProfiles(getActiveProfiles());
-		builder.setDefaultProfiles(getDefaultProfiles());
-		builder.setHybridLoad(isHybridLoad());
-		
-		ActivityContext activityContext = builder.build(rootContext);
-		
-		long elapsedTime = System.currentTimeMillis() - startTime;
+        log.info("Loading ActivityContext with root configuration: " + rootContext);
 
-		log.info("ActivityContext load completed in " + elapsedTime + " ms.");
-		
-		return activityContext;
-	}
+        long startTime = System.currentTimeMillis();
 
-	@Override
-	public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
-		if (hardReload) {
-			newAspectranClassLoader();
-		}
+        ActivityContextBuilder builder = new HybridActivityContextBuilder(getApplicationAdapter(), encoding);
+        builder.setActiveProfiles(getActiveProfiles());
+        builder.setDefaultProfiles(getDefaultProfiles());
+        builder.setHybridLoad(isHybridLoad());
 
-		return load(rootContext);
-	}
-	
+        ActivityContext activityContext = builder.build(rootContext);
+
+        long elapsedTime = System.currentTimeMillis() - startTime;
+
+        log.info("ActivityContext load completed in " + elapsedTime + " ms.");
+
+        return activityContext;
+    }
+
+    @Override
+    public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
+        if (hardReload) {
+            newAspectranClassLoader();
+        }
+
+        return load(rootContext);
+    }
+
 }

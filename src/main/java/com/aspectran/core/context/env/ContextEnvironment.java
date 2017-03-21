@@ -25,49 +25,49 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 
 public class ContextEnvironment extends AbstractEnvironment {
 
-	private final ActivityContext context;
-	
-	private ItemRuleMap propertyItemRuleMap;
-	
-	public ContextEnvironment(ActivityContext context) {
-		this.context = context;
-	}
-	
-	@Override
-	public ApplicationAdapter getApplicationAdapter() {
-		return context.getApplicationAdapter();
-	}
+    private final ActivityContext context;
 
-	public ItemRuleMap getPropertyItemRuleMap() {
-		return propertyItemRuleMap;
-	}
+    private ItemRuleMap propertyItemRuleMap;
 
-	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-		this.propertyItemRuleMap = propertyItemRuleMap;
-	}
-	
-	public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-		if (this.propertyItemRuleMap == null) {
-			this.propertyItemRuleMap = propertyItemRuleMap;
-		} else {
-			this.propertyItemRuleMap.putAll(propertyItemRuleMap);
-		}
-	}
-	
-	public <T> T getProperty(String name) {
-		if (propertyItemRuleMap == null) {
-			return null;
-		}
+    public ContextEnvironment(ActivityContext context) {
+        this.context = context;
+    }
 
-		ItemRule itemRule = propertyItemRuleMap.get(name);
-		if (itemRule == null) {
-			return null;
-		}
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return context.getApplicationAdapter();
+    }
 
-		Activity activity = context.getCurrentActivity();
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
 
-		ItemEvaluator evaluator = new ItemExpressionParser(activity);
-		return evaluator.evaluate(itemRule);
-	}
-	
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        if (this.propertyItemRuleMap == null) {
+            this.propertyItemRuleMap = propertyItemRuleMap;
+        } else {
+            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+        }
+    }
+
+    public <T> T getProperty(String name) {
+        if (propertyItemRuleMap == null) {
+            return null;
+        }
+
+        ItemRule itemRule = propertyItemRuleMap.get(name);
+        if (itemRule == null) {
+            return null;
+        }
+
+        Activity activity = context.getCurrentActivity();
+
+        ItemEvaluator evaluator = new ItemExpressionParser(activity);
+        return evaluator.evaluate(itemRule);
+    }
+
 }

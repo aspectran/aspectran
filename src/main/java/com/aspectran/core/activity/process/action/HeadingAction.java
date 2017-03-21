@@ -36,79 +36,79 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class HeadingAction extends AbstractAction {
 
-	private static final Log log = LogFactory.getLog(HeadingAction.class);
-	
-	private final HeadingActionRule headingActionRule;
-	
-	/**
-	 * Instantiates a new HeadingAction.
-	 * 
-	 * @param headingActionRule the heading action rule
-	 * @param parent the parent
-	 */
-	public HeadingAction(HeadingActionRule headingActionRule, ActionList parent) {
-		super(parent);
-		this.headingActionRule = headingActionRule;
-	}
+    private static final Log log = LogFactory.getLog(HeadingAction.class);
 
-	@Override
-	public Object execute(Activity activity) throws Exception {
-		if (headingActionRule.getHeaderItemRuleMap() == null) {
-			return null;
-		}
-		
-		try {
-			ItemEvaluator evaluator = new ItemExpressionParser(activity);
-			MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
-			
-			if (!valueMap.isEmpty()) {
-				ResponseAdapter responseAdapter = activity.getResponseAdapter();
-				responseAdapter.touchHeaders().putAll(valueMap);
-			}
-			
-			return valueMap;
-		} catch (Exception e) {
-			log.error("Failed to execute heading action " + headingActionRule + " Cause: " + e.toString());
-			throw e;
-		}
-	}
-	
-	/**
-	 * Returns the heading action rule.
-	 * 
-	 * @return the headingActionRule
-	 */
-	public HeadingActionRule getHeadingActionRule() {
-		return headingActionRule;
-	}
+    private final HeadingActionRule headingActionRule;
 
-	@Override
-	public String getActionId() {
-		return headingActionRule.getActionId();
-	}
+    /**
+     * Instantiates a new HeadingAction.
+     *
+     * @param headingActionRule the heading action rule
+     * @param parent the parent
+     */
+    public HeadingAction(HeadingActionRule headingActionRule, ActionList parent) {
+        super(parent);
+        this.headingActionRule = headingActionRule;
+    }
 
-	@Override
-	public boolean isHidden() {
-		return headingActionRule.isHidden();
-	}
+    @Override
+    public Object execute(Activity activity) throws Exception {
+        if (headingActionRule.getHeaderItemRuleMap() == null) {
+            return null;
+        }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.HEADERS;
-	}
+        try {
+            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getActionRule() {
-		return (T)headingActionRule;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("actionType", getActionType());
-		tsb.append("headingActionRule", headingActionRule);
-		return tsb.toString();
-	}
+            if (!valueMap.isEmpty()) {
+                ResponseAdapter responseAdapter = activity.getResponseAdapter();
+                responseAdapter.touchHeaders().putAll(valueMap);
+            }
+
+            return valueMap;
+        } catch (Exception e) {
+            log.error("Failed to execute heading action " + headingActionRule + " Cause: " + e.toString());
+            throw e;
+        }
+    }
+
+    /**
+     * Returns the heading action rule.
+     *
+     * @return the headingActionRule
+     */
+    public HeadingActionRule getHeadingActionRule() {
+        return headingActionRule;
+    }
+
+    @Override
+    public String getActionId() {
+        return headingActionRule.getActionId();
+    }
+
+    @Override
+    public boolean isHidden() {
+        return headingActionRule.isHidden();
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.HEADERS;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getActionRule() {
+        return (T)headingActionRule;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("actionType", getActionType());
+        tsb.append("headingActionRule", headingActionRule);
+        return tsb.toString();
+    }
 
 }

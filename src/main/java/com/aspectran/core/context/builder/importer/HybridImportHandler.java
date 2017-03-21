@@ -40,128 +40,128 @@ import com.aspectran.core.util.apon.Parameters;
  * The Class HybridImportHandler.
  */
 public class HybridImportHandler extends AbstractImportHandler {
-	
-	private final ContextBuilderAssistant assistant;
-	
-	private final String encoding;
-	
-	private final boolean hybridLoad;
-	
-	private AspectranNodeParser aspectranNodeParser;
-	
-	private RootAponDisassembler rootAponDisassembler;
-	
-	public HybridImportHandler(ActivityContextBuilder builder, String encoding, boolean hybridLoading) {
-		super(builder.getContextEnvironment());
 
-		this.assistant = builder.getContextBuilderAssistant();
-		this.encoding = encoding;
-		this.hybridLoad = hybridLoading;
-	}
+    private final ContextBuilderAssistant assistant;
 
-	@Override
-	public void handle(Importer importer) throws Exception {
-		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
+    private final String encoding;
 
-		boolean hybridon = false;
-		
-		if (importer.getImporterFileFormatType() == ImporterFileFormatType.APON) {
-			Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
-			
-			if (rootAponDisassembler == null) {
-				rootAponDisassembler = new RootAponDisassembler(assistant);
-			}
-			rootAponDisassembler.disassembleAspectran(rootParameters);
-		} else {
-			if (hybridLoad && importer.getImporterType() == ImporterType.FILE) {
-				File aponFile = makeAponFile((FileImporter)importer);
+    private final boolean hybridLoad;
 
-				if (importer.getLastModified() == aponFile.lastModified()) {
-					log.info("Rapid configuration loading with an APON file: " + aponFile);
+    private AspectranNodeParser aspectranNodeParser;
 
-					hybridon = true;
+    private RootAponDisassembler rootAponDisassembler;
 
-					Parameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
-					
-					if (rootAponDisassembler == null) {
-						rootAponDisassembler = new RootAponDisassembler(assistant);
-					}
-					rootAponDisassembler.disassembleRoot(rootParameters);
-				}
-			}
-			
-			if (!hybridon) {
-				if (aspectranNodeParser == null) {
-					aspectranNodeParser = new AspectranNodeParser(assistant);
-				}
-				aspectranNodeParser.parse(importer.getInputStream());
-			}
-		}
-		
-		super.handle();
+    public HybridImportHandler(ActivityContextBuilder builder, String encoding, boolean hybridLoading) {
+        super(builder.getContextEnvironment());
 
-		// The first default settings will remain after all configuration settings have been completed.
-		if (assistantLocal.getReplicatedCount() > 0) {
-			assistant.restoreAssistantLocal(assistantLocal);
-		}
-		
-		if (!hybridon && hybridLoad) {
-			if (importer.getImporterType() == ImporterType.FILE && importer.getImporterFileFormatType() == ImporterFileFormatType.XML) {
-				importer.setProfiles(null);
-				saveAsAponFormat((FileImporter)importer);
-			}
-		}
-	}
-	
-	private void saveAsAponFormat(FileImporter fileImporter) throws Exception {
-		log.info("Save as APON format " + fileImporter);
-		
-		File aponFile = null;
-		
-		try {
-			aponFile = makeAponFile(fileImporter);
-			
-			AponWriter aponWriter;
-			if (encoding != null) {
-				OutputStream outputStream = new FileOutputStream(aponFile);
-				aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
-			} else {
-				aponWriter = new AponWriter(new FileWriter(aponFile));
-			}
-			
-			try {
-				ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
-				assistant.ready();
+        this.assistant = builder.getContextBuilderAssistant();
+        this.encoding = encoding;
+        this.hybridLoad = hybridLoading;
+    }
 
-				AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
-				parser.parse(fileImporter.getInputStream());
-				
-				RootAponAssembler assembler = new RootAponAssembler(assistant);
-				Parameters rootParameters = assembler.assembleRootParameters();
-				
-				aponWriter.comment(aponFile.getAbsolutePath());
-				aponWriter.write(rootParameters);
-				
-				assistant.release();
-			} finally {
-				try {
-					aponWriter.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-			
-			aponFile.setLastModified(fileImporter.getLastModified());
-		} catch (Exception e) {
-			log.error("Failed to save the converted APON format to file: " + aponFile, e);
-		}
-	}
-	
-	private File makeAponFile(FileImporter fileImporter) {
-		String basePath = fileImporter.getBasePath();
-		String filePath = fileImporter.getFilePath() + "." + ImporterFileFormatType.APON.toString();
+    @Override
+    public void handle(Importer importer) throws Exception {
+        AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 
-		return new File(basePath, filePath);
-	}
+        boolean hybridon = false;
+
+        if (importer.getImporterFileFormatType() == ImporterFileFormatType.APON) {
+            Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
+
+            if (rootAponDisassembler == null) {
+                rootAponDisassembler = new RootAponDisassembler(assistant);
+            }
+            rootAponDisassembler.disassembleAspectran(rootParameters);
+        } else {
+            if (hybridLoad && importer.getImporterType() == ImporterType.FILE) {
+                File aponFile = makeAponFile((FileImporter)importer);
+
+                if (importer.getLastModified() == aponFile.lastModified()) {
+                    log.info("Rapid configuration loading with an APON file: " + aponFile);
+
+                    hybridon = true;
+
+                    Parameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
+
+                    if (rootAponDisassembler == null) {
+                        rootAponDisassembler = new RootAponDisassembler(assistant);
+                    }
+                    rootAponDisassembler.disassembleRoot(rootParameters);
+                }
+            }
+
+            if (!hybridon) {
+                if (aspectranNodeParser == null) {
+                    aspectranNodeParser = new AspectranNodeParser(assistant);
+                }
+                aspectranNodeParser.parse(importer.getInputStream());
+            }
+        }
+
+        super.handle();
+
+        // The first default settings will remain after all configuration settings have been completed.
+        if (assistantLocal.getReplicatedCount() > 0) {
+            assistant.restoreAssistantLocal(assistantLocal);
+        }
+
+        if (!hybridon && hybridLoad) {
+            if (importer.getImporterType() == ImporterType.FILE && importer.getImporterFileFormatType() == ImporterFileFormatType.XML) {
+                importer.setProfiles(null);
+                saveAsAponFormat((FileImporter)importer);
+            }
+        }
+    }
+
+    private void saveAsAponFormat(FileImporter fileImporter) throws Exception {
+        log.info("Save as APON format " + fileImporter);
+
+        File aponFile = null;
+
+        try {
+            aponFile = makeAponFile(fileImporter);
+
+            AponWriter aponWriter;
+            if (encoding != null) {
+                OutputStream outputStream = new FileOutputStream(aponFile);
+                aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
+            } else {
+                aponWriter = new AponWriter(new FileWriter(aponFile));
+            }
+
+            try {
+                ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
+                assistant.ready();
+
+                AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
+                parser.parse(fileImporter.getInputStream());
+
+                RootAponAssembler assembler = new RootAponAssembler(assistant);
+                Parameters rootParameters = assembler.assembleRootParameters();
+
+                aponWriter.comment(aponFile.getAbsolutePath());
+                aponWriter.write(rootParameters);
+
+                assistant.release();
+            } finally {
+                try {
+                    aponWriter.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+
+            aponFile.setLastModified(fileImporter.getLastModified());
+        } catch (Exception e) {
+            log.error("Failed to save the converted APON format to file: " + aponFile, e);
+        }
+    }
+
+    private File makeAponFile(FileImporter fileImporter) {
+        String basePath = fileImporter.getBasePath();
+        String filePath = fileImporter.getFilePath() + "." + ImporterFileFormatType.APON.toString();
+
+        return new File(basePath, filePath);
+    }
 
 }

@@ -36,66 +36,66 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class AbstractScope implements Scope {
 
-	private static final Log log = LogFactory.getLog(AbstractScope.class);
+    private static final Log log = LogFactory.getLog(AbstractScope.class);
 
-	private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-	protected final Map<BeanRule, InstantiatedBean> scopedBeanMap = new HashMap<>();
-	
-	private final ScopeType scopeType;
-	
-	public AbstractScope(ScopeType scopeType) {
-		this.scopeType = scopeType;
-	}
+    protected final Map<BeanRule, InstantiatedBean> scopedBeanMap = new HashMap<>();
 
-	@Override
-	public ReadWriteLock getScopeLock() {
-		return scopeLock;
-	}
+    private final ScopeType scopeType;
 
-	@Override
-	public InstantiatedBean getInstantiatedBean(BeanRule beanRule) {
-		return scopedBeanMap.get(beanRule);
-	}
+    public AbstractScope(ScopeType scopeType) {
+        this.scopeType = scopeType;
+    }
 
-	@Override
-	public void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean) {
-		scopedBeanMap.put(beanRule, instantiatedBean);
-	}
+    @Override
+    public ReadWriteLock getScopeLock() {
+        return scopeLock;
+    }
 
-	@Override
-	public void destroy() {
-		if (log.isDebugEnabled()) {
-			if (scopedBeanMap.size() > 0) {
-				log.debug("Destroy " + scopeType + " scoped beans in the " + this);
-			}
-		}
+    @Override
+    public InstantiatedBean getInstantiatedBean(BeanRule beanRule) {
+        return scopedBeanMap.get(beanRule);
+    }
 
-		for (Map.Entry<BeanRule, InstantiatedBean> entry : scopedBeanMap.entrySet()) {
-			BeanRule beanRule = entry.getKey();
-			InstantiatedBean instantiatedBean = entry.getValue();
-			Object bean = instantiatedBean.getBean();
-			if(bean != null) {
-				doDestroy(beanRule, bean);
-			}
-		}
+    @Override
+    public void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean) {
+        scopedBeanMap.put(beanRule, instantiatedBean);
+    }
 
-		scopedBeanMap.clear();
-	}
+    @Override
+    public void destroy() {
+        if (log.isDebugEnabled()) {
+            if (scopedBeanMap.size() > 0) {
+                log.debug("Destroy " + scopeType + " scoped beans in the " + this);
+            }
+        }
 
-	private void doDestroy(BeanRule beanRule, Object bean) {
-		if (bean != null) {
-			try {
-				if (beanRule.isDisposableBean()) {
-					((DisposableBean)bean).destroy();
-				} else if (beanRule.getDestroyMethodName() != null) {
-					Method destroyMethod = beanRule.getDestroyMethod();
-					destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
-				}
-			} catch (Exception e) {
-				log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
-			}
-		}
-	}
-	
+        for (Map.Entry<BeanRule, InstantiatedBean> entry : scopedBeanMap.entrySet()) {
+            BeanRule beanRule = entry.getKey();
+            InstantiatedBean instantiatedBean = entry.getValue();
+            Object bean = instantiatedBean.getBean();
+            if(bean != null) {
+                doDestroy(beanRule, bean);
+            }
+        }
+
+        scopedBeanMap.clear();
+    }
+
+    private void doDestroy(BeanRule beanRule, Object bean) {
+        if (bean != null) {
+            try {
+                if (beanRule.isDisposableBean()) {
+                    ((DisposableBean)bean).destroy();
+                } else if (beanRule.getDestroyMethodName() != null) {
+                    Method destroyMethod = beanRule.getDestroyMethod();
+                    destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
+                }
+            } catch (Exception e) {
+                log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
+            }
+        }
+    }
+
 }

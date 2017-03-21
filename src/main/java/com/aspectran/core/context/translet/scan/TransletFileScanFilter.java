@@ -23,7 +23,7 @@ import java.io.File;
  * @since 2.0.0
  */
 public interface TransletFileScanFilter {
-	
-	boolean filter(String transletName, File templateFile);
+
+    boolean filter(String transletName, File templateFile);
 
 }

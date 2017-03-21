@@ -21,45 +21,45 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ItemParameters extends AbstractParameters {
 
-	public static final ParameterDefinition type;
-	public static final ParameterDefinition name;
-	public static final ParameterDefinition value;
-	public static final ParameterDefinition valueType;
-	public static final ParameterDefinition defaultValue;
-	public static final ParameterDefinition tokenize;
-	public static final ParameterDefinition mandatory;
-	public static final ParameterDefinition call;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		type = new ParameterDefinition("type", ParameterValueType.STRING);
-		name = new ParameterDefinition("name", ParameterValueType.STRING);
-		value = new ParameterDefinition("value", ParameterValueType.VARIABLE);
-		valueType = new ParameterDefinition("valueType", ParameterValueType.STRING);
-		defaultValue = new ParameterDefinition("defaultValue", ParameterValueType.STRING);
-		tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
-		mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
-		call = new ParameterDefinition("call", CallParameters.class);
+    public static final ParameterDefinition type;
+    public static final ParameterDefinition name;
+    public static final ParameterDefinition value;
+    public static final ParameterDefinition valueType;
+    public static final ParameterDefinition defaultValue;
+    public static final ParameterDefinition tokenize;
+    public static final ParameterDefinition mandatory;
+    public static final ParameterDefinition call;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			type,
-			name,
-			value,
-			valueType,
-			defaultValue,
-			tokenize,
-			mandatory,
-			call
-		};
-	}
-	
-	public ItemParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ItemParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        type = new ParameterDefinition("type", ParameterValueType.STRING);
+        name = new ParameterDefinition("name", ParameterValueType.STRING);
+        value = new ParameterDefinition("value", ParameterValueType.VARIABLE);
+        valueType = new ParameterDefinition("valueType", ParameterValueType.STRING);
+        defaultValue = new ParameterDefinition("defaultValue", ParameterValueType.STRING);
+        tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
+        mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
+        call = new ParameterDefinition("call", CallParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            type,
+            name,
+            value,
+            valueType,
+            defaultValue,
+            tokenize,
+            mandatory,
+            call
+        };
+    }
+
+    public ItemParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ItemParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

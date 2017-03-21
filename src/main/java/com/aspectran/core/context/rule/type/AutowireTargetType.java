@@ -24,35 +24,35 @@ package com.aspectran.core.context.rule.type;
  */
 public enum AutowireTargetType {
 
-	FIELD("field"),
-	METHOD("method"),
-	VALUE("value");
+    FIELD("field"),
+    METHOD("method"),
+    VALUE("value");
 
-	private final String alias;
+    private final String alias;
 
-	AutowireTargetType(String alias) {
-		this.alias = alias;
-	}
+    AutowireTargetType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code AutowireTargetType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the autowire target type as a {@code String}
-	 * @return an {@code AutowireTargetType}, may be {@code null}
-	 */
-	public static AutowireTargetType resolve(String alias) {
-		for (AutowireTargetType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code AutowireTargetType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the autowire target type as a {@code String}
+     * @return an {@code AutowireTargetType}, may be {@code null}
+     */
+    public static AutowireTargetType resolve(String alias) {
+        for (AutowireTargetType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

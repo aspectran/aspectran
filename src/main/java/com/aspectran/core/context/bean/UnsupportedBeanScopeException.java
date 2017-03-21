@@ -23,17 +23,17 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class UnsupportedBeanScopeException extends BeanRuleException {
 
-	/** @serial */
-	private static final long serialVersionUID = -5350555208208267662L;
+    /** @serial */
+    private static final long serialVersionUID = -5350555208208267662L;
 
-	/**
-	 * Create a new UnsupportedBeanScopeException.
-	 *
-	 * @param scopeType the scope type
-	 * @param beanRule the bean rule
-	 */
-	public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
-		super("The " + scopeType + " scope is not available. beanRule", beanRule);
-	}
+    /**
+     * Create a new UnsupportedBeanScopeException.
+     *
+     * @param scopeType the scope type
+     * @param beanRule the bean rule
+     */
+    public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
+        super("The " + scopeType + " scope is not available. beanRule", beanRule);
+    }
 
 }

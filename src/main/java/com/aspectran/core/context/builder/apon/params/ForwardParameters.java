@@ -21,36 +21,36 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ForwardParameters extends AbstractParameters {
 
-	public static final ParameterDefinition actions;
-	public static final ParameterDefinition contentType;
-	public static final ParameterDefinition translet;
-	public static final ParameterDefinition defaultResponse;
-	public static final ParameterDefinition attributes;
+    public static final ParameterDefinition actions;
+    public static final ParameterDefinition contentType;
+    public static final ParameterDefinition translet;
+    public static final ParameterDefinition defaultResponse;
+    public static final ParameterDefinition attributes;
 
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
-		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
-		attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+    private static final ParameterDefinition[] parameterDefinitions;
 
-		parameterDefinitions = new ParameterDefinition[] {
-			actions,
-			contentType,
-			translet,
-			defaultResponse,
-			attributes
-		};
-	}
-	
-	public ForwardParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ForwardParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    static {
+        actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            actions,
+            contentType,
+            translet,
+            defaultResponse,
+            attributes
+        };
+    }
+
+    public ForwardParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ForwardParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

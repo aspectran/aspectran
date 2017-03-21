@@ -24,42 +24,42 @@ import com.aspectran.core.context.bean.BeanException;
  */
 public class TransletScanFailedException extends BeanException {
 
-	/** @serial */
-	private static final long serialVersionUID = -7694783910759443211L;
+    /** @serial */
+    private static final long serialVersionUID = -7694783910759443211L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public TransletScanFailedException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public TransletScanFailedException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public TransletScanFailedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public TransletScanFailedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public TransletScanFailedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public TransletScanFailedException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public TransletScanFailedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public TransletScanFailedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

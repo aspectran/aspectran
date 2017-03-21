@@ -24,42 +24,42 @@ import com.aspectran.core.context.AspectranCheckedException;
  */
 public class AspectranServiceException extends AspectranCheckedException {
 
-	/** @serial */
-	private static final long serialVersionUID = -7460804495296696284L;
+    /** @serial */
+    private static final long serialVersionUID = -7460804495296696284L;
 
-	/**
-	 * Simple constructor
-	 */
-	public AspectranServiceException() {
-		super();
-	}
+    /**
+     * Simple constructor
+     */
+    public AspectranServiceException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public AspectranServiceException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public AspectranServiceException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranServiceException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AspectranServiceException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranServiceException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public AspectranServiceException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

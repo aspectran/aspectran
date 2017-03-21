@@ -31,95 +31,95 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class DefaultServletHttpRequestHandler {
 
-	private static final Log log = LogFactory.getLog(DefaultServletHttpRequestHandler.class);
-	
-	/** Default Servlet name used by Tomcat, Jetty, JBoss, and Glassfish */
-	private static final String COMMON_DEFAULT_SERVLET_NAME = "default";
+    private static final Log log = LogFactory.getLog(DefaultServletHttpRequestHandler.class);
 
-	/** Default Servlet name used by Resin */
-	private static final String RESIN_DEFAULT_SERVLET_NAME = "resin-file";
+    /** Default Servlet name used by Tomcat, Jetty, JBoss, and Glassfish */
+    private static final String COMMON_DEFAULT_SERVLET_NAME = "default";
 
-	/** Default Servlet name used by WebLogic */
-	private static final String WEBLOGIC_DEFAULT_SERVLET_NAME = "FileServlet";
+    /** Default Servlet name used by Resin */
+    private static final String RESIN_DEFAULT_SERVLET_NAME = "resin-file";
 
-	/** Default Servlet name used by WebSphere */
-	private static final String WEBSPHERE_DEFAULT_SERVLET_NAME = "SimpleFileServlet";
-	
-	/** Default Servlet name used by Google App Engine */
-	private static final String GAE_DEFAULT_SERVLET_NAME = "_ah_default";
+    /** Default Servlet name used by WebLogic */
+    private static final String WEBLOGIC_DEFAULT_SERVLET_NAME = "FileServlet";
 
-	private final ServletContext servletContext;
-	
-	private String defaultServletName;
+    /** Default Servlet name used by WebSphere */
+    private static final String WEBSPHERE_DEFAULT_SERVLET_NAME = "SimpleFileServlet";
 
-	public DefaultServletHttpRequestHandler(ServletContext servletContext) {
-		this.servletContext = servletContext;
-		
-		lookupDefaultServletName(servletContext);
-	}
+    /** Default Servlet name used by Google App Engine */
+    private static final String GAE_DEFAULT_SERVLET_NAME = "_ah_default";
 
-	/**
-	 * Gets the default servlet name.
-	 *
-	 * @return the default servlet name
-	 */
-	public String getDefaultServletName() {
-		return defaultServletName;
-	}
+    private final ServletContext servletContext;
 
-	/**
-	 * Set the name of the default Servlet to be forwarded to for static resource requests.
-	 *
-	 * @param defaultServletName the new default servlet name
-	 */
-	public void setDefaultServletName(String defaultServletName) {
-		this.defaultServletName = defaultServletName;
-	}
-	
-	/**
-	 * Lookup default servlet name.
-	 *
-	 * @param servletContext the servlet context
-	 */
-	private void lookupDefaultServletName(ServletContext servletContext) {
-		if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
-			defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
-		} else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
-			defaultServletName = RESIN_DEFAULT_SERVLET_NAME;
-		} else if (servletContext.getNamedDispatcher(WEBLOGIC_DEFAULT_SERVLET_NAME) != null) {
-			defaultServletName = WEBLOGIC_DEFAULT_SERVLET_NAME;
-		} else if (servletContext.getNamedDispatcher(WEBSPHERE_DEFAULT_SERVLET_NAME) != null) {
-			defaultServletName = WEBSPHERE_DEFAULT_SERVLET_NAME;
-		} else if (servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
-			defaultServletName = GAE_DEFAULT_SERVLET_NAME;
-		} else {
-			log.warn("Unable to locate the default servlet for serving static content. Please set the 'aspectran:defaultServletName'");
-		}
-	}
+    private String defaultServletName;
 
-	/**
-	 * Process the actual dispatching.
-	 *
-	 * @param request current HTTP servlet request
-	 * @param response current HTTP servlet response
-	 * @return true, if successful
-	 * @throws ServletException the servlet exception
-	 * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
-	 */
-	public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (defaultServletName != null) {
-			RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
-			
-			if (rd == null) {
-				throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'.");
-			}
-			
-			rd.forward(request, response);
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public DefaultServletHttpRequestHandler(ServletContext servletContext) {
+        this.servletContext = servletContext;
+
+        lookupDefaultServletName(servletContext);
+    }
+
+    /**
+     * Gets the default servlet name.
+     *
+     * @return the default servlet name
+     */
+    public String getDefaultServletName() {
+        return defaultServletName;
+    }
+
+    /**
+     * Set the name of the default Servlet to be forwarded to for static resource requests.
+     *
+     * @param defaultServletName the new default servlet name
+     */
+    public void setDefaultServletName(String defaultServletName) {
+        this.defaultServletName = defaultServletName;
+    }
+
+    /**
+     * Lookup default servlet name.
+     *
+     * @param servletContext the servlet context
+     */
+    private void lookupDefaultServletName(ServletContext servletContext) {
+        if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = RESIN_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(WEBLOGIC_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = WEBLOGIC_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(WEBSPHERE_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = WEBSPHERE_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = GAE_DEFAULT_SERVLET_NAME;
+        } else {
+            log.warn("Unable to locate the default servlet for serving static content. Please set the 'aspectran:defaultServletName'");
+        }
+    }
+
+    /**
+     * Process the actual dispatching.
+     *
+     * @param request current HTTP servlet request
+     * @param response current HTTP servlet response
+     * @return true, if successful
+     * @throws ServletException the servlet exception
+     * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
+     */
+    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (defaultServletName != null) {
+            RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
+
+            if (rd == null) {
+                throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'.");
+            }
+
+            rd.forward(request, response);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

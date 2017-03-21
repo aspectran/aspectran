@@ -27,35 +27,35 @@ import com.aspectran.core.context.builder.importer.Importer;
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
-	
-	private final String encoding;
-	
-	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
-	}
-	
-	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		super(applicationAdapter);
-		this.encoding = encoding;
-	}
 
-	@Override
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
-		try {
-			if (rootContext == null) {
-				throw new IllegalArgumentException("The rootContext argument must not be null.");
-			}
+    private final String encoding;
 
-			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
-			getContextBuilderAssistant().setImportHandler(importHandler);
-			
-			Importer importer = resolveImporter(rootContext);
-			importHandler.handle(importer);
+    public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+        this(applicationAdapter, null);
+    }
 
-			return createActivityContext();
-		} catch (Exception e) {
-			throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
-		}
-	}
+    public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
+        super(applicationAdapter);
+        this.encoding = encoding;
+    }
+
+    @Override
+    public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+        try {
+            if (rootContext == null) {
+                throw new IllegalArgumentException("The rootContext argument must not be null.");
+            }
+
+            ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
+            getContextBuilderAssistant().setImportHandler(importHandler);
+
+            Importer importer = resolveImporter(rootContext);
+            importHandler.handle(importer);
+
+            return createActivityContext();
+        } catch (Exception e) {
+            throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
+        }
+    }
 
 }

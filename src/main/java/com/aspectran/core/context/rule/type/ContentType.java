@@ -22,37 +22,37 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ContentType {
 
-	TEXT_PLAIN("text/plain"),
-	TEXT_XML("text/xml"),
-	TEXT_JSON("application/json"),
-	TEXT_APON("text/apon"),
-	TEXT_HTML("text/html");
+    TEXT_PLAIN("text/plain"),
+    TEXT_XML("text/xml"),
+    TEXT_JSON("application/json"),
+    TEXT_APON("text/apon"),
+    TEXT_HTML("text/html");
 
-	private final String alias;
+    private final String alias;
 
-	ContentType(String alias) {
-		this.alias = alias;
-	}
+    ContentType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code ContentType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the content type as a {@code String}
-	 * @return a {@code ContentType}, may be {@code null}
-	 */
-	public static ContentType resolve(String alias) {
-		for (ContentType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code ContentType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the content type as a {@code String}
+     * @return a {@code ContentType}, may be {@code null}
+     */
+    public static ContentType resolve(String alias) {
+        for (ContentType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

@@ -32,120 +32,120 @@ import com.aspectran.core.util.json.JsonWriter;
  */
 public class ContentsJsonWriter extends JsonWriter {
 
-	/**
-	 * Instantiates a new ContentsJsonWriter.
-	 * 
-	 * @param writer a {@code Writer} object that can send character text
-	 */
-	public ContentsJsonWriter(Writer writer) {
-		this(writer, false);
-	}
+    /**
+     * Instantiates a new ContentsJsonWriter.
+     *
+     * @param writer a {@code Writer} object that can send character text
+     */
+    public ContentsJsonWriter(Writer writer) {
+        this(writer, false);
+    }
 
-	/**
-	 * Instantiates a new ContentsJsonWriter.
-	 * 
-	 * @param writer a {@code Writer} object that can send character text
-	 * @param prettyPrint enables or disables pretty-printing
-	 */
-	public ContentsJsonWriter(Writer writer, boolean prettyPrint) {
-		super(writer, prettyPrint);
-	}
+    /**
+     * Instantiates a new ContentsJsonWriter.
+     *
+     * @param writer a {@code Writer} object that can send character text
+     * @param prettyPrint enables or disables pretty-printing
+     */
+    public ContentsJsonWriter(Writer writer, boolean prettyPrint) {
+        super(writer, prettyPrint);
+    }
 
-	@Override
-	public void write(Object object) throws IOException, InvocationTargetException {
-		if (object instanceof ProcessResult) {
-			write((ProcessResult)object);
-		} else {
-			super.write(object);
-		}
-	}
+    @Override
+    public void write(Object object) throws IOException, InvocationTargetException {
+        if (object instanceof ProcessResult) {
+            write((ProcessResult)object);
+        } else {
+            super.write(object);
+        }
+    }
 
-	/**
-	 * Write a {@code ProcessResult} object to the character streams.
-	 *
-	 * @param processResult the {@code ProcessResult} object to write to a character-output stream
-	 * @throws IOException if an I/O error has occurred
-	 * @throws InvocationTargetException the invocation target exception
-	 */
-	private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
-		if (processResult.isEmpty()) {
-			writeNull();
-		} else if (processResult.size() == 1) {
-			ContentResult contentResult = processResult.get(0);
-			write(contentResult);
-		} else {
-			openSquareBracket();
-	
-			Iterator<ContentResult> iter = processResult.iterator();
-	
-			while (iter.hasNext()) {
-				ContentResult contentResult = iter.next();
-				write(contentResult);
-	
-				if (iter.hasNext()) {
-					writeComma();
-				}
-			}
-	
-			closeSquareBracket();
-		}
-	}
+    /**
+     * Write a {@code ProcessResult} object to the character streams.
+     *
+     * @param processResult the {@code ProcessResult} object to write to a character-output stream
+     * @throws IOException if an I/O error has occurred
+     * @throws InvocationTargetException the invocation target exception
+     */
+    private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
+        if (processResult.isEmpty()) {
+            writeNull();
+        } else if (processResult.size() == 1) {
+            ContentResult contentResult = processResult.get(0);
+            write(contentResult);
+        } else {
+            openSquareBracket();
 
-	/**
-	 * Write a {@code ContentResult} object to the character-output stream.
-	 *
-	 * @param contentResult the {@code ContentResult} object to write to a character-output stream.
-	 * @throws IOException if an I/O error has occurred
-	 * @throws InvocationTargetException the invocation target exception
-	 */
-	private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
-		if (contentResult.isEmpty()) {
-			writeNull();
-			return;
-		}
-			
-		if (contentResult.getName() != null) {
-			openCurlyBracket();
-			writeName(contentResult.getName());
-		}
+            Iterator<ContentResult> iter = processResult.iterator();
 
-		if (contentResult.size() == 1) {
-			ActionResult actionResult = contentResult.get(0);
-			
-			if (actionResult.getActionId() != null) {
-				openCurlyBracket();
-			
-				writeName(actionResult.getActionId());
-				write(actionResult.getResultValue());
-				
-				closeCurlyBracket();
-			} else {
-				write(actionResult.getResultValue());
-			}
-		} else {
-			openCurlyBracket();
-	
-			Iterator<ActionResult> iter = contentResult.iterator();
-			int cnt = 0;
-	
-			while (iter.hasNext()) {
-				ActionResult actionResult = iter.next();
-				
-				if (actionResult.getActionId() != null) {
-					if (cnt++ > 0) {
-						writeComma();
-					}
-					writeName(actionResult.getActionId());
-					write(actionResult.getResultValue());
-				}
-			}
-			
-			closeCurlyBracket();
-		}
-		
-		if (contentResult.getName() != null) {
-			closeCurlyBracket();
-		}
-	}
+            while (iter.hasNext()) {
+                ContentResult contentResult = iter.next();
+                write(contentResult);
+
+                if (iter.hasNext()) {
+                    writeComma();
+                }
+            }
+
+            closeSquareBracket();
+        }
+    }
+
+    /**
+     * Write a {@code ContentResult} object to the character-output stream.
+     *
+     * @param contentResult the {@code ContentResult} object to write to a character-output stream.
+     * @throws IOException if an I/O error has occurred
+     * @throws InvocationTargetException the invocation target exception
+     */
+    private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
+        if (contentResult.isEmpty()) {
+            writeNull();
+            return;
+        }
+
+        if (contentResult.getName() != null) {
+            openCurlyBracket();
+            writeName(contentResult.getName());
+        }
+
+        if (contentResult.size() == 1) {
+            ActionResult actionResult = contentResult.get(0);
+
+            if (actionResult.getActionId() != null) {
+                openCurlyBracket();
+
+                writeName(actionResult.getActionId());
+                write(actionResult.getResultValue());
+
+                closeCurlyBracket();
+            } else {
+                write(actionResult.getResultValue());
+            }
+        } else {
+            openCurlyBracket();
+
+            Iterator<ActionResult> iter = contentResult.iterator();
+            int cnt = 0;
+
+            while (iter.hasNext()) {
+                ActionResult actionResult = iter.next();
+
+                if (actionResult.getActionId() != null) {
+                    if (cnt++ > 0) {
+                        writeComma();
+                    }
+                    writeName(actionResult.getActionId());
+                    write(actionResult.getResultValue());
+                }
+            }
+
+            closeCurlyBracket();
+        }
+
+        if (contentResult.getName() != null) {
+            closeCurlyBracket();
+        }
+    }
 
 }

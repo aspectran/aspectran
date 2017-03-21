@@ -28,51 +28,51 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public class ResourceImporter extends AbstractImporter {
-	
-	private final static ImporterType RESOURCE_IMPORTER = ImporterType.RESOURCE;
-	
-	private final ClassLoader classLoader;
 
-	private final String resource;
+    private final static ImporterType RESOURCE_IMPORTER = ImporterType.RESOURCE;
 
-	public ResourceImporter(ClassLoader classLoader, String resource, ImporterFileFormatType importerFileFormatType) {
-		super(RESOURCE_IMPORTER);
+    private final ClassLoader classLoader;
 
-		if (importerFileFormatType == null) {
-			importerFileFormatType = resource.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
-		}
+    private final String resource;
 
-		setImporterFileFormatType(importerFileFormatType);
-		
-		this.classLoader = classLoader;
-		this.resource = resource;
-		
-		setLastModified(System.currentTimeMillis());
-	}
+    public ResourceImporter(ClassLoader classLoader, String resource, ImporterFileFormatType importerFileFormatType) {
+        super(RESOURCE_IMPORTER);
 
-	@Override
-	public String getDistinguishedName() {
-		return resource;
-	}
+        if (importerFileFormatType == null) {
+            importerFileFormatType = resource.endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
+        }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		InputStream inputStream = classLoader.getResourceAsStream(resource);
-		
-		if (inputStream == null) {
-			throw new IOException("Could not find resource to import. resource: " + resource);
-		}
+        setImporterFileFormatType(importerFileFormatType);
 
-		return inputStream;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("importerType", getImporterType());
-		tsb.append("resource", resource);
-		tsb.append("profile", getProfiles());
-		return tsb.toString();
-	}
+        this.classLoader = classLoader;
+        this.resource = resource;
+
+        setLastModified(System.currentTimeMillis());
+    }
+
+    @Override
+    public String getDistinguishedName() {
+        return resource;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        InputStream inputStream = classLoader.getResourceAsStream(resource);
+
+        if (inputStream == null) {
+            throw new IOException("Could not find resource to import. resource: " + resource);
+        }
+
+        return inputStream;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("importerType", getImporterType());
+        tsb.append("resource", resource);
+        tsb.append("profile", getProfiles());
+        return tsb.toString();
+    }
 
 }

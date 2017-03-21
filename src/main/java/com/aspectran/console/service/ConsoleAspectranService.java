@@ -51,262 +51,262 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ConsoleAspectranService extends BasicAspectranService {
 
-	private static final Log log = LogFactory.getLog(ConsoleAspectranService.class);
+    private static final Log log = LogFactory.getLog(ConsoleAspectranService.class);
 
-	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
+    private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
-	private SessionAdapter sessionAdapter;
+    private SessionAdapter sessionAdapter;
 
-	private SessionScopeAdvisor sessionScopeAdvisor;
-	
-	private long pauseTimeout;
+    private SessionScopeAdvisor sessionScopeAdvisor;
 
-	private ConsoleInout consoleInout;
+    private long pauseTimeout;
 
-	private ConsoleAspectranService() throws IOException {
-		super(new ConsoleApplicationAdapter());
-	}
+    private ConsoleInout consoleInout;
 
-	@Override
-	public void afterContextLoaded() {
-		sessionAdapter = new ConsoleSessionAdapter();
-		sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
-		if (sessionScopeAdvisor != null) {
-			sessionScopeAdvisor.executeBeforeAdvice();
-		}
-	}
+    private ConsoleAspectranService() throws IOException {
+        super(new ConsoleApplicationAdapter());
+    }
 
-	@Override
-	public void beforeContextDestroy() {
-		if (sessionScopeAdvisor != null) {
-			sessionScopeAdvisor.executeAfterAdvice();
-		}
-		if (sessionAdapter != null) {
-			Scope sessionScope = sessionAdapter.getSessionScope();
-			sessionScope.destroy();
-		}
-	}
+    @Override
+    public void afterContextLoaded() {
+        sessionAdapter = new ConsoleSessionAdapter();
+        sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
+        if (sessionScopeAdvisor != null) {
+            sessionScopeAdvisor.executeBeforeAdvice();
+        }
+    }
 
-	public SessionAdapter getSessionAdapter() {
-		return sessionAdapter;
-	}
+    @Override
+    public void beforeContextDestroy() {
+        if (sessionScopeAdvisor != null) {
+            sessionScopeAdvisor.executeAfterAdvice();
+        }
+        if (sessionAdapter != null) {
+            Scope sessionScope = sessionAdapter.getSessionScope();
+            sessionScope.destroy();
+        }
+    }
 
-	public ConsoleInout getConsoleInout() {
-		return consoleInout;
-	}
+    public SessionAdapter getSessionAdapter() {
+        return sessionAdapter;
+    }
 
-	private void setConsoleInout(ConsoleInout consoleInout) {
-		this.consoleInout = consoleInout;
-	}
+    public ConsoleInout getConsoleInout() {
+        return consoleInout;
+    }
 
-	/**
-	 * Process the actual dispatching to the activity. 
-	 *
-	 * @param command the translet name
-	 */
-	protected void service(String command) {
-		if (!isExposable(command)) {
-			log.info("Unexposable translet name: " + command);
-			return;
-		}
+    private void setConsoleInout(ConsoleInout consoleInout) {
+        this.consoleInout = consoleInout;
+    }
 
-		if (pauseTimeout != 0L) {
-			if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-				if (pauseTimeout == -1L) {
-					log.info("AspectranService has been paused.");
-				} else {
-					long remains = pauseTimeout - System.currentTimeMillis();
-					if (remains > 0L) {
-						log.info("AspectranService has been paused and will resume after " + remains + " ms.");
-					} else {
-						log.info("AspectranService has been paused and will soon resume.");
-					}
-				}
-				return;
-			} else {
-				pauseTimeout = 0L;
-			}
-		}
+    /**
+     * Process the actual dispatching to the activity.
+     *
+     * @param command the translet name
+     */
+    protected void service(String command) {
+        if (!isExposable(command)) {
+            log.info("Unexposable translet name: " + command);
+            return;
+        }
 
-		CommandParser commandParser = CommandParser.parseCommand(command);
-		Writer[] redirectionWriters = null;
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (pauseTimeout == -1L) {
+                    log.info("AspectranService has been paused.");
+                } else {
+                    long remains = pauseTimeout - System.currentTimeMillis();
+                    if (remains > 0L) {
+                        log.info("AspectranService has been paused and will resume after " + remains + " ms.");
+                    } else {
+                        log.info("AspectranService has been paused and will soon resume.");
+                    }
+                }
+                return;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
 
-		if(commandParser.getRedirectionList() != null) {
-			try {
-				redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
-			} catch (Exception e) {
-				log.warn("Invalid redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
-				return;
-			}
-		}
+        CommandParser commandParser = CommandParser.parseCommand(command);
+        Writer[] redirectionWriters = null;
 
-		Activity activity = null;
+        if(commandParser.getRedirectionList() != null) {
+            try {
+                redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
+            } catch (Exception e) {
+                log.warn("Invalid redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
+                return;
+            }
+        }
 
-		try {
-			activity = new ConsoleActivity(this, redirectionWriters);
-			activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
-			activity.perform();
-		} catch (TransletNotFoundException e) {
-			log.info("Unknown translet name: " + command);
-		} catch (ActivityTerminatedException e) {
-			if (log.isDebugEnabled()) {
-				log.debug("Translet activity was terminated.");
-			}
-		} catch (Exception e) {
-			log.error("Colsole activity failed to perform.", e);
-		} finally {
-			if (redirectionWriters != null) {
-				for (Writer writer : redirectionWriters) {
-					try {
-						writer.close();
-					} catch (IOException e) {
-						log.error("Failed to close writer: " + e.getMessage(), e);
-					}
-				}
-			}
-			if (activity != null) {
-				activity.finish();
-			}
-		}
-	}
+        Activity activity = null;
 
-	public void service() {
-		try {
-			loop:
-			while (true) {
-				String command = consoleInout.readCommand();
+        try {
+            activity = new ConsoleActivity(this, redirectionWriters);
+            activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
+            activity.perform();
+        } catch (TransletNotFoundException e) {
+            log.info("Unknown translet name: " + command);
+        } catch (ActivityTerminatedException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Translet activity was terminated.");
+            }
+        } catch (Exception e) {
+            log.error("Colsole activity failed to perform.", e);
+        } finally {
+            if (redirectionWriters != null) {
+                for (Writer writer : redirectionWriters) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        log.error("Failed to close writer: " + e.getMessage(), e);
+                    }
+                }
+            }
+            if (activity != null) {
+                activity.finish();
+            }
+        }
+    }
 
-				if (command == null) {
-					continue;
-				}
-				command = command.trim();
-				if (command.isEmpty()) {
-					continue;
-				}
+    public void service() {
+        try {
+            loop:
+            while (true) {
+                String command = consoleInout.readCommand();
 
-				switch (command) {
-					case "restart":
-						log.info("Restarting the Aspectran Service...");
-						restart();
-						break;
-					case "pause":
-						log.info("Pausing the Aspectran Service...");
-						pause();
-						break;
-					case "resume":
-						log.info("Resuming the Aspectran Service...");
-						resume();
-						break;
-					case "quit":
-						log.info("Goodbye.");
-						break loop;
-					default:
-						service(command);
-				}
+                if (command == null) {
+                    continue;
+                }
+                command = command.trim();
+                if (command.isEmpty()) {
+                    continue;
+                }
 
-				consoleInout.writeLine();
-			}
-		} catch (ConsoleTerminatedException e) {
-			// Do Nothing
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (isActive()) {
-				log.info("Do not terminate this application while destroying all scoped beans.");
-				shutdown();
-			}
-		}
-	}
+                switch (command) {
+                    case "restart":
+                        log.info("Restarting the Aspectran Service...");
+                        restart();
+                        break;
+                    case "pause":
+                        log.info("Pausing the Aspectran Service...");
+                        pause();
+                        break;
+                    case "resume":
+                        log.info("Resuming the Aspectran Service...");
+                        resume();
+                        break;
+                    case "quit":
+                        log.info("Goodbye.");
+                        break loop;
+                    default:
+                        service(command);
+                }
 
-	/**
-	 * Returns a new instance of ConsoleAspectranService.
-	 *
-	 * @param aspectranConfigFile the aspectran configuration file
-	 * @return the console aspectran service
-	 * @throws AspectranServiceException the aspectran service exception
-	 * @throws IOException if an I/O error has occurred
-	 */
-	public static ConsoleAspectranService build(String aspectranConfigFile)
-			throws AspectranServiceException, IOException {
-		AspectranConfig aspectranConfig = new AspectranConfig();
-		if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
-			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
-		}
+                consoleInout.writeLine();
+            }
+        } catch (ConsoleTerminatedException e) {
+            // Do Nothing
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (isActive()) {
+                log.info("Do not terminate this application while destroying all scoped beans.");
+                shutdown();
+            }
+        }
+    }
 
-		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-		if (contextParameters == null) {
-			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
-		}
+    /**
+     * Returns a new instance of ConsoleAspectranService.
+     *
+     * @param aspectranConfigFile the aspectran configuration file
+     * @return the console aspectran service
+     * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
+     */
+    public static ConsoleAspectranService build(String aspectranConfigFile)
+            throws AspectranServiceException, IOException {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
+            AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
+        }
 
-		String rootContext = contextParameters.getString(AspectranContextConfig.root);
-		if (rootContext == null || rootContext.length() == 0) {
-			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
-		}
+        Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+        if (contextParameters == null) {
+            contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+        }
 
-		ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
-		consoleAspectranService.initialize(aspectranConfig);
+        String rootContext = contextParameters.getString(AspectranContextConfig.root);
+        if (rootContext == null || rootContext.length() == 0) {
+            contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+        }
 
-		Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
-		if (consoleConfig != null) {
-			String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
-			String commandPrompt = consoleConfig.getString(AspectranConsoleConfig.prompt);
-			ConsoleInout consoleInout;
-			if ("jline".equals(consoleMode)) {
-				consoleInout = new Jline3ConsoleInout();
-			} else {
-				consoleInout = new SystemConsoleInout();
-			}
-			if (commandPrompt != null) {
-				consoleInout.setCommandPrompt(commandPrompt);
-			}
-			consoleAspectranService.setConsoleInout(consoleInout);
-			consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
-		} else {
-			consoleAspectranService.setConsoleInout(new SystemConsoleInout());
-		}
+        ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
+        consoleAspectranService.initialize(aspectranConfig);
 
-		setAspectranServiceLifeCycleListener(consoleAspectranService);
+        Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
+        if (consoleConfig != null) {
+            String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
+            String commandPrompt = consoleConfig.getString(AspectranConsoleConfig.prompt);
+            ConsoleInout consoleInout;
+            if ("jline".equals(consoleMode)) {
+                consoleInout = new Jline3ConsoleInout();
+            } else {
+                consoleInout = new SystemConsoleInout();
+            }
+            if (commandPrompt != null) {
+                consoleInout.setCommandPrompt(commandPrompt);
+            }
+            consoleAspectranService.setConsoleInout(consoleInout);
+            consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
+        } else {
+            consoleAspectranService.setConsoleInout(new SystemConsoleInout());
+        }
 
-		consoleAspectranService.startup();
+        setAspectranServiceLifeCycleListener(consoleAspectranService);
 
-		return consoleAspectranService;
-	}
+        consoleAspectranService.startup();
 
-	private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
-		aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
-			@Override
-			public void started() {
-				aspectranService.pauseTimeout = 0;
-			}
-			
-			@Override
-			public void restarted(boolean hardReload) {
-				started();
-			}
-			
-			@Override
-			public void paused(long millis) {
-				if (millis < 0L) {
-					throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
-				}
-				aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
-			}
-			
-			@Override
-			public void paused() {
-				aspectranService.pauseTimeout = -1L;
-			}
-			
-			@Override
-			public void resumed() {
-				started();
-			}
-			
-			@Override
-			public void stopped() {
-				paused();
-			}
-		});
-	}
+        return consoleAspectranService;
+    }
+
+    private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
+        aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
+            @Override
+            public void started() {
+                aspectranService.pauseTimeout = 0;
+            }
+
+            @Override
+            public void restarted(boolean hardReload) {
+                started();
+            }
+
+            @Override
+            public void paused(long millis) {
+                if (millis < 0L) {
+                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
+                }
+                aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
+            }
+
+            @Override
+            public void paused() {
+                aspectranService.pauseTimeout = -1L;
+            }
+
+            @Override
+            public void resumed() {
+                started();
+            }
+
+            @Override
+            public void stopped() {
+                paused();
+            }
+        });
+    }
 
 }

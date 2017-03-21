@@ -21,27 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextProfilesConfig extends AbstractParameters {
 
-	public static final ParameterDefinition activeProfiles;
-	public static final ParameterDefinition defaultProfiles;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		activeProfiles = new ParameterDefinition("active", ParameterValueType.STRING, true);
-		defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			activeProfiles,
-			defaultProfiles
-		};
-	}
-	
-	public AspectranContextProfilesConfig() {
-		super(parameterDefinitions);
-	}
-	
-	public AspectranContextProfilesConfig(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition activeProfiles;
+    public static final ParameterDefinition defaultProfiles;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        activeProfiles = new ParameterDefinition("active", ParameterValueType.STRING, true);
+        defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            activeProfiles,
+            defaultProfiles
+        };
+    }
+
+    public AspectranContextProfilesConfig() {
+        super(parameterDefinitions);
+    }
+
+    public AspectranContextProfilesConfig(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

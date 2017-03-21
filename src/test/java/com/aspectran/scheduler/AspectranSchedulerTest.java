@@ -33,27 +33,27 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AspectranSchedulerTest {
 
-	private EmbeddedAspectranService aspectranService;
+    private EmbeddedAspectranService aspectranService;
 
-	@Before
-	public void ready() throws IOException, AspectranServiceException {
-		AspectranConfig aspectranConfig = new AspectranConfig();
-		aspectranConfig.updateRootContextLocation("classpath:config/scheduler/scheduler-config.xml");
-		aspectranConfig.updateSchedulerConfig(0, true, true);
+    @Before
+    public void ready() throws IOException, AspectranServiceException {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        aspectranConfig.updateRootContextLocation("classpath:config/scheduler/scheduler-config.xml");
+        aspectranConfig.updateSchedulerConfig(0, true, true);
 
-		aspectranService = EmbeddedAspectranService.build(aspectranConfig);
-	}
+        aspectranService = EmbeddedAspectranService.build(aspectranConfig);
+    }
 
-	@After
-	public void finish() {
-		if (aspectranService != null) {
-			aspectranService.shutdown();
-		}
-	}
+    @After
+    public void finish() {
+        if (aspectranService != null) {
+            aspectranService.shutdown();
+        }
+    }
 
-	@Test
-	public void dummyTest() throws InterruptedException {
-		Thread.sleep(3000);
-	}
+    @Test
+    public void dummyTest() throws InterruptedException {
+        Thread.sleep(3000);
+    }
 
 }

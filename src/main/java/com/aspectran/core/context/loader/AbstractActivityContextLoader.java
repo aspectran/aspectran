@@ -23,87 +23,87 @@ import com.aspectran.core.util.logging.LogFactory;
 
 abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
-	protected final Log log = LogFactory.getLog(getClass());
-	
-	private final ApplicationAdapter applicationAdapter;
+    protected final Log log = LogFactory.getLog(getClass());
 
-	private AspectranClassLoader aspectranClassLoader;
+    private final ApplicationAdapter applicationAdapter;
 
-	private String[] activeProfiles;
+    private AspectranClassLoader aspectranClassLoader;
 
-	private String[] defaultProfiles;
+    private String[] activeProfiles;
 
-	private boolean hybridLoad;
+    private String[] defaultProfiles;
 
-	AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-		
-		newAspectranClassLoader();
-	}
-	
-	@Override
-	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
-	}
+    private boolean hybridLoad;
 
-	@Override
-	public AspectranClassLoader getAspectranClassLoader() {
-		return aspectranClassLoader;
-	}
+    AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
 
-	@Override
-	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-		if (resourceLocations != null) {
-			aspectranClassLoader.setResourceLocations(resourceLocations);
-		}
-	}
+        newAspectranClassLoader();
+    }
 
-	@Override
-	public String[] getActiveProfiles() {
-		return activeProfiles;
-	}
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
+    }
 
-	@Override
-	public void setActiveProfiles(String... activeProfiles) {
-		this.activeProfiles = activeProfiles;
-	}
+    @Override
+    public AspectranClassLoader getAspectranClassLoader() {
+        return aspectranClassLoader;
+    }
 
-	@Override
-	public String[] getDefaultProfiles() {
-		return defaultProfiles;
-	}
+    @Override
+    public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
+        if (resourceLocations != null) {
+            aspectranClassLoader.setResourceLocations(resourceLocations);
+        }
+    }
 
-	@Override
-	public void setDefaultProfiles(String... defaultProfiles) {
-		this.defaultProfiles = defaultProfiles;
-	}
+    @Override
+    public String[] getActiveProfiles() {
+        return activeProfiles;
+    }
 
-	@Override
-	public boolean isHybridLoad() {
-		return hybridLoad;
-	}
+    @Override
+    public void setActiveProfiles(String... activeProfiles) {
+        this.activeProfiles = activeProfiles;
+    }
 
-	@Override
-	public void setHybridLoad(boolean hybridLoad) {
-		this.hybridLoad = hybridLoad;
-	}
+    @Override
+    public String[] getDefaultProfiles() {
+        return defaultProfiles;
+    }
 
-	protected AspectranClassLoader newAspectranClassLoader() {
-		String[] excludePackageNames = new String[] {
-				"com.aspectran.console",
-				"com.aspectran.core",
-				"com.aspectran.embedded",
-				"com.aspectran.scheduler",
-				"com.aspectran.web"
-			};
+    @Override
+    public void setDefaultProfiles(String... defaultProfiles) {
+        this.defaultProfiles = defaultProfiles;
+    }
 
-		AspectranClassLoader acl = new AspectranClassLoader();
-		acl.excludePackage(excludePackageNames);
+    @Override
+    public boolean isHybridLoad() {
+        return hybridLoad;
+    }
 
-		this.aspectranClassLoader = acl;
-		this.applicationAdapter.setClassLoader(acl);
-		
-		return acl;
-	}
-	
+    @Override
+    public void setHybridLoad(boolean hybridLoad) {
+        this.hybridLoad = hybridLoad;
+    }
+
+    protected AspectranClassLoader newAspectranClassLoader() {
+        String[] excludePackageNames = new String[] {
+                "com.aspectran.console",
+                "com.aspectran.core",
+                "com.aspectran.embedded",
+                "com.aspectran.scheduler",
+                "com.aspectran.web"
+            };
+
+        AspectranClassLoader acl = new AspectranClassLoader();
+        acl.excludePackage(excludePackageNames);
+
+        this.aspectranClassLoader = acl;
+        this.applicationAdapter.setClassLoader(acl);
+
+        return acl;
+    }
+
 }

@@ -25,50 +25,50 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class EnvironmentRule implements PropertyPossessable {
 
-	private String profile;
-	
-	private ItemRuleMap propertyItemRuleMap;
+    private String profile;
 
-	public String getProfile() {
-		return profile;
-	}
+    private ItemRuleMap propertyItemRuleMap;
 
-	public void setProfile(String profile) {
-		this.profile = profile;
-	}
+    public String getProfile() {
+        return profile;
+    }
 
-	@Override
-	public ItemRuleMap getPropertyItemRuleMap() {
-		return propertyItemRuleMap;
-	}
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 
-	@Override
-	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-		this.propertyItemRuleMap = propertyItemRuleMap;
-	}
+    @Override
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("profile", profile);
-		if (propertyItemRuleMap != null) {
-			tsb.append("properties", propertyItemRuleMap.keySet());
-		}
-		return tsb.toString();
-	}
-	
-	/**
-	 * Returns a new instance of EnvironmentRule.
-	 *
-	 * @param profile the profile
-	 * @param propertyItemRuleMap the property item rule map
-	 * @return an instance of EnvironmentRule
-	 */
-	public static EnvironmentRule newInstance(String profile, ItemRuleMap propertyItemRuleMap) {
-		EnvironmentRule environmentRule = new EnvironmentRule();
-		environmentRule.setProfile(profile);
-		environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
-		return environmentRule;
-	}
-	
+    @Override
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("profile", profile);
+        if (propertyItemRuleMap != null) {
+            tsb.append("properties", propertyItemRuleMap.keySet());
+        }
+        return tsb.toString();
+    }
+
+    /**
+     * Returns a new instance of EnvironmentRule.
+     *
+     * @param profile the profile
+     * @param propertyItemRuleMap the property item rule map
+     * @return an instance of EnvironmentRule
+     */
+    public static EnvironmentRule newInstance(String profile, ItemRuleMap propertyItemRuleMap) {
+        EnvironmentRule environmentRule = new EnvironmentRule();
+        environmentRule.setProfile(profile);
+        environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
+        return environmentRule;
+    }
+
 }

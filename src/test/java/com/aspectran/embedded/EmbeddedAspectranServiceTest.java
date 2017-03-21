@@ -38,60 +38,60 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EmbeddedAspectranServiceTest {
 
-	private EmbeddedAspectranService aspectranService;
+    private EmbeddedAspectranService aspectranService;
 
-	@Before
-	public void ready() throws IOException, AspectranServiceException {
-		String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
-		aspectranService = EmbeddedAspectranService.build(rootContextLocation);
-	}
+    @Before
+    public void ready() throws IOException, AspectranServiceException {
+        String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
+        aspectranService = EmbeddedAspectranService.build(rootContextLocation);
+    }
 
-	@After
-	public void finish() {
-		if (aspectranService != null) {
-			aspectranService.shutdown();
-		}
-	}
+    @After
+    public void finish() {
+        if (aspectranService != null) {
+            aspectranService.shutdown();
+        }
+    }
 
-	@Test
-	public void test1() throws AspectranServiceException, IOException {
-		ActivityContext activityContext = aspectranService.getActivityContext();
-		BeanRegistry beanRegistry = activityContext.getBeanRegistry();
-		FirstBean firstBean = beanRegistry.getBean("thirdBean");
+    @Test
+    public void test1() throws AspectranServiceException, IOException {
+        ActivityContext activityContext = aspectranService.getActivityContext();
+        BeanRegistry beanRegistry = activityContext.getBeanRegistry();
+        FirstBean firstBean = beanRegistry.getBean("thirdBean");
 
-		//System.out.println(firstBean);
-		//System.out.println(firstBean.getMessage());
+        //System.out.println(firstBean);
+        //System.out.println(firstBean.getMessage());
 
-		Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
+        Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
 
-		Translet translet = aspectranService.translet("echo");
-		System.out.println(translet.getResponseAdapter().getWriter().toString());
+        Translet translet = aspectranService.translet("echo");
+        System.out.println(translet.getResponseAdapter().getWriter().toString());
 
-		Map<String, String> params = new HashMap<>();
-		params.put("id", "0001");
-		params.put("name", "aspectran");
-		params.put("email", "aspectran@aspectran.com");
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "0001");
+        params.put("name", "aspectran");
+        params.put("email", "aspectran@aspectran.com");
 
-		String echo = aspectranService.template("echo", params);
-		System.out.println(echo);
+        String echo = aspectranService.template("echo", params);
+        System.out.println(echo);
 
-		String selectQuery = aspectranService.template("selectQuery", params);
-		System.out.println(selectQuery);
+        String selectQuery = aspectranService.template("selectQuery", params);
+        System.out.println(selectQuery);
 
-		String updateQuery = aspectranService.template("updateQuery", params);
-		System.out.println(updateQuery);
-	}
+        String updateQuery = aspectranService.template("updateQuery", params);
+        System.out.println(updateQuery);
+    }
 
-	@Test
-	public void test2() throws AspectranServiceException, IOException {
-		Translet translet = aspectranService.translet("attr-test");
-		System.out.println(translet.getResponseAdapter().getWriter().toString());
-	}
+    @Test
+    public void test2() throws AspectranServiceException, IOException {
+        Translet translet = aspectranService.translet("attr-test");
+        System.out.println(translet.getResponseAdapter().getWriter().toString());
+    }
 
-	@Test
-	public void includeTest() throws AspectranServiceException, IOException {
-		Translet translet = aspectranService.translet("include-test");
-		System.out.println(translet.getResponseAdapter().getWriter().toString());
-	}
+    @Test
+    public void includeTest() throws AspectranServiceException, IOException {
+        Translet translet = aspectranService.translet("include-test");
+        System.out.println(translet.getResponseAdapter().getWriter().toString());
+    }
 
 }

@@ -22,11 +22,11 @@ package com.aspectran.core.context.bean.ablility;
  */
 public interface DisposableBean {
 
-	/**
-	 * A Dispose implementation that calls the destroy() method.
-	 *
-	 * @throws Exception if destruction fails
-	 */
-	void destroy() throws Exception;
+    /**
+     * A Dispose implementation that calls the destroy() method.
+     *
+     * @throws Exception if destruction fails
+     */
+    void destroy() throws Exception;
 
 }

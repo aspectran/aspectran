@@ -22,8 +22,8 @@ import com.aspectran.core.util.StringOutputWriter;
  */
 public class QuartzJobOutputWriter extends StringOutputWriter {
 
-	public QuartzJobOutputWriter() {
-		super(648);
-	}
+    public QuartzJobOutputWriter() {
+        super(648);
+    }
 
 }

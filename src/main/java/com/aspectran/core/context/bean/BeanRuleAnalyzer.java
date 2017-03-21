@@ -30,164 +30,164 @@ import com.aspectran.core.util.MethodUtils;
  */
 public class BeanRuleAnalyzer {
 
-	public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
-	
-	public static Class<?> determineBeanClass(BeanRule beanRule) {
-		Class<?> targetBeanClass;
+    public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
-		if (beanRule.isFactoryOffered()) {
-			targetBeanClass = beanRule.getFactoryBeanClass();
-			if (targetBeanClass == null) {
-				// (will be post processing)
-				return null;
-			}
-			targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
-		} else {
-			targetBeanClass = beanRule.getBeanClass();
-		}
+    public static Class<?> determineBeanClass(BeanRule beanRule) {
+        Class<?> targetBeanClass;
 
-		if (targetBeanClass == null) {
-			throw new BeanRuleException("Invalid BeanRule", beanRule);
-		}
+        if (beanRule.isFactoryOffered()) {
+            targetBeanClass = beanRule.getFactoryBeanClass();
+            if (targetBeanClass == null) {
+                // (will be post processing)
+                return null;
+            }
+            targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+        } else {
+            targetBeanClass = beanRule.getBeanClass();
+        }
 
-		if (beanRule.getInitMethodName() != null) {
-			checkInitMethod(targetBeanClass, beanRule);
-		}
+        if (targetBeanClass == null) {
+            throw new BeanRuleException("Invalid BeanRule", beanRule);
+        }
 
-		if (beanRule.getDestroyMethodName() != null) {
-			checkDestroyMethod(targetBeanClass, beanRule);
-		}
+        if (beanRule.getInitMethodName() != null) {
+            checkInitMethod(targetBeanClass, beanRule);
+        }
 
-		if (!beanRule.isFactoryOffered()) {
-			if (beanRule.isFactoryBean()) {
-				targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
-			} else if (beanRule.getFactoryMethodName() != null) {
-				targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
-			}
-		}
+        if (beanRule.getDestroyMethodName() != null) {
+            checkDestroyMethod(targetBeanClass, beanRule);
+        }
 
-		return targetBeanClass;
-	}
+        if (!beanRule.isFactoryOffered()) {
+            if (beanRule.isFactoryBean()) {
+                targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
+            } else if (beanRule.getFactoryMethodName() != null) {
+                targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+            }
+        }
 
-	public static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
-		try {
-			Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
-			Class<?> targetBeanClass = m.getReturnType();
-			beanRule.setTargetBeanClass(targetBeanClass);
-			return targetBeanClass;
-		} catch (Exception e) {
-			throw new BeanRuleException("Invalid BeanRule", beanRule);
-		}
-	}
-	
-	protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
-		String factoryMethodName = beanRule.getFactoryMethodName();
+        return targetBeanClass;
+    }
 
-		Class<?> targetBeanClass;
+    public static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
+        try {
+            Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
+            Class<?> targetBeanClass = m.getReturnType();
+            beanRule.setTargetBeanClass(targetBeanClass);
+            return targetBeanClass;
+        } catch (Exception e) {
+            throw new BeanRuleException("Invalid BeanRule", beanRule);
+        }
+    }
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+    protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+        String factoryMethodName = beanRule.getFactoryMethodName();
 
-		if (m1 != null) {
-			beanRule.setFactoryMethod(m1);
-			beanRule.setFactoryMethodRequiresTranslet(true);
-			targetBeanClass = m1.getReturnType();
-		} else {
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
+        Class<?> targetBeanClass;
 
-			if (m2 == null) {
-				throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-			}
+        Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
-			beanRule.setFactoryMethod(m2);
-			targetBeanClass = m2.getReturnType();
-		}
-		
-		beanRule.setTargetBeanClass(targetBeanClass);
-		
-		return targetBeanClass;
-	}
+        if (m1 != null) {
+            beanRule.setFactoryMethod(m1);
+            beanRule.setFactoryMethodRequiresTranslet(true);
+            targetBeanClass = m1.getReturnType();
+        } else {
+            Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
 
-	public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
-		if (beanRule.isInitializableBean()) {
-			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
-		}
-		if (beanRule.isInitializableTransletBean()) {
-			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
-		}
+            if (m2 == null) {
+                throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+            }
 
-		String initMethodName = beanRule.getInitMethodName();
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+            beanRule.setFactoryMethod(m2);
+            targetBeanClass = m2.getReturnType();
+        }
 
-		if (m1 != null) {
-			beanRule.setInitMethod(m1);
-			beanRule.setInitMethodRequiresTranslet(true);
-		} else {
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
+        beanRule.setTargetBeanClass(targetBeanClass);
 
-			if (m2 == null) {
-				throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-			}
+        return targetBeanClass;
+    }
 
-			beanRule.setInitMethod(m2);
-		}
-	}
+    public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
+        if (beanRule.isInitializableBean()) {
+            throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
+        }
+        if (beanRule.isInitializableTransletBean()) {
+            throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
+        }
 
-	public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
-		if (beanRule.isDisposableBean()) {
-			throw new BeanRuleException("Bean destroy method is duplicated. Already implemented the DisposableBean", beanRule);
-		}
+        String initMethodName = beanRule.getInitMethodName();
+        Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
-		String destroyMethodName = beanRule.getDestroyMethodName();
-		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
-		
-		if (m == null) {
-			throw new BeanRuleException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-		}
-		
-		beanRule.setDestroyMethod(m);
-	}
-	
-	public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
-		if (beanActionRule.getArgumentItemRuleMap() == null) {
-			Class<?> beanClass = beanRule.getTargetBeanClass();
-			String methodName = beanActionRule.getMethodName();
+        if (m1 != null) {
+            beanRule.setInitMethod(m1);
+            beanRule.setInitMethodRequiresTranslet(true);
+        } else {
+            Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
 
-			Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
+            if (m2 == null) {
+                throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+            }
 
-			if (m1 != null) {
-				beanActionRule.setMethod(m1);
-				beanActionRule.setRequiresTranslet(true);
-			} else {
-				Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
-				if (m2 == null) {
-					throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
-				}
-				beanActionRule.setMethod(m2);
-			}
-		}
-	}
+            beanRule.setInitMethod(m2);
+        }
+    }
 
-	public static void checkRequiredProperty(BeanRule beanRule, Method method) {
-		ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-		String propertyName = dropCase(method.getName());
+    public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
+        if (beanRule.isDisposableBean()) {
+            throw new BeanRuleException("Bean destroy method is duplicated. Already implemented the DisposableBean", beanRule);
+        }
 
-		if (propertyItemRuleMap != null) {
-			if (propertyItemRuleMap.containsKey(propertyName)) {
-				return;
-			}
-		}
+        String destroyMethodName = beanRule.getDestroyMethodName();
+        Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
 
-		throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
-	}
+        if (m == null) {
+            throw new BeanRuleException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+        }
 
-	private static String dropCase(String name) {
-		if (name.startsWith("set")) {
-			name = name.substring(3);
-		}
-		if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
-			name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
-		}
-		return name;
-	}
-	
+        beanRule.setDestroyMethod(m);
+    }
+
+    public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
+        if (beanActionRule.getArgumentItemRuleMap() == null) {
+            Class<?> beanClass = beanRule.getTargetBeanClass();
+            String methodName = beanActionRule.getMethodName();
+
+            Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
+
+            if (m1 != null) {
+                beanActionRule.setMethod(m1);
+                beanActionRule.setRequiresTranslet(true);
+            } else {
+                Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
+                if (m2 == null) {
+                    throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
+                }
+                beanActionRule.setMethod(m2);
+            }
+        }
+    }
+
+    public static void checkRequiredProperty(BeanRule beanRule, Method method) {
+        ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+        String propertyName = dropCase(method.getName());
+
+        if (propertyItemRuleMap != null) {
+            if (propertyItemRuleMap.containsKey(propertyName)) {
+                return;
+            }
+        }
+
+        throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
+    }
+
+    private static String dropCase(String name) {
+        if (name.startsWith("set")) {
+            name = name.substring(3);
+        }
+        if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
+            name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
+        }
+        return name;
+    }
+
 }

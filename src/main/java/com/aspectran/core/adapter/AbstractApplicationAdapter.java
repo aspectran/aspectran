@@ -31,99 +31,99 @@ import com.aspectran.core.util.ToStringBuilder;
  * @since 2011. 3. 13.
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
-	
-	protected final Object adaptee;
 
-	protected final ApplicationScope scope = new ApplicationScope();
+    protected final Object adaptee;
 
-	protected ClassLoader classLoader;
+    protected final ApplicationScope scope = new ApplicationScope();
 
-	protected String basePath;
+    protected ClassLoader classLoader;
 
-	/**
-	 * Instantiates a new AbstractApplicationAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public AbstractApplicationAdapter(Object adaptee) {
-		this.adaptee = adaptee;
-	}
+    protected String basePath;
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAdaptee() {
-		return (T)adaptee;
-	}
+    /**
+     * Instantiates a new AbstractApplicationAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public AbstractApplicationAdapter(Object adaptee) {
+        this.adaptee = adaptee;
+    }
 
-	@Override
-	public ApplicationScope getApplicationScope() {
-		return scope;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAdaptee() {
+        return (T)adaptee;
+    }
 
-	@Override
-	public ClassLoader getClassLoader() {
-		if (classLoader == null) {
-			return AspectranClassLoader.getDefaultClassLoader();
-		} else {
-			return classLoader;
-		}
-	}
+    @Override
+    public ApplicationScope getApplicationScope() {
+        return scope;
+    }
 
-	@Override
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
+    @Override
+    public ClassLoader getClassLoader() {
+        if (classLoader == null) {
+            return AspectranClassLoader.getDefaultClassLoader();
+        } else {
+            return classLoader;
+        }
+    }
 
-	public String getBasePath() {
-		return basePath;
-	}
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
-	/**
-	 * Sets the application base path.
-	 *
-	 * @param basePath the new application base path
-	 */
-	public void setBasePath(String basePath) {
-		this.basePath = basePath;
-	}
+    public String getBasePath() {
+        return basePath;
+    }
 
-	@Override
-	public String toRealPath(String filePath) throws IOException {
-		File file = toRealPathAsFile(filePath);
-		return file.getCanonicalPath();
-	}
+    /**
+     * Sets the application base path.
+     *
+     * @param basePath the new application base path
+     */
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
-	@Override
-	public File toRealPathAsFile(String filePath) throws IOException {
-		File file;
-		if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-			// Using url fully qualified paths
-			URI uri = URI.create(filePath);
-			file = new File(uri);
-		} else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			// Using classpath relative resources
-			URL url = getClassLoader().getResource(filePath);
-			if (url == null) {
-				throw new IOException("Could not find the resource with the given name: " + filePath);
-			}
-			file = new File(url.getFile());
-		} else {
-			if (basePath != null) {
-				file = new File(basePath, filePath);
-			} else {
-				file = new File(filePath);
-			}
-		}
-		return file;
-	}
+    @Override
+    public String toRealPath(String filePath) throws IOException {
+        File file = toRealPathAsFile(filePath);
+        return file.getCanonicalPath();
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("basePath", basePath);
-		tsb.append("classLoader", getClassLoader());
-		tsb.append("adaptee", adaptee);
-		return tsb.toString();
-	}
-	
+    @Override
+    public File toRealPathAsFile(String filePath) throws IOException {
+        File file;
+        if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            // Using url fully qualified paths
+            URI uri = URI.create(filePath);
+            file = new File(uri);
+        } else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            // Using classpath relative resources
+            URL url = getClassLoader().getResource(filePath);
+            if (url == null) {
+                throw new IOException("Could not find the resource with the given name: " + filePath);
+            }
+            file = new File(url.getFile());
+        } else {
+            if (basePath != null) {
+                file = new File(basePath, filePath);
+            } else {
+                file = new File(filePath);
+            }
+        }
+        return file;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("basePath", basePath);
+        tsb.append("classLoader", getClassLoader());
+        tsb.append("adaptee", adaptee);
+        return tsb.toString();
+    }
+
 }

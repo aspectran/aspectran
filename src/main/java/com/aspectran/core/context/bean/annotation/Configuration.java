@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Configuration {
 
-	String namespace() default "";
+    String namespace() default "";
 
 }

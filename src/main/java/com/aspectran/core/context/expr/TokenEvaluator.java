@@ -31,24 +31,24 @@ import com.aspectran.core.context.expr.token.Token;
  */
 public interface TokenEvaluator {
 
-	Object evaluate(Token token);
-	
-	Object evaluate(Token[] tokens);
+    Object evaluate(Token token);
 
-	void evaluate(Token[] tokens, Writer writer) throws IOException;
+    Object evaluate(Token[] tokens);
 
-	String evaluateAsString(Token[] tokens);
+    void evaluate(Token[] tokens, Writer writer) throws IOException;
 
-	Object evaluate(String parameterName, Token[] tokens);
+    String evaluateAsString(Token[] tokens);
 
-	String evaluateAsString(String parameterName, Token[] tokens);
+    Object evaluate(String parameterName, Token[] tokens);
 
-	List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList);
+    String evaluateAsString(String parameterName, Token[] tokens);
 
-	Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet);
-	
-	Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap);
-	
-	Properties evaluateAsProperties(String parameterName, Properties tokensProp);
-	
+    List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList);
+
+    Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet);
+
+    Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap);
+
+    Properties evaluateAsProperties(String parameterName, Properties tokensProp);
+
 }

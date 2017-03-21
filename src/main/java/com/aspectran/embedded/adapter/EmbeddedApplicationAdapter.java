@@ -22,19 +22,19 @@ import com.aspectran.core.util.SystemUtils;
  * The Class EmbeddedApplicationAdapter.
  */
 public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
-	
-	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embedded.workingDir";
-	
-	/**
-	 * Instantiates a new EmbeddedApplicationAdapter.
-	 */
-	public EmbeddedApplicationAdapter() {
-		super(null);
-		
-		String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-		if(basePath != null) {
-			setBasePath(basePath);
-		}
-	}
+
+    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embedded.workingDir";
+
+    /**
+     * Instantiates a new EmbeddedApplicationAdapter.
+     */
+    public EmbeddedApplicationAdapter() {
+        super(null);
+
+        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+        if(basePath != null) {
+            setBasePath(basePath);
+        }
+    }
 
 }

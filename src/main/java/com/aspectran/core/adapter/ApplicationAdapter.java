@@ -27,90 +27,90 @@ import com.aspectran.core.context.bean.scope.ApplicationScope;
  * @since 2011. 3. 13.
  */
 public interface ApplicationAdapter {
-	
-	/**
-	 * Gets the adaptee object.
-	 *
-	 * @param <T> the generic type
-	 * @return the adaptee object
-	 */
-	<T> T getAdaptee();
 
-	/**
-	 * Gets the application scope.
-	 *
-	 * @return the scope
-	 */
-	ApplicationScope getApplicationScope();
-	
-	/**
-	 * Gets the attribute.
-	 *
-	 * @param <T> the generic type
-	 * @param name the name
-	 * @return the attribute
-	 */
-	<T> T getAttribute(String name);
+    /**
+     * Gets the adaptee object.
+     *
+     * @param <T> the generic type
+     * @return the adaptee object
+     */
+    <T> T getAdaptee();
 
-	/**
-	 * Sets the attribute.
-	 *
-	 * @param name the name
-	 * @param value the value
-	 */
-	void setAttribute(String name, Object value);
-	
-	/**
-	 * Gets the attribute names.
-	 *
-	 * @return the attribute names
-	 */
-	Enumeration<String> getAttributeNames();
-	
-	/**
-	 * Removes the attribute.
-	 *
-	 * @param name the name
-	 */
-	void removeAttribute(String name);
-	
-	/**
-	 * Gets the class loader.
-	 *
-	 * @return the class loader
-	 */
-	ClassLoader getClassLoader();
+    /**
+     * Gets the application scope.
+     *
+     * @return the scope
+     */
+    ApplicationScope getApplicationScope();
 
-	/**
-	 * Sets the class loader.
-	 *
-	 * @param classLoader the class loader
-	 */
-	void setClassLoader(ClassLoader classLoader);
+    /**
+     * Gets the attribute.
+     *
+     * @param <T> the generic type
+     * @param name the name
+     * @return the attribute
+     */
+    <T> T getAttribute(String name);
 
-	/**
-	 * Return the base path that the current application is mapped to.
-	 *
-	 * @return the application base path
-	 */
-	String getBasePath();
-	
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 *
-	 * @param filePath the specified file path
-	 * @return the real file path
-	 * @throws IOException if an I/O error has occurred
-	 */
-	String toRealPath(String filePath) throws IOException;
-	
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 * 
-	 * @param filePath the specified file path
-	 * @return the real file path
-	 * @throws IOException if an I/O error has occurred
-	 */
-	File toRealPathAsFile(String filePath) throws IOException;
+    /**
+     * Sets the attribute.
+     *
+     * @param name the name
+     * @param value the value
+     */
+    void setAttribute(String name, Object value);
+
+    /**
+     * Gets the attribute names.
+     *
+     * @return the attribute names
+     */
+    Enumeration<String> getAttributeNames();
+
+    /**
+     * Removes the attribute.
+     *
+     * @param name the name
+     */
+    void removeAttribute(String name);
+
+    /**
+     * Gets the class loader.
+     *
+     * @return the class loader
+     */
+    ClassLoader getClassLoader();
+
+    /**
+     * Sets the class loader.
+     *
+     * @param classLoader the class loader
+     */
+    void setClassLoader(ClassLoader classLoader);
+
+    /**
+     * Return the base path that the current application is mapped to.
+     *
+     * @return the application base path
+     */
+    String getBasePath();
+
+    /**
+     * Returns to convert the given file path with the real file path.
+     *
+     * @param filePath the specified file path
+     * @return the real file path
+     * @throws IOException if an I/O error has occurred
+     */
+    String toRealPath(String filePath) throws IOException;
+
+    /**
+     * Returns to convert the given file path with the real file path.
+     *
+     * @param filePath the specified file path
+     * @return the real file path
+     * @throws IOException if an I/O error has occurred
+     */
+    File toRealPathAsFile(String filePath) throws IOException;
 
 }

@@ -31,76 +31,76 @@ import com.aspectran.core.util.MultiValueMap;
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
-	
-	/**
-	 * Instantiates a new HttpServletRequestAdapter.
-	 *
-	 * @param request the HTTP request
-	 */
-	public HttpServletRequestAdapter(HttpServletRequest request) {
-		super(request, request.getParameterMap());
-		setRequestMethod(MethodType.resolve(request.getMethod()));
-	}
 
-	@Override
-	public String getCharacterEncoding() {
-		return ((HttpServletRequest)adaptee).getCharacterEncoding();
-	}
+    /**
+     * Instantiates a new HttpServletRequestAdapter.
+     *
+     * @param request the HTTP request
+     */
+    public HttpServletRequestAdapter(HttpServletRequest request) {
+        super(request, request.getParameterMap());
+        setRequestMethod(MethodType.resolve(request.getMethod()));
+    }
 
-	@Override
-	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
-		if(characterEncoding != null) {
-			((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
-		}
-	}
+    @Override
+    public String getCharacterEncoding() {
+        return ((HttpServletRequest)adaptee).getCharacterEncoding();
+    }
 
-	@Override
-	protected MultiValueMap<String, String> touchHeaders() {
-		boolean headersInstantiated = isHeadersInstantiated();
-		MultiValueMap<String, String> headers = super.touchHeaders();
+    @Override
+    public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
+        if(characterEncoding != null) {
+            ((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
+        }
+    }
 
-		if (!headersInstantiated) {
-			HttpServletRequest request = ((HttpServletRequest)adaptee);
+    @Override
+    protected MultiValueMap<String, String> touchHeaders() {
+        boolean headersInstantiated = isHeadersInstantiated();
+        MultiValueMap<String, String> headers = super.touchHeaders();
 
-			for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
-				String name = names.nextElement();
-				for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
-					String value = values.nextElement();
-					headers.add(name, value);
-				}
-			}
-		}
+        if (!headersInstantiated) {
+            HttpServletRequest request = ((HttpServletRequest)adaptee);
 
-		return headers;
-	}
+            for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
+                String name = names.nextElement();
+                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
+                    String value = values.nextElement();
+                    headers.add(name, value);
+                }
+            }
+        }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)((HttpServletRequest)adaptee).getAttribute(name);
-	}
+        return headers;
+    }
 
-	@Override
-	public void setAttribute(String name, Object o) {
-		((HttpServletRequest)adaptee).setAttribute(name, o);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)((HttpServletRequest)adaptee).getAttribute(name);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return ((HttpServletRequest)adaptee).getAttributeNames();
-	}
+    @Override
+    public void setAttribute(String name, Object o) {
+        ((HttpServletRequest)adaptee).setAttribute(name, o);
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		((HttpServletRequest)adaptee).removeAttribute(name);
-	}
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return ((HttpServletRequest)adaptee).getAttributeNames();
+    }
 
-	@Override
-	public Locale getLocale() {
-		if (super.getLocale() != null) {
-			return super.getLocale();
-		}
-		return ((HttpServletRequest)adaptee).getLocale();
-	}
+    @Override
+    public void removeAttribute(String name) {
+        ((HttpServletRequest)adaptee).removeAttribute(name);
+    }
+
+    @Override
+    public Locale getLocale() {
+        if (super.getLocale() != null) {
+            return super.getLocale();
+        }
+        return ((HttpServletRequest)adaptee).getLocale();
+    }
 
 }

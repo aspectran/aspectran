@@ -22,32 +22,32 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface SchedulerService {
 
-	int getStartDelaySeconds();
-	
-	void setStartDelaySeconds(int startDelaySeconds);
-	
-	boolean isWaitOnShutdown();
-	
-	void setWaitOnShutdown(boolean waitOnShutdown);
+    int getStartDelaySeconds();
 
-	void setExposals(String[] exposals);
+    void setStartDelaySeconds(int startDelaySeconds);
 
-	void startup() throws SchedulerServiceException;
-	
-	void startup(int delaySeconds) throws SchedulerServiceException;
-	
-	void shutdown() throws SchedulerServiceException;
-	
-	void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
+    boolean isWaitOnShutdown();
 
-	void restart(ActivityContext context) throws SchedulerServiceException;
+    void setWaitOnShutdown(boolean waitOnShutdown);
 
-	void pause() throws SchedulerServiceException;
+    void setExposals(String[] exposals);
 
-	void pause(String schedulerId) throws SchedulerServiceException;
+    void startup() throws SchedulerServiceException;
 
-	void resume() throws SchedulerServiceException;
+    void startup(int delaySeconds) throws SchedulerServiceException;
 
-	void resume(String schedulerId) throws SchedulerServiceException;
+    void shutdown() throws SchedulerServiceException;
+
+    void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
+
+    void restart(ActivityContext context) throws SchedulerServiceException;
+
+    void pause() throws SchedulerServiceException;
+
+    void pause(String schedulerId) throws SchedulerServiceException;
+
+    void resume() throws SchedulerServiceException;
+
+    void resume(String schedulerId) throws SchedulerServiceException;
 
 }

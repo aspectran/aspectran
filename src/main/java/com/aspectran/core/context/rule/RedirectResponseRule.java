@@ -37,305 +37,305 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class RedirectResponseRule extends ActionPossessSupport implements Replicable<RedirectResponseRule> {
-	
-	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
-	private String contentType;
-	
-	private String target;
-	
-	private Token[] targetTokens;
+    public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
-	private String characterEncoding;
+    private String contentType;
 
-	private Boolean excludeNullParameter;
+    private String target;
 
-	private Boolean excludeEmptyParameter;
+    private Token[] targetTokens;
 
-	private ItemRuleMap parameterItemRuleMap;
+    private String characterEncoding;
 
-	private Boolean defaultResponse;
+    private Boolean excludeNullParameter;
 
-	/**
-	 * Gets the content type.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		return contentType;
-	}
+    private Boolean excludeEmptyParameter;
 
-	/**
-	 * Sets the content type.
-	 * 
-	 * @param contentType the new content type
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    private ItemRuleMap parameterItemRuleMap;
 
-	/**
-	 * Gets the redirect target.
-	 * 
-	 * @return the redirect target
-	 */
-	public String getTarget() {
-		return target;
-	}
+    private Boolean defaultResponse;
 
-	/**
-	 * Gets the redirect target.
-	 *
-	 * @param activity the activity
-	 * @return the redirect target
-	 */
-	public String getTarget(Activity activity) {
-		if (targetTokens != null && targetTokens.length > 0) {
-			TokenEvaluator evaluator = new TokenExpressionParser(activity);
-			return evaluator.evaluateAsString(targetTokens);
-		} else {
-			return target;
-		}
-	}
+    /**
+     * Gets the content type.
+     *
+     * @return the content type
+     */
+    public String getContentType() {
+        return contentType;
+    }
 
-	/**
-	 * Sets the target name.
-	 * 
-	 * @param target the new target name
-	 */
-	public void setTarget(String target) {
-		this.target = target;
+    /**
+     * Sets the content type.
+     *
+     * @param contentType the new content type
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-		List<Token> tokens = Tokenizer.tokenize(target, true);
-		int tokenCount = 0;
-		
-		for (Token t : tokens) {
-			if (t.getType() != TokenType.TEXT) {
-				tokenCount++;
-			}
-		}
-		
-		if (tokenCount > 0) {
-			this.targetTokens = tokens.toArray(new Token[tokens.size()]);
-		} else {
-			this.targetTokens = null;
-		}
-	}
-	
-	public void setTarget(String target, Token[] targetTokens) {
-		this.target = target;
-		this.targetTokens = targetTokens;
-	}
+    /**
+     * Gets the redirect target.
+     *
+     * @return the redirect target
+     */
+    public String getTarget() {
+        return target;
+    }
 
-	/**
-	 * Gets the tokens of the redirect target.
-	 * 
-	 * @return the tokens of the redirect target
-	 */
-	public Token[] getTargetTokens() {
-		return targetTokens;
-	}
+    /**
+     * Gets the redirect target.
+     *
+     * @param activity the activity
+     * @return the redirect target
+     */
+    public String getTarget(Activity activity) {
+        if (targetTokens != null && targetTokens.length > 0) {
+            TokenEvaluator evaluator = new TokenExpressionParser(activity);
+            return evaluator.evaluateAsString(targetTokens);
+        } else {
+            return target;
+        }
+    }
 
-	/**
-	 * Gets the character encoding.
-	 *
-	 * @return the character encoding
-	 */
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    /**
+     * Sets the target name.
+     *
+     * @param target the new target name
+     */
+    public void setTarget(String target) {
+        this.target = target;
 
-	/**
-	 * Sets the character encoding.
-	 *
-	 * @param characterEncoding the new character encoding
-	 */
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+        List<Token> tokens = Tokenizer.tokenize(target, true);
+        int tokenCount = 0;
 
-	/**
-	 * Gets whether to exclude parameters with null values.
-	 * 
-	 * @return whether to exclude parameters with null values
-	 */
-	public Boolean getExcludeNullParameter() {
-		return excludeNullParameter;
-	}
+        for (Token t : tokens) {
+            if (t.getType() != TokenType.TEXT) {
+                tokenCount++;
+            }
+        }
 
-	/**
-	 * Returns whether to exclude parameters with null values.
-	 *
-	 * @return whether to exclude parameters with null values
-	 */
-	public boolean isExcludeNullParameter() {
-		return BooleanUtils.toBoolean(excludeNullParameter);
-	}
+        if (tokenCount > 0) {
+            this.targetTokens = tokens.toArray(new Token[tokens.size()]);
+        } else {
+            this.targetTokens = null;
+        }
+    }
 
-	/**
-	 * Sets whether to exclude parameters with null values.
-	 *
-	 * @param excludeNullParameter whether to exclude parameters with null values
-	 */
-	public void setExcludeNullParameter(Boolean excludeNullParameter) {
-		this.excludeNullParameter = excludeNullParameter;
-	}
+    public void setTarget(String target, Token[] targetTokens) {
+        this.target = target;
+        this.targetTokens = targetTokens;
+    }
 
-	/**
-	 * Gets whether to exclude parameters with empty values.
-	 *
-	 * @return whether to exclude parameters with empty values
-	 */
-	public Boolean getExcludeEmptyParameter() {
-		return excludeNullParameter;
-	}
+    /**
+     * Gets the tokens of the redirect target.
+     *
+     * @return the tokens of the redirect target
+     */
+    public Token[] getTargetTokens() {
+        return targetTokens;
+    }
 
-	/**
-	 * Returns whether to exclude parameters with empty values.
-	 *
-	 * @return whether to exclude parameters with empty values
-	 */
-	public boolean isExcludeEmptyParameter() {
-		return BooleanUtils.toBoolean(excludeEmptyParameter);
-	}
+    /**
+     * Gets the character encoding.
+     *
+     * @return the character encoding
+     */
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	/**
-	 * Sets whether to exclude parameters with empty values.
-	 *
-	 * @param excludeEmptyParameter whether to exclude parameters with empty values
-	 */
-	public void setExcludeEmptyParameter(Boolean excludeEmptyParameter) {
-		this.excludeEmptyParameter = excludeEmptyParameter;
-	}
+    /**
+     * Sets the character encoding.
+     *
+     * @param characterEncoding the new character encoding
+     */
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	/**
-	 * Gets the parameter rule map.
-	 * 
-	 * @return the parameter rule map
-	 */
-	public ItemRuleMap getParameterItemRuleMap() {
-		return parameterItemRuleMap;
-	}
+    /**
+     * Gets whether to exclude parameters with null values.
+     *
+     * @return whether to exclude parameters with null values
+     */
+    public Boolean getExcludeNullParameter() {
+        return excludeNullParameter;
+    }
 
-	/**
-	 * Sets the parameter rules.
-	 * 
-	 * @param parameterItemRuleMap the new parameter rules
-	 */
-	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
-		this.parameterItemRuleMap = parameterItemRuleMap;
-	}
-	
-	/**
-	 * Adds the parameter rule.
-	 * 
-	 * @param parameterItemRule the parameter rule
-	 */
-	public void addParameterItemRule(ItemRule parameterItemRule) {
-		if (parameterItemRuleMap == null) {
-			parameterItemRuleMap = new ItemRuleMap();
-		}
-		parameterItemRuleMap.putItemRule(parameterItemRule);
-	}
+    /**
+     * Returns whether to exclude parameters with null values.
+     *
+     * @return whether to exclude parameters with null values
+     */
+    public boolean isExcludeNullParameter() {
+        return BooleanUtils.toBoolean(excludeNullParameter);
+    }
 
-	/**
-	 * Sets the parameter map.
-	 *
-	 * @param parameterMap the parameter map
-	 */
-	public void setParameterMap(Map<String, String> parameterMap) {
-		if (parameterMap == null) {
-			this.parameterItemRuleMap = null;
-			return;
-		}
+    /**
+     * Sets whether to exclude parameters with null values.
+     *
+     * @param excludeNullParameter whether to exclude parameters with null values
+     */
+    public void setExcludeNullParameter(Boolean excludeNullParameter) {
+        this.excludeNullParameter = excludeNullParameter;
+    }
 
-		ItemRuleMap params = new ItemRuleMap();
-		for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
-			ItemRule ir = new ItemRule();
-			ir.setName(entry.getKey());
-			ir.setValue(TokenParser.makeTokens(entry.getValue(), false));
-		}
+    /**
+     * Gets whether to exclude parameters with empty values.
+     *
+     * @return whether to exclude parameters with empty values
+     */
+    public Boolean getExcludeEmptyParameter() {
+        return excludeNullParameter;
+    }
 
-		this.parameterItemRuleMap = params;
-	}
+    /**
+     * Returns whether to exclude parameters with empty values.
+     *
+     * @return whether to exclude parameters with empty values
+     */
+    public boolean isExcludeEmptyParameter() {
+        return BooleanUtils.toBoolean(excludeEmptyParameter);
+    }
 
-	/**
-	 * Returns whether the default response.
-	 *
-	 * @return whether the default response
-	 */
-	public Boolean getDefaultResponse() {
-		return defaultResponse;
-	}
+    /**
+     * Sets whether to exclude parameters with empty values.
+     *
+     * @param excludeEmptyParameter whether to exclude parameters with empty values
+     */
+    public void setExcludeEmptyParameter(Boolean excludeEmptyParameter) {
+        this.excludeEmptyParameter = excludeEmptyParameter;
+    }
 
-	/**
-	 * Returns whether the default response.
-	 *
-	 * @return true, if is default response
-	 */
-	public boolean isDefaultResponse() {
-		return BooleanUtils.toBoolean(defaultResponse);
-	}
+    /**
+     * Gets the parameter rule map.
+     *
+     * @return the parameter rule map
+     */
+    public ItemRuleMap getParameterItemRuleMap() {
+        return parameterItemRuleMap;
+    }
 
-	/**
-	 * Sets whether the default response.
-	 *
-	 * @param defaultResponse whether the default response
-	 */
-	public void setDefaultResponse(Boolean defaultResponse) {
-		this.defaultResponse = defaultResponse;
-	}
+    /**
+     * Sets the parameter rules.
+     *
+     * @param parameterItemRuleMap the new parameter rules
+     */
+    public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
+        this.parameterItemRuleMap = parameterItemRuleMap;
+    }
 
-	@Override
-	public RedirectResponseRule replicate() {
-		return replicate(this);
-	}
+    /**
+     * Adds the parameter rule.
+     *
+     * @param parameterItemRule the parameter rule
+     */
+    public void addParameterItemRule(ItemRule parameterItemRule) {
+        if (parameterItemRuleMap == null) {
+            parameterItemRuleMap = new ItemRuleMap();
+        }
+        parameterItemRuleMap.putItemRule(parameterItemRule);
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.appendForce("responseType", RESPONSE_TYPE);
-		tsb.append("contentType", contentType);
-		tsb.appendForce("target", target);
-		tsb.appendForce("characterEncoding", characterEncoding);
-		tsb.append("excludeNullParameter", excludeNullParameter);
-		tsb.append("defaultResponse", defaultResponse);
-		return tsb.toString();
-	}
-	
-	public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding, Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
-		RedirectResponseRule rrr = new RedirectResponseRule();
-		rrr.setContentType(contentType);
-		if (target != null && target.length() > 0) {
-			rrr.setTarget(target);
-		}
-		rrr.setCharacterEncoding(characterEncoding);
-		rrr.setExcludeNullParameter(excludeNullParameter);
-		rrr.setExcludeEmptyParameter(excludeEmptyParameter);
-		rrr.setDefaultResponse(defaultResponse);
-		return rrr;
-	}
-	
-	public static RedirectResponseRule newInstance(String target) {
-		if (target == null) {
-			throw new IllegalArgumentException("The target argument must not be null.");
-		}
-		RedirectResponseRule rrr = new RedirectResponseRule();
-		rrr.setTarget(target);
-		return rrr;
-	}
-	
-	public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
-		RedirectResponseRule rrr = new RedirectResponseRule();
-		rrr.setContentType(redirectResponseRule.getContentType());
-		rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
-		rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
-		rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
-		rrr.setExcludeEmptyParameter(redirectResponseRule.getExcludeEmptyParameter());
-		rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
-		rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
-		rrr.setActionList(redirectResponseRule.getActionList());
-		return rrr;
-	}
-	
+    /**
+     * Sets the parameter map.
+     *
+     * @param parameterMap the parameter map
+     */
+    public void setParameterMap(Map<String, String> parameterMap) {
+        if (parameterMap == null) {
+            this.parameterItemRuleMap = null;
+            return;
+        }
+
+        ItemRuleMap params = new ItemRuleMap();
+        for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+            ItemRule ir = new ItemRule();
+            ir.setName(entry.getKey());
+            ir.setValue(TokenParser.makeTokens(entry.getValue(), false));
+        }
+
+        this.parameterItemRuleMap = params;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
+    @Override
+    public RedirectResponseRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.append("contentType", contentType);
+        tsb.appendForce("target", target);
+        tsb.appendForce("characterEncoding", characterEncoding);
+        tsb.append("excludeNullParameter", excludeNullParameter);
+        tsb.append("defaultResponse", defaultResponse);
+        return tsb.toString();
+    }
+
+    public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding, Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
+        RedirectResponseRule rrr = new RedirectResponseRule();
+        rrr.setContentType(contentType);
+        if (target != null && target.length() > 0) {
+            rrr.setTarget(target);
+        }
+        rrr.setCharacterEncoding(characterEncoding);
+        rrr.setExcludeNullParameter(excludeNullParameter);
+        rrr.setExcludeEmptyParameter(excludeEmptyParameter);
+        rrr.setDefaultResponse(defaultResponse);
+        return rrr;
+    }
+
+    public static RedirectResponseRule newInstance(String target) {
+        if (target == null) {
+            throw new IllegalArgumentException("The target argument must not be null.");
+        }
+        RedirectResponseRule rrr = new RedirectResponseRule();
+        rrr.setTarget(target);
+        return rrr;
+    }
+
+    public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
+        RedirectResponseRule rrr = new RedirectResponseRule();
+        rrr.setContentType(redirectResponseRule.getContentType());
+        rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
+        rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
+        rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
+        rrr.setExcludeEmptyParameter(redirectResponseRule.getExcludeEmptyParameter());
+        rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
+        rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
+        rrr.setActionList(redirectResponseRule.getActionList());
+        return rrr;
+    }
+
 }

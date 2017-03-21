@@ -37,42 +37,42 @@ package com.aspectran.core.context;
  */
 public class AspectranCheckedException extends Exception {
 
-	/** @serial */
-	private static final long serialVersionUID = 3365225829643047037L;
+    /** @serial */
+    private static final long serialVersionUID = 3365225829643047037L;
 
-	/**
-	 * Constructs a AspectranCheckedException.
-	 */
-	public AspectranCheckedException() {
-		super();
-	}
+    /**
+     * Constructs a AspectranCheckedException.
+     */
+    public AspectranCheckedException() {
+        super();
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the specified message.
-	 *
-	 * @param msg the specific message
-	 */
-	public AspectranCheckedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the specified message.
+     *
+     * @param msg the specific message
+     */
+    public AspectranCheckedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the wrapped exception.
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranCheckedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the wrapped exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public AspectranCheckedException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructs a AspectranCheckedException with the specified message and wrapped exception.
-	 *
-	 * @param msg the specific message
-	 * @param cause the real cause of the exception
-	 */
-	public AspectranCheckedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructs a AspectranCheckedException with the specified message and wrapped exception.
+     *
+     * @param msg the specific message
+     * @param cause the real cause of the exception
+     */
+    public AspectranCheckedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

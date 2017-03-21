@@ -26,68 +26,68 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ContentResult extends ArrayList<ActionResult> {
 
-	/** @serial */
-	private static final long serialVersionUID = 7394299260107452305L;
+    /** @serial */
+    private static final long serialVersionUID = 7394299260107452305L;
 
-	private final ProcessResult parent;
-	
-	private String name;
-	
-	private boolean omittable;
+    private final ProcessResult parent;
 
-	public ContentResult(ProcessResult parent, int initialCapacity) {
-		super(initialCapacity);
-		this.parent = parent;
-		
-		if (parent != null) {
-			parent.addContentResult(this);
-		}
-	}
+    private String name;
 
-	public ProcessResult getParent() {
-		return parent;
-	}
+    private boolean omittable;
 
-	public String getName() {
-		return name;
-	}
+    public ContentResult(ProcessResult parent, int initialCapacity) {
+        super(initialCapacity);
+        this.parent = parent;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        if (parent != null) {
+            parent.addContentResult(this);
+        }
+    }
 
-	public ActionResult getActionResult(String actionId) {
-		for (ActionResult actionResult : this) {
-			if (actionId.equals(actionResult.getActionId())) {
-				return actionResult;
-			}
-		}
-		return null;
-	}
-	
-	public boolean isOmittable() {
-		return omittable;
-	}
+    public ProcessResult getParent() {
+        return parent;
+    }
 
-	public void setOmittable(boolean omittable) {
-		this.omittable = omittable;
-	}
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Adds the action result.
-	 *
-	 * @param actionResult the action result
-	 */
-	public void addActionResult(ActionResult actionResult) {
-		add(actionResult);
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("values", this);
-		return tsb.toString();
-	}
+    public ActionResult getActionResult(String actionId) {
+        for (ActionResult actionResult : this) {
+            if (actionId.equals(actionResult.getActionId())) {
+                return actionResult;
+            }
+        }
+        return null;
+    }
+
+    public boolean isOmittable() {
+        return omittable;
+    }
+
+    public void setOmittable(boolean omittable) {
+        this.omittable = omittable;
+    }
+
+    /**
+     * Adds the action result.
+     *
+     * @param actionResult the action result
+     */
+    public void addActionResult(ActionResult actionResult) {
+        add(actionResult);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("values", this);
+        return tsb.toString();
+    }
 
 }

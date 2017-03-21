@@ -24,18 +24,18 @@ import com.aspectran.core.context.rule.ItemRuleMap;
  */
 public interface PropertyPossessable {
 
-	/**
-	 * Gets the parameter rule map for properties.
-	 * 
-	 * @return the parameter rule map
-	 */
-	ItemRuleMap getPropertyItemRuleMap();
-	
-	/**
-	 * Sets the parameter rule map for properties.
-	 *
-	 * @param propertyItemRuleMap the new property item rule map
-	 */
-	void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
+    /**
+     * Gets the parameter rule map for properties.
+     *
+     * @return the parameter rule map
+     */
+    ItemRuleMap getPropertyItemRuleMap();
+
+    /**
+     * Sets the parameter rule map for properties.
+     *
+     * @param propertyItemRuleMap the new property item rule map
+     */
+    void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
 
 }

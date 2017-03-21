@@ -28,43 +28,43 @@ import java.io.Writer;
  */
 public interface ConsoleInout {
 
-	String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
+    String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
 
-	String getCommandPrompt();
+    String getCommandPrompt();
 
-	void setCommandPrompt(String commandPrompt);
+    void setCommandPrompt(String commandPrompt);
 
-	String readCommand();
+    String readCommand();
 
-	String readLine();
+    String readLine();
 
-	String readLine(String prompt);
+    String readLine(String prompt);
 
-	String readLine(String format, Object ...args);
+    String readLine(String format, Object ...args);
 
-	String readPassword();
+    String readPassword();
 
-	String readPassword(String prompt);
+    String readPassword(String prompt);
 
-	String readPassword(String format, Object ...args);
+    String readPassword(String format, Object ...args);
 
-	void write(String string);
+    void write(String string);
 
-	void write(String format, Object ...args);
+    void write(String format, Object ...args);
 
-	void writeLine(String string);
+    void writeLine(String string);
 
-	void writeLine(String format, Object ...args);
+    void writeLine(String format, Object ...args);
 
-	void writeLine();
+    void writeLine();
 
-	String getEncoding();
+    String getEncoding();
 
-	OutputStream getOutput();
+    OutputStream getOutput();
 
-	Writer getWriter();
+    Writer getWriter();
 
-	Writer getUnclosableWriter() throws UnsupportedEncodingException;
+    Writer getUnclosableWriter() throws UnsupportedEncodingException;
 
 }
 

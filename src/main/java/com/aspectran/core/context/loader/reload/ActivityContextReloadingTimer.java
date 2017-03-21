@@ -27,57 +27,57 @@ import com.aspectran.core.util.logging.LogFactory;
  * Provides timer control to reload the ActivityContext.
  */
 public class ActivityContextReloadingTimer {
-	
-	private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
-	private final AspectranServiceController aspectranServiceController;
+    private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
-	private final URL[] resources;
-	
-	private Timer timer;
-	
-	private TimerTask timerTask;
-	
-	public ActivityContextReloadingTimer(AspectranServiceController aspectranServiceController, URL[] resources) {
-		this.aspectranServiceController = aspectranServiceController;
-		this.resources = resources;
-		
-		init();
-	}
-	
-	private void init() {
-		if(log.isDebugEnabled()) {
-			log.debug("ActivityContextReloadingTimer is initialized.");
-		}
-	}
-	
-	public void start(int scanIntervalSeconds) {
-		stop();
-		
-		if(log.isDebugEnabled()) {
-			log.debug("Starting ActivityContextReloadingTimer...");
-		}
-		
-		timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
-		
-		timer = new Timer();
-		timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
-	}
-	
-	public void cancel() {
-		stop();
-	}
-	
-	protected void stop() {
-		if (timer != null) {
-			log.debug("Stopping ActivityContextReloadingTimer...");
-			
-			timer.cancel();
-			timer = null;
-			
-			timerTask.cancel();
-			timerTask = null;
-		}
-	}
+    private final AspectranServiceController aspectranServiceController;
+
+    private final URL[] resources;
+
+    private Timer timer;
+
+    private TimerTask timerTask;
+
+    public ActivityContextReloadingTimer(AspectranServiceController aspectranServiceController, URL[] resources) {
+        this.aspectranServiceController = aspectranServiceController;
+        this.resources = resources;
+
+        init();
+    }
+
+    private void init() {
+        if(log.isDebugEnabled()) {
+            log.debug("ActivityContextReloadingTimer is initialized.");
+        }
+    }
+
+    public void start(int scanIntervalSeconds) {
+        stop();
+
+        if(log.isDebugEnabled()) {
+            log.debug("Starting ActivityContextReloadingTimer...");
+        }
+
+        timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
+
+        timer = new Timer();
+        timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
+    }
+
+    public void cancel() {
+        stop();
+    }
+
+    protected void stop() {
+        if (timer != null) {
+            log.debug("Stopping ActivityContextReloadingTimer...");
+
+            timer.cancel();
+            timer = null;
+
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
 
 }

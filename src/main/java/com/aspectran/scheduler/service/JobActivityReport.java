@@ -37,60 +37,60 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class JobActivityReport {
 
-	private final Log log = LogFactory.getLog(JobActivityReport.class);
+    private final Log log = LogFactory.getLog(JobActivityReport.class);
 
-	private final JobExecutionContext jobExecutionContext;
+    private final JobExecutionContext jobExecutionContext;
 
-	private final JobExecutionException jobException;
+    private final JobExecutionException jobException;
 
-	public JobActivityReport(JobExecutionContext jobExecutionContext, JobExecutionException jobException) {
-		this.jobExecutionContext = jobExecutionContext;
-		this.jobException = jobException;
-	}
+    public JobActivityReport(JobExecutionContext jobExecutionContext, JobExecutionException jobException) {
+        this.jobExecutionContext = jobExecutionContext;
+        this.jobException = jobException;
+    }
 
-	public void reporting(Activity activity) throws IOException {
-		if (!log.isDebugEnabled()) {
-			return;
-		}
+    public void reporting(Activity activity) throws IOException {
+        if (!log.isDebugEnabled()) {
+            return;
+        }
 
-		JobDetail jobDetail = jobExecutionContext.getJobDetail();
-		JobKey key = jobDetail.getKey();
+        JobDetail jobDetail = jobExecutionContext.getJobDetail();
+        JobKey key = jobDetail.getKey();
 
-		String jobName = key.getName();
-		String jobGroup = key.getGroup();
+        String jobName = key.getName();
+        String jobGroup = key.getGroup();
 
-		StringBuilder sb = new StringBuilder(698);
-		sb.append("Result of job [").append(jobName).append("]").append(ActivityContext.LINE_SEPARATOR);
-		sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Job Name            : ").append(jobName).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime()).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime()).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
-		sb.append("- Refire Count        : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
+        StringBuilder sb = new StringBuilder(698);
+        sb.append("Result of job [").append(jobName).append("]").append(ActivityContext.LINE_SEPARATOR);
+        sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Job Name            : ").append(jobName).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime()).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime()).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
+        sb.append("- Refire Count        : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
 
-		if (jobException != null) {
-			sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
-			sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
-			sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
-		} else {
-			sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
-		}
+        if (jobException != null) {
+            sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+            sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
+            sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
+        } else {
+            sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+        }
 
-		if (activity != null) {
-			Writer writer = activity.getResponseAdapter().getWriter();
-			String output = writer.toString();
+        if (activity != null) {
+            Writer writer = activity.getResponseAdapter().getWriter();
+            String output = writer.toString();
 
-			if (!output.isEmpty()) {
-				sb.append(output).append(ActivityContext.LINE_SEPARATOR);
-				sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
-			}
-		}
+            if (!output.isEmpty()) {
+                sb.append(output).append(ActivityContext.LINE_SEPARATOR);
+                sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
+            }
+        }
 
-		log.debug(sb.toString());
-	}
+        log.debug(sb.toString());
+    }
 
 }

@@ -23,43 +23,43 @@ import com.aspectran.core.activity.ActivityException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ResponseException extends ActivityException {
-	
-	/** @serial */
-	private static final long serialVersionUID = -7446545758142913255L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public ResponseException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = -7446545758142913255L;
 
-	/**
-	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public ResponseException(String msg) {
-		super(msg);
-	}
+    /**
+     * Simple constructor.
+     */
+    public ResponseException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public ResponseException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public ResponseException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public ResponseException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ResponseException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ResponseException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

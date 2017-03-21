@@ -26,12 +26,12 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Dispatch {
 
-	String name();
+    String name();
 
-	String dispatcher() default "";
-	
-	String contentType() default "";
-	
-	String characterEncoding() default "";
-	
+    String dispatcher() default "";
+
+    String contentType() default "";
+
+    String characterEncoding() default "";
+
 }

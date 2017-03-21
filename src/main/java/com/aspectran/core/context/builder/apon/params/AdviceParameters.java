@@ -21,36 +21,36 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AdviceParameters extends AbstractParameters {
 
-	public static final ParameterDefinition bean;
-	public static final ParameterDefinition beforeAdvice;
-	public static final ParameterDefinition afterAdvice;
-	public static final ParameterDefinition aroundAdvice;
-	public static final ParameterDefinition finallyAdvice;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		beforeAdvice = new ParameterDefinition("before", AdviceActionParameters.class);
-		afterAdvice = new ParameterDefinition("after", AdviceActionParameters.class);
-		aroundAdvice = new ParameterDefinition("around", AdviceActionParameters.class);
-		finallyAdvice = new ParameterDefinition("finally", AdviceActionParameters.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			bean,
-			beforeAdvice,
-			afterAdvice,
-			aroundAdvice,
-			finallyAdvice
-		};
-	}
-	
-	public AdviceParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public AdviceParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition bean;
+    public static final ParameterDefinition beforeAdvice;
+    public static final ParameterDefinition afterAdvice;
+    public static final ParameterDefinition aroundAdvice;
+    public static final ParameterDefinition finallyAdvice;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+        beforeAdvice = new ParameterDefinition("before", AdviceActionParameters.class);
+        afterAdvice = new ParameterDefinition("after", AdviceActionParameters.class);
+        aroundAdvice = new ParameterDefinition("around", AdviceActionParameters.class);
+        finallyAdvice = new ParameterDefinition("finally", AdviceActionParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            bean,
+            beforeAdvice,
+            afterAdvice,
+            aroundAdvice,
+            finallyAdvice
+        };
+    }
+
+    public AdviceParameters() {
+        super(parameterDefinitions);
+    }
+
+    public AdviceParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

@@ -25,18 +25,18 @@ import com.aspectran.core.activity.ActivityDataMap;
  */
 public class TemplateDataMap extends ActivityDataMap {
 
-	/** @serial */
-	private static final long serialVersionUID = -1414688689441309354L;
-	
-	public TemplateDataMap(Activity activity) {
-		super(activity);
-	}
+    /** @serial */
+    private static final long serialVersionUID = -1414688689441309354L;
 
-	public Locale getLocale() {
-		if (requestAdapter != null) {
-			return requestAdapter.getLocale();
-		}
-		return null;
-	}
+    public TemplateDataMap(Activity activity) {
+        super(activity);
+    }
+
+    public Locale getLocale() {
+        if (requestAdapter != null) {
+            return requestAdapter.getLocale();
+        }
+        return null;
+    }
 
 }

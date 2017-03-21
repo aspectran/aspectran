@@ -21,36 +21,36 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ImportParameters extends AbstractParameters {
 
-	public static final ParameterDefinition file;
-	public static final ParameterDefinition resource;
-	public static final ParameterDefinition url;
-	public static final ParameterDefinition format;
-	public static final ParameterDefinition profile;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		file = new ParameterDefinition("file", ParameterValueType.STRING);
-		resource = new ParameterDefinition("resource", ParameterValueType.STRING);
-		url = new ParameterDefinition("url", ParameterValueType.STRING);
-		format = new ParameterDefinition("format", ParameterValueType.STRING);
-		profile = new ParameterDefinition("profile", ParameterValueType.STRING);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			file,
-			resource,
-			url,
-			format,
-			profile
-		};
-	}
-	
-	public ImportParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ImportParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition file;
+    public static final ParameterDefinition resource;
+    public static final ParameterDefinition url;
+    public static final ParameterDefinition format;
+    public static final ParameterDefinition profile;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        file = new ParameterDefinition("file", ParameterValueType.STRING);
+        resource = new ParameterDefinition("resource", ParameterValueType.STRING);
+        url = new ParameterDefinition("url", ParameterValueType.STRING);
+        format = new ParameterDefinition("format", ParameterValueType.STRING);
+        profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            file,
+            resource,
+            url,
+            format,
+            profile
+        };
+    }
+
+    public ImportParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ImportParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

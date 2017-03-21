@@ -25,20 +25,20 @@ import java.util.LinkedHashMap;
  */
 public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {
 
-	/** @serial */
-	private static final long serialVersionUID = 2093093144584776388L;
+    /** @serial */
+    private static final long serialVersionUID = 2093093144584776388L;
 
-	public Response getFirst() {
-		if (size() > 0) {
-			return (Response)values().toArray()[0];
-		} else {
-			return null;
-		}
-	}
-	
-	@Override
-	public Iterator<Response> iterator() {
-		return this.values().iterator();
-	}
+    public Response getFirst() {
+        if (size() > 0) {
+            return (Response)values().toArray()[0];
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Iterator<Response> iterator() {
+        return this.values().iterator();
+    }
 
 }

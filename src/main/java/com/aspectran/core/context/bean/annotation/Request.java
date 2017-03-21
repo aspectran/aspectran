@@ -28,8 +28,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 @Documented
 public @interface Request {
 
-	String translet() default "";
+    String translet() default "";
 
-	MethodType[] method() default {};
+    MethodType[] method() default {};
 
 }

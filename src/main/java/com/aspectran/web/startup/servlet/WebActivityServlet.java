@@ -34,70 +34,70 @@ import com.aspectran.web.service.WebAspectranService;
  */
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
-	/** @serial */
-	private static final long serialVersionUID = 6659683668233267847L;
+    /** @serial */
+    private static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
+    private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 
-	private WebAspectranService webAspectranService;
-	
-	private boolean standalone;
+    private WebAspectranService webAspectranService;
 
-	/**
-	 * Instantiates a new WebActivityServlet.
-	 */
-	public WebActivityServlet() {
-		super();
-	}
+    private boolean standalone;
 
-	@Override
-	public void init() throws ServletException {
-		log.info("Initializing WebActivityServlet...");
+    /**
+     * Instantiates a new WebActivityServlet.
+     */
+    public WebActivityServlet() {
+        super();
+    }
 
-		try {
-			ServletContext servletContext = getServletContext();
-			Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
+    @Override
+    public void init() throws ServletException {
+        log.info("Initializing WebActivityServlet...");
 
-			if (attr != null) {
-				if (!(attr instanceof WebAspectranService)) {
-					throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
-				}
-				
-				WebAspectranService rootAspectranService = (WebAspectranService)attr;
-				webAspectranService = WebAspectranService.build(this, rootAspectranService);
-				standalone = (rootAspectranService != webAspectranService);
-			} else {
-				webAspectranService = WebAspectranService.build(this);
-				standalone = true;
-			}
+        try {
+            ServletContext servletContext = getServletContext();
+            Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
 
-			if (standalone) {
-				log.info("AspectranService is running in standalone mode inside the servlet: " + this);
-			} else {
-				log.info("Detected RootAspectranService: " + webAspectranService.getActivityContext().getRootAspectranService());
-			}
-		} catch (Exception e) {
-			log.error("Unable to initialize WebActivityServlet.", e);
-			throw new UnavailableException(e.getMessage());
-		}
-	}
+            if (attr != null) {
+                if (!(attr instanceof WebAspectranService)) {
+                    throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
+                }
 
-	@Override
-	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		webAspectranService.service(req, res);
-	}
+                WebAspectranService rootAspectranService = (WebAspectranService)attr;
+                webAspectranService = WebAspectranService.build(this, rootAspectranService);
+                standalone = (rootAspectranService != webAspectranService);
+            } else {
+                webAspectranService = WebAspectranService.build(this);
+                standalone = true;
+            }
 
-	@Override
-	public void destroy() {
-		super.destroy();
+            if (standalone) {
+                log.info("AspectranService is running in standalone mode inside the servlet: " + this);
+            } else {
+                log.info("Detected RootAspectranService: " + webAspectranService.getActivityContext().getRootAspectranService());
+            }
+        } catch (Exception e) {
+            log.error("Unable to initialize WebActivityServlet.", e);
+            throw new UnavailableException(e.getMessage());
+        }
+    }
 
-		if (standalone) {
-			log.info("Do not terminate the application server while destroying all scoped beans.");
+    @Override
+    public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        webAspectranService.service(req, res);
+    }
 
-			webAspectranService.shutdown();
+    @Override
+    public void destroy() {
+        super.destroy();
 
-			log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
-		}
-	}
-	
+        if (standalone) {
+            log.info("Do not terminate the application server while destroying all scoped beans.");
+
+            webAspectranService.shutdown();
+
+            log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
+        }
+    }
+
 }

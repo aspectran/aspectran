@@ -22,41 +22,41 @@ import com.aspectran.core.context.rule.TemplateRule;
  */
 public class TemplateRuleException extends TemplateException {
 
-	/** @serial */
-	private static final long serialVersionUID = -3101097393726872156L;
+    /** @serial */
+    private static final long serialVersionUID = -3101097393726872156L;
 
-	private final TemplateRule templateRule;
+    private final TemplateRule templateRule;
 
-	/**
-	 * Instantiates a new TemplateRuleException.
-	 *
-	 * @param msg the detail message
-	 * @param templateRule the template rule
-	 */
-	public TemplateRuleException(String msg, TemplateRule templateRule) {
-		super(msg + " " + templateRule);
-		this.templateRule = templateRule;
-	}
+    /**
+     * Instantiates a new TemplateRuleException.
+     *
+     * @param msg the detail message
+     * @param templateRule the template rule
+     */
+    public TemplateRuleException(String msg, TemplateRule templateRule) {
+        super(msg + " " + templateRule);
+        this.templateRule = templateRule;
+    }
 
-	/**
-	 * Instantiates a new TemplateRuleException.
-	 *
-	 * @param msg the detail message
-	 * @param templateRule the template rule
-	 * @param cause the root cause
-	 */
-	public TemplateRuleException(String msg, TemplateRule templateRule, Throwable cause) {
-		super(msg + " " + templateRule, cause);
-		this.templateRule = templateRule;
-	}
+    /**
+     * Instantiates a new TemplateRuleException.
+     *
+     * @param msg the detail message
+     * @param templateRule the template rule
+     * @param cause the root cause
+     */
+    public TemplateRuleException(String msg, TemplateRule templateRule, Throwable cause) {
+        super(msg + " " + templateRule, cause);
+        this.templateRule = templateRule;
+    }
 
-	/**
-	 * Gets bean rule.
-	 *
-	 * @return the template rule
-	 */
-	public TemplateRule getTemplateRule() {
-		return templateRule;
-	}
+    /**
+     * Gets bean rule.
+     *
+     * @return the template rule
+     */
+    public TemplateRule getTemplateRule() {
+        return templateRule;
+    }
 
 }

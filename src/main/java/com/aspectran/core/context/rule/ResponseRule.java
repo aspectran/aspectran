@@ -35,149 +35,149 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ResponseRule implements ResponseRuleApplicable, Replicable<ResponseRule> {
 
-	public static final String CONTENT_ENCODING_SETTING_NAME = "contentEncoding";
+    public static final String CONTENT_ENCODING_SETTING_NAME = "contentEncoding";
 
-	private String name;
-	
-	private String characterEncoding;
-	
-	private Response response;
-	
-	/**
-	 * Instantiates a new ResponseRule.
-	 */
-	public ResponseRule() {
-	}
-	
-	public String getName() {
-		return name;
-	}
+    private String name;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private String characterEncoding;
 
-	/**
-	 * Gets the character encoding.
-	 * 
-	 * @return the character encoding
-	 */
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    private Response response;
 
-	/**
-	 * Sets the character encoding.
-	 * 
-	 * @param characterEncoding the new character encoding
-	 */
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    /**
+     * Instantiates a new ResponseRule.
+     */
+    public ResponseRule() {
+    }
 
-	public Response getResponse() {
-		return response;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setResponse(Response response) {
-		this.response = response;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public ResponseType getResponseType() {
-		return (response != null ? response.getResponseType() : null);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> T getRespondent() {
-		return (T)response;
-	}
+    /**
+     * Gets the character encoding.
+     *
+     * @return the character encoding
+     */
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	@Override
-	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		Response response = new DispatchResponse(dispatchResponseRule);
-		this.response = response;
-		return response;
-	}
+    /**
+     * Sets the character encoding.
+     *
+     * @param characterEncoding the new character encoding
+     */
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	@Override
-	public Response applyResponseRule(TransformRule transformRule) {
-		Response response = TransformResponseFactory.createTransformResponse(transformRule);
-		this.response = response;
-		return response;
-	}
+    public Response getResponse() {
+        return response;
+    }
 
-	@Override
-	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		Response response = new ForwardResponse(forwardResponseRule);
-		this.response = response;
-		return response;
-	}
+    public void setResponse(Response response) {
+        this.response = response;
+    }
 
-	@Override
-	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		Response response = new RedirectResponse(redirectResponseRule);
-		this.response = response;
-		return response;
-	}
-	
-	public ResponseRule replicate() {
-		return replicate(this);
-	}
+    public ResponseType getResponseType() {
+        return (response != null ? response.getResponseType() : null);
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("characterEncoding", characterEncoding);
-		tsb.append("response", response);
-		return tsb.toString();
-	}
-	
-	public static ResponseRule newInstance(String name, String characterEncoding) {
-		if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
-			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
-		}
-		
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.setName(name);
-		responseRule.setCharacterEncoding(characterEncoding);
-		return responseRule;
-	}
-	
-	public static ResponseRule newInstance(DispatchResponseRule drr) {
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.applyResponseRule(drr);
-		return responseRule;
-	}
+    @SuppressWarnings("unchecked")
+    public <T> T getRespondent() {
+        return (T)response;
+    }
 
-	public static ResponseRule newInstance(TransformRule tr) {
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.applyResponseRule(tr);
-		return responseRule;
-	}
-	
-	public static ResponseRule newInstance(ForwardResponseRule frr) {
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.applyResponseRule(frr);
-		return responseRule;
-	}
-	
-	public static ResponseRule newInstance(RedirectResponseRule rrr) {
-		ResponseRule responseRule = new ResponseRule();
-		responseRule.applyResponseRule(rrr);
-		return responseRule;
-	}
-	
-	public static ResponseRule replicate(ResponseRule responseRule) {
-		ResponseRule newResponseRule = new ResponseRule();
-		newResponseRule.setName(responseRule.getName());
-		newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
-		Response response = responseRule.getResponse();
-		if (response != null) {
-			Response newResponse = response.replicate();
-			newResponseRule.setResponse(newResponse);
-		}
-		return newResponseRule;
-	}
-	
+    @Override
+    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+        Response response = new DispatchResponse(dispatchResponseRule);
+        this.response = response;
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(TransformRule transformRule) {
+        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        this.response = response;
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+        Response response = new ForwardResponse(forwardResponseRule);
+        this.response = response;
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+        Response response = new RedirectResponse(redirectResponseRule);
+        this.response = response;
+        return response;
+    }
+
+    public ResponseRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("response", response);
+        return tsb.toString();
+    }
+
+    public static ResponseRule newInstance(String name, String characterEncoding) {
+        if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
+            throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+        }
+
+        ResponseRule responseRule = new ResponseRule();
+        responseRule.setName(name);
+        responseRule.setCharacterEncoding(characterEncoding);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(DispatchResponseRule drr) {
+        ResponseRule responseRule = new ResponseRule();
+        responseRule.applyResponseRule(drr);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(TransformRule tr) {
+        ResponseRule responseRule = new ResponseRule();
+        responseRule.applyResponseRule(tr);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(ForwardResponseRule frr) {
+        ResponseRule responseRule = new ResponseRule();
+        responseRule.applyResponseRule(frr);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(RedirectResponseRule rrr) {
+        ResponseRule responseRule = new ResponseRule();
+        responseRule.applyResponseRule(rrr);
+        return responseRule;
+    }
+
+    public static ResponseRule replicate(ResponseRule responseRule) {
+        ResponseRule newResponseRule = new ResponseRule();
+        newResponseRule.setName(responseRule.getName());
+        newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
+        Response response = responseRule.getResponse();
+        if (response != null) {
+            Response newResponse = response.replicate();
+            newResponseRule.setResponse(newResponse);
+        }
+        return newResponseRule;
+    }
+
 }

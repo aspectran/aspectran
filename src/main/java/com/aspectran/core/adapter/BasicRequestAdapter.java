@@ -27,58 +27,58 @@ import java.util.Map;
 */
 public class BasicRequestAdapter extends AbstractRequestAdapter {
 
-	private String characterEncoding;
+    private String characterEncoding;
 
-	private Map<String, Object> attributeMap = new HashMap<>();
+    private Map<String, Object> attributeMap = new HashMap<>();
 
-	/**
-	 * Instantiates a new BasicRequestAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public BasicRequestAdapter(Object adaptee) {
-		super(adaptee);
-	}
+    /**
+     * Instantiates a new BasicRequestAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public BasicRequestAdapter(Object adaptee) {
+        super(adaptee);
+    }
 
-	/**
-	 * Instantiates a new BasicRequestAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 * @param parameterMap the parameter map
-	 */
-	public BasicRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
-		super(adaptee, parameterMap);
-	}
+    /**
+     * Instantiates a new BasicRequestAdapter.
+     *
+     * @param adaptee the adaptee object
+     * @param parameterMap the parameter map
+     */
+    public BasicRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
+        super(adaptee, parameterMap);
+    }
 
-	@Override
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    @Override
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	@Override
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    @Override
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributeMap.get(name);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)attributeMap.get(name);
+    }
 
-	@Override
-	public void setAttribute(String name, Object value) {
-		attributeMap.put(name, value);
-	}
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributeMap.put(name, value);
+    }
 
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributeMap.keySet());
-	}
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return Collections.enumeration(attributeMap.keySet());
+    }
 
-	@Override
-	public void removeAttribute(String name) {
-		attributeMap.remove(name);
-	}
+    @Override
+    public void removeAttribute(String name) {
+        attributeMap.remove(name);
+    }
 
 }

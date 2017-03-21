@@ -42,566 +42,566 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable, Replicable<TransletRule> {
 
-	private String name;
-
-	private MethodType[] allowedMethods;
-	
-	private WildcardPattern namePattern;
-	
-	private Token[] nameTokens;
-
-	private String scanPath;
-	
-	private String maskPattern;
-	
-	private Parameters filterParameters;
-	
-	private RequestRule requestRule;
-	
-	private ContentList contentList;
-
-	private boolean explicitContent;
-
-	private ResponseRule responseRule;
-
-	private boolean implicitResponse;
-
-	private List<ResponseRule> responseRuleList;
-	
-	private ExceptionRule exceptionRule;
-	
-	private Class<? extends Translet> transletInterfaceClass;
-	
-	private Class<? extends CoreTranslet> transletImplementationClass;
-
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-
-	private String description;
-
-	/**
-	 * Instantiates a new TransletRule.
-	 */
-	public TransletRule() {
-	}
-
-	/**
-	 * Gets the translet name.
-	 * 
-	 * @return the translet name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Gets the allowed methods.
-	 *
-	 * @return the allowed methods
-	 */
-	public MethodType[] getAllowedMethods() {
-		return allowedMethods;
-	}
-
-	/**
-	 * Sets the allowed methods.
-	 *
-	 * @param allowedMethods the allowed methods
-	 */
-	public void setAllowedMethods(MethodType[] allowedMethods) {
-		this.allowedMethods = allowedMethods;
-	}
-
-	/**
-	 * Gets the name pattern.
-	 *
-	 * @return the name pattern
-	 */
-	public WildcardPattern getNamePattern() {
-		return namePattern;
-	}
-
-	/**
-	 * Sets the name pattern.
-	 *
-	 * @param namePattern the new name pattern
-	 */
-	public void setNamePattern(WildcardPattern namePattern) {
-		this.namePattern = namePattern;
-	}
-
-	/**
-	 * Gets the name tokens.
-	 *
-	 * @return the name tokens
-	 */
-	public Token[] getNameTokens() {
-		return nameTokens;
-	}
-
-	/**
-	 * Sets the name tokens.
-	 *
-	 * @param nameTokens the new name tokens
-	 */
-	public void setNameTokens(Token[] nameTokens) {
-		this.nameTokens = nameTokens;
-	}
-
-	/**
-	 * Gets the scan path.
-	 *
-	 * @return the scan path
-	 */
-	public String getScanPath() {
-		return scanPath;
-	}
-	
-	/**
-	 * Sets the scan path.
-	 *
-	 * @param scanPath the new scan path
-	 */
-	public void setScanPath(String scanPath) {
-		this.scanPath = scanPath;
-	}
-
-	/**
-	 * Gets the mask pattern.
-	 *
-	 * @return the mask pattern
-	 */
-	public String getMaskPattern() {
-		return maskPattern;
-	}
-
-	/**
-	 * Sets the mask pattern.
-	 *
-	 * @param maskPattern the new mask pattern
-	 */
-	public void setMaskPattern(String maskPattern) {
-		this.maskPattern = maskPattern;
-	}
-
-	/**
-	 * Gets the filter parameters.
-	 *
-	 * @return the filter parameters
-	 */
-	public Parameters getFilterParameters() {
-		return filterParameters;
-	}
-
-	/**
-	 * Sets the filter parameters.
-	 *
-	 * @param filterParameters the new filter parameters
-	 */
-	public void setFilterParameters(Parameters filterParameters) {
-		this.filterParameters = filterParameters;
-	}
-
-	/**
-	 * Gets the request rule.
-	 * 
-	 * @return the request rule
-	 */
-	public RequestRule getRequestRule() {
-		return requestRule;
-	}
-
-	/**
-	 * Sets the request rule.
-	 * 
-	 * @param requestRule the new request rule
-	 */
-	public void setRequestRule(RequestRule requestRule) {
-		this.requestRule = requestRule;
-	}
-
-	/**
-	 * Gets the content list.
-	 * 
-	 * @return the content list
-	 */
-	public ContentList getContentList() {
-		return contentList;
-	}
-
-	/**
-	 * Sets the content list.
-	 * 
-	 * @param contentList the new content list
-	 */
-	public void setContentList(ContentList contentList) {
-		this.contentList = contentList;
-		this.explicitContent = (contentList != null);
-	}
-
-	public ContentList touchContentList() {
-		return touchContentList(false, true);
-	}
-
-	public ContentList touchContentList(boolean explicitContent, boolean omittable) {
-		if (contentList == null) {
-			contentList = new ContentList();
-			this.explicitContent = explicitContent;
-			if (omittable) {
-				contentList.setOmittable(Boolean.TRUE);
-			}
-		}
-		return contentList;
-	}
-
-	public boolean isExplicitContent() {
-		return explicitContent;
-	}
-
-	private void setContentList(ContentList contentList, boolean explicitContent) {
-		this.contentList = contentList;
-		this.explicitContent = explicitContent;
-	}
-
-	@Override
-	public void applyActionRule(BeanActionRule beanActionRule) {
-		touchActionList().applyActionRule(beanActionRule);
-	}
-
-	@Override
-	public void applyActionRule(MethodActionRule methodActionRule) {
-		touchActionList().applyActionRule(methodActionRule);
-	}
-
-	@Override
-	public void applyActionRule(IncludeActionRule includeActionRule) {
-		touchActionList().applyActionRule(includeActionRule);
-	}
-
-	@Override
-	public void applyActionRule(EchoActionRule echoActionRule) {
-		touchActionList().applyActionRule(echoActionRule);
-	}
-
-	@Override
-	public void applyActionRule(HeadingActionRule headingActionRule) {
-		touchActionList().applyActionRule(headingActionRule);
-	}
-	
-	private ActionList touchActionList() {
-		touchContentList();
-		
-		if (contentList.size() == 1) {
-			return contentList.get(0);
-		} else {
-			return contentList.newActionList(!explicitContent);
-		}
-	}
-	
-	/**
-	 * Gets the response rule.
-	 * 
-	 * @return the response rule
-	 */
-	public ResponseRule getResponseRule() {
-		return responseRule;
-	}
-	
-	/**
-	 * Sets the response rule.
-	 * 
-	 * @param responseRule the new response rule
-	 */
-	public void setResponseRule(ResponseRule responseRule) {
-		this.responseRule = responseRule;
-		this.implicitResponse = false;
-	}
-	
-	public List<ResponseRule> getResponseRuleList() {
-		return responseRuleList;
-	}
-
-	public void setResponseRuleList(List<ResponseRule> responseRuleList) {
-		this.responseRuleList = responseRuleList;
-		this.implicitResponse = false;
-	}
-	
-	public void addResponseRule(ResponseRule responseRule) {
-		if (responseRuleList == null) {
-			responseRuleList = new ArrayList<ResponseRule>();
-		}
-		responseRuleList.add(responseRule);
-		implicitResponse = false;
-	}
-
-	public boolean isImplicitResponse() {
-		return implicitResponse;
-	}
-
-	@Override
-	public Response applyResponseRule(TransformRule transformRule) {
-		if (responseRule == null) {
-			responseRule = new ResponseRule();
-		}
-		implicitResponse = true;
-
-		return responseRule.applyResponseRule(transformRule);
-	}
-
-	@Override
-	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		if (responseRule == null) {
-			responseRule = new ResponseRule();
-		}
-		implicitResponse = true;
-
-		return responseRule.applyResponseRule(dispatchResponseRule);
-	}
-
-	@Override
-	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		if (responseRule == null) {
-			responseRule = new ResponseRule();
-		}
-		implicitResponse = true;
-		
-		return responseRule.applyResponseRule(redirectResponseRule);
-	}
-
-	@Override
-	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		if (responseRule == null) {
-			responseRule = new ResponseRule();
-		}
-		implicitResponse = true;
-
-		return responseRule.applyResponseRule(forwardResponseRule);
-	}
-	
-	private void addActionList(ActionList actionList) {
-		if (actionList != null) {
-			touchContentList();
-			contentList.add(actionList);
-		}
-	}
-	
-	public void determineResponseRule() {
-		if (responseRule == null) {
-			responseRule = new ResponseRule();
-		} else {
-			if (responseRule.getResponse() != null) {
-				addActionList(responseRule.getResponse().getActionList());
-			}
-
-			String responseName = responseRule.getName();
-			if (responseName != null && !responseName.isEmpty()) {
-				setName(name + responseName);
-			}
-		}
-		setResponseRuleList(null);
-	}
-
-	public ExceptionRule getExceptionRule() {
-		return exceptionRule;
-	}
-
-	public void setExceptionRule(ExceptionRule exceptionRule) {
-		this.exceptionRule = exceptionRule;
-	}
-
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return transletInterfaceClass;
-	}
-
-	public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
-	}
-
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return transletImplementationClass;
-	}
-
-	public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
-		this.transletImplementationClass = transletImplementationClass;
-	}
-
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-
-	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return aspectAdviceRuleRegistry;
-	}
-	
-	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.replicate() : null);
-	}
-
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public TransletRule replicate() {
-		return replicate(this);
-	}
-
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("method", allowedMethods);
-		tsb.append("namePattern", namePattern);
-		tsb.append("requestRule", requestRule);
-		tsb.append("responseRule", responseRule);
-		tsb.append("exceptionRule", exceptionRule);
-		tsb.append("transletInterfaceClass", transletInterfaceClass);
-		tsb.append("transletImplementationClass", transletImplementationClass);
-		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-		tsb.append("explicitContent", explicitContent);
-		tsb.append("implicitResponse", implicitResponse);
-		return tsb.toString();
-	}
-	
-	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
-		if (name == null && scanPath == null) {
-			throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
-		}
-
-		MethodType[] allowedMethods = null;
-		if (method != null) {
-			allowedMethods = MethodType.parse(method);
-			if (allowedMethods == null) {
-				throw new IllegalArgumentException("No request method type for '" + method + "'.");
-			}
-		}
-
-		return newInstance(name, scanPath, maskPattern, allowedMethods);
-	}
-
-	public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods) {
-		TransletRule transletRule = new TransletRule();
-		transletRule.setName(name);
-		if (allowedMethods != null && allowedMethods.length > 0) {
-			transletRule.setAllowedMethods(allowedMethods);
-		} else {
-			transletRule.setScanPath(scanPath);
-			transletRule.setMaskPattern(maskPattern);
-		}
-		return transletRule;
-	}
-	
-	public static TransletRule newInstance(String name, String method) {
-		return newInstance(name, null, null, method);
-	}
-
-	public static TransletRule newInstance(String name, MethodType[] allowedMethods) {
-		return newInstance(name, null, null, allowedMethods);
-	}
-
-	public static TransletRule replicate(TransletRule transletRule) {
-		TransletRule tr = new TransletRule();
-		tr.setName(transletRule.getName());
-		tr.setAllowedMethods(transletRule.getAllowedMethods());
-		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionRule(transletRule.getExceptionRule());
-		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
-		tr.setDescription(transletRule.getDescription());
-		if (transletRule.getContentList() != null) {
-			ContentList contentList = transletRule.getContentList().replicate();
-			tr.setContentList(contentList, transletRule.isExplicitContent());
-		}
-		return tr;
-	}
-	
-	public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
-		TransletRule tr = new TransletRule();
-		tr.setName(transletRule.getName());
-		tr.setAllowedMethods(transletRule.getAllowedMethods());
-		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionRule(transletRule.getExceptionRule());
-		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
-		tr.setDescription(transletRule.getDescription());
-		if (transletRule.getResponseRule() != null) {
-			ResponseRule responseRule = transletRule.getResponseRule();
-			ResponseRule rr = replicate(responseRule, newDispatchName);
-			tr.setResponseRule(rr);
-		}
-		if (transletRule.getResponseRuleList() != null) {
-			List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-			List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
-			for (ResponseRule responseRule : responseRuleList) {
-				ResponseRule rr = replicate(responseRule, newDispatchName);
-				newResponseRuleList.add(rr);
-			}
-			tr.setResponseRuleList(newResponseRuleList);
-		}
-		return tr;
-	}
-	
-	private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
-		ResponseRule rr = responseRule.replicate();
-		if (rr.getResponse() != null) {
-			// assign dispatch name if the dispatch respone exists.
-			if (rr.getResponse() instanceof DispatchResponse) {
-				DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
-				DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
-				String dispatchName = dispatchResponseRule.getName();
-				
-				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
-
-				if (prefixSuffixPattern.isSplited()) {
-					dispatchResponseRule.setName(prefixSuffixPattern.join(newDispatchName));
-				} else {
-					if (dispatchName != null) {
-						dispatchResponseRule.setName(dispatchName + newDispatchName);
-					} else {
-						dispatchResponseRule.setName(newDispatchName);
-					}
-				}
-			}
-		}
-		return rr;
-	}
-
-	public static String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
-		StringBuilder sb = new StringBuilder(transletName + (allowedMethods.length * 7) + 1);
-		for (MethodType type : allowedMethods) {
-			sb.append(type).append(" ");
-		}
-		sb.append(transletName);
-		return sb.toString();
-	}
+    private String name;
+
+    private MethodType[] allowedMethods;
+
+    private WildcardPattern namePattern;
+
+    private Token[] nameTokens;
+
+    private String scanPath;
+
+    private String maskPattern;
+
+    private Parameters filterParameters;
+
+    private RequestRule requestRule;
+
+    private ContentList contentList;
+
+    private boolean explicitContent;
+
+    private ResponseRule responseRule;
+
+    private boolean implicitResponse;
+
+    private List<ResponseRule> responseRuleList;
+
+    private ExceptionRule exceptionRule;
+
+    private Class<? extends Translet> transletInterfaceClass;
+
+    private Class<? extends CoreTranslet> transletImplementationClass;
+
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+    private String description;
+
+    /**
+     * Instantiates a new TransletRule.
+     */
+    public TransletRule() {
+    }
+
+    /**
+     * Gets the translet name.
+     *
+     * @return the translet name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the allowed methods.
+     *
+     * @return the allowed methods
+     */
+    public MethodType[] getAllowedMethods() {
+        return allowedMethods;
+    }
+
+    /**
+     * Sets the allowed methods.
+     *
+     * @param allowedMethods the allowed methods
+     */
+    public void setAllowedMethods(MethodType[] allowedMethods) {
+        this.allowedMethods = allowedMethods;
+    }
+
+    /**
+     * Gets the name pattern.
+     *
+     * @return the name pattern
+     */
+    public WildcardPattern getNamePattern() {
+        return namePattern;
+    }
+
+    /**
+     * Sets the name pattern.
+     *
+     * @param namePattern the new name pattern
+     */
+    public void setNamePattern(WildcardPattern namePattern) {
+        this.namePattern = namePattern;
+    }
+
+    /**
+     * Gets the name tokens.
+     *
+     * @return the name tokens
+     */
+    public Token[] getNameTokens() {
+        return nameTokens;
+    }
+
+    /**
+     * Sets the name tokens.
+     *
+     * @param nameTokens the new name tokens
+     */
+    public void setNameTokens(Token[] nameTokens) {
+        this.nameTokens = nameTokens;
+    }
+
+    /**
+     * Gets the scan path.
+     *
+     * @return the scan path
+     */
+    public String getScanPath() {
+        return scanPath;
+    }
+
+    /**
+     * Sets the scan path.
+     *
+     * @param scanPath the new scan path
+     */
+    public void setScanPath(String scanPath) {
+        this.scanPath = scanPath;
+    }
+
+    /**
+     * Gets the mask pattern.
+     *
+     * @return the mask pattern
+     */
+    public String getMaskPattern() {
+        return maskPattern;
+    }
+
+    /**
+     * Sets the mask pattern.
+     *
+     * @param maskPattern the new mask pattern
+     */
+    public void setMaskPattern(String maskPattern) {
+        this.maskPattern = maskPattern;
+    }
+
+    /**
+     * Gets the filter parameters.
+     *
+     * @return the filter parameters
+     */
+    public Parameters getFilterParameters() {
+        return filterParameters;
+    }
+
+    /**
+     * Sets the filter parameters.
+     *
+     * @param filterParameters the new filter parameters
+     */
+    public void setFilterParameters(Parameters filterParameters) {
+        this.filterParameters = filterParameters;
+    }
+
+    /**
+     * Gets the request rule.
+     *
+     * @return the request rule
+     */
+    public RequestRule getRequestRule() {
+        return requestRule;
+    }
+
+    /**
+     * Sets the request rule.
+     *
+     * @param requestRule the new request rule
+     */
+    public void setRequestRule(RequestRule requestRule) {
+        this.requestRule = requestRule;
+    }
+
+    /**
+     * Gets the content list.
+     *
+     * @return the content list
+     */
+    public ContentList getContentList() {
+        return contentList;
+    }
+
+    /**
+     * Sets the content list.
+     *
+     * @param contentList the new content list
+     */
+    public void setContentList(ContentList contentList) {
+        this.contentList = contentList;
+        this.explicitContent = (contentList != null);
+    }
+
+    public ContentList touchContentList() {
+        return touchContentList(false, true);
+    }
+
+    public ContentList touchContentList(boolean explicitContent, boolean omittable) {
+        if (contentList == null) {
+            contentList = new ContentList();
+            this.explicitContent = explicitContent;
+            if (omittable) {
+                contentList.setOmittable(Boolean.TRUE);
+            }
+        }
+        return contentList;
+    }
+
+    public boolean isExplicitContent() {
+        return explicitContent;
+    }
+
+    private void setContentList(ContentList contentList, boolean explicitContent) {
+        this.contentList = contentList;
+        this.explicitContent = explicitContent;
+    }
+
+    @Override
+    public void applyActionRule(BeanActionRule beanActionRule) {
+        touchActionList().applyActionRule(beanActionRule);
+    }
+
+    @Override
+    public void applyActionRule(MethodActionRule methodActionRule) {
+        touchActionList().applyActionRule(methodActionRule);
+    }
+
+    @Override
+    public void applyActionRule(IncludeActionRule includeActionRule) {
+        touchActionList().applyActionRule(includeActionRule);
+    }
+
+    @Override
+    public void applyActionRule(EchoActionRule echoActionRule) {
+        touchActionList().applyActionRule(echoActionRule);
+    }
+
+    @Override
+    public void applyActionRule(HeadingActionRule headingActionRule) {
+        touchActionList().applyActionRule(headingActionRule);
+    }
+
+    private ActionList touchActionList() {
+        touchContentList();
+
+        if (contentList.size() == 1) {
+            return contentList.get(0);
+        } else {
+            return contentList.newActionList(!explicitContent);
+        }
+    }
+
+    /**
+     * Gets the response rule.
+     *
+     * @return the response rule
+     */
+    public ResponseRule getResponseRule() {
+        return responseRule;
+    }
+
+    /**
+     * Sets the response rule.
+     *
+     * @param responseRule the new response rule
+     */
+    public void setResponseRule(ResponseRule responseRule) {
+        this.responseRule = responseRule;
+        this.implicitResponse = false;
+    }
+
+    public List<ResponseRule> getResponseRuleList() {
+        return responseRuleList;
+    }
+
+    public void setResponseRuleList(List<ResponseRule> responseRuleList) {
+        this.responseRuleList = responseRuleList;
+        this.implicitResponse = false;
+    }
+
+    public void addResponseRule(ResponseRule responseRule) {
+        if (responseRuleList == null) {
+            responseRuleList = new ArrayList<ResponseRule>();
+        }
+        responseRuleList.add(responseRule);
+        implicitResponse = false;
+    }
+
+    public boolean isImplicitResponse() {
+        return implicitResponse;
+    }
+
+    @Override
+    public Response applyResponseRule(TransformRule transformRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        }
+        implicitResponse = true;
+
+        return responseRule.applyResponseRule(transformRule);
+    }
+
+    @Override
+    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        }
+        implicitResponse = true;
+
+        return responseRule.applyResponseRule(dispatchResponseRule);
+    }
+
+    @Override
+    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        }
+        implicitResponse = true;
+
+        return responseRule.applyResponseRule(redirectResponseRule);
+    }
+
+    @Override
+    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        }
+        implicitResponse = true;
+
+        return responseRule.applyResponseRule(forwardResponseRule);
+    }
+
+    private void addActionList(ActionList actionList) {
+        if (actionList != null) {
+            touchContentList();
+            contentList.add(actionList);
+        }
+    }
+
+    public void determineResponseRule() {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        } else {
+            if (responseRule.getResponse() != null) {
+                addActionList(responseRule.getResponse().getActionList());
+            }
+
+            String responseName = responseRule.getName();
+            if (responseName != null && !responseName.isEmpty()) {
+                setName(name + responseName);
+            }
+        }
+        setResponseRuleList(null);
+    }
+
+    public ExceptionRule getExceptionRule() {
+        return exceptionRule;
+    }
+
+    public void setExceptionRule(ExceptionRule exceptionRule) {
+        this.exceptionRule = exceptionRule;
+    }
+
+    public Class<? extends Translet> getTransletInterfaceClass() {
+        return transletInterfaceClass;
+    }
+
+    public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+        this.transletInterfaceClass = transletInterfaceClass;
+    }
+
+    public Class<? extends CoreTranslet> getTransletImplementationClass() {
+        return transletImplementationClass;
+    }
+
+    public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
+        this.transletImplementationClass = transletImplementationClass;
+    }
+
+    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+        return aspectAdviceRuleRegistry;
+    }
+
+    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    }
+
+    public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+        if (aspectAdviceRuleRegistry == null) {
+            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+        }
+        return aspectAdviceRuleRegistry;
+    }
+
+    public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+        return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.replicate() : null);
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public TransletRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("method", allowedMethods);
+        tsb.append("namePattern", namePattern);
+        tsb.append("requestRule", requestRule);
+        tsb.append("responseRule", responseRule);
+        tsb.append("exceptionRule", exceptionRule);
+        tsb.append("transletInterfaceClass", transletInterfaceClass);
+        tsb.append("transletImplementationClass", transletImplementationClass);
+        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+        tsb.append("explicitContent", explicitContent);
+        tsb.append("implicitResponse", implicitResponse);
+        return tsb.toString();
+    }
+
+    public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
+        if (name == null && scanPath == null) {
+            throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
+        }
+
+        MethodType[] allowedMethods = null;
+        if (method != null) {
+            allowedMethods = MethodType.parse(method);
+            if (allowedMethods == null) {
+                throw new IllegalArgumentException("No request method type for '" + method + "'.");
+            }
+        }
+
+        return newInstance(name, scanPath, maskPattern, allowedMethods);
+    }
+
+    public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods) {
+        TransletRule transletRule = new TransletRule();
+        transletRule.setName(name);
+        if (allowedMethods != null && allowedMethods.length > 0) {
+            transletRule.setAllowedMethods(allowedMethods);
+        } else {
+            transletRule.setScanPath(scanPath);
+            transletRule.setMaskPattern(maskPattern);
+        }
+        return transletRule;
+    }
+
+    public static TransletRule newInstance(String name, String method) {
+        return newInstance(name, null, null, method);
+    }
+
+    public static TransletRule newInstance(String name, MethodType[] allowedMethods) {
+        return newInstance(name, null, null, allowedMethods);
+    }
+
+    public static TransletRule replicate(TransletRule transletRule) {
+        TransletRule tr = new TransletRule();
+        tr.setName(transletRule.getName());
+        tr.setAllowedMethods(transletRule.getAllowedMethods());
+        tr.setRequestRule(transletRule.getRequestRule());
+        tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
+        tr.setDescription(transletRule.getDescription());
+        if (transletRule.getContentList() != null) {
+            ContentList contentList = transletRule.getContentList().replicate();
+            tr.setContentList(contentList, transletRule.isExplicitContent());
+        }
+        return tr;
+    }
+
+    public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
+        TransletRule tr = new TransletRule();
+        tr.setName(transletRule.getName());
+        tr.setAllowedMethods(transletRule.getAllowedMethods());
+        tr.setRequestRule(transletRule.getRequestRule());
+        tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
+        tr.setDescription(transletRule.getDescription());
+        if (transletRule.getResponseRule() != null) {
+            ResponseRule responseRule = transletRule.getResponseRule();
+            ResponseRule rr = replicate(responseRule, newDispatchName);
+            tr.setResponseRule(rr);
+        }
+        if (transletRule.getResponseRuleList() != null) {
+            List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
+            List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
+            for (ResponseRule responseRule : responseRuleList) {
+                ResponseRule rr = replicate(responseRule, newDispatchName);
+                newResponseRuleList.add(rr);
+            }
+            tr.setResponseRuleList(newResponseRuleList);
+        }
+        return tr;
+    }
+
+    private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
+        ResponseRule rr = responseRule.replicate();
+        if (rr.getResponse() != null) {
+            // assign dispatch name if the dispatch respone exists.
+            if (rr.getResponse() instanceof DispatchResponse) {
+                DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
+                DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
+                String dispatchName = dispatchResponseRule.getName();
+
+                PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
+
+                if (prefixSuffixPattern.isSplited()) {
+                    dispatchResponseRule.setName(prefixSuffixPattern.join(newDispatchName));
+                } else {
+                    if (dispatchName != null) {
+                        dispatchResponseRule.setName(dispatchName + newDispatchName);
+                    } else {
+                        dispatchResponseRule.setName(newDispatchName);
+                    }
+                }
+            }
+        }
+        return rr;
+    }
+
+    public static String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
+        StringBuilder sb = new StringBuilder(transletName + (allowedMethods.length * 7) + 1);
+        for (MethodType type : allowedMethods) {
+            sb.append(type).append(" ");
+        }
+        sb.append(transletName);
+        return sb.toString();
+    }
 
 }

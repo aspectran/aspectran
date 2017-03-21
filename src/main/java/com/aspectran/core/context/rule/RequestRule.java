@@ -28,123 +28,123 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class RequestRule {
 
-	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
-	
-	public static final String LOCALE_RESOLVER_SETTING_NAME = "localeResolver";
+    public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
-	public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
+    public static final String LOCALE_RESOLVER_SETTING_NAME = "localeResolver";
 
-	private String characterEncoding;
-	
-	private MethodType allowedMethod;
+    public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
 
-	private ItemRuleMap parameterItemRuleMap;
+    private String characterEncoding;
 
-	private ItemRuleMap attributeItemRuleMap;
+    private MethodType allowedMethod;
 
-	public RequestRule() {
-	}
-	
-	/**
-	 * Gets the character encoding.
-	 * 
-	 * @return the character encoding
-	 */
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    private ItemRuleMap parameterItemRuleMap;
 
-	/**
-	 * Sets the character encoding.
-	 * 
-	 * @param characterEncoding the new character encoding
-	 */
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    private ItemRuleMap attributeItemRuleMap;
 
-	/**
-	 * Gets the allowed method.
-	 *
-	 * @return the allowed method
-	 */
-	public MethodType getAllowedMethod() {
-		return allowedMethod;
-	}
+    public RequestRule() {
+    }
 
-	/**
-	 * Sets the allowed method.
-	 *
-	 * @param allowedMethod the new allowed method
-	 */
-	public void setAllowedMethod(MethodType allowedMethod) {
-		this.allowedMethod = allowedMethod;
-	}
+    /**
+     * Gets the character encoding.
+     *
+     * @return the character encoding
+     */
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	/**
-	 * Gets the parameter item rule map.
-	 * 
-	 * @return the parameter item rule map
-	 */
-	public ItemRuleMap getParameterItemRuleMap() {
-		return parameterItemRuleMap;
-	}
+    /**
+     * Sets the character encoding.
+     *
+     * @param characterEncoding the new character encoding
+     */
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	/**
-	 * Sets the attribute item rule map.
-	 *
-	 * @param parameterItemRuleMap the new attribute item rule map
-	 */
-	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
-		this.parameterItemRuleMap = parameterItemRuleMap;
-	}
+    /**
+     * Gets the allowed method.
+     *
+     * @return the allowed method
+     */
+    public MethodType getAllowedMethod() {
+        return allowedMethod;
+    }
 
-	/**
-	 * Gets the attribute item rule map.
-	 *
-	 * @return the attribute rule map for attributes
-	 */
-	public ItemRuleMap getAttributeItemRuleMap() {
-		return attributeItemRuleMap;
-	}
+    /**
+     * Sets the allowed method.
+     *
+     * @param allowedMethod the new allowed method
+     */
+    public void setAllowedMethod(MethodType allowedMethod) {
+        this.allowedMethod = allowedMethod;
+    }
 
-	/**
-	 * Sets the attribute item rule map.
-	 *
-	 * @param attributeItemRuleMap the new attribute item rule map
-	 */
-	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
-		this.attributeItemRuleMap = attributeItemRuleMap;
-	}
+    /**
+     * Gets the parameter item rule map.
+     *
+     * @return the parameter item rule map
+     */
+    public ItemRuleMap getParameterItemRuleMap() {
+        return parameterItemRuleMap;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("method", allowedMethod);
-		tsb.append("characterEncoding", characterEncoding);
-		tsb.append("parameters", parameterItemRuleMap);
-		tsb.append("attributes", attributeItemRuleMap);
-		return tsb.toString();
-	}
-	
-	public static RequestRule newInstance(String allowedMethod, String characterEncoding) {
-		MethodType allowedethodType = null;
-		
-		if (allowedMethod != null) {
-			allowedethodType = MethodType.resolve(allowedMethod);
-			if (allowedethodType == null) {
-				throw new IllegalArgumentException("No request method type for '" + allowedMethod + "'.");
-			}
-		}
-		
-		if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
-			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
-		}
-		
-		RequestRule requestRule = new RequestRule();
-		requestRule.setAllowedMethod(allowedethodType);
-		requestRule.setCharacterEncoding(characterEncoding);
-		return requestRule;
-	}
-	
+    /**
+     * Sets the attribute item rule map.
+     *
+     * @param parameterItemRuleMap the new attribute item rule map
+     */
+    public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
+        this.parameterItemRuleMap = parameterItemRuleMap;
+    }
+
+    /**
+     * Gets the attribute item rule map.
+     *
+     * @return the attribute rule map for attributes
+     */
+    public ItemRuleMap getAttributeItemRuleMap() {
+        return attributeItemRuleMap;
+    }
+
+    /**
+     * Sets the attribute item rule map.
+     *
+     * @param attributeItemRuleMap the new attribute item rule map
+     */
+    public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
+        this.attributeItemRuleMap = attributeItemRuleMap;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("method", allowedMethod);
+        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("parameters", parameterItemRuleMap);
+        tsb.append("attributes", attributeItemRuleMap);
+        return tsb.toString();
+    }
+
+    public static RequestRule newInstance(String allowedMethod, String characterEncoding) {
+        MethodType allowedethodType = null;
+
+        if (allowedMethod != null) {
+            allowedethodType = MethodType.resolve(allowedMethod);
+            if (allowedethodType == null) {
+                throw new IllegalArgumentException("No request method type for '" + allowedMethod + "'.");
+            }
+        }
+
+        if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
+            throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+        }
+
+        RequestRule requestRule = new RequestRule();
+        requestRule.setAllowedMethod(allowedethodType);
+        requestRule.setCharacterEncoding(characterEncoding);
+        return requestRule;
+    }
+
 }

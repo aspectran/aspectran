@@ -112,7 +112,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * @return the default time zone (or {@code null} if none defined)
      * @see #setDefaultTimeZone
      */
-	protected TimeZone resolveDefaultTimeZone(Translet translet) {
+    protected TimeZone resolveDefaultTimeZone(Translet translet) {
         TimeZone defaultTimeZone = getDefaultTimeZone();
         if (defaultTimeZone != null) {
             translet.getRequestAdapter().setTimeZone(defaultTimeZone);

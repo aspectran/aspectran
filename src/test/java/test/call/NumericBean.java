@@ -20,6 +20,6 @@ package test.call;
  */
 public interface NumericBean {
 
-	int getNumber();
+    int getNumber();
 
 }

@@ -34,134 +34,134 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class BeanClassScanner extends ClassScanner {
 
-	private final Log log = LogFactory.getLog(BeanClassScanner.class);
-	
-	private Parameters filterParameters;
-	
-	private BeanClassScanFilter beanClassScanFilter;
-	
-	private WildcardPattern beanIdMaskPattern;
-	
-	private Map<String, WildcardPattern> excludePatternCache = new HashMap<>();
+    private final Log log = LogFactory.getLog(BeanClassScanner.class);
 
-	public BeanClassScanner(ClassLoader classLoader) {
-		super(classLoader);
-	}
-	
-	public Parameters getFilterParameters() {
-		return filterParameters;
-	}
+    private Parameters filterParameters;
 
-	public void setFilterParameters(Parameters filterParameters) {
-		this.filterParameters = filterParameters;
-		
-		String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-		if (classScanFilterClassName != null) {
-			setBeanClassScanFilter(classScanFilterClassName);
-		}
-	}
+    private BeanClassScanFilter beanClassScanFilter;
 
-	public BeanClassScanFilter getBeanClassScanFilter() {
-		return beanClassScanFilter;
-	}
+    private WildcardPattern beanIdMaskPattern;
 
-	public void setBeanClassScanFilter(BeanClassScanFilter beanClassScanFilter) {
-		this.beanClassScanFilter = beanClassScanFilter;
-	}
-	
-	public void setBeanClassScanFilter(Class<?> beanClassScanFilterClass) {
-		try {
-			beanClassScanFilter = (BeanClassScanFilter)beanClassScanFilterClass.newInstance();
-		} catch (Exception e) {
-			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
-		}
-	}
+    private Map<String, WildcardPattern> excludePatternCache = new HashMap<>();
 
-	public WildcardPattern getBeanIdMaskPattern() {
-		return beanIdMaskPattern;
-	}
+    public BeanClassScanner(ClassLoader classLoader) {
+        super(classLoader);
+    }
 
-	public void setBeanIdMaskPattern(WildcardPattern beanIdMaskPattern) {
-		this.beanIdMaskPattern = beanIdMaskPattern;
-	}
+    public Parameters getFilterParameters() {
+        return filterParameters;
+    }
 
-	public void setBeanIdMaskPattern(String beanIdMaskPattern) {
-		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, ActivityContext.ID_SEPARATOR_CHAR);
-	}
-	
-	public void setBeanClassScanFilter(String classScanFilterClassName) {
-		Class<?> filterClass;
-		try {
-			filterClass = getClassLoader().loadClass(classScanFilterClassName);
-		} catch (ClassNotFoundException e) {
-			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + classScanFilterClassName + "]", e);
-		}
-		setBeanClassScanFilter(filterClass);
-	}
+    public void setFilterParameters(Parameters filterParameters) {
+        this.filterParameters = filterParameters;
 
-	@Override
-	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
-		super.scan(classNamePattern, new InnerSaveHandler(saveHandler));
-	}
+        String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+        if (classScanFilterClassName != null) {
+            setBeanClassScanFilter(classScanFilterClassName);
+        }
+    }
 
-	private class InnerSaveHandler implements SaveHandler {
+    public BeanClassScanFilter getBeanClassScanFilter() {
+        return beanClassScanFilter;
+    }
 
-		private SaveHandler saveHandler;
+    public void setBeanClassScanFilter(BeanClassScanFilter beanClassScanFilter) {
+        this.beanClassScanFilter = beanClassScanFilter;
+    }
 
-		public InnerSaveHandler(SaveHandler saveHandler) {
-			this.saveHandler = saveHandler;
-		}
+    public void setBeanClassScanFilter(Class<?> beanClassScanFilterClass) {
+        try {
+            beanClassScanFilter = (BeanClassScanFilter)beanClassScanFilterClass.newInstance();
+        } catch (Exception e) {
+            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
+        }
+    }
 
-		@Override
-		public void save(String resourceName, Class<?> scannedClass) {
-			if (scannedClass.isInterface()
-					|| Modifier.isAbstract(scannedClass.getModifiers())
-					|| !Modifier.isPublic(scannedClass.getModifiers())) {
-				return;
-			}
+    public WildcardPattern getBeanIdMaskPattern() {
+        return beanIdMaskPattern;
+    }
 
-			String className = scannedClass.getName();
-			String beanId = className;
+    public void setBeanIdMaskPattern(WildcardPattern beanIdMaskPattern) {
+        this.beanIdMaskPattern = beanIdMaskPattern;
+    }
 
-			if (beanIdMaskPattern != null) {
-				String maskedBeanId = beanIdMaskPattern.mask(beanId);
-				if (maskedBeanId != null) {
-					beanId = maskedBeanId;
-				} else {
-					log.warn(String.format("Unmatched pattern can not be masking. beanId: %s (maskPattern: %s)", beanId, beanIdMaskPattern));
-				}
-			}
+    public void setBeanIdMaskPattern(String beanIdMaskPattern) {
+        this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, ActivityContext.ID_SEPARATOR_CHAR);
+    }
 
-			if (beanClassScanFilter != null) {
-				beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
-				if (beanId == null) {
-					return;
-				}
-			}
+    public void setBeanClassScanFilter(String classScanFilterClassName) {
+        Class<?> filterClass;
+        try {
+            filterClass = getClassLoader().loadClass(classScanFilterClassName);
+        } catch (ClassNotFoundException e) {
+            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + classScanFilterClassName + "]", e);
+        }
+        setBeanClassScanFilter(filterClass);
+    }
 
-			if (filterParameters != null) {
-				String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+    @Override
+    public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
+        super.scan(classNamePattern, new InnerSaveHandler(saveHandler));
+    }
 
-				if (excludePatterns != null) {
-					for (String excludePattern : excludePatterns) {
-						WildcardPattern pattern = excludePatternCache.get(excludePattern);
-						if (pattern == null) {
-							pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-							excludePatternCache.put(excludePattern, pattern);
-						}
-						if (pattern.matches(className)) {
-							return;
-						}
-					}
-				}
-			}
+    private class InnerSaveHandler implements SaveHandler {
 
-			saveHandler.save(beanId, scannedClass);
+        private SaveHandler saveHandler;
 
-			if (log.isTraceEnabled()) {
-				log.trace(String.format("scanned bean class {beanId: %s, className: %s}", beanId, className));
-			}
-		}
-	}
+        public InnerSaveHandler(SaveHandler saveHandler) {
+            this.saveHandler = saveHandler;
+        }
+
+        @Override
+        public void save(String resourceName, Class<?> scannedClass) {
+            if (scannedClass.isInterface()
+                    || Modifier.isAbstract(scannedClass.getModifiers())
+                    || !Modifier.isPublic(scannedClass.getModifiers())) {
+                return;
+            }
+
+            String className = scannedClass.getName();
+            String beanId = className;
+
+            if (beanIdMaskPattern != null) {
+                String maskedBeanId = beanIdMaskPattern.mask(beanId);
+                if (maskedBeanId != null) {
+                    beanId = maskedBeanId;
+                } else {
+                    log.warn(String.format("Unmatched pattern can not be masking. beanId: %s (maskPattern: %s)", beanId, beanIdMaskPattern));
+                }
+            }
+
+            if (beanClassScanFilter != null) {
+                beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
+                if (beanId == null) {
+                    return;
+                }
+            }
+
+            if (filterParameters != null) {
+                String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+
+                if (excludePatterns != null) {
+                    for (String excludePattern : excludePatterns) {
+                        WildcardPattern pattern = excludePatternCache.get(excludePattern);
+                        if (pattern == null) {
+                            pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+                            excludePatternCache.put(excludePattern, pattern);
+                        }
+                        if (pattern.matches(className)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            saveHandler.save(beanId, scannedClass);
+
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("scanned bean class {beanId: %s, className: %s}", beanId, className));
+            }
+        }
+    }
 
 }

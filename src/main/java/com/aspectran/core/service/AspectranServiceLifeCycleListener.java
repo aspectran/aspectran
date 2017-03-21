@@ -21,17 +21,17 @@ import java.util.EventListener;
  * The listener interface for receiving AspectranService life-cycle events.
  */
 public interface AspectranServiceLifeCycleListener extends EventListener {
-	
-	void started();
-	
-	void restarted(boolean hardReload);
 
-	void paused(long millis);
-	
-	void paused();
-	
-	void resumed();
+    void started();
 
-	void stopped();
+    void restarted(boolean hardReload);
+
+    void paused(long millis);
+
+    void paused();
+
+    void resumed();
+
+    void stopped();
 
 }

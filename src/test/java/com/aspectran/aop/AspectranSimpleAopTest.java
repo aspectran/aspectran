@@ -29,25 +29,25 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
  */
 public class AspectranSimpleAopTest {
 
-	private EmbeddedAspectranService aspectranService;
+    private EmbeddedAspectranService aspectranService;
 
-	@Before
-	public void ready() throws IOException, AspectranServiceException {
-		String rootContextLocation = "classpath:config/aop/simple-aop-test-config.xml";
-		aspectranService = EmbeddedAspectranService.build(rootContextLocation);
-	}
+    @Before
+    public void ready() throws IOException, AspectranServiceException {
+        String rootContextLocation = "classpath:config/aop/simple-aop-test-config.xml";
+        aspectranService = EmbeddedAspectranService.build(rootContextLocation);
+    }
 
-	@After
-	public void finish() {
-		if (aspectranService != null) {
-			aspectranService.shutdown();
-		}
-	}
+    @After
+    public void finish() {
+        if (aspectranService != null) {
+            aspectranService.shutdown();
+        }
+    }
 
-	@Test
-	public void test() throws AspectranServiceException, IOException {
-		aspectranService.translet("/aop/test/target1");
-		aspectranService.translet("/aop/test/target2");
-	}
+    @Test
+    public void test() throws AspectranServiceException, IOException {
+        aspectranService.translet("/aop/test/target1");
+        aspectranService.translet("/aop/test/target2");
+    }
 
 }

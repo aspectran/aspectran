@@ -20,34 +20,34 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TriggerType {
 
-	CRON("cron"),
-	SIMPLE("simple");
+    CRON("cron"),
+    SIMPLE("simple");
 
-	private final String alias;
+    private final String alias;
 
-	TriggerType(String alias) {
-		this.alias = alias;
-	}
+    TriggerType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code TriggerType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the trigger type as a {@code String}
-	 * @return a {@code TriggerType}, may be {@code null}
-	 */
-	public static TriggerType resolve(String alias) {
-		for (TriggerType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code TriggerType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the trigger type as a {@code String}
+     * @return a {@code TriggerType}, may be {@code null}
+     */
+    public static TriggerType resolve(String alias) {
+        for (TriggerType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

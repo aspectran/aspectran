@@ -21,21 +21,21 @@ package com.aspectran.core.util;
  * @author Juho Jeong
  */
 public class BooleanUtils {
-	
-	public static Boolean toBooleanObject(String booleanString) {
-		return Boolean.valueOf(booleanString);
-	}
-	
-	public static Boolean toNullableBooleanObject(String booleanString) {
-		return (booleanString != null ? Boolean.valueOf(booleanString) : null);
-	}
-	
-	public static boolean toBoolean(Boolean bool) {
-		return toBoolean(bool, false);
-	}
-	
-	public static boolean toBoolean(Boolean bool, boolean defaultValue) {
-		return (bool != null ? bool : defaultValue);
-	}
+
+    public static Boolean toBooleanObject(String booleanString) {
+        return Boolean.valueOf(booleanString);
+    }
+
+    public static Boolean toNullableBooleanObject(String booleanString) {
+        return (booleanString != null ? Boolean.valueOf(booleanString) : null);
+    }
+
+    public static boolean toBoolean(Boolean bool) {
+        return toBoolean(bool, false);
+    }
+
+    public static boolean toBoolean(Boolean bool, boolean defaultValue) {
+        return (bool != null ? bool : defaultValue);
+    }
 
 }

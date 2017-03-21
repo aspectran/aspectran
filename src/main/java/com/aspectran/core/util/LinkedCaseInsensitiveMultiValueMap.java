@@ -38,154 +38,154 @@ import java.util.Set;
  */
 public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable {
 
-	private static final long serialVersionUID = 2505523262093891621L;
+    private static final long serialVersionUID = 2505523262093891621L;
 
-	private final Map<String, List<V>> values;
+    private final Map<String, List<V>> values;
 
-	/**
-	 * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
-	 */
-	public LinkedCaseInsensitiveMultiValueMap() {
-		this.values = new LinkedCaseInsensitiveMap<>(Locale.ENGLISH);
-	}
+    /**
+     * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
+     */
+    public LinkedCaseInsensitiveMultiValueMap() {
+        this.values = new LinkedCaseInsensitiveMap<>(Locale.ENGLISH);
+    }
 
-	/**
-	 * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
-	 *
-	 * @param initialCapacity the initial capacity
-	 */
-	public LinkedCaseInsensitiveMultiValueMap(int initialCapacity) {
-		this.values = new LinkedCaseInsensitiveMap<>(initialCapacity, Locale.ENGLISH);
-	}
+    /**
+     * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
+     *
+     * @param initialCapacity the initial capacity
+     */
+    public LinkedCaseInsensitiveMultiValueMap(int initialCapacity) {
+        this.values = new LinkedCaseInsensitiveMap<>(initialCapacity, Locale.ENGLISH);
+    }
 
-	@Override
-	public V getFirst(String key) {
-		List<V> headerValues = this.values.get(key);
-		return (headerValues != null ? headerValues.get(0) : null);
-	}
+    @Override
+    public V getFirst(String key) {
+        List<V> headerValues = this.values.get(key);
+        return (headerValues != null ? headerValues.get(0) : null);
+    }
 
-	@Override
-	public void add(String key, V value) {
-		List<V> headerValues = this.values.get(key);
-		if (headerValues == null) {
-			headerValues = new LinkedList<>();
-			this.values.put(key, headerValues);
-		}
-		headerValues.add(value);
-	}
+    @Override
+    public void add(String key, V value) {
+        List<V> headerValues = this.values.get(key);
+        if (headerValues == null) {
+            headerValues = new LinkedList<>();
+            this.values.put(key, headerValues);
+        }
+        headerValues.add(value);
+    }
 
-	@Override
-	public void set(String key, V value) {
-		List<V> headerValues = new LinkedList<>();
-		headerValues.add(value);
-		this.values.put(key, headerValues);
-	}
+    @Override
+    public void set(String key, V value) {
+        List<V> headerValues = new LinkedList<>();
+        headerValues.add(value);
+        this.values.put(key, headerValues);
+    }
 
-	@Override
-	public void setAll(Map<String, V> values) {
-		for (Entry<String, V> entry : values.entrySet()) {
-			set(entry.getKey(), entry.getValue());
-		}
-	}
+    @Override
+    public void setAll(Map<String, V> values) {
+        for (Entry<String, V> entry : values.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
+    }
 
-	@Override
-	public void put(String key, V[] values) {
-		List<V> list = new LinkedList<>();
-		Collections.addAll(list, values);
-		put(key, list);
-	}
+    @Override
+    public void put(String key, V[] values) {
+        List<V> list = new LinkedList<>();
+        Collections.addAll(list, values);
+        put(key, list);
+    }
 
-	@Override
-	public Map<String, V> toSingleValueMap() {
-		LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.values.size());
-		for (Entry<String, List<V>> entry : this.values.entrySet()) {
-			singleValueMap.put(entry.getKey(), entry.getValue().get(0));
-		}
-		return singleValueMap;
-	}
+    @Override
+    public Map<String, V> toSingleValueMap() {
+        LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.values.size());
+        for (Entry<String, List<V>> entry : this.values.entrySet()) {
+            singleValueMap.put(entry.getKey(), entry.getValue().get(0));
+        }
+        return singleValueMap;
+    }
 
-	// Map implementation
+    // Map implementation
 
-	@Override
-	public int size() {
-		return this.values.size();
-	}
+    @Override
+    public int size() {
+        return this.values.size();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return this.values.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
 
-	@Override
-	public boolean containsKey(Object key) {
-		return this.values.containsKey(key);
-	}
+    @Override
+    public boolean containsKey(Object key) {
+        return this.values.containsKey(key);
+    }
 
-	@Override
-	public boolean containsValue(Object value) {
-		return this.values.containsValue(value);
-	}
+    @Override
+    public boolean containsValue(Object value) {
+        return this.values.containsValue(value);
+    }
 
-	@Override
-	public List<V> get(Object key) {
-		return this.values.get(key);
-	}
+    @Override
+    public List<V> get(Object key) {
+        return this.values.get(key);
+    }
 
-	@Override
-	public List<V> put(String key, List<V> value) {
-		return this.values.put(key, value);
-	}
+    @Override
+    public List<V> put(String key, List<V> value) {
+        return this.values.put(key, value);
+    }
 
-	@Override
-	public List<V> remove(Object key) {
-		return this.values.remove(key);
-	}
+    @Override
+    public List<V> remove(Object key) {
+        return this.values.remove(key);
+    }
 
-	@Override
-	public void putAll(Map<? extends String, ? extends List<V>> map) {
-		this.values.putAll(map);
-	}
+    @Override
+    public void putAll(Map<? extends String, ? extends List<V>> map) {
+        this.values.putAll(map);
+    }
 
-	@Override
-	public void clear() {
-		this.values.clear();
-	}
+    @Override
+    public void clear() {
+        this.values.clear();
+    }
 
-	@Override
-	public Set<String> keySet() {
-		return this.values.keySet();
-	}
+    @Override
+    public Set<String> keySet() {
+        return this.values.keySet();
+    }
 
-	@Override
-	public Collection<List<V>> values() {
-		return this.values.values();
-	}
+    @Override
+    public Collection<List<V>> values() {
+        return this.values.values();
+    }
 
-	@Override
-	public Set<Entry<String, List<V>>> entrySet() {
-		return this.values.entrySet();
-	}
+    @Override
+    public Set<Entry<String, List<V>>> entrySet() {
+        return this.values.entrySet();
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
-			return false;
-		}
-		LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;
-		return this.values.equals(otherValues.values);
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
+            return false;
+        }
+        LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;
+        return this.values.equals(otherValues.values);
+    }
 
-	@Override
-	public int hashCode() {
-		return this.values.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.values.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		return this.values.toString();
-	}
+    @Override
+    public String toString() {
+        return this.values.toString();
+    }
 
 }

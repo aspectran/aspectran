@@ -24,21 +24,21 @@ import com.aspectran.core.activity.response.AbstractAdaptiveResponse;
  */
 public abstract class AbstractResponseAdapter extends AbstractAdaptiveResponse implements ResponseAdapter {
 
-	protected Object adaptee;
-	
-	/**
-	 * Instantiates a new AbstractResponseAdapter.
-	 *
-	 * @param adaptee the adaptee object
-	 */
-	public AbstractResponseAdapter(Object adaptee) {
-		this.adaptee = adaptee;
-	}
+    protected Object adaptee;
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAdaptee() {
-		return (T)adaptee;
-	}
+    /**
+     * Instantiates a new AbstractResponseAdapter.
+     *
+     * @param adaptee the adaptee object
+     */
+    public AbstractResponseAdapter(Object adaptee) {
+        this.adaptee = adaptee;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAdaptee() {
+        return (T)adaptee;
+    }
 
 }

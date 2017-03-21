@@ -26,38 +26,38 @@ package com.aspectran.core.context.rule.type;
  */
 public enum AspectAdviceType {
 
-	SETTINGS("settings"),
-	BEFORE("before"),
-	AFTER("after"),
-	AROUND("around"),
-	THROWN("thrown"),
-	FINALLY("finally");
+    SETTINGS("settings"),
+    BEFORE("before"),
+    AFTER("after"),
+    AROUND("around"),
+    THROWN("thrown"),
+    FINALLY("finally");
 
-	private final String alias;
+    private final String alias;
 
-	AspectAdviceType(String alias) {
-		this.alias = alias;
-	}
+    AspectAdviceType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code AspectAdviceType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the aspect advice type as a {@code String}
-	 * @return an {@code AspectAdviceType}, may be {@code null}
-	 */
-	public static AspectAdviceType resolve(String alias) {
-		for (AspectAdviceType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code AspectAdviceType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the aspect advice type as a {@code String}
+     * @return an {@code AspectAdviceType}, may be {@code null}
+     */
+    public static AspectAdviceType resolve(String alias) {
+        for (AspectAdviceType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

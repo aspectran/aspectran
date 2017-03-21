@@ -29,34 +29,34 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 class TemplateNodeletAdder implements NodeletAdder {
 
-	protected final ContextBuilderAssistant assistant;
+    protected final ContextBuilderAssistant assistant;
 
-	/**
-	 * Instantiates a new TemplateNodeletAdder.
-	 *
-	 * @param assistant the assistant
-	 */
-	TemplateNodeletAdder(ContextBuilderAssistant assistant) {
-		this.assistant = assistant;
-	}
+    /**
+     * Instantiates a new TemplateNodeletAdder.
+     *
+     * @param assistant the assistant
+     */
+    TemplateNodeletAdder(ContextBuilderAssistant assistant) {
+        this.assistant = assistant;
+    }
 
-	@Override
-	public void process(String xpath, NodeletParser parser) {
-		parser.addNodelet(xpath, "/template", (node, attributes, text) -> {
-			String id = StringUtils.emptyToNull(attributes.get("id"));
-			String engine = StringUtils.emptyToNull(attributes.get("engine"));
-			String name = StringUtils.emptyToNull(attributes.get("name"));
-			String file = StringUtils.emptyToNull(attributes.get("file"));
-			String resource = StringUtils.emptyToNull(attributes.get("resource"));
-			String url = StringUtils.emptyToNull(attributes.get("url"));
-			String style = attributes.get("style");
-			String encoding = attributes.get("encoding");
-			Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
+    @Override
+    public void process(String xpath, NodeletParser parser) {
+        parser.addNodelet(xpath, "/template", (node, attributes, text) -> {
+            String id = StringUtils.emptyToNull(attributes.get("id"));
+            String engine = StringUtils.emptyToNull(attributes.get("engine"));
+            String name = StringUtils.emptyToNull(attributes.get("name"));
+            String file = StringUtils.emptyToNull(attributes.get("file"));
+            String resource = StringUtils.emptyToNull(attributes.get("resource"));
+            String url = StringUtils.emptyToNull(attributes.get("url"));
+            String style = attributes.get("style");
+            String encoding = attributes.get("encoding");
+            Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, style, encoding, noCache);
+            TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, style, encoding, noCache);
 
-			assistant.addTemplateRule(templateRule);
-		});
-	}
+            assistant.addTemplateRule(templateRule);
+        });
+    }
 
 }

@@ -23,12 +23,12 @@ import com.aspectran.core.context.rule.type.ScopeType;
 @Configuration
 public class TestConfiguration {
 
-	@Autowired
-	private FirstBean firstBean;
-	
-	@Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
-	public FirstBean getThirdBean() {
-		return firstBean;
-	}
-	
+    @Autowired
+    private FirstBean firstBean;
+
+    @Bean(id = "thirdBean", scope = ScopeType.SINGLETON, lazyInit = true)
+    public FirstBean getThirdBean() {
+        return firstBean;
+    }
+
 }

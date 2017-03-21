@@ -30,80 +30,80 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class SettingsAdviceRule {
 
-	private final AspectRule aspectRule;
+    private final AspectRule aspectRule;
 
-	private final AspectAdviceType aspectAdviceType = AspectAdviceType.SETTINGS;
+    private final AspectAdviceType aspectAdviceType = AspectAdviceType.SETTINGS;
 
-	private Map<String, Object> settings;
+    private Map<String, Object> settings;
 
-	public SettingsAdviceRule(AspectRule aspectRule) {
-		this.aspectRule = aspectRule;
-	}
+    public SettingsAdviceRule(AspectRule aspectRule) {
+        this.aspectRule = aspectRule;
+    }
 
-	public String getAspectId() {
-		return aspectRule.getId();
-	}
+    public String getAspectId() {
+        return aspectRule.getId();
+    }
 
-	public AspectRule getAspectRule() {
-		return aspectRule;
-	}
+    public AspectRule getAspectRule() {
+        return aspectRule;
+    }
 
-	public AspectAdviceType getAspectAdviceType() {
-		return aspectAdviceType;
-	}
+    public AspectAdviceType getAspectAdviceType() {
+        return aspectAdviceType;
+    }
 
-	public Map<String, Object> getSettings() {
-		return settings;
-	}
+    public Map<String, Object> getSettings() {
+        return settings;
+    }
 
-	public void setSettings(Map<String, Object> settings) {
-		this.settings = settings;
-	}
+    public void setSettings(Map<String, Object> settings) {
+        this.settings = settings;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T getSetting(String name) {
-		return (T)settings.get(name);
-	}
+    @SuppressWarnings("unchecked")
+    public <T> T getSetting(String name) {
+        return (T)settings.get(name);
+    }
 
-	public void putSetting(String name, Object value) {
-		if (settings == null) {
-			settings = new HashMap<String, Object>(5);
-		}
-		settings.put(name, value);
-	}
+    public void putSetting(String name, Object value) {
+        if (settings == null) {
+            settings = new HashMap<String, Object>(5);
+        }
+        settings.put(name, value);
+    }
 
-	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
-		if (StringUtils.hasText(text)) {
-			Parameters settingsParameters = new VariableParameters(text);
-			return newInstance(aspectRule, settingsParameters);
-		} else {
-			return newInstance(aspectRule, (Parameters)null);
-		}
-	}
+    public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
+        if (StringUtils.hasText(text)) {
+            Parameters settingsParameters = new VariableParameters(text);
+            return newInstance(aspectRule, settingsParameters);
+        } else {
+            return newInstance(aspectRule, (Parameters)null);
+        }
+    }
 
-	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
-		SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
-		if (settingsParameters != null) {
-			Set<String> parametersNames = settingsParameters.getParameterNameSet();
-			if (parametersNames != null) {
-				for (String name : parametersNames) {
-					sar.putSetting(name, settingsParameters.getString(name));
-				}
-			}
-		}
+    public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
+        SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+        if (settingsParameters != null) {
+            Set<String> parametersNames = settingsParameters.getParameterNameSet();
+            if (parametersNames != null) {
+                for (String name : parametersNames) {
+                    sar.putSetting(name, settingsParameters.getString(name));
+                }
+            }
+        }
 
-		return sar;
-	}
+        return sar;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		if (aspectRule != null) {
-			tsb.append("aspectId", aspectRule.getId());
-		}
-		tsb.append("aspectAdviceType", aspectAdviceType);
-		tsb.append("settings", settings);
-		return tsb.toString();
-	}
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (aspectRule != null) {
+            tsb.append("aspectId", aspectRule.getId());
+        }
+        tsb.append("aspectAdviceType", aspectAdviceType);
+        tsb.append("settings", settings);
+        return tsb.toString();
+    }
 
 }

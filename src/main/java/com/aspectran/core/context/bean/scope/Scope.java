@@ -27,32 +27,32 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public interface Scope {
 
-	/**
-	 * Returns the scope lock.
-	 *
-	 * @return the scope lock
-	 */
-	ReadWriteLock getScopeLock();
+    /**
+     * Returns the scope lock.
+     *
+     * @return the scope lock
+     */
+    ReadWriteLock getScopeLock();
 
-	/**
-	 * Returns an instance of the bean that matches the given bean rule.
-	 *
-	 * @param beanRule the bean rule of the bean to retrieve
-	 * @return an instance of the bean
-	 */
-	InstantiatedBean getInstantiatedBean(BeanRule beanRule);
+    /**
+     * Returns an instance of the bean that matches the given bean rule.
+     *
+     * @param beanRule the bean rule of the bean to retrieve
+     * @return an instance of the bean
+     */
+    InstantiatedBean getInstantiatedBean(BeanRule beanRule);
 
-	/**
-	 * Saves an instantiated bean with the given bean rule into the scope.
-	 *
-	 * @param beanRule the bean rule of the bean to save
-	 * @param instantiatedBean an instance of the bean
-	 */
-	void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean);
+    /**
+     * Saves an instantiated bean with the given bean rule into the scope.
+     *
+     * @param beanRule the bean rule of the bean to save
+     * @param instantiatedBean an instance of the bean
+     */
+    void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean);
 
-	/**
-	 * Destroy all scoped beans in this scope.
-	 */
-	void destroy();
-	
+    /**
+     * Destroy all scoped beans in this scope.
+     */
+    void destroy();
+
 }

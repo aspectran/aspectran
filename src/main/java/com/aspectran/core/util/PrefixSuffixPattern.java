@@ -17,79 +17,79 @@ package com.aspectran.core.util;
 
 public class PrefixSuffixPattern {
 
-	public static final char PREFIX_SUFFIX_PATTERN_SEPARATOR = '*';
-	
-	private String prefix;
-	
-	private String suffix;
-	
-	private boolean splited;
-	
-	public PrefixSuffixPattern() {
-	}
-	
-	public PrefixSuffixPattern(String input) {
-		split(input);
-	}
-	
-	public boolean split(String input) {
-		int start = (input != null) ? input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR) : -1;
-		if (start == -1) {
-			prefix = null;
-			suffix = null;
-			splited = false;
-		} else {
-			prefix = (start > 0 ? input.substring(0, start) : null);
-			suffix = (start < input.length() - 1 ? input.substring(start + 1) : null);
-			splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
-		}
-		return splited;
-	}
+    public static final char PREFIX_SUFFIX_PATTERN_SEPARATOR = '*';
 
-	public String getPrefix() {
-		return prefix;
-	}
+    private String prefix;
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+    private String suffix;
 
-	public String getSuffix() {
-		return suffix;
-	}
+    private boolean splited;
 
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
-	
-	public boolean isSplited() {
-		return splited;
-	}
+    public PrefixSuffixPattern() {
+    }
 
-	public String join(String input) {
-		return join(prefix, input, suffix);
-	}
+    public PrefixSuffixPattern(String input) {
+        split(input);
+    }
 
-	public static String join(String prefix, String input, String suffix) {
-		if (prefix != null && suffix != null) {
-			return prefix + StringUtils.nullToEmpty(input) + suffix;
-		} else if (prefix != null) {
-			return prefix + StringUtils.nullToEmpty(input);
-		} else if (suffix != null) {
-			return StringUtils.nullToEmpty(input) + suffix;
-		} else {
-			return input;
-		}
-	}
+    public boolean split(String input) {
+        int start = (input != null) ? input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR) : -1;
+        if (start == -1) {
+            prefix = null;
+            suffix = null;
+            splited = false;
+        } else {
+            prefix = (start > 0 ? input.substring(0, start) : null);
+            suffix = (start < input.length() - 1 ? input.substring(start + 1) : null);
+            splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
+        }
+        return splited;
+    }
 
-	public static PrefixSuffixPattern parse(String input) {
-		if (input != null && !input.isEmpty()) {
-			PrefixSuffixPattern pattern = new PrefixSuffixPattern(input);
-			if (pattern.isSplited()) {
-				return pattern;
-			}
-		}
-		return null;
-	}
-	
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public boolean isSplited() {
+        return splited;
+    }
+
+    public String join(String input) {
+        return join(prefix, input, suffix);
+    }
+
+    public static String join(String prefix, String input, String suffix) {
+        if (prefix != null && suffix != null) {
+            return prefix + StringUtils.nullToEmpty(input) + suffix;
+        } else if (prefix != null) {
+            return prefix + StringUtils.nullToEmpty(input);
+        } else if (suffix != null) {
+            return StringUtils.nullToEmpty(input) + suffix;
+        } else {
+            return input;
+        }
+    }
+
+    public static PrefixSuffixPattern parse(String input) {
+        if (input != null && !input.isEmpty()) {
+            PrefixSuffixPattern pattern = new PrefixSuffixPattern(input);
+            if (pattern.isSplited()) {
+                return pattern;
+            }
+        }
+        return null;
+    }
+
 }

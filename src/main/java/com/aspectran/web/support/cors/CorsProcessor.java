@@ -30,33 +30,33 @@ import com.aspectran.core.activity.Translet;
  */
 public interface CorsProcessor {
 
-	/**
-	 * Process a simple or actual CORS request.
-	 *
-	 * @param translet the translet
-	 * @throws CorsException if the request is invalid or denied.
-	 * @throws IOException in case of I/O errors
-	 */
-	void processActualRequest(Translet translet) throws CorsException, IOException;
+    /**
+     * Process a simple or actual CORS request.
+     *
+     * @param translet the translet
+     * @throws CorsException if the request is invalid or denied.
+     * @throws IOException in case of I/O errors
+     */
+    void processActualRequest(Translet translet) throws CorsException, IOException;
 
-	/**
-	 * Process a preflight CORS request.
-	 *
-	 * <p>CORS specification:
-	 * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/#resource-preflight-requests">PreflightRequest</a>
-	 *
-	 * @param translet the translet
-	 * @throws CorsException if the request is invalid or denied.
-	 * @throws IOException in case of I/O errors
-	 */
-	void processPreflightRequest(Translet translet) throws CorsException, IOException;
+    /**
+     * Process a preflight CORS request.
+     *
+     * <p>CORS specification:
+     * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/#resource-preflight-requests">PreflightRequest</a>
+     *
+     * @param translet the translet
+     * @throws CorsException if the request is invalid or denied.
+     * @throws IOException in case of I/O errors
+     */
+    void processPreflightRequest(Translet translet) throws CorsException, IOException;
 
-	/**
-	 * Sends an error response to the client using the specified status.
-	 *
-	 * @param translet the translet
-	 * @throws IOException in case of I/O errors
-	 */
-	void sendError(Translet translet) throws IOException;
+    /**
+     * Sends an error response to the client using the specified status.
+     *
+     * @param translet the translet
+     * @throws IOException in case of I/O errors
+     */
+    void sendError(Translet translet) throws IOException;
 
 }

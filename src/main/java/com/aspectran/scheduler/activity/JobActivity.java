@@ -28,26 +28,26 @@ import com.aspectran.core.context.ActivityContext;
  */
 public class JobActivity extends CoreActivity {
 
-	/**
-	 * Instantiates a new job activity.
-	 *
-	 * @param context the current ActivityContext
-	 * @param requestAdapter the request adapter
-	 * @param responseAdapter the response adapter
-	 */
-	public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
-		super(context);
+    /**
+     * Instantiates a new job activity.
+     *
+     * @param context the current ActivityContext
+     * @param requestAdapter the request adapter
+     * @param responseAdapter the response adapter
+     */
+    public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
+        super(context);
 
-		setRequestAdapter(requestAdapter);
-		setResponseAdapter(responseAdapter);
-	}
+        setRequestAdapter(requestAdapter);
+        setResponseAdapter(responseAdapter);
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		JobActivity activity = new JobActivity(getActivityContext(), getRequestAdapter(), getResponseAdapter());
-		activity.setIncluded(true);
-		return (T)activity;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Activity> T newActivity() {
+        JobActivity activity = new JobActivity(getActivityContext(), getRequestAdapter(), getResponseAdapter());
+        activity.setIncluded(true);
+        return (T)activity;
+    }
 
 }

@@ -17,13 +17,13 @@ package com.aspectran.embedded;
 
 public class SecondBean {
 
-	public static final String message = "This is the second bean.";
-	
-	public SecondBean() {
-	}
+    public static final String message = "This is the second bean.";
 
-	public String getMessage() {
-		return message;
-	}
+    public SecondBean() {
+    }
+
+    public String getMessage() {
+        return message;
+    }
 
 }

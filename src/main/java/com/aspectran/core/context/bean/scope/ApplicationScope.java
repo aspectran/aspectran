@@ -24,11 +24,11 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class ApplicationScope extends AbstractScope {
 
-	/**
-	 * Instantiates a new Application scope.
-	 */
-	public ApplicationScope() {
-		super(ScopeType.APPLICATION);
-	}
-	
+    /**
+     * Instantiates a new Application scope.
+     */
+    public ApplicationScope() {
+        super(ScopeType.APPLICATION);
+    }
+
 }

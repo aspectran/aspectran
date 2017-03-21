@@ -23,43 +23,43 @@ import com.aspectran.core.context.AspectranRuntimeException;
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class TransletException extends AspectranRuntimeException {
-	
-	/** @serial */
-	private static final long serialVersionUID = 3736262494374232352L;
 
-	/**
-	 * Creates a new TransletException without detail message.
-	 */
-	public TransletException() {
-		super();
-	}
+    /** @serial */
+    private static final long serialVersionUID = 3736262494374232352L;
 
-	/**
-	 * Constructs a TransletException with the specified detail message.
-	 * 
-	 * @param msg a message to associate with the exception
-	 */
-	public TransletException(String msg) {
-		super(msg);
-	}
+    /**
+     * Creates a new TransletException without detail message.
+     */
+    public TransletException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 * 
-	 * @param cause the real cause of the exception
-	 */
-	public TransletException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a TransletException with the specified detail message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public TransletException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
-	 * @param msg the detail message
-	 * @param cause the real cause of the exception
-	 */
-	public TransletException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public TransletException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the detail message
+     * @param cause the real cause of the exception
+     */
+    public TransletException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

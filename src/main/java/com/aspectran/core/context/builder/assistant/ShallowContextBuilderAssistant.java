@@ -37,147 +37,147 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	private List<AspectRule> aspectRules;
-	
-	private List<BeanRule> beanRules;
+    private List<AspectRule> aspectRules;
 
-	private List<ScheduleRule> scheduleRules;
-	
-	private List<TransletRule> transletRules;
-	
-	private List<TemplateRule> templateRules;
+    private List<BeanRule> beanRules;
 
-	public ShallowContextBuilderAssistant() {
-		super();
-	}
+    private List<ScheduleRule> scheduleRules;
 
-	@Override
-	public void ready() {
-		super.ready();
+    private List<TransletRule> transletRules;
 
-		aspectRules = new ArrayList<>();
-		beanRules = new ArrayList<>();
-		scheduleRules = new ArrayList<>();
-		transletRules = new ArrayList<>();
-		templateRules = new ArrayList<>();
-		
-		setImportHandler(new ShallowImportHandler());
-	}
-	
-	@Override
-	public void release() {
-		super.release();
-		
-		aspectRules = null;
-		beanRules = null;
-		scheduleRules = null;
-		transletRules = null;
-		templateRules = null;
-	}
-	
-	@Override
-	public String resolveAliasType(String alias) {
-		return alias;
-	}
+    private List<TemplateRule> templateRules;
 
-	@Override
-	public String applyTransletNamePattern(String transletName) {
-		return transletName;
-	}
+    public ShallowContextBuilderAssistant() {
+        super();
+    }
 
-	@Override
-	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-		// shallow
-	}
+    @Override
+    public void ready() {
+        super.ready();
 
-	@Override
-	public void addAspectRule(AspectRule aspectRule) {
-		aspectRules.add(aspectRule);
-	}
+        aspectRules = new ArrayList<>();
+        beanRules = new ArrayList<>();
+        scheduleRules = new ArrayList<>();
+        transletRules = new ArrayList<>();
+        templateRules = new ArrayList<>();
 
-	@Override
-	public void addBeanRule(BeanRule beanRule) {
-		beanRules.add(beanRule);
-	}
+        setImportHandler(new ShallowImportHandler());
+    }
 
-	@Override
-	public void addScheduleRule(ScheduleRule scheduleRule) {
-		scheduleRules.add(scheduleRule);
-	}
+    @Override
+    public void release() {
+        super.release();
 
-	@Override
-	public void addTransletRule(TransletRule transletRule) {
-		transletRules.add(transletRule);
-	}
+        aspectRules = null;
+        beanRules = null;
+        scheduleRules = null;
+        transletRules = null;
+        templateRules = null;
+    }
 
-	@Override
-	public void addTemplateRule(TemplateRule templateRule) {
-		templateRules.add(templateRule);
-	}
+    @Override
+    public String resolveAliasType(String alias) {
+        return alias;
+    }
 
-	@Override
-	public Collection<AspectRule> getAspectRules() {
-		return aspectRules;
-	}
+    @Override
+    public String applyTransletNamePattern(String transletName) {
+        return transletName;
+    }
 
-	@Override
-	public Collection<BeanRule> getBeanRules() {
-		return beanRules;
-	}
+    @Override
+    public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
+        // shallow
+    }
 
-	@Override
-	public Collection<ScheduleRule> getScheduleRules() {
-		return scheduleRules;
-	}
-	
-	@Override
-	public Collection<TransletRule> getTransletRules() {
-		return transletRules;
-	}
+    @Override
+    public void addAspectRule(AspectRule aspectRule) {
+        aspectRules.add(aspectRule);
+    }
 
-	@Override
-	public Collection<TemplateRule> getTemplateRules() {
-		return templateRules;
-	}
-	
-	@Override
-	public void resolveAdviceBeanClass(String beanId, AspectRule aspectRule) {
-		// shallow
-	}
+    @Override
+    public void addBeanRule(BeanRule beanRule) {
+        beanRules.add(beanRule);
+    }
 
-	@Override
-	public void resolveActionBeanClass(String beanId, BeanActionRule beanActionRule) {
-		// shallow
-	}
+    @Override
+    public void addScheduleRule(ScheduleRule scheduleRule) {
+        scheduleRules.add(scheduleRule);
+    }
 
-	@Override
-	public void resolveFactoryBeanClass(String beanId, BeanRule beanRule) {
-		// shallow
-	}
-	
-	@Override
-	public void resolveBeanClass(ItemRule itemRule) {
-		// shallow
-	}
+    @Override
+    public void addTransletRule(TransletRule transletRule) {
+        transletRules.add(transletRule);
+    }
 
-	@Override
-	public void resolveBeanClass(Token token) {
-		// shallow
-	}
+    @Override
+    public void addTemplateRule(TemplateRule templateRule) {
+        templateRules.add(templateRule);
+    }
 
-	@Override
-	public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
-		// shallow
-	}
+    @Override
+    public Collection<AspectRule> getAspectRules() {
+        return aspectRules;
+    }
 
-	@Override
-	public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
-		// shallow
-	}
+    @Override
+    public Collection<BeanRule> getBeanRules() {
+        return beanRules;
+    }
 
-	@Override
-	public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
-		// shallow
-	}
+    @Override
+    public Collection<ScheduleRule> getScheduleRules() {
+        return scheduleRules;
+    }
+
+    @Override
+    public Collection<TransletRule> getTransletRules() {
+        return transletRules;
+    }
+
+    @Override
+    public Collection<TemplateRule> getTemplateRules() {
+        return templateRules;
+    }
+
+    @Override
+    public void resolveAdviceBeanClass(String beanId, AspectRule aspectRule) {
+        // shallow
+    }
+
+    @Override
+    public void resolveActionBeanClass(String beanId, BeanActionRule beanActionRule) {
+        // shallow
+    }
+
+    @Override
+    public void resolveFactoryBeanClass(String beanId, BeanRule beanRule) {
+        // shallow
+    }
+
+    @Override
+    public void resolveBeanClass(ItemRule itemRule) {
+        // shallow
+    }
+
+    @Override
+    public void resolveBeanClass(Token token) {
+        // shallow
+    }
+
+    @Override
+    public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+        // shallow
+    }
+
+    @Override
+    public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
+        // shallow
+    }
+
+    @Override
+    public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+        // shallow
+    }
 
 }

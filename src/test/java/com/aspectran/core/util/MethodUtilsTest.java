@@ -35,8 +35,8 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2016. 2. 29.</p>
  */
 public class MethodUtilsTest {
-	
-	private static final Log log = LogFactory.getLog(MethodUtilsTest.class);
+
+    private static final Log log = LogFactory.getLog(MethodUtilsTest.class);
 
     @Test
     public void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -127,17 +127,17 @@ public class MethodUtilsTest {
     private class SampleBean {
 
         @SuppressWarnings("unused")
-		public void primitiveArray(int num) {
-        	log.debug("specified args: " + num);
+        public void primitiveArray(int num) {
+            log.debug("specified args: " + num);
         }
 
         @SuppressWarnings("unused")
-		public void primitiveArray(int[] intArray) {
-        	log.debug("specified args: " + intArray);
+        public void primitiveArray(int[] intArray) {
+            log.debug("specified args: " + intArray);
         }
 
         @SuppressWarnings("unused")
-		public String countTo10(Translet translet) {
+        public String countTo10(Translet translet) {
             StringBuilder sb = new StringBuilder();
 
             for (int i = 1; i <= 10; i++) {
@@ -148,29 +148,29 @@ public class MethodUtilsTest {
         }
         
         @SuppressWarnings("unused")
-		public void setSampleBean(SampleBean sampleBean) {
-        	log.debug("specified args: " + sampleBean);
+        public void setSampleBean(SampleBean sampleBean) {
+            log.debug("specified args: " + sampleBean);
         }
         
         @SuppressWarnings("unused")
-		public void setSampleBean(SampleBean[] sampleBean) {
-        	log.debug("specified args: " + sampleBean);
+        public void setSampleBean(SampleBean[] sampleBean) {
+            log.debug("specified args: " + sampleBean);
         }
 
         @SuppressWarnings("unused")
-		public void setSampleBean(List<SampleBean> list) {
-        	log.debug("specified args: " + list);
+        public void setSampleBean(List<SampleBean> list) {
+            log.debug("specified args: " + list);
         }
 
 //        @SuppressWarnings("unused")
 //        public void setSampleBean(Object o) {
-//        	log.debug("specified args: " + o);
+//            log.debug("specified args: " + o);
 //        }
         
     }
 
     @SuppressWarnings("unused")
-	private class ExtendedSampleBean extends SampleBean {
+    private class ExtendedSampleBean extends SampleBean {
     }
     
 }

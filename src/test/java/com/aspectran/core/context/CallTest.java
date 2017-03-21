@@ -44,67 +44,67 @@ import test.call.TotalBean;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CallTest {
 
-	private File base = base = new File("./target/test-classes");
+    private File base = base = new File("./target/test-classes");
 
-	private ActivityContext context;
+    private ActivityContext context;
 
-	@Before
-	public void ready() throws IOException, InvalidResourceException, ActivityContextBuilderException {
-		BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-		applicationAdapter.setBasePath(base.getCanonicalPath());
-		ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
-		activityContextLoader.setHybridLoad(false);
+    @Before
+    public void ready() throws IOException, InvalidResourceException, ActivityContextBuilderException {
+        BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
+        applicationAdapter.setBasePath(base.getCanonicalPath());
+        ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
+        activityContextLoader.setHybridLoad(false);
 
-		ActivityContext context = activityContextLoader.load("/config/call/call-test-config.xml");
-		context.initialize();
+        ActivityContext context = activityContextLoader.load("/config/call/call-test-config.xml");
+        context.initialize();
 
-		this.context = context;
-	}
+        this.context = context;
+    }
 
-	@Test
-	public void testBeanCall() throws InvalidResourceException, ActivityContextBuilderException {
-		TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
-		int count = 1;
-		for (NumericBean o : totalBean.getNumerics()) {
-			assertEquals(count++, o.getNumber());
-			//System.out.println(o.getNumber() + " : " + o);
-		}
-	}
+    @Test
+    public void testBeanCall() throws InvalidResourceException, ActivityContextBuilderException {
+        TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
+        int count = 1;
+        for (NumericBean o : totalBean.getNumerics()) {
+            assertEquals(count++, o.getNumber());
+            //System.out.println(o.getNumber() + " : " + o);
+        }
+    }
 
-	@Test
-	public void testTemplateCall() throws InvalidResourceException, ActivityContextBuilderException {
-		TemplateProcessor templateProcessor = context.getTemplateProcessor();
-		String result1 = templateProcessor.process("template-2");
+    @Test
+    public void testTemplateCall() throws InvalidResourceException, ActivityContextBuilderException {
+        TemplateProcessor templateProcessor = context.getTemplateProcessor();
+        String result1 = templateProcessor.process("template-2");
 
-		System.out.println("-------------------------------");
-		System.out.println(" Test cases for template calls");
-		System.out.println("-------------------------------");
+        System.out.println("-------------------------------");
+        System.out.println(" Test cases for template calls");
+        System.out.println("-------------------------------");
 
-		assertEquals("TEMPATE-1", result1);
-		System.out.println(result1);
+        assertEquals("TEMPATE-1", result1);
+        System.out.println(result1);
 
-		String result2 = templateProcessor.process("template-4");
+        String result2 = templateProcessor.process("template-4");
 
-		assertEquals("TEMPATE-3", result2);
-		System.out.println(result2);
+        assertEquals("TEMPATE-3", result2);
+        System.out.println(result2);
 
-		String result4 = templateProcessor.process("aponStyle");
-		System.out.println(" === aponStyle ===");
-		System.out.println(result4);
+        String result4 = templateProcessor.process("aponStyle");
+        System.out.println(" === aponStyle ===");
+        System.out.println(result4);
 
-		String result5 = templateProcessor.process("compactStyle");
-		System.out.println(" === compactStyle ===");
-		System.out.println(result5);
+        String result5 = templateProcessor.process("compactStyle");
+        System.out.println(" === compactStyle ===");
+        System.out.println(result5);
 
-		String result6 = templateProcessor.process("compressedStyle");
-		System.out.println(" === compressedStyle ===");
-		System.out.println(result6);
+        String result6 = templateProcessor.process("compressedStyle");
+        System.out.println(" === compressedStyle ===");
+        System.out.println(result6);
 
-	}
+    }
 
-	@After
-	public void finish() {
-		context.destroy();
-	}
+    @After
+    public void finish() {
+        context.destroy();
+    }
 
 }

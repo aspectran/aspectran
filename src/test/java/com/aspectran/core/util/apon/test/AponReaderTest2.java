@@ -20,30 +20,30 @@ import com.aspectran.core.util.apon.AponWriter;
 
 public class AponReaderTest2 {
 
-	public static void main(String argv[]) {
-		try {
-			Customer customer = new Customer();
-			customer.putValue(Customer.id, "guest");
-			customer.putValue(Customer.name, "Guest");
-			customer.putValue(Customer.age, 20);
-			customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
-			customer.putValue(Customer.approved, false);
-			
-			String text = AponWriter.stringify(customer);
-			
-			Customer customer2 = new Customer();
-			customer2 = AponReader.parse(text, customer2);
-			
-			String text2 = AponWriter.stringify(customer2);
-			
-			System.out.println("---------------------------------------------------");
-			System.out.print(text);
-			System.out.println("---------------------------------------------------");
-			System.out.print(text2);
-			System.out.println("---------------------------------------------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void main(String argv[]) {
+        try {
+            Customer customer = new Customer();
+            customer.putValue(Customer.id, "guest");
+            customer.putValue(Customer.name, "Guest");
+            customer.putValue(Customer.age, 20);
+            customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
+            customer.putValue(Customer.approved, false);
+
+            String text = AponWriter.stringify(customer);
+
+            Customer customer2 = new Customer();
+            customer2 = AponReader.parse(text, customer2);
+
+            String text2 = AponWriter.stringify(customer2);
+
+            System.out.println("---------------------------------------------------");
+            System.out.print(text);
+            System.out.println("---------------------------------------------------");
+            System.out.print(text2);
+            System.out.println("---------------------------------------------------");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

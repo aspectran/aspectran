@@ -21,33 +21,33 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContentParameters extends AbstractParameters {
 
-	public static final ParameterDefinition name;
-	public static final ParameterDefinition hidden;
-	public static final ParameterDefinition omittable;
-	public static final ParameterDefinition actions;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		name = new ParameterDefinition("name", ParameterValueType.STRING);
-		hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
-		omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			name,
-			hidden,
-			omittable,
-			actions
-		};
-	}
-	
-	public ContentParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public ContentParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition name;
+    public static final ParameterDefinition hidden;
+    public static final ParameterDefinition omittable;
+    public static final ParameterDefinition actions;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        name = new ParameterDefinition("name", ParameterValueType.STRING);
+        hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
+        omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
+        actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            name,
+            hidden,
+            omittable,
+            actions
+        };
+    }
+
+    public ContentParameters() {
+        super(parameterDefinitions);
+    }
+
+    public ContentParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

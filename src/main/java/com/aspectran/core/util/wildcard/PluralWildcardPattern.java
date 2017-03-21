@@ -27,89 +27,89 @@ import java.util.List;
  */
 public class PluralWildcardPattern {
 
-	private final WildcardPattern[] patterns;
+    private final WildcardPattern[] patterns;
 
-	public PluralWildcardPattern(WildcardPattern[] patterns) {
-		this.patterns = patterns;
-	}
+    public PluralWildcardPattern(WildcardPattern[] patterns) {
+        this.patterns = patterns;
+    }
 
-	public PluralWildcardPattern(String[] patterns) {
-		this.patterns = compile(patterns);
-	}
+    public PluralWildcardPattern(String[] patterns) {
+        this.patterns = compile(patterns);
+    }
 
-	public PluralWildcardPattern(String[] patterns, char separator) {
-		this.patterns = compile(patterns, separator);
-	}
+    public PluralWildcardPattern(String[] patterns, char separator) {
+        this.patterns = compile(patterns, separator);
+    }
 
-	public boolean matches(String compareString) {
-		if (patterns != null) {
-			for (WildcardPattern pattern : patterns) {
-				if (pattern.matches(compareString)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    public boolean matches(String compareString) {
+        if (patterns != null) {
+            for (WildcardPattern pattern : patterns) {
+                if (pattern.matches(compareString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	public static WildcardPattern[] compile(String[] patterns) {
-		if (patterns == null || patterns.length == 0) {
-			return null;
-		}
-		List<WildcardPattern> wildcardPatternList = new ArrayList<>(patterns.length);
-		for (String pattern : patterns) {
-			if (pattern != null && pattern.length() > 0) {
-				WildcardPattern wildcardPattern = new WildcardPattern(pattern);
-				wildcardPatternList.add(wildcardPattern);
-			}
-		}
-		if (wildcardPatternList.size() > 0) {
-			return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
-		} else {
-			return null;
-		}
-	}
+    public static WildcardPattern[] compile(String[] patterns) {
+        if (patterns == null || patterns.length == 0) {
+            return null;
+        }
+        List<WildcardPattern> wildcardPatternList = new ArrayList<>(patterns.length);
+        for (String pattern : patterns) {
+            if (pattern != null && pattern.length() > 0) {
+                WildcardPattern wildcardPattern = new WildcardPattern(pattern);
+                wildcardPatternList.add(wildcardPattern);
+            }
+        }
+        if (wildcardPatternList.size() > 0) {
+            return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
+        } else {
+            return null;
+        }
+    }
 
-	public static WildcardPattern[] compile(String[] patterns, char separator) {
-		if (patterns == null || patterns.length == 0) {
-			return null;
-		}
-		List<WildcardPattern> wildcardPatternList = new ArrayList<>(patterns.length);
-		for (String pattern : patterns) {
-			if (pattern != null && pattern.length() > 0) {
-				WildcardPattern wildcardPattern = new WildcardPattern(pattern, separator);
-				wildcardPatternList.add(wildcardPattern);
-			}
-		}
-		if (wildcardPatternList.size() > 0) {
-			return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
-		} else {
-			return null;
-		}
-	}
+    public static WildcardPattern[] compile(String[] patterns, char separator) {
+        if (patterns == null || patterns.length == 0) {
+            return null;
+        }
+        List<WildcardPattern> wildcardPatternList = new ArrayList<>(patterns.length);
+        for (String pattern : patterns) {
+            if (pattern != null && pattern.length() > 0) {
+                WildcardPattern wildcardPattern = new WildcardPattern(pattern, separator);
+                wildcardPatternList.add(wildcardPattern);
+            }
+        }
+        if (wildcardPatternList.size() > 0) {
+            return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
+        } else {
+            return null;
+        }
+    }
 
-	public static PluralWildcardPattern newInstance(String[] patterns) {
-		if (patterns == null || patterns.length == 0) {
-			return null;
-		}
-		WildcardPattern[] wildcardPatterns = compile(patterns);
-		if (wildcardPatterns != null) {
-			return new PluralWildcardPattern(wildcardPatterns);
-		} else {
-			return null;
-		}
-	}
+    public static PluralWildcardPattern newInstance(String[] patterns) {
+        if (patterns == null || patterns.length == 0) {
+            return null;
+        }
+        WildcardPattern[] wildcardPatterns = compile(patterns);
+        if (wildcardPatterns != null) {
+            return new PluralWildcardPattern(wildcardPatterns);
+        } else {
+            return null;
+        }
+    }
 
-	public static PluralWildcardPattern newInstance(String[] patterns, char separator) {
-		if (patterns == null || patterns.length == 0) {
-			return null;
-		}
-		WildcardPattern[] wildcardPatterns = compile(patterns, separator);
-		if (wildcardPatterns != null) {
-			return new PluralWildcardPattern(wildcardPatterns);
-		} else {
-			return null;
-		}
-	}
+    public static PluralWildcardPattern newInstance(String[] patterns, char separator) {
+        if (patterns == null || patterns.length == 0) {
+            return null;
+        }
+        WildcardPattern[] wildcardPatterns = compile(patterns, separator);
+        if (wildcardPatterns != null) {
+            return new PluralWildcardPattern(wildcardPatterns);
+        } else {
+            return null;
+        }
+    }
 
 }

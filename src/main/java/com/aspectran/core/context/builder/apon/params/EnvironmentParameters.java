@@ -21,28 +21,28 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class EnvironmentParameters extends AbstractParameters {
 
-	public static final ParameterDefinition profile;
-	
-	public static final ParameterDefinition properties;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		profile = new ParameterDefinition("profile", ParameterValueType.STRING);
-		properties = new ParameterDefinition("properties", ItemHolderParameters.class);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			profile,
-			properties
-		};
-	}
-	
-	public EnvironmentParameters() {
-		super(parameterDefinitions);
-	}
-	
-	public EnvironmentParameters(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public static final ParameterDefinition profile;
+
+    public static final ParameterDefinition properties;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+        properties = new ParameterDefinition("properties", ItemHolderParameters.class);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            profile,
+            properties
+        };
+    }
+
+    public EnvironmentParameters() {
+        super(parameterDefinitions);
+    }
+
+    public EnvironmentParameters(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

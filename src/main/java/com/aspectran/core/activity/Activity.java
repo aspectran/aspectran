@@ -37,245 +37,245 @@ import com.aspectran.core.context.template.TemplateProcessor;
  */
 public interface Activity extends BeanRegistry {
 
-	/**
-	 * Preparation for the activity.
-	 *
-	 * @param transletName the translet name
-	 */
-	void prepare(String transletName);
-	
-	/**
-	 * Preparation for the activity.
-	 *
-	 * @param transletName the translet name
-	 * @param requestMethod the request method
-	 */
-	void prepare(String transletName, String requestMethod);
+    /**
+     * Preparation for the activity.
+     *
+     * @param transletName the translet name
+     */
+    void prepare(String transletName);
 
-	/**
-	 * Preparation for the activity.
-	 *
-	 * @param transletName the translet name
-	 * @param requestMethod the request method
-	 */
-	void prepare(String transletName, MethodType requestMethod);
-	
-	/**
-	 * Perform a prepared activity.
-	 */
-	void perform();
-	
-	/**
-	 * Perform a prepared activity but does not respond to the client.
-	 */
-	void performWithoutResponse();
+    /**
+     * Preparation for the activity.
+     *
+     * @param transletName the translet name
+     * @param requestMethod the request method
+     */
+    void prepare(String transletName, String requestMethod);
 
-	/**
-	 * Finish the activity.
-	 * It must be called before exiting activity.
-	 */
-	void finish();
+    /**
+     * Preparation for the activity.
+     *
+     * @param transletName the translet name
+     * @param requestMethod the request method
+     */
+    void prepare(String transletName, MethodType requestMethod);
 
-	/**
-	 * Throws an Activity Terminated Exception in order to end the current activity.
-	 * @throws ActivityTerminatedException if an activity is terminated during processing
-	 */
-	void terminate();
+    /**
+     * Perform a prepared activity.
+     */
+    void perform();
 
-	/**
-	 * Gets the request http method.
-	 *
-	 * @return the request method
-	 */
-	MethodType getRequestMethod();
+    /**
+     * Perform a prepared activity but does not respond to the client.
+     */
+    void performWithoutResponse();
 
-	/**
-	 * Gets the name of the current translet.
-	 *
-	 * @return the translet name
-	 */
-	String getTransletName();
+    /**
+     * Finish the activity.
+     * It must be called before exiting activity.
+     */
+    void finish();
 
-	/**
-	 * Returns an instance of the current translet.
-	 *
-	 * @return an instance of the current translet
-	 */
-	Translet getTranslet();
+    /**
+     * Throws an Activity Terminated Exception in order to end the current activity.
+     * @throws ActivityTerminatedException if an activity is terminated during processing
+     */
+    void terminate();
 
-	/**
-	 * Returns the process result.
-	 *
-	 * @return the process result
-	 */
-	ProcessResult getProcessResult();
+    /**
+     * Gets the request http method.
+     *
+     * @return the request method
+     */
+    MethodType getRequestMethod();
 
-	/**
-	 * Returns an action result for the specified action id from the process result,
-	 * or {@code null} if the action does not exist.
-	 *
-	 * @param actionId the specified action id
-	 * @return an action result
-	 */
-	Object getProcessResult(String actionId);
+    /**
+     * Gets the name of the current translet.
+     *
+     * @return the translet name
+     */
+    String getTransletName();
 
-	/**
-	 * Execute the aspect advices.
-	 *
-	 * @param aspectAdviceRuleList the aspect advice rule list
-	 */
-	void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
-	
-	/**
-	 * Execute the aspect advices without throw exceptions.
-	 *
-	 * @param aspectAdviceRuleList the aspect advice rule list
-	 */
-	void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
-	
-	/**
-	 * Execute the aspect advice.
-	 *
-	 * @param aspectAdviceRule the aspect advice rule
-	 */
-	void executeAdvice(AspectAdviceRule aspectAdviceRule);
-	
-	/**
-	 * Execute the aspect advice without throw exceptions.
-	 *
-	 * @param aspectAdviceRule the aspect advice rule
-	 */
-	void executeAdviceWithoutThrow(AspectAdviceRule aspectAdviceRule);
-	
-	/**
-	 * Returns whether the response is reserved.
-	 * 
-	 * @return true, if the response is reserved
-	 */
-	boolean isResponseReserved();
+    /**
+     * Returns an instance of the current translet.
+     *
+     * @return an instance of the current translet
+     */
+    Translet getTranslet();
 
-	/**
-	 * Exception handling.
-	 *
-	 * @param exceptionRuleList the exception rule list
-	 */
-	void handleException(List<ExceptionRule> exceptionRuleList);
+    /**
+     * Returns the process result.
+     *
+     * @return the process result
+     */
+    ProcessResult getProcessResult();
 
-	/**
-	 * Returns whether the exception was thrown.
-	 *
-	 * @return true, if is exception raised
-	 */
-	boolean isExceptionRaised();
+    /**
+     * Returns an action result for the specified action id from the process result,
+     * or {@code null} if the action does not exist.
+     *
+     * @param actionId the specified action id
+     * @return an action result
+     */
+    Object getProcessResult(String actionId);
 
-	/**
-	 * Returns an instance of the currently raised exception.
-	 *
-	 * @return an instance of the currently raised exception
-	 */
-	Throwable getRaisedException();
+    /**
+     * Execute the aspect advices.
+     *
+     * @param aspectAdviceRuleList the aspect advice rule list
+     */
+    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
 
-	/**
-	 * Returns an instance of the originally raised exception.
-	 *
-	 * @return an instance of the originally raised exception
-	 */
-	Throwable getOriginRaisedException();
+    /**
+     * Execute the aspect advices without throw exceptions.
+     *
+     * @param aspectAdviceRuleList the aspect advice rule list
+     */
+    void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 
-	/**
-	 * Sets an instance of the currently raised exception.
-	 *
-	 * @param raisedException an instance of the currently raised exception
-	 */
-	void setRaisedException(Throwable raisedException);
+    /**
+     * Execute the aspect advice.
+     *
+     * @param aspectAdviceRule the aspect advice rule
+     */
+    void executeAdvice(AspectAdviceRule aspectAdviceRule);
 
-	/**
-	 * Gets the activity context.
-	 *
-	 * @return the activity context
-	 */
-	ActivityContext getActivityContext();
+    /**
+     * Execute the aspect advice without throw exceptions.
+     *
+     * @param aspectAdviceRule the aspect advice rule
+     */
+    void executeAdviceWithoutThrow(AspectAdviceRule aspectAdviceRule);
 
-	/**
-	 * Returns the class loader.
-	 *
-	 * @return the class loader
-	 */
-	ClassLoader getClassLoader();
+    /**
+     * Returns whether the response is reserved.
+     *
+     * @return true, if the response is reserved
+     */
+    boolean isResponseReserved();
 
-	/**
-	 * Create a new inner activity.
-	 *
-	 * @param <T> the type of the activity
-	 * @return the activity object
-	 */
-	<T extends Activity> T newActivity();
+    /**
+     * Exception handling.
+     *
+     * @param exceptionRuleList the exception rule list
+     */
+    void handleException(List<ExceptionRule> exceptionRuleList);
 
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	ApplicationAdapter getApplicationAdapter();
+    /**
+     * Returns whether the exception was thrown.
+     *
+     * @return true, if is exception raised
+     */
+    boolean isExceptionRaised();
 
-	/**
-	 * Gets the session adapter.
-	 *
-	 * @return the session adapter
-	 */
-	SessionAdapter getSessionAdapter();
-	
-	/**
-	 * Gets the request adapter.
-	 *
-	 * @return the request adapter
-	 */
-	RequestAdapter getRequestAdapter();
-	
-	/**
-	 * Gets the response adapter.
-	 *
-	 * @return the response adapter
-	 */
-	ResponseAdapter getResponseAdapter();
+    /**
+     * Returns an instance of the currently raised exception.
+     *
+     * @return an instance of the currently raised exception
+     */
+    Throwable getRaisedException();
 
-	/**
-	 * Gets the bean registry.
-	 *
-	 * @return the bean registry
-	 */
-	BeanRegistry getBeanRegistry();
-	
-	/**
-	 * Gets the template processor.
-	 *
-	 * @return the template processor
-	 */
-	TemplateProcessor getTemplateProcessor();
+    /**
+     * Returns an instance of the originally raised exception.
+     *
+     * @return an instance of the originally raised exception
+     */
+    Throwable getOriginRaisedException();
 
-	/**
-	 * Gets the setting value in the translet scope.
-	 *
-	 * @param <T> the type of the value
-	 * @param settingName the setting name
-	 * @return the setting value
-	 */
-	<T> T getSetting(String settingName);
+    /**
+     * Sets an instance of the currently raised exception.
+     *
+     * @param raisedException an instance of the currently raised exception
+     */
+    void setRaisedException(Throwable raisedException);
 
-	/**
-	 * Register an aspect rule dynamically.
-	 *
-	 * @param aspectRule the aspect rule
-	 */
-	void registerAspectRule(AspectRule aspectRule);
+    /**
+     * Gets the activity context.
+     *
+     * @return the activity context
+     */
+    ActivityContext getActivityContext();
 
-	/**
-	 * Gets the aspect advice bean.
-	 *
-	 * @param <T> the type of the bean
-	 * @param aspectId the aspect id
-	 * @return the aspect advice bean object
-	 */
-	<T> T getAspectAdviceBean(String aspectId);
+    /**
+     * Returns the class loader.
+     *
+     * @return the class loader
+     */
+    ClassLoader getClassLoader();
+
+    /**
+     * Create a new inner activity.
+     *
+     * @param <T> the type of the activity
+     * @return the activity object
+     */
+    <T extends Activity> T newActivity();
+
+    /**
+     * Gets the application adapter.
+     *
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
+
+    /**
+     * Gets the session adapter.
+     *
+     * @return the session adapter
+     */
+    SessionAdapter getSessionAdapter();
+
+    /**
+     * Gets the request adapter.
+     *
+     * @return the request adapter
+     */
+    RequestAdapter getRequestAdapter();
+
+    /**
+     * Gets the response adapter.
+     *
+     * @return the response adapter
+     */
+    ResponseAdapter getResponseAdapter();
+
+    /**
+     * Gets the bean registry.
+     *
+     * @return the bean registry
+     */
+    BeanRegistry getBeanRegistry();
+
+    /**
+     * Gets the template processor.
+     *
+     * @return the template processor
+     */
+    TemplateProcessor getTemplateProcessor();
+
+    /**
+     * Gets the setting value in the translet scope.
+     *
+     * @param <T> the type of the value
+     * @param settingName the setting name
+     * @return the setting value
+     */
+    <T> T getSetting(String settingName);
+
+    /**
+     * Register an aspect rule dynamically.
+     *
+     * @param aspectRule the aspect rule
+     */
+    void registerAspectRule(AspectRule aspectRule);
+
+    /**
+     * Gets the aspect advice bean.
+     *
+     * @param <T> the type of the bean
+     * @param aspectId the aspect id
+     * @return the aspect advice bean object
+     */
+    <T> T getAspectAdviceBean(String aspectId);
 
 }

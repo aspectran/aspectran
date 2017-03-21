@@ -21,30 +21,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranWebConfig extends AbstractParameters {
 
-	public static final ParameterDefinition exposals;
-	public static final ParameterDefinition uriDecoding;
-	public static final ParameterDefinition defaultServletName;
+    public static final ParameterDefinition exposals;
+    public static final ParameterDefinition uriDecoding;
+    public static final ParameterDefinition defaultServletName;
 
-	private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
-	static {
-		exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
-		uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
-		defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
+    static {
+        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+        uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
+        defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
 
-		parameterDefinitions = new ParameterDefinition[] {
-			exposals,
-			uriDecoding,
-			defaultServletName
-		};
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            exposals,
+            uriDecoding,
+            defaultServletName
+        };
+    }
 
-	public AspectranWebConfig() {
-		super(parameterDefinitions);
-	}
+    public AspectranWebConfig() {
+        super(parameterDefinitions);
+    }
 
-	public AspectranWebConfig(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public AspectranWebConfig(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

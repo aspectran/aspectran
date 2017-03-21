@@ -21,30 +21,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranConsoleConfig extends AbstractParameters {
 
-	public static final ParameterDefinition mode;
-	public static final ParameterDefinition prompt;
-	public static final ParameterDefinition exposals;
+    public static final ParameterDefinition mode;
+    public static final ParameterDefinition prompt;
+    public static final ParameterDefinition exposals;
 
-	private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
-	static {
-		mode = new ParameterDefinition("mode", ParameterValueType.STRING);
-		prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
-		exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+    static {
+        mode = new ParameterDefinition("mode", ParameterValueType.STRING);
+        prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
+        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
-		parameterDefinitions = new ParameterDefinition[] {
-			mode,
-			prompt,
-			exposals
-		};
-	}
+        parameterDefinitions = new ParameterDefinition[] {
+            mode,
+            prompt,
+            exposals
+        };
+    }
 
-	public AspectranConsoleConfig() {
-		super(parameterDefinitions);
-	}
+    public AspectranConsoleConfig() {
+        super(parameterDefinitions);
+    }
 
-	public AspectranConsoleConfig(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    public AspectranConsoleConfig(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

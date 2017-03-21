@@ -25,15 +25,15 @@ import com.aspectran.core.context.bean.annotation.Request;
 @Configuration
 public class SimpleAopTestAction {
 
-	@Request (translet = "/aop/test/target1")
-	public void target1(Translet translet) {
-		System.out.println("[SimpleAopTest] Target-1");
-	}
+    @Request (translet = "/aop/test/target1")
+    public void target1(Translet translet) {
+        System.out.println("[SimpleAopTest] Target-1");
+    }
 
-	@Request (translet = "/aop/test/target2")
-	public void target2(Translet translet) {
-		System.out.println("[SimpleAopTest] Target-2");
-		throw new SimpleAopTestException();
-	}
+    @Request (translet = "/aop/test/target2")
+    public void target2(Translet translet) {
+        System.out.println("[SimpleAopTest] Target-2");
+        throw new SimpleAopTestException();
+    }
 
 }

@@ -29,65 +29,65 @@ import com.aspectran.core.context.rule.type.ImporterType;
  */
 abstract class AbstractImporter implements Importer {
 
-	private ImporterType importerType;
+    private ImporterType importerType;
 
-	private ImporterFileFormatType importerFileFormatType;
-	
-	private String[] profiles;
+    private ImporterFileFormatType importerFileFormatType;
 
-	private long lastModified;
+    private String[] profiles;
 
-	AbstractImporter(ImporterType importerType) {
-		this.importerType = importerType;
-	}
+    private long lastModified;
 
-	@Override
-	public ImporterType getImporterType() {
-		return importerType;
-	}
-	
-	@Override
-	public ImporterFileFormatType getImporterFileFormatType() {
-		return importerFileFormatType;
-	}
+    AbstractImporter(ImporterType importerType) {
+        this.importerType = importerType;
+    }
 
-	@Override
-	public void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType) {
-		this.importerFileFormatType = importerFileFormatType;
-	}
+    @Override
+    public ImporterType getImporterType() {
+        return importerType;
+    }
 
-	@Override
-	public String[] getProfiles() {
-		return profiles;
-	}
+    @Override
+    public ImporterFileFormatType getImporterFileFormatType() {
+        return importerFileFormatType;
+    }
 
-	@Override
-	public void setProfiles(String[] profiles) {
-		this.profiles = profiles;
-	}
+    @Override
+    public void setImporterFileFormatType(ImporterFileFormatType importerFileFormatType) {
+        this.importerFileFormatType = importerFileFormatType;
+    }
 
-	@Override
-	public long getLastModified() {
-		return lastModified;
-	}
+    @Override
+    public String[] getProfiles() {
+        return profiles;
+    }
 
-	@Override
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
-	}
+    @Override
+    public void setProfiles(String[] profiles) {
+        this.profiles = profiles;
+    }
 
-	@Override
-	public Reader getReader() throws IOException {
-		return getReader(null);
-	}
-	
-	@Override
-	public Reader getReader(String encoding) throws IOException {
-		if (encoding != null) {
-			return new InputStreamReader(getInputStream(), encoding);
-		} else {
-			return new InputStreamReader(getInputStream());
-		}
-	}
+    @Override
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    @Override
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    @Override
+    public Reader getReader() throws IOException {
+        return getReader(null);
+    }
+
+    @Override
+    public Reader getReader(String encoding) throws IOException {
+        if (encoding != null) {
+            return new InputStreamReader(getInputStream(), encoding);
+        } else {
+            return new InputStreamReader(getInputStream());
+        }
+    }
 
 }

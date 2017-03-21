@@ -24,30 +24,30 @@ import com.aspectran.core.context.builder.xml.AspectranNodeParser;
  * The Class XmlImportHandler.
  */
 public class XmlImportHandler extends AbstractImportHandler {
-	
-	private final ContextBuilderAssistant assistant;
-	
-	private AspectranNodeParser aspectranNodeParser;
-	
-	public XmlImportHandler(ActivityContextBuilder builder) {
-		super(builder.getContextEnvironment());
 
-		assistant = builder.getContextBuilderAssistant();
-		aspectranNodeParser = new AspectranNodeParser(assistant);
-	}
+    private final ContextBuilderAssistant assistant;
 
-	@Override
-	public void handle(Importer importer) throws Exception {
-		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
-		
-		aspectranNodeParser.parse(importer.getInputStream());
-		
-		super.handle();
-		
-		// First default setting is held after configuration loading is completed.
-		if (assistantLocal.getReplicatedCount() > 0) {
-			assistant.restoreAssistantLocal(assistantLocal);
-		}
-	}
+    private AspectranNodeParser aspectranNodeParser;
+
+    public XmlImportHandler(ActivityContextBuilder builder) {
+        super(builder.getContextEnvironment());
+
+        assistant = builder.getContextBuilderAssistant();
+        aspectranNodeParser = new AspectranNodeParser(assistant);
+    }
+
+    @Override
+    public void handle(Importer importer) throws Exception {
+        AssistantLocal assistantLocal = assistant.backupAssistantLocal();
+
+        aspectranNodeParser.parse(importer.getInputStream());
+
+        super.handle();
+
+        // First default setting is held after configuration loading is completed.
+        if (assistantLocal.getReplicatedCount() > 0) {
+            assistant.restoreAssistantLocal(assistantLocal);
+        }
+    }
 
 }

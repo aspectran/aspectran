@@ -25,45 +25,45 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
 public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
-	private String rootContext;
+    private String rootContext;
 
-	public XmlActivityContextLoader() {
-		super(new BasicApplicationAdapter());
-	}
-	
-	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter);
-	}
+    public XmlActivityContextLoader() {
+        super(new BasicApplicationAdapter());
+    }
 
-	@Override
-	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
-		this.rootContext = rootContext;
+    public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
+        super(applicationAdapter);
+    }
 
-		log.info("Loading ActivityContext with root configuration: " + rootContext);
+    @Override
+    public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
+        this.rootContext = rootContext;
 
-		long startTime = System.currentTimeMillis();
+        log.info("Loading ActivityContext with root configuration: " + rootContext);
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(getApplicationAdapter());
-		builder.setActiveProfiles(getActiveProfiles());
-		builder.setDefaultProfiles(getDefaultProfiles());
-		builder.setHybridLoad(isHybridLoad());
-		
-		ActivityContext activityContext = builder.build(rootContext);
-		
-		long elapsedTime = System.currentTimeMillis() - startTime;
+        long startTime = System.currentTimeMillis();
 
-		log.info("ActivityContext load completed in " + elapsedTime + " ms.");
-		
-		return activityContext;
-	}
+        ActivityContextBuilder builder = new XmlActivityContextBuilder(getApplicationAdapter());
+        builder.setActiveProfiles(getActiveProfiles());
+        builder.setDefaultProfiles(getDefaultProfiles());
+        builder.setHybridLoad(isHybridLoad());
 
-	@Override
-	public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
-		if (hardReload) {
-			newAspectranClassLoader();
-		}
+        ActivityContext activityContext = builder.build(rootContext);
 
-		return load(rootContext);
-	}
+        long elapsedTime = System.currentTimeMillis() - startTime;
+
+        log.info("ActivityContext load completed in " + elapsedTime + " ms.");
+
+        return activityContext;
+    }
+
+    @Override
+    public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
+        if (hardReload) {
+            newAspectranClassLoader();
+        }
+
+        return load(rootContext);
+    }
 
 }

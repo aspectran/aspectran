@@ -25,17 +25,17 @@ import com.aspectran.core.context.env.ContextEnvironment;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public interface ActivityContextBuilder {
-	
-	ContextEnvironment getContextEnvironment();
-	
-	ContextBuilderAssistant getContextBuilderAssistant();
-	
-	void setActiveProfiles(String... activeProfiles);
-	
-	void setDefaultProfiles(String... defaultProfiles);
-	
-	void setHybridLoad(boolean hybridLoad);
-	
-	ActivityContext build(String rootContext) throws ActivityContextBuilderException;
-	
+
+    ContextEnvironment getContextEnvironment();
+
+    ContextBuilderAssistant getContextBuilderAssistant();
+
+    void setActiveProfiles(String... activeProfiles);
+
+    void setDefaultProfiles(String... defaultProfiles);
+
+    void setHybridLoad(boolean hybridLoad);
+
+    ActivityContext build(String rootContext) throws ActivityContextBuilderException;
+
 }

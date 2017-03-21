@@ -29,113 +29,113 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
 public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {
-	
-	/** @serial */
-	private static final long serialVersionUID = 2567969961069441527L;
-	
-	private String name;
-	
-	private Boolean omittable;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	public ContentList() {
-		super(3);
-	}
+    /** @serial */
+    private static final long serialVersionUID = 2567969961069441527L;
 
-	protected ContentList(Collection<ActionList> c) {
-		super(c);
-	}
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    private Boolean omittable;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	public boolean isOmittable() {
-		return BooleanUtils.toBoolean(omittable);
-	}
+    public ContentList() {
+        super(3);
+    }
 
-	public Boolean getOmittable() {
-		return omittable;
-	}
+    protected ContentList(Collection<ActionList> c) {
+        super(c);
+    }
 
-	public void setOmittable(Boolean omittable) {
-		this.omittable = omittable;
-	}
-	
-	public void addActionList(ActionList actionList) {
-		if (actionList != null) {
-			add(actionList);
-		}
-	}
+    public String getName() {
+        return name;
+    }
 
-	public ActionList newActionList(boolean omittable) {
-		ActionList actionList = new ActionList();
-		if (omittable) {
-			actionList.setOmittable(Boolean.TRUE);
-		}
-		add(actionList);
-		return actionList;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getVisibleCount() {
-		int count = 0;
-		for (ActionList actionList : this) {
-			if (!actionList.isHidden()) {
-				count++;
-			}
-		}
-		return count;
-	}
+    public boolean isOmittable() {
+        return BooleanUtils.toBoolean(omittable);
+    }
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
+    public Boolean getOmittable() {
+        return omittable;
+    }
 
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
+    public void setOmittable(Boolean omittable) {
+        this.omittable = omittable;
+    }
 
-	public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		}
-		return aspectAdviceRuleRegistry;
-	}
+    public void addActionList(ActionList actionList) {
+        if (actionList != null) {
+            add(actionList);
+        }
+    }
 
-	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-		if (aspectAdviceRuleRegistry == null) {
-			return null;
-		}
-		return aspectAdviceRuleRegistry.replicate();
-	}
+    public ActionList newActionList(boolean omittable) {
+        ActionList actionList = new ActionList();
+        if (omittable) {
+            actionList.setOmittable(Boolean.TRUE);
+        }
+        add(actionList);
+        return actionList;
+    }
 
-	@Override
-	public ContentList replicate() {
-		ContentList contentList = new ContentList(this);
-		contentList.setName(name);
-		contentList.setOmittable(omittable);
-		return contentList;
-	}
+    public int getVisibleCount() {
+        int count = 0;
+        for (ActionList actionList : this) {
+            if (!actionList.isHidden()) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
-		tsb.append("omittable", omittable);
-		tsb.append("contents", this);
-		return tsb.toString();
-	}
-	
-	public static ContentList newInstance(String name, Boolean omittable) {
-		ContentList contentList = new ContentList();
-		contentList.setName(name);
-		contentList.setOmittable(omittable);
-		return contentList;
-	}
+    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+        return aspectAdviceRuleRegistry;
+    }
+
+    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    }
+
+    public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
+        if (aspectAdviceRuleRegistry == null) {
+            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+        }
+        return aspectAdviceRuleRegistry;
+    }
+
+    public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+        if (aspectAdviceRuleRegistry == null) {
+            return null;
+        }
+        return aspectAdviceRuleRegistry.replicate();
+    }
+
+    @Override
+    public ContentList replicate() {
+        ContentList contentList = new ContentList(this);
+        contentList.setName(name);
+        contentList.setOmittable(omittable);
+        return contentList;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("omittable", omittable);
+        tsb.append("contents", this);
+        return tsb.toString();
+    }
+
+    public static ContentList newInstance(String name, Boolean omittable) {
+        ContentList contentList = new ContentList();
+        contentList.setName(name);
+        contentList.setOmittable(omittable);
+        return contentList;
+    }
 
 }

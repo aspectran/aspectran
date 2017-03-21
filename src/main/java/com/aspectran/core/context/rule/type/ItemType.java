@@ -22,38 +22,38 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ItemType {
 
-	SINGLE("single"),
-	ARRAY("array"),
-	LIST("list"),
-	MAP("map"),
-	SET("set"),
-	PROPERTIES("properties");
+    SINGLE("single"),
+    ARRAY("array"),
+    LIST("list"),
+    MAP("map"),
+    SET("set"),
+    PROPERTIES("properties");
 
-	private final String alias;
+    private final String alias;
 
-	ItemType(String alias) {
-		this.alias = alias;
-	}
+    ItemType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns an {@code ItemType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the item type as a {@code String}
-	 * @return an {@code ItemType}, may be {@code null}
-	 */
-	public static ItemType resolve(String alias) {
-		for (ItemType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns an {@code ItemType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the item type as a {@code String}
+     * @return an {@code ItemType}, may be {@code null}
+     */
+    public static ItemType resolve(String alias) {
+        for (ItemType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

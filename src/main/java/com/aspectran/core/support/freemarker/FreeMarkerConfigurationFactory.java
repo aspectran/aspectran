@@ -107,28 +107,28 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     }
 
     public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
-		this.templateLoaderPaths = new String[] { templateLoaderPath };
-	}
+        this.templateLoaderPaths = new String[] { templateLoaderPath };
+    }
 
     public void setTemplateLoaderPath(String[] templateLoaderPaths) {
-		this.templateLoaderPaths = templateLoaderPaths;
-	}
+        this.templateLoaderPaths = templateLoaderPaths;
+    }
 
     public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
-	}
+    }
 
     public void setTemplateLoader(TemplateLoader templateLoaders) {
-		this.templateLoaders = new TemplateLoader[] {templateLoaders};
-	}
+        this.templateLoaders = new TemplateLoader[] {templateLoaders};
+    }
 
     public void setTemplateLoader(TemplateLoader[] templateLoaders) {
-		this.templateLoaders = templateLoaders;
-	}
+        this.templateLoaders = templateLoaders;
+    }
 
     public void setTemplateLoader(List<TemplateLoader> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
-	}
+    }
 
     public void setTrimDirectives(Parameters parameters) {
         String[] directiveGroupNames = parameters.getParameterNames();
@@ -184,7 +184,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @throws TemplateException on FreeMarker initialization failure
      */
     public Configuration createConfiguration() throws IOException, TemplateException {
-    	Configuration config = newConfiguration();
+        Configuration config = newConfiguration();
         Properties props = new Properties();
 
         // Merge local properties if specified.
@@ -256,23 +256,23 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @return the aggregate TemplateLoader
      */
     protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
-    	int loaderCount = (templateLoaders != null ? templateLoaders.length : 0);
+        int loaderCount = (templateLoaders != null ? templateLoaders.length : 0);
         switch (loaderCount) {
             case 0:
-            	if (log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
                 }
                 return null;
             case 1:
-            	if (log.isDebugEnabled()) {
-            		log.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
-            	}
+                if (log.isDebugEnabled()) {
+                    log.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
+                }
                 return templateLoaders[0];
             default:
-            	TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
-            	if (log.isDebugEnabled()) {
-            		log.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
-        		}
+                TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
+                if (log.isDebugEnabled()) {
+                    log.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
+                }
                 return loader;
         }
     }

@@ -49,176 +49,176 @@ import com.aspectran.web.support.http.HttpHeaders;
  * @since 2008. 4. 28.
  */
 public class WebActivity extends CoreActivity {
-	
-	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
-	private static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
-	private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
-	private HttpServletRequest request;
-	
-	private HttpServletResponse response;
-	
-	/**
-	 * Instantiates a new WebActivity.
-	 *
-	 * @param context the current ActivityContext
-	 * @param request the HTTP request
-	 * @param response the HTTP response
-	 */
-	public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
-		super(context);
+    private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
-		this.request = request;
-		this.response = response;
-	}
-	
-	@Override
-	public void prepare(String transletName, MethodType requestMethod) {
-		// Check for HTTP POST with the X-HTTP-Method-Override header
-		if (requestMethod == MethodType.POST) {
-			String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
-			if (method != null) {
-				// Check if the header value is in our methods list
-				MethodType hiddenRequestMethod = MethodType.resolve(method);
-				if (hiddenRequestMethod != null) {
-					// Change the request method
-					requestMethod = hiddenRequestMethod;
-				}
-			}
-		}
-		
-		super.prepare(transletName, requestMethod);
-	}
+    private HttpServletRequest request;
 
-	@Override
-	protected void adapt() throws AdapterException {
-		try {
-			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-			setRequestAdapter(requestAdapter);
+    private HttpServletResponse response;
 
-			boolean contentEncoding = false;
-			if (!isIncluded() && isGzipAccepted()) {
-				response = new GZipServletResponseWrapper(response);
-				contentEncoding = true;
-			}
+    /**
+     * Instantiates a new WebActivity.
+     *
+     * @param context the current ActivityContext
+     * @param request the HTTP request
+     * @param response the HTTP response
+     */
+    public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
+        super(context);
 
-			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
-			setResponseAdapter(responseAdapter);
+        this.request = request;
+        this.response = response;
+    }
 
-			if (contentEncoding) {
-				setGzipContentEncoded();
-			}
-		} catch (Exception e) {
-			throw new AdapterException("Could not adapt to web application activity.", e);
-		}
-	}
-	
-	@Override
-	public SessionAdapter getSessionAdapter() {
-		if (super.getSessionAdapter() == null) {
-			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
-			super.setSessionAdapter(sessionAdapter);
-		}
-		return super.getSessionAdapter();
-	}
+    @Override
+    public void prepare(String transletName, MethodType requestMethod) {
+        // Check for HTTP POST with the X-HTTP-Method-Override header
+        if (requestMethod == MethodType.POST) {
+            String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+            if (method != null) {
+                // Check if the header value is in our methods list
+                MethodType hiddenRequestMethod = MethodType.resolve(method);
+                if (hiddenRequestMethod != null) {
+                    // Change the request method
+                    requestMethod = hiddenRequestMethod;
+                }
+            }
+        }
 
-	@Override
-	protected void parseRequest() {
-		String characterEncoding = resolveRequestCharacterEncoding();
-		if(characterEncoding != null) {
-			try {
-				getRequestAdapter().setCharacterEncoding(characterEncoding);
-			} catch (UnsupportedEncodingException e) {
-				throw new RequestException("Unable to set request character encoding to " + characterEncoding, e);
-			}
-		}
-		
-		String contentType = request.getContentType();
+        super.prepare(transletName, requestMethod);
+    }
 
-		MethodType requestMethod = getRequestAdapter().getRequestMethod();
-		MethodType allowedMethod = getRequestRule().getAllowedMethod();
-		if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
-			throw new RequestMethodNotAllowedException(allowedMethod);
-		}
+    @Override
+    protected void adapt() throws AdapterException {
+        try {
+            RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+            setRequestAdapter(requestAdapter);
 
-		if (contentType != null) {
-			if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
-				parseMultipartFormData();
-			} else if ((MethodType.PUT.equals(requestMethod) ||
-					MethodType.PATCH.equals(requestMethod) ||
-					MethodType.DELETE.equals(requestMethod)) &&
-					contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
-				parseHttpPutFormContent();
-			}
-		}
+            boolean contentEncoding = false;
+            if (!isIncluded() && isGzipAccepted()) {
+                response = new GZipServletResponseWrapper(response);
+                contentEncoding = true;
+            }
 
-		super.parseRequest();
-	}
+            ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+            setResponseAdapter(responseAdapter);
 
-	/**
-	 * Parse the multipart form data.
-	 */
-	private void parseMultipartFormData() {
-		String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-		if (multipartFormDataParser == null) {
-			throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings.");
-		}
+            if (contentEncoding) {
+                setGzipContentEncoded();
+            }
+        } catch (Exception e) {
+            throw new AdapterException("Could not adapt to web application activity.", e);
+        }
+    }
 
-		MultipartFormDataParser parser = getBean(multipartFormDataParser);
-		if (parser == null) {
-			throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
-		}
+    @Override
+    public SessionAdapter getSessionAdapter() {
+        if (super.getSessionAdapter() == null) {
+            SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
+            super.setSessionAdapter(sessionAdapter);
+        }
+        return super.getSessionAdapter();
+    }
 
-		parser.parse(getRequestAdapter());
-	}
+    @Override
+    protected void parseRequest() {
+        String characterEncoding = resolveRequestCharacterEncoding();
+        if(characterEncoding != null) {
+            try {
+                getRequestAdapter().setCharacterEncoding(characterEncoding);
+            } catch (UnsupportedEncodingException e) {
+                throw new RequestException("Unable to set request character encoding to " + characterEncoding, e);
+            }
+        }
 
-	/**
-	 * Parse the HTTP PUT requests.
-	 */
-	private void parseHttpPutFormContent() {
-		HttpPutFormContentParser.parse(getRequestAdapter());
-	}
+        String contentType = request.getContentType();
 
-	@Override
-	protected LocaleResolver resolveLocale() {
-		LocaleResolver localeResolver = super.resolveLocale();
-		if (localeResolver != null) {
-			String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-			if (localeChangeInterceptorId != null) {
-				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
-				localeChangeInterceptor.handle(getTranslet(), localeResolver);
-			}
-		}
-		return localeResolver;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Activity> T newActivity() {
-		WebActivity activity = new WebActivity(getActivityContext(), request, response);
-		activity.setIncluded(true);
-		return (T)activity;
-	}
+        MethodType requestMethod = getRequestAdapter().getRequestMethod();
+        MethodType allowedMethod = getRequestRule().getAllowedMethod();
+        if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
+            throw new RequestMethodNotAllowedException(allowedMethod);
+        }
 
-	private boolean isGzipAccepted() {
-		String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-		if (contentEncoding != null) {
-			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
-			if (acceptEncoding != null) {
-				return acceptEncoding.contains(contentEncoding);
-			}
-		}
-		return false;
-	}
-	
-	private void setGzipContentEncoded() {
-		getResponseAdapter().setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
-		
-		// indicate to the client that the servlet varies it's
-		// output depending on the "Accept-Encoding" header
-		getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
-	}
+        if (contentType != null) {
+            if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
+                parseMultipartFormData();
+            } else if ((MethodType.PUT.equals(requestMethod) ||
+                    MethodType.PATCH.equals(requestMethod) ||
+                    MethodType.DELETE.equals(requestMethod)) &&
+                    contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
+                parseHttpPutFormContent();
+            }
+        }
+
+        super.parseRequest();
+    }
+
+    /**
+     * Parse the multipart form data.
+     */
+    private void parseMultipartFormData() {
+        String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+        if (multipartFormDataParser == null) {
+            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings.");
+        }
+
+        MultipartFormDataParser parser = getBean(multipartFormDataParser);
+        if (parser == null) {
+            throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
+        }
+
+        parser.parse(getRequestAdapter());
+    }
+
+    /**
+     * Parse the HTTP PUT requests.
+     */
+    private void parseHttpPutFormContent() {
+        HttpPutFormContentParser.parse(getRequestAdapter());
+    }
+
+    @Override
+    protected LocaleResolver resolveLocale() {
+        LocaleResolver localeResolver = super.resolveLocale();
+        if (localeResolver != null) {
+            String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+            if (localeChangeInterceptorId != null) {
+                LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+                localeChangeInterceptor.handle(getTranslet(), localeResolver);
+            }
+        }
+        return localeResolver;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Activity> T newActivity() {
+        WebActivity activity = new WebActivity(getActivityContext(), request, response);
+        activity.setIncluded(true);
+        return (T)activity;
+    }
+
+    private boolean isGzipAccepted() {
+        String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+        if (contentEncoding != null) {
+            String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
+            if (acceptEncoding != null) {
+                return acceptEncoding.contains(contentEncoding);
+            }
+        }
+        return false;
+    }
+
+    private void setGzipContentEncoded() {
+        getResponseAdapter().setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
+
+        // indicate to the client that the servlet varies it's
+        // output depending on the "Accept-Encoding" header
+        getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
+    }
 
 }

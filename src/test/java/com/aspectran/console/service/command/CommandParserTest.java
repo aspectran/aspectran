@@ -25,30 +25,30 @@ import org.junit.Test;
  */
 public class CommandParserTest {
 
-	@Test
-	public void testCommandParser() {
-		CommandParser commandParser = CommandParser.parseCommand("GET /path/method >> abcde.txt > 12345.txt");
-		System.out.println(commandParser.getRequestMethod());
-		System.out.println(commandParser.getTransletName());
-		System.out.println(commandParser.getRedirectionList());
-	}
-	
-	@Test
-	public void testRedirectionOperators() {
-		List<CommandRedirection> list = CommandParser.parseCommand(">> abcde > 12345").getRedirectionList();
-		Assert.assertEquals(list.get(0).getOperator(), CommandRedirection.Operator.APPEND_OUT);
-		Assert.assertEquals(list.get(0).getOperand(), "abcde");
-		Assert.assertEquals(list.get(1).getOperator(), CommandRedirection.Operator.OVERWRITE_OUT);
-		Assert.assertEquals(list.get(1).getOperand(), "12345");
-	}
+    @Test
+    public void testCommandParser() {
+        CommandParser commandParser = CommandParser.parseCommand("GET /path/method >> abcde.txt > 12345.txt");
+        System.out.println(commandParser.getRequestMethod());
+        System.out.println(commandParser.getTransletName());
+        System.out.println(commandParser.getRedirectionList());
+    }
 
-	@Test
-	public void testRedirectionOperators2() {
-		List<CommandRedirection> list = CommandParser.parseCommand("> '<abcde>' >> 12345").getRedirectionList();
-		Assert.assertEquals(list.get(0).getOperator(), CommandRedirection.Operator.OVERWRITE_OUT);
-		Assert.assertEquals(list.get(0).getOperand(), "'<abcde>'");
-		Assert.assertEquals(list.get(1).getOperator(), CommandRedirection.Operator.APPEND_OUT);
-		Assert.assertEquals(list.get(1).getOperand(), "12345");
-	}
+    @Test
+    public void testRedirectionOperators() {
+        List<CommandRedirection> list = CommandParser.parseCommand(">> abcde > 12345").getRedirectionList();
+        Assert.assertEquals(list.get(0).getOperator(), CommandRedirection.Operator.APPEND_OUT);
+        Assert.assertEquals(list.get(0).getOperand(), "abcde");
+        Assert.assertEquals(list.get(1).getOperator(), CommandRedirection.Operator.OVERWRITE_OUT);
+        Assert.assertEquals(list.get(1).getOperand(), "12345");
+    }
+
+    @Test
+    public void testRedirectionOperators2() {
+        List<CommandRedirection> list = CommandParser.parseCommand("> '<abcde>' >> 12345").getRedirectionList();
+        Assert.assertEquals(list.get(0).getOperator(), CommandRedirection.Operator.OVERWRITE_OUT);
+        Assert.assertEquals(list.get(0).getOperand(), "'<abcde>'");
+        Assert.assertEquals(list.get(1).getOperator(), CommandRedirection.Operator.APPEND_OUT);
+        Assert.assertEquals(list.get(1).getOperand(), "12345");
+    }
 
 }

@@ -76,223 +76,223 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class AspectRule implements BeanReferenceInspectable {
 
-	private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.ASPECT_RULE;
+    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.ASPECT_RULE;
 
-	private String id;
+    private String id;
 
-	/**
-	 * The lowest value has highest priority.
-	 * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
-	 */
-	private int order = Integer.MAX_VALUE;
+    /**
+     * The lowest value has highest priority.
+     * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
+     */
+    private int order = Integer.MAX_VALUE;
 
-	private Boolean isolated;
+    private Boolean isolated;
 
-	private JoinpointRule joinpointRule;
+    private JoinpointRule joinpointRule;
 
-	private Pointcut pointcut;
+    private Pointcut pointcut;
 
-	private String adviceBeanId;
+    private String adviceBeanId;
 
-	private Class<?> adviceBeanClass;
-	
-	private SettingsAdviceRule settingsAdviceRule;
-	
-	private List<AspectAdviceRule> aspectAdviceRuleList;
-	
-	private ExceptionRule exceptionRule;
-	
-	private boolean beanRelevanted;
-	
-	private String description;
-	
-	public String getId() {
-		return id;
-	}
+    private Class<?> adviceBeanClass;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private SettingsAdviceRule settingsAdviceRule;
 
-	public int getOrder() {
-		return order;
-	}
+    private List<AspectAdviceRule> aspectAdviceRuleList;
 
-	private void setOrder(int order) {
-		this.order = order;
-	}
+    private ExceptionRule exceptionRule;
 
-	public Boolean getIsolated() {
-		return isolated;
-	}
+    private boolean beanRelevanted;
 
-	public boolean isIsolated() {
-		return BooleanUtils.toBoolean(isolated, false);
-	}
+    private String description;
 
-	private void setIsolated(Boolean isolated) {
-		this.isolated = isolated;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public JoinpointRule getJoinpointRule() {
-		return joinpointRule;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	private void setJoinpointRule(JoinpointRule joinpointRule) {
-		this.joinpointRule = joinpointRule;
-	}
+    public int getOrder() {
+        return order;
+    }
 
-	public JoinpointType getJoinpointType() {
-		return (joinpointRule != null ? joinpointRule.getJoinpointType() : null);
-	}
+    private void setOrder(int order) {
+        this.order = order;
+    }
 
-	public MethodType[] getTargetMethods() {
-		return (joinpointRule != null ? joinpointRule.getTargetMethods() : null);
-	}
+    public Boolean getIsolated() {
+        return isolated;
+    }
 
-	public String[] getTargetHeaders() {
-		return (joinpointRule != null ? joinpointRule.getTargetHeaders() : null);
-	}
+    public boolean isIsolated() {
+        return BooleanUtils.toBoolean(isolated, false);
+    }
 
-	public PointcutRule getPointcutRule() {
-		return (joinpointRule != null ? joinpointRule.getPointcutRule() : null);
-	}
+    private void setIsolated(Boolean isolated) {
+        this.isolated = isolated;
+    }
 
-	public Pointcut getPointcut() {
-		return pointcut;
-	}
+    public JoinpointRule getJoinpointRule() {
+        return joinpointRule;
+    }
 
-	public void setPointcut(Pointcut pointcut) {
-		this.pointcut = pointcut;
-	}
+    private void setJoinpointRule(JoinpointRule joinpointRule) {
+        this.joinpointRule = joinpointRule;
+    }
 
-	public String getAdviceBeanId() {
-		return adviceBeanId;
-	}
+    public JoinpointType getJoinpointType() {
+        return (joinpointRule != null ? joinpointRule.getJoinpointType() : null);
+    }
 
-	public void setAdviceBeanId(String adviceBeanId) {
-		this.adviceBeanId = adviceBeanId;
-	}
+    public MethodType[] getTargetMethods() {
+        return (joinpointRule != null ? joinpointRule.getTargetMethods() : null);
+    }
 
-	public Class<?> getAdviceBeanClass() {
-		return adviceBeanClass;
-	}
+    public String[] getTargetHeaders() {
+        return (joinpointRule != null ? joinpointRule.getTargetHeaders() : null);
+    }
 
-	public void setAdviceBeanClass(Class<?> adviceBeanClass) {
-		this.adviceBeanClass = adviceBeanClass;
-	}
+    public PointcutRule getPointcutRule() {
+        return (joinpointRule != null ? joinpointRule.getPointcutRule() : null);
+    }
 
-	public SettingsAdviceRule getSettingsAdviceRule() {
-		return settingsAdviceRule;
-	}
+    public Pointcut getPointcut() {
+        return pointcut;
+    }
 
-	public void setSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
-		this.settingsAdviceRule = settingsAdviceRule;
-	}
+    public void setPointcut(Pointcut pointcut) {
+        this.pointcut = pointcut;
+    }
 
-	public List<AspectAdviceRule> getAspectAdviceRuleList() {
-		return aspectAdviceRuleList;
-	}
+    public String getAdviceBeanId() {
+        return adviceBeanId;
+    }
 
-	public void setAspectAdviceRuleList(List<AspectAdviceRule> aspectAdviceRuleList) {
-		this.aspectAdviceRuleList = aspectAdviceRuleList;
-	}
-	
-	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		AspectAdviceRule.updateAspectAdviceRule(aspectAdviceRule);
+    public void setAdviceBeanId(String adviceBeanId) {
+        this.adviceBeanId = adviceBeanId;
+    }
 
-		if (aspectAdviceRuleList == null) {
-			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
-		}
-		aspectAdviceRuleList.add(aspectAdviceRule);
-	}
+    public Class<?> getAdviceBeanClass() {
+        return adviceBeanClass;
+    }
 
-	public ExceptionRule getExceptionRule() {
-		return exceptionRule;
-	}
+    public void setAdviceBeanClass(Class<?> adviceBeanClass) {
+        this.adviceBeanClass = adviceBeanClass;
+    }
 
-	public void setExceptionRule(ExceptionRule exceptionRule) {
-		this.exceptionRule = exceptionRule;
-	}
+    public SettingsAdviceRule getSettingsAdviceRule() {
+        return settingsAdviceRule;
+    }
 
-	public boolean isBeanRelevanted() {
-		return beanRelevanted;
-	}
+    public void setSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        this.settingsAdviceRule = settingsAdviceRule;
+    }
 
-	public void setBeanRelevanted(boolean beanRelevanted) {
-		this.beanRelevanted = beanRelevanted;
-	}
+    public List<AspectAdviceRule> getAspectAdviceRuleList() {
+        return aspectAdviceRuleList;
+    }
 
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+    public void setAspectAdviceRuleList(List<AspectAdviceRule> aspectAdviceRuleList) {
+        this.aspectAdviceRuleList = aspectAdviceRuleList;
+    }
 
-	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+        AspectAdviceRule.updateAspectAdviceRule(aspectAdviceRule);
 
-	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERRER_TYPE;
-	}
+        if (aspectAdviceRuleList == null) {
+            aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
+        }
+        aspectAdviceRuleList.add(aspectAdviceRule);
+    }
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("id", id);
-		if (order != Integer.MAX_VALUE) {
-			tsb.append("order", order);
-		}
-		tsb.append("isolated", isolated);
-		tsb.append("joinpointRule", joinpointRule);
-		tsb.append("settingsAdviceRule", settingsAdviceRule);
-		tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
-		tsb.append("exceptionRule", exceptionRule);
-		tsb.append("beanRelevanted", beanRelevanted);
-		return tsb.toString();
-	}
-	
-	public static AspectRule newInstance(String id, String order, Boolean isolated) {
-		if (id == null) {
-			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
-		}
+    public ExceptionRule getExceptionRule() {
+        return exceptionRule;
+    }
 
-		AspectRule aspectRule = new AspectRule();
-		aspectRule.setId(id);
-		aspectRule.setIsolated(isolated);
+    public void setExceptionRule(ExceptionRule exceptionRule) {
+        this.exceptionRule = exceptionRule;
+    }
 
-		if (!StringUtils.isEmpty(order)) {
-			try {
-				aspectRule.setOrder(Integer.parseInt(order));
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
-			}
-		}
+    public boolean isBeanRelevanted() {
+        return beanRelevanted;
+    }
 
-		return aspectRule;
-	}
-	
-	public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
-		JoinpointRule joinpointRule = JoinpointRule.newInstance();
-		JoinpointRule.updateJoinpointType(joinpointRule, type);
-		JoinpointRule.updateJoinpoint(joinpointRule, text);
-		aspectRule.setJoinpointRule(joinpointRule);
-	}
-	
-	public static void updateJoinpoint(AspectRule aspectRule, Parameters joinpointParameters) {
-		JoinpointRule joinpointRule = JoinpointRule.newInstance();
-		JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
-		aspectRule.setJoinpointRule(joinpointRule);
-	}
+    public void setBeanRelevanted(boolean beanRelevanted) {
+        this.beanRelevanted = beanRelevanted;
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public BeanReferrerType getBeanReferrerType() {
+        return BEAN_REFERRER_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("id", id);
+        if (order != Integer.MAX_VALUE) {
+            tsb.append("order", order);
+        }
+        tsb.append("isolated", isolated);
+        tsb.append("joinpointRule", joinpointRule);
+        tsb.append("settingsAdviceRule", settingsAdviceRule);
+        tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
+        tsb.append("exceptionRule", exceptionRule);
+        tsb.append("beanRelevanted", beanRelevanted);
+        return tsb.toString();
+    }
+
+    public static AspectRule newInstance(String id, String order, Boolean isolated) {
+        if (id == null) {
+            throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
+        }
+
+        AspectRule aspectRule = new AspectRule();
+        aspectRule.setId(id);
+        aspectRule.setIsolated(isolated);
+
+        if (!StringUtils.isEmpty(order)) {
+            try {
+                aspectRule.setOrder(Integer.parseInt(order));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
+            }
+        }
+
+        return aspectRule;
+    }
+
+    public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
+        JoinpointRule joinpointRule = JoinpointRule.newInstance();
+        JoinpointRule.updateJoinpointType(joinpointRule, type);
+        JoinpointRule.updateJoinpoint(joinpointRule, text);
+        aspectRule.setJoinpointRule(joinpointRule);
+    }
+
+    public static void updateJoinpoint(AspectRule aspectRule, Parameters joinpointParameters) {
+        JoinpointRule joinpointRule = JoinpointRule.newInstance();
+        JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
+        aspectRule.setJoinpointRule(joinpointRule);
+    }
 
 }

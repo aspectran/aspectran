@@ -41,99 +41,99 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class XmlTransformResponse extends TransformResponse {
 
-	private static final String OUTPUT_METHOD_XML = "xml";
+    private static final String OUTPUT_METHOD_XML = "xml";
 
-	private static final String OUTPUT_INDENT_YES = "yes";
+    private static final String OUTPUT_INDENT_YES = "yes";
 
-	private static final String INDENT_NUMBER_KEY = "indent-number";
+    private static final String INDENT_NUMBER_KEY = "indent-number";
 
-	private static final Integer INDENT_NUMBER_VAL = 1;
+    private static final Integer INDENT_NUMBER_VAL = 1;
 
-	private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
+    private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
 
-	private final String characterEncoding;
+    private final String characterEncoding;
 
-	private final String contentType;
+    private final String contentType;
 
-	private final boolean pretty;
+    private final boolean pretty;
 
-	/**
-	 * Instantiates a new XmlTransform.
-	 * 
-	 * @param transformRule the transform rule
-	 */
-	public XmlTransformResponse(TransformRule transformRule) {
-		super(transformRule);
+    /**
+     * Instantiates a new XmlTransform.
+     *
+     * @param transformRule the transform rule
+     */
+    public XmlTransformResponse(TransformRule transformRule) {
+        super(transformRule);
 
-		this.characterEncoding = transformRule.getCharacterEncoding();
-		this.contentType = transformRule.getContentType();
-		this.pretty = transformRule.isPretty();
-	}
+        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.contentType = transformRule.getContentType();
+        this.pretty = transformRule.isPretty();
+    }
 
-	@Override
-	public void response(Activity activity) throws TransformResponseException {
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		if (responseAdapter == null) {
-			return;
-		}
+    @Override
+    public void response(Activity activity) throws TransformResponseException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            return;
+        }
 
-		if (log.isDebugEnabled()) {
-			log.debug("response " + transformRule);
-		}
+        if (log.isDebugEnabled()) {
+            log.debug("response " + transformRule);
+        }
 
-		try {
-			String characterEncoding;
-			if (this.characterEncoding != null) {
-				characterEncoding = this.characterEncoding;
-			} else {
-				characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-			}
+        try {
+            String characterEncoding;
+            if (this.characterEncoding != null) {
+                characterEncoding = this.characterEncoding;
+            } else {
+                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+            }
 
-			if (characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
-			}
+            if (characterEncoding != null) {
+                responseAdapter.setCharacterEncoding(characterEncoding);
+            }
 
-			if (contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
+            if (contentType != null) {
+                responseAdapter.setContentType(contentType);
+            }
 
-			Writer writer = responseAdapter.getWriter();
-			ProcessResult processResult = activity.getProcessResult();
+            Writer writer = responseAdapter.getWriter();
+            ProcessResult processResult = activity.getProcessResult();
 
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-			if (pretty) {
-				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
-			}
+            if (pretty) {
+                transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
+            }
 
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 
-			if (characterEncoding != null) {
-				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
-			}
+            if (characterEncoding != null) {
+                transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+            }
 
-			if (pretty) {
-				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
-			}
+            if (pretty) {
+                transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
+            }
 
-			ContentsXMLReader xreader = new ContentsXMLReader();
-			ContentsInputSource isource = new ContentsInputSource(processResult);
-			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-		} catch (Exception e) {
-			throw new TransformResponseException(transformRule, e);
-		}
-	}
+            ContentsXMLReader xreader = new ContentsXMLReader();
+            ContentsInputSource isource = new ContentsInputSource(processResult);
+            transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
+        } catch (Exception e) {
+            throw new TransformResponseException(transformRule, e);
+        }
+    }
 
-	@Override
-	public ActionList getActionList() {
-		return transformRule.getActionList();
-	}
+    @Override
+    public ActionList getActionList() {
+        return transformRule.getActionList();
+    }
 
-	@Override
-	public Response replicate() {
-		TransformRule transformRule = getTransformRule().replicate();
-		return new XmlTransformResponse(transformRule);
-	}
+    @Override
+    public Response replicate() {
+        TransformRule transformRule = getTransformRule().replicate();
+        return new XmlTransformResponse(transformRule);
+    }
 
 }

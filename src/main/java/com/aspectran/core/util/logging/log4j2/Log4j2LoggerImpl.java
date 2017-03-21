@@ -27,57 +27,57 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class Log4j2LoggerImpl implements Log {
 
-	private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
+    private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
 
-	private Logger log;
+    private Logger log;
 
-	public Log4j2LoggerImpl(Logger logger) {
-		log = logger;
-	}
+    public Log4j2LoggerImpl(Logger logger) {
+        log = logger;
+    }
 
-	@Override
-	public boolean isDebugEnabled() {
-		return log.isDebugEnabled();
-	}
+    @Override
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
 
-	@Override
-	public boolean isTraceEnabled() {
-		return log.isTraceEnabled();
-	}
+    @Override
+    public boolean isTraceEnabled() {
+        return log.isTraceEnabled();
+    }
 
-	@Override
-	public void error(String s, Throwable e) {
-		log.error(MARKER, s, e);
-	}
+    @Override
+    public void error(String s, Throwable e) {
+        log.error(MARKER, s, e);
+    }
 
-	@Override
-	public void error(String s) {
-		log.error(MARKER, s);
-	}
+    @Override
+    public void error(String s) {
+        log.error(MARKER, s);
+    }
 
-	@Override
-	public void debug(String s) {
-		log.debug(MARKER, s);
-	}
+    @Override
+    public void debug(String s) {
+        log.debug(MARKER, s);
+    }
 
-	@Override
-	public void info(String s) {
-		log.info(MARKER, s);
-	}
+    @Override
+    public void info(String s) {
+        log.info(MARKER, s);
+    }
 
-	@Override
-	public void trace(String s) {
-		log.trace(MARKER, s);
-	}
+    @Override
+    public void trace(String s) {
+        log.trace(MARKER, s);
+    }
 
-	@Override
-	public void warn(String s) {
-		log.warn(MARKER, s);
-	}
+    @Override
+    public void warn(String s) {
+        log.warn(MARKER, s);
+    }
 
-	@Override
-	public void warn(String s, Throwable e) {
-		log.warn(MARKER, s, e);
-	}
+    @Override
+    public void warn(String s, Throwable e) {
+        log.warn(MARKER, s, e);
+    }
 
 }

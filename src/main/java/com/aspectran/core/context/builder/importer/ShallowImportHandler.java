@@ -21,14 +21,14 @@ package com.aspectran.core.context.builder.importer;
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class ShallowImportHandler extends AbstractImportHandler {
-	
-	public ShallowImportHandler() {
-		super(null);
-	}
 
-	@Override
-	public void handle(Importer importer) throws Exception {
-		// shallow
-	}
-	
+    public ShallowImportHandler() {
+        super(null);
+    }
+
+    @Override
+    public void handle(Importer importer) throws Exception {
+        // shallow
+    }
+
 }

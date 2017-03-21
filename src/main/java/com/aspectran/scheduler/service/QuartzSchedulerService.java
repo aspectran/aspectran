@@ -50,289 +50,289 @@ import com.aspectran.core.util.wildcard.PluralWildcardPattern;
  */
 public class QuartzSchedulerService implements SchedulerService {
 
-	public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
+    public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
-	public final static String ACTIVITY_DATA_KEY = "ACTIVITY";
+    public final static String ACTIVITY_DATA_KEY = "ACTIVITY";
 
-	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
+    private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
-	private ActivityContext context;
+    private ActivityContext context;
 
-	private final Set<Scheduler> schedulerSet = new HashSet<>();
-	
-	private Map<String, Scheduler> schedulerMap = new HashMap<>();
-	
-	private int startDelaySeconds = 0;
-	
-	private boolean waitOnShutdown = false;
+    private final Set<Scheduler> schedulerSet = new HashSet<>();
 
-	private PluralWildcardPattern pluralWildcardPattern;
-	
-	public QuartzSchedulerService(ActivityContext context) {
-		this.context = context;
-	}
+    private Map<String, Scheduler> schedulerMap = new HashMap<>();
 
-	@Override
-	public int getStartDelaySeconds() {
-		return startDelaySeconds;
-	}
+    private int startDelaySeconds = 0;
 
-	@Override
-	public void setStartDelaySeconds(int startDelaySeconds) {
-		this.startDelaySeconds = startDelaySeconds;
-	}
+    private boolean waitOnShutdown = false;
 
-	@Override
-	public boolean isWaitOnShutdown() {
-		return waitOnShutdown;
-	}
+    private PluralWildcardPattern pluralWildcardPattern;
 
-	@Override
-	public void setWaitOnShutdown(boolean waitOnShutdown) {
-		this.waitOnShutdown = waitOnShutdown;
-	}
+    public QuartzSchedulerService(ActivityContext context) {
+        this.context = context;
+    }
 
-	public void setExposals(String[] exposals) {
-		pluralWildcardPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
-	}
+    @Override
+    public int getStartDelaySeconds() {
+        return startDelaySeconds;
+    }
 
-	private boolean isExposable(String transletName) {
-		return (pluralWildcardPattern == null || pluralWildcardPattern.matches(transletName));
-	}
+    @Override
+    public void setStartDelaySeconds(int startDelaySeconds) {
+        this.startDelaySeconds = startDelaySeconds;
+    }
 
-	@Override
-	public void startup(int delaySeconds) throws SchedulerServiceException {
-		this.startDelaySeconds = delaySeconds;
-		startup();
-	}
+    @Override
+    public boolean isWaitOnShutdown() {
+        return waitOnShutdown;
+    }
 
-	@Override
-	public synchronized void startup() throws SchedulerServiceException {
-		if (context.getScheduleRuleRegistry() == null) {
-			return;
-		}
+    @Override
+    public void setWaitOnShutdown(boolean waitOnShutdown) {
+        this.waitOnShutdown = waitOnShutdown;
+    }
 
-		Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
-		if (scheduleRuleMap == null) {
-			return;
-		}
-		
-		log.info("Now try to starting QuartzSchedulerService.");
-		
-		try {
-			for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
-				Scheduler scheduler = buildScheduler((scheduleRule));
+    public void setExposals(String[] exposals) {
+        pluralWildcardPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+    }
 
-				schedulerSet.add(scheduler);
-				schedulerMap.put(scheduleRule.getId(), scheduler);
-			}
+    private boolean isExposable(String transletName) {
+        return (pluralWildcardPattern == null || pluralWildcardPattern.matches(transletName));
+    }
 
-			for (Scheduler scheduler : schedulerSet) {
-				log.info("Starting scheduler '" + scheduler.getSchedulerName() + "'.");
+    @Override
+    public void startup(int delaySeconds) throws SchedulerServiceException {
+        this.startDelaySeconds = delaySeconds;
+        startup();
+    }
 
-				//Listener attached to jobKey
-				JobListener defaultJobListener = new QuartzJobListener();
-				scheduler.getListenerManager().addJobListener(defaultJobListener);
+    @Override
+    public synchronized void startup() throws SchedulerServiceException {
+        if (context.getScheduleRuleRegistry() == null) {
+            return;
+        }
 
-				if (startDelaySeconds > 0) {
-					scheduler.startDelayed(startDelaySeconds);
-				} else {
-					scheduler.start();
-				}
-			}
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not start QuartzSchedulerService.", e);
-		}
-	}
+        Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
+        if (scheduleRuleMap == null) {
+            return;
+        }
 
-	@Override
-	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
-		this.waitOnShutdown = waitForJobsToComplete;
-		shutdown();
-	}
+        log.info("Now try to starting QuartzSchedulerService.");
 
-	@Override
-	public synchronized void shutdown() throws SchedulerServiceException {
-		log.info("Now try to shutting down QuartzSchedulerService.");
+        try {
+            for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
+                Scheduler scheduler = buildScheduler((scheduleRule));
 
-		try {
-			for (Scheduler scheduler : schedulerSet) {
-				if (!scheduler.isShutdown()) {
-					log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-					scheduler.shutdown(waitOnShutdown);
-				}
-			}
-			schedulerSet.clear();
-			schedulerMap.clear();
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not shutdown QuartzSchedulerService.", e);
-		}
-	}
+                schedulerSet.add(scheduler);
+                schedulerMap.put(scheduleRule.getId(), scheduler);
+            }
 
-	@Override
-	public void restart(ActivityContext context) throws SchedulerServiceException {
-		this.context = context;
-		shutdown();
-		startup();
-	}
+            for (Scheduler scheduler : schedulerSet) {
+                log.info("Starting scheduler '" + scheduler.getSchedulerName() + "'.");
 
-	@Override
-	public synchronized void pause() throws SchedulerServiceException {
-		try {
-			for (Scheduler scheduler : schedulerSet) {
-				scheduler.pauseAll();
-			}
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not pause all schedulers.", e);
-		}
-	}
+                //Listener attached to jobKey
+                JobListener defaultJobListener = new QuartzJobListener();
+                scheduler.getListenerManager().addJobListener(defaultJobListener);
 
-	@Override
-	public synchronized void pause(String scheduleId) throws SchedulerServiceException {
-		try {
-			Scheduler scheduler = getScheduler(scheduleId);
-			if (scheduler != null && scheduler.isStarted()) {
-				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
-			}
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'.", e);
-		}
-	}
+                if (startDelaySeconds > 0) {
+                    scheduler.startDelayed(startDelaySeconds);
+                } else {
+                    scheduler.start();
+                }
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not start QuartzSchedulerService.", e);
+        }
+    }
 
-	@Override
-	public synchronized void resume() throws SchedulerServiceException {
-		try {
-			for (Scheduler scheduler : schedulerSet) {
-				scheduler.resumeAll();
-			}
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not resume all schedulers.", e);
-		}
-	}
+    @Override
+    public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
+        this.waitOnShutdown = waitForJobsToComplete;
+        shutdown();
+    }
 
-	@Override
-	public synchronized void resume(String scheduleId) throws SchedulerServiceException {
-		try {
-			Scheduler scheduler = getScheduler(scheduleId);
-			if (scheduler != null && scheduler.isStarted()) {
-				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
-			}
-		} catch (Exception e) {
-			throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'.", e);
-		}
-	}
+    @Override
+    public synchronized void shutdown() throws SchedulerServiceException {
+        log.info("Now try to shutting down QuartzSchedulerService.");
 
-	private Scheduler getScheduler(String scheduleId) throws SchedulerException {
-		return schedulerMap.get(scheduleId);
-	}
+        try {
+            for (Scheduler scheduler : schedulerSet) {
+                if (!scheduler.isShutdown()) {
+                    log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+                    scheduler.shutdown(waitOnShutdown);
+                }
+            }
+            schedulerSet.clear();
+            schedulerMap.clear();
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not shutdown QuartzSchedulerService.", e);
+        }
+    }
 
-	private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
-		Scheduler scheduler = null;
-		if (scheduleRule.getSchedulerBeanClass() != null) {
-			scheduler = (Scheduler)context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
-		} else if (scheduleRule.getSchedulerBeanId() != null) {
-			scheduler = context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
-		}
-		if (scheduler == null) {
-			throw new ActionExecutionException("No such Scheduler bean; Invalid ScheduleRule " + scheduleRule);
-		}
+    @Override
+    public void restart(ActivityContext context) throws SchedulerServiceException {
+        this.context = context;
+        shutdown();
+        startup();
+    }
 
-		List<ScheduleJobRule> jobRuleList = scheduleRule.getScheduleJobRuleList();
-		for (ScheduleJobRule jobRule : jobRuleList) {
-			if (isExposable(jobRule.getTransletName())) {
-				JobDetail jobDetail = buildJobDetail(jobRule);
-				if (jobDetail != null) {
-					String triggerName = jobDetail.getKey().getName();
-					String triggerGroup = scheduleRule.getId();
-					Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
+    @Override
+    public synchronized void pause() throws SchedulerServiceException {
+        try {
+            for (Scheduler scheduler : schedulerSet) {
+                scheduler.pauseAll();
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not pause all schedulers.", e);
+        }
+    }
 
-					scheduler.scheduleJob(jobDetail, trigger);
-				}
-			} else {
-				log.warn("Unexposable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
-			}
-		}
+    @Override
+    public synchronized void pause(String scheduleId) throws SchedulerServiceException {
+        try {
+            Scheduler scheduler = getScheduler(scheduleId);
+            if (scheduler != null && scheduler.isStarted()) {
+                scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'.", e);
+        }
+    }
 
-		return scheduler;
-	}
+    @Override
+    public synchronized void resume() throws SchedulerServiceException {
+        try {
+            for (Scheduler scheduler : schedulerSet) {
+                scheduler.resumeAll();
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not resume all schedulers.", e);
+        }
+    }
 
-	private JobDetail buildJobDetail(ScheduleJobRule scheduleJobRule) {
-		if (scheduleJobRule.isDisabled()) {
-			return null;
-		}
+    @Override
+    public synchronized void resume(String scheduleId) throws SchedulerServiceException {
+        try {
+            Scheduler scheduler = getScheduler(scheduleId);
+            if (scheduler != null && scheduler.isStarted()) {
+                scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'.", e);
+        }
+    }
 
-		String jobName = scheduleJobRule.getTransletName();
-		String jobGroup = scheduleJobRule.getScheduleRule().getId();
+    private Scheduler getScheduler(String scheduleId) throws SchedulerException {
+        return schedulerMap.get(scheduleId);
+    }
 
-		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
+    private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
+        Scheduler scheduler = null;
+        if (scheduleRule.getSchedulerBeanClass() != null) {
+            scheduler = (Scheduler)context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
+        } else if (scheduleRule.getSchedulerBeanId() != null) {
+            scheduler = context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
+        }
+        if (scheduler == null) {
+            throw new ActionExecutionException("No such Scheduler bean; Invalid ScheduleRule " + scheduleRule);
+        }
 
-		return JobBuilder.newJob(ActivityLauncherJob.class)
-				.withIdentity(jobName, jobGroup)
-				.setJobData(jobDataMap)
-				.build();
-	}
+        List<ScheduleJobRule> jobRuleList = scheduleRule.getScheduleJobRuleList();
+        for (ScheduleJobRule jobRule : jobRuleList) {
+            if (isExposable(jobRule.getTransletName())) {
+                JobDetail jobDetail = buildJobDetail(jobRule);
+                if (jobDetail != null) {
+                    String triggerName = jobDetail.getKey().getName();
+                    String triggerGroup = scheduleRule.getId();
+                    Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
 
-	private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
-		Trigger trigger;
+                    scheduler.scheduleJob(jobDetail, trigger);
+                }
+            } else {
+                log.warn("Unexposable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
+            }
+        }
 
-		Parameters triggerParameters = scheduleRule.getTriggerParameters();
-		Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
-		int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
+        return scheduler;
+    }
 
-		Date firstFireTime;
-		if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
-			firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
-		} else {
-			firstFireTime = new Date();
-		}
-		
-		if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-			Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
-			Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
-			Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
-			Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-			Integer repeatCount = triggerParameters.getInt(TriggerParameters.repeatCount);
-			Boolean repeatForever = triggerParameters.getBoolean(TriggerParameters.repeatForever);
+    private JobDetail buildJobDetail(ScheduleJobRule scheduleJobRule) {
+        if (scheduleJobRule.isDisabled()) {
+            return null;
+        }
 
-			SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
+        String jobName = scheduleJobRule.getTransletName();
+        String jobGroup = scheduleJobRule.getScheduleRule().getId();
 
-			if (intervalInMilliseconds != null) {
-				builder.withIntervalInMilliseconds(intervalInMilliseconds);
-			}
-			if (intervalInMinutes != null) {
-				builder.withIntervalInMinutes(intervalInMinutes);
-			}
-			if (intervalInSeconds != null) {
-				builder.withIntervalInSeconds(intervalInSeconds);
-			}
-			if (intervalInHours != null) {
-				builder.withIntervalInHours(intervalInHours);
-			}
-			if (repeatCount != null) {
-				builder.withRepeatCount(repeatCount);
-			}
-			if (Boolean.TRUE.equals(repeatForever)) {
-				builder.repeatForever();
-			}
-				
-			trigger = TriggerBuilder.newTrigger()
-					.withIdentity(name, group)
-					.startAt(firstFireTime)
-					.withSchedule(builder)
-					.build();
-		} else {
-			String expression = triggerParameters.getString(TriggerParameters.expression);
-			CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
-			
-			trigger = TriggerBuilder.newTrigger()
-					.withIdentity(name, group)
-					.startAt(firstFireTime)
-					.withSchedule(cronSchedule)
-					.build();
-		}
-		
-		return trigger;
-	}
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
+
+        return JobBuilder.newJob(ActivityLauncherJob.class)
+                .withIdentity(jobName, jobGroup)
+                .setJobData(jobDataMap)
+                .build();
+    }
+
+    private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
+        Trigger trigger;
+
+        Parameters triggerParameters = scheduleRule.getTriggerParameters();
+        Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
+        int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
+
+        Date firstFireTime;
+        if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
+            firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
+        } else {
+            firstFireTime = new Date();
+        }
+
+        if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+            Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
+            Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
+            Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
+            Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
+            Integer repeatCount = triggerParameters.getInt(TriggerParameters.repeatCount);
+            Boolean repeatForever = triggerParameters.getBoolean(TriggerParameters.repeatForever);
+
+            SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
+
+            if (intervalInMilliseconds != null) {
+                builder.withIntervalInMilliseconds(intervalInMilliseconds);
+            }
+            if (intervalInMinutes != null) {
+                builder.withIntervalInMinutes(intervalInMinutes);
+            }
+            if (intervalInSeconds != null) {
+                builder.withIntervalInSeconds(intervalInSeconds);
+            }
+            if (intervalInHours != null) {
+                builder.withIntervalInHours(intervalInHours);
+            }
+            if (repeatCount != null) {
+                builder.withRepeatCount(repeatCount);
+            }
+            if (Boolean.TRUE.equals(repeatForever)) {
+                builder.repeatForever();
+            }
+
+            trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(name, group)
+                    .startAt(firstFireTime)
+                    .withSchedule(builder)
+                    .build();
+        } else {
+            String expression = triggerParameters.getString(TriggerParameters.expression);
+            CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
+
+            trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(name, group)
+                    .startAt(firstFireTime)
+                    .withSchedule(cronSchedule)
+                    .build();
+        }
+
+        return trigger;
+    }
 
 }

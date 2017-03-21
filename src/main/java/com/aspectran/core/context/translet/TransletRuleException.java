@@ -22,41 +22,41 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 public class TransletRuleException extends TransletException {
 
-	/** @serial */
-	private static final long serialVersionUID = -2570196533755194540L;
+    /** @serial */
+    private static final long serialVersionUID = -2570196533755194540L;
 
-	private final TransletRule transletRule;
+    private final TransletRule transletRule;
 
-	/**
-	 * Instantiates a new TransletRuleException.
-	 *
-	 * @param msg the detail message
-	 * @param transletRule the translet rule
-	 */
-	public TransletRuleException(String msg, TransletRule transletRule) {
-		super(msg + " " + transletRule);
-		this.transletRule = transletRule;
-	}
+    /**
+     * Instantiates a new TransletRuleException.
+     *
+     * @param msg the detail message
+     * @param transletRule the translet rule
+     */
+    public TransletRuleException(String msg, TransletRule transletRule) {
+        super(msg + " " + transletRule);
+        this.transletRule = transletRule;
+    }
 
-	/**
-	 * Instantiates a new TransletRuleException.
-	 *
-	 * @param msg the detail message
-	 * @param transletRule the translet rule
-	 * @param cause the root cause
-	 */
-	public TransletRuleException(String msg, TransletRule transletRule, Throwable cause) {
-		super(msg + " " + transletRule, cause);
-		this.transletRule = transletRule;
-	}
+    /**
+     * Instantiates a new TransletRuleException.
+     *
+     * @param msg the detail message
+     * @param transletRule the translet rule
+     * @param cause the root cause
+     */
+    public TransletRuleException(String msg, TransletRule transletRule, Throwable cause) {
+        super(msg + " " + transletRule, cause);
+        this.transletRule = transletRule;
+    }
 
-	/**
-	 * Gets translet rule.
-	 *
-	 * @return the translet rule
-	 */
-	public TransletRule getTransletRule() {
-		return transletRule;
-	}
+    /**
+     * Gets translet rule.
+     *
+     * @return the translet rule
+     */
+    public TransletRule getTransletRule() {
+        return transletRule;
+    }
 
 }

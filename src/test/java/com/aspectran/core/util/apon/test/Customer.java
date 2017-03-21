@@ -26,53 +26,53 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class Customer extends AbstractParameters implements Parameters {
 
-	/** 고객번호 */
-	public static final ParameterDefinition id;
-	
-	/** 이름 */
-	public static final ParameterDefinition name;
-	
-	/** 나이 */
-	public static final ParameterDefinition age;
-	
-	/** 에피소드 */
-	public static final ParameterDefinition episode;
-	
-	/** 승인 여부 */
-	public static final ParameterDefinition approved;
-	
-	private static final ParameterDefinition[] parameterDefinitions;
-	
-	static {
-		id = new ParameterDefinition("id", ParameterValueType.STRING);
-		name = new ParameterDefinition("name", ParameterValueType.STRING);
-		age = new ParameterDefinition("age", ParameterValueType.INT);
-		episode = new ParameterDefinition("epsode", ParameterValueType.TEXT);
-		approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
-		
-		parameterDefinitions = new ParameterDefinition[] {
-			id,
-			name,
-			age,
-			episode,
-			approved
-		};
-	}
-	
-	/**
-	 * Instantiates a new customer.
-	 */
-	public Customer() {
-		super(parameterDefinitions);
-	}
-	
-	/**
-	 * Instantiates a new customer.
-	 *
-	 * @param text the Text string of APON format
-	 */
-	public Customer(String text) {
-		super(parameterDefinitions, text);
-	}
-	
+    /** 고객번호 */
+    public static final ParameterDefinition id;
+
+    /** 이름 */
+    public static final ParameterDefinition name;
+
+    /** 나이 */
+    public static final ParameterDefinition age;
+
+    /** 에피소드 */
+    public static final ParameterDefinition episode;
+
+    /** 승인 여부 */
+    public static final ParameterDefinition approved;
+
+    private static final ParameterDefinition[] parameterDefinitions;
+
+    static {
+        id = new ParameterDefinition("id", ParameterValueType.STRING);
+        name = new ParameterDefinition("name", ParameterValueType.STRING);
+        age = new ParameterDefinition("age", ParameterValueType.INT);
+        episode = new ParameterDefinition("epsode", ParameterValueType.TEXT);
+        approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
+
+        parameterDefinitions = new ParameterDefinition[] {
+            id,
+            name,
+            age,
+            episode,
+            approved
+        };
+    }
+
+    /**
+     * Instantiates a new customer.
+     */
+    public Customer() {
+        super(parameterDefinitions);
+    }
+
+    /**
+     * Instantiates a new customer.
+     *
+     * @param text the Text string of APON format
+     */
+    public Customer(String text) {
+        super(parameterDefinitions, text);
+    }
+
 }

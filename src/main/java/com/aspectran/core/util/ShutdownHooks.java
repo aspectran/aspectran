@@ -28,114 +28,114 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ShutdownHooks {
 
-	private static final Log log = LogFactory.getLog(ShutdownHooks.class);
+    private static final Log log = LogFactory.getLog(ShutdownHooks.class);
 
-	private static final List<Task> tasks = new ArrayList<>();
+    private static final List<Task> tasks = new ArrayList<>();
 
-	private static Thread hook;
+    private static Thread hook;
 
-	public static synchronized <T extends Task> T add(final T task) {
-		if (task == null) {
-			throw new IllegalArgumentException("The task argument must not be null.");
-		}
+    public static synchronized <T extends Task> T add(final T task) {
+        if (task == null) {
+            throw new IllegalArgumentException("The task argument must not be null.");
+        }
 
-		if (hook == null) {
-			hook = addHook(new Thread("Aspectran Shutdown Hook") {
-				@Override
-				public void run() {
-					runTasks();
-				}
-			});
-		}
+        if (hook == null) {
+            hook = addHook(new Thread("Aspectran Shutdown Hook") {
+                @Override
+                public void run() {
+                    runTasks();
+                }
+            });
+        }
 
-		if (log.isDebugEnabled()) {
-			log.debug("Adding shutdown-hook task: " + task);
-		}
+        if (log.isDebugEnabled()) {
+            log.debug("Adding shutdown-hook task: " + task);
+        }
 
-		tasks.add(task);
+        tasks.add(task);
 
-		return task;
-	}
+        return task;
+    }
 
-	private static synchronized void runTasks() {
-		if (log.isDebugEnabled()) {
-			log.debug("Running all shutdown-hook tasks.");
-		}
+    private static synchronized void runTasks() {
+        if (log.isDebugEnabled()) {
+            log.debug("Running all shutdown-hook tasks.");
+        }
 
-		// Iterate through copy of tasks list
-		for (Task task : tasks.toArray(new Task[tasks.size()])) {
-			if (log.isDebugEnabled()) {
-				log.debug("Running task: " + task);
-			}
-			try {
-				task.run();
-			} catch (Throwable e) {
-				log.warn("Task failed", e);
-			}
-		}
+        // Iterate through copy of tasks list
+        for (Task task : tasks.toArray(new Task[tasks.size()])) {
+            if (log.isDebugEnabled()) {
+                log.debug("Running task: " + task);
+            }
+            try {
+                task.run();
+            } catch (Throwable e) {
+                log.warn("Task failed", e);
+            }
+        }
 
-		tasks.clear();
-	}
+        tasks.clear();
+    }
 
-	private static Thread addHook(final Thread thread) {
-		if (log.isDebugEnabled()) {
-			log.debug("Registering shutdown-hook: " + thread);
-		}
-		try {
-			Runtime.getRuntime().addShutdownHook(thread);
-		} catch (AbstractMethodError e) {
-			// JDK 1.3+ only method. Bummer.
-			if (log.isDebugEnabled()) {
-				log.debug("Failed to register shutdown-hook" + e);
-			}
-		}
-		return thread;
-	}
+    private static Thread addHook(final Thread thread) {
+        if (log.isDebugEnabled()) {
+            log.debug("Registering shutdown-hook: " + thread);
+        }
+        try {
+            Runtime.getRuntime().addShutdownHook(thread);
+        } catch (AbstractMethodError e) {
+            // JDK 1.3+ only method. Bummer.
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to register shutdown-hook" + e);
+            }
+        }
+        return thread;
+    }
 
-	public static synchronized void remove(final Task task) {
-		if (task == null) {
-			throw new IllegalArgumentException("The task argument must not be null.");
-		}
+    public static synchronized void remove(final Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("The task argument must not be null.");
+        }
 
-		// ignore if hook never installed
-		if (hook == null) {
-			return;
-		}
+        // ignore if hook never installed
+        if (hook == null) {
+            return;
+        }
 
-		// Drop the task
-		tasks.remove(task);
+        // Drop the task
+        tasks.remove(task);
 
-		// If there are no more tasks, then remove the hook thread
-		if (tasks.isEmpty()) {
-			removeHook(hook);
-			hook = null;
-		}
-	}
+        // If there are no more tasks, then remove the hook thread
+        if (tasks.isEmpty()) {
+            removeHook(hook);
+            hook = null;
+        }
+    }
 
-	private static void removeHook(final Thread thread) {
-		if (log.isDebugEnabled()) {
-			log.debug("Removing shutdown-hook: " + thread);
-		}
+    private static void removeHook(final Thread thread) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing shutdown-hook: " + thread);
+        }
 
-		try {
-			Runtime.getRuntime().removeShutdownHook(thread);
-		} catch (AbstractMethodError e) {
-			// JDK 1.3+ only method. Bummer.
-			if (log.isDebugEnabled()) {
-				log.debug("Failed to remove shutdown-hook" + e);
-			}
-		} catch (IllegalStateException e) {
-			// The VM is shutting down, not a big deal; ignore
-		}
-	}
+        try {
+            Runtime.getRuntime().removeShutdownHook(thread);
+        } catch (AbstractMethodError e) {
+            // JDK 1.3+ only method. Bummer.
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to remove shutdown-hook" + e);
+            }
+        } catch (IllegalStateException e) {
+            // The VM is shutting down, not a big deal; ignore
+        }
+    }
 
-	/**
-	 * Essentially a {@link Runnable} which allows running to throw an exception.
-	 */
-	public interface Task {
+    /**
+     * Essentially a {@link Runnable} which allows running to throw an exception.
+     */
+    public interface Task {
 
-		void run() throws Exception;
+        void run() throws Exception;
 
-	}
+    }
 
 }

@@ -33,131 +33,131 @@ import com.aspectran.core.service.AspectranService;
  */
 public interface ActivityContext extends MessageSource {
 
-	String ID_SEPARATOR = ".";
+    String ID_SEPARATOR = ".";
 
-	char ID_SEPARATOR_CHAR = '.';
+    char ID_SEPARATOR_CHAR = '.';
 
-	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
+    char TRANSLET_NAME_SEPARATOR_CHAR = '/';
 
-	String LINE_SEPARATOR = "\n";
+    String LINE_SEPARATOR = "\n";
 
-	String DEFAULT_ENCODING = "UTF-8";
+    String DEFAULT_ENCODING = "UTF-8";
 
-	String MESSAGE_SOURCE_BEAN_ID = "messageSource";
+    String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
-	/**
-	 * Gets the context environment.
-	 *
-	 * @return the context environment
-	 */
-	ContextEnvironment getContextEnvironment();
+    /**
+     * Gets the context environment.
+     *
+     * @return the context environment
+     */
+    ContextEnvironment getContextEnvironment();
 
-	/**
-	 * Gets the class loader.
-	 *
-	 * @return the class loader
-	 */
-	ClassLoader getClassLoader();
-	
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	ApplicationAdapter getApplicationAdapter();
+    /**
+     * Gets the class loader.
+     *
+     * @return the class loader
+     */
+    ClassLoader getClassLoader();
 
-	/**
-	 * Returns the Aspectran Service that created the current ActivityContext.
-	 *
-	 * @return the origin aspectran service
-	 */
-	AspectranService getRootAspectranService();
+    /**
+     * Gets the application adapter.
+     *
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
 
-	/**
-	 * Gets the aspect rule registry.
-	 *
-	 * @return the aspect rule registry
-	 */
-	AspectRuleRegistry getAspectRuleRegistry();
+    /**
+     * Returns the Aspectran Service that created the current ActivityContext.
+     *
+     * @return the origin aspectran service
+     */
+    AspectranService getRootAspectranService();
 
-	/**
-	 * Gets the bean registry.
-	 *
-	 * @return the bean registry
-	 */
-	BeanRegistry getBeanRegistry();
+    /**
+     * Gets the aspect rule registry.
+     *
+     * @return the aspect rule registry
+     */
+    AspectRuleRegistry getAspectRuleRegistry();
 
-	/**
-	 * Gets the schedule rule registry.
-	 *
-	 * @return the schedule rule registry
-	 */
-	ScheduleRuleRegistry getScheduleRuleRegistry();
+    /**
+     * Gets the bean registry.
+     *
+     * @return the bean registry
+     */
+    BeanRegistry getBeanRegistry();
 
-	/**
-	 * Gets the template processor.
-	 *
-	 * @return the template processor
-	 */
-	TemplateProcessor getTemplateProcessor();
+    /**
+     * Gets the schedule rule registry.
+     *
+     * @return the schedule rule registry
+     */
+    ScheduleRuleRegistry getScheduleRuleRegistry();
 
-	/**
-	 * Gets the translet rule registry.
-	 *
-	 * @return the translet rule registry
-	 */
-	TransletRuleRegistry getTransletRuleRegistry();
+    /**
+     * Gets the template processor.
+     *
+     * @return the template processor
+     */
+    TemplateProcessor getTemplateProcessor();
 
-	/**
-	 * Gets the message source.
-	 *
-	 * @return the message source
-	 */
-	MessageSource getMessageSource();
+    /**
+     * Gets the translet rule registry.
+     *
+     * @return the translet rule registry
+     */
+    TransletRuleRegistry getTransletRuleRegistry();
 
-	/**
-	 * Gets the default activity.
-	 *
-	 * @return the default activity
-	 */
-	Activity getDefaultActivity();
+    /**
+     * Gets the message source.
+     *
+     * @return the message source
+     */
+    MessageSource getMessageSource();
 
-	/**
-	 * Gets the current activity.
-	 *
-	 * @return the current activity
-	 */
-	Activity getCurrentActivity();
-	
-	/**
-	 * Sets the current activity.
-	 *
-	 * @param activity the new current activity
-	 */
-	void setCurrentActivity(Activity activity);
-	
-	/**
-	 * Removes the current activity.
-	 */
-	void removeCurrentActivity();
+    /**
+     * Gets the default activity.
+     *
+     * @return the default activity
+     */
+    Activity getDefaultActivity();
 
-	/**
-	 * Initializes the ActivityContext.
-	 */
-	void initialize();
+    /**
+     * Gets the current activity.
+     *
+     * @return the current activity
+     */
+    Activity getCurrentActivity();
 
-	/**
-	 * Initializes the ActivityContext.
-	 * Sets the Aspectran Service that created the current ActivityContext.
-	 * It is set only once, just after the ActivityContext is created.
-	 *
-	 * @param rootAspectranService the origin aspectran service
-	 */
-	void initialize(AspectranService rootAspectranService);
+    /**
+     * Sets the current activity.
+     *
+     * @param activity the new current activity
+     */
+    void setCurrentActivity(Activity activity);
 
-	/**
-	 * Destroy the aspectran context. 
-	 */
-	void destroy();
+    /**
+     * Removes the current activity.
+     */
+    void removeCurrentActivity();
+
+    /**
+     * Initializes the ActivityContext.
+     */
+    void initialize();
+
+    /**
+     * Initializes the ActivityContext.
+     * Sets the Aspectran Service that created the current ActivityContext.
+     * It is set only once, just after the ActivityContext is created.
+     *
+     * @param rootAspectranService the origin aspectran service
+     */
+    void initialize(AspectranService rootAspectranService);
+
+    /**
+     * Destroy the aspectran context.
+     */
+    void destroy();
 
 }

@@ -25,14 +25,14 @@ import com.aspectran.core.adapter.BasicRequestAdapter;
  * @since 2013. 11. 20.
  */
 public class QuartzJobRequestAdapter extends BasicRequestAdapter {
-	
-	/**
-	 * Instantiates a new QuartzJobRequestAdapter.
-	 *
-	 * @param jobExecutionContext the job execution context
-	 */
-	public QuartzJobRequestAdapter(JobExecutionContext jobExecutionContext) {
-		super(jobExecutionContext);
-	}
+
+    /**
+     * Instantiates a new QuartzJobRequestAdapter.
+     *
+     * @param jobExecutionContext the job execution context
+     */
+    public QuartzJobRequestAdapter(JobExecutionContext jobExecutionContext) {
+        super(jobExecutionContext);
+    }
 
 }

@@ -20,42 +20,42 @@ package com.aspectran.core.activity;
  */
 public class ActivityTerminatedException extends ActivityException {
 
-	/** @serial */
-	private static final long serialVersionUID = 6615572357964634821L;
+    /** @serial */
+    private static final long serialVersionUID = 6615572357964634821L;
 
-	/**
-	 * Simple constructor.
-	 */
-	public ActivityTerminatedException() {
-		super();
-	}
+    /**
+     * Simple constructor.
+     */
+    public ActivityTerminatedException() {
+        super();
+    }
 
-	/**
-	 * Constructor to create exception with a message.
-	 *
-	 * @param msg a message to associate with the exception
-	 */
-	public ActivityTerminatedException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param msg a message to associate with the exception
+     */
+    public ActivityTerminatedException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception.
-	 *
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityTerminatedException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception.
+     *
+     * @param cause the real cause of the exception
+     */
+    public ActivityTerminatedException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
-	 *
-	 * @param msg the message
-	 * @param cause the real cause of the exception
-	 */
-	public ActivityTerminatedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     *
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ActivityTerminatedException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

@@ -22,36 +22,36 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ResponseType {
 
-	TRANSFORM("transform"),
-	DISPATCH("dispatch"),
-	REDIRECT("redirect"),
-	FORWARD("forward");
+    TRANSFORM("transform"),
+    DISPATCH("dispatch"),
+    REDIRECT("redirect"),
+    FORWARD("forward");
 
-	private final String alias;
+    private final String alias;
 
-	ResponseType(String alias) {
-		this.alias = alias;
-	}
+    ResponseType(String alias) {
+        this.alias = alias;
+    }
 
-	@Override
-	public String toString() {
-		return this.alias;
-	}
+    @Override
+    public String toString() {
+        return this.alias;
+    }
 
-	/**
-	 * Returns a {@code ResponseType} with a value represented
-	 * by the specified {@code String}.
-	 *
-	 * @param alias the response type as a {@code String}
-	 * @return a {@code ResponseType}, may be {@code null}
-	 */
-	public static ResponseType resolve(String alias) {
-		for (ResponseType type : values()) {
-			if (type.alias.equals(alias)) {
-				return type;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns a {@code ResponseType} with a value represented
+     * by the specified {@code String}.
+     *
+     * @param alias the response type as a {@code String}
+     * @return a {@code ResponseType}, may be {@code null}
+     */
+    public static ResponseType resolve(String alias) {
+        for (ResponseType type : values()) {
+            if (type.alias.equals(alias)) {
+                return type;
+            }
+        }
+        return null;
+    }
 
 }

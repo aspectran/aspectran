@@ -25,21 +25,21 @@ import java.io.Writer;
  */
 public abstract class AbstractConsoleInout implements ConsoleInout {
 
-	private String commandPrompt = DEFAULT_COMMAND_PROMPT;
+    private String commandPrompt = DEFAULT_COMMAND_PROMPT;
 
-	@Override
-	public String getCommandPrompt() {
-		return commandPrompt;
-	}
+    @Override
+    public String getCommandPrompt() {
+        return commandPrompt;
+    }
 
-	@Override
-	public void setCommandPrompt(String commandPrompt) {
-		this.commandPrompt = commandPrompt;
-	}
+    @Override
+    public void setCommandPrompt(String commandPrompt) {
+        this.commandPrompt = commandPrompt;
+    }
 
-	@Override
-	public Writer getUnclosableWriter() throws UnsupportedEncodingException {
-		return new UnclosablePrintWriter(getOutput(), getEncoding());
-	}
+    @Override
+    public Writer getUnclosableWriter() throws UnsupportedEncodingException {
+        return new UnclosablePrintWriter(getOutput(), getEncoding());
+    }
 
 }
