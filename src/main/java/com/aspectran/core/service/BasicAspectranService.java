@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2008-2017 Juho Jeong
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,7 +119,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
 				doShutdown();
 
-				log.info("AspectranService has been shut down.");
+				log.info("AspectranService has been shut down successfully.");
 
 				reloadActivityContext();
 
