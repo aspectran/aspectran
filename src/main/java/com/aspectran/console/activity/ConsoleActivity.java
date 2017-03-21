@@ -99,7 +99,7 @@ public class ConsoleActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
-        receiveRequiredParameters();
+        requiredParameters();
 
         super.parseRequest();
     }
@@ -107,15 +107,15 @@ public class ConsoleActivity extends CoreActivity {
     /**
      * Receive required input parameters.
      */
-    private void receiveRequiredParameters() {
+    private void requiredParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
         if (parameterItemRuleMap != null) {
-            ItemRuleList parameterItemRules = new ItemRuleList(parameterItemRuleMap.values());
+            ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
             consoleInout.writeLine("Required parameters:");
 
-            for (ItemRule itemRule : parameterItemRules) {
+            for (ItemRule itemRule : parameterItemRuleList) {
                 Token[] tokens = itemRule.getTokens();
                 if (tokens == null) {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
@@ -125,49 +125,53 @@ public class ConsoleActivity extends CoreActivity {
                 consoleInout.writeLine(" %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
             }
 
-            consoleInout.writeLine("Enter a value for each parameter:");
+            enterRequiredParameters(parameterItemRuleList);
+        }
+    }
 
-            ItemRuleList missingItemRules = receiveRequiredParameters(parameterItemRules);
+    private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
+        consoleInout.writeLine("Enter a value for each parameter:");
 
-            if (missingItemRules != null) {
-                consoleInout.writeLine("Please enter a value for all required parameters:");
+        ItemRuleList missingItemRules1 = inputEachParameter(parameterItemRuleList);
 
-                ItemRuleList missingItemRules2 = receiveRequiredParameters(missingItemRules);
+        if (missingItemRules1 != null) {
+            consoleInout.writeLine("Please enter a value for all required parameters:");
 
-                if (missingItemRules2 != null && missingItemRules.size() == missingItemRules2.size()) {
-                    String[] itemNames = missingItemRules2.getItemNames();
-                    String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
-                    consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
+            ItemRuleList missingItemRules2 = inputEachParameter(missingItemRules1);
 
-                    terminate();
-                }
+            if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
+                String[] itemNames = missingItemRules2.getItemNames();
+                String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
+                consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
+
+                terminate();
             }
         }
     }
 
-    private ItemRuleList receiveRequiredParameters(ItemRuleList parameterItemRules) {
-        ItemRuleList missingItemRules = new ItemRuleList(parameterItemRules.size());
+    private ItemRuleList inputEachParameter(ItemRuleList parameterItemRuleList) {
+        ItemRuleList missingItemRules = new ItemRuleList(parameterItemRuleList.size());
 
         try {
-            for (ItemRule itemRule : parameterItemRules) {
+            for (ItemRule itemRule : parameterItemRuleList) {
                 Token[] tokens = itemRule.getTokens();
+                if (tokens == null || tokens.length == 0) {
+                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                    tokens = new Token[] { t };
+                }
+
                 int inputCount = 0;
 
-                if (tokens != null && tokens.length > 0) {
-                    for (Token token : tokens) {
-                        if (token.getType() == TokenType.PARAMETER) {
-                            String input = consoleInout.readLine("   %s: ", token.stringify());
-                            if (input != null && !input.isEmpty()) {
-                                getRequestAdapter().setParameter(token.getName(), input);
-                                inputCount++;
-                            }
+                for (Token token : tokens) {
+                    if (token.getType() == TokenType.PARAMETER) {
+                        String input = consoleInout.readLine("   %s: ", token.stringify());
+                        if (input != null && !input.isEmpty()) {
+                            getRequestAdapter().setParameter(token.getName(), input);
+                            inputCount++;
+                        } else if (token.getValue() != null) {
+                            getRequestAdapter().setParameter(token.getName(), token.getValue());
+                            inputCount++;
                         }
-                    }
-                } else {
-                    String input = consoleInout.readLine("   $%s: ", itemRule.getName());
-                    if (input != null && !input.isEmpty()) {
-                        getRequestAdapter().setParameter(itemRule.getName(), input);
-                        inputCount++;
                     }
                 }
 
