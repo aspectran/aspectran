@@ -453,7 +453,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
                 int start = 0;
                 for (int end = 0; end < content.length(); end++) {
                     char c = content.charAt(end);
-                    if (c == '|') {
+                    if (start == 0 && c == '|') {
                         start = end + 1;
                         if (sb.length() > 0) {
                             sb.append(ActivityContext.LINE_SEPARATOR);
