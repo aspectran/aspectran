@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -444,60 +443,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     private static void updateTemplateSourceByStyle(TemplateRule templateRule) {
         String content = templateRule.getContent();
-        if (content == null) {
-            return;
-        }
-        if (!content.isEmpty()) {
-            if (templateRule.getContentStyle() == ContentStyleType.APON) {
-                StringBuilder sb = new StringBuilder(content.length());
-                int start = 0;
-                for (int end = 0; end < content.length(); end++) {
-                    char c = content.charAt(end);
-                    if (start == 0 && c == '|') {
-                        start = end + 1;
-                        if (sb.length() > 0) {
-                            sb.append(ActivityContext.LINE_SEPARATOR);
-                        }
-                    } else if (start > 0) {
-                        if (c == '\n' || c == '\r') {
-                            sb.append(content.substring(start, end));
-                            start = 0;
-                        }
-                    }
-                }
-                if (start > 0) {
-                    sb.append(content.substring(start));
-                }
-                templateRule.setTemplateSource(sb.toString());
-            } else if (templateRule.getContentStyle() == ContentStyleType.COMPACT ||
-                    templateRule.getContentStyle() == ContentStyleType.COMPRESSED) {
-                content = content.trim();
-                StringBuilder sb = new StringBuilder(content.length());
-                int start = 0;
-                for (int end = 0; end < content.length(); end++) {
-                    char c = content.charAt(end);
-                    if (c == '\n' || c == '\r') {
-                        if (start > -1) {
-                            sb.append(content.substring(start, end).trim());
-                            if (templateRule.getContentStyle() != ContentStyleType.COMPRESSED) {
-                                sb.append(ActivityContext.LINE_SEPARATOR);
-                            }
-                            start = -1;
-                        }
-                    } else if (start == -1) {
-                        start = end;
-                    }
-                }
-                if (start > -1) {
-                    sb.append(content.substring(start).trim());
-                }
-                templateRule.setTemplateSource(sb.toString());
-            } else {
-                templateRule.setTemplateSource(content);
-            }
-        } else {
-            templateRule.setTemplateSource(content);
-        }
+        content = ContentStyleType.apply(content, templateRule.getContentStyle());
+        templateRule.setTemplateSource(content);
     }
 
 }
