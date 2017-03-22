@@ -436,12 +436,11 @@ public class StringUtils {
     }
 
     /**
-     * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
-     * 각 분리된 문자열을 배열에 할당하여 반환한다.
+     * Returns an array of strings separated by the delimiter string.
      *
-     * @param str 분리 대상 문자열
-     * @param delim 구분 문자열
-     * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+     * @param str the string to be separated
+     * @param delim the delimiter
+     * @return an array, containing the splitted strings
      */
     public static String[] split(String str, String delim) {
         if (isEmpty(str)) {
@@ -480,14 +479,12 @@ public class StringUtils {
     }
 
     /**
-     * 대상 문자열(str)에서 구분 문자열(delim)을 기준으로 문자열을 분리하여
-     * 각 분리된 문자열을 배열에 할당하여 반환한다.
-     * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
+     * Returns an array of strings separated by the delimiter string.
      *
-     * @param str 분리 대상 문자열
-     * @param delim 구분 문자열
-     * @param size 결과 배열의 크기
-     * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+     * @param str the string to be separated
+     * @param delim the delimiter
+     * @param size the size of the array
+     * @return an array, containing the splitted strings
      */
     public static String[] split(String str, String delim, int size) {
         String[] arr1 = new String[size];
@@ -506,13 +503,11 @@ public class StringUtils {
 
 
     /**
-     * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
-     * 각 분리된 문자열을 배열에 할당하여 반환한다.
+     * Returns an array of strings separated by the delimiter string.
      *
-     * @param str 분리 대상 문자열
-     * @param delim 구분 문자열
-     *
-     * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+     * @param str the string to be separated
+     * @param delim the delimiter
+     * @return an array, containing the splitted strings
      */
     public static String[] split(String str, char delim) {
         if (isEmpty(str)) {
@@ -550,14 +545,12 @@ public class StringUtils {
     }
 
     /**
-     * 대상 문자열(str)에서 구분 문자열(delim)을 기준으로 문자열을 분리하여
-     * 각 분리된 문자열을 배열에 할당하여 반환한다.
-     * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
+     * Returns an array of strings separated by the delimiter string.
      *
-     * @param str 분리 대상 문자열
-     * @param delim 구분 문자열
-     * @param size 결과 배열의 크기
-     * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+     * @param str the string to be separated
+     * @param delim the delimiter
+     * @param size the size of the array
+     * @return an array, containing the splitted strings
      */
     public static String[] split(String str, char delim, int size) {
         String[] arr1 = new String[size];
@@ -575,12 +568,12 @@ public class StringUtils {
     }
 
     /**
-     * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
-     * 지정문자열이 없으면 0 을 반환한다.
+     * Returns the number of times the specified string was found
+     * in the target string, or 0 if there is no specified string.
      *
-     * @param str 대상문자열
-     * @param keyw 검색할 문자열
-     * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+     * @param str the target string
+     * @param keyw the string to find
+     * @return the number of times the specified string was found
      */
     public static int search(String str, String keyw) {
         int strLen = str.length();
@@ -605,24 +598,25 @@ public class StringUtils {
     }
 
     /**
-     * 대상문자열(str)에서 대소문자 구분없이 지정문자열(keyw)이 검색된 횟수를,
-     * 지정문자열이 없으면 0 을 반환한다.
+     * Returns the number of times the specified string was found
+     * in the target string, or 0 if there is no specified string.
+     * When searching for the specified string, it is not case-sensitive.
      *
-     * @param str 대상문자열
-     * @param keyw 검색할 문자열
-     * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+     * @param str the target string
+     * @param keyw the string to find
+     * @return the number of times the specified string was found
      */
     public static int searchIgnoreCase(String str, String keyw) {
         return search(str.toLowerCase(), keyw.toLowerCase());
     }
 
     /**
-     * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
-     * 지정문자열이 없으면 0 을 반환한다.
+     * Returns the number of times the specified character was found
+     * in the target string, or 0 if there is no specified character.
      *
-     * @param chars 대상문자열
-     * @param c 검색할 문자열
-     * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+     * @param chars the target string
+     * @param c the character to find
+     * @return the number of times the specified character was found
      */
     public static int search(CharSequence chars, char c) {
         int count = 0;
@@ -635,12 +629,13 @@ public class StringUtils {
     }
 
     /**
-     * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
-     * 지정문자열이 없으면 0 을 반환한다.
+     * Returns the number of times the specified character was found
+     * in the target string, or 0 if there is no specified character.
+     * When searching for the specified character, it is not case-sensitive.
      *
-     * @param chars 대상문자열
-     * @param c 검색할 문자열
-     * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+     * @param chars the target string
+     * @param c the character to find
+     * @return the number of times the specified character was found
      */
     public static int searchIgnoreCase(CharSequence chars, char c) {
         int count = 0;
@@ -654,9 +649,9 @@ public class StringUtils {
     }
 
     /**
-     * Tokenize the given String into a String array via a StringTokenizer.
+     * Tokenize the given {@code String} into a String array via a StringTokenizer.
      *
-     * @param str the String to tokenize
+     * @param str the {@code String} to tokenize
      * @param delimiters the delimiter characters
      * @return an array of the tokens
      */
@@ -665,7 +660,7 @@ public class StringUtils {
     }
 
     /**
-     * Tokenize the given String into a String array via a StringTokenizer.
+     * Tokenize the given {@code String} into a {@code String} array via a {@code StringTokenizer}.
      *
      * @param str the String to tokenize
      * @param delimiters the delimiter characters
