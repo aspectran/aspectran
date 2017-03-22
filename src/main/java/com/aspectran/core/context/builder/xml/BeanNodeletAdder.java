@@ -19,6 +19,7 @@ import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -72,6 +73,9 @@ class BeanNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(xpath, "/bean/description", (node, attributes, text) -> {
             if (text != null) {
+                String style = attributes.get("style");
+                text = ContentStyleType.apply(text, style);
+
                 BeanRule beanRule = assistant.peekObject();
                 beanRule.setDescription(text);
             }

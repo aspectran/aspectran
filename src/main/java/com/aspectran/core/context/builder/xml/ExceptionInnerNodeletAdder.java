@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -43,6 +44,9 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
     public void process(String xpath, NodeletParser parser) {
         parser.addNodelet(xpath, "/description", (node, attributes, text) -> {
             if (text != null) {
+                String style = attributes.get("style");
+                text = ContentStyleType.apply(text, style);
+
                 ExceptionRule exceptionRule = assistant.peekObject();
                 exceptionRule.setDescription(text);
             }

@@ -19,6 +19,7 @@ import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -54,6 +55,9 @@ class AspectNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(xpath, "/aspect/description", (node, attributes, text) -> {
             if (text != null) {
+                String style = attributes.get("style");
+                text = ContentStyleType.apply(text, style);
+
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setDescription(text);
             }

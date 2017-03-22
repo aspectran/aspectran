@@ -24,6 +24,7 @@ import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
@@ -104,6 +105,9 @@ public class AspectranNodeParser {
     private void addDescriptionNodelets() {
         parser.addNodelet("/aspectran/description", (node, attributes, text) -> {
             if (text != null) {
+                String style = attributes.get("style");
+                text = ContentStyleType.apply(text, style);
+
                 assistant.getAssistantLocal().setDescription(text);
             }
         });

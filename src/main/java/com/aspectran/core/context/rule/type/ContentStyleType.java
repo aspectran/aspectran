@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.core.util.StringStyler;
+
 /**
  * Enumeration for styles of template content.
  * 
@@ -51,6 +53,26 @@ public enum ContentStyleType {
             }
         }
         return null;
+    }
+
+    public static String apply(String content, String style) {
+        ContentStyleType contentStyleType = ContentStyleType.resolve(style);
+        if (style != null && contentStyleType == null) {
+            throw new IllegalArgumentException("No content style type for '" + style + "'.");
+        }
+        return apply(content, contentStyleType);
+    }
+
+    public static String apply(String content, ContentStyleType contentStyleType) {
+        if (contentStyleType == ContentStyleType.APON) {
+            return StringStyler.toAponStyle(content);
+        } else if (contentStyleType == ContentStyleType.COMPACT) {
+            return StringStyler.toCompactStyle(content);
+        } else if (contentStyleType == ContentStyleType.COMPRESSED) {
+            return StringStyler.toCompressedStyle(content);
+        } else {
+            return content;
+        }
     }
 
 }

@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -52,6 +53,9 @@ class ScheduleNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(xpath, "/schedule/description", (node, attributes, text) -> {
             if (text != null) {
+                String style = attributes.get("style");
+                text = ContentStyleType.apply(text, style);
+
                 ScheduleRule scheduleRule = assistant.peekObject();
                 scheduleRule.setDescription(text);
             }
