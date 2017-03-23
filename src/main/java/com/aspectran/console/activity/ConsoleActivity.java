@@ -99,18 +99,20 @@ public class ConsoleActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
-        requiredParameters();
+        receiveParameters();
+        parseDeclaredParameters();
 
-        super.parseRequest();
+        receiveAttributes();
+        parseDeclaredAttributes();
     }
 
     /**
      * Receive required input parameters.
      */
-    private void requiredParameters() {
+    private void receiveParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
-        if (parameterItemRuleMap != null) {
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
             consoleInout.writeLine("Required parameters:");
@@ -121,8 +123,8 @@ public class ConsoleActivity extends CoreActivity {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
                 }
 
-                String madatoryMarker = itemRule.isMandatory() ? "*" : " ";
-                consoleInout.writeLine(" %s %s: %s", madatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+                String mandatoryMarker = itemRule.isMandatory() ? "*" : " ";
+                consoleInout.writeLine(" %s %s: %s", mandatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
             }
 
             enterRequiredParameters(parameterItemRuleList);
@@ -130,8 +132,6 @@ public class ConsoleActivity extends CoreActivity {
     }
 
     private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
-        consoleInout.writeLine("Enter a value for each parameter:");
-
         ItemRuleList missingItemRules1 = inputEachParameter(parameterItemRuleList);
 
         if (missingItemRules1 != null) {
@@ -149,11 +149,56 @@ public class ConsoleActivity extends CoreActivity {
         }
     }
 
-    private ItemRuleList inputEachParameter(ItemRuleList parameterItemRuleList) {
-        ItemRuleList missingItemRules = new ItemRuleList(parameterItemRuleList.size());
+    /**
+     * Receive required input attributes.
+     */
+    private void receiveAttributes() {
+        ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
+
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+            ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
+
+            consoleInout.writeLine("Required attributes:");
+
+            for (ItemRule itemRule : attributeItemRuleList) {
+                Token[] tokens = itemRule.getTokens();
+                if (tokens == null) {
+                    tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
+                }
+
+                String mandatoryMarker = itemRule.isMandatory() ? "*" : " ";
+                consoleInout.writeLine(" %s %s: %s", mandatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+            }
+
+            enterRequiredAttributes(attributeItemRuleList);
+        }
+    }
+
+    private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
+        ItemRuleList missingItemRules1 = inputEachParameter(attributeItemRuleList);
+
+        if (missingItemRules1 != null) {
+            consoleInout.writeLine("Please enter a value for all required attributes:");
+
+            ItemRuleList missingItemRules2 = inputEachParameter(missingItemRules1);
+
+            if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
+                String[] itemNames = missingItemRules2.getItemNames();
+                String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
+                consoleInout.writeLine("Missing required attributes: %s", missingParamNames);
+
+                terminate();
+            }
+        }
+    }
+
+    private ItemRuleList inputEachParameter(ItemRuleList itemRuleList) {
+        consoleInout.writeLine("Enter a value for each token:");
+
+        ItemRuleList missingItemRules = new ItemRuleList(itemRuleList.size());
 
         try {
-            for (ItemRule itemRule : parameterItemRuleList) {
+            for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getTokens();
                 if (tokens == null || tokens.length == 0) {
                     Token t = new Token(TokenType.PARAMETER, itemRule.getName());
@@ -164,9 +209,9 @@ public class ConsoleActivity extends CoreActivity {
 
                 for (Token token : tokens) {
                     if (token.getType() == TokenType.PARAMETER) {
-                        String input = consoleInout.readLine("   %s: ", token.stringify());
-                        if (input != null && !input.isEmpty()) {
-                            getRequestAdapter().setParameter(token.getName(), input);
+                        String value = consoleInout.readLine("   %s: ", token.stringify());
+                        if (value != null && !value.isEmpty()) {
+                            getRequestAdapter().setParameter(token.getName(), value);
                             inputCount++;
                         } else if (token.getValue() != null) {
                             getRequestAdapter().setParameter(token.getName(), token.getValue());
