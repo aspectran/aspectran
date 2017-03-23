@@ -95,7 +95,14 @@ public class Tokenizer {
                 if (c == Token.START_BRACKET) {
                     status = AT_TOKEN_NAME;
                 } else {
-                    status = AT_STRING;
+                    if (Token.isTokenSymbol(c)) {
+                        symbol = c;
+                        status = AT_TOKEN_SYMBOL;
+                        // abc$ --> tokenStartOffset: 3
+                        tokenStartOffset = stringBuffer.length() - 1;
+                    } else {
+                        status = AT_STRING;
+                    }
                 }
 
                 break;
