@@ -38,7 +38,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
 
-    private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "internal";
+    private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "token";
 
     private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
 

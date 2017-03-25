@@ -67,7 +67,7 @@
         </transform>
     </translet>
 
-    <template id="echo" engine="internal">
+    <template id="echo" engine="token">
         ID: ${id}
         Name: ${name}
         Email: ${email}
