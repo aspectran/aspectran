@@ -42,11 +42,18 @@ import com.aspectran.core.context.rule.type.MethodType;
 public interface Translet extends BeanRegistry, MessageSource {
 
     /**
-     * Returns the name of this translet.
+     * Returns the name of this {@code Translet}.
      *
      * @return the translet name
      */
     String getName();
+
+    /**
+     * Returns a description of this {@code Translet}.
+     *
+     * @return a description of this {@code Translet}
+     */
+    String getDescription();
 
     /**
      * Gets the request http method.

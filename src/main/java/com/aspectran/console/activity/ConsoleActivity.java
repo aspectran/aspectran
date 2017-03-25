@@ -99,11 +99,26 @@ public class ConsoleActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
+        showDescription();
+
         receiveParameters();
         parseDeclaredParameters();
 
         receiveAttributes();
         parseDeclaredAttributes();
+    }
+
+    /**
+     * Prints a description for the {@code Translet}.
+     */
+    private void showDescription() {
+        if (service.isShowDescription()) {
+            String description = getTranslet().getDescription();
+            if (description != null) {
+                consoleInout.writeLine(description);
+                consoleInout.flush();
+            }
+        }
     }
 
     /**
@@ -132,12 +147,12 @@ public class ConsoleActivity extends CoreActivity {
     }
 
     private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
-        ItemRuleList missingItemRules1 = inputEachParameter(parameterItemRuleList);
+        ItemRuleList missingItemRules1 = enterEachParameter(parameterItemRuleList);
 
         if (missingItemRules1 != null) {
             consoleInout.writeLine("Please enter a value for all required parameters:");
 
-            ItemRuleList missingItemRules2 = inputEachParameter(missingItemRules1);
+            ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
             if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
                 String[] itemNames = missingItemRules2.getItemNames();
@@ -175,12 +190,12 @@ public class ConsoleActivity extends CoreActivity {
     }
 
     private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
-        ItemRuleList missingItemRules1 = inputEachParameter(attributeItemRuleList);
+        ItemRuleList missingItemRules1 = enterEachParameter(attributeItemRuleList);
 
         if (missingItemRules1 != null) {
             consoleInout.writeLine("Please enter a value for all required attributes:");
 
-            ItemRuleList missingItemRules2 = inputEachParameter(missingItemRules1);
+            ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
             if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
                 String[] itemNames = missingItemRules2.getItemNames();
@@ -192,7 +207,7 @@ public class ConsoleActivity extends CoreActivity {
         }
     }
 
-    private ItemRuleList inputEachParameter(ItemRuleList itemRuleList) {
+    private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
         consoleInout.writeLine("Enter a value for each token:");
 
         ItemRuleList missingItemRules = new ItemRuleList(itemRuleList.size());
@@ -209,7 +224,12 @@ public class ConsoleActivity extends CoreActivity {
 
                 for (Token token : tokens) {
                     if (token.getType() == TokenType.PARAMETER) {
-                        String value = consoleInout.readLine("   %s: ", token.stringify());
+                        String value;
+                        if (itemRule.isSecurity()) {
+                            value = consoleInout.readPassword("   %s: ", token.stringify());
+                        } else {
+                            value = consoleInout.readLine("   %s: ", token.stringify());
+                        }
                         if (value != null && !value.isEmpty()) {
                             getRequestAdapter().setParameter(token.getName(), value);
                             inputCount++;

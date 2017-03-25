@@ -66,6 +66,11 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
+    public String getDescription() {
+        return activity.getTransletRule().getDescription();
+    }
+
+    @Override
     public MethodType getRequestMethod() {
         return activity.getRequestMethod();
     }

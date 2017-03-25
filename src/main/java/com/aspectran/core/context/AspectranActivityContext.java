@@ -53,6 +53,8 @@ public class AspectranActivityContext implements ActivityContext {
 
     private final ApplicationAdapter applicationAdapter;
 
+    private String description;
+
     private AspectranService rootAspectranService;
 
     private AspectRuleRegistry aspectRuleRegistry;
@@ -75,6 +77,15 @@ public class AspectranActivityContext implements ActivityContext {
     public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
         this.contextEnvironment = new ContextEnvironment(this);
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

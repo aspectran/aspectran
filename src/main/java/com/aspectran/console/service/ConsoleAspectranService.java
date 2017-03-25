@@ -35,10 +35,13 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranConsoleConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
+import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
@@ -62,6 +65,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
     private long pauseTimeout;
 
     private ConsoleInout consoleInout;
+
+    private boolean showDescription;
 
     private ConsoleAspectranService() throws IOException {
         super(new ConsoleApplicationAdapter());
@@ -100,6 +105,33 @@ public class ConsoleAspectranService extends BasicAspectranService {
     }
 
     /**
+     * Returns a flag indicating whether to show the description or not.
+     *
+     * @return true if description should be shown
+     */
+    public boolean isShowDescription() {
+        return showDescription;
+    }
+
+    /**
+     * Sets a flag indicating whether to show the description or not.
+     *
+     * @param showDescription true if description should be shown
+     */
+    public void setShowDescription(boolean showDescription) {
+        this.showDescription = showDescription;
+    }
+
+    protected void showDescription() {
+        if (isShowDescription()) {
+            if (getActivityContext().getDescription() != null) {
+                consoleInout.writeLine(getActivityContext().getDescription());
+                consoleInout.flush();
+            }
+        }
+    }
+
+    /**
      * Process the actual dispatching to the activity.
      *
      * @param command the translet name
@@ -131,7 +163,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
         CommandParser commandParser = CommandParser.parseCommand(command);
         Writer[] redirectionWriters = null;
 
-        if(commandParser.getRedirectionList() != null) {
+        if (commandParser.getRedirectionList() != null) {
             try {
                 redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
             } catch (Exception e) {
@@ -197,14 +229,21 @@ public class ConsoleAspectranService extends BasicAspectranService {
                         log.info("Resuming the Aspectran Service...");
                         resume();
                         break;
+                    case "description on":
+                        log.info("Descripton On");
+                        setShowDescription(true);
+                        break;
+                    case "description off":
+                        log.info("Descripton Off");
+                        setShowDescription(false);
+                        break;
                     case "quit":
                         log.info("Goodbye.");
                         break loop;
                     default:
                         service(command);
+                        consoleInout.writeLine();
                 }
-
-                consoleInout.writeLine();
             }
         } catch (ConsoleTerminatedException e) {
             // Do Nothing
@@ -228,9 +267,23 @@ public class ConsoleAspectranService extends BasicAspectranService {
      */
     public static ConsoleAspectranService build(String aspectranConfigFile)
             throws AspectranServiceException, IOException {
+        File file = ResourceUtils.getFile(aspectranConfigFile, AspectranClassLoader.getDefaultClassLoader());
+        return build(file);
+    }
+
+    /**
+     * Returns a new instance of ConsoleAspectranService.
+     *
+     * @param aspectranConfigFile the aspectran configuration file
+     * @return the console aspectran service
+     * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
+     */
+    public static ConsoleAspectranService build(File aspectranConfigFile)
+            throws AspectranServiceException, IOException {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        if (aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
-            AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
+        if (aspectranConfigFile != null) {
+            AponReader.parse(aspectranConfigFile, aspectranConfig);
         }
 
         Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
@@ -260,6 +313,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 consoleInout.setCommandPrompt(commandPrompt);
             }
             consoleAspectranService.setConsoleInout(consoleInout);
+            boolean showDescription = BooleanUtils.toBoolean(consoleConfig.getBoolean(AspectranConsoleConfig.showDescription));
+            consoleAspectranService.setShowDescription(showDescription);
             consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
         } else {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
@@ -277,6 +332,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             @Override
             public void started() {
                 aspectranService.pauseTimeout = 0;
+                aspectranService.showDescription();
             }
 
             @Override

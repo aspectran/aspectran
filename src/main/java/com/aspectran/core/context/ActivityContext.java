@@ -46,6 +46,13 @@ public interface ActivityContext extends MessageSource {
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
     /**
+     * Gets the description of this ActivityContext.
+     *
+     * @return the description of this ActivityContext
+     */
+    String getDescription();
+
+    /**
      * Gets the context environment.
      *
      * @return the context environment

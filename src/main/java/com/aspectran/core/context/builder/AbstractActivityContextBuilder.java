@@ -121,6 +121,8 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      */
     protected ActivityContext createActivityContext() throws BeanReferenceException {
+        activityContext.setDescription(assistant.getAssistantLocal().getDescription());
+
         initContextEnvironment();
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
