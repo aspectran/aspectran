@@ -30,13 +30,15 @@ public class StringStyler {
         }
         StringBuilder sb = new StringBuilder(content.length());
         int start = 0;
+        int line = 0;
         for (int end = 0; end < content.length(); end++) {
             char c = content.charAt(end);
             if (start == 0 && c == '|') {
-                start = end + 1;
-                if (sb.length() > 0) {
+                if (line > 0) {
                     sb.append(ActivityContext.LINE_SEPARATOR);
                 }
+                start = end + 1;
+                line++;
             } else if (start > 0) {
                 if (c == '\n' || c == '\r') {
                     sb.append(content.substring(start, end));
