@@ -28,6 +28,7 @@ public class ItemParameters extends AbstractParameters {
     public static final ParameterDefinition defaultValue;
     public static final ParameterDefinition tokenize;
     public static final ParameterDefinition mandatory;
+    public static final ParameterDefinition security;
     public static final ParameterDefinition call;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -40,6 +41,7 @@ public class ItemParameters extends AbstractParameters {
         defaultValue = new ParameterDefinition("defaultValue", ParameterValueType.STRING);
         tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
         mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
+        security = new ParameterDefinition("security", ParameterValueType.BOOLEAN);
         call = new ParameterDefinition("call", CallParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -50,6 +52,7 @@ public class ItemParameters extends AbstractParameters {
             defaultValue,
             tokenize,
             mandatory,
+            security,
             call
         };
     }

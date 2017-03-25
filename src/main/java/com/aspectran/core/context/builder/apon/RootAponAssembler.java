@@ -753,6 +753,7 @@ public class RootAponAssembler {
         itemParameters.putValueNonNull(ItemParameters.defaultValue, itemRule.getDefaultValue());
         itemParameters.putValueNonNull(ItemParameters.tokenize, itemRule.getTokenize());
         itemParameters.putValueNonNull(ItemParameters.mandatory, itemRule.getMandatory());
+        itemParameters.putValueNonNull(ItemParameters.security, itemRule.getSecurity());
 
         if (itemRule.getType() == ItemType.SINGLE) {
             itemParameters.putValueNonNull(ItemParameters.value, itemRule.getValue());
