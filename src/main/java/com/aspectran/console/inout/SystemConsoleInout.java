@@ -88,6 +88,11 @@ public class SystemConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
+    public void flush() {
+        System.out.flush();
+    }
+
+    @Override
     public String getEncoding() {
         return Charset.defaultCharset().name();
     }

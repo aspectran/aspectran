@@ -155,6 +155,15 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
+    public void flush() {
+        try {
+            getWriter().flush();
+        } catch (IOException e) {
+            throw new IOError(e);
+        }
+    }
+
+    @Override
     public String getEncoding() {
         return encoding;
     }

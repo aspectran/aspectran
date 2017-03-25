@@ -58,6 +58,8 @@ public interface ConsoleInout {
 
     void writeLine();
 
+    void flush();
+
     String getEncoding();
 
     OutputStream getOutput();
