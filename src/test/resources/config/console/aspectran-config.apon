@@ -1,0 +1,23 @@
+context: {
+    root: classpath:config/console/console-test-config.xml
+    resources: [
+    ]
+    hybridLoad: false
+    autoReload: {
+        reloadMode: soft
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    profiles: {
+    }
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    startup: false
+}
+console: {
+    mode: jline
+    prompt: "test-console-app> "
+    showDescription: true
+}
