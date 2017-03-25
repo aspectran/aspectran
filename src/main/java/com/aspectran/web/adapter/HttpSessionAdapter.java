@@ -161,15 +161,13 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
      * Returns a new HTTP session scope.
      *
      * @param force whether to force a new session scope
-     * @return a {@code SessionScope} object
      */
-    private SessionScope newHttpSessionScope(boolean force) {
+    private void newHttpSessionScope(boolean force) {
         SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
         if (advisor != null || force) {
             this.sessionScope = new HttpSessionScope(this, advisor);
             setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
         }
-        return this.sessionScope;
     }
 
 }
