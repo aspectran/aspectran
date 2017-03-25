@@ -163,7 +163,7 @@ public abstract class AbstractEnvironment implements Environment {
         String profilesProp = SystemUtils.getProperty(propName);
         if (profilesProp != null) {
             String[] profiles = StringUtils.splitCommaDelimitedString(profilesProp);
-            if (profiles != null && profiles.length > 0) {
+            if (profiles.length > 0) {
                 return profiles;
             }
         }
