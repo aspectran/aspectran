@@ -22,6 +22,9 @@
 )>
 
 <!ELEMENT description (#PCDATA)>
+<!ATTLIST description
+  style   (apon | compact | compressed) #IMPLIED
+>
 
 <!ELEMENT settings (#PCDATA | setting)*>
 <!ELEMENT setting (#PCDATA)>
@@ -254,6 +257,7 @@
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
   mandatory    (true | false) #IMPLIED
+  security     (true | false) #IMPLIED
 >
 
 <!ELEMENT value (#PCDATA | call | null)*>
