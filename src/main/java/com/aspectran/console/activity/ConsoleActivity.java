@@ -18,7 +18,11 @@ package com.aspectran.console.activity;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
@@ -133,7 +137,7 @@ public class ConsoleActivity extends CoreActivity {
             consoleInout.writeLine("Required parameters:");
 
             for (ItemRule itemRule : parameterItemRuleList) {
-                Token[] tokens = itemRule.getTokens();
+                Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null) {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
                 }
@@ -176,7 +180,7 @@ public class ConsoleActivity extends CoreActivity {
             consoleInout.writeLine("Required attributes:");
 
             for (ItemRule itemRule : attributeItemRuleList) {
-                Token[] tokens = itemRule.getTokens();
+                Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null) {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
                 }
@@ -210,38 +214,50 @@ public class ConsoleActivity extends CoreActivity {
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
         consoleInout.writeLine("Enter a value for each token:");
 
-        ItemRuleList missingItemRules = new ItemRuleList(itemRuleList.size());
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>(itemRuleList.size());
 
         try {
+            Map<Token, ItemRule> inputTokens = new HashMap<>(itemRuleList.size());
             for (ItemRule itemRule : itemRuleList) {
-                Token[] tokens = itemRule.getTokens();
+                Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
                     Token t = new Token(TokenType.PARAMETER, itemRule.getName());
                     tokens = new Token[] { t };
                 }
-
-                int inputCount = 0;
-
-                for (Token token : tokens) {
-                    if (token.getType() == TokenType.PARAMETER) {
-                        String value;
-                        if (itemRule.isSecurity()) {
-                            value = consoleInout.readPassword("   %s: ", token.stringify());
-                        } else {
-                            value = consoleInout.readLine("   %s: ", token.stringify());
+                for (Token t1 : tokens) {
+                    if (t1.getType() == TokenType.PARAMETER) {
+                        boolean exists = false;
+                        for (Token t2 : inputTokens.keySet()) {
+                            if (t2.equals(t1)) {
+                                exists = true;
+                            }
                         }
-                        if (value != null && !value.isEmpty()) {
-                            getRequestAdapter().setParameter(token.getName(), value);
-                            inputCount++;
-                        } else if (token.getValue() != null) {
-                            getRequestAdapter().setParameter(token.getName(), token.getValue());
-                            inputCount++;
+                        if (!exists) {
+                            inputTokens.put(t1, itemRule);
                         }
                     }
                 }
+            }
 
-                if (itemRule.isMandatory() && inputCount == 0) {
-                    missingItemRules.add(itemRule);
+            for (Map.Entry<Token, ItemRule> entry : inputTokens.entrySet()) {
+                Token token = entry.getKey();
+                ItemRule itemRule = entry.getValue();
+                String value;
+                if (itemRule.isSecurity()) {
+                    value = consoleInout.readPassword("   %s: ", token.stringify());
+                } else {
+                    value = consoleInout.readLine("   %s: ", token.stringify());
+                }
+                if (value != null && !value.isEmpty()) {
+                    getRequestAdapter().setParameter(token.getName(), value);
+                } else if (token.getValue() != null) {
+                    getRequestAdapter().setParameter(token.getName(), token.getValue());
+                } else {
+                    for (ItemRule ir : itemRuleList) {
+                        if (ir.containsToken(token)) {
+                            missingItemRules.add(ir);
+                        }
+                    }
                 }
             }
         } catch (ConsoleTerminatedException e) {
@@ -249,7 +265,7 @@ public class ConsoleActivity extends CoreActivity {
             throw new ActivityTerminatedException();
         }
 
-        return (missingItemRules.isEmpty() ? null : missingItemRules);
+        return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
     @Override

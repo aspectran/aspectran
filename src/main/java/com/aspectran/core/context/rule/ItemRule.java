@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -396,6 +397,53 @@ public class ItemRule {
      */
     public void setSecurity(Boolean security) {
         this.security = security;
+    }
+
+    public Token[] getAllTokens() {
+        if (type == ItemType.SINGLE) {
+            return tokens;
+        } else if (isListableType()) {
+            if (tokensList == null || tokensList.isEmpty()) {
+                return null;
+            } else if (tokensList.size() == 1) {
+                return tokensList.get(0);
+            } else {
+                List<Token> list = new ArrayList<>();
+                for (Token[] tokens : tokensList) {
+                    Collections.addAll(list, tokens);
+                }
+                return list.toArray(new Token[list.size()]);
+            }
+        } else if (isMappableType()) {
+            if (tokensMap == null || tokensMap.isEmpty()) {
+                return null;
+            } else if (tokensMap.size() == 1) {
+                Iterator iter = tokensMap.values().iterator();
+                if (iter.hasNext()) {
+                    return (Token[])iter.next();
+                } else {
+                    return new Token[0];
+                }
+            } else {
+                List<Token> list = new ArrayList<>();
+                for (Token[] tokens : tokensMap.values()) {
+                    Collections.addAll(list, tokens);
+                }
+                return list.toArray(new Token[list.size()]);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public boolean containsToken(Token token) {
+        Token[] allTokens = getAllTokens();
+        for (Token t : allTokens) {
+            if (t == token) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -359,7 +359,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             object = getBeanProperty(object, token.getGetterName());
         }
 
-        return object;
+        return (object != null ? object : token.getValue());
     }
 
     /**
@@ -373,11 +373,17 @@ public class TokenExpressionParser implements TokenEvaluator {
 
         if (token.getAlternativeValue() != null) {
             value = activity.getBean((Class<?>)token.getAlternativeValue());
+            if (value != null && token.getGetterName() != null) {
+                value = getBeanProperty(value, token.getGetterName());
+            }
         } else {
             value = activity.getBean(token.getName());
-        }
-        if (value != null && token.getGetterName() != null) {
-            value = getBeanProperty(value, token.getGetterName());
+            if (value != null && token.getGetterName() != null) {
+                value = getBeanProperty(value, token.getGetterName());
+            }
+            if (value == null) {
+                value = token.getValue();
+            }
         }
 
         return value;
@@ -424,7 +430,7 @@ public class TokenExpressionParser implements TokenEvaluator {
                 throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
             }
 
-            Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : props;
+            Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getAlternativeValue());
         } else {
             Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());

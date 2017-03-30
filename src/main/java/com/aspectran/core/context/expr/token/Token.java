@@ -203,13 +203,24 @@ public class Token implements BeanReferenceInspectable {
             if (name != null) {
                 sb.append(name);
             }
-            if (value != null) {
-                sb.append(VALUE_SEPARATOR);
-                sb.append(value);
-            }
-            if (getterName != null) {
-                sb.append(GETTER_SEPARATOR);
-                sb.append(getterName);
+            if (alternativeValue != null) {
+                if (value != null) {
+                    sb.append(VALUE_SEPARATOR);
+                    sb.append(value);
+                }
+                if (getterName != null) {
+                    sb.append(GETTER_SEPARATOR);
+                    sb.append(getterName);
+                }
+            } else {
+                if (getterName != null) {
+                    sb.append(GETTER_SEPARATOR);
+                    sb.append(getterName);
+                }
+                if (value != null) {
+                    sb.append(VALUE_SEPARATOR);
+                    sb.append(value);
+                }
             }
             sb.append(END_BRACKET);
             return sb.toString();
@@ -223,10 +234,6 @@ public class Token implements BeanReferenceInspectable {
             if (value != null) {
                 sb.append(VALUE_SEPARATOR);
                 sb.append(value);
-            }
-            if (getterName != null) {
-                sb.append(GETTER_SEPARATOR);
-                sb.append(getterName);
             }
             sb.append(END_BRACKET);
             return sb.toString();
@@ -284,6 +291,48 @@ public class Token implements BeanReferenceInspectable {
         } else {
             throw new InvalidTokenException("Unknown token type", this);
         }
+    }
+
+    public boolean equals(Object token) {
+        return (token instanceof Token && deepEquals((Token)token));
+    }
+
+    private boolean deepEquals(Token token) {
+        if (this == token) {
+            return true;
+        }
+        if (type != token.getType()) {
+            return false;
+        }
+        if (name != null) {
+            if (!name.equals(token.getName())) {
+                return false;
+            }
+        } else if (token.getName() != null) {
+            return false;
+        }
+        if (getterName != null) {
+            if (!getterName.equals(token.getGetterName())) {
+                return false;
+            }
+        } else if (token.getGetterName() != null) {
+            return false;
+        }
+        if (value != null) {
+            if (!value.equals(token.getValue())) {
+                return false;
+            }
+        } else if (token.getValue() != null) {
+            return false;
+        }
+        if (alternativeValue != null) {
+            if (!alternativeValue.equals(token.getAlternativeValue())) {
+                return false;
+            }
+        } else if (token.getAlternativeValue() != null) {
+            return false;
+        }
+        return true;
     }
 
     @Override
