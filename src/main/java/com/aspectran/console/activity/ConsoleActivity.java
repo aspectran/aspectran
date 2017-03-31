@@ -16,13 +16,7 @@
 package com.aspectran.console.activity;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
@@ -217,7 +211,7 @@ public class ConsoleActivity extends CoreActivity {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>(itemRuleList.size());
 
         try {
-            Map<Token, ItemRule> inputTokens = new HashMap<>(itemRuleList.size());
+            Map<Token, ItemRule> inputTokens = new LinkedHashMap<>(itemRuleList.size());
             for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
@@ -230,6 +224,7 @@ public class ConsoleActivity extends CoreActivity {
                         for (Token t2 : inputTokens.keySet()) {
                             if (t2.equals(t1)) {
                                 exists = true;
+                                break;
                             }
                         }
                         if (!exists) {
