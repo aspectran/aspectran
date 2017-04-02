@@ -22,22 +22,58 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class Token.
+ * A token has a string value of its own or contains information
+ * for fetching a specific value from another provider.
  *
- *<ul>
- *  <li>${parameterName}
- *  <li>${parameterName:defaultValue}
- *  <li>{@literal @}{attributeName}
- *  <li>{@literal @}{attributeName:defaultValue}
- *  <li>{@literal @}{attributeName^getterName:defaultValue}
- *  <li>#{beanId}
- *  <li>#{beanId^getterName}
- *  <li>#{class:className}
- *  <li>#{class:className^getterName}
- *  <li>%{environmentPropertyName}
- *  <li>%{classpath:properties^getterName}
- *  <li>%{classpath:properties^getterName:defaultValue}
- *</ul>
+ * <p>The following symbols are used to distinguish the providers of values:</p>
+ * <dl>
+ *     <dt>#</dt>
+ *     <dd><p>Refers to a bean specified by the Bean Registry.</p>
+ *         ex)
+ *         <ul>
+ *         <li>#{beanId}
+ *         <li>#{beanId^getterName}
+ *         <li>#{beanId^getterName:defaultString}
+ *         <li>#{class:className}
+ *         <li>#{class:className^getterName}
+ *         <li>#{class:className^getterName:defaultString}
+ *         </ul>
+ *     </dd>
+ *     <dt>~</dt>
+ *     <dd><p>Refers to a string formatted from the Template Rule Registry.</p>
+ *         ex)
+ *         <ul>
+ *         <li>~{templateId}
+ *         <li>~{templateId:defaultString}
+ *         </ul>
+ *     </dd>
+ *     <dt>$</dt>
+ *     <dd><p>Refers to a parameter value.</p>
+ *         ex)
+ *         <ul>
+ *         <li>${parameterName}
+ *         <li>${parameterName:defaultString}
+ *         </ul>
+ *     </dd>
+ *     <dt>@</dt>
+ *     <dd><p>Refers to an attribute value.</p>
+ *         ex)
+ *         <ul>
+ *         <li>{@literal @}{attributeName}
+ *         <li>{@literal @}{attributeName:defaultString}
+ *         <li>{@literal @}{attributeName^getterName:defaultString}
+ *         </ul>
+ *     </dd>
+ *     <dt>%</dt>
+ *     <dd><p>Refers to a property from the specified Properties file or environment variables.</p>
+ *         ex)
+ *         <ul>
+ *         <li>%{environmentPropertyName}
+ *         <li>%{classpath:propertiesPath^getterName}
+ *         <li>%{classpath:propertiesPath^getterName:defaultString}
+ *         </ul>
+ *     </dd>
+ * </dl>
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
@@ -75,19 +111,20 @@ public class Token implements BeanReferenceInspectable {
 
     private String getterName;
 
+    private String defaultValue;
+
     /**
      * Instantiates a new Token.
      *
      * @param type the token type
-     * @param nameOrValue token's name or value of this token.
-     *         If token type is TEXT then will be a value of this token.
+     * @param nameOrValue the name or default value of this token
      */
     public Token(TokenType type, String nameOrValue) {
         this.type = type;
 
         if (type == TokenType.TEXT) {
             this.name = null;
-            this.value = nameOrValue;
+            this.defaultValue = nameOrValue;
         } else {
             if (nameOrValue == null) {
                 throw new IllegalArgumentException("The nameOrValue argument must not be null.");
@@ -109,6 +146,7 @@ public class Token implements BeanReferenceInspectable {
      * Gets the token directive type.
      *
      * @return the token directive type
+     * @see TokenDirectiveType
      */
     public TokenDirectiveType getDirectiveType() {
         return directiveType;
@@ -118,6 +156,7 @@ public class Token implements BeanReferenceInspectable {
      * Sets the token directive type.
      *
      * @param directiveType the token directive type
+     * @see TokenDirectiveType
      */
     public void setDirectiveType(TokenDirectiveType directiveType) {
         this.directiveType = directiveType;
@@ -133,9 +172,12 @@ public class Token implements BeanReferenceInspectable {
     }
 
     /**
-     * Returns the token's default value or bean's class name.
-     * If the token's type is Bean and token's name is "class" then token's
-     * value is class name of the Bean. Others that is default value.
+     * Returns the class name of the bean or the classpath of the Properties file,
+     * depending on the type of token.
+     * For example, if the token type is "bean" and the token name is "class",
+     * the value of the token is the class name of the bean.
+     * Also, if the token type is "property" and the token name is "classpath",
+     * the value of the token is the path to reference in the Properties file.
      *
      * @return the default value or bean's class name
      */
@@ -144,9 +186,10 @@ public class Token implements BeanReferenceInspectable {
     }
 
     /**
-     * Sets the token's default value or bean's class name.
+     * Sets the class name of the bean or the classpath of the Properties file,
+     * depending on the type of the token.
      *
-     * @param value the default value or bean's class name
+     * @param value the class name of the bean or the classpath of the Properties file
      */
     public void setValue(String value) {
         this.value = value;
@@ -163,6 +206,7 @@ public class Token implements BeanReferenceInspectable {
 
     /**
      * Gets the alternative value.
+     * It is a value corresponding to class name or class path according to token directive.
      *
      * @return the alternative value
      */
@@ -172,6 +216,7 @@ public class Token implements BeanReferenceInspectable {
 
     /**
      * Sets the alternative value.
+     * It is a value corresponding to class name or class path according to token directive.
      *
      * @param value the new alternative value
      */
@@ -188,70 +233,66 @@ public class Token implements BeanReferenceInspectable {
         this.getterName = getterName;
     }
 
+    /**
+     * Gets the default value.
+     *
+     * @return the default value
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    /**
+     * Sets the default value.
+     *
+     * @param defaultValue the new default value
+     */
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Override
     public BeanReferrerType getBeanReferrerType() {
         return BEAN_REFERRER_TYPE;
     }
 
+    /**
+     * Convert a Token object into a string.
+     *
+     * @return a string representation of the token
+     */
     public String stringify() {
         if (type == TokenType.TEXT) {
-            return value;
-        } else if (type == TokenType.BEAN) {
-            StringBuilder sb = new StringBuilder();
+            return defaultValue;
+        }
+        StringBuilder sb = new StringBuilder();
+        if (type == TokenType.BEAN) {
             sb.append(BEAN_SYMBOL);
             sb.append(START_BRACKET);
             if (name != null) {
                 sb.append(name);
             }
-            if (alternativeValue != null) {
-                if (value != null) {
-                    sb.append(VALUE_SEPARATOR);
-                    sb.append(value);
-                }
-                if (getterName != null) {
-                    sb.append(GETTER_SEPARATOR);
-                    sb.append(getterName);
-                }
-            } else {
-                if (getterName != null) {
-                    sb.append(GETTER_SEPARATOR);
-                    sb.append(getterName);
-                }
-                if (value != null) {
-                    sb.append(VALUE_SEPARATOR);
-                    sb.append(value);
-                }
+            if (value != null) {
+                sb.append(VALUE_SEPARATOR);
+                sb.append(value);
             }
-            sb.append(END_BRACKET);
-            return sb.toString();
+            if (getterName != null) {
+                sb.append(GETTER_SEPARATOR);
+                sb.append(getterName);
+            }
         } else if (type == TokenType.TEMPLATE) {
-            StringBuilder sb = new StringBuilder();
             sb.append(TEMPLATE_SYMBOL);
             sb.append(START_BRACKET);
             if (name != null) {
                 sb.append(name);
             }
-            if (value != null) {
-                sb.append(VALUE_SEPARATOR);
-                sb.append(value);
-            }
-            sb.append(END_BRACKET);
-            return sb.toString();
         } else if (type == TokenType.PARAMETER) {
-            StringBuilder sb = new StringBuilder();
             sb.append(PARAMETER_SYMBOL);
             sb.append(START_BRACKET);
             if (name != null) {
                 sb.append(name);
             }
-            if (value != null) {
-                sb.append(VALUE_SEPARATOR);
-                sb.append(value);
-            }
-            sb.append(END_BRACKET);
-            return sb.toString();
         } else if (type == TokenType.ATTRIBUTE) {
-            StringBuilder sb = new StringBuilder();
             sb.append(ATTRIBUTE_SYMBOL);
             sb.append(START_BRACKET);
             if (name != null) {
@@ -261,14 +302,7 @@ public class Token implements BeanReferenceInspectable {
                 sb.append(GETTER_SEPARATOR);
                 sb.append(getterName);
             }
-            if (value != null) {
-                sb.append(VALUE_SEPARATOR);
-                sb.append(value);
-            }
-            sb.append(END_BRACKET);
-            return sb.toString();
         } else if (type == TokenType.PROPERTY) {
-            StringBuilder sb = new StringBuilder();
             sb.append(PROPERTY_SYMBOL);
             sb.append(START_BRACKET);
             if (name != null) {
@@ -282,15 +316,15 @@ public class Token implements BeanReferenceInspectable {
                 sb.append(GETTER_SEPARATOR);
                 sb.append(getterName);
             }
-            if (alternativeValue != null) {
-                sb.append(VALUE_SEPARATOR);
-                sb.append(alternativeValue);
-            }
-            sb.append(END_BRACKET);
-            return sb.toString();
         } else {
             throw new InvalidTokenException("Unknown token type", this);
         }
+        if (defaultValue != null) {
+            sb.append(VALUE_SEPARATOR);
+            sb.append(defaultValue);
+        }
+        sb.append(END_BRACKET);
+        return sb.toString();
     }
 
     public boolean equals(Object token) {
@@ -311,13 +345,6 @@ public class Token implements BeanReferenceInspectable {
         } else if (token.getName() != null) {
             return false;
         }
-        if (getterName != null) {
-            if (!getterName.equals(token.getGetterName())) {
-                return false;
-            }
-        } else if (token.getGetterName() != null) {
-            return false;
-        }
         if (value != null) {
             if (!value.equals(token.getValue())) {
                 return false;
@@ -325,11 +352,18 @@ public class Token implements BeanReferenceInspectable {
         } else if (token.getValue() != null) {
             return false;
         }
-        if (alternativeValue != null) {
-            if (!alternativeValue.equals(token.getAlternativeValue())) {
+        if (getterName != null) {
+            if (!getterName.equals(token.getGetterName())) {
                 return false;
             }
-        } else if (token.getAlternativeValue() != null) {
+        } else if (token.getGetterName() != null) {
+            return false;
+        }
+        if (defaultValue != null) {
+            if (!defaultValue.equals(token.getDefaultValue())) {
+                return false;
+            }
+        } else if (token.getDefaultValue() != null) {
             return false;
         }
         return true;
@@ -340,9 +374,10 @@ public class Token implements BeanReferenceInspectable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", type);
         tsb.append("name", name);
-        tsb.append("getterName", getterName);
         tsb.append("value", value);
         tsb.append("alternativeValue", alternativeValue);
+        tsb.append("getterName", getterName);
+        tsb.append("defaultValue", defaultValue);
         return tsb.toString();
     }
 

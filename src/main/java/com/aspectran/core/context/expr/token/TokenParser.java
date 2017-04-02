@@ -80,7 +80,7 @@ public class TokenParser {
             for (Token t : tokenList) {
                 if (t.getType() == TokenType.TEXT) {
                     // except empty token
-                    if (StringUtils.hasText(t.getValue())) {
+                    if (StringUtils.hasText(t.getDefaultValue())) {
                         tokensList.add(new Token[] {t});
                     }
                 } else {
@@ -104,7 +104,7 @@ public class TokenParser {
             tokensMap = new LinkedHashMap<>();
             for (Token t : tokenList) {
                 if (t.getType() != TokenType.TEXT) {
-                    if (StringUtils.hasLength(t.getName()) && StringUtils.hasLength(t.getValue())) {
+                    if (StringUtils.hasLength(t.getName()) && StringUtils.hasLength(t.getDefaultValue())) {
                         tokensMap.put(t.getName(), new Token[] {t});
                     }
                 }

@@ -62,13 +62,13 @@ public class TokenExpressionParser implements TokenEvaluator {
         Object value = null;
 
         if (tokenType == TokenType.TEXT) {
-            value = token.getValue();
+            value = token.getDefaultValue();
         } else if (tokenType == TokenType.BEAN) {
             value = getBean(token);
         } else if (tokenType == TokenType.TEMPLATE) {
             value = getTemplate(token);
         } else if (tokenType == TokenType.PARAMETER) {
-            value = getParameter(token.getName(), token.getValue());
+            value = getParameter(token.getName(), token.getDefaultValue());
         } else if (tokenType == TokenType.ATTRIBUTE) {
             value = getAttribute(token);
         } else if (tokenType == TokenType.PROPERTY) {
@@ -359,7 +359,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             object = getBeanProperty(object, token.getGetterName());
         }
 
-        return (object != null ? object : token.getValue());
+        return (object != null ? object : token.getDefaultValue());
     }
 
     /**
@@ -373,17 +373,14 @@ public class TokenExpressionParser implements TokenEvaluator {
 
         if (token.getAlternativeValue() != null) {
             value = activity.getBean((Class<?>)token.getAlternativeValue());
-            if (value != null && token.getGetterName() != null) {
-                value = getBeanProperty(value, token.getGetterName());
-            }
         } else {
             value = activity.getBean(token.getName());
-            if (value != null && token.getGetterName() != null) {
-                value = getBeanProperty(value, token.getGetterName());
-            }
-            if (value == null) {
-                value = token.getValue();
-            }
+        }
+        if (value != null && token.getGetterName() != null) {
+            value = getBeanProperty(value, token.getGetterName());
+        }
+        if (value == null) {
+            value = token.getDefaultValue();
         }
 
         return value;
@@ -431,13 +428,13 @@ public class TokenExpressionParser implements TokenEvaluator {
             }
 
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
-            return (value != null ? value : token.getAlternativeValue());
+            return (value != null ? value : token.getDefaultValue());
         } else {
             Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }
-            return (value != null ? value : token.getValue());
+            return (value != null ? value : token.getDefaultValue());
         }
     }
 
@@ -454,7 +451,7 @@ public class TokenExpressionParser implements TokenEvaluator {
         templateProcessor.process(token.getName(), activity, writer);
 
         String result = writer.toString();
-        return (result != null ? result : token.getValue());
+        return (result != null ? result : token.getDefaultValue());
     }
 
     /**

@@ -245,8 +245,8 @@ public class ConsoleActivity extends CoreActivity {
                 }
                 if (value != null && !value.isEmpty()) {
                     getRequestAdapter().setParameter(token.getName(), value);
-                } else if (token.getValue() != null) {
-                    getRequestAdapter().setParameter(token.getName(), token.getValue());
+                } else if (token.getDefaultValue() != null) {
+                    getRequestAdapter().setParameter(token.getName(), token.getDefaultValue());
                 } else {
                     for (ItemRule ir : itemRuleList) {
                         if (ir.containsToken(token)) {
