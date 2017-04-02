@@ -58,7 +58,7 @@ public class Tokenizer {
         int inputLen = input.length();
         if (inputLen == 0) {
             List<Token> tokens = new ArrayList<>(1);
-            tokens.add(new Token(TokenType.TEXT, ""));
+            tokens.add(new Token(""));
             return tokens;
         }
 
@@ -123,7 +123,7 @@ public class Tokenizer {
                         // save previous non-token string
                         if (tokenStartOffset > 0) {
                             String text = trimBuffer(textBuf, tokenStartOffset, textTrim);
-                            Token token = new Token(TokenType.TEXT, text);
+                            Token token = new Token(text);
                             tokens.add(token);
                         }
 
@@ -156,7 +156,7 @@ public class Tokenizer {
 
         if (textBuf.length() > 0) {
             String text = trimBuffer(textBuf, textBuf.length(), textTrim);
-            Token token = new Token(TokenType.TEXT, text);
+            Token token = new Token(text);
             tokens.add(token);
         }
 
@@ -219,9 +219,7 @@ public class Tokenizer {
                             }
                         }
                     }
-                    Token token = new Token(type, name);
-                    token.setDirectiveType(directiveType);
-                    token.setValue(value);
+                    Token token = new Token(type, directiveType, value);
                     token.setGetterName(getter);
                     token.setDefaultValue(defaultValue);
                     return token;
@@ -235,7 +233,7 @@ public class Tokenizer {
             }
         } else {
             // when not exists tokenName then tokenType must be TEXT type
-            return new Token(TokenType.TEXT, value);
+            return new Token(value);
         }
     }
 
@@ -333,14 +331,14 @@ public class Tokenizer {
         if (firstVal != null) {
             String text = trimLeadingWhitespace(firstVal);
             if (!Objects.equals(firstVal, text)) {
-                tokens[0] = new Token(TokenType.TEXT, text);
+                tokens[0] = new Token(text);
             }
         }
 
         if (lastVal != null && !lastVal.isEmpty()) {
             String text = trimTrailingWhitespace(lastVal);
             if (!Objects.equals(lastVal, text)) {
-                tokens[tokens.length - 1] = new Token(TokenType.TEXT, text);
+                tokens[tokens.length - 1] = new Token(text);
             }
         }
 

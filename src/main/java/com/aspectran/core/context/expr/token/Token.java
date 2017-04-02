@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -77,7 +78,7 @@ import com.aspectran.core.util.ToStringBuilder;
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
-public class Token implements BeanReferenceInspectable {
+public class Token implements BeanReferenceInspectable, Replicable {
 
     private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TOKEN;
 
@@ -116,21 +117,51 @@ public class Token implements BeanReferenceInspectable {
     /**
      * Instantiates a new Token.
      *
-     * @param type the token type
-     * @param nameOrValue the name or default value of this token
+     * @param defaultValue the default value
      */
-    public Token(TokenType type, String nameOrValue) {
-        this.type = type;
+    public Token(String defaultValue) {
+        this.type = TokenType.TEXT;
+        this.name = null;
+        this.defaultValue = defaultValue;
+    }
 
+    /**
+     * Instantiates a new Token.
+     *
+     * @param type the token type
+     * @param name the token name
+     */
+    public Token(TokenType type, String name) {
         if (type == TokenType.TEXT) {
-            this.name = null;
-            this.defaultValue = nameOrValue;
-        } else {
-            if (nameOrValue == null) {
-                throw new IllegalArgumentException("The nameOrValue argument must not be null.");
-            }
-            this.name = nameOrValue;
+            throw new UnsupportedOperationException();
         }
+        if (type == null) {
+            throw new IllegalArgumentException("The type argument must not be null.");
+        }
+        if (name == null) {
+            throw new IllegalArgumentException("The name argument must not be null.");
+        }
+        this.type = type;
+        this.name = name;
+    }
+
+    /**
+     * Instantiates a new Token.
+     *
+     * @param type the token type
+     * @param directiveType the token directive type
+     */
+    public Token(TokenType type, TokenDirectiveType directiveType, String value) {
+        if (type == null) {
+            throw new IllegalArgumentException("The type argument must not be null.");
+        }
+        if (directiveType == null) {
+            throw new IllegalArgumentException("The directiveType argument must not be null.");
+        }
+        this.type = type;
+        this.directiveType = directiveType;
+        this.name = directiveType.toString();
+        this.value = value;
     }
 
     /**
@@ -158,7 +189,7 @@ public class Token implements BeanReferenceInspectable {
      * @param directiveType the token directive type
      * @see TokenDirectiveType
      */
-    public void setDirectiveType(TokenDirectiveType directiveType) {
+    private void setDirectiveType(TokenDirectiveType directiveType) {
         this.directiveType = directiveType;
     }
 
@@ -367,6 +398,26 @@ public class Token implements BeanReferenceInspectable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Token replicate() {
+        Token token;
+        if (directiveType != null) {
+            token = new Token(type, directiveType, value);
+            token.setAlternativeValue(alternativeValue);
+            token.setGetterName(getterName);
+            token.setDefaultValue(defaultValue);
+        } else {
+            if (type == TokenType.TEXT) {
+                token = new Token(defaultValue);
+            } else {
+                token = new Token(type, name);
+                token.setGetterName(getterName);
+                token.setDefaultValue(defaultValue);
+            }
+        }
+        return token;
     }
 
     @Override

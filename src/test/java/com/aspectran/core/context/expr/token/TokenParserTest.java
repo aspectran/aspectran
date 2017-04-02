@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr.token;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -67,28 +68,11 @@ public class TokenParserTest {
 
         Token[] tokens = TokenParser.parse(text);
 
-        //for (Token token : tokens) {
-        //    System.out.println(token.stringify() + " = " + token.toString());
-        //}
-
-        assertEquals(tokens[0].stringify(), "${param1}");
-        assertEquals(tokens[1].stringify(), "${param2:defaultStr}");
-        assertEquals(tokens[2].stringify(), "@{attr1}");
-        assertEquals(tokens[3].stringify(), "@{attr2:defaultStr}");
-        assertEquals(tokens[4].stringify(), "@{attr3^invokeMethod}");
-        assertEquals(tokens[5].stringify(), "%{prop1}");
-        assertEquals(tokens[6].stringify(), "%{classpath:propertiesPath^getterName}");
-        assertEquals(tokens[7].stringify(), "%{classpath:propertiesPath^getterName:defaultStr}");
-        assertEquals(tokens[8].stringify(), "#{beanId}");
-        assertEquals(tokens[9].stringify(), "#{beanId^getterName}");
-        assertEquals(tokens[10].stringify(), "#{beanId^getterName:defaultStr}");
-        assertEquals(tokens[11].stringify(), "#{class:beanClassName}");
-        assertEquals(tokens[12].stringify(), "#{class:beanClassName^getterName}");
-        assertEquals(tokens[13].stringify(), "#{class:beanClassName^getterName:defaultStr}");
-        assertEquals(tokens[14].stringify(), "~{templateId}");
-        assertEquals(tokens[15].stringify(), "~{templateId:defaultStr}");
+        for (Token token : tokens) {
+            System.out.println(token.stringify() + " = " + token.toString());
+            assertTrue(token.equals(token.replicate()));
+            assertEquals(token.stringify(), token.replicate().stringify());
+        }
     }
-
-
 
 }

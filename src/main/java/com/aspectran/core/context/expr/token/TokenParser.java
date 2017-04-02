@@ -50,8 +50,8 @@ public class TokenParser {
             return null;
         }
         if (text.length() == 0) {
-            Token t = new Token(TokenType.TEXT, text);
-            return new Token[] {t};
+            Token t = new Token(text);
+            return new Token[] { t };
         }
 
         Token[] tokens = null;
@@ -130,7 +130,7 @@ public class TokenParser {
             tokens = parse(text);
         } else {
             tokens = new Token[1];
-            tokens[0] = new Token(TokenType.TEXT, text);
+            tokens[0] = new Token(text);
         }
         return tokens;
     }
