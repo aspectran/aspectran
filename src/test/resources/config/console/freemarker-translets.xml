@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        This is an Aspectran Configuration for the Console Application.
+        This is an example using the Freemarker template engine.
     </description>
 
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
@@ -47,8 +47,10 @@
     </bean>
 
     <translet name="free">
-        <description>
-            두 개의 입력 값과 Freemarker 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
+        <description style="apon">
+            |
+            |   It uses the Freemarker template engine to output the values of the input parameters to the console.
+            |
         </description>
         <request>
             <parameters>
@@ -58,24 +60,26 @@
         </request>
         <transform type="transform/text">
             <template engine="freemarker" style="apon">
+                |-------------------------------------
                 |The input parameters are as follows:
                 |-------------------------------------
                 |input_1: ${input_1}
                 |input_2: ${input_2}
                 |-------------------------------------
                 |Templated by Freemarker engine
+                |-------------------------------------
             </template>
         </transform>
     </translet>
 
     <template id="selectOne" engine="freemarker" style="apon">
         <![CDATA[
-        |------------------------------------------
+        |--------------------------------------------------------
         |SELECT
         |    id,
         |    name,
         |    email
-        |FROM table1
+        |FROM users
         |<@directive.where>
         |    <#if id?has_content>
         |    id = :id
@@ -88,18 +92,19 @@
         |    </#if>
         |</@directive.where>
         |ORDER BY name
-        |------------------------------------------
+        |--------------------------------------------------------
+        | The values to be set in the PreparedStatement instance.
         | id    = ${id?default("")}
         | name  = ${name?default("")}
         | email = ${email?default("")}
-        |------------------------------------------
+        |--------------------------------------------------------
         ]]>
     </template>
 
     <template id="updateOne" engine="freemarker" style="apon">
         <![CDATA[
-        |------------------------------------------
-        |UPDATE table1
+        |--------------------------------------------------------
+        |UPDATE users
         |<@directive.set>
         |    name = :name,
         |    email = :email,
@@ -107,17 +112,20 @@
         |<@directive.where>
         |    id = :id
         |</@directive.where>
-        |------------------------------------------
+        |--------------------------------------------------------
+        | The values to be set in the PreparedStatement instance.
         | id    = ${id?default("")}
         | name  = ${name?default("")}
         | email = ${email?default("")}
-        |------------------------------------------
+        |--------------------------------------------------------
         ]]>
     </template>
 
     <translet name="select">
-        <description>
-            Freemarker 템플릿 엔진을 사용해서 간단한 SQL문을 생성하는 예제입니다.
+        <description style="apon">
+            |
+            |   This example generates a simple SQL SELECT statement using the Freemarker template engine.
+            |
         </description>
         <request>
             <parameters>
@@ -125,11 +133,6 @@
                 <item name="name"/>
                 <item name="email"/>
             </parameters>
-            <attributes>
-                <item name="id" mandatory="true"/>
-                <item name="name" mandatory="true">${firstName} ${lastName}</item>
-                <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
-            </attributes>
         </request>
         <transform type="transform/text">
         	<call template="selectOne"/>
@@ -137,8 +140,10 @@
     </translet>
 
     <translet name="update">
-        <description>
-            Freemarker 템플릿 엔진을 사용해서 간단한 SQL문을 생성하는 예제입니다.
+        <description style="apon">
+            |
+            |   This example generates a simple SQL UPDATE statement using the Freemarker template engine.
+            |
         </description>
         <request>
             <parameters>

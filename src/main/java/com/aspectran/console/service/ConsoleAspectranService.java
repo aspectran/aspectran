@@ -237,6 +237,9 @@ public class ConsoleAspectranService extends BasicAspectranService {
                         log.info("Descripton Off");
                         setShowDescription(false);
                         break;
+                    case "help":
+                        showDescription();
+                        break ;
                     case "quit":
                         log.info("Goodbye.");
                         break loop;

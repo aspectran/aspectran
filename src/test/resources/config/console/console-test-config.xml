@@ -3,8 +3,27 @@
 
 <aspectran>
 
-    <description>
-        This is an Aspectran Configuration for the Console Application.
+    <description style="apon">
+        |-----------------------------------------------------
+        |   Demonstrating the Aspectran console application
+        |-----------------------------------------------------
+        |
+        |Built-in commands for this console application:
+        |   description on - Display a description of the command
+        |   description off - Turn off display of description for the command
+        |   help - Show the description message that was displayed at startup
+        |   restart - Restart this console application
+        |   quit - Exit from this console application
+        |
+        |Commands that can run the examples:
+        |   hello - Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
+        |   echo - It accepts parameters and print them to the console.
+        |   login - It accepts parameters used for login and print them to the console.
+        |   changePassword - It accepts parameters for changing the password and print them to the console.
+        |   free - It uses the Freemarker template engine to output the values of the input parameters to the console.
+        |   select - This example generates a simple SQL SELECT statement using the Freemarker template engine.
+        |   update - This example generates a simple SQL UPDATE statement using the Freemarker template engine.
+        |
     </description>
 
     <bean class="sample.SampleAction">
