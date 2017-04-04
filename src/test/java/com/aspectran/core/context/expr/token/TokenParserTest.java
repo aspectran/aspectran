@@ -69,7 +69,7 @@ public class TokenParserTest {
         Token[] tokens = TokenParser.parse(text);
 
         for (Token token : tokens) {
-            System.out.println(token.stringify() + " = " + token.toString());
+            //System.out.println(token.stringify() + " = " + token.toString());
             assertTrue(token.equals(token.replicate()));
             assertEquals(token.stringify(), token.replicate().stringify());
         }

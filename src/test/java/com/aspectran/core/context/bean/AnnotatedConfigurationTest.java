@@ -15,8 +15,20 @@
  */
 package com.aspectran.core.context.bean;
 
+import static junit.framework.TestCase.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.embedded.service.EmbeddedAspectranService;
+
+import test.anno.ThirdResult;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
@@ -24,16 +36,25 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AnnotatedConfigurationTest {
 
-//    @Test
-//    public void configurationTest() throws ClassNotFoundException {
-//        NonContextBeanRegistryFactory factory = new NonContextBeanRegistryFactory();
-//        factory.addScanPattern("com.aspectran.core.context.bean.*Bean", "com.aspectran.core.context.bean.*");
-//        factory.addScanPattern("com.aspectran.core.context.bean.*Configuration", "com.aspectran.core.context.bean.*");
-//
-//        BeanRegistry beanRegistry = factory.createNonContextBeanRegistry();
-//        FirstBean firstBean = beanRegistry.getBean("thirdBean");
-//
-//        System.out.println(firstBean.getMessage());
-//    }
+    private EmbeddedAspectranService aspectranService;
+
+    @Before
+    public void ready() throws IOException, AspectranServiceException {
+        String rootContextLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
+        aspectranService = EmbeddedAspectranService.build(rootContextLocation);
+    }
+
+    @After
+    public void finish() {
+        if (aspectranService != null) {
+            aspectranService.shutdown();
+        }
+    }
+
+    @Test
+    public void firstTest() throws AspectranServiceException, IOException {
+        ThirdResult thirdResult = aspectranService.getActivityContext().getBeanRegistry().getBean("thirdResult");
+        assertEquals(thirdResult.getMessage(), "This is a second bean.");
+    }
 
 }

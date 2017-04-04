@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.message;
 
+import static junit.framework.TestCase.assertEquals;
+
 import java.util.Locale;
 
 import org.junit.Test;
@@ -37,11 +39,11 @@ public class ResourceBundleMessageSourceTest {
         String msg4 = messageSource.getMessage("hello", args, Locale.FRENCH);
         String msg5 = messageSource.getMessage("hello", args, Locale.GERMAN);
 
-        System.out.println(msg1);
-        System.out.println(msg2);
-        System.out.println(msg3);
-        System.out.println(msg4);
-        System.out.println(msg5);
+        assertEquals("Hello, Aspectran!", msg1);
+        assertEquals("안녕하세요, Aspectran!", msg2);
+        assertEquals("こんにちは、 Aspectran!", msg3);
+        assertEquals("Bonjour, Aspectran!", msg4);
+        assertEquals("Guten Tag, Aspectran!", msg5);
     }
 
 }

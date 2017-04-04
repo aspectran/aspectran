@@ -15,20 +15,16 @@
  */
 package test.anno;
 
-import com.aspectran.core.context.bean.annotation.Autowired;
-import com.aspectran.core.context.bean.annotation.Bean;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.rule.type.ScopeType;
+public class ThirdResult {
 
-@Configuration
-public class TestConfiguration {
-
-    @Autowired
     private FirstBean firstBean;
 
-    @Bean(id = "thirdResult", scope = ScopeType.SINGLETON, lazyInit = true)
-    public ThirdResult getThirdResult() {
-        return new ThirdResult(firstBean);
+    public ThirdResult(FirstBean firstBean) {
+        this.firstBean = firstBean;
+    }
+
+    public String getMessage() {
+        return firstBean.getMessage();
     }
 
 }

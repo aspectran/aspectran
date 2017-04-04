@@ -17,11 +17,7 @@ package test.anno;
 
 public class SecondBean {
 
-    private String message = "This is the second bean.";
-
-    public SecondBean() {
-        System.out.println("1111111111");
-    }
+    private String message = "This is a second bean.";
 
     public String getMessage() {
         return message;
