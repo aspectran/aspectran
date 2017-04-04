@@ -17,6 +17,8 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.apon.RootAponDisassembler;
+import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.importer.AponImportHandler;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
@@ -56,6 +58,21 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
             return createActivityContext();
         } catch (Exception e) {
             throw new ActivityContextBuilderException("Failed to build an ActivityContext: " + rootContext, e);
+        }
+    }
+
+    public ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException {
+        try {
+            if (aspectranParameters == null) {
+                throw new IllegalArgumentException("The aspectranParameters argument must not be null.");
+            }
+
+            RootAponDisassembler rootAponDisassembler = new RootAponDisassembler(getContextBuilderAssistant());
+            rootAponDisassembler.disassembleAspectran(aspectranParameters);
+
+            return createActivityContext();
+        } catch (Exception e) {
+            throw new ActivityContextBuilderException("Failed to build an ActivityContext with AspectranParameters:" + aspectranParameters, e);
         }
     }
 

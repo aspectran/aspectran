@@ -21,6 +21,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextConfig extends AbstractParameters {
 
+    public static final ParameterDefinition parameters;
     public static final ParameterDefinition root;
     public static final ParameterDefinition encoding;
     public static final ParameterDefinition resources;
@@ -31,6 +32,7 @@ public class AspectranContextConfig extends AbstractParameters {
     private final static ParameterDefinition[] parameterDefinitions;
 
     static {
+        parameters = new ParameterDefinition("parameters", ParameterValueType.PARAMETERS);
         root = new ParameterDefinition("root", ParameterValueType.STRING);
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
@@ -39,6 +41,7 @@ public class AspectranContextConfig extends AbstractParameters {
         profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
+            parameters,
             root,
             encoding,
             resources,
