@@ -30,13 +30,13 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.parser.assistant.BeanReferenceException;
 import com.aspectran.core.context.parser.assistant.BeanReferenceInspector;
-import com.aspectran.core.context.parser.assistant.ContextBuilderAssistant;
+import com.aspectran.core.context.parser.assistant.ContextParserAssistant;
 import com.aspectran.core.context.parser.importer.FileImporter;
 import com.aspectran.core.context.parser.importer.Importer;
 import com.aspectran.core.context.parser.importer.ResourceImporter;
-import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -55,11 +55,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class AbstractActivityContextBuilder.
+ * The Class AbstractActivityContextParser.
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
+abstract class AbstractActivityContextParser implements ActivityContextParser {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -67,15 +67,15 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
 
     private final ContextEnvironment environment;
 
-    private final ContextBuilderAssistant assistant;
+    private final ContextParserAssistant assistant;
 
     private boolean hybridLoad;
 
-    protected AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+    protected AbstractActivityContextParser(ApplicationAdapter applicationAdapter) {
         activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
         environment = activityContext.getContextEnvironment();
 
-        assistant = new ContextBuilderAssistant(environment);
+        assistant = new ContextParserAssistant(environment);
         assistant.ready();
     }
 
@@ -85,7 +85,7 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
     }
 
     @Override
-    public ContextBuilderAssistant getContextBuilderAssistant() {
+    public ContextParserAssistant getContextBuilderAssistant() {
         return assistant;
     }
 
