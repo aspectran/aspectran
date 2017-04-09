@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutParameters;
-import com.aspectran.core.context.builder.apon.params.PointcutTargetParameters;
+import com.aspectran.core.context.parser.apon.params.JoinpointParameters;
+import com.aspectran.core.context.parser.apon.params.PointcutParameters;
+import com.aspectran.core.context.parser.apon.params.PointcutTargetParameters;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;

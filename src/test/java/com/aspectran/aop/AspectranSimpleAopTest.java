@@ -37,17 +37,15 @@ public class AspectranSimpleAopTest {
         aspectranService = EmbeddedAspectranService.build(rootContextLocation);
     }
 
-    @After
-    public void finish() {
-        if (aspectranService != null) {
-            aspectranService.shutdown();
-        }
-    }
-
     @Test
     public void test() throws AspectranServiceException, IOException {
         aspectranService.translet("/aop/test/target1");
         aspectranService.translet("/aop/test/target2");
+    }
+
+    @After
+    public void finish() {
+        aspectranService.shutdown();
     }
 
 }

@@ -16,11 +16,11 @@ echo "Current commit detected: ${commit_message}"
 VER=`java -version 2>&1 | sed 's/java version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q'`
 echo "Java detected: ${VER}"
 
-# We build for several JDKs on Travis.
+# We parser for several JDKs on Travis.
 # Some actions, like analyzing the code (Coveralls) and uploading
 # artifacts on a Maven repository, should only be made for one version.
 
-if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
+if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-destroy-plugin]"* ]]; then
   if [ $VER == "18" ]; then
     mvn clean deploy -Dmaven.test.skip=true -q --settings ./travis/settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
@@ -33,5 +33,5 @@ if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$
     # echo -e "Successfully ran Sonar integration under Travis job ${TRAVIS_JOB_NUMBER}"
   fi
 else
-  echo "Travis build skipped"
+  echo "Travis parser skipped"
 fi

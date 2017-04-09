@@ -15,96 +15,156 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.util.List;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.RegulatedApplicationAdapter;
+import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranActivityContext;
-import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
-import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.aspect.InvalidPointcutPatternException;
-import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
-import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.builder.assistant.BeanReferenceException;
-import com.aspectran.core.context.builder.assistant.BeanReferenceInspector;
-import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.importer.FileImporter;
-import com.aspectran.core.context.builder.importer.Importer;
-import com.aspectran.core.context.builder.importer.ResourceImporter;
-import com.aspectran.core.context.env.ContextEnvironment;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.ImporterFileFormatType;
-import com.aspectran.core.context.rule.type.JoinpointType;
-import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.context.template.ContextTemplateProcessor;
-import com.aspectran.core.context.template.TemplateRuleRegistry;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranContextAutoReloadConfig;
+import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.AspectranContextProfilesConfig;
+import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.parser.apon.params.AspectranParameters;
+import com.aspectran.core.service.AspectranServiceController;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-/**
- * The Class AbstractActivityContextBuilder.
- * 
- * <p>Created: 2008. 06. 14 PM 8:53:29</p>
- */
-abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
+public abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private final AspectranActivityContext activityContext;
+    private final ApplicationAdapter applicationAdapter;
 
-    private final ContextEnvironment environment;
+    private AspectranContextConfig aspectranContextConfig;
 
-    private final ContextBuilderAssistant assistant;
+    private AspectranParameters aspectranParameters;
+
+    private String basePath;
+
+    private String rootContext;
+
+    private String encoding;
+
+    private String[] resourceLocations;
+
+    private String[] activeProfiles;
+
+    private String[] defaultProfiles;
 
     private boolean hybridLoad;
 
-    protected AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-        activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
-        environment = activityContext.getContextEnvironment();
+    private boolean hardReload;
 
-        assistant = new ContextBuilderAssistant(environment);
-        assistant.ready();
+    private boolean autoReloadStartup;
+
+    private int scanIntervalSeconds;
+
+    private ActivityContextReloadingTimer reloadingTimer;
+
+    private AspectranServiceController aspectranServiceController;
+
+    private AspectranClassLoader aspectranClassLoader;
+
+    public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+        if (applicationAdapter == null) {
+            throw new IllegalArgumentException("The applicationAdapter argument must not be null.");
+        }
+        this.applicationAdapter = applicationAdapter;
+        this.basePath = applicationAdapter.getBasePath();
     }
 
     @Override
-    public ContextEnvironment getContextEnvironment() {
-        return environment;
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
     }
 
     @Override
-    public ContextBuilderAssistant getContextBuilderAssistant() {
-        return assistant;
+    public AspectranContextConfig getAspectranContextConfig() {
+        return aspectranContextConfig;
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    @Override
+    public void setBasePath(String basePath) {
+        if (applicationAdapter instanceof BasicApplicationAdapter) {
+            this.basePath = basePath;
+            ((BasicApplicationAdapter)applicationAdapter).setBasePath(basePath);
+        } else {
+            throw new UnsupportedOperationException("Does not allow the base path change of ApplicationAdapter " + applicationAdapter);
+        }
+    }
+
+    @Override
+    public AspectranParameters getAspectranParameters() {
+        return aspectranParameters;
+    }
+
+    @Override
+    public void setAspectranParameters(AspectranParameters aspectranParameters) {
+        this.aspectranParameters = aspectranParameters;
+        this.rootContext = null;
+    }
+
+    @Override
+    public String getRootContext() {
+        return rootContext;
+    }
+
+    @Override
+    public void setRootContext(String rootContext) {
+        this.rootContext = rootContext;
+        this.aspectranParameters = null;
+    }
+
+    @Override
+    public String getEncoding() {
+        return (encoding == null ? ActivityContext.DEFAULT_ENCODING : encoding);
+    }
+
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    @Override
+    public String[] getResourceLocations() {
+        return resourceLocations;
+    }
+
+    @Override
+    public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
+        if (resourceLocations != null) {
+            aspectranClassLoader.setResourceLocations(resourceLocations);
+        }
+    }
+
+    @Override
+    public String[] getActiveProfiles() {
+        return activeProfiles;
     }
 
     @Override
     public void setActiveProfiles(String... activeProfiles) {
-        if (activeProfiles != null) {
-            log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
-        }
-        environment.setActiveProfiles(activeProfiles);
+        this.activeProfiles = activeProfiles;
+    }
+
+    @Override
+    public String[] getDefaultProfiles() {
+        return defaultProfiles;
     }
 
     @Override
     public void setDefaultProfiles(String... defaultProfiles) {
-        if (defaultProfiles != null) {
-            log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
-        }
-        environment.setDefaultProfiles(defaultProfiles);
+        this.defaultProfiles = defaultProfiles;
     }
 
+    @Override
     public boolean isHybridLoad() {
         return hybridLoad;
     }
@@ -114,172 +174,117 @@ abstract class AbstractActivityContextBuilder implements ActivityContextBuilder 
         this.hybridLoad = hybridLoad;
     }
 
-    /**
-     * Returns a new instance of ActivityContext.
-     *
-     * @return the activity context
-     * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
-     */
-    protected ActivityContext createActivityContext() throws BeanReferenceException {
-        activityContext.setDescription(assistant.getAssistantLocal().getDescription());
-
-        initContextEnvironment();
-
-        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
-
-        BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-        beanRuleRegistry.postProcess(assistant);
-
-        ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
-        TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
-
-        BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
-        beanReferenceInspector.inspect(beanRuleRegistry);
-
-        initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
-
-        BeanProxifierType beanProxifierType = BeanProxifierType.resolve((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
-
-        ContextTemplateProcessor contextTemplateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
-
-        assistant.release();
-
-        activityContext.setAspectRuleRegistry(aspectRuleRegistry);
-        activityContext.setContextBeanRegistry(contextBeanRegistry);
-        activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-        activityContext.setContextTemplateProcessor(contextTemplateProcessor);
-        activityContext.setTransletRuleRegistry(transletRuleRegistry);
-
-        return activityContext;
+    @Override
+    public boolean isHardReload() {
+        return hardReload;
     }
 
-    private void initContextEnvironment() {
-        for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
-            if (environmentRule.getPropertyItemRuleMap() != null) {
-                String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-                if (environment.acceptsProfiles(profiles)) {
-                    environment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
-                }
+    @Override
+    public void setHardReload(boolean hardReload) {
+        this.hardReload = hardReload;
+    }
+
+    @Override
+    public AspectranServiceController getAspectranServiceController() {
+        return aspectranServiceController;
+    }
+
+    @Override
+    public void setAspectranServiceController(AspectranServiceController aspectranServiceController) {
+        this.aspectranServiceController = aspectranServiceController;
+    }
+
+    @Override
+    public AspectranClassLoader getAspectranClassLoader() {
+        return aspectranClassLoader;
+    }
+
+    protected void newAspectranClassLoader() throws InvalidResourceException {
+        if (aspectranClassLoader == null || hardReload) {
+            String[] excludePackageNames = new String[] {
+                    "com.aspectran.console",
+                    "com.aspectran.core",
+                    "com.aspectran.embedded",
+                    "com.aspectran.scheduler",
+                    "com.aspectran.web"
+            };
+
+            AspectranClassLoader acl = new AspectranClassLoader();
+            acl.excludePackage(excludePackageNames);
+
+            if (resourceLocations != null && resourceLocations.length > 0) {
+                acl.setResourceLocations(resourceLocations);
             }
+
+            aspectranClassLoader = acl;
+            applicationAdapter.setClassLoader(acl);
         }
     }
 
-    /**
-     * Initialize the aspect rule registry.
-     *
-     * @param aspectRuleRegistry the aspect rule registry
-     * @param beanRuleRegistry the bean rule registry
-     * @param transletRuleRegistry the translet rule registry
-     */
-    private void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry,
-                                        TransletRuleRegistry transletRuleRegistry) {
-        AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
+    @Override
+    public void initialize(AspectranContextConfig aspectranContextConfig) throws InvalidResourceException {
+        this.aspectranContextConfig = aspectranContextConfig;
 
-        for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            PointcutRule pointcutRule = aspectRule.getPointcutRule();
-            if (pointcutRule != null) {
-                Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
-                aspectRule.setPointcut(pointcut);
-            }
-            if (aspectRule.getJoinpointType() == JoinpointType.SESSION) {
-                sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
-            }
+        String basePath = aspectranContextConfig.getString(AspectranContextConfig.base);
+        if (basePath != null) {
+            setBasePath(basePath);
         }
 
-        AspectAdviceRulePreRegister preRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
-        preRegister.register(beanRuleRegistry);
-        preRegister.register(transletRuleRegistry);
+        this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
 
-        // check offending pointcut pattern
-        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
-        int offendingPointcutPatterns = 0;
-
-        for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            Pointcut pointcut = aspectRule.getPointcut();
-
-            if (pointcut != null) {
-                List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-
-                if (pointcutPatternRuleList != null) {
-                    for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                        /*
-                        if (ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
-                            offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern of translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
-                            if (pointcutPatternVerifiable)
-                                log.error(msg);
-                            else
-                                log.warn(msg);
-                        }
-                        */
-                        if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
-                            offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern of bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
-                            if (pointcutPatternVerifiable) {
-                                log.error(msg);
-                            } else {
-                                log.warn(msg);
-                            }
-                        }
-                        if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
-                            offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern of class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
-                            if (pointcutPatternVerifiable) {
-                                log.error(msg);
-                            } else {
-                                log.warn(msg);
-                            }
-                        }
-                        if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
-                            offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern of bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
-                            if (pointcutPatternVerifiable) {
-                                log.error(msg);
-                            } else {
-                                log.warn(msg);
-                            }
-                        }
-                    }
-                }
-            }
+        AspectranParameters aspectranParameters = aspectranContextConfig.getParameters(AspectranContextConfig.parameters);
+        if (aspectranParameters != null) {
+            this.aspectranParameters = aspectranParameters;
         }
 
-        if (offendingPointcutPatterns > 0) {
-            String msg = offendingPointcutPatterns + " Offending pointcut patterns. Please check the logs for more information.";
-            if (pointcutPatternVerifiable) {
-                log.error(msg);
-                throw new InvalidPointcutPatternException(msg);
-            } else {
-                log.warn(msg);
-            }
+        this.encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
+
+        String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+        this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getBasePath());
+
+        Parameters aspectranContextProfilesConfig = aspectranContextConfig.getParameters(AspectranContextConfig.profiles);
+        if (aspectranContextProfilesConfig != null) {
+            this.activeProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
+            this.defaultProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
         }
 
-        AspectAdviceRuleRegistry sessionScopeAspectAdviceRuleRegistry = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
-        if (sessionScopeAspectAdviceRuleRegistry != null)
-            aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
+        this.hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
+
+        Parameters aspectranContextAutoReloadConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReload);
+        if (aspectranContextAutoReloadConfig != null) {
+            String reloadMode = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMode);
+            int scanIntervalSeconds = aspectranContextAutoReloadConfig.getInt(AspectranContextAutoReloadConfig.scanIntervalSeconds, -1);
+            boolean autoReloadStartup = aspectranContextAutoReloadConfig.getBoolean(AspectranContextAutoReloadConfig.startup, false);
+            this.hardReload = "hard".equals(reloadMode);
+            this.autoReloadStartup = autoReloadStartup;
+            this.scanIntervalSeconds = scanIntervalSeconds;
+        }
+        if (this.autoReloadStartup && (this.resourceLocations == null || this.resourceLocations.length == 0)) {
+            this.autoReloadStartup = false;
+        }
+        if (this.autoReloadStartup) {
+            if (this.scanIntervalSeconds == -1) {
+                this.scanIntervalSeconds = 10;
+                String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReload.getName();
+                log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
+            }
+        }
     }
 
-    protected Importer resolveImporter(String rootContext) {
-        ImporterFileFormatType importerFileFormatType = rootContext.toLowerCase().endsWith(".apon") ? ImporterFileFormatType.APON : ImporterFileFormatType.XML;
-        return resolveImporter(rootContext, importerFileFormatType);
+    public void startReloadingTimer() {
+        if (autoReloadStartup) {
+            if (aspectranClassLoader != null) {
+                reloadingTimer = new ActivityContextReloadingTimer(aspectranServiceController, aspectranClassLoader.extractResources());
+                reloadingTimer.start(scanIntervalSeconds);
+            }
+        }
     }
 
-    protected Importer resolveImporter(String rootContext, ImporterFileFormatType importerFileFormatType) {
-        Importer importer;
-
-        if (rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            importer = new ResourceImporter(assistant.getClassLoader(), resource, importerFileFormatType);
-        } else if (rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-            String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
-            importer = new FileImporter(filePath, importerFileFormatType);
-        } else {
-            importer = new FileImporter(assistant.getBasePath(), rootContext, importerFileFormatType);
+    public void stopReloadingTimer() {
+        if (reloadingTimer != null) {
+            reloadingTimer.cancel();
+            reloadingTimer = null;
         }
-
-        return importer;
     }
 
 }

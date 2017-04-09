@@ -181,12 +181,14 @@ public class CommandParser {
 
     public static String serialize(List<CommandRedirection> redirectionList) {
         StringBuilder sb = new StringBuilder();
-        for (CommandRedirection redirection : redirectionList) {
-            if(sb.length() > 0) {
-                sb.append(" ");
+        if (redirectionList != null) {
+            for (CommandRedirection redirection : redirectionList) {
+                if (sb.length() > 0) {
+                    sb.append(" ");
+                }
+                sb.append(redirection.getOperator()).append(" ");
+                sb.append(redirection.getOperand());
             }
-            sb.append(redirection.getOperator()).append(" ");
-            sb.append(redirection.getOperand());
         }
         return sb.toString();
     }

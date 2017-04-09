@@ -17,17 +17,12 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.HybridActivityContextLoader;
-import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig;
-import com.aspectran.core.context.loader.config.AspectranContextConfig;
-import com.aspectran.core.context.loader.config.AspectranContextProfilesConfig;
-import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.context.loader.resource.AspectranClassLoader;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.context.builder.ActivityContextBuilder;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
+import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.AspectranSchedulerConfig;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
@@ -48,23 +43,13 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     private AspectranSchedulerConfig aspectranSchedulerConfig;
 
-    private ActivityContextLoader activityContextLoader;
-
-    private String rootContext;
-
-    private boolean hardReload;
-
-    private boolean autoReloadStartup;
-
-    private int scanIntervalSeconds;
+    private ActivityContextBuilder activityContextBuilder;
 
     private PluralWildcardPattern exposableTransletNamesPattern;
 
     private ActivityContext activityContext;
 
     private SchedulerService schedulerService;
-
-    private ActivityContextReloadingTimer reloadingTimer;
 
     AbstractAspectranService(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
@@ -96,15 +81,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     @Override
     public AspectranClassLoader getAspectranClassLoader() {
-        if (activityContextLoader == null) {
+        if (activityContextBuilder == null) {
             throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
         }
-        return activityContextLoader.getAspectranClassLoader();
-    }
-
-    @Override
-    public boolean isHardReload() {
-        return hardReload;
+        return activityContextBuilder.getAspectranClassLoader();
     }
 
     @Override
@@ -112,61 +92,30 @@ public abstract class AbstractAspectranService implements AspectranService {
         return aspectranConfig;
     }
 
+    @Override
+    public boolean isHardReload() {
+        if (activityContextBuilder == null) {
+            throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
+        }
+        return activityContextBuilder.isHardReload();
+    }
+
     protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
-            throw new AspectranServiceException("AspectranService can not be initialized because AspectranContext has already been loaded.");
+            throw new AspectranServiceException("AspectranService can not be initialized because ActivityContext has already been loaded.");
         }
 
         log.info("Initializing AspectranService...");
 
         try {
             this.aspectranConfig = aspectranConfig;
-            Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
-            Parameters aspectranContextAutoReloadConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReload);
-            Parameters aspectranContextProfilesConfig = aspectranContextConfig.getParameters(AspectranContextConfig.profiles);
-
-            if (aspectranContextAutoReloadConfig != null) {
-                String reloadMode = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMode);
-                int scanIntervalSeconds = aspectranContextAutoReloadConfig.getInt(AspectranContextAutoReloadConfig.scanIntervalSeconds, -1);
-                boolean autoReloadStartup = aspectranContextAutoReloadConfig.getBoolean(AspectranContextAutoReloadConfig.startup, false);
-                this.hardReload = "hard".equals(reloadMode);
-                this.autoReloadStartup = autoReloadStartup;
-                this.scanIntervalSeconds = scanIntervalSeconds;
-            }
-
-            this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
             this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 
-            String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
-            boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
-            String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+            AspectranContextConfig aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
 
-            String[] activeProfiles = null;
-            String[] defaultProfiles = null;
-
-            if (aspectranContextProfilesConfig != null) {
-                activeProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
-                defaultProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
-            }
-
-            resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getBasePath());
-
-            activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
-            activityContextLoader.setResourceLocations(resourceLocations);
-            activityContextLoader.setActiveProfiles(activeProfiles);
-            activityContextLoader.setDefaultProfiles(defaultProfiles);
-            activityContextLoader.setHybridLoad(hybridLoad);
-
-            if (autoReloadStartup && (resourceLocations == null || resourceLocations.length == 0)) {
-                autoReloadStartup = false;
-            }
-            if (autoReloadStartup) {
-                if (scanIntervalSeconds == -1) {
-                    scanIntervalSeconds = 10;
-                    String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReload.getName();
-                    log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
-                }
-            }
+            activityContextBuilder = new HybridActivityContextBuilder(this);
+            activityContextBuilder.initialize(aspectranContextConfig);
+            activityContextBuilder.setAspectranServiceController(this);
         } catch (Exception e) {
             throw new AspectranServiceException("Could not initialize AspectranService.", e);
         }
@@ -180,9 +129,9 @@ public abstract class AbstractAspectranService implements AspectranService {
         return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
     }
 
-    protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
-        if (activityContextLoader == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize () method.");
+    protected synchronized void loadActivityContext() throws AspectranServiceException {
+        if (activityContextBuilder == null) {
+            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize() method.");
         }
 
         if (activityContext != null) {
@@ -190,58 +139,19 @@ public abstract class AbstractAspectranService implements AspectranService {
         }
 
         try {
-            activityContext = activityContextLoader.load(rootContext);
-            activityContext.initialize(this);
-
-            startReloadingTimer();
-
-            return activityContext;
+            activityContext = activityContextBuilder.build();
         } catch (Exception e) {
             throw new AspectranServiceException("Could not load ActivityContext.", e);
         }
     }
 
     protected synchronized void destroyActivityContext() {
-        stopReloadingTimer();
-
-        destroyApplicationScope();
-
-        if (activityContext != null) {
-            activityContext.destroy();
-            activityContext = null;
-
-            log.info("AspectranContext has been destroyed.");
-        }
-    }
-
-    /**
-     * Destroys the application scope.
-     */
-    private void destroyApplicationScope() {
-        ApplicationAdapter applicationAdapter = getApplicationAdapter();
-        if (applicationAdapter != null) {
-            Scope scope = applicationAdapter.getApplicationScope();
-            if (scope != null) {
-                scope.destroy();
-            }
-        }
-    }
-
-    protected synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
-        if (activityContextLoader == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize () method.");
+        if (activityContextBuilder == null) {
+            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize() method.");
         }
 
-        try {
-            activityContext = activityContextLoader.reload(hardReload);
-            activityContext.initialize(this);
-
-            startReloadingTimer();
-
-            return activityContext;
-        } catch (Exception e) {
-            throw new AspectranServiceException("Could not reload ActivityContext.", e);
-        }
+        activityContextBuilder.destroy();
+        activityContext = null;
     }
 
     protected void startSchedulerService() throws SchedulerServiceException {
@@ -302,23 +212,6 @@ public abstract class AbstractAspectranService implements AspectranService {
             schedulerService.resume();
             log.info("SchedulerService has been resumed.");
         }
-    }
-
-    private void startReloadingTimer() {
-        if (autoReloadStartup) {
-            AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
-            if (aspectranClassLoader != null) {
-                reloadingTimer = new ActivityContextReloadingTimer(this, aspectranClassLoader.extractResources());
-                reloadingTimer.start(scanIntervalSeconds);
-            }
-        }
-    }
-
-    private void stopReloadingTimer() {
-        if (reloadingTimer != null) {
-            reloadingTimer.cancel();
-        }
-        reloadingTimer = null;
     }
 
 }

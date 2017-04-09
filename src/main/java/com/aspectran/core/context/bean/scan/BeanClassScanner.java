@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.apon.params.FilterParameters;
+import com.aspectran.core.context.parser.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.apon.Parameters;

@@ -60,7 +60,7 @@ public class MethodUtils {
      * This static variable is safe even when this code is deployed via a
      * shared classloader because it is keyed via a MethodDescriptor object
      * which has a Class as one of its members and that member is used in
-     * the MethodDescriptor.equals method. So two components that load the same
+     * the MethodDescriptor.equals method. So two components that parse the same
      * class via different classloaders will generate non-equal MethodDescriptor
      * objects and hence end up with different entries in the map.
      */

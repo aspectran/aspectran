@@ -26,7 +26,10 @@ public class SystemConsoleInoutTest {
         ConsoleInout consoleInout = new SystemConsoleInout();
         String prompt = "System > ";
         while (true) {
-            consoleInout.readPassword(prompt);
+            String line = consoleInout.readLine(prompt);
+            if ("quit".equals(line)) {
+                break;
+            }
         }
     }
 

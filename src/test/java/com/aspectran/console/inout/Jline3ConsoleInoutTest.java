@@ -26,7 +26,10 @@ public class Jline3ConsoleInoutTest {
         ConsoleInout consoleInout = new Jline3ConsoleInout();
         String prompt = "JLine3 > ";
         while (true) {
-            consoleInout.readLine(prompt, 'd');
+            String line = consoleInout.readLine(prompt);
+            if ("quit".equals(line)) {
+                break;
+            }
         }
     }
 

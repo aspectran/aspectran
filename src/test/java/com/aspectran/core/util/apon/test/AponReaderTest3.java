@@ -26,7 +26,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
-import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponFormat;
 import com.aspectran.core.util.apon.AponReadFailedException;
 import com.aspectran.core.util.apon.IncompatibleParameterValueTypeException;

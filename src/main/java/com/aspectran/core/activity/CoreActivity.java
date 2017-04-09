@@ -177,7 +177,7 @@ public class CoreActivity extends BasicActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActivityException("Activity failed to prepare.", e);
+            throw new ActivityException("Failed to prepare activity.", e);
         }
     }
 

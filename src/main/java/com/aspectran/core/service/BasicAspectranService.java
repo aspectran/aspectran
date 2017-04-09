@@ -30,14 +30,14 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     private AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener;
 
-    /** Flag that indicates whether this context is currently active */
+    /** Flag that indicates whether this service is currently active */
     private final AtomicBoolean active = new AtomicBoolean();
 
-    /** Flag that indicates whether this context has been closed already */
+    /** Flag that indicates whether this service has been closed already */
     private final AtomicBoolean closed = new AtomicBoolean();
 
-    /** Synchronization monitor for the "restart" and "shutdown" */
-    private final Object startupShutdownMonitor = new Object();
+    /** Synchronization Monitor used for this service control */
+    private final Object serviceControlMonitor = new Object();
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;
@@ -77,7 +77,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void startup() throws AspectranServiceException {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     throw new AspectranServiceException("Could not start AspectranService because it has already been destroyed.");
                 }
@@ -107,7 +107,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void restart() throws AspectranServiceException {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not restart AspectranService because it has already been destroyed.");
                     return;
@@ -121,7 +121,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 log.info("AspectranService has been shut down successfully.");
 
-                reloadActivityContext();
+                loadActivityContext();
 
                 afterContextLoaded();
 
@@ -142,7 +142,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void pause() throws SchedulerServiceException {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not pause AspectranService because it has already been destroyed.");
                     return;
@@ -167,7 +167,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void pause(long timeout) throws AspectranServiceException {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not pause AspectranService because it has already been destroyed.");
                     return;
@@ -191,7 +191,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void resume() throws AspectranServiceException {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not resume AspectranService because it has already been destroyed.");
                     return;
@@ -215,7 +215,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public void shutdown() {
         if (!this.derivedService) {
-            synchronized (this.startupShutdownMonitor) {
+            synchronized (this.serviceControlMonitor) {
                 doShutdown();
                 removeShutdownTask();
 
@@ -256,7 +256,7 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
             this.shutdownTask = ShutdownHooks.add(() -> {
-                synchronized (startupShutdownMonitor) {
+                synchronized (serviceControlMonitor) {
                     doShutdown();
                     removeShutdownTask();
                 }

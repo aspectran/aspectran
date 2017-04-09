@@ -22,11 +22,10 @@ import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.AspectranServiceLifeCycleListener;
@@ -57,11 +56,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     private long pauseTimeout;
 
     public EmbeddedAspectranService() {
-        this(new EmbeddedApplicationAdapter());
-    }
-
-    public EmbeddedAspectranService(ApplicationAdapter applicationAdapter) {
-        super(applicationAdapter);
+        super(new EmbeddedApplicationAdapter());
         this.sessionAdapter = new EmbeddedSessionAdapter();
     }
 
@@ -266,13 +261,13 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     /**
      * Returns a new instance of EmbeddedAspectranService.
      *
-     * @param rootContextLocation the root context location
+     * @param rootContext the root configuration file
      * @return the embedded aspectran service
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService build(String rootContextLocation) throws AspectranServiceException {
+    public static EmbeddedAspectranService build(String rootContext) throws AspectranServiceException {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootContextLocation(rootContextLocation);
+        aspectranConfig.updateRootContext(rootContext);
         return build(aspectranConfig);
     }
 
@@ -291,7 +286,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
         String rootContext = contextParameters.getString(AspectranContextConfig.root);
         if (rootContext == null || rootContext.isEmpty()) {
-            contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            if (contextParameters.getParameter(AspectranContextConfig.parameters) == null) {
+                contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            }
         }
 
         EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();

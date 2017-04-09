@@ -93,7 +93,7 @@ public class DefaultServletHttpRequestHandler {
         } else if (servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = GAE_DEFAULT_SERVLET_NAME;
         } else {
-            log.warn("Unable to locate the default servlet for serving static content. Please set the 'aspectran:defaultServletName'");
+            log.warn("Unable to locate the default servlet for serving static content. Please set the 'web.defaultServletName'.");
         }
     }
 

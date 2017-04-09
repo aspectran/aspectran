@@ -9,8 +9,8 @@
         |-----------------------------------------------------
         |
         |Built-in commands for this console application:
-        |   description on - Display a description of the command
-        |   description off - Turn off display of description for the command
+        |   desc on - Display a description of the command
+        |   desc off - Turn off display of description for the command
         |   help - Show the description message that was displayed at startup
         |   restart - Restart this console application
         |   quit - Exit from this console application

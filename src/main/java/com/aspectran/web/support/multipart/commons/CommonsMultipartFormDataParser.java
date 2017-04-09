@@ -62,7 +62,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     private String deniedFileExtensions;
 
     /**
-     * Instantiates a new MultipartFormDataParser.
+     * Instantiates a new CommonsMultipartFormDataParser.
      */
     public CommonsMultipartFormDataParser() {
     }

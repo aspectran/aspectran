@@ -15,27 +15,79 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.parser.apon.params.AspectranParameters;
+import com.aspectran.core.service.AspectranServiceController;
 
 /**
- * The Interface ActivityContextBuilder.
- * 
- * <p>Created: 2008. 06. 14 PM 8:53:29</p>
+ * Strategy interface for building ActivityContext.
  */
 public interface ActivityContextBuilder {
 
-    ContextEnvironment getContextEnvironment();
+    ApplicationAdapter getApplicationAdapter();
 
-    ContextBuilderAssistant getContextBuilderAssistant();
+    AspectranContextConfig getAspectranContextConfig();
+
+    String getBasePath();
+
+    void setBasePath(String basePath);
+
+    AspectranParameters getAspectranParameters();
+
+    void setAspectranParameters(AspectranParameters aspectranParameters);
+
+    String getRootContext();
+
+    void setRootContext(String rootContext);
+
+    String getEncoding();
+
+    void setEncoding(String encoding);
+
+    String[] getResourceLocations();
+
+    void setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
+
+    String[] getActiveProfiles();
 
     void setActiveProfiles(String... activeProfiles);
 
+    String[] getDefaultProfiles();
+
     void setDefaultProfiles(String... defaultProfiles);
+
+    boolean isHybridLoad();
 
     void setHybridLoad(boolean hybridLoad);
 
+    boolean isHardReload();
+
+    void setHardReload(boolean hardReload);
+
+    AspectranServiceController getAspectranServiceController();
+
+    void setAspectranServiceController(AspectranServiceController aspectranServiceController);
+
+    AspectranClassLoader getAspectranClassLoader();
+
+    void initialize(AspectranContextConfig aspectranContextConfig) throws InvalidResourceException;
+
+    void startReloadingTimer();
+
+    void stopReloadingTimer();
+
+    ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
+
     ActivityContext build(String rootContext) throws ActivityContextBuilderException;
+
+    ActivityContext build() throws ActivityContextBuilderException;
+
+    void destroy();
+
+    boolean isActive();
 
 }

@@ -18,14 +18,14 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.ActivityContextException;
 
 /**
- * This exception will be thrown when a ActivityContext build failed.
+ * This exception is thrown when ActivityContext building fails.
  * 
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * <p>Created: 2017. 04. 08 PM 8:17:55</p>
  */
 public class ActivityContextBuilderException extends ActivityContextException {
 
     /** @serial */
-    private static final long serialVersionUID = 5702282474852901391L;
+    private static final long serialVersionUID = -276971044899838358L;
 
     /**
      * Simple constructor.

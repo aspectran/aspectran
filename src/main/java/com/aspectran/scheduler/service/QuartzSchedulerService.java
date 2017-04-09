@@ -36,7 +36,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.apon.params.TriggerParameters;
+import com.aspectran.core.context.parser.apon.params.TriggerParameters;
 import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.type.TriggerType;

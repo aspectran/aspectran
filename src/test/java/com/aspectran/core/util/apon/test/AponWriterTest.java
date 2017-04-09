@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;

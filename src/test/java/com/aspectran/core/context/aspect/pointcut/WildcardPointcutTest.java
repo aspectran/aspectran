@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.aspect.pointcut.WildcardPointcut;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
 /**
+ * Test Cases for Wildcard Pointcut.
+ *
  * <p>Created: 2016. 2. 29.</p>
  */
 public class WildcardPointcutTest {

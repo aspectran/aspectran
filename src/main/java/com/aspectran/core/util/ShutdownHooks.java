@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.aspectran.core.util.logging.Log;
@@ -63,6 +64,7 @@ public class ShutdownHooks {
         }
 
         // Iterate through copy of tasks list
+        Collections.reverse(tasks);
         for (Task task : tasks.toArray(new Task[tasks.size()])) {
             if (log.isDebugEnabled()) {
                 log.debug("Running task: " + task);

@@ -26,11 +26,11 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.aspectran.core.adapter.BasicApplicationAdapter;
+import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.HybridActivityContextLoader;
-import com.aspectran.core.context.loader.resource.InvalidResourceException;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
+import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.parser.ActivityContextParserException;
 import com.aspectran.core.context.template.TemplateProcessor;
 
 import test.call.NumericBean;
@@ -44,25 +44,22 @@ import test.call.TotalBean;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CallTest {
 
-    private File base = base = new File("./target/test-classes");
+    private File baseDir = new File("./target/test-classes");
+
+    private ActivityContextBuilder activityContextBuilder;
 
     private ActivityContext context;
 
     @Before
-    public void ready() throws IOException, InvalidResourceException, ActivityContextBuilderException {
-        BasicApplicationAdapter applicationAdapter = new BasicApplicationAdapter();
-        applicationAdapter.setBasePath(base.getCanonicalPath());
-        ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter);
-        activityContextLoader.setHybridLoad(false);
+    public void ready() throws IOException, ActivityContextBuilderException {
+        activityContextBuilder = new HybridActivityContextBuilder();
+        activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
 
-        ActivityContext context = activityContextLoader.load("/config/call/call-test-config.xml");
-        context.initialize();
-
-        this.context = context;
+        this.context = activityContextBuilder.build("/config/call/call-test-config.xml");
     }
 
     @Test
-    public void testBeanCall() throws InvalidResourceException, ActivityContextBuilderException {
+    public void testBeanCall() throws InvalidResourceException, ActivityContextParserException {
         TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
         int count = 1;
         for (NumericBean o : totalBean.getNumerics()) {
@@ -72,7 +69,7 @@ public class CallTest {
     }
 
     @Test
-    public void testTemplateCall() throws InvalidResourceException, ActivityContextBuilderException {
+    public void testTemplateCall() throws InvalidResourceException, ActivityContextParserException {
         TemplateProcessor templateProcessor = context.getTemplateProcessor();
         String result1 = templateProcessor.process("template-2");
 
@@ -99,12 +96,11 @@ public class CallTest {
         String result6 = templateProcessor.process("compressedStyle");
         System.out.println(" === compressedStyle ===");
         System.out.println(result6);
-
     }
 
     @After
     public void finish() {
-        context.destroy();
+        activityContextBuilder.destroy();
     }
 
 }

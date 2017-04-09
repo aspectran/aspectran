@@ -32,10 +32,10 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.context.loader.config.AspectranConsoleConfig;
-import com.aspectran.core.context.loader.config.AspectranContextConfig;
-import com.aspectran.core.context.loader.resource.AspectranClassLoader;
+import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranConsoleConfig;
+import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.AspectranServiceLifeCycleListener;
@@ -123,7 +123,11 @@ public class ConsoleAspectranService extends BasicAspectranService {
     }
 
     protected void showDescription() {
-        if (isShowDescription()) {
+        showDescription(false);
+    }
+
+    protected void showDescription(boolean force) {
+        if (force || isShowDescription()) {
             if (getActivityContext().getDescription() != null) {
                 consoleInout.writeLine(getActivityContext().getDescription());
                 consoleInout.flush();
@@ -185,7 +189,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 log.debug("Translet activity was terminated.");
             }
         } catch (Exception e) {
-            log.error("Colsole activity failed to perform.", e);
+            log.error("Console activity failed to perform.", e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {
@@ -229,16 +233,16 @@ public class ConsoleAspectranService extends BasicAspectranService {
                         log.info("Resuming the Aspectran Service...");
                         resume();
                         break;
-                    case "description on":
+                    case "desc on":
                         log.info("Descripton On");
                         setShowDescription(true);
                         break;
-                    case "description off":
+                    case "desc off":
                         log.info("Descripton Off");
                         setShowDescription(false);
                         break;
                     case "help":
-                        showDescription();
+                        showDescription(true);
                         break ;
                     case "quit":
                         log.info("Goodbye.");

@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 

@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.builder.apon.params.TriggerParameters;
+import com.aspectran.core.context.parser.apon.params.TriggerParameters;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.TriggerType;

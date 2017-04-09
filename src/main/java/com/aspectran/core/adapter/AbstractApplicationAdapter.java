@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.context.loader.resource.AspectranClassLoader;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -34,7 +34,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     protected final Object adaptee;
 
-    protected final ApplicationScope scope = new ApplicationScope();
+    protected final ApplicationScope scope;
 
     protected ClassLoader classLoader;
 
@@ -47,6 +47,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
      */
     public AbstractApplicationAdapter(Object adaptee) {
         this.adaptee = adaptee;
+        this.scope = new ApplicationScope();
     }
 
     @Override
@@ -74,6 +75,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
         this.classLoader = classLoader;
     }
 
+    @Override
     public String getBasePath() {
         return basePath;
     }

@@ -206,10 +206,10 @@ public class ResourceUtils {
     /**
      * Returns the URL of the resource on the classpath.
      *
-     * @param loader The classloader used to load the resource
-     * @param resource The resource to find
-     * @return The resource
-     * @throws IOException If the resource cannot be found or read
+     * @param loader the classloader used to load the resource
+     * @param resource the resource to find
+     * @return the resource
+     * @throws IOException if the resource cannot be found or read
      */
     public static URL getResourceURL(String resource, ClassLoader loader) throws IOException {
         URL url = null;
@@ -228,10 +228,10 @@ public class ResourceUtils {
     /**
      * Returns a resource on the classpath as a Stream object.
      *
-     * @param resource The resource to find
+     * @param resource the resource to find
      * @param classLoader the class loader
-     * @return The resource
-     * @throws IOException If the resource cannot be found or read
+     * @return the resource
+     * @throws IOException if the resource cannot be found or read
      */
     public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
         InputStream in = null;

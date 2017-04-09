@@ -31,6 +31,8 @@ import com.aspectran.embedded.service.EmbeddedAspectranService;
 import test.anno.ThirdResult;
 
 /**
+ * Test cases for Annotated Configuration.
+ *
  * <p>Created: 2016. 9. 7.</p>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -44,17 +46,15 @@ public class AnnotatedConfigurationTest {
         aspectranService = EmbeddedAspectranService.build(rootContextLocation);
     }
 
-    @After
-    public void finish() {
-        if (aspectranService != null) {
-            aspectranService.shutdown();
-        }
-    }
-
     @Test
     public void firstTest() throws AspectranServiceException, IOException {
         ThirdResult thirdResult = aspectranService.getActivityContext().getBeanRegistry().getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
+    }
+
+    @After
+    public void finish() {
+        aspectranService.shutdown();
     }
 
 }

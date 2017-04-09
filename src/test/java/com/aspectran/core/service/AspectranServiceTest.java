@@ -24,7 +24,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 
@@ -48,7 +48,7 @@ public class AspectranServiceTest {
 
         AponWriter aponWriter = new AponWriter(outputFile);
         aponWriter.setPrettyPrint(true);
-        aponWriter.setIndentString("  ");
+        aponWriter.setIndentString("    ");
         aponWriter.setNoQuotes(true);
         aponWriter.write(aspectranConfig);
         aponWriter.close();

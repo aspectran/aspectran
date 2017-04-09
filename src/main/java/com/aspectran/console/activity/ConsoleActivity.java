@@ -91,7 +91,7 @@ public class ConsoleActivity extends CoreActivity {
             responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Could not adapt to console application activity.", e);
+            throw new AdapterException("Failed to specify adapters for console service activity.", e);
         }
     }
 
@@ -154,9 +154,10 @@ public class ConsoleActivity extends CoreActivity {
 
             if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
                 String[] itemNames = missingItemRules2.getItemNames();
-                String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
-                consoleInout.writeLine("Missing required parameters: %s", missingParamNames);
-
+                consoleInout.writeLine("Missing required parameters:");
+                for (String name : itemNames) {
+                    consoleInout.writeLine("   %s", name);
+                }
                 terminate();
             }
         }
@@ -243,13 +244,14 @@ public class ConsoleActivity extends CoreActivity {
                 } else {
                     value = consoleInout.readLine("   %s: ", token.stringify());
                 }
-                if (value != null && !value.isEmpty()) {
+                if (value == null || value.isEmpty()) {
+                    value = token.getDefaultValue();
+                }
+                if (value != null) {
                     getRequestAdapter().setParameter(token.getName(), value);
-                } else if (token.getDefaultValue() != null) {
-                    getRequestAdapter().setParameter(token.getName(), token.getDefaultValue());
                 } else {
                     for (ItemRule ir : itemRuleList) {
-                        if (ir.containsToken(token)) {
+                        if (token.getName().equals(ir.getName()) || ir.containsToken(token)) {
                             missingItemRules.add(ir);
                         }
                     }
