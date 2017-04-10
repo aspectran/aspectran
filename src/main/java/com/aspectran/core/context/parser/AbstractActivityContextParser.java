@@ -85,7 +85,7 @@ abstract class AbstractActivityContextParser implements ActivityContextParser {
     }
 
     @Override
-    public ContextParserAssistant getContextBuilderAssistant() {
+    public ContextParserAssistant getContextParserAssistant() {
         return assistant;
     }
 

@@ -26,7 +26,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Offline entity resolver for the Aspectran DTDs
+ * Offline entity resolver for the Aspectran DTDs.
  * 
  * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
@@ -34,12 +34,12 @@ class AspectranDtdResolver implements EntityResolver {
 
     private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-4.dtd";
 
-    private static final Map<String, String> doctypeMap = new HashMap<String, String>();
+    private static final Map<String, String> doctypeMap = new HashMap<>();
 
     private final boolean validating;
 
     static {
-        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN".toUpperCase(), ASPECTRAN_DTD);
         doctypeMap.put("aspectran-4.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 
@@ -54,10 +54,10 @@ class AspectranDtdResolver implements EntityResolver {
     /**
      * Converts a public DTD into a local one.
      *
-     * @param publicId Unused but required by EntityResolver interface
-     * @param systemId The DTD that is being requested
-     * @return The InputSource for the DTD
-     * @throws SAXException If anything goes wrong
+     * @param publicId unused but required by EntityResolver interface
+     * @param systemId the DTD that is being requested
+     * @return the InputSource for the DTD
+     * @throws SAXException if anything goes wrong
      */
     @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException {

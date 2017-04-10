@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 
 /**
- * The Class ShallowContextBuilderAssistant.
+ * The Class ShallowContextParserAssistant.
  * 
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
@@ -161,12 +161,22 @@ public class ShallowContextParserAssistant extends ContextParserAssistant {
     }
 
     @Override
+    public void resolveBeanClass(Token[] tokens) {
+        // shallow
+    }
+
+    @Override
     public void resolveBeanClass(Token token) {
         // shallow
     }
 
     @Override
     public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+        // shallow
+    }
+
+    @Override
+    public void resolveBeanClass(String beanId, TemplateRule templateRule) {
         // shallow
     }
 

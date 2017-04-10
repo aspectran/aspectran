@@ -49,7 +49,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
             }
 
             ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
-            getContextBuilderAssistant().setImportHandler(importHandler);
+            getContextParserAssistant().setImportHandler(importHandler);
 
             Importer importer = resolveImporter(rootContext);
             importHandler.handle(importer);
@@ -68,9 +68,9 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
             }
 
             ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
-            getContextBuilderAssistant().setImportHandler(importHandler);
+            getContextParserAssistant().setImportHandler(importHandler);
 
-            RootAponDisassembler rootAponDisassembler = new RootAponDisassembler(getContextBuilderAssistant());
+            RootAponDisassembler rootAponDisassembler = new RootAponDisassembler(getContextParserAssistant());
             rootAponDisassembler.disassembleAspectran(aspectranParameters);
 
             importHandler.handle(null);

@@ -29,7 +29,7 @@ public interface ActivityContextParser {
 
     ContextEnvironment getContextEnvironment();
 
-    ContextParserAssistant getContextBuilderAssistant();
+    ContextParserAssistant getContextParserAssistant();
 
     void setActiveProfiles(String... activeProfiles);
 

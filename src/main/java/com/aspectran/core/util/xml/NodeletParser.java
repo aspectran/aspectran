@@ -248,7 +248,7 @@ public class NodeletParser {
             return EMPTY_ATTRIBUTES;
         }
 
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
 
         for (int i = 0; i < attributeNodes.getLength(); i++) {
             Node attribute = attributeNodes.item(i);

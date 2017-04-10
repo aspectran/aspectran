@@ -51,10 +51,10 @@ public class HybridImportHandler extends AbstractImportHandler {
 
     private RootAponDisassembler rootAponDisassembler;
 
-    public HybridImportHandler(ActivityContextParser builder, String encoding, boolean hybridLoad) {
-        super(builder.getContextEnvironment());
+    public HybridImportHandler(ActivityContextParser parser, String encoding, boolean hybridLoad) {
+        super(parser.getContextEnvironment());
 
-        this.assistant = builder.getContextBuilderAssistant();
+        this.assistant = parser.getContextParserAssistant();
         this.encoding = encoding;
         this.hybridLoad = hybridLoad;
     }

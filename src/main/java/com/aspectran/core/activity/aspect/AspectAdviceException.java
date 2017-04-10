@@ -48,4 +48,5 @@ public class AspectAdviceException extends AspectException {
     public AspectAdviceRule getAspectAdviceRule() {
         return aspectAdviceRule;
     }
+
 }

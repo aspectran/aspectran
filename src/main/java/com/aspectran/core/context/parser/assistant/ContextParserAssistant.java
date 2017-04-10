@@ -59,7 +59,7 @@ import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * The Class ContextBuilderAssistant
+ * The Class ContextParserAssistant.
  * 
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
