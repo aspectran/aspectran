@@ -42,7 +42,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ActivityContext parser(String rootContext) throws ActivityContextParserException {
+    public ActivityContext parse(String rootContext) throws ActivityContextParserException {
         try {
             if (rootContext == null) {
                 throw new IllegalArgumentException("The rootContext argument must not be null.");
@@ -61,7 +61,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ActivityContext parser(AspectranParameters aspectranParameters) throws ActivityContextParserException {
+    public ActivityContext parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
         try {
             if (aspectranParameters == null) {
                 throw new IllegalArgumentException("The aspectranParameters argument must not be null.");

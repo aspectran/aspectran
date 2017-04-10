@@ -100,9 +100,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             ActivityContext activityContext;
             if (rootContext != null) {
-                activityContext = parser.parser(rootContext);
+                activityContext = parser.parse(rootContext);
             } else {
-                activityContext = parser.parser(aspectranParameters);
+                activityContext = parser.parse(aspectranParameters);
             }
 
             activityContext.initialize(aspectranService);
