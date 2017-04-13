@@ -106,14 +106,14 @@ public class TransletFileScanner extends FileScanner {
 
     @Override
     protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
-        super.scan(targetPath, matcher, new InnerSaveHandler(saveHandler));
+        super.scan(targetPath, matcher, new ProxySaveHandler(saveHandler));
     }
 
-    private class InnerSaveHandler implements SaveHandler {
+    private class ProxySaveHandler implements SaveHandler {
 
         private SaveHandler saveHandler;
 
-        public InnerSaveHandler(SaveHandler saveHandler) {
+        private ProxySaveHandler(SaveHandler saveHandler) {
             this.saveHandler = saveHandler;
         }
 
@@ -126,7 +126,7 @@ public class TransletFileScanner extends FileScanner {
                 if (maskedTransletName != null) {
                     transletName = maskedTransletName;
                 }  else {
-                    log.warn("Unmatched the pattern can not be masking. filePath: " + transletName + " (maskPattern: " + transletNameMaskPattern + ")");
+                    log.warn("The translet name [" + transletName + "] can not be masked by the mask pattern [" + transletNameMaskPattern + "].");
                 }
             }
 

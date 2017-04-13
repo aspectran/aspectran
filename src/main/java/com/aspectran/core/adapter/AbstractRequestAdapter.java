@@ -17,7 +17,7 @@ package com.aspectran.core.adapter;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.request.AbstractAdaptiveRequest;
+import com.aspectran.core.activity.request.AdaptionalRequest;
 import com.aspectran.core.context.bean.scope.RequestScope;
 
 /**
@@ -25,7 +25,7 @@ import com.aspectran.core.context.bean.scope.RequestScope;
   *
  * @since 2011. 3. 13.
 */
-public abstract class AbstractRequestAdapter extends AbstractAdaptiveRequest implements RequestAdapter {
+public abstract class AbstractRequestAdapter extends AdaptionalRequest implements RequestAdapter {
 
     protected final Object adaptee;
 

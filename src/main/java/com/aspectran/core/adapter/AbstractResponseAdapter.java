@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.activity.response.AbstractAdaptiveResponse;
+import com.aspectran.core.activity.response.AdaptionalResponse;
 
 /**
  * The Class AbstractResponseAdapter.
  *
  * @since 2011. 3. 13.
  */
-public abstract class AbstractResponseAdapter extends AbstractAdaptiveResponse implements ResponseAdapter {
+public abstract class AbstractResponseAdapter extends AdaptionalResponse implements ResponseAdapter {
 
     protected Object adaptee;
 

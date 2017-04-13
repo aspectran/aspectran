@@ -32,11 +32,11 @@ import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 
 /**
- * The Class AbstractRequest.
+ * The Class AdaptionalRequest.
  *
  * @since 2011. 3. 12.
  */
-public abstract class AbstractAdaptiveRequest {
+public abstract class AdaptionalRequest {
 
     private MethodType requestMethod;
 
@@ -52,10 +52,10 @@ public abstract class AbstractAdaptiveRequest {
 
     private boolean maxLengthExceeded;
 
-    public AbstractAdaptiveRequest() {
+    public AdaptionalRequest() {
     }
 
-    public AbstractAdaptiveRequest(Map<String, String[]> parameterMap) {
+    public AdaptionalRequest(Map<String, String[]> parameterMap) {
         if (parameterMap != null && !parameterMap.isEmpty()) {
             this.parameterMap = new ParameterMap(parameterMap);
         }
@@ -189,7 +189,7 @@ public abstract class AbstractAdaptiveRequest {
     }
 
     public Map<String, Object> getParameterMap() {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         fillPrameterMap(params);
         return params;
     }
@@ -245,7 +245,7 @@ public abstract class AbstractAdaptiveRequest {
     }
 
     public Map<String, Object> getAttributeMap() {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         fillAttributeMap(params);
         return params;
     }
