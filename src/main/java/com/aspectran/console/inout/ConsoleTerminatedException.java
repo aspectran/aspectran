@@ -18,7 +18,7 @@ package com.aspectran.console.inout;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * Raised if an console is terminated.
+ * This exception raised if a console is terminated.
  */
 public class ConsoleTerminatedException extends AspectranRuntimeException {
 
