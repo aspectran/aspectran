@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Support classes for Built-in scheduling service.
+ * A package to support external modules for built-in scheduler.
  */
 package com.aspectran.scheduler.support;

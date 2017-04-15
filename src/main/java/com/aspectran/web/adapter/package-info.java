@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Adapter interface for Web application integration.
+ * Contains a variant of the adapter interface for web application.
  */
 package com.aspectran.web.adapter;

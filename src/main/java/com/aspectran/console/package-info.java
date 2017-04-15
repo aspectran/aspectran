@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Console-based application package.
+ * A package for building web applications based on the Aspectran infrastructure.
  */
 package com.aspectran.console;

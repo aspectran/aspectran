@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Activity interface for Built-in scheduling service.
+ * Contains a variant of the activity interface for built-in scheduler.
  */
 package com.aspectran.scheduler.activity;

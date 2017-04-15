@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Adapter interface for Embedded aspectran.
+ * Contains a variant of the adapter interface for embedded Aspectran.
  */
 package com.aspectran.embedded.adapter;

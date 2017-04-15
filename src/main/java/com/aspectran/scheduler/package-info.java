@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Built-in scheduling service integration package.
+ * Built-in scheduler package that integrates with Aspectran infrastructure.
  */
 package com.aspectran.scheduler;

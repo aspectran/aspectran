@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Service interface for Web application integration.
+ * Contains a variant of the service interface for web application.
  */
 package com.aspectran.web.service;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Adapter interface for Built-in scheduling service.
+ * Contains a variant of the adapter interface for built-in scheduler.
  */
 package com.aspectran.scheduler.adapter;

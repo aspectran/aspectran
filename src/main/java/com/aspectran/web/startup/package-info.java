@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Service interface for Web application integration.
+ * Provides servlets and listeners for integration with web applications.
  */
 package com.aspectran.web.startup;

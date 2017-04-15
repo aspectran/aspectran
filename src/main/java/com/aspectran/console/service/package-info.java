@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Service interface for Console application.
+ * Contains a variant of the service interface for console-based application.
  */
 package com.aspectran.console.service;

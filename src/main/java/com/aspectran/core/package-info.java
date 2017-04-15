@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides core classes to other packages.
+ * Provides core interfaces and classes for the Aspectran infrastructure.
  */
 package com.aspectran.core;

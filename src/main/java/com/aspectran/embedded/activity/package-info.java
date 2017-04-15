@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Activity interface for Embedded aspectran.
+ * Contains a variant of the activity interface for embedded Aspectran.
  */
 package com.aspectran.embedded.activity;

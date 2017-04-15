@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Web application integration package.
+ * A package for building console-based applications based on the Aspectran infrastructure.
  */
 package com.aspectran.web;

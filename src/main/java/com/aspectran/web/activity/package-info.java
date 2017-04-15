@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the Activity interface for Web application integration.
+ * Contains a variant of the activity interface for web application.
  */
 package com.aspectran.web.activity;
