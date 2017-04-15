@@ -64,10 +64,10 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                 }
 
                 WebAspectranService rootAspectranService = (WebAspectranService)attr;
-                webAspectranService = WebAspectranService.build(this, rootAspectranService);
+                webAspectranService = WebAspectranService.create(this, rootAspectranService);
                 standalone = (rootAspectranService != webAspectranService);
             } else {
-                webAspectranService = WebAspectranService.build(this);
+                webAspectranService = WebAspectranService.create(this);
                 standalone = true;
             }
 

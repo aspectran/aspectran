@@ -37,7 +37,7 @@ public class AspectranServiceListener implements ServletContextListener {
         log.info("Initializing AspectranServiceListener...");
 
         try {
-            aspectranService = WebAspectranService.build(event.getServletContext());
+            aspectranService = WebAspectranService.create(event.getServletContext());
         } catch (Exception e) {
             log.error("AspectranServiceListener initialization failed.", e);
         }
