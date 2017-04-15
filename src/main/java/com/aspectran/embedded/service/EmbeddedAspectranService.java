@@ -265,10 +265,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @return the embedded aspectran service
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService build(String rootContext) throws AspectranServiceException {
+    public static EmbeddedAspectranService create(String rootContext) throws AspectranServiceException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootContext(rootContext);
-        return build(aspectranConfig);
+        return create(aspectranConfig);
     }
 
     /**
@@ -278,7 +278,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @return the embedded aspectran service
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService build(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
         Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
         if (contextParameters == null) {
             contextParameters = aspectranConfig.newParameters(AspectranConfig.context);

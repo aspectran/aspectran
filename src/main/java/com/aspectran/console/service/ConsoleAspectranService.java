@@ -272,10 +272,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
      */
-    public static ConsoleAspectranService build(String aspectranConfigFile)
+    public static ConsoleAspectranService create(String aspectranConfigFile)
             throws AspectranServiceException, IOException {
         File file = ResourceUtils.getFile(aspectranConfigFile, AspectranClassLoader.getDefaultClassLoader());
-        return build(file);
+        return create(file);
     }
 
     /**
@@ -286,7 +286,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
      */
-    public static ConsoleAspectranService build(File aspectranConfigFile)
+    public static ConsoleAspectranService create(File aspectranConfigFile)
             throws AspectranServiceException, IOException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {

@@ -41,7 +41,7 @@ public class AspectranSchedulerTest {
         aspectranConfig.updateRootContext("classpath:config/scheduler/scheduler-config.xml");
         aspectranConfig.updateSchedulerConfig(0, true, true);
 
-        aspectranService = EmbeddedAspectranService.build(aspectranConfig);
+        aspectranService = EmbeddedAspectranService.create(aspectranConfig);
     }
 
     @After

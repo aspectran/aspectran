@@ -28,7 +28,7 @@ public class AspectranConsoleTest {
         int exitStatus = 0;
 
         try {
-            ConsoleAspectranService.build(aspectranConfigFile).service();
+            ConsoleAspectranService.create(aspectranConfigFile).service();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;

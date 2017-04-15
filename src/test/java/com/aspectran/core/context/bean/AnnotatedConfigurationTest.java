@@ -43,7 +43,7 @@ public class AnnotatedConfigurationTest {
     @Before
     public void ready() throws IOException, AspectranServiceException {
         String rootContextLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
-        aspectranService = EmbeddedAspectranService.build(rootContextLocation);
+        aspectranService = EmbeddedAspectranService.create(rootContextLocation);
     }
 
     @Test
