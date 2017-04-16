@@ -109,7 +109,7 @@ public class DispatchResponse implements Response {
             viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
             if (viewDispatcherName == null) {
                 throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
-                        "' has not been specified in the default response rule.");
+                        "' has not been specified in the default response rule");
             }
         }
 
@@ -127,7 +127,7 @@ public class DispatchResponse implements Response {
                 }
 
                 if (viewDispatcher == null) {
-                    throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
+                    throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined");
                 }
 
                 if (viewDispatcher.isSingleton()) {

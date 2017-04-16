@@ -45,7 +45,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     public ActivityContext parse(String rootContext) throws ActivityContextParserException {
         try {
             if (rootContext == null) {
-                throw new IllegalArgumentException("The rootContext argument must not be null.");
+                throw new IllegalArgumentException("Argument 'rootContext' must not be null");
             }
 
             ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
@@ -64,7 +64,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     public ActivityContext parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
         try {
             if (aspectranParameters == null) {
-                throw new IllegalArgumentException("The aspectranParameters argument must not be null.");
+                throw new IllegalArgumentException("Argument 'aspectranParameters' must not be null");
             }
 
             ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());

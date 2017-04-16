@@ -77,7 +77,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private ActivityContext doBuild() throws ActivityContextBuilderException {
         try {
             if (this.active.get()) {
-                throw new IllegalStateException("An ActivityContext already activated.");
+                throw new IllegalStateException("An ActivityContext already activated");
             }
 
             String rootContext = getRootContext();
@@ -110,7 +110,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
-            log.info("ActivityContext build completed in " + elapsedTime + " ms.");
+            log.info("ActivityContext build completed in " + elapsedTime + " ms");
 
             registerDestroyTask();
 
@@ -142,7 +142,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 activityContext.destroy();
                 activityContext = null;
 
-                log.info("ActivityContext has been destroyed.");
+                log.info("ActivityContext has been destroyed");
             }
 
             this.active.set(false);

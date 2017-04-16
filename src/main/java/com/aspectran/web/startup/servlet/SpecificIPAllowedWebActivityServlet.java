@@ -74,7 +74,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
         if (!isAllowedAdress(remoteAddr)) {
             if (debugEnabled) {
-                log.debug("Access denied '" + remoteAddr + "'.");
+                log.debug("Access Denied: " + remoteAddr);
             }
 
             res.sendError(HttpServletResponse.SC_FORBIDDEN);

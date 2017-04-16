@@ -139,7 +139,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     protected HttpSession getSession(boolean create) {
         if (adaptee == null) {
-            throw new IllegalStateException("Session has been expired or not yet initialized.");
+            throw new IllegalStateException("Session has been expired or not yet initialized");
         }
         return ((HttpServletRequest)adaptee).getSession(create);
     }

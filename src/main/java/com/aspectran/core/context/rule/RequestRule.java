@@ -133,7 +133,7 @@ public class RequestRule {
         if (allowedMethod != null) {
             allowedethodType = MethodType.resolve(allowedMethod);
             if (allowedethodType == null) {
-                throw new IllegalArgumentException("No request method type for '" + allowedMethod + "'.");
+                throw new IllegalArgumentException("No request method type for '" + allowedMethod + "'");
             }
         }
 

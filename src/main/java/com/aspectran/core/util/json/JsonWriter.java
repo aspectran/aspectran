@@ -519,7 +519,7 @@ public class JsonWriter implements Flushable {
 
             return writer.toString();
         } catch (Exception e) {
-            throw new RuntimeException("Cannot convert to a JSON formatted string.", e);
+            throw new RuntimeException("Cannot convert to a JSON formatted string", e);
         }
     }
 

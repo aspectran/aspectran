@@ -208,7 +208,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
      */
     public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
         if (methodName == null) {
-            throw new IllegalArgumentException("The 'action' element requires an 'method' attribute.");
+            throw new IllegalArgumentException("The 'action' element requires an 'method' attribute");
         }
 
         BeanActionRule beanActionRule = new BeanActionRule();

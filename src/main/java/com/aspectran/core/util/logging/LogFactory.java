@@ -102,7 +102,7 @@ public final class LogFactory {
             Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
             Log log = candidate.newInstance(LogFactory.class.getName());
             if (log.isDebugEnabled()) {
-                log.debug("Logging initialized using '" + implClass + "' adapter.");
+                log.debug("Logging initialized using '" + implClass + "' adapter");
             }
             logConstructor = candidate;
         } catch (Throwable t) {

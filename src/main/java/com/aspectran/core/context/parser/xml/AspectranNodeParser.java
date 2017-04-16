@@ -87,7 +87,7 @@ public class AspectranNodeParser {
         try {
             parser.parse(inputStream);
         } catch (Exception e) {
-            throw new Exception("Error parsing aspectran configuration.", e);
+            throw new Exception("Error parsing aspectran configuration", e);
         } finally {
             if (inputStream != null) {
                 try {

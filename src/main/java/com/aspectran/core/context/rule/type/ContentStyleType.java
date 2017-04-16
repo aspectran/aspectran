@@ -58,7 +58,7 @@ public enum ContentStyleType {
     public static String apply(String content, String style) {
         ContentStyleType contentStyleType = ContentStyleType.resolve(style);
         if (style != null && contentStyleType == null) {
-            throw new IllegalArgumentException("No content style type for '" + style + "'.");
+            throw new IllegalArgumentException("No content style type for '" + style + "'");
         }
         return apply(content, contentStyleType);
     }

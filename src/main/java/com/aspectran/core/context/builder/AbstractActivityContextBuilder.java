@@ -69,7 +69,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
-            throw new IllegalArgumentException("The applicationAdapter argument must not be null.");
+            throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
         this.applicationAdapter = applicationAdapter;
         this.basePath = applicationAdapter.getBasePath();
@@ -266,7 +266,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
                 String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReload.getName();
-                log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
+                log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds");
             }
         }
     }

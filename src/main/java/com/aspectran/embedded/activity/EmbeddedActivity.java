@@ -78,7 +78,7 @@ public class EmbeddedActivity extends CoreActivity {
                 }
             }
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for embedded service activity.", e);
+            throw new AdapterException("Failed to specify adapters for embedded service activity", e);
         }
     }
 

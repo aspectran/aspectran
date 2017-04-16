@@ -111,7 +111,7 @@ public class WebActivity extends CoreActivity {
                 setGzipContentEncoded();
             }
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for web service activity.", e);
+            throw new AdapterException("Failed to specify adapters for web service activity", e);
         }
     }
 
@@ -163,12 +163,12 @@ public class WebActivity extends CoreActivity {
     private void parseMultipartFormData() {
         String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
         if (multipartFormDataParser == null) {
-            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings.");
+            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings");
         }
 
         MultipartFormDataParser parser = getBean(multipartFormDataParser);
         if (parser == null) {
-            throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined.");
+            throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined");
         }
 
         parser.parse(getRequestAdapter());

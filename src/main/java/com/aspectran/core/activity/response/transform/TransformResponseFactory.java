@@ -58,7 +58,7 @@ public class TransformResponseFactory {
             }
             transformResponse = new AponTransformResponse(transformRule);
         } else {
-            throw new TransformResponseException(transformRule, "Unknown transform type.");
+            throw new TransformResponseException(transformRule, "Unknown transform type");
         }
 
         return transformResponse;

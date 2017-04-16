@@ -750,13 +750,13 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             Boolean important) {
 
         if (className == null && scanPattern == null) {
-            throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
+            throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute");
         }
 
         ScopeType scopeType = ScopeType.resolve(scope);
 
         if (scope != null && scopeType == null) {
-            throw new IllegalArgumentException("No scope type for '" + scope + "'.");
+            throw new IllegalArgumentException("No scope type for '" + scope + "'");
         }
 
         if (scopeType == null) {
@@ -793,13 +793,13 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             Boolean important) {
 
         if (factoryBeanId == null || factoryMethodName == null) {
-            throw new IllegalArgumentException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute.");
+            throw new IllegalArgumentException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute");
         }
 
         ScopeType scopeType = ScopeType.resolve(scope);
 
         if (scope != null && scopeType == null) {
-            throw new IllegalArgumentException("No scope type for '" + scope + "'.");
+            throw new IllegalArgumentException("No scope type for '" + scope + "'");
         }
 
         if (scopeType == null) {

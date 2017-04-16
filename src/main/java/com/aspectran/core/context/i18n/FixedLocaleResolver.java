@@ -75,12 +75,12 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
 
     @Override
     public void setLocale(Translet translet, Locale locale) {
-        throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy.");
+        throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy");
     }
 
     @Override
     public void setTimeZone(Translet translet, TimeZone timeZone) {
-        throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy.");
+        throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy");
     }
 
 }

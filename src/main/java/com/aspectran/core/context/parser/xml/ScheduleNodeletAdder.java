@@ -80,7 +80,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
             if (transletName == null) {
-                throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+                throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute");
             }
 
             transletName = assistant.applyTransletNamePattern(transletName);

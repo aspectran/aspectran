@@ -81,7 +81,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
     protected Object createBean(BeanRule beanRule) {
         Activity activity = context.getCurrentActivity();
         if (activity == null) {
-            throw new BeanException("Cannot create a bean because an active activity is not found.");
+            throw new BeanException("Cannot create a bean because an active activity is not found");
         }
         return createBean(beanRule, activity);
     }
@@ -186,7 +186,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
             bean = invokeFactoryMethod(beanRule, bean, activity);
             if (bean == null) {
-                throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null.");
+                throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
             }
         } catch (Exception e) {
             throw new BeanCreationException(
@@ -376,9 +376,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
             instantiateSingletons();
 
-            log.info("BeanFactory has been initialized.");
+            log.info("BeanFactory has been initialized");
         } else {
-            log.warn("BeanFactory has already been initialized.");
+            log.warn("BeanFactory has already been initialized");
         }
     }
 
@@ -387,9 +387,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         if (this.active.compareAndSet(true, false)) {
             destroySingletons();
 
-            log.info("BeanFactory has been destroyed.");
+            log.info("BeanFactory has been destroyed");
         } else {
-            log.warn("BeanFactory has already been destroyed.");
+            log.warn("BeanFactory has already been destroyed");
         }
     }
 
@@ -443,9 +443,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         }
 
         if (failedDestroyes > 0) {
-            log.warn("Singletons has not been destroyed cleanly. Failure Count: " + failedDestroyes);
+            log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
         } else {
-            log.info("Singletons has been destroyed.");
+            log.info("Singletons has been destroyed");
         }
     }
 

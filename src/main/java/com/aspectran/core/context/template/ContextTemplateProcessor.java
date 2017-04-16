@@ -122,7 +122,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             if(writer == null) {
                 writer = (activity.getResponseAdapter() != null ? activity.getResponseAdapter().getWriter() : null);
                 if(writer == null) {
-                    throw new IllegalStateException("No such writer to transfer the output string.");
+                    throw new IllegalStateException("No such writer to transfer the output string");
                 }
             }
 
@@ -134,7 +134,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     engine = activity.getBean(templateRule.getEngineBeanId());
                 }
                 if (engine == null) {
-                    throw new IllegalArgumentException("No template engine bean type for '" + templateRule.getEngine() + "'.");
+                    throw new IllegalArgumentException("No template engine bean type for '" + templateRule.getEngine() + "'");
                 }
 
                 if(model == null) {
@@ -180,7 +180,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
      */
     public synchronized void initialize(ActivityContext context) {
         if (this.active) {
-            log.warn("TemplateProcessor has already been initialized.");
+            log.warn("TemplateProcessor has already been initialized");
             return;
         }
 
@@ -189,7 +189,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         this.closed = false;
         this.active = true;
 
-        log.info("TemplateProcessor has been initialized.");
+        log.info("TemplateProcessor has been initialized");
     }
 
     /**
@@ -201,7 +201,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             this.closed = true;
             this.active = false;
 
-            log.info("TemplateProcessor has been destroyed.");
+            log.info("TemplateProcessor has been destroyed");
         }
     }
 

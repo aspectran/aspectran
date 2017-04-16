@@ -26,7 +26,7 @@ public class AponReaderTest2 {
             customer.putValue(Customer.id, "guest");
             customer.putValue(Customer.name, "Guest");
             customer.putValue(Customer.age, 20);
-            customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
+            customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome");
             customer.putValue(Customer.approved, false);
 
             String text = AponWriter.stringify(customer);

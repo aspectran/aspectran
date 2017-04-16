@@ -184,7 +184,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
             transformType = TransformType.resolve(ContentType.resolve(contentType));
         }
         if (transformType == null) {
-            throw new IllegalArgumentException("No transform type for '" + type + "'.");
+            throw new IllegalArgumentException("No transform type for '" + type + "'");
         }
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformType);
@@ -203,7 +203,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
             transformType = TransformType.resolve(ContentType.resolve(contentType));
         }
         if (transformType == null) {
-            throw new IllegalArgumentException("Transform Type is not specified.");
+            throw new IllegalArgumentException("Transform Type is not specified");
         }
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformType);

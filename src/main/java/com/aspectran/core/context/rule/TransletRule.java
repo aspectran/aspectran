@@ -494,14 +494,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
         if (name == null && scanPath == null) {
-            throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
+            throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute");
         }
 
         MethodType[] allowedMethods = null;
         if (method != null) {
             allowedMethods = MethodType.parse(method);
             if (allowedMethods == null) {
-                throw new IllegalArgumentException("No request method type for '" + method + "'.");
+                throw new IllegalArgumentException("No request method type for '" + method + "'");
             }
         }
 

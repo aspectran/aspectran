@@ -73,7 +73,7 @@ public class JspViewDispatcher implements ViewDispatcher {
         try {
             dispatchName = dispatchResponseRule.getName(activity);
             if (dispatchName == null) {
-                throw new IllegalArgumentException("No specified dispatch name.");
+                throw new IllegalArgumentException("No specified dispatch name");
             }
 
             if (prefix != null && suffix != null) {
@@ -118,7 +118,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             requestDispatcher.forward(request, response);
 
             if (debugEnabled) {
-                log.debug("Dispatch to a JSP [" + dispatchName + "]");
+                log.debug("Dispatch to JSP [" + dispatchName + "]");
             }
         } catch (Exception e) {
             throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);

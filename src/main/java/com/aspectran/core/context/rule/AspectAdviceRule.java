@@ -81,14 +81,14 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     public void applyActionRule(MethodActionRule methodActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the Method Action Rule to the Aspect Advice Rule. " +
-                "AspecetAdvice is not support MethodAction.");
+                "AspecetAdvice is not support MethodAction");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the Include Action Rule to the Aspect Advice Rule. " +
-                "AspecetAdvice is not support IncludeAction.");
+                "AspecetAdvice is not support IncludeAction");
     }
 
     @Override

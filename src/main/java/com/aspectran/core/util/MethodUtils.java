@@ -582,15 +582,6 @@ public class MethodUtils {
                     if (!methodParamType.equals(argParamType)) {
                         args2[i] = ReflectionUtils.toComponentTypeArray(args2[i], methodParamType);
                     }
-//                    if (methodParamType.isPrimitive()) {
-//                        if (ClassUtils.isPrimitiveWrapper(argParamType)) {
-//                            args2[i] = ReflectionUtils.toPrimitiveArray(args2[i]);
-//                        }
-//                    } else {
-//                        if (!methodParamType.equals(argParamType)) {
-//                            args2[i] = ReflectionUtils.toComponentTypeArray(args2[i], methodParamType);
-//                        }
-//                    }
                 }
             }
             return method.invoke(object, args2);
@@ -1001,10 +992,10 @@ public class MethodUtils {
          */
         private MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {
             if (cls == null) {
-                throw new IllegalArgumentException("Class cannot be null.");
+                throw new IllegalArgumentException("Class cannot be null");
             }
             if (methodName == null) {
-                throw new IllegalArgumentException("Method Name cannot be null.");
+                throw new IllegalArgumentException("Method Name cannot be null");
             }
             if (paramTypes == null) {
                 paramTypes = EMPTY_CLASS_PARAMETERS;

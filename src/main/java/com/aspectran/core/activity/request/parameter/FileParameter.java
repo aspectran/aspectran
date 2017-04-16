@@ -176,7 +176,7 @@ public class FileParameter {
      */
     public File saveAs(File destFile, boolean overwrite) throws IOException {
         if (destFile == null) {
-            throw new IllegalArgumentException("The destFile argument must not be null.");
+            throw new IllegalArgumentException("Argument 'destFile' must not be null");
         }
 
         if (!overwrite) {
@@ -187,7 +187,7 @@ public class FileParameter {
         } else {
             if (destFile.exists() && !destFile.delete()) {
                 throw new IOException("Destination file [" + destFile.getAbsolutePath() +
-                        "] already exists and could not be deleted.");
+                        "] already exists and could not be deleted");
             }
         }
 

@@ -163,8 +163,7 @@ public class BeanDescriptor {
     /**
      * This method returns an array containing all methods declared in this
      * class and any superclass. We use this method, instead of the simpler
-     * Class.readMethods(), because we want to look for private methods as
-     * well.
+     * Class.readMethods(), because we want to look for private methods as well.
      *
      * @param cls the class
      * @return an array containing all methods in this class
@@ -261,7 +260,7 @@ public class BeanDescriptor {
     public Method getSetter(String propertyName) throws NoSuchMethodException {
         Method method = writeMethods.get(propertyName);
         if (method == null) {
-            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
+            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
         }
         return method;
     }
@@ -276,7 +275,7 @@ public class BeanDescriptor {
     public Method getGetter(String propertyName) throws NoSuchMethodException {
         Method method = readMethods.get(propertyName);
         if (method == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
+            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
         }
         return method;
     }
@@ -291,7 +290,7 @@ public class BeanDescriptor {
     public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
         Class<?> clazz = writeType.get(propertyName);
         if (clazz == null) {
-            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
+            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
         }
         return clazz;
     }
@@ -306,7 +305,7 @@ public class BeanDescriptor {
     public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
         Class<?> clazz = readTypes.get(propertyName);
         if (clazz == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
+            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
         }
         return clazz;
     }

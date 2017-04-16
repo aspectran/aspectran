@@ -37,7 +37,7 @@ public class ShutdownHooks {
 
     public static synchronized <T extends Task> T add(final T task) {
         if (task == null) {
-            throw new IllegalArgumentException("The task argument must not be null.");
+            throw new IllegalArgumentException("Argument 'task' must not be null");
         }
 
         if (hook == null) {
@@ -60,7 +60,7 @@ public class ShutdownHooks {
 
     private static synchronized void runTasks() {
         if (log.isDebugEnabled()) {
-            log.debug("Running all shutdown-hook tasks.");
+            log.debug("Running all shutdown-hook tasks");
         }
 
         // Iterate through copy of tasks list
@@ -96,7 +96,7 @@ public class ShutdownHooks {
 
     public static synchronized void remove(final Task task) {
         if (task == null) {
-            throw new IllegalArgumentException("The task argument must not be null.");
+            throw new IllegalArgumentException("Argument 'task' must not be null");
         }
 
         // ignore if hook never installed

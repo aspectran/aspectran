@@ -40,7 +40,7 @@ public class JsonWriterTest {
                 customer.putValue(Customer.id, "guest-" + i);
                 customer.putValue(Customer.name, "Guest" + i);
                 customer.putValue(Customer.age, 20 + i);
-                customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
+                customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome");
                 customer.putValue(Customer.approved, true);
 
                 customerList.add(customer);

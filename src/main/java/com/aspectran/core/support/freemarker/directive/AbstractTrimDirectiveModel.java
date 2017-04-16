@@ -46,7 +46,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
         }
 
         if (loopVars.length != 0) {
-            throw new TemplateModelException("Trim directive doesn't allow loop variables.");
+            throw new TemplateModelException("Trim directive doesn't allow loop variables");
         }
 
         StringWriter bodyWriter = new StringWriter();
@@ -84,7 +84,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
         }
 
         if (!(paramModel instanceof SimpleScalar)) {
-            throw new IllegalArgumentException(paramName + " must be string.");
+            throw new IllegalArgumentException(paramName + " must be string");
         }
 
         return ((SimpleScalar)paramModel).getAsString();
@@ -107,7 +107,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
         }
 
         if (!(paramModel instanceof SimpleSequence)) {
-            throw new IllegalArgumentException(paramName + " must be sequence.");
+            throw new IllegalArgumentException(paramName + " must be sequence");
         }
 
         List<String> list = transformSimpleSequenceAsStringList((SimpleSequence)paramModel, paramName);
@@ -131,7 +131,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
             TemplateModel model = sequence.get(i);
 
             if (!(model instanceof SimpleScalar)) {
-                throw new IllegalArgumentException(paramName + "'s item must be string.");
+                throw new IllegalArgumentException(paramName + "'s item must be string");
             }
 
             list.add(((SimpleScalar)model).getAsString());

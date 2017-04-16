@@ -264,7 +264,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
     public static AspectRule newInstance(String id, String order, Boolean isolated) {
         if (id == null) {
-            throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
+            throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute");
         }
 
         AspectRule aspectRule = new AspectRule();
@@ -275,7 +275,7 @@ public class AspectRule implements BeanReferenceInspectable {
             try {
                 aspectRule.setOrder(Integer.parseInt(order));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer.");
+                throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer");
             }
         }
 

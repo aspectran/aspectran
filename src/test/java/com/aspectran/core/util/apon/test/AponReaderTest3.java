@@ -116,10 +116,10 @@ public class AponReaderTest3 {
 
                     int index = trim.indexOf(NAME_VALUE_SEPARATOR);
                     if (index == -1)
-                        throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
+                        throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair");
 
                     if (index == 0)
-                        throw new InvalidParameterException(lineNumber, line, trim, "Cannot recognize the parameter name.");
+                        throw new InvalidParameterException(lineNumber, line, trim, "Cannot recognize the parameter name");
 
                     name = trim.substring(0, index).trim();
                     value = trim.substring(index + 1).trim();
@@ -151,7 +151,7 @@ public class AponReaderTest3 {
                     }
                     if (parameterValueType != null) {
                         if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar)
-                            throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type.");
+                            throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type");
                         if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar)
                             throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
                         if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar)
@@ -330,11 +330,11 @@ public class AponReaderTest3 {
                         sb.append(NEXT_LINE_CHAR);
                     sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
                 } else if (tlen > 0) {
-                    throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a '|' character.");
+                    throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a '|' character");
                 }
             }
 
-            throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
+            throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found");
         }
 
         private String unescape(String value, int lineNumber, String line, String trim) {

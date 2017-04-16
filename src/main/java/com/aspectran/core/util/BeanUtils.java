@@ -77,7 +77,7 @@ public class BeanUtils {
             }
         } else {
             if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
+                StringTokenizer parser = new StringTokenizer(name, "");
                 while (parser.hasMoreTokens()) {
                     name = parser.nextToken();
                     type = getBeanDescriptor(type).getSetterType(name);
@@ -113,7 +113,7 @@ public class BeanUtils {
             }
         } else {
             if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
+                StringTokenizer parser = new StringTokenizer(name, "");
                 while (parser.hasMoreTokens()) {
                     name = parser.nextToken();
                     type = getBeanDescriptor(type).getGetterType(name);
@@ -136,7 +136,7 @@ public class BeanUtils {
      */
     public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
         if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
+            StringTokenizer parser = new StringTokenizer(name, "");
             while (parser.hasMoreTokens()) {
                 name = parser.nextToken();
                 type = getBeanDescriptor(type).getGetterType(name);
@@ -159,7 +159,7 @@ public class BeanUtils {
      */
     public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
         if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
+            StringTokenizer parser = new StringTokenizer(name, "");
             while (parser.hasMoreTokens()) {
                 name = parser.nextToken();
                 type = getBeanDescriptor(type).getSetterType(name);
@@ -181,7 +181,7 @@ public class BeanUtils {
      */
     public static Object getObject(Object object, String name) throws InvocationTargetException {
         if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
+            StringTokenizer parser = new StringTokenizer(name, "");
             Object value = object;
             while (parser.hasMoreTokens()) {
                 value = getProperty(value, parser.nextToken());
@@ -206,7 +206,7 @@ public class BeanUtils {
      */
     public static void setObject(Object object, String name, Object value) throws InvocationTargetException, NoSuchMethodException {
         if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
+            StringTokenizer parser = new StringTokenizer(name, "");
             String property = parser.nextToken();
             Object child = object;
 
@@ -254,7 +254,7 @@ public class BeanUtils {
             hasProperty = true; // ((Map)object).containsKey(propertyName);
         } else {
             if (propertyName.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(propertyName, ".");
+                StringTokenizer parser = new StringTokenizer(propertyName, "");
                 Class<?> type = object.getClass();
 
                 while (parser.hasMoreTokens()) {
@@ -285,7 +285,7 @@ public class BeanUtils {
             hasProperty = true; // ((Map)object).containsKey(propertyName);
         } else {
             if (propertyName.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(propertyName, ".");
+                StringTokenizer parser = new StringTokenizer(propertyName, "");
                 Class<?> type = object.getClass();
 
                 while (parser.hasMoreTokens()) {
@@ -436,7 +436,7 @@ public class BeanUtils {
                 value = ((short[])list)[index];
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        object.getClass().getName() + " class is not a List or Array.");
+                        object.getClass().getName() + " class is not a List or Array");
             }
 
             return value;
@@ -483,7 +483,7 @@ public class BeanUtils {
                 value = Short.class;
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        object.getClass().getName() + " class is not a List or Array.");
+                        object.getClass().getName() + " class is not a List or Array");
             }
 
             return value;
@@ -524,7 +524,7 @@ public class BeanUtils {
                 ((short[])list)[index] = (Short)value;
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        object.getClass().getName() + " class is not a List or Array.");
+                        object.getClass().getName() + " class is not a List or Array");
             }
         } catch (InvocationTargetException e) {
             throw e;

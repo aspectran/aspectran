@@ -136,10 +136,10 @@ public class Token implements BeanReferenceInspectable, Replicable {
             throw new UnsupportedOperationException();
         }
         if (type == null) {
-            throw new IllegalArgumentException("The type argument must not be null.");
+            throw new IllegalArgumentException("Argument 'type' must not be null");
         }
         if (name == null) {
-            throw new IllegalArgumentException("The name argument must not be null.");
+            throw new IllegalArgumentException("Argument 'name' must not be null");
         }
         this.type = type;
         this.name = name;
@@ -154,10 +154,10 @@ public class Token implements BeanReferenceInspectable, Replicable {
      */
     public Token(TokenType type, TokenDirectiveType directiveType, String value) {
         if (type == null) {
-            throw new IllegalArgumentException("The type argument must not be null.");
+            throw new IllegalArgumentException("Argument 'type' must not be null");
         }
         if (directiveType == null) {
-            throw new IllegalArgumentException("The directiveType argument must not be null.");
+            throw new IllegalArgumentException("Argument 'directiveType' must not be null");
         }
         this.type = type;
         this.directiveType = directiveType;

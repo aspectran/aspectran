@@ -131,7 +131,7 @@ public class NodeletParser {
             Document doc = createDocument(reader);
             parse(doc.getLastChild());
         } catch (Exception e) {
-            throw new NodeletException("Error parsing XML.", e);
+            throw new NodeletException("Error parsing XML", e);
         }
     }
 
@@ -146,7 +146,7 @@ public class NodeletParser {
             Document doc = createDocument(inputStream);
             parse(doc.getLastChild());
         } catch (Exception e) {
-            throw new NodeletException("Error parsing XML.", e);
+            throw new NodeletException("Error parsing XML", e);
         }
     }
 

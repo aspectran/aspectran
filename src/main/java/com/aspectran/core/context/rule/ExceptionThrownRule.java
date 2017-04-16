@@ -161,13 +161,13 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     @Override
     public void applyActionRule(MethodActionRule methodActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Method Action Rule to the Exception Thrown Rule.");
+                "Cannot apply the Method Action Rule to the Exception Thrown Rule");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Include Action Rule to the Exception Thrown Rule.");
+                "Cannot apply the Include Action Rule to the Exception Thrown Rule");
     }
 
     @Override

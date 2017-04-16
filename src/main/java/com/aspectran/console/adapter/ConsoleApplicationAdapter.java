@@ -40,7 +40,7 @@ public class ConsoleApplicationAdapter extends BasicApplicationAdapter {
 
         String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
         if (basePath == null) {
-            basePath = new File(".").getCanonicalPath();
+            basePath = new File("").getCanonicalPath();
         }
 
         super.setBasePath(basePath);

@@ -73,7 +73,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
         try {
             dispatchName = dispatchResponseRule.getName();
             if (dispatchName == null) {
-                throw new IllegalArgumentException("No specified dispatch name.");
+                throw new IllegalArgumentException("No specified dispatch name");
             }
 
             if (templateNamePrefix != null && templateNameSuffix != null) {
@@ -108,10 +108,10 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 
             if (debugEnabled) {
-                log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
+                log.debug("Dispatch to Pebble template page [" + dispatchName + "]");
             }
         } catch (Exception e) {
-            throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);
+            throw new ViewDispatchException("Failed to dispatch to Pebble template page " + dispatchResponseRule.toString(this, dispatchName), e);
         }
     }
 

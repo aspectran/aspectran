@@ -34,7 +34,7 @@ public class NoSuchMessageException extends AspectranRuntimeException {
      * @param locale locale that was used to search for the code within
      */
     public NoSuchMessageException(String code, Locale locale) {
-        super("No message found under code '" + code + "' for locale '" + locale + "'.");
+        super("No message found under code '" + code + "' for locale '" + locale + "'");
     }
 
     /**
@@ -42,7 +42,7 @@ public class NoSuchMessageException extends AspectranRuntimeException {
      * @param code code that could not be resolved for given locale
      */
     public NoSuchMessageException(String code) {
-        super("No message found under code '" + code + "' for locale '" + Locale.getDefault() + "'.");
+        super("No message found under code '" + code + "' for locale '" + Locale.getDefault() + "'");
     }
 
 }

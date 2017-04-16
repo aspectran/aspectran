@@ -84,7 +84,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String template = StringUtils.emptyToNull(attributes.get("template"));
 
             if (template == null) {
-                throw new IllegalArgumentException("The <call> element inside <transform> must have the attribute 'template'.");
+                throw new IllegalArgumentException("The <call> element inside <transform> must have the attribute 'template'");
             }
 
             TransformRule transformRule = assistant.peekObject(1);
@@ -159,7 +159,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             RedirectResponseRule rrr = assistant.popObject();
 
             if (rrr.getTarget() == null) {
-                throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute.");
+                throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute");
             }
 
             if (!actionList.isEmpty()) {

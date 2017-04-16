@@ -126,10 +126,10 @@ public class AponReader extends AponFormat {
 
                 int index = trim.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
+                    throw new InvalidParameterException(lineNumber, line, trim, "Failed to break up string of name/value pairs");
                 }
                 if (index == 0) {
-                    throw new InvalidParameterException(lineNumber, line, trim, "Cannot recognize the parameter name.");
+                    throw new InvalidParameterException(lineNumber, line, trim, "Unrecognized parameter name");
                 }
 
                 name = trim.substring(0, index).trim();
@@ -144,7 +144,7 @@ public class AponReader extends AponFormat {
                 } else {
                     if (!addable) {
                         throw new InvalidParameterException(lineNumber, line, trim,
-                                "Predefined parameters are only allowed. Unallowed parameter name: " + name);
+                                "Only predefined parameters are allowed. Disallowed parameter name: " + name);
                     }
                     parameterValueType = ParameterValueType.resolveByHint(name);
                     if (parameterValueType != null) {
@@ -161,7 +161,7 @@ public class AponReader extends AponFormat {
                 }
                 if (parameterValueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type.");
+                        throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type");
                     }
                     if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
                         throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
@@ -338,12 +338,12 @@ public class AponReader extends AponFormat {
                 sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
             } else if (tlen > 0) {
                 throw new InvalidParameterException(lineNumber, line, trim,
-                        "The closing round bracket was missing or Each text line is must start with a ';' character.");
+                        "The closing round bracket was missing or Each text line is must start with a ';' character");
             }
         }
 
         throw new InvalidParameterException(lineNumber, "", trim,
-                "The end of the text line was reached with no closing round bracket found.");
+                "The end of the text line was reached with no closing round bracket found");
     }
 
     private String unescape(String value, int lineNumber, String line, String trim) {

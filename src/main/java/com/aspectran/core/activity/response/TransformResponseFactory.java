@@ -37,7 +37,7 @@ public class TransformResponseFactory {
      */
     public static Response createTransformResponse(TransformRule transformRule) {
         if (transformRule == null) {
-            throw new IllegalArgumentException("The transformRule argument must not be null.");
+            throw new IllegalArgumentException("Argument 'transformRule' must not be null");
         }
 
         TransformType type = transformRule.getTransformType();

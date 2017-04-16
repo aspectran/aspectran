@@ -373,12 +373,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
             String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
 
         if (id == null) {
-            throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
+            throw new IllegalArgumentException("The 'template' element requires an 'id' attribute");
         }
 
         ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
         if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'");
         }
 
         TemplateRule tr = new TemplateRule();
@@ -403,7 +403,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
         ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
         if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'.");
+            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'");
         }
 
         TemplateRule tr = new TemplateRule();

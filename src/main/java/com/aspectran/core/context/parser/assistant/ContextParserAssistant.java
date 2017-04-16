@@ -242,7 +242,7 @@ public class ContextParserAssistant {
     public void putSetting(String name, String value) {
         DefaultSettingType settingType = DefaultSettingType.resolve(name);
         if (settingType == null) {
-            throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
+            throw new IllegalArgumentException("Unknown default setting name '" + name + "'");
         }
         settings.put(settingType, value);
     }
@@ -752,7 +752,7 @@ public class ContextParserAssistant {
         }
 
         if (importer == null) {
-            throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
+            throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute");
         }
 
         return importer;

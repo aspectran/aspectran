@@ -153,7 +153,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     private AspectranClassLoader createChild(String resourceLocation) throws InvalidResourceException {
         if (!firstborn) {
-            throw new UnsupportedOperationException("Only the firstborn AspectranClassLoader can create a child.");
+            throw new UnsupportedOperationException("Only the firstborn AspectranClassLoader can create a child");
         }
 
         AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
@@ -375,7 +375,7 @@ public class AspectranClassLoader extends ClassLoader {
             try  {
                 classData = loadClassData(name, root);
             } catch (InvalidResourceException e) {
-                log.error("Failed to load class '" + name + "'.", e);
+                log.error("Failed to load class '" + name + "'", e);
             }
 
             if (classData != null) {
@@ -450,7 +450,7 @@ public class AspectranClassLoader extends ClassLoader {
 
             return output.toByteArray();
         } catch (IOException e) {
-            throw new InvalidResourceException("Cannot read a class file '" + url + "'.", e);
+            throw new InvalidResourceException("Cannot read a class file '" + url + "'", e);
         }
     }
 
@@ -578,7 +578,7 @@ public class AspectranClassLoader extends ClassLoader {
                 String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
                 URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
                 if (url == null) {
-                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist.");
+                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
                 }
                 resourceLocations[i] = url.getFile();
             } else if (resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
@@ -586,7 +586,7 @@ public class AspectranClassLoader extends ClassLoader {
                     URL url = new URL(resourceLocations[i]);
                     resourceLocations[i] = url.getFile();
                 } catch (MalformedURLException e) {
-                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path.");
+                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path");
                 }
             } else {
                 if (basePath != null) {

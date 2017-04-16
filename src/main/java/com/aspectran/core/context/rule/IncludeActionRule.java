@@ -182,7 +182,7 @@ public class IncludeActionRule {
      */
     public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
         if (transletName == null) {
-            throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute.");
+            throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute");
         }
 
         IncludeActionRule includeActionRule = new IncludeActionRule();

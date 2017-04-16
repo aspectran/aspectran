@@ -79,10 +79,10 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    throw new AspectranServiceException("Could not start AspectranService because it has already been destroyed.");
+                    throw new AspectranServiceException("Could not start AspectranService because it has already been destroyed");
                 }
                 if (this.active.get()) {
-                    throw new AspectranServiceException("Could not start AspectranService because it has already been started.");
+                    throw new AspectranServiceException("Could not start AspectranService because it has already been started");
                 }
 
                 loadActivityContext();
@@ -95,7 +95,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                 this.closed.set(false);
                 this.active.set(true);
 
-                log.info("AspectranService has been started successfully.");
+                log.info("AspectranService has been started successfully");
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.started();
@@ -109,17 +109,17 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    log.warn("Could not restart AspectranService because it has already been destroyed.");
+                    log.warn("Could not restart AspectranService because it has already been destroyed");
                     return;
                 }
                 if (!this.active.get()) {
-                    log.warn("Could not restart AspectranService because it is currently stopped.");
+                    log.warn("Could not restart AspectranService because it is currently stopped");
                     return;
                 }
 
                 doShutdown();
 
-                log.info("AspectranService has been shut down successfully.");
+                log.info("AspectranService has been shut down successfully");
 
                 loadActivityContext();
 
@@ -130,7 +130,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                 this.closed.set(false);
                 this.active.set(true);
 
-                log.info("AspectranService has been restarted successfully.");
+                log.info("AspectranService has been restarted successfully");
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.restarted(isHardReload());
@@ -144,18 +144,18 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    log.warn("Could not pause AspectranService because it has already been destroyed.");
+                    log.warn("Could not pause AspectranService because it has already been destroyed");
                     return;
                 }
 
                 try {
                     pauseSchedulerService();
                 } catch (SchedulerServiceException e) {
-                    log.error("Could not pause AspectranService.", e);
+                    log.error("Could not pause AspectranService", e);
                     throw e;
                 }
 
-                log.info("AspectranService has been paused.");
+                log.info("AspectranService has been paused");
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.paused();
@@ -169,17 +169,17 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    log.warn("Could not pause AspectranService because it has already been destroyed.");
+                    log.warn("Could not pause AspectranService because it has already been destroyed");
                     return;
                 }
 
                 try {
                     pauseSchedulerService();
                 } catch (SchedulerServiceException e) {
-                    throw new AspectranServiceException("Could not pause AspectranService.", e);
+                    throw new AspectranServiceException("Could not pause AspectranService", e);
                 }
 
-                log.info("AspectranService has been paused and will resume after " + timeout + " ms.");
+                log.info("AspectranService has been paused and will resume after " + timeout + " ms");
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.paused(timeout);
@@ -193,17 +193,17 @@ public class BasicAspectranService extends AbstractAspectranService {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    log.warn("Could not resume AspectranService because it has already been destroyed.");
+                    log.warn("Could not resume AspectranService because it has already been destroyed");
                     return;
                 }
 
                 try {
                     resumeSchedulerService();
                 } catch (SchedulerServiceException e) {
-                    throw new AspectranServiceException("Could not resume AspectranService.", e);
+                    throw new AspectranServiceException("Could not resume AspectranService", e);
                 }
 
-                log.info("AspectranService has been resumed.");
+                log.info("AspectranService has been resumed");
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.resumed();
@@ -219,7 +219,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                 doShutdown();
                 removeShutdownTask();
 
-                log.info("AspectranService has been shut down successfully.");
+                log.info("AspectranService has been shut down successfully");
             }
         }
     }

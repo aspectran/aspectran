@@ -195,7 +195,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             for (int i = 0; i < basenames.length; i++) {
                 String basename = basenames[i];
                 if (!StringUtils.hasText(basename)) {
-                    throw new IllegalArgumentException("Basename must not be empty.");
+                    throw new IllegalArgumentException("Basename must not be empty");
                 }
                 this.basenames[i] = basename.trim();
             }

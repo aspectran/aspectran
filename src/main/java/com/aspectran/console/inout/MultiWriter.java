@@ -56,7 +56,7 @@ public class MultiWriter extends Writer {
             }
         }
         if (unclosed > 0) {
-            throw new IOException("Failed to close the multi-writer.");
+            throw new IOException("Failed to close the multi-writer");
         }
     }
 

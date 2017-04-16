@@ -100,7 +100,7 @@ public class AnnotatedConfigParser {
 
     public void parse() {
         if (log.isDebugEnabled()) {
-            log.debug("Now try to parse annotated configurations.");
+            log.debug("Now try to parse annotated configurations");
             log.debug("Parsing bean rules for configuring: " + configBeanRuleMap.size());
         }
 

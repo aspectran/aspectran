@@ -31,7 +31,7 @@ public class BeanNotFoundException extends BeanException {
      * @param beanId the bean id
      */
     public BeanNotFoundException(String beanId) {
-        super("No bean named '" + beanId + "' is defined.");
+        super("No bean named '" + beanId + "' is defined");
         this.beanId = beanId;
     }
 

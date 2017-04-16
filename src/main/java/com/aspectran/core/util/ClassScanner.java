@@ -86,7 +86,7 @@ public class ClassScanner {
      */
     public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
         if (classNamePattern == null) {
-            throw new IllegalArgumentException("The classNamePattern argument must not be null.");
+            throw new IllegalArgumentException("Argument 'classNamePattern' must not be null");
         }
 
         classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
@@ -281,7 +281,7 @@ public class ClassScanner {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("class loading failed. class name: " + className, e);
+            throw new RuntimeException("Class loading failed. class name: " + className, e);
         }
     }
 

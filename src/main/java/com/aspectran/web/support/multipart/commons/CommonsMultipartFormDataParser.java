@@ -76,7 +76,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     public void setTempDirectoryPath(String tempDirectoryPath) {
         File tempDirectory = new File(tempDirectoryPath);
         if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
-            throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
+            throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
         }
         this.tempDirectoryPath = tempDirectoryPath;
     }
@@ -117,7 +117,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             if (tempDirectoryPath != null) {
                 File repository = new File(tempDirectoryPath);
                 if (!repository.exists() && !repository.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created.");
+                    throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
                 }
                 factory.setRepository(repository);
             }
@@ -137,14 +137,14 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
             } catch (SizeLimitExceededException e) {
-                log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);
+                log.warn("Maximum request length exceeded. (multipart.maxRequestSize: " + maxRequestSize + ")");
                 requestAdapter.setMaxLengthExceeded(true);
                 return;
             }
 
             parseMultipart(fileItemListMap, requestAdapter);
         } catch (Exception e) {
-            throw new MultipartRequestParseException("Could not parse multipart servlet request.", e);
+            throw new MultipartRequestParseException("Could not parse multipart servlet request", e);
         }
     }
 
@@ -221,7 +221,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                 value = fileItem.getString(characterEncoding);
             } catch (UnsupportedEncodingException ex) {
                 log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
-                        "' with encoding '" + characterEncoding + "': using platform default.");
+                        "' with encoding '" + characterEncoding + "': using platform default");
                 value = fileItem.getString();
             }
         } else {

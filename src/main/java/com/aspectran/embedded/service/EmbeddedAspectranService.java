@@ -162,7 +162,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             throws AspectranServiceException {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                log.warn("AspectranService has been paused, so did not run the translet \"" + name + "\".");
+                log.warn("AspectranService has been paused, so did not run the translet \"" + name + "\"");
                 return null;
             } else {
                 pauseTimeout = 0L;
@@ -182,10 +182,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if(log.isDebugEnabled()) {
-                log.debug("Translet activity was terminated.");
+                log.debug("Translet activity was terminated");
             }
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while processing a translet.", e);
+            throw new AspectranServiceException("An error occurred while processing a translet", e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -246,7 +246,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while processing a template.", e);
+            throw new AspectranServiceException("An error occurred while processing a template", e);
         }
     }
 
@@ -316,7 +316,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             @Override
             public void paused(long millis) {
                 if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
+                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
                 }
                 aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
             }

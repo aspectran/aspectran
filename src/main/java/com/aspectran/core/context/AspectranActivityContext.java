@@ -171,7 +171,7 @@ public class AspectranActivityContext implements ActivityContext {
     @Override
     public MessageSource getMessageSource() {
         if (this.messageSource == null) {
-            throw new IllegalStateException("MessageSource not initialized.");
+            throw new IllegalStateException("MessageSource not initialized");
         }
         return messageSource;
     }
@@ -224,7 +224,7 @@ public class AspectranActivityContext implements ActivityContext {
     public void initialize(AspectranService rootAspectranService) {
         if (rootAspectranService != null) {
             if (this.rootAspectranService != null) {
-                throw new UnsupportedOperationException("ActivityContext has already been initialized.");
+                throw new UnsupportedOperationException("ActivityContext has already been initialized");
             }
             this.rootAspectranService = rootAspectranService;
         }

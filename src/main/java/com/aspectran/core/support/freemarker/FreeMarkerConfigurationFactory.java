@@ -260,7 +260,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         switch (loaderCount) {
             case 0:
                 if (log.isDebugEnabled()) {
-                    log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
+                    log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source");
                 }
                 return null;
             case 1:

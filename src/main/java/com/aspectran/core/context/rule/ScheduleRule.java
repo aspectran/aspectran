@@ -149,7 +149,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
     public static ScheduleRule newInstance(String id) {
         if (id == null) {
-            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute.");
+            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute");
         }
 
         ScheduleRule scheduleRule = new ScheduleRule();
@@ -201,7 +201,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
         if (type != null) {
             triggerType = TriggerType.resolve(type);
             if (triggerType == null) {
-                throw new IllegalArgumentException("Unknown trigger type '" + type + "'. Trigger type for Scheduler must be 'cron' or 'simple'.");
+                throw new IllegalArgumentException("Unknown trigger type '" + type + "'; Trigger type for Scheduler must be 'cron' or 'simple'");
             }
         } else {
             triggerType = TriggerType.CRON;

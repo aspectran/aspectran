@@ -91,7 +91,7 @@ public class ConsoleActivity extends CoreActivity {
             responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for console service activity.", e);
+            throw new AdapterException("Failed to specify adapters for console service activity", e);
         }
     }
 
@@ -258,7 +258,7 @@ public class ConsoleActivity extends CoreActivity {
                 }
             }
         } catch (ConsoleTerminatedException e) {
-            log.info("User interrupt occurred.");
+            log.info("User interrupt occurred");
             throw new ActivityTerminatedException();
         }
 

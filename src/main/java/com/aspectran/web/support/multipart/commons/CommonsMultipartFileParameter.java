@@ -94,7 +94,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
     @Override
     public InputStream getInputStream() throws IOException {
         if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again.");
+            throw new IllegalStateException("File has been moved - cannot be read again");
         }
         InputStream inputStream = fileItem.getInputStream();
         return (inputStream != null ? inputStream : new ByteArrayInputStream(new byte[0]));
@@ -108,7 +108,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
     @Override
     public byte[] getBytes() {
         if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again.");
+            throw new IllegalStateException("File has been moved - cannot be read again");
         }
         byte[] bytes = fileItem.get();
         return (bytes != null ? bytes : new byte[0]);
@@ -125,10 +125,10 @@ public class CommonsMultipartFileParameter extends FileParameter {
     @Override
     public File saveAs(File destFile, boolean overwrite) throws IOException {
         if (destFile == null) {
-            throw new IllegalArgumentException("The destFile argument must not be null.");
+            throw new IllegalArgumentException("Argument 'destFile' must not be null");
         }
         if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again.");
+            throw new IllegalStateException("File has been moved - cannot be read again");
         }
         if (!overwrite) {
             File newFile = FilenameUtils.seekUniqueFile(destFile);
@@ -137,7 +137,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
             }
         } else {
             if (destFile.exists() && !destFile.delete()) {
-                throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted.");
+                throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted");
             }
         }
 

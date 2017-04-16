@@ -121,7 +121,7 @@ public class PointcutRule {
         if (type != null) {
             pointcutType = PointcutType.resolve(type);
             if (pointcutType == null) {
-                throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
+                throw new IllegalArgumentException("Unknown pointcut type '" + type + "'; Pointcut type for Translet must be 'wildcard' or 'regexp'");
             }
         }
 

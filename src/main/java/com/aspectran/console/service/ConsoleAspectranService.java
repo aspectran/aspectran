@@ -149,13 +149,13 @@ public class ConsoleAspectranService extends BasicAspectranService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
-                    log.info("AspectranService has been paused.");
+                    log.info("AspectranService has been paused");
                 } else {
                     long remains = pauseTimeout - System.currentTimeMillis();
                     if (remains > 0L) {
-                        log.info("AspectranService has been paused and will resume after " + remains + " ms.");
+                        log.info("AspectranService has been paused and will resume after " + remains + " ms");
                     } else {
-                        log.info("AspectranService has been paused and will soon resume.");
+                        log.info("AspectranService has been paused and will soon resume");
                     }
                 }
                 return;
@@ -186,10 +186,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
             log.info("Unknown translet name: " + command);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet activity was terminated.");
+                log.debug("Translet activity was terminated");
             }
         } catch (Exception e) {
-            log.error("Console activity failed to perform.", e);
+            log.error("Console activity failed to perform", e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {
@@ -245,7 +245,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
                         showDescription(true);
                         break ;
                     case "quit":
-                        log.info("Goodbye.");
+                        log.info("Goodbye");
                         break loop;
                     default:
                         service(command);
@@ -258,7 +258,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             e.printStackTrace();
         } finally {
             if (isActive()) {
-                log.info("Do not terminate this application while destroying all scoped beans.");
+                log.info("Do not terminate this application while destroying all scoped beans");
                 shutdown();
             }
         }
@@ -350,7 +350,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             @Override
             public void paused(long millis) {
                 if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0.");
+                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
                 }
                 aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
             }

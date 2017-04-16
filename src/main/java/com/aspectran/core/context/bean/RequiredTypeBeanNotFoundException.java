@@ -31,7 +31,7 @@ public class RequiredTypeBeanNotFoundException extends BeanException {
      * @param requiredType the required type
      */
     public RequiredTypeBeanNotFoundException(Class<?> requiredType) {
-        super("No matching bean of type [" + requiredType + "] found.");
+        super("No matching bean of type [" + requiredType + "] found");
         this.requiredType = requiredType;
     }
 

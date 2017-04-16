@@ -177,7 +177,7 @@ public class CoreActivity extends BasicActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActivityException("Failed to prepare activity.", e);
+            throw new ActivityException("Failed to prepare activity", e);
         }
     }
 
@@ -325,7 +325,7 @@ public class CoreActivity extends BasicActivity {
                 response();
             }
         } catch (Exception e) {
-            throw new ActivityException("Activity failed to perform.", e);
+            throw new ActivityException("Activity failed to perform", e);
         } finally {
             Scope requestScope = getRequestAdapter().getRequestScope(false);
             if (requestScope != null) {
