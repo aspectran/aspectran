@@ -13,21 +13,21 @@ Aspectran will support most of the functionality required in an enterprise envir
 
 The main features of Aspectran are as follows:
 
-* Support various execution environments with the same configuration settings  
+* **Support various execution environments with the same configuration settings**  
   You can use the same configuration settings for different execution environments, such as Web, console-based, and other applications.
-* Support POJO (*Plain Old Java Object*) programming model  
+* **Support POJO (*Plain Old Java Object*) programming model**  
   You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
   The resulting value can be returned to the most simple Java object.
-* Support Inversion of Control (*IoC*)  
+* **Support Inversion of Control (*IoC*)**  
   The framework controls the overall flow and invokes the functionality of the module created by the developer.
   Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
-* Support Dependency Injection (*DI*)  
+* **Support Dependency Injection (*DI*)**  
   The framework links modules that depend on each other at runtime.
   It can maintain low coupling between modules and increase code reusability.
-* Support Aspect-Oriented Programming (*AOP*)  
+* **Support Aspect-Oriented Programming (*AOP*)**  
   You can write code by separating core functions and additional functions.
   Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
-* Support building RESTful Web Services
+* **Support building RESTful Web Services**
 
 The following packages based on the `core` package exist to support various execution environments.
 
@@ -50,7 +50,7 @@ com.aspectran
 ├── console       A package for building console-based applications based on the Aspectran infrastructure
 │   ├── activity    Contains a variant of the activity interface for console-based application
 │   ├── adapter     Contains a variant of the adapter interface for console-based application
-│   ├── inout       A package to provide console input / output handling
+│   ├── inout       A package for enhanced console input and output
 │   └── service     Contains a variant of the service interface for console-based application
 ├── embedded      A package that provides the ability to embed Aspectran in other applications
 │   ├── activity    Contains a variant of the activity interface for embedded Aspectran
