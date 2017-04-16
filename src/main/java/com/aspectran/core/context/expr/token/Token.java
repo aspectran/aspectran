@@ -150,6 +150,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
      *
      * @param type the token type
      * @param directiveType the token directive type
+     * @param value the token value
      */
     public Token(TokenType type, TokenDirectiveType directiveType, String value) {
         if (type == null) {

@@ -393,7 +393,7 @@ public class ItemRule {
     /**
      * Sets whether this item requires security input.
      *
-     * @return whether or not this item requires security input
+     * @param security whether or not this item requires security input
      */
     public void setSecurity(Boolean security) {
         this.security = security;
@@ -511,7 +511,8 @@ public class ItemRule {
      * @param valueType the value type
      * @param defaultValue the default value
      * @param tokenize whether to tokenize
-     * @param mandatory whether or not the item is mandatory
+     * @param mandatory whether or not this item is mandatory
+     * @param security whether or not this item requires security input
      * @return the item rule
      */
     public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize, Boolean mandatory, Boolean security) {
