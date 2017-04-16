@@ -57,7 +57,6 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     public EmbeddedAspectranService() {
         super(new EmbeddedApplicationAdapter());
-        this.sessionAdapter = new EmbeddedSessionAdapter();
     }
 
     @Override
