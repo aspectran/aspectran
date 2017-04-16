@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Packages to embed Aspectran in other applications.
+ * A package that provides the ability to embed Aspectran in other applications.
  */
 package com.aspectran.embedded;

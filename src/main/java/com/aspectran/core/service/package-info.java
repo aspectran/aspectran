@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides servlets and listeners for integration with web application.
+ * A Package for providing core components and configuring an execution environment.
  */
-package com.aspectran.web.startup;
+package com.aspectran.core.service;
