@@ -68,7 +68,7 @@ public class HeadingAction extends AbstractAction {
 
             return valueMap;
         } catch (Exception e) {
-            log.error("Failed to execute heading action " + headingActionRule + " Cause: " + e.toString());
+            log.error("Failed to execute an action that generates response headers. headingActionRule " + headingActionRule);
             throw e;
         }
     }

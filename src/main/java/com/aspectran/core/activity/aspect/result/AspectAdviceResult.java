@@ -44,7 +44,7 @@ public class AspectAdviceResult {
 
     public void putAspectAdviceBean(String aspectId, Object adviceBean) {
         if (aspectAdviceBeanMap == null) {
-            aspectAdviceBeanMap = new HashMap<String, Object>();
+            aspectAdviceBeanMap = new HashMap<>();
         }
         aspectAdviceBeanMap.put(aspectId, adviceBean);
     }
@@ -58,7 +58,7 @@ public class AspectAdviceResult {
 
     private void putBeforeAdviceResult(String aspectId, Object actionResult) {
         if (beforeAdviceResultMap == null) {
-            beforeAdviceResultMap = new HashMap<String, Object>();
+            beforeAdviceResultMap = new HashMap<>();
         }
         beforeAdviceResultMap.put(aspectId, actionResult);
     }
@@ -72,7 +72,7 @@ public class AspectAdviceResult {
 
     private void putAfterAdviceResult(String aspectId, Object actionResult) {
         if (afterAdviceResultMap == null) {
-            afterAdviceResultMap = new HashMap<String, Object>();
+            afterAdviceResultMap = new HashMap<>();
         }
         afterAdviceResultMap.put(aspectId, actionResult);
     }
@@ -86,7 +86,7 @@ public class AspectAdviceResult {
 
     private void putFinallyAdviceResult(String aspectId, Object actionResult) {
         if (finallyAdviceResultMap == null) {
-            finallyAdviceResultMap = new HashMap<String, Object>();
+            finallyAdviceResultMap = new HashMap<>();
         }
         finallyAdviceResultMap.put(aspectId, actionResult);
     }

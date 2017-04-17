@@ -78,7 +78,7 @@ public class IncludeAction extends AbstractAction {
 
             return innerActivity.getProcessResult();
         } catch (Exception e) {
-            log.error("Failed to execute action that include other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
+            log.error("Failed to execute an action that includes other translet. includeActionRule " + includeActionRule + " Cause: " + e.toString());
             throw e;
         } finally {
             if (innerActivity != null) {
