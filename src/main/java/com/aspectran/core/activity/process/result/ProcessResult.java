@@ -65,6 +65,12 @@ public class ProcessResult extends ArrayList<ContentResult> {
         add(contentResult);
     }
 
+    /**
+     * Returns the result of the action as an {@code ActionResult}.
+     *
+     * @param actionId the action id
+     * @return the result of the action
+     */
     public ActionResult getActionResult(String actionId) {
         for (ContentResult contentResult : this) {
             ActionResult actionResult = contentResult.getActionResult(actionId);
@@ -76,10 +82,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
     }
 
     /**
-     * Gets the result value of an action.
+     * Returns the result value of the action as an {@code Object}.
      *
      * @param actionId the action id
-     * @return the result value of an action
+     * @return the result value of the action
      */
     public Object getResultValue(String actionId) {
         ActionResult actionResult = getActionResult(actionId);

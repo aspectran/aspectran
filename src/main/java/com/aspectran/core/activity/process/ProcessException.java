@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process;
 import com.aspectran.core.activity.ActivityException;
 
 /**
- * This exception will be thrown when a translet process is failed.
+ * This exception will be thrown if the translet processing fails.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

@@ -93,7 +93,7 @@ public class ActionResult {
     }
 
     /**
-     * Returns whether or not to hide this action result.
+     * Returns whether or not to expose this action's result.
      *
      * @return true if hide this action result, otherwise false
      */
@@ -102,7 +102,7 @@ public class ActionResult {
     }
 
     /**
-     * Sets whether or not to hide this action result.
+     * Sets whether or not to hide the result of this action.
      *
      * @param hidden whether to hide this action result
      */

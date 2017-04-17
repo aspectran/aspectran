@@ -40,7 +40,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     /**
      * Instantiates a new Parameter map.
      *
-     * @param  initialCapacity the initial capacity
+     * @param initialCapacity the initial capacity
      */
     public ParameterMap(int initialCapacity) {
         super(initialCapacity);
