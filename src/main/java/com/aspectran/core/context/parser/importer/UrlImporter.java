@@ -57,7 +57,6 @@ public class UrlImporter extends AbstractImporter {
         URL url = new URL(urlString);
         URLConnection conn = url.openConnection();
         setLastModified(conn.getLastModified());
-
         return conn.getInputStream();
     }
 

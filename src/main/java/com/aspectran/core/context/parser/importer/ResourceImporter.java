@@ -58,11 +58,9 @@ public class ResourceImporter extends AbstractImporter {
     @Override
     public InputStream getInputStream() throws IOException {
         InputStream inputStream = classLoader.getResourceAsStream(resource);
-
         if (inputStream == null) {
-            throw new IOException("Could not find resource to import. resource: " + resource);
+            throw new IOException("Failed to import resource: " + resource);
         }
-
         return inputStream;
     }
 

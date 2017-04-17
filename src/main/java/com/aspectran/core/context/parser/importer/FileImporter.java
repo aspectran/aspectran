@@ -68,13 +68,11 @@ public class FileImporter extends AbstractImporter {
     }
 
     public File getFile() {
-        File file;
         if (basePath == null) {
-            file = new File(filePath);
+            return new File(filePath);
         } else {
-            file = new File(basePath, filePath);
+            return new File(basePath, filePath);
         }
-        return file;
     }
 
     @Override
@@ -87,7 +85,7 @@ public class FileImporter extends AbstractImporter {
     public InputStream getInputStream() throws IOException {
         File file = getFile();
         if (!file.isFile()) {
-            throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
+            throw new IOException("Failed to import file: " + file.getAbsolutePath());
         }
         setLastModified(file.lastModified());
         return new FileInputStream(file);
