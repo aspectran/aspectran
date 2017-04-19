@@ -146,9 +146,9 @@ public abstract class BasicActivity extends AbstractActivity {
                 } else {
                     setRaisedException(e);
                     if (noThrow) {
-                        log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+                            log.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     } else {
-                        throw new AspectAdviceException("Failed to execute the advice action " + aspectAdviceRule, aspectAdviceRule, e);
+                        throw new AspectAdviceException("Failed to execute an advice action " + aspectAdviceRule, aspectAdviceRule, e);
                     }
                 }
             }
@@ -164,7 +164,7 @@ public abstract class BasicActivity extends AbstractActivity {
 
     protected void handleException(ExceptionRule exceptionRule) {
         if (log.isDebugEnabled()) {
-            log.debug("Exception handling for raised exception: " + getOriginRaisedException());
+            log.debug("Handle raised exception: " + getOriginRaisedException());
         }
 
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
