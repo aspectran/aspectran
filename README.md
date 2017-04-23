@@ -8,6 +8,8 @@
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
+[![asciicast](https://asciinema.org/a/116148.png)](https://asciinema.org/a/116148)
+
 Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications.
 Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java application framework.
 
