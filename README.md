@@ -1,6 +1,6 @@
 # [Aspectran](http://www.aspectran.com)
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
-[![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master&20170423)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![License](http://img.shields.io/:license-apache-orange.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
@@ -80,7 +80,7 @@ Provides user guide documentation for Aspectran users.
 
 ## [API Reference](http://www.aspectran.com/docs/api/)
 Provides Aspectran API documentation.
-* [http://api.aspectran.com/3.3.0/](http://api.aspectran.com/)
+* [http://api.aspectran.com/4.0.0/](http://api.aspectran.com/)
 
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Provides information on Aspectran's major change history.  
