@@ -50,8 +50,14 @@ public class WebAspectranService extends BasicAspectranService {
 
     private static final Log log = LogFactory.getLog(WebAspectranService.class);
 
+    /**
+     * ServletContext attribute name used to obtain the root WebAspectranService object.
+     */
     public static final String ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE = WebAspectranService.class.getName() + ".ROOT";
 
+    /**
+     * The prefix of the ServletContext property name used to get the standalone WebAspectranService object.
+     */
     public static final String STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX = WebAspectranService.class.getName() + ".STANDALONE:";
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
@@ -180,7 +186,7 @@ public class WebAspectranService extends BasicAspectranService {
         servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
         if (log.isDebugEnabled()) {
-            log.debug("WebAspectranService Attribute in ServletContext has been created. " +
+            log.debug("The WebAspectranService attribute in ServletContext has been created; " +
                     ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
         }
 
@@ -235,7 +241,8 @@ public class WebAspectranService extends BasicAspectranService {
         servletContext.setAttribute(attrName, aspectranService);
 
         if (log.isDebugEnabled()) {
-            log.debug("WebAspectranService Attribute in ServletContext has been created. " + attrName + ": " + aspectranService);
+            log.debug("The WebAspectranService attribute in ServletContext has been created; " +
+                    attrName + ": " + aspectranService);
         }
 
         return aspectranService;

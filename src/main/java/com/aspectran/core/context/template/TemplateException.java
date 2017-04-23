@@ -53,8 +53,10 @@ public class TemplateException extends AspectranRuntimeException {
     }
 
     /**
-     * Constructs a TemplateException with the specified error message and also the specified root cause exception.
-     * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a TemplateException.
+     * Constructs a TemplateException with the specified error message and
+     * also the specified root cause exception.
+     * The root cause exception is generally for TypeConversionException's root cause
+     * or something that might have caused a TemplateException.
      *
      * @param msg the detail message
      * @param cause the real cause of the exception
