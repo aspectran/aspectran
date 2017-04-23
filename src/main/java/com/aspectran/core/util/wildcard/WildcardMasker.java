@@ -233,10 +233,10 @@ public class WildcardMasker {
         }
 
         if (cidx < clen) {
-            if(cidx == 0 && tlen > 0 && types[0] == WildcardPattern.STAR_STAR_TYPE) {
+            if (cidx == 0 && tlen > 0 && types[0] == WildcardPattern.STAR_STAR_TYPE) {
                 for (int end = 0; end < clen; end++) {
-                    if(input.charAt(end) != separator) {
-                        if(end > 0) {
+                    if (input.charAt(end) != separator) {
+                        if (end > 0) {
                             return input.subSequence(end, clen).toString();
                         }
                         break;
@@ -264,10 +264,10 @@ public class WildcardMasker {
             }
         }
 
-        if(types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
+        if (types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
             for (int end = 0; end < sb.length(); end++) {
-                if(sb.charAt(end) != separator) {
-                    if(end > 0) {
+                if (sb.charAt(end) != separator) {
+                    if (end > 0) {
                         sb.delete(0, end);
                     }
                     break;

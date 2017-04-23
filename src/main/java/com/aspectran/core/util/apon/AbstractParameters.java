@@ -82,8 +82,8 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public Parameter getParent() {
         if (prototype != null) {
-            if(prototype.getContainer() != null) {
-                if(prototype.getContainer().getPrototype() != null) {
+            if (prototype.getContainer() != null) {
+                if (prototype.getContainer().getPrototype() != null) {
                     return prototype.getContainer().getPrototype();
                 }
             }

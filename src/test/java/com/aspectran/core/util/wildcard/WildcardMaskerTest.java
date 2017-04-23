@@ -44,7 +44,7 @@ public class WildcardMaskerTest {
 //        list.add(mask("com.aspectran.core.embedded.**.*", "com.aspectran.core.embedded.ABean"));
 //
 //        System.out.println("-------------------------------------");
-//        for(String string : list) {
+//        for (String string : list) {
 //            System.out.println(string);
 //        }
 //        System.out.println("-------------------------------------");

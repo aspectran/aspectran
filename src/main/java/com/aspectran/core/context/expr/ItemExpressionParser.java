@@ -79,7 +79,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         if (itemType == ItemType.SINGLE) {
             Token[] tokens = itemRule.getTokens();
             value = evaluate(name, tokens, valueType);
-            if(value == null) {
+            if (value == null) {
                 value = itemRule.getDefaultValue();
             }
         } else if (itemType == ItemType.ARRAY) {
@@ -161,7 +161,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
     @SuppressWarnings("all")
     private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
         List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
-        if(list == null) {
+        if (list == null) {
             return null;
         }
 

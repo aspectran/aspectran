@@ -72,7 +72,7 @@ public class EmbeddedActivity extends CoreActivity {
             ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
-            if(attributeMap != null) {
+            if (attributeMap != null) {
                 for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
                     requestAdapter.setAttribute(entry.getKey(), entry.getValue());
                 }

@@ -100,7 +100,7 @@ public abstract class BasicActivity extends AbstractActivity {
      * @param noThrow whether or not throw exception
      */
     private void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
-        if(isExceptionRaised() && aspectAdviceRule.getExceptionRule() != null) {
+        if (isExceptionRaised() && aspectAdviceRule.getExceptionRule() != null) {
             try {
                 handleException(aspectAdviceRule.getExceptionRule());
             } catch (Exception e) {

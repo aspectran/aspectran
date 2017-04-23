@@ -123,8 +123,8 @@ public class CommandParser {
         boolean haveDoubleQuote = false;
         boolean haveSingleQuote = false;
 
-        while(matcher.find()) {
-            if(matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
+        while (matcher.find()) {
+            if (matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
                 String string = buffer.substring(0, matcher.start(1)).trim();
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
@@ -136,7 +136,7 @@ public class CommandParser {
                 buffer = buffer.substring(matcher.end(1));
                 matcher = redirectionOperatorPattern.matcher(buffer);
             }
-            else if(matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
+            else if (matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
                 String string = buffer.substring(0, matcher.start(2)).trim();
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
@@ -148,13 +148,13 @@ public class CommandParser {
                 buffer = buffer.substring(matcher.end(2));
                 matcher = redirectionOperatorPattern.matcher(buffer);
             }
-            else if(matcher.group(3) != null) {
-                if((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
+            else if (matcher.group(3) != null) {
+                if ((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
                     haveDoubleQuote = !haveDoubleQuote;
                 }
             }
-            else if(matcher.group(4) != null) {
-                if((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) && !haveDoubleQuote) {
+            else if (matcher.group(4) != null) {
+                if ((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) && !haveDoubleQuote) {
                     haveSingleQuote = !haveSingleQuote;
                 }
             }

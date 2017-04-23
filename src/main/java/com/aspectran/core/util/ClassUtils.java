@@ -113,7 +113,7 @@ public abstract class ClassUtils {
             return !lhsType.isPrimitive();
         }
         if (lhsType.isArray() || rhsType.isArray()) {
-            if((lhsType.isArray() && rhsType.isArray())) {
+            if ((lhsType.isArray() && rhsType.isArray())) {
                 return isAssignable(lhsType.getComponentType(), rhsType.getComponentType());
             }
         } else {
@@ -145,9 +145,9 @@ public abstract class ClassUtils {
         }
         Class<?> valueType = value.getClass();
         if (type.isArray() || valueType.isArray()) {
-            if((type.isArray() && valueType.isArray())) {
+            if ((type.isArray() && valueType.isArray())) {
                 int len = Array.getLength(value);
-                if(len == 0) {
+                if (len == 0) {
                     return true;
                 } else {
                     Object first = Array.get(value, 0);
@@ -155,7 +155,7 @@ public abstract class ClassUtils {
                 }
             }
         } else {
-            if(type.isInstance(value)) {
+            if (type.isInstance(value)) {
                 return true;
             }
             if (valueType.isPrimitive() && !type.isPrimitive() && type.equals(getPrimitiveWrapper(valueType))) {

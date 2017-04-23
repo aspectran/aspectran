@@ -78,7 +78,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if(outputStream == null) {
+        if (outputStream == null) {
             throw new UnsupportedOperationException();
         }
         return outputStream;

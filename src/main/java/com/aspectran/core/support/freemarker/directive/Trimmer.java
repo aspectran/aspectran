@@ -100,8 +100,8 @@ public class Trimmer {
 
         if (deprefixes != null && deprefixes.length > 0) {
             int start = 0;
-            for(; start < builder.length(); start++) {
-                if(!Character.isWhitespace(builder.charAt(start))) {
+            for (; start < builder.length(); start++) {
+                if (!Character.isWhitespace(builder.charAt(start))) {
                     break;
                 }
             }
@@ -121,8 +121,8 @@ public class Trimmer {
 
         if (desuffixes != null && desuffixes.length > 0) {
             int len = builder.length();
-            for(; len > 0; len--) {
-                if(!Character.isWhitespace(builder.charAt(len - 1))) {
+            for (; len > 0; len--) {
+                if (!Character.isWhitespace(builder.charAt(len - 1))) {
                     break;
                 }
             }
@@ -144,8 +144,8 @@ public class Trimmer {
         }
 
         int start = 0;
-        for(; start < builder.length(); start++) {
-            if(!Character.isWhitespace(builder.charAt(start))) {
+        for (; start < builder.length(); start++) {
+            if (!Character.isWhitespace(builder.charAt(start))) {
                 break;
             }
         }

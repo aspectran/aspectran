@@ -75,7 +75,7 @@ public class AbstractScope implements Scope {
             BeanRule beanRule = entry.getKey();
             InstantiatedBean instantiatedBean = entry.getValue();
             Object bean = instantiatedBean.getBean();
-            if(bean != null) {
+            if (bean != null) {
                 doDestroy(beanRule, bean);
             }
         }

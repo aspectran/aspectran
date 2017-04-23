@@ -334,7 +334,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             if (noQuotes && !NULL.equals(value)) {
                 writer.write(escape(value, true));
             } else {
-                if(value.startsWith(AponFormat.SPACE) || value.endsWith(AponFormat.SPACE)) {
+                if (value.startsWith(AponFormat.SPACE) || value.endsWith(AponFormat.SPACE)) {
                     writer.write(DOUBLE_QUOTE_CHAR);
                     writer.write(escape(value, false));
                     writer.write(DOUBLE_QUOTE_CHAR);

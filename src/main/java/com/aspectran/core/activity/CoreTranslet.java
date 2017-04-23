@@ -169,9 +169,9 @@ public class CoreTranslet implements Translet {
 
     @Override
     public ActivityDataMap getActivityDataMap(boolean prefill) {
-        if(prefill) {
+        if (prefill) {
             activityDataMap = new ActivityDataMap(activity, true);
-        } else if(activityDataMap == null) {
+        } else if (activityDataMap == null) {
             activityDataMap = new ActivityDataMap(activity, false);
         }
         return activityDataMap;

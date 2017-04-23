@@ -46,7 +46,7 @@ public class ActivityContextReloadingTimer {
     }
 
     private void init() {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("ActivityContextReloadingTimer is initialized");
         }
     }
@@ -54,7 +54,7 @@ public class ActivityContextReloadingTimer {
     public void start(int scanIntervalSeconds) {
         stop();
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Starting ActivityContextReloadingTimer...");
         }
 

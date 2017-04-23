@@ -127,7 +127,7 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void parseRequest() {
         String characterEncoding = resolveRequestCharacterEncoding();
-        if(characterEncoding != null) {
+        if (characterEncoding != null) {
             try {
                 getRequestAdapter().setCharacterEncoding(characterEncoding);
             } catch (UnsupportedEncodingException e) {

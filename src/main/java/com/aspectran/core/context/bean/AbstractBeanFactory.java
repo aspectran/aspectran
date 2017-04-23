@@ -139,7 +139,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
             bean = createBeanInstance(beanRule, args, argTypes);
 
-            if(beanRule.isSingleton()) {
+            if (beanRule.isSingleton()) {
                 beanRule.setInstantiatedBean(new InstantiatedBean(bean));
             }
 
@@ -194,7 +194,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
                     beanRule, e);
         }
 
-        if(beanRule.isSingleton()) {
+        if (beanRule.isSingleton()) {
             beanRule.setInstantiatedBean(new InstantiatedBean(bean));
         }
 
@@ -456,7 +456,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
             try {
                 InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
                 Object bean = instantiatedBean.getBean();
-                if(bean != null) {
+                if (bean != null) {
                     if (beanRule.isDisposableBean()) {
                         ((DisposableBean)bean).destroy();
                     } else if (beanRule.getDestroyMethod() != null) {

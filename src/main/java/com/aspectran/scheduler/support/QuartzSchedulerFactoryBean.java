@@ -87,7 +87,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
      */
     protected Scheduler createScheduler() throws SchedulerException {
         Properties props;
-        if(this.quartzProperties != null) {
+        if (this.quartzProperties != null) {
             props = new Properties(this.quartzProperties);
         } else {
             props = new Properties();
@@ -98,7 +98,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
         }
 
         String schedulerName = props.getProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME);
-        if(schedulerName != null) {
+        if (schedulerName != null) {
             SchedulerRepository repository = SchedulerRepository.getInstance();
             Scheduler existingScheduler = repository.lookup(schedulerName);
             if (existingScheduler != null) {

@@ -161,7 +161,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     } else {
                         bean = instantiatedBean.getBean();
                     }
-                    if(beanRule.isFactoryProductionRequired()) {
+                    if (beanRule.isFactoryProductionRequired()) {
                         bean = getFactoryProducedObject(beanRule, bean);
                     }
                 } finally {

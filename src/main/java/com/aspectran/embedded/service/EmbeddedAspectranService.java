@@ -180,7 +180,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             activity.perform();
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Translet activity was terminated");
             }
         } catch (Exception e) {
@@ -231,12 +231,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             throws AspectranServiceException {
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), sessionAdapter);
-            if(parameterMap != null) {
+            if (parameterMap != null) {
                 ParameterMap parameterMap2 = new ParameterMap(parameterMap.size());
                 parameterMap2.setAll(parameterMap);
                 activity.setParameterMap(parameterMap2);
             }
-            if(attributeMap != null) {
+            if (attributeMap != null) {
                 activity.setAttributeMap(attributeMap);
             }
             activity.adapt();

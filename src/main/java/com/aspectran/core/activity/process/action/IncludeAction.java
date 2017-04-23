@@ -57,7 +57,7 @@ public class IncludeAction extends AbstractAction {
             innerActivity = activity.newActivity();
             innerActivity.prepare(includeActionRule.getTransletName());
 
-            if(includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
+            if (includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
                 ItemEvaluator evaluator = new ItemExpressionParser(activity);
 
                 if (includeActionRule.getParameterItemRuleMap() != null) {

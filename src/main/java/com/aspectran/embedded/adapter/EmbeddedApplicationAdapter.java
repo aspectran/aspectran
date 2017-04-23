@@ -32,7 +32,7 @@ public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
         super(null);
 
         String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-        if(basePath != null) {
+        if (basePath != null) {
             setBasePath(basePath);
         }
     }

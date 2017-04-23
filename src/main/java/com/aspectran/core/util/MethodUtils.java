@@ -572,7 +572,7 @@ public class MethodUtils {
 
     private static Object invokeMethod(Object object, Method method, Class<?>[] methodsParams, Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if(methodsParams != null && methodsParams.length > 0) {
+        if (methodsParams != null && methodsParams.length > 0) {
             Object[] args2 = new Object[methodsParams.length];
             for (int i = 0; i < methodsParams.length; i++) {
                 args2[i] = args[i];
@@ -856,7 +856,7 @@ public class MethodUtils {
                 if (methodParamSize == paramSize) {
                     boolean paramMatch = true;
                     for (int n = 0; n < methodParamSize; n++) {
-                        if(args != null) {
+                        if (args != null) {
                             if (!ClassUtils.isAssignableValue(methodsParams[n], args[n])) {
                                 paramMatch = false;
                                 break;
@@ -869,7 +869,7 @@ public class MethodUtils {
                         }
                     }
                     if (paramMatch) {
-                        if(args != null) {
+                        if (args != null) {
                             myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), args);
                         } else {
                             myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
@@ -980,7 +980,7 @@ public class MethodUtils {
 
         private boolean exact;
 
-        private int hashCode;
+        private volatile int hashCode;
 
         /**
          * The sole constructor.
@@ -992,36 +992,23 @@ public class MethodUtils {
          */
         private MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {
             if (cls == null) {
-                throw new IllegalArgumentException("Class cannot be null");
+                throw new IllegalArgumentException("Argument 'cls' must not be null");
             }
             if (methodName == null) {
-                throw new IllegalArgumentException("Method Name cannot be null");
+                throw new IllegalArgumentException("Argument 'methodName' must not be null");
             }
-            if (paramTypes == null) {
-                paramTypes = EMPTY_CLASS_PARAMETERS;
-            }
-
             this.cls = cls;
             this.methodName = methodName;
-            this.paramTypes = paramTypes;
+            this.paramTypes = (paramTypes != null ? paramTypes : EMPTY_CLASS_PARAMETERS);
             this.exact = exact;
-
-            this.hashCode = methodName.length();
         }
 
-        /**
-         * Checks for equality.
-         * @param obj object to be tested for equality
-         * @return true, if the object describes the same Method
-         */
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof MethodDescriptor)) {
-                return false;
+            if (this == obj) {
+                return true;
             }
-
             MethodDescriptor md = (MethodDescriptor)obj;
-
             return (
                     exact == md.exact &&
                     methodName.equals(md.methodName) &&
@@ -1030,16 +1017,18 @@ public class MethodUtils {
                 );
         }
 
-        /**
-         * Returns the string length of method name. I.e. if the
-         * hashcodes are different, the objects are different. If the
-         * hashcodes are the same, need to use the equals method to
-         * determine equality.
-         * @return the string length of method name
-         */
         @Override
         public int hashCode() {
-            return hashCode;
+            final int prime = 31;
+            int result = hashCode;
+            if (result == 0) {
+                result = prime * result + cls.hashCode();
+                result = prime * result + methodName.hashCode();
+                result = prime * result + Arrays.hashCode(paramTypes);
+                result = prime * result + (exact ? 1 : 0);
+                hashCode = result;
+            }
+            return result;
         }
     }
 

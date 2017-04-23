@@ -115,13 +115,13 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     @Override
     public void process(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
         try {
-            if(activity == null) {
+            if (activity == null) {
                 activity = context.getCurrentActivity();
             }
 
-            if(writer == null) {
+            if (writer == null) {
                 writer = (activity.getResponseAdapter() != null ? activity.getResponseAdapter().getWriter() : null);
-                if(writer == null) {
+                if (writer == null) {
                     throw new IllegalStateException("No such writer to transfer the output string");
                 }
             }
@@ -137,8 +137,8 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     throw new IllegalArgumentException("No template engine bean type for '" + templateRule.getEngine() + "'");
                 }
 
-                if(model == null) {
-                    if(activity.getTranslet() != null) {
+                if (model == null) {
+                    if (activity.getTranslet() != null) {
                         model = activity.getTranslet().getActivityDataMap();
                     } else {
                         model = new ActivityDataMap(activity);
@@ -150,7 +150,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                     Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
                     engine.process(templateName, model, writer, locale);
                 } else {
-                    String templateSource = templateRule.getTemplateSource(activity.getApplicationAdapter());
+                    String templateSource = templateRule.getTemplateSource(context.getApplicationAdapter());
                     if (templateSource != null) {
                         String templateName = templateRule.getId();
                         if (templateName == null) {

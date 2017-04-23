@@ -58,7 +58,7 @@ public class ScheduleRuleRegistry {
     public void addScheduleRule(ScheduleRule scheduleRule) {
         if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-            if(defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
+            if (defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
                 scheduleRule.setSchedulerBeanId(defaultSettings.getDefaultSchedulerBean());
             }
         }

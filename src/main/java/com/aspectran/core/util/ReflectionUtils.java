@@ -185,7 +185,7 @@ public class ReflectionUtils {
      * @return the cost of transforming an object
      */
     public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
-        if(srcClass == null){
+        if (srcClass == null){
             return Float.MAX_VALUE;
         }
 
