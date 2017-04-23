@@ -359,14 +359,12 @@ public class Token implements BeanReferenceInspectable, Replicable {
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object token) {
-        return (token instanceof Token && deepEquals((Token)token));
+        return this == token || (token instanceof Token && deepEquals((Token)token));
     }
 
     private boolean deepEquals(Token token) {
-        if (this == token) {
-            return true;
-        }
         if (type != token.getType()) {
             return false;
         }
@@ -399,6 +397,18 @@ public class Token implements BeanReferenceInspectable, Replicable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 11;
+        result = prime * result + type.hashCode();
+        result = prime * result + (name != null ? name.hashCode() : 0);
+        result = prime * result + (value != null ? value.hashCode() : 0);
+        result = prime * result + (getterName != null ? getterName.hashCode() : 0);
+        result = prime * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        return result;
     }
 
     @Override

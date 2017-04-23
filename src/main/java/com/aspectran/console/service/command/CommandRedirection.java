@@ -44,10 +44,13 @@ public class CommandRedirection {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof CommandRedirection) {
-            CommandRedirection r = (CommandRedirection)o;
-            if(r.getOperand().equals(getOperand()) &&
-                    r.getOperator().equals(getOperator())) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof CommandRedirection) {
+            CommandRedirection cr = (CommandRedirection)o;
+            if (cr.getOperand().equals(operand) &&
+                    cr.getOperator().equals(operator)) {
                 return true;
             }
         }
@@ -56,7 +59,11 @@ public class CommandRedirection {
 
     @Override
     public int hashCode() {
-        return 7129415;
+        final int prime = 31;
+        int result = 17;
+        result = prime * result + operator.hashCode();
+        result = prime * result + (operand != null ? operand.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -68,7 +75,7 @@ public class CommandRedirection {
     }
 
     /**
-     * Command redirection operators
+     * Command redirection operators.
      */
     public enum Operator {
 
