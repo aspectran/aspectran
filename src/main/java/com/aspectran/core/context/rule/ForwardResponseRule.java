@@ -168,7 +168,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
 
     public static ForwardResponseRule newInstance(String transletName) {
         if (transletName == null) {
-            throw new IllegalArgumentException("'Translet name must not be null");
+            throw new IllegalArgumentException("Argument 'transletName' must not be null");
         }
 
         ForwardResponseRule frr = new ForwardResponseRule();
