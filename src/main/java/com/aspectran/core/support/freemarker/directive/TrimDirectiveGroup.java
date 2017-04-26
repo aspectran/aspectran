@@ -41,7 +41,7 @@ public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirectiv
         if (directives != null) {
             directives.put(trimDirective.getDirectiveName(), trimDirective);
         } else {
-            directives = new HashMap<String, TrimDirective>();
+            directives = new HashMap<>();
             directives.put(trimDirective.getDirectiveName(), trimDirective);
             put(trimDirective.getGroupName(), directives);
         }
