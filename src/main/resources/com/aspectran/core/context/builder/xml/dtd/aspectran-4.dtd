@@ -18,7 +18,7 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
+  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | append*)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -44,6 +44,15 @@
 <!ATTLIST typeAlias
   alias   CDATA #REQUIRED
   type    CDATA #REQUIRED
+>
+
+<!ELEMENT append EMPTY>
+<!ATTLIST append
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  format   (xml | apon) #IMPLIED
+  profile  CDATA #IMPLIED
 >
 
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
@@ -226,21 +235,10 @@
   defaultResponse       (true | false) #IMPLIED
 >
 
-<!ELEMENT url (#PCDATA)>
-
 <!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #IMPLIED
->
-
-<!ELEMENT import EMPTY>
-<!ATTLIST import
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  format   (xml | apon) #IMPLIED
-  profile  CDATA #IMPLIED
 >
 
 <!ELEMENT parameters (#PCDATA | item)*>

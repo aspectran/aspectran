@@ -27,9 +27,9 @@ import java.util.Set;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.parser.apon.params.CallParameters;
-import com.aspectran.core.context.parser.apon.params.ItemHolderParameters;
-import com.aspectran.core.context.parser.apon.params.ItemParameters;
+import com.aspectran.core.context.rule.params.CallParameters;
+import com.aspectran.core.context.rule.params.ItemHolderParameters;
+import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -727,14 +727,14 @@ public class ItemRule {
      * @param itemParametersList the item parameters list to convert
      * @return the item rule map
      */
-    public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
+    public static ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) {
         if (itemParametersList == null || itemParametersList.isEmpty()) {
             return null;
         }
 
         ItemRuleMap itemRuleMap = new ItemRuleMap();
 
-        for (Parameters parameters : itemParametersList) {
+        for (ItemParameters parameters : itemParametersList) {
             ItemRule itemRule = toItemRule(parameters);
 
             // auto-naming if did not specify the name of the item.
@@ -780,7 +780,7 @@ public class ItemRule {
      * @param itemParameters the item parameters
      * @return an {@code ItemRule}
      */
-    public static ItemRule toItemRule(Parameters itemParameters) {
+    public static ItemRule toItemRule(ItemParameters itemParameters) {
         String type = itemParameters.getString(ItemParameters.type);
         String name = itemParameters.getString(ItemParameters.name);
         String valueType = itemParameters.getString(ItemParameters.valueType);
@@ -838,7 +838,7 @@ public class ItemRule {
      * @param text the {@code String} to convert
      * @return the item parameters list
      */
-    public static List<Parameters> toItemParametersList(String text) {
+    public static List<ItemParameters> toItemParametersList(String text) {
         Parameters holder = new ItemHolderParameters(text);
         return holder.getParametersList(ItemHolderParameters.item);
     }
@@ -851,8 +851,8 @@ public class ItemRule {
      */
     public static ItemRuleMap toItemRuleMap(String text) {
         Parameters holder = new ItemHolderParameters(text);
-        List<Parameters> parametersList = holder.getParametersList(ItemHolderParameters.item);
-        return toItemRuleMap(parametersList);
+        List<ItemParameters> itemParametersList = holder.getParametersList(ItemHolderParameters.item);
+        return toItemRuleMap(itemParametersList);
     }
 
 }

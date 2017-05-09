@@ -30,7 +30,7 @@ import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
-import com.aspectran.core.context.parser.ActivityContextParserException;
+import com.aspectran.core.context.rule.parser.ActivityContextParserException;
 import com.aspectran.core.context.template.TemplateProcessor;
 
 import test.call.NumericBean;

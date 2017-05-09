@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.parser.assistant.AssistantLocal;
-import com.aspectran.core.context.parser.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.assistant.AssistantLocal;
+import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

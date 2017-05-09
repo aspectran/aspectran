@@ -25,8 +25,8 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 /**
  * Converts a ProcessResult object to a APON object.

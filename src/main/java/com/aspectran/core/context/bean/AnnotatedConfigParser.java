@@ -44,7 +44,6 @@ import com.aspectran.core.context.bean.annotation.Value;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.parser.assistant.ContextParserAssistant;
 import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -54,6 +53,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -73,7 +73,7 @@ public class AnnotatedConfigParser {
 
     private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
-    private final ContextParserAssistant assistant;
+    private final ContextRuleAssistant assistant;
 
     private final BeanRuleRegistry beanRuleRegistry;
 
@@ -87,7 +87,7 @@ public class AnnotatedConfigParser {
 
     private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
-    public AnnotatedConfigParser(ContextParserAssistant assistant, AnnotatedConfigRelater relater) {
+    public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater relater) {
         this.assistant = assistant;
         this.beanRuleRegistry = assistant.getBeanRuleRegistry();
         this.relater = relater;

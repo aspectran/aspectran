@@ -336,7 +336,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     public void addResponseRule(ResponseRule responseRule) {
         if (responseRuleList == null) {
-            responseRuleList = new ArrayList<ResponseRule>();
+            responseRuleList = new ArrayList<>();
         }
         responseRuleList.add(responseRule);
         implicitResponse = false;

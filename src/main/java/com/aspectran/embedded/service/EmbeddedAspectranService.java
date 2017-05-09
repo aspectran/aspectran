@@ -278,9 +278,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      */
     public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+        Parameters contextParameters = aspectranConfig.getAspectranContextConfig();
         if (contextParameters == null) {
-            contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+            contextParameters = aspectranConfig.newAspectranContextConfig();
         }
 
         String rootContext = contextParameters.getString(AspectranContextConfig.root);

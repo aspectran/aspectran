@@ -28,9 +28,9 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.parser.assistant.ContextParserAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
@@ -251,7 +251,7 @@ public class BeanRuleRegistry {
         configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
-    public void postProcess(ContextParserAssistant assistant) {
+    public void postProcess(ContextRuleAssistant assistant) {
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
                 if (beanRule.getId() != null) {
@@ -289,7 +289,7 @@ public class BeanRuleRegistry {
         parseAnnotatedConfig(assistant);
     }
 
-    private void parseAnnotatedConfig(ContextParserAssistant assistant) {
+    private void parseAnnotatedConfig(ContextRuleAssistant assistant) {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relay(Class<?> targetBeanClass, BeanRule beanRule) {

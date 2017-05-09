@@ -178,6 +178,6 @@
         </transform>
     </translet>
 
-    <import resource="config/console/freemarker-translets.xml"/>
+    <append resource="config/console/freemarker-translets.xml"/>
 
 </aspectran>

@@ -17,6 +17,7 @@ package com.aspectran.core.support.freemarker;
 
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
+
 import freemarker.template.Configuration;
 
 /**

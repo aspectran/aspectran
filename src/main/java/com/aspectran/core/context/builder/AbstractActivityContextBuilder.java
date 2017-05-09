@@ -25,7 +25,7 @@ import com.aspectran.core.context.builder.config.AspectranContextProfilesConfig;
 import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
-import com.aspectran.core.context.parser.apon.params.AspectranParameters;
+import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;

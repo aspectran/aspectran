@@ -293,11 +293,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
         }
 
-        Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
-        if (contextParameters == null) {
-            contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
-        }
-
+        Parameters contextParameters = aspectranConfig.touchAspectranContextConfig();
         String rootContext = contextParameters.getString(AspectranContextConfig.root);
         if (rootContext == null || rootContext.length() == 0) {
             contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
@@ -306,10 +302,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
         ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
         consoleAspectranService.initialize(aspectranConfig);
 
-        Parameters consoleConfig = aspectranConfig.getParameters(AspectranConfig.console);
-        if (consoleConfig != null) {
-            String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
-            String commandPrompt = consoleConfig.getString(AspectranConsoleConfig.prompt);
+        Parameters consoleParameters = aspectranConfig.getAspectranConsoleConfig();
+        if (consoleParameters != null) {
+            String consoleMode = consoleParameters.getString(AspectranConsoleConfig.mode);
+            String commandPrompt = consoleParameters.getString(AspectranConsoleConfig.prompt);
             ConsoleInout consoleInout;
             if ("jline".equals(consoleMode)) {
                 consoleInout = new Jline3ConsoleInout();
@@ -320,9 +316,9 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 consoleInout.setCommandPrompt(commandPrompt);
             }
             consoleAspectranService.setConsoleInout(consoleInout);
-            boolean showDescription = BooleanUtils.toBoolean(consoleConfig.getBoolean(AspectranConsoleConfig.showDescription));
+            boolean showDescription = BooleanUtils.toBoolean(consoleParameters.getBoolean(AspectranConsoleConfig.showDescription));
             consoleAspectranService.setShowDescription(showDescription);
-            consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
+            consoleAspectranService.setExposals(consoleParameters.getStringArray(AspectranConsoleConfig.exposals));
         } else {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
         }

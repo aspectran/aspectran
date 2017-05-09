@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder.config;
 
+import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
@@ -40,7 +41,7 @@ public class AspectranContextConfig extends AbstractParameters {
         profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
         hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
-        parameters = new ParameterDefinition("parameters", ParameterValueType.PARAMETERS);
+        parameters = new ParameterDefinition("parameters", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
             base,

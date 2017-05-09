@@ -50,6 +50,70 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterDefinitions, text);
     }
 
+    public AspectranContextConfig newAspectranContextConfig() {
+        return newParameters(context);
+    }
+
+    public AspectranContextConfig touchAspectranContextConfig() {
+        return touchParameters(context);
+    }
+
+    public AspectranContextConfig getAspectranContextConfig() {
+        return getParameters(context);
+    }
+
+    public void putAspectranContextConfig(AspectranContextConfig aspectranContextConfig) {
+        putValue(context, aspectranContextConfig);
+    }
+
+    public AspectranSchedulerConfig newAspectranSchedulerConfig() {
+        return newParameters(scheduler);
+    }
+
+    public AspectranSchedulerConfig touchAspectranSchedulerConfig() {
+        return touchParameters(scheduler);
+    }
+
+    public AspectranSchedulerConfig getAspectranSchedulerConfig() {
+        return getParameters(scheduler);
+    }
+
+    public void putAspectranSchedulerConfig(AspectranSchedulerConfig aspectranSchedulerConfig) {
+        putValue(scheduler, aspectranSchedulerConfig);
+    }
+
+    public AspectranConsoleConfig newAspectranConsoleConfig() {
+        return newParameters(console);
+    }
+
+    public AspectranConsoleConfig touchAspectranConsoleConfig() {
+        return touchParameters(console);
+    }
+
+    public AspectranConsoleConfig getAspectranConsoleConfig() {
+        return getParameters(console);
+    }
+
+    public void putAspectranConsoleConfig(AspectranConsoleConfig aspectranConsoleConfig) {
+        putValue(console, aspectranConsoleConfig);
+    }
+
+    public AspectranConsoleConfig newAspectranWebConfig() {
+        return newParameters(web);
+    }
+
+    public AspectranConsoleConfig touchAspectranWebConfig() {
+        return touchParameters(web);
+    }
+
+    public AspectranWebConfig getAspectranWebConfig() {
+        return getParameters(web);
+    }
+
+    public void putAspectranWebConfig(AspectranWebConfig aspectranWebConfig) {
+        putValue(web, aspectranWebConfig);
+    }
+
     public void updateRootContext(String rootContext) {
         Parameters contextParameters = touchParameters(context);
         contextParameters.putValue(AspectranContextConfig.root, rootContext);

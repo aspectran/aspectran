@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.parser.apon.params.JoinpointParameters;
-import com.aspectran.core.context.parser.apon.params.PointcutParameters;
-import com.aspectran.core.context.parser.apon.params.PointcutTargetParameters;
+import com.aspectran.core.context.rule.params.JoinpointParameters;
+import com.aspectran.core.context.rule.params.PointcutParameters;
+import com.aspectran.core.context.rule.params.PointcutTargetParameters;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
@@ -211,10 +211,10 @@ public class JoinpointRule {
         PointcutRule pointcutRule = null;
 
         if (pointcutParameters != null) {
-            List<String> plusPatternStringList = pointcutParameters.getStringList(PointcutParameters.pluses);
-            List<String> minusPatternStringList = pointcutParameters.getStringList(PointcutParameters.minuses);
-            List<Parameters> includeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.includes);
-            List<Parameters> execludeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.execludes);
+            List<String> plusPatternStringList = pointcutParameters.getStringList(PointcutParameters.plus);
+            List<String> minusPatternStringList = pointcutParameters.getStringList(PointcutParameters.minus);
+            List<Parameters> includeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.include);
+            List<Parameters> execludeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.execlude);
 
             int patternStringCount = (plusPatternStringList != null ? plusPatternStringList.size() : 0);
             int targetParametersCount = (includeTargetParametersList != null ? includeTargetParametersList.size() : 0);

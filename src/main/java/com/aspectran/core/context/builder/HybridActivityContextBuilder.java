@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.parser.ActivityContextParser;
-import com.aspectran.core.context.parser.HybridActivityContextParser;
-import com.aspectran.core.context.parser.apon.params.AspectranParameters;
+import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.parser.ActivityContextParser;
+import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.util.ShutdownHooks;
 
@@ -52,7 +52,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public synchronized ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException {
+    public ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
             setAspectranParameters(aspectranParameters);
             return doBuild();
@@ -60,7 +60,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public synchronized ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+    public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
             setRootContext(rootContext);
             return doBuild();
@@ -68,7 +68,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public synchronized ActivityContext build() throws ActivityContextBuilderException {
+    public ActivityContext build() throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
             return doBuild();
         }
@@ -93,9 +93,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
-            ActivityContextParser parser = new HybridActivityContextParser(getApplicationAdapter(), getEncoding());
+            ActivityContextParser parser = new HybridActivityContextParser(getApplicationAdapter());
             parser.setActiveProfiles(getActiveProfiles());
             parser.setDefaultProfiles(getDefaultProfiles());
+            parser.setEncoding(getEncoding());
             parser.setHybridLoad(isHybridLoad());
 
             ActivityContext activityContext;
@@ -125,7 +126,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public synchronized void destroy() {
+    public void destroy() {
         synchronized (this.buildDestroyMonitor) {
             doDestroy();
             removeDestroyTask();

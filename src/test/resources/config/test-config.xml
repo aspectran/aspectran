@@ -201,6 +201,6 @@
         </transform>
     </translet>
 
-    <import file="/config/scheduler-config.xml"/>
+    <append file="/config/scheduler-config.xml"/>
 
 </aspectran>

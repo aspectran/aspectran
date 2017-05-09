@@ -82,7 +82,7 @@ public abstract class AbstractAspectranService implements AspectranService {
     @Override
     public AspectranClassLoader getAspectranClassLoader() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+            throw new UnsupportedOperationException("ActivityContextLoader is not initialized; Call initialize() method first");
         }
         return activityContextBuilder.getAspectranClassLoader();
     }
@@ -95,7 +95,7 @@ public abstract class AbstractAspectranService implements AspectranService {
     @Override
     public boolean isHardReload() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+            throw new UnsupportedOperationException("ActivityContextLoader is not initialized; Call initialize() method first");
         }
         return activityContextBuilder.isHardReload();
     }
@@ -109,9 +109,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 
         try {
             this.aspectranConfig = aspectranConfig;
-            this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
+            this.aspectranSchedulerConfig = aspectranConfig.getAspectranSchedulerConfig();
 
-            AspectranContextConfig aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
+            AspectranContextConfig aspectranContextConfig = aspectranConfig.getAspectranContextConfig();
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.initialize(aspectranContextConfig);
@@ -131,7 +131,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     protected synchronized void loadActivityContext() throws AspectranServiceException {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize() method");
+            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
         }
 
         if (activityContext != null) {
@@ -147,7 +147,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     protected synchronized void destroyActivityContext() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state. First, call the initialize() method");
+            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
         }
 
         activityContextBuilder.destroy();
@@ -172,7 +172,7 @@ public abstract class AbstractAspectranService implements AspectranService {
             }
 
             if (startDelaySeconds == -1) {
-                log.info("Scheduler option 'startDelaySeconds' not specified. So defaulting to 5 seconds");
+                log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
                 startDelaySeconds = 5;
             }
 

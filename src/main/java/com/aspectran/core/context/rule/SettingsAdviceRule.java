@@ -22,8 +22,8 @@ import java.util.Set;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 /**
  * The Class SettingsAdviceRule.

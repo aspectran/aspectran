@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
-import com.aspectran.core.context.parser.apon.params.AspectranParameters;
+import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.AspectranServiceController;
 
 /**
