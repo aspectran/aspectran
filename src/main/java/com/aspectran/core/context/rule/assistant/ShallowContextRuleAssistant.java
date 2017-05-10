@@ -61,7 +61,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
         transletRules = new ArrayList<>();
         templateRules = new ArrayList<>();
 
-        setRuleAppendHandler(new ShallowRuleAppendHandler());
+        setRuleAppendHandler(new ShallowRuleAppendHandler(this));
     }
 
     @Override

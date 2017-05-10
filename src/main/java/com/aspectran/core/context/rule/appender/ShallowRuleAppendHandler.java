@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.appender;
 
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+
 /**
  * The Class ShallowRuleAppendHandler.
  * 
@@ -22,8 +24,8 @@ package com.aspectran.core.context.rule.appender;
  */
 public class ShallowRuleAppendHandler extends AbstractAppendHandler {
 
-    public ShallowRuleAppendHandler() {
-        super(null);
+    public ShallowRuleAppendHandler(ContextRuleAssistant assistant) {
+        super(assistant);
     }
 
     @Override
