@@ -191,7 +191,7 @@ public class ParameterValue implements Parameter {
 
     private synchronized void addValue(Object value) {
         if (list == null) {
-            list = new ArrayList<Object>();
+            list = new ArrayList<>();
             assigned = true;
         }
         list.add(value);
@@ -205,7 +205,7 @@ public class ParameterValue implements Parameter {
     @Override
     public List<?> getValueList() {
         if (!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
-            List<Object> list = new ArrayList<Object>();
+            List<Object> list = new ArrayList<>();
             list.add(value);
             return list;
         }
@@ -250,7 +250,7 @@ public class ParameterValue implements Parameter {
         if (parameterValueType == ParameterValueType.STRING) {
             return (List<String>)getValueList();
         }
-        List<String> list2 = new ArrayList<String>();
+        List<String> list2 = new ArrayList<>();
         for (Object o : list) {
             list2.add(o.toString());
         }

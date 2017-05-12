@@ -100,12 +100,10 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
     @Override
     public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>(itemRuleMap.size());
-
         for (ItemRule itemRule : itemRuleMap.values()) {
             String[] values = evaluateAsStringArray(itemRule);
             valueMap.put(itemRule.getName(), values);
         }
-
         return valueMap;
     }
 
@@ -120,9 +118,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             Object value = evaluate(name, tokens, valueType);
             if (value != null) {
                 if (value instanceof String[]) {
-                    return (String[]) value;
+                    return (String[])value;
                 } else {
-                    return (new String[] {value.toString()});
+                    return new String[] { value.toString() };
                 }
             }
         } else if (itemType == ItemType.ARRAY) {
@@ -194,7 +192,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         List<Object> valueList = new ArrayList<>(tokensList.size());
-
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
             if (value != null && valueType != null) {
@@ -202,7 +199,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             }
             valueList.add(value);
         }
-
         return valueList;
     }
 
@@ -212,7 +208,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         Set<Object> valueSet = new HashSet<>(tokensList.size());
-
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
             if (value != null && valueType != null) {
@@ -220,7 +215,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             }
             valueSet.add(value);
         }
-
         return valueSet;
     }
 
@@ -239,7 +233,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         Map<String, Object> valueMap = new LinkedHashMap<>();
-
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = evaluate(entry.getKey(), entry.getValue());
             if (value != null && valueType != null) {
@@ -247,7 +240,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             }
             valueMap.put(entry.getKey(), value);
         }
-
         return valueMap;
     }
 
@@ -266,7 +258,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         Properties prop = new Properties();
-
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = evaluate(entry.getKey(), entry.getValue());
             if (value != null && valueType != null) {
@@ -276,7 +267,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
                 prop.put(entry.getKey(), value);
             }
         }
-
         return prop;
     }
 
@@ -303,7 +293,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         List<Object> valueList = new ArrayList<>(values.length);
-
         for (Object value : values) {
             if (value != null && valueType != null) {
                 valueList.add(valuelize(value, valueType));
@@ -311,7 +300,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
                 valueList.add(value);
             }
         }
-
         return valueList;
     }
 
@@ -322,7 +310,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         Set<Object> valueSet = new LinkedHashSet<>(values.length);
-
         for (Object value : values) {
             if (value != null && valueType != null) {
                 valueSet.add(valuelize(value, valueType));
@@ -330,7 +317,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
                 valueSet.add(value);
             }
         }
-
         return valueSet;
     }
 

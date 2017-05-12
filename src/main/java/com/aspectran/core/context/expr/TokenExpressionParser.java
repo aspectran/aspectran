@@ -60,7 +60,6 @@ public class TokenExpressionParser implements TokenEvaluator {
     public Object evaluate(Token token) {
         TokenType tokenType = token.getType();
         Object value = null;
-
         if (tokenType == TokenType.TEXT) {
             value = token.getDefaultValue();
         } else if (tokenType == TokenType.BEAN) {
@@ -74,7 +73,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         } else if (tokenType == TokenType.PROPERTY) {
             value = getProperty(token);
         }
-
         return value;
     }
 
@@ -86,14 +84,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 
         if (tokens.length > 1) {
             StringBuilder sb = new StringBuilder();
-
             for (Token t : tokens) {
                 Object value = evaluate(t);
                 if (value != null) {
                     sb.append(value.toString());
                 }
             }
-
             return sb.toString();
         } else {
             return evaluate(tokens[0]);
@@ -112,7 +108,6 @@ public class TokenExpressionParser implements TokenEvaluator {
                 writer.write(value.toString());
             }
         }
-
         writer.flush();
     }
 
@@ -151,12 +146,10 @@ public class TokenExpressionParser implements TokenEvaluator {
         }
 
         List<Object> valueList = new ArrayList<>(tokensList.size());
-
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
             valueList.add(value);
         }
-
         return valueList;
     }
 
@@ -167,12 +160,10 @@ public class TokenExpressionParser implements TokenEvaluator {
         }
 
         Set<Object> valueSet = new HashSet<>(tokensSet.size());
-
         for (Token[] tokens : tokensSet) {
             Object value = evaluate(parameterName, tokens);
             valueSet.add(value);
         }
-
         return valueSet;
     }
 
@@ -183,19 +174,16 @@ public class TokenExpressionParser implements TokenEvaluator {
             if (value == null) {
                 return null;
             }
-
             Map<String, Object> valueMap = new LinkedHashMap<>();
             valueMap.put(parameterName, value);
             return valueMap;
         }
 
         Map<String, Object> valueMap = new LinkedHashMap<>();
-
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = evaluate(entry.getKey(), entry.getValue());
             valueMap.put(entry.getKey(), value);
         }
-
         return valueMap;
     }
 
@@ -206,19 +194,16 @@ public class TokenExpressionParser implements TokenEvaluator {
             if (value == null) {
                 return null;
             }
-
             Properties prop = new Properties();
             prop.put(parameterName, value);
             return prop;
         }
 
         Properties prop = new Properties();
-
         for (Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
             Object value = evaluate(entry.getKey().toString(), (Token[])entry.getValue());
             prop.put(entry.getKey(), value);
         }
-
         return prop;
     }
 
@@ -348,7 +333,6 @@ public class TokenExpressionParser implements TokenEvaluator {
      */
     protected Object getAttribute(Token token) {
         Object object = null;
-
         if (activity.getProcessResult() != null) {
             object = activity.getProcessResult().getResultValue(token.getName());
         }
@@ -358,7 +342,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (object != null && token.getGetterName() != null) {
             object = getBeanProperty(object, token.getGetterName());
         }
-
         return (object != null ? object : token.getDefaultValue());
     }
 
@@ -370,7 +353,6 @@ public class TokenExpressionParser implements TokenEvaluator {
      */
     protected Object getBean(Token token) {
         Object value;
-
         if (token.getAlternativeValue() != null) {
             value = activity.getBean((Class<?>)token.getAlternativeValue());
         } else {
@@ -382,7 +364,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (value == null) {
             value = token.getDefaultValue();
         }
-
         return value;
     }
 
@@ -395,14 +376,12 @@ public class TokenExpressionParser implements TokenEvaluator {
      */
     protected Object getBeanProperty(final Object object, String propertyName) {
         Object value;
-
         try {
             value = BeanUtils.getObject(object, propertyName);
         } catch (InvocationTargetException e) {
             // ignore
             value = null;
         }
-
         return value;
     }
 
@@ -420,13 +399,11 @@ public class TokenExpressionParser implements TokenEvaluator {
     protected Object getProperty(Token token) {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             Properties props;
-
             try {
                 props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
             } catch (IOException e) {
                 throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
             }
-
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
         } else {

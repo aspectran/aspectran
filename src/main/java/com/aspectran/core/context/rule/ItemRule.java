@@ -801,7 +801,7 @@ public class ItemRule {
 
             Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
             if (t != null) {
-                Token[] tokens = new Token[] {t};
+                Token[] tokens = new Token[] { t };
                 ItemRule.addValue(itemRule, null, tokens);
             }
         } else {
