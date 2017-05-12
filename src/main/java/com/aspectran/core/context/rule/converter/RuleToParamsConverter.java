@@ -89,6 +89,7 @@ import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -758,25 +759,38 @@ public class RuleToParamsConverter {
         itemParameters.putValueNonNull(ItemParameters.security, itemRule.getSecurity());
 
         if (itemRule.getType() == ItemType.SINGLE) {
-            itemParameters.putValueNonNull(ItemParameters.value, itemRule.getValue());
+            Object o = determineItemValue(itemRule.getValueType(), itemRule.getValue());
+            itemParameters.putValueNonNull(ItemParameters.value, o);
         } else if (itemRule.isListableType()) {
             List<String> valueList = itemRule.getValueList();
             if (valueList != null) {
                 for (String value : valueList) {
-                    itemParameters.putValue(ItemParameters.value, value);
+                    Object o = determineItemValue(itemRule.getValueType(), value);
+                    itemParameters.putValue(ItemParameters.value, o);
                 }
             }
         } else if (itemRule.isMappableType()) {
             Map<String, String> valueMap = itemRule.getValueMap();
             if (valueMap != null) {
-                Parameters para = itemParameters.newParameters(ItemParameters.value);
+                Parameters p = itemParameters.newParameters(ItemParameters.value);
                 for (Map.Entry<String, String> entry : valueMap.entrySet()) {
-                    para.putValue(entry.getKey(), entry.getValue());
+                    Object o = determineItemValue(itemRule.getValueType(), entry.getValue());
+                    p.putValue(entry.getKey(), o);
                 }
             }
         }
 
         return itemParameters;
+    }
+
+    private static Object determineItemValue(ItemValueType valueType, String value) {
+        if (value == null) {
+            return null;
+        } else if (valueType == ItemValueType.PARAMETERS) {
+            return new VariableParameters(value);
+        } else {
+            return value;
+        }
     }
 
 }

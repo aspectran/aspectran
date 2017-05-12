@@ -68,7 +68,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * The default indentation string is a tab character.
      *
      * @param writer the character-output stream
-     * @param prettyPrint enables or disables pretty-printing.
+     * @param prettyPrint enables or disables pretty-printing
      */
     public AponWriter(Writer writer, boolean prettyPrint) {
         this(writer, prettyPrint, AponFormat.INDENT_STRING);
@@ -81,7 +81,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      *
      * @param writer the character-output stream
      * @param prettyPrint enables or disables pretty-printing.
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+     * @param indentString the string that should be used for indentation when pretty-printing is enabled
      */
     public AponWriter(Writer writer, boolean prettyPrint, String indentString) {
         this.writer = writer;
@@ -150,7 +150,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Write a Parameters object to the character-output stream.
      *
      * @param parameters the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException an I/O error occurs
      */
     public void write(Parameters parameters) throws IOException {
         if (parameters != null) {
@@ -167,7 +167,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Write a Parameter object to the character-output stream.
      *
      * @param parameter the parameter object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException an I/O error occurs
      */
     public void write(Parameter parameter) throws IOException {
         if (parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
@@ -201,8 +201,53 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     closeCurlyBracket();
                 }
             }
-        } else if (parameter.getParameterValueType() == ParameterValueType.STRING
-                || parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
+        } else if (parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
+            if (parameter.isArray()) {
+                List<?> list = parameter.getValueList();
+                if (list != null) {
+                    if (parameter.isBracketed()) {
+                        writeName(parameter);
+                        openSquareBracket();
+                        for (Object value : list) {
+                            indent();
+                            if (value instanceof Parameters) {
+                                write((Parameters)value);
+                            } else if (value != null) {
+                                writeString(value.toString());
+                            } else {
+                                writeNull();
+                            }
+                        }
+                        closeSquareBracket();
+                    } else {
+                        for (Object value : list) {
+                            writeName(parameter);
+                            if (value instanceof Parameters) {
+                                write((Parameters)value);
+                            } else if (value != null) {
+                                writeString(value.toString());
+                            } else {
+                                writeNull();
+                            }
+                        }
+                    }
+                }
+            } else {
+                Object value = parameter.getValue();
+                if (nullWrite || value != null) {
+                    writeName(parameter);
+                    openCurlyBracket();
+                    if (value instanceof Parameters) {
+                        write((Parameters)value);
+                    } else if (value != null) {
+                        writeString(value.toString());
+                    } else {
+                        writeNull();
+                    }
+                    closeCurlyBracket();
+                }
+            }
+        } else if (parameter.getParameterValueType() == ParameterValueType.STRING) {
             if (parameter.isArray()) {
                 List<String> list = parameter.getValueAsStringList();
                 if (list != null) {
@@ -294,8 +339,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Writes a comment to the character-output stream.
      *
-     * @param describe the comment to write to a character-output stream.
-     * @throws IOException an I/O error occurs.
+     * @param describe the comment to write to a character-output stream
+     * @throws IOException an I/O error occurs
      */
     public void comment(String describe) throws IOException {
         if (describe.indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
@@ -474,7 +519,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * The default indentation string is a tab character.
      *
      * @param parameters the parameters object
-     * @param prettyPrint enables or disables pretty-printing.
+     * @param prettyPrint enables or disables pretty-printing
      * @return the APON formatted string
      */
     public static String stringify(Parameters parameters, boolean prettyPrint) {
@@ -491,8 +536,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * The new-lines character is always present.
      *
      * @param parameters the parameters object
-     * @param prettyPrint enables or disables pretty-printing.
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+     * @param prettyPrint enables or disables pretty-printing
+     * @param indentString the string that should be used for indentation when pretty-printing is enabled
      * @return the APON formatted string
      */
     public static String stringify(Parameters parameters, boolean prettyPrint, String indentString) {
