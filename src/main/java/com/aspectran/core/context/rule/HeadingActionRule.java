@@ -70,11 +70,24 @@ public class HeadingActionRule {
     }
 
     /**
+     * Adds a new header rule with the specified name and returns it.
+     *
+     * @param headerName the header name
+     * @return the header item rule
+     */
+    public ItemRule newHeaderItemRule(String headerName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(headerName);
+        addHeaderItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
      * Adds the header item rule.
      *
      * @param headerItemRule the header item rule
      */
-    public void addItemRule(ItemRule headerItemRule) {
+    public void addHeaderItemRule(ItemRule headerItemRule) {
         if (headerItemRuleMap == null) {
             headerItemRuleMap = new ItemRuleMap();
         }

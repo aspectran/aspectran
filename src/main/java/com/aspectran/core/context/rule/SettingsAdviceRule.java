@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
@@ -31,8 +30,6 @@ import com.aspectran.core.util.apon.VariableParameters;
 public class SettingsAdviceRule {
 
     private final AspectRule aspectRule;
-
-    private final AspectAdviceType aspectAdviceType = AspectAdviceType.SETTINGS;
 
     private Map<String, Object> settings;
 
@@ -46,10 +43,6 @@ public class SettingsAdviceRule {
 
     public AspectRule getAspectRule() {
         return aspectRule;
-    }
-
-    public AspectAdviceType getAspectAdviceType() {
-        return aspectAdviceType;
     }
 
     public Map<String, Object> getSettings() {
@@ -101,7 +94,6 @@ public class SettingsAdviceRule {
         if (aspectRule != null) {
             tsb.append("aspectId", aspectRule.getId());
         }
-        tsb.append("aspectAdviceType", aspectAdviceType);
         tsb.append("settings", settings);
         return tsb.toString();
     }

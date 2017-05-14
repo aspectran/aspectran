@@ -63,7 +63,7 @@ class ItemNodeletAdder implements NodeletAdder {
             ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, security);
 
             if (value != null && itemRule.getType() == ItemType.SINGLE) {
-                ItemRule.setValue(itemRule, value);
+                itemRule.setValue(value);
             }
 
             assistant.pushObject(itemRule);
@@ -103,7 +103,13 @@ class ItemNodeletAdder implements NodeletAdder {
             String name = assistant.popObject();
             ItemRule itemRule = assistant.peekObject();
 
-            ItemRule.addValue(itemRule, name, tokens);
+            if (itemRule.isListableType()) {
+                itemRule.addValue(tokens);
+            } else if (itemRule.isMappableType()) {
+                itemRule.putValue(name, tokens);
+            } else {
+                itemRule.setValue(tokens);
+            }
         });
         parser.addNodelet(xpath, "/item/call", (node, attributes, text) -> {
             String bean = StringUtils.emptyToNull(attributes.get("bean"));
@@ -116,15 +122,19 @@ class ItemNodeletAdder implements NodeletAdder {
 
             Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
             if (t != null) {
-                Token[] tokens = new Token[] {t};
-                ItemRule.addValue(itemRule, null, tokens);
+                Token[] tokens = new Token[] { t };
+                if (itemRule.isListableType()) {
+                    itemRule.addValue(tokens);
+                } else {
+                    itemRule.setValue(tokens);
+                }
             }
         });
         parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
             ItemRule itemRule = assistant.popObject();
             ItemRuleMap itemRuleMap = assistant.peekObject();
 
-            ItemRule.addItemRule(itemRule, itemRuleMap);
+            itemRuleMap.putItemRule(itemRule);
 
             assistant.resolveBeanClass(itemRule);
         });

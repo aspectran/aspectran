@@ -46,6 +46,9 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 
     private TemplateRule templateRule;
 
+    /**
+     * Instantiates a new TransformRule.
+     */
     public TransformRule() {
     }
 
@@ -113,42 +116,98 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         this.characterEncoding = characterEncoding;
     }
 
+    /**
+     * Returns whether this is the default response.
+     *
+     * @return whether this is the default response
+     */
     public Boolean getDefaultResponse() {
         return defaultResponse;
     }
 
+    /**
+     * Returns whether this is the default response.
+     *
+     * @return whether this is the default response
+     */
     public boolean isDefaultResponse() {
         return BooleanUtils.toBoolean(defaultResponse);
     }
 
+    /**
+     * Sets whether this is the default response.
+     *
+     * @param defaultResponse whether this is the default response
+     */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
     }
 
+    /**
+     * Returns whether to format the content of the response
+     * to make it easier to read by adding spaces or tabs.
+     *
+     * @return true, if the content of the response should be
+     *      formatted to make it easier to read
+     */
     public Boolean getPretty() {
         return pretty;
     }
 
+    /**
+     * Returns whether to format the content of the response
+     * to make it easier to read by adding spaces or tabs.
+     *
+     * @return true, if the content of the response should be
+     *      formatted to make it easier to read
+     */
     public boolean isPretty() {
         return BooleanUtils.toBoolean(pretty);
     }
 
+    /**
+     * Set whether to format the content of the response
+     * to make it easier to read by adding spaces or tabs.
+     *
+     * @param pretty if true, format the content of the response
+     *      by adding spaces or tabs
+     */
     public void setPretty(Boolean pretty) {
         this.pretty = pretty;
     }
 
+    /**
+     * Gets the template id.
+     *
+     * @return the template id
+     */
     public String getTemplateId() {
         return templateId;
     }
 
+    /**
+     * Sets the template id.
+     *
+     * @param templateId the template id
+     */
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
     }
 
+    /**
+     * Gets the template rule.
+     *
+     * @return the template rule
+     */
     public TemplateRule getTemplateRule() {
         return templateRule;
     }
 
+    /**
+     * Sets the template rule.
+     *
+     * @param templateRule the template rule
+     */
     public void setTemplateRule(TemplateRule templateRule) {
         this.templateRule = templateRule;
         if (templateRule != null) {
@@ -203,7 +262,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
             transformType = TransformType.resolve(ContentType.resolve(contentType));
         }
         if (transformType == null) {
-            throw new IllegalArgumentException("Transform Type is not specified");
+            throw new IllegalArgumentException("The transform type is not specified");
         }
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformType);

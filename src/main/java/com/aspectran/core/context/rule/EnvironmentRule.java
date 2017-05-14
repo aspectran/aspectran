@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.PropertyPossessable;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -23,7 +22,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
-public class EnvironmentRule implements PropertyPossessable {
+public class EnvironmentRule {
 
     private String profile;
 
@@ -37,14 +36,47 @@ public class EnvironmentRule implements PropertyPossessable {
         this.profile = profile;
     }
 
-    @Override
+    /**
+     * Gets the property item rule map.
+     *
+     * @return the property item rule map
+     */
     public ItemRuleMap getPropertyItemRuleMap() {
         return propertyItemRuleMap;
     }
 
-    @Override
+    /**
+     * Sets the property item rule map.
+     *
+     * @param propertyItemRuleMap the new property item rule map
+     */
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
         this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    /**
+     * Adds a new property rule with the specified name and returns it.
+     *
+     * @param propertyName the property name
+     * @return the property item rule
+     */
+    public ItemRule newPropertyItemRule(String propertyName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(propertyName);
+        addPropertyItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
+     * Adds the property item rule.
+     *
+     * @param propertyItemRule the property item rule
+     */
+    public void addPropertyItemRule(ItemRule propertyItemRule) {
+        if (propertyItemRuleMap == null) {
+            propertyItemRuleMap = new ItemRuleMap();
+        }
+        propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
     @Override

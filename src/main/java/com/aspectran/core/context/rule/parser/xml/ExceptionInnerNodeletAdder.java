@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -55,7 +56,12 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/thrown", (node, attributes, text) -> {
             String exceptionType = attributes.get("type");
 
-            ExceptionThrownRule etr = ExceptionThrownRule.newInstance(exceptionType);
+            ExceptionThrownRule etr = new ExceptionThrownRule();
+            if (exceptionType != null) {
+                String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+                etr.setExceptionTypes(exceptionTypes);
+            }
+
             assistant.pushObject(etr);
         });
         parser.addNodelet(xpath, "/thrown", new ActionNodeletAdder(assistant));

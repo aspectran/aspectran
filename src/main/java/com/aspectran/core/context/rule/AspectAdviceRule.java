@@ -74,7 +74,11 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public void applyActionRule(BeanActionRule beanActionRule) {
-        action = new BeanAction(beanActionRule, null);
+        BeanAction action = new BeanAction(beanActionRule, null);
+        if (beanActionRule.getBeanId() == null) {
+            action.setAspectAdviceRule(this);
+        }
+        this.action = action;
     }
 
     @Override
@@ -118,8 +122,11 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+        ExceptionRule exceptionRule = new ExceptionRule();
+        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
+
+        this.exceptionRule = exceptionRule;
         this.exceptionThrownRule = exceptionThrownRule;
-        this.exceptionRule = ExceptionRule.newInstance(exceptionThrownRule);
     }
 
     @Override
@@ -141,28 +148,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
         return new AspectAdviceRule(aspectRule, aspectAdviceType);
-    }
-
-    public static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-        if (aspectAdviceRule.getAdviceBeanId() != null) {
-            if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
-                BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
-                updateAspectAdviceRule(aspectAdviceRule, beanAction);
-            }
-            if (aspectAdviceRule.getExceptionThrownRule() != null) {
-                Executable action = aspectAdviceRule.getExceptionThrownRule().getExecutableAction();
-                if (action != null && action.getActionType() == ActionType.BEAN) {
-                    updateAspectAdviceRule(aspectAdviceRule, (BeanAction)action);
-                }
-            }
-        }
-    }
-
-    private static void updateAspectAdviceRule(AspectAdviceRule aspectAdviceRule, BeanAction beanAction) {
-        BeanActionRule beanActionRule = beanAction.getBeanActionRule();
-        if (beanActionRule.getBeanId() == null) {
-            beanAction.setAspectAdviceRule(aspectAdviceRule);
-        }
     }
 
 }

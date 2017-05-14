@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -45,46 +46,39 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
     public void process(String xpath, NodeletParser parser) {
         parser.addNodelet(xpath, "/before", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.peekObject();
-            AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
             assistant.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(xpath, "/before", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/before/end()", (node, attributes, text) -> {
-            AspectAdviceRule aspectAdviceRule = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
-            aspectRule.addAspectAdviceRule(aspectAdviceRule);
-        });
+        parser.addNodelet(xpath, "/before/end()", (node, attributes, text) -> assistant.popObject());
         parser.addNodelet(xpath, "/after", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.peekObject();
-            AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
             assistant.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(xpath, "/after", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/after/end()", (node, attributes, text) -> {
-            AspectAdviceRule aspectAdviceRule = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
-            aspectRule.addAspectAdviceRule(aspectAdviceRule);
-        });
+        parser.addNodelet(xpath, "/after/end()", (node, attributes, text) -> assistant.popObject());
         parser.addNodelet(xpath, "/around", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.peekObject();
-            AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
             assistant.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(xpath, "/around", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/around/end()", (node, attributes, text) -> {
-            AspectAdviceRule aspectAdviceRule = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
-            aspectRule.addAspectAdviceRule(aspectAdviceRule);
-        });
+        parser.addNodelet(xpath, "/around/end()", (node, attributes, text) -> assistant.popObject());
         parser.addNodelet(xpath, "/finally", (node, attributes, text) -> {
             AspectRule aspectRule = assistant.peekObject();
-            AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.FINALLY);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
             assistant.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(xpath, "/finally/thrown", (node, attributes, text) -> {
             String exceptionType = attributes.get("type");
 
-            ExceptionThrownRule etr = ExceptionThrownRule.newInstance(exceptionType);
+            ExceptionThrownRule etr = new ExceptionThrownRule();
+            if (exceptionType != null) {
+                String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+                etr.setExceptionTypes(exceptionTypes);
+            }
+
             assistant.pushObject(etr);
         });
         parser.addNodelet(xpath, "/finally/thrown", new ActionNodeletAdder(assistant));
@@ -95,11 +89,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             aspectAdviceRule.setExceptionThrownRule(etr);
         });
         parser.addNodelet(xpath, "/finally", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/finally/end()", (node, attributes, text) -> {
-            AspectAdviceRule aspectAdviceRule = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
-            aspectRule.addAspectAdviceRule(aspectAdviceRule);
-        });
+        parser.addNodelet(xpath, "/finally/end()", (node, attributes, text) -> assistant.popObject());
     }
 
 }

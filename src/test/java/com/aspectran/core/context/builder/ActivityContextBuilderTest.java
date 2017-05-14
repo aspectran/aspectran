@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.loader;
+package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,10 +23,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 
 /**
  * Test case for building ActivityContext.

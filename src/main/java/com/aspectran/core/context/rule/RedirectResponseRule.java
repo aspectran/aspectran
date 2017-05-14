@@ -22,7 +22,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
@@ -209,27 +208,40 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Gets the parameter rule map.
+     * Gets the parameter item rule map.
      *
-     * @return the parameter rule map
+     * @return the parameter item rule map
      */
     public ItemRuleMap getParameterItemRuleMap() {
         return parameterItemRuleMap;
     }
 
     /**
-     * Sets the parameter rules.
+     * Sets the attribute item rule map.
      *
-     * @param parameterItemRuleMap the new parameter rules
+     * @param parameterItemRuleMap the new attribute item rule map
      */
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
         this.parameterItemRuleMap = parameterItemRuleMap;
     }
 
     /**
-     * Adds the parameter rule.
+     * Adds a new parameter rule with the specified name and returns it.
      *
-     * @param parameterItemRule the parameter rule
+     * @param parameterName the parameter name
+     * @return the parameter item rule
+     */
+    public ItemRule newParameterItemRule(String parameterName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(parameterName);
+        addParameterItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
+     * Adds the parameter item rule.
+     *
+     * @param parameterItemRule the parameter item rule
      */
     public void addParameterItemRule(ItemRule parameterItemRule) {
         if (parameterItemRuleMap == null) {
@@ -249,14 +261,14 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
             return;
         }
 
-        ItemRuleMap params = new ItemRuleMap();
+        ItemRuleMap itemRuleMap = new ItemRuleMap();
         for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
             ItemRule ir = new ItemRule();
+            ir.setTokenize(false);
             ir.setName(entry.getKey());
-            ir.setValue(TokenParser.makeTokens(entry.getValue(), false));
+            ir.setValue(entry.getValue());
         }
-
-        this.parameterItemRuleMap = params;
+        this.parameterItemRuleMap = itemRuleMap;
     }
 
     /**

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
@@ -202,48 +203,167 @@ public class ItemRule {
     }
 
     /**
-     * Sets the value.
+     * Sets the specified value to this Single type item.
      *
-     * @param tokens the new value
+     * @param text the value to be analyzed for use as the value of this item
+     * @see #setValue(Token[])
+     */
+    public void setValue(String text) {
+        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+        setValue(tokens);
+    }
+
+    /**
+     * Sets the specified value to this Single type item.
+     *
+     * @param tokens an array of tokens
      */
     public void setValue(Token[] tokens) {
         if (type == null) {
-            throw new IllegalArgumentException("The item type must be specified first");
+            type = ItemType.SINGLE;
         }
         if (type != ItemType.SINGLE) {
-            throw new IllegalArgumentException("The item type must be 'single': " + this);
+            throw new IllegalArgumentException("The item type must be 'single' for this item " + this);
         }
         this.tokens = tokens;
     }
 
     /**
-     * Sets the value.
+     * Puts the specified value with the specified key to this Map type item.
      *
-     * @param tokensList the new value
+     * @param name the value name; may be null
+     * @param text the value to be analyzed for use as the value of this item
+     * @see #putValue(String, Token[])
      */
-    public void setValue(List<Token[]> tokensList) {
-        if (type == null) {
-            throw new IllegalArgumentException("The item type must be specified first");
-        }
-        if (!isListableType()) {
-            throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item: " + this);
-        }
-        this.tokensList = tokensList;
+    public void putValue(String name, String text) {
+        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+        putValue(name, tokens);
     }
 
     /**
-     * Sets the value.
+     * Puts the specified value with the specified key to this Map type item.
+     *
+     * @param name the value name; may be null
+     * @param tokens an array of tokens
+     */
+    public void putValue(String name, Token[] tokens) {
+        if (type == null) {
+            type = ItemType.MAP;
+        }
+        if (!isMappableType()) {
+            throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item " + this);
+        }
+        if (tokensMap == null) {
+            tokensMap = new LinkedHashMap<>();
+        }
+        tokensMap.put(name, tokens);
+    }
+
+    /**
+     * Sets a value to this Map type item.
      *
      * @param tokensMap the tokens map
      */
     public void setValue(Map<String, Token[]> tokensMap) {
         if (type == null) {
-            throw new IllegalArgumentException("The item type must be specified first");
+            type = ItemType.MAP;
         }
         if (!isMappableType()) {
-            throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item: " + this);
+            throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item " + this);
         }
         this.tokensMap = tokensMap;
+    }
+
+    /**
+     * Sets a value to this Properties type item.
+     *
+     * @param properties the properties
+     */
+    public void setValue(Properties properties)  {
+        if (properties == null) {
+            throw new IllegalArgumentException("Argument 'properties' must not be null");
+        }
+        if (type == null) {
+            type = ItemType.PROPERTIES;
+        }
+        if (!isMappableType()) {
+            throw new IllegalArgumentException("The item type must be 'properties' or 'map' for this item " + this);
+        }
+        tokensMap = new LinkedHashMap<>();
+        for (String key : properties.stringPropertyNames()) {
+            Object o = properties.get(key);
+            if (o instanceof Token[]) {
+                tokensMap.put(key, (Token[])o);
+            } else if (o instanceof Token) {
+                Token[] tokens = new Token[] { (Token)o };
+                tokensMap.put(key, tokens);
+            } else {
+                Token[] tokens = TokenParser.makeTokens(o.toString(), isTokenize());
+                putValue(name, tokens);
+            }
+        }
+    }
+
+    /**
+     * Adds the specified value to this List type item.
+     *
+     * @param text the value to be analyzed for use as the value of this item
+     * @see #addValue(Token[])
+     */
+    public void addValue(String text) {
+        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+        addValue(tokens);
+    }
+
+    /**
+     * Adds the specified value to this List type item.
+     *
+     * @param tokens an array of tokens
+     */
+    public void addValue(Token[] tokens) {
+        if (type == null) {
+            type = ItemType.LIST;
+        }
+        if (!isListableType()) {
+            throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item " + this);
+        }
+        if (tokensList == null) {
+            tokensList = new ArrayList<>();
+        }
+        tokensList.add(tokens);
+    }
+
+    /**
+     * Sets a value to this List type item.
+     *
+     * @param tokensList the tokens list
+     */
+    public void setValue(List<Token[]> tokensList) {
+        if (type == null) {
+            type = ItemType.LIST;
+        }
+        if (!isListableType()) {
+            throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item " + this);
+        }
+        this.tokensList = tokensList;
+    }
+
+    /**
+     * Sets a value to this Set type item.
+     *
+     * @param tokensSet the tokens set
+     */
+    public void setValue(Set<Token[]> tokensSet) {
+        if (tokensSet == null) {
+            throw new IllegalArgumentException("Argument 'tokensSet' must not be null");
+        }
+        if (type == null) {
+            type = ItemType.SET;
+        }
+        if (!isListableType()) {
+            throw new IllegalArgumentException("The item type must be 'set', 'array' or 'list' for this item " + this);
+        }
+        tokensList = new ArrayList<>(tokensSet);
     }
 
     /**
@@ -571,7 +691,6 @@ public class ItemRule {
      */
     public static Token makeReferenceToken(String bean, String template, String parameter, String attribute, String property) {
         Token token;
-
         if (bean != null) {
             token = new Token(TokenType.BEAN, bean);
         } else if (template != null) {
@@ -585,7 +704,6 @@ public class ItemRule {
         } else {
             token = null;
         }
-
         return token;
     }
 
@@ -630,98 +748,6 @@ public class ItemRule {
     }
 
     /**
-     * Analyze the raw values and assign them to the values of the items.
-     *
-     * @param itemRule the item rule
-     * @param text the raw value of the item
-     */
-    public static void setValue(ItemRule itemRule, String text) {
-        Token[] tokens = TokenParser.makeTokens(text, itemRule.isTokenize());
-        itemRule.setValue(tokens);
-    }
-
-    /**
-     * Analyze the raw values and assign them to the values of the items.
-     *
-     * @param itemRule the item rule
-     * @param name the value name; may be null
-     * @param text the raw value of the item
-     */
-    public static void addValue(ItemRule itemRule, String name, String text) {
-        Token[] tokens = TokenParser.makeTokens(text, itemRule.isTokenize());
-        addValue(itemRule, name, tokens);
-    }
-
-    /**
-     * Analyze the raw values and assign them to the values of the items.
-     *
-     * @param itemRule the item rule
-     * @param name the value name; may be null
-     * @param tokens an array of tokens
-     */
-    public static void addValue(ItemRule itemRule, String name, Token[] tokens) {
-        if (itemRule.isListableType()) {
-            List<Token[]> tokensList = itemRule.getTokensList();
-            if (tokensList == null) {
-                tokensList = new ArrayList<>();
-                itemRule.setValue(tokensList);
-            }
-            tokensList.add(tokens);
-        } else if (!StringUtils.isEmpty(name) && itemRule.isMappableType()) {
-            Map<String, Token[]> tokensMap = itemRule.getTokensMap();
-            if (tokensMap == null) {
-                tokensMap = new LinkedHashMap<>();
-                itemRule.setValue(tokensMap);
-            }
-            tokensMap.put(name, tokens);
-        } else {
-            itemRule.setValue(tokens);
-        }
-    }
-
-    /**
-     * Adds the item rule.
-     *
-     * @param itemRuleMap the item rule map
-     * @param itemRule the item rule
-     */
-    public static void addItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
-        // auto-naming if did not specify the name of the item.
-        if (itemRule.isAutoGeneratedName()) {
-            generateItemName(itemRule, itemRuleMap);
-        }
-        itemRuleMap.putItemRule(itemRule);
-    }
-
-    /**
-     * Auto-naming for unnamed item name.
-     * Auto-naming if did not specify the name of the item.
-     *
-     * @param itemRule the item rule
-     * @param itemRuleMap the item rule map
-     */
-    private static void generateItemName(ItemRule itemRule, ItemRuleMap itemRuleMap) {
-        int count = 1;
-        for (ItemRule ir : itemRuleMap.values()) {
-            if (ir.isAutoGeneratedName() && ir.getType() == itemRule.getType()) {
-                count++;
-                if (itemRule == ir) {
-                    break;
-                }
-            }
-        }
-        if (itemRule.getType() != ItemType.SINGLE || itemRule.getValueType() == null) {
-            String name = itemRule.getType().toString() + count;
-            itemRule.setName(name);
-        } else {
-            if (itemRule.getValueType() != null) {
-                String name = itemRule.getValueType().toString() + count;
-                itemRule.setName(name);
-            }
-        }
-    }
-
-    /**
      * Convert the given item parameters list into an {@code ItemRuleMap}.
      *
      * @param itemParametersList the item parameters list to convert
@@ -733,19 +759,9 @@ public class ItemRule {
         }
 
         ItemRuleMap itemRuleMap = new ItemRuleMap();
-
         for (ItemParameters parameters : itemParametersList) {
-            ItemRule itemRule = toItemRule(parameters);
-
-            // auto-naming if did not specify the name of the item.
-            if (StringUtils.isEmpty(itemRule.getName())) {
-                itemRule.setAutoGeneratedName(true);
-                generateItemName(itemRule, itemRuleMap);
-            }
-
-            itemRuleMap.putItemRule(itemRule);
+            itemRuleMap.putItemRule(toItemRule(parameters));
         }
-
         return itemRuleMap;
     }
 
@@ -802,17 +818,18 @@ public class ItemRule {
             Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
             if (t != null) {
                 Token[] tokens = new Token[] { t };
-                ItemRule.addValue(itemRule, null, tokens);
+                if (itemRule.isListableType()) {
+                    itemRule.addValue(tokens);
+                } else {
+                    itemRule.setValue(tokens);
+                }
             }
         } else {
-            if (itemRule.getType() == ItemType.SINGLE) {
-                String text = itemParameters.getString(ItemParameters.value);
-                setValue(itemRule, text);
-            } else if (itemRule.isListableType()) {
+            if (itemRule.isListableType()) {
                 List<String> stringList = itemParameters.getStringList(ItemParameters.value);
                 if (stringList != null) {
                     for (String text : stringList) {
-                        addValue(itemRule, null, text);
+                        itemRule.addValue(text);
                     }
                 }
             } else if (itemRule.isMappableType()) {
@@ -822,10 +839,13 @@ public class ItemRule {
                     if (parametersNames != null) {
                         for (String valueName : parametersNames) {
                             String text = parameters.getString(valueName);
-                            addValue(itemRule, valueName, text);
+                            itemRule.putValue(valueName, text);
                         }
                     }
                 }
+            } else {
+                String text = itemParameters.getString(ItemParameters.value);
+                itemRule.setValue(text);
             }
         }
 

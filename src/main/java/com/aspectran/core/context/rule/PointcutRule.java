@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.rule.params.PointcutTargetParameters;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class PointcutRule.
@@ -35,9 +35,9 @@ public class PointcutRule {
 
     private List<String> minusPatternStringList;
 
-    private List<Parameters> includeTargetParametersList;
+    private List<PointcutTargetParameters> includeTargetParametersList;
 
-    private List<Parameters> execludeTargetParametersList;
+    private List<PointcutTargetParameters> execludeTargetParametersList;
 
 
     public PointcutRule(PointcutType pointcutType) {
@@ -91,19 +91,19 @@ public class PointcutRule {
         this.minusPatternStringList = minusPatternStringList;
     }
 
-    public List<Parameters> getIncludeTargetParametersList() {
+    public List<PointcutTargetParameters> getIncludeTargetParametersList() {
         return includeTargetParametersList;
     }
 
-    public void setIncludeTargetParametersList(List<Parameters> includeTargetParametersList) {
+    public void setIncludeTargetParametersList(List<PointcutTargetParameters> includeTargetParametersList) {
         this.includeTargetParametersList = includeTargetParametersList;
     }
 
-    public List<Parameters> getExecludeTargetParametersList() {
+    public List<PointcutTargetParameters> getExecludeTargetParametersList() {
         return execludeTargetParametersList;
     }
 
-    public void setExecludeTargetParametersList(List<Parameters> execludeTargetParametersList) {
+    public void setExecludeTargetParametersList(List<PointcutTargetParameters> execludeTargetParametersList) {
         this.execludeTargetParametersList = execludeTargetParametersList;
     }
 

@@ -18,6 +18,10 @@ package com.aspectran.core.activity.response.dispatch;
 import static junit.framework.TestCase.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,9 +33,11 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -40,6 +46,7 @@ import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean;
 import com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine;
+import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
 import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
@@ -61,14 +68,35 @@ public class ViewDispatcherTest {
         BeanRule freeMarkerConfigurationBeanRule = new BeanRule();
         freeMarkerConfigurationBeanRule.setId("freeMarkerConfiguration");
         freeMarkerConfigurationBeanRule.setBeanClass(FreeMarkerConfigurationFactoryBean.class);
+        freeMarkerConfigurationBeanRule.newPropertyItemRule("templateLoaderPath").setValue("classpath:view");
         parameters.addRule(freeMarkerConfigurationBeanRule);
 
         BeanRule freeMarkerBeanRule = new BeanRule();
         freeMarkerBeanRule.setId("freemarker");
         freeMarkerBeanRule.setBeanClass(FreeMarkerTemplateEngine.class);
         ItemRule constructorArgumentItemRule1 = freeMarkerBeanRule.newConstructorArgumentItemRule();
-        constructorArgumentItemRule1.setValue(TokenParser.parse("#{freeMarkerConfiguration}"));
+        constructorArgumentItemRule1.setValue("#{freeMarkerConfiguration}");
         parameters.addRule(freeMarkerBeanRule);
+
+        BeanRule freeMarkerViewDispatcherBeanRule = new BeanRule();
+        freeMarkerViewDispatcherBeanRule.setId("freeMarkerViewDispatcher");
+        freeMarkerViewDispatcherBeanRule.setBeanClass(FreeMarkerViewDispatcher.class);
+        ItemRule constructorArgumentItemRule2 = freeMarkerViewDispatcherBeanRule.newConstructorArgumentItemRule();
+        constructorArgumentItemRule2.setValue("#{freeMarkerConfiguration}");
+        ItemRule propertyItemRule1 = freeMarkerViewDispatcherBeanRule.newPropertyItemRule("prefix");
+        propertyItemRule1.setValue("freemarker/");
+        ItemRule propertyItemRule2 = freeMarkerViewDispatcherBeanRule.newPropertyItemRule("suffix");
+        propertyItemRule2.setValue(".ftl");
+        parameters.addRule(freeMarkerViewDispatcherBeanRule);
+
+        AspectRule aspectRule1 = new AspectRule();
+        aspectRule1.setId("transletSettings");
+        SettingsAdviceRule settingsAdviceRule1 = aspectRule1.touchSettingsAdviceRule();
+        settingsAdviceRule1.putSetting("viewDispatcher", "freeMarkerViewDispatcher");
+        parameters.addRule(aspectRule1);
+
+        // Append a child Aspectran
+        AspectranParameters aspectran1 = new AspectranParameters();
 
         TransletRule transletRule1 = new TransletRule();
         transletRule1.setName("test/freemarker");
@@ -78,9 +106,8 @@ public class ViewDispatcherTest {
         templateRule1.setTemplateSource("${param1} ${param2}");
         transformRule1.setTemplateRule(templateRule1);
         transletRule1.applyResponseRule(transformRule1);
-        parameters.addRule(transletRule1);
+        aspectran1.addRule(transletRule1);
 
-        AspectranParameters aspectran1 = new AspectranParameters();
         TransletRule transletRule2 = new TransletRule();
         transletRule2.setName("test/appended/echo");
         TransformRule transformRule2 = new TransformRule();
@@ -91,6 +118,14 @@ public class ViewDispatcherTest {
         transformRule2.setTemplateRule(templateRule2);
         transletRule2.applyResponseRule(transformRule2);
         aspectran1.addRule(transletRule2);
+
+        TransletRule transletRule3 = new TransletRule();
+        transletRule3.setName("test/appended/freemarker/template1");
+        DispatchResponseRule dispatchResponseRule1 = new DispatchResponseRule();
+        dispatchResponseRule1.setName("freemarker-template1");
+        transletRule3.applyResponseRule(dispatchResponseRule1);
+        aspectran1.addRule(transletRule3);
+
         parameters.addRule(aspectran1);
 
         aspectranService = EmbeddedAspectranService.create(aspectranConfig);
@@ -129,16 +164,23 @@ public class ViewDispatcherTest {
         //System.out.println(result);
     }
 
-//    @Test
-//    public void test2() throws AspectranServiceException, IOException {
-//        Translet translet = aspectranService.translet("attr-test");
-//        System.out.println(translet.getResponseAdapter().getWriter().toString());
-//    }
-//
-//    @Test
-//    public void includeTest() throws AspectranServiceException, IOException {
-//        Translet translet = aspectranService.translet("include-test");
-//        System.out.println(translet.getResponseAdapter().getWriter().toString());
-//    }
+    @Test
+    public void testFreemarkerTemplate1() throws AspectranServiceException, IOException {
+        List<String> fruits = new ArrayList<>();
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+
+        Map<String, List<String>> misc = new HashMap<>();
+        misc.put("fruits", fruits);
+
+        Map<String, Object> attributeMap = new HashMap<>();
+        attributeMap.put("misc", misc);
+
+        Translet translet = aspectranService.translet("test/appended/freemarker/template1", attributeMap);
+        String result = translet.getResponseAdapter().getWriter().toString();
+
+        System.out.println(result);
+    }
 
 }

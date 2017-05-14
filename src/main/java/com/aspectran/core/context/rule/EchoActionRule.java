@@ -68,15 +68,28 @@ public class EchoActionRule {
     }
 
     /**
+     * Adds a new attribute rule with the specified name and returns it.
+     *
+     * @param attributeName the attribute name
+     * @return the attribute item rule
+     */
+    public ItemRule newAttributeItemRule(String attributeName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(attributeName);
+        addAttributeItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
      * Adds the attribute item rule.
      *
-     * @param attributeItemRule the attribute item rule
+     * @param itemRule the attribute item rule
      */
-    public void addItemRule(ItemRule attributeItemRule) {
-        if (attributeItemRuleMap == null)
+    public void addAttributeItemRule(ItemRule itemRule) {
+        if (attributeItemRuleMap == null) {
             attributeItemRuleMap = new ItemRuleMap();
-
-        attributeItemRuleMap.putItemRule(attributeItemRule);
+        }
+        attributeItemRuleMap.putItemRule(itemRule);
     }
 
     /**

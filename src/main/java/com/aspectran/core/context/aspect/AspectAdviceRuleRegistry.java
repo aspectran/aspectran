@@ -263,7 +263,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(94);
-        tsb.appendSize("settings", settings);
+        tsb.append("settings", settings);
         tsb.append("beforeAdvices", beforeAdviceRuleList);
         tsb.append("afterAdvices", afterAdviceRuleList);
         tsb.append("finallyAdvices", finallyAdviceRuleList);

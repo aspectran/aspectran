@@ -47,7 +47,6 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -142,41 +141,41 @@ public class RuleToParamsConverter {
         List<EnvironmentRule> environmentRules = assistant.getEnvironmentRules();
         if (!environmentRules.isEmpty()) {
             for (EnvironmentRule environmentRule : environmentRules) {
-                Parameters p = toEnvironmentParameters(environmentRule);
+                EnvironmentParameters p = toEnvironmentParameters(environmentRule);
                 aspectranParameters.putValue(AspectranParameters.environment, p);
             }
         }
 
         Map<String, String> typeAliases = assistant.getTypeAliases();
         if (!typeAliases.isEmpty()) {
-            VariableParameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
+            Parameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
             for (Map.Entry<String, String> entry : typeAliases.entrySet()) {
                 typeAliasParameters.putValue(entry.getKey(), entry.getValue());
             }
         }
 
         for (AspectRule aspectRule : assistant.getAspectRules()) {
-            Parameters p = toAspectParameters(aspectRule);
+            AspectParameters p = toAspectParameters(aspectRule);
             aspectranParameters.putValue(AspectranParameters.aspect, p);
         }
 
         for (BeanRule beanRule : assistant.getBeanRules()) {
-            Parameters p = toBeanParameters(beanRule);
+            BeanParameters p = toBeanParameters(beanRule);
             aspectranParameters.putValue(AspectranParameters.bean, p);
         }
 
         for (ScheduleRule scheduleRule : assistant.getScheduleRules()) {
-            Parameters p = toScheduleParameters(scheduleRule);
+            ScheduleParameters p = toScheduleParameters(scheduleRule);
             aspectranParameters.putValue(AspectranParameters.schedule, p);
         }
 
         for (TransletRule transletRule : assistant.getTransletRules()) {
-            Parameters p = toTransletParameters(transletRule);
+            TransletParameters p = toTransletParameters(transletRule);
             aspectranParameters.putValue(AspectranParameters.translet, p);
         }
 
         for (TemplateRule templateRule : assistant.getTemplateRules()) {
-            Parameters p = toTemplateParameters(templateRule);
+            TemplateParameters p = toTemplateParameters(templateRule);
             aspectranParameters.putValue(AspectranParameters.template, p);
         }
 
@@ -213,7 +212,7 @@ public class RuleToParamsConverter {
         EnvironmentParameters environmentParameters = new EnvironmentParameters();
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
         if (environmentRule.getPropertyItemRuleMap() != null) {
-            Parameters itemHoderParameters = toItemHolderParameters(environmentRule.getPropertyItemRuleMap());
+            ItemHolderParameters itemHoderParameters = toItemHolderParameters(environmentRule.getPropertyItemRuleMap());
             environmentParameters.putValue(EnvironmentParameters.properties, itemHoderParameters);
         }
         return environmentParameters;
@@ -228,30 +227,30 @@ public class RuleToParamsConverter {
         }
         aspectParameters.putValueNonNull(AspectParameters.isolated, aspectRule.getIsolated());
 
-        Parameters joinpointParameters = aspectRule.getJoinpointRule() != null ? aspectRule.getJoinpointRule().getJoinpointParameters() : null;
-        if (joinpointParameters != null) {
-            joinpointParameters.putValueNonNull(JoinpointParameters.type, aspectRule.getJoinpointType());
+        if (aspectRule.getJoinpointRule() != null) {
+            JoinpointParameters joinpointParameters = aspectRule.getJoinpointRule().getJoinpointParameters();
+            if (joinpointParameters != null) {
+                joinpointParameters.putValueNonNull(JoinpointParameters.type, aspectRule.getJoinpointType());
+                aspectParameters.putValue(AspectParameters.jointpoint, joinpointParameters);
+            }
         }
-        aspectParameters.putValueNonNull(AspectParameters.jointpoint, joinpointParameters);
 
-        SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
-        if (settingsAdviceRule != null) {
-            Map<String, Object> settings = settingsAdviceRule.getSettings();
+        if (aspectRule.getSettingsAdviceRule() != null) {
+            Map<String, Object> settings = aspectRule.getSettingsAdviceRule().getSettings();
             if (settings != null) {
-                VariableParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
+                Parameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
                 for (Map.Entry<String, Object> entry : settings.entrySet()) {
                     settingsParameters.putValue(entry.getKey(), entry.getValue());
                 }
             }
         }
 
-        List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-        if (aspectAdviceRuleList != null) {
-            Parameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
+        if (aspectRule.getAspectAdviceRuleList() != null) {
+            AdviceParameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
             adviceParameters.putValue(AdviceParameters.bean, aspectRule.getAdviceBeanId());
-            for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+            for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
                 if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-                    Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
                     if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
                         BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanActionRule));
@@ -263,7 +262,7 @@ public class RuleToParamsConverter {
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headingActionRule));
                     }
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
-                    Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
                     if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
                         BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanActionRule));
@@ -275,7 +274,7 @@ public class RuleToParamsConverter {
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headingActionRule));
                     }
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
-                    Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
                     if (aspectAdviceRule.getActionType() == ActionType.BEAN) {
                         BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanActionRule));
@@ -287,7 +286,7 @@ public class RuleToParamsConverter {
                         adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headingActionRule));
                     }
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
-                    Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
                     if (aspectAdviceRule.getExceptionThrownRule() != null) {
                         adviceActionParameters.putValue(AdviceActionParameters.thrown, toExceptionThrownParameters(aspectAdviceRule.getExceptionThrownRule()));
                     }
@@ -307,7 +306,7 @@ public class RuleToParamsConverter {
 
         ExceptionRule exceptionRule = aspectRule.getExceptionRule();
         if (exceptionRule != null) {
-            Parameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
+            ExceptionParameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
             for (ExceptionThrownRule etr : exceptionRule) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
@@ -340,13 +339,13 @@ public class RuleToParamsConverter {
         ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
         if (constructorArgumentItemRuleMap != null) {
             ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
-            Parameters itemHoderParameters = toItemHolderParameters(constructorArgumentItemRuleMap);
+            ItemHolderParameters itemHoderParameters = toItemHolderParameters(constructorArgumentItemRuleMap);
             constructorParameters.putValue(ConstructorParameters.arguments, itemHoderParameters);
         }
 
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
-            Parameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
+            ItemHolderParameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
             beanParameters.putValue(BeanParameters.properties, itemHoderParameters);
         }
 
@@ -361,7 +360,7 @@ public class RuleToParamsConverter {
         SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
         schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
 
-        Parameters triggerParameters = scheduleRule.getTriggerParameters();
+        TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
         if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
             triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
             schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
@@ -413,11 +412,11 @@ public class RuleToParamsConverter {
             ContentList contentList = transletRule.getContentList();
             if (contentList != null) {
                 if (!contentList.isOmittable()) {
-                    Parameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
+                    ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
                     contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
                     contentsParameters.putValueNonNull(ContentsParameters.omittable, contentList.getOmittable());
                     for (ActionList actionList : contentList) {
-                        Parameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
+                        ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
                         contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
                         contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
                         contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
@@ -425,7 +424,7 @@ public class RuleToParamsConverter {
                     }
                 } else {
                     for (ActionList actionList : contentList) {
-                        Parameters contentParameters = transletParameters.newParameters(TransletParameters.content);
+                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
                         contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
                         contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
                         contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
@@ -471,7 +470,7 @@ public class RuleToParamsConverter {
 
         ExceptionRule exceptionRule = transletRule.getExceptionRule();
         if (exceptionRule != null) {
-            Parameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
+            ExceptionParameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
             for (ExceptionThrownRule etr : exceptionRule) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
@@ -560,7 +559,7 @@ public class RuleToParamsConverter {
         }
 
         if (transformRule.getTemplateId() != null) {
-            Parameters callParameters = transformParameters.newParameters(TransformParameters.call);
+            CallParameters callParameters = transformParameters.newParameters(TransformParameters.call);
             callParameters.putValue(CallParameters.template, transformRule.getTemplateId());
             transformParameters.putValue(TransformParameters.call, callParameters);
         }
@@ -675,13 +674,13 @@ public class RuleToParamsConverter {
 
         ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
-            Parameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
+            ItemHolderParameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
             actionParameters.putValue(ActionParameters.properties, itemHoderParameters);
         }
 
         ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
         if (argumentItemRuleMap != null) {
-            Parameters itemHoderParameters = toItemHolderParameters(argumentItemRuleMap);
+            ItemHolderParameters itemHoderParameters = toItemHolderParameters(argumentItemRuleMap);
             actionParameters.putValue(ActionParameters.arguments, itemHoderParameters);
         }
 

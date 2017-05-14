@@ -53,4 +53,12 @@ public class PointcutParameters extends AbstractParameters {
         super(parameterDefinitions, text);
     }
 
+    public void addIncludePattern(String pattern) {
+        putValue(plus, pattern);
+    }
+
+    public void addExecludePattern(String pattern) {
+        putValue(minus, pattern);
+    }
+
 }

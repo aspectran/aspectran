@@ -17,9 +17,7 @@ package com.aspectran.core.context.rule;
 
 import java.lang.reflect.Method;
 
-import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
-import com.aspectran.core.context.rule.ability.PropertyPossessable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -29,7 +27,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
+public class BeanActionRule implements BeanReferenceInspectable {
 
     private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
@@ -156,27 +154,92 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
         this.hidden = hidden;
     }
 
-    @Override
+    /**
+     * Gets the argument item rule map.
+     *
+     * @return the argument item rule map
+     */
     public ItemRuleMap getArgumentItemRuleMap() {
         return argumentItemRuleMap;
     }
 
-    @Override
+    /**
+     * Sets the argument item rule map.
+     *
+     * @param argumentItemRuleMap the new argument item rule map
+     */
     public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
         this.argumentItemRuleMap = argumentItemRuleMap;
     }
 
-    @Override
+    /**
+     * Adds a new argument rule with the specified name and returns it.
+     *
+     * @param argumentName the argument name
+     * @return the argument item rule
+     */
+    public ItemRule newArgumentItemRule(String argumentName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(argumentName);
+        addArgumentItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
+     * Adds the argument item rule.
+     *
+     * @param argumentItemRule the new argument item rule
+     */
+    public void addArgumentItemRule(ItemRule argumentItemRule) {
+        if (argumentItemRuleMap == null) {
+            argumentItemRuleMap = new ItemRuleMap();
+        }
+        argumentItemRuleMap.putItemRule(argumentItemRule);
+    }
+
+    /**
+     * Gets the property item rule map.
+     *
+     * @return the property item rule map
+     */
     public ItemRuleMap getPropertyItemRuleMap() {
         return propertyItemRuleMap;
     }
 
-    @Override
+    /**
+     * Sets the property item rule map.
+     *
+     * @param propertyItemRuleMap the new property item rule map
+     */
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
         this.propertyItemRuleMap = propertyItemRuleMap;
     }
 
-    @Override
+    /**
+     * Adds a new property rule with the specified name and returns it.
+     *
+     * @param propertyName the property name
+     * @return the property item rule
+     */
+    public ItemRule newPropertyItemRule(String propertyName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(propertyName);
+        addPropertyItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
+     * Adds the property item rule.
+     *
+     * @param propertyItemRule the new property item rule
+     */
+    public void addPropertyItemRule(ItemRule propertyItemRule) {
+        if (propertyItemRuleMap == null) {
+            propertyItemRuleMap = new ItemRuleMap();
+        }
+        propertyItemRuleMap.putItemRule(propertyItemRule);
+    }
+
     public BeanReferrerType getBeanReferrerType() {
         return BEAN_REFERRER_TYPE;
     }

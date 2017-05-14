@@ -125,6 +125,19 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * Run a translet.
      *
      * @param name the translet name
+     * @param attributeMap the attribute map
+     * @return the {@code Translet} object
+     * @throws AspectranServiceException the aspectran service exception
+     */
+    public Translet translet(String name, Map<String, Object> attributeMap)
+            throws AspectranServiceException {
+        return translet(name, null, null, attributeMap);
+    }
+
+    /**
+     * Run a translet.
+     *
+     * @param name the translet name
      * @param method the request method
      * @return the {@code Translet} object
      * @throws AspectranServiceException the aspectran service exception
@@ -145,6 +158,20 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     public Translet translet(String name, MethodType method, ParameterMap parameterMap)
             throws AspectranServiceException {
         return translet(name, method, parameterMap, null);
+    }
+
+    /**
+     * Run a translet.
+     *
+     * @param name the translet name
+     * @param method the request method
+     * @param attributeMap the attribute map
+     * @return the {@code Translet} object
+     * @throws AspectranServiceException the aspectran service exception
+     */
+    public Translet translet(String name, MethodType method, Map<String, Object> attributeMap)
+            throws AspectranServiceException {
+        return translet(name, method, null, attributeMap);
     }
 
     /**
@@ -213,9 +240,22 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @return the output string of the template
      * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId, Map<String, String> parameterMap)
+    public String template(String templateId, ParameterMap parameterMap)
             throws AspectranServiceException {
         return template(templateId, parameterMap, null);
+    }
+
+    /**
+     * Evaluate the template with a set of parameters.
+     *
+     * @param templateId the template id
+     * @param attributeMap the attribute map
+     * @return the output string of the template
+     * @throws AspectranServiceException the aspectran service exception
+     */
+    public String template(String templateId, Map<String, Object> attributeMap)
+            throws AspectranServiceException {
+        return template(templateId, null, attributeMap);
     }
 
     /**
@@ -227,14 +267,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @return the output string of the template
      * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId, Map<String, String> parameterMap, Map<String, Object> attributeMap)
+    public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap)
             throws AspectranServiceException {
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), sessionAdapter);
             if (parameterMap != null) {
-                ParameterMap parameterMap2 = new ParameterMap(parameterMap.size());
-                parameterMap2.setAll(parameterMap);
-                activity.setParameterMap(parameterMap2);
+                activity.setParameterMap(parameterMap);
             }
             if (attributeMap != null) {
                 activity.setAttributeMap(attributeMap);

@@ -24,7 +24,6 @@ import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class ScheduleRule.
@@ -52,7 +51,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
     private TriggerType triggerType;
 
-    private Parameters triggerParameters;
+    private TriggerParameters triggerParameters;
 
     private String schedulerBeanId;
 
@@ -78,11 +77,11 @@ public class ScheduleRule implements BeanReferenceInspectable {
         this.triggerType = triggerType;
     }
 
-    public Parameters getTriggerParameters() {
+    public TriggerParameters getTriggerParameters() {
         return triggerParameters;
     }
 
-    public void setTriggerParameters(Parameters triggerParameters) {
+    public void setTriggerParameters(TriggerParameters triggerParameters) {
         this.triggerParameters = triggerParameters;
     }
 
@@ -164,12 +163,12 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
     public static void updateTrigger(ScheduleRule scheduleRule, String text) {
         if (StringUtils.hasText(text)) {
-            Parameters triggerParameters = new TriggerParameters(text);
+            TriggerParameters triggerParameters = new TriggerParameters(text);
             updateTrigger(scheduleRule, triggerParameters);
         }
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, Parameters triggerParameters) {
+    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters) {
         if (scheduleRule.getTriggerType() == null) {
             String type = triggerParameters.getString(TriggerParameters.type);
             updateTriggerType(scheduleRule, type);

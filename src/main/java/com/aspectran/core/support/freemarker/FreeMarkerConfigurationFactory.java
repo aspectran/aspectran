@@ -106,28 +106,62 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         this.defaultEncoding = defaultEncoding;
     }
 
-    public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
+    /**
+     * Set the Freemarker template loader path.
+     *
+     * @param templateLoaderPath the Freemarker template loader path
+     */
+    public void setTemplateLoaderPath(String templateLoaderPath) {
         this.templateLoaderPaths = new String[] { templateLoaderPath };
     }
 
-    public void setTemplateLoaderPath(String[] templateLoaderPaths) {
+    /**
+     * Set multiple Freemarker template loader paths.
+     *
+     * @param templateLoaderPaths the multiple Freemarker template loader paths
+     */
+    public void setTemplateLoaderPath(String... templateLoaderPaths) {
         this.templateLoaderPaths = templateLoaderPaths;
     }
 
+    /**
+     * Set a List of Freemarker template loader paths.
+     *
+     * @param templateLoaderPathList a List of Freemarker template loader paths
+     */
     public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
     }
 
-    public void setTemplateLoader(TemplateLoader templateLoaders) {
-        this.templateLoaders = new TemplateLoader[] {templateLoaders};
+    /**
+     * Set a TemplateLoader that will be used to search for templates.
+     *
+     * @param templateLoader the template loader
+     */
+    public void setTemplateLoader(TemplateLoader templateLoader) {
+        this.templateLoaders = new TemplateLoader[] { templateLoader };
     }
 
-    public void setTemplateLoader(TemplateLoader[] templateLoaders) {
+    /**
+     * Set multiple TemplateLoaders that will be used to search for templates.
+     *
+     * @param templateLoaders the multiple TemplateLoaders
+     */
+    public void setTemplateLoader(TemplateLoader... templateLoaders) {
         this.templateLoaders = templateLoaders;
     }
 
+    /**
+     * Set a List of TemplateLoaders that will be used to search for templates.
+     *
+     * @param templateLoaderList a List of TemplateLoaders
+     */
     public void setTemplateLoader(List<TemplateLoader> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
+    }
+
+    public void setTrimDirectives(TrimDirective... trimDirectives) {
+        this.trimDirectives = trimDirectives;
     }
 
     public void setTrimDirectives(Parameters parameters) {

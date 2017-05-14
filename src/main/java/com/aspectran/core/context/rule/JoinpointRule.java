@@ -25,7 +25,6 @@ import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class AspectRule.
@@ -83,7 +82,7 @@ public class JoinpointRule {
 
     private PointcutRule pointcutRule;
 
-    private Parameters joinpointParameters;
+    private JoinpointParameters joinpointParameters;
 
     public JoinpointType getJoinpointType() {
         return joinpointType;
@@ -124,11 +123,11 @@ public class JoinpointRule {
         this.pointcutRule = pointcutRule;
     }
 
-    public Parameters getJoinpointParameters() {
+    public JoinpointParameters getJoinpointParameters() {
         return joinpointParameters;
     }
 
-    private void setJoinpointParameters(Parameters joinpointParameters) {
+    private void setJoinpointParameters(JoinpointParameters joinpointParameters) {
         this.joinpointParameters = joinpointParameters;
     }
 
@@ -148,12 +147,12 @@ public class JoinpointRule {
 
     public static void updateJoinpoint(JoinpointRule joinpointRule, String text) {
         if (StringUtils.hasText(text)) {
-            Parameters joinpointParameters = new JoinpointParameters(text);
+            JoinpointParameters joinpointParameters = new JoinpointParameters(text);
             updateJoinpoint(joinpointRule, joinpointParameters);
         }
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, Parameters joinpointParameters) {
+    public static void updateJoinpoint(JoinpointRule joinpointRule, JoinpointParameters joinpointParameters) {
         if (joinpointRule.getJoinpointType() == null) {
             String type = joinpointParameters.getString(JoinpointParameters.type);
             updateJoinpointType(joinpointRule, type);
@@ -207,14 +206,14 @@ public class JoinpointRule {
         joinpointRule.setTargetHeaders(targetHeaders);
     }
 
-    public static void updatePointcutRule(JoinpointRule joinpointRule, Parameters pointcutParameters) {
+    public static void updatePointcutRule(JoinpointRule joinpointRule, PointcutParameters pointcutParameters) {
         PointcutRule pointcutRule = null;
 
         if (pointcutParameters != null) {
             List<String> plusPatternStringList = pointcutParameters.getStringList(PointcutParameters.plus);
             List<String> minusPatternStringList = pointcutParameters.getStringList(PointcutParameters.minus);
-            List<Parameters> includeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.include);
-            List<Parameters> execludeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.execlude);
+            List<PointcutTargetParameters> includeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.include);
+            List<PointcutTargetParameters> execludeTargetParametersList = pointcutParameters.getParametersList(PointcutParameters.execlude);
 
             int patternStringCount = (plusPatternStringList != null ? plusPatternStringList.size() : 0);
             int targetParametersCount = (includeTargetParametersList != null ? includeTargetParametersList.size() : 0);
@@ -245,14 +244,14 @@ public class JoinpointRule {
                     List<PointcutPatternRule> excludePointcutPatternRuleList = null;
                     if (execludeTargetParametersList != null && !execludeTargetParametersList.isEmpty()) {
                         excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>(execludeTargetParametersList.size());
-                        for (Parameters excludeTargetParameters : execludeTargetParametersList) {
+                        for (PointcutTargetParameters excludeTargetParameters : execludeTargetParametersList) {
                             PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(excludeTargetParameters);
                             if (pointcutPatternRule != null) {
                                 excludePointcutPatternRuleList.add(pointcutPatternRule);
                             }
                         }
                     }
-                    for (Parameters includeTargetParameters : includeTargetParametersList) {
+                    for (PointcutTargetParameters includeTargetParameters : includeTargetParametersList) {
                         PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeTargetParameters);
                         pointcutRule.addPointcutPatternRule(pointcutPatternRule, excludePointcutPatternRuleList);
                     }
@@ -266,11 +265,11 @@ public class JoinpointRule {
         joinpointRule.setPointcutRule(pointcutRule);
     }
 
-    private static PointcutPatternRule createPointcutPatternRule(Parameters excludeTargetParameters) {
+    private static PointcutPatternRule createPointcutPatternRule(PointcutTargetParameters pointcutTargetParameters) {
         PointcutPatternRule pointcutPatternRule = null;
-        String translet = excludeTargetParameters.getString(PointcutTargetParameters.translet);
-        String bean = excludeTargetParameters.getString(PointcutTargetParameters.bean);
-        String method = excludeTargetParameters.getString(PointcutTargetParameters.method);
+        String translet = pointcutTargetParameters.getString(PointcutTargetParameters.translet);
+        String bean = pointcutTargetParameters.getString(PointcutTargetParameters.bean);
+        String method = pointcutTargetParameters.getString(PointcutTargetParameters.method);
         if (StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
             pointcutPatternRule = PointcutPatternRule.newInstance(translet, bean, method);
         }

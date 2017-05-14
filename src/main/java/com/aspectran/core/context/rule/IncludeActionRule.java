@@ -90,6 +90,19 @@ public class IncludeActionRule {
     }
 
     /**
+     * Adds a new parameter rule with the specified name and returns it.
+     *
+     * @param parameterName the parameter name
+     * @return the parameter item rule
+     */
+    public ItemRule newParameterItemRule(String parameterName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(parameterName);
+        addParameterItemRule(itemRule);
+        return itemRule;
+    }
+
+    /**
      * Adds the parameter item rule.
      *
      * @param parameterItemRule the parameter item rule
@@ -117,6 +130,19 @@ public class IncludeActionRule {
      */
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
         this.attributeItemRuleMap = attributeItemRuleMap;
+    }
+
+    /**
+     * Adds a new attribute rule with the specified name and returns it.
+     *
+     * @param attributeName the attribute name
+     * @return the attribute item rule
+     */
+    public ItemRule newAttributeItemRule(String attributeName) {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setName(attributeName);
+        addAttributeItemRule(itemRule);
+        return itemRule;
     }
 
     /**

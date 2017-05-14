@@ -28,7 +28,6 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class ExceptionThrownRule.
@@ -36,6 +35,8 @@ import com.aspectran.core.util.StringUtils;
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
 public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleApplicable {
+
+    private final AspectAdviceRule aspectAdviceRule;
 
     private String[] exceptionTypes;
 
@@ -45,11 +46,19 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     private Executable action;
 
+    public ExceptionThrownRule() {
+        this(null);
+    }
+
+    public ExceptionThrownRule(AspectAdviceRule aspectAdviceRule) {
+        this.aspectAdviceRule = aspectAdviceRule;
+    }
+
     public String[] getExceptionTypes() {
         return exceptionTypes;
     }
 
-    public void setExceptionTypes(String[] exceptionTypes) {
+    public void setExceptionTypes(String... exceptionTypes) {
         this.exceptionTypes = exceptionTypes;
     }
 
@@ -155,7 +164,11 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     @Override
     public void applyActionRule(BeanActionRule beanActionRule) {
-        action = new BeanAction(beanActionRule, null);
+        BeanAction action = new BeanAction(beanActionRule, null);
+        if (aspectAdviceRule != null && beanActionRule.getBeanId() == null) {
+            action.setAspectAdviceRule(aspectAdviceRule);
+        }
+        this.action = action;
     }
 
     @Override
@@ -196,15 +209,6 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
      */
     public ActionType getActionType() {
         return (action != null ? action.getActionType() : null);
-    }
-
-    public static ExceptionThrownRule newInstance(String exceptionType) {
-        ExceptionThrownRule etr = new ExceptionThrownRule();
-        if (exceptionType != null) {
-            String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
-            etr.setExceptionTypes(exceptionTypes);
-        }
-        return etr;
     }
 
 }

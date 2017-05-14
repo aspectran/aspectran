@@ -26,7 +26,6 @@ package com.aspectran.core.context.rule.type;
  */
 public enum AspectAdviceType {
 
-    SETTINGS("settings"),
     BEFORE("before"),
     AFTER("after"),
     AROUND("around"),

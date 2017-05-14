@@ -20,13 +20,14 @@ import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.params.JoinpointParameters;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class AspectRule.
@@ -190,6 +191,13 @@ public class AspectRule implements BeanReferenceInspectable {
         this.settingsAdviceRule = settingsAdviceRule;
     }
 
+    public SettingsAdviceRule touchSettingsAdviceRule() {
+        if (settingsAdviceRule == null) {
+            settingsAdviceRule = new SettingsAdviceRule(this);
+        }
+        return settingsAdviceRule;
+    }
+
     public List<AspectAdviceRule> getAspectAdviceRuleList() {
         return aspectAdviceRuleList;
     }
@@ -198,13 +206,20 @@ public class AspectRule implements BeanReferenceInspectable {
         this.aspectAdviceRuleList = aspectAdviceRuleList;
     }
 
-    public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-        AspectAdviceRule.updateAspectAdviceRule(aspectAdviceRule);
-
-        if (aspectAdviceRuleList == null) {
-            aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
+    public AspectAdviceRule newAspectAdviceRule(AspectAdviceType aspectAdviceType) {
+        if (aspectAdviceType == null) {
+            throw new IllegalArgumentException("Argument 'aspectAdviceType' must not be null");
         }
-        aspectAdviceRuleList.add(aspectAdviceRule);
+        AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(this, aspectAdviceType);
+        touchAspectAdviceRuleList().add(aspectAdviceRule);
+        return aspectAdviceRule;
+    }
+
+    private List<AspectAdviceRule> touchAspectAdviceRuleList() {
+        if (aspectAdviceRuleList == null) {
+            aspectAdviceRuleList = new ArrayList<>();
+        }
+        return aspectAdviceRuleList;
     }
 
     public ExceptionRule getExceptionRule() {
@@ -289,7 +304,7 @@ public class AspectRule implements BeanReferenceInspectable {
         aspectRule.setJoinpointRule(joinpointRule);
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, Parameters joinpointParameters) {
+    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters) {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
         aspectRule.setJoinpointRule(joinpointRule);

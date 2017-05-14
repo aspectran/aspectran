@@ -50,4 +50,20 @@ public class JoinpointParameters extends AbstractParameters {
         super(parameterDefinitions, text);
     }
 
+    public void setJoinpointType(String joinpointType) {
+        putValue(type, joinpointType);
+    }
+
+    public void setTargetMethods(String... targetMethods) {
+        putValue(methods, targetMethods);
+    }
+
+    public void setTargetHeaders(String... targetHeaders) {
+        putValue(headers, targetHeaders);
+    }
+
+    public PointcutParameters newPointcutParameters() {
+        return newParameters(pointcut);
+    }
+
 }

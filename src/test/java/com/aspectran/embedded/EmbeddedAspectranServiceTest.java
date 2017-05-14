@@ -16,8 +16,6 @@
 package com.aspectran.embedded;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -27,6 +25,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.service.AspectranServiceException;
@@ -67,10 +66,10 @@ public class EmbeddedAspectranServiceTest {
         Translet translet = aspectranService.translet("echo");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
 
-        Map<String, String> params = new HashMap<>();
-        params.put("id", "0001");
-        params.put("name", "aspectran");
-        params.put("email", "aspectran@aspectran.com");
+        ParameterMap params = new ParameterMap();
+        params.setParameter("id", "0001");
+        params.setParameter("name", "aspectran");
+        params.setParameter("email", "aspectran@aspectran.com");
 
         String echo = aspectranService.template("echo", params);
         System.out.println(echo);

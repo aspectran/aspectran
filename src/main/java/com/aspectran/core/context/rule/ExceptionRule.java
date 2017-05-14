@@ -130,14 +130,4 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
         this.description = description;
     }
 
-    public static ExceptionRule newInstance() {
-        return new ExceptionRule();
-    }
-
-    public static ExceptionRule newInstance(ExceptionThrownRule exceptionThrownRule) {
-        ExceptionRule exceptionRule = new ExceptionRule();
-        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
-        return exceptionRule;
-    }
-
 }
