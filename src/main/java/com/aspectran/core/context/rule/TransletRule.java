@@ -247,10 +247,24 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.explicitContent = (contentList != null);
     }
 
+    /**
+     * Returns the content list.
+     * If not yet instantiated then create a new one.
+     *
+     * @return the content list
+     */
     public ContentList touchContentList() {
         return touchContentList(false, true);
     }
 
+    /**
+     * Returns the content list.
+     * If not yet instantiated then create a new one.
+     *
+     * @param explicitContent whether the content element is explicitly declared
+     * @param omittable whether the content list can be omitted
+     * @return the content list
+     */
     public ContentList touchContentList(boolean explicitContent, boolean omittable) {
         if (contentList == null) {
             contentList = new ContentList();
@@ -262,10 +276,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return contentList;
     }
 
+    /**
+     * Returns whether the <contents> element is explicitly declared.
+     *
+     * @return whether the content element is explicitly declared
+     */
     public boolean isExplicitContent() {
         return explicitContent;
     }
 
+    /**
+     * Sets the content list.
+     *
+     * @param contentList the content list
+     * @param explicitContent whether the content element is explicitly declared
+     */
     private void setContentList(ContentList contentList, boolean explicitContent) {
         this.contentList = contentList;
         this.explicitContent = explicitContent;
@@ -296,6 +321,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         touchActionList().applyActionRule(headingActionRule);
     }
 
+    /**
+     * Returns the action list.
+     * If not yet instantiated then create a new one.
+     *
+     * @return the action list
+     */
     private ActionList touchActionList() {
         touchContentList();
 
@@ -303,6 +334,18 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
             return contentList.get(0);
         } else {
             return contentList.newActionList(!explicitContent);
+        }
+    }
+
+    /**
+     * Adds the action list.
+     *
+     * @param actionList the action list
+     */
+    private void addActionList(ActionList actionList) {
+        if (actionList != null) {
+            touchContentList();
+            contentList.add(actionList);
         }
     }
 
@@ -384,13 +427,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         implicitResponse = true;
 
         return responseRule.applyResponseRule(forwardResponseRule);
-    }
-
-    private void addActionList(ActionList actionList) {
-        if (actionList != null) {
-            touchContentList();
-            contentList.add(actionList);
-        }
     }
 
     public void determineResponseRule() {
