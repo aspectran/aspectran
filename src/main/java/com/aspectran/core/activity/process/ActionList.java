@@ -33,7 +33,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * A list of actions.
+ * The set of actions is called a Content or ActionList.
  * 
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */

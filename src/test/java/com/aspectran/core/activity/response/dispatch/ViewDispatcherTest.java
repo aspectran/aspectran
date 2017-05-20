@@ -50,6 +50,8 @@ import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
 import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
+ * Test case for dispatching Views.
+ *
  * <p>Created: 2016. 9. 7.</p>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

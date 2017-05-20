@@ -35,6 +35,8 @@ import org.jline.terminal.TerminalBuilder;
  */
 public class Jline3ConsoleInout extends AbstractConsoleInout {
 
+    private static final String APP_NAME = "Aspectran Console";
+
     private static final Character MASK_CHAR = '*';
 
     private static final String encoding = Charset.defaultCharset().name();
@@ -47,8 +49,8 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
 
     public Jline3ConsoleInout() throws IOException {
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
-        this.reader = LineReaderBuilder.builder().appName("Aspectran Console").terminal(terminal).build();
-        this.commandReader = LineReaderBuilder.builder().appName("Aspectran Console").terminal(terminal).build();
+        this.reader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
+        this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
     }
 
     @Override

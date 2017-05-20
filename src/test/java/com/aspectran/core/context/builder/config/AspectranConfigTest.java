@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.service;
+package com.aspectran.core.context.builder.config;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
-import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AspectranServiceTest {
-
-    @Before
-    public void ready() {
-    }
+public class AspectranConfigTest {
 
     @Test
     public void aspectranConfigTest() throws IOException {
@@ -52,10 +42,6 @@ public class AspectranServiceTest {
         aponWriter.setNoQuotes(true);
         aponWriter.write(aspectranConfig);
         aponWriter.close();
-    }
-
-    @After
-    public void finish() {
     }
 
 }

@@ -37,7 +37,7 @@ import test.call.NumericBean;
 import test.call.TotalBean;
 
 /**
- * Test cases that call beans and templates.
+ * Test cases for calling beans and templates.
  *
  * <p>Created: 2017. 3. 20.</p>
  */

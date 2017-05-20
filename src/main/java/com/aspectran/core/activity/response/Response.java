@@ -58,7 +58,7 @@ public interface Response extends Replicable<Response> {
     ActionList getActionList();
 
     /**
-     * Replicate this response.
+     * Replicates and returns this response.
      *
      * @return the new response
      */

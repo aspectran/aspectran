@@ -18,13 +18,12 @@ package com.aspectran.core.activity.process;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * A list of contens.
+ * The set of Content is called Contents or ContentList.
  * 
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
@@ -36,8 +35,6 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
     private String name;
 
     private Boolean omittable;
-
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
     public ContentList() {
         super(3);
@@ -90,28 +87,6 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
             }
         }
         return count;
-    }
-
-    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-        return aspectAdviceRuleRegistry;
-    }
-
-    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-    }
-
-    public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-        if (aspectAdviceRuleRegistry == null) {
-            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-        }
-        return aspectAdviceRuleRegistry;
-    }
-
-    public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-        if (aspectAdviceRuleRegistry == null) {
-            return null;
-        }
-        return aspectAdviceRuleRegistry.replicate();
     }
 
     @Override

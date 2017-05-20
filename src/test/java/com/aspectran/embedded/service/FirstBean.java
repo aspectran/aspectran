@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded;
+package com.aspectran.embedded.service;
 
 import com.aspectran.core.context.bean.annotation.Autowired;
-import com.aspectran.core.context.bean.annotation.Bean;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.bean.annotation.Qualifier;
 
-@Configuration
-public class TestConfiguration {
+public class FirstBean {
 
     @Autowired
-    @Qualifier("FirstBean")
-    private FirstBean firstBean;
+    private SecondBean secondBean;
 
-    @Bean(id = "thirdBean", lazyInit = true)
-    public FirstBean getThirdBean() {
-        return firstBean;
+    public String getMessage() {
+        return secondBean.getMessage();
     }
 
 }

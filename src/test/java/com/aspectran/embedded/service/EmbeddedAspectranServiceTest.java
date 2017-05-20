@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded;
+package com.aspectran.embedded.service;
 
 import java.io.IOException;
 
@@ -29,7 +29,6 @@ import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
  * <p>Created: 2016. 9. 7.</p>

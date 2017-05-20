@@ -7,9 +7,9 @@
         Aspectran configuration for embedded mode for tests
     </description>
 
-    <bean scan="com.aspectran.embedded.*Bean" mask="com.aspectran.embedded.*"/>
+    <bean scan="com.aspectran.embedded.**.*Bean" mask="com.aspectran.embedded.service.*"/>
 
-    <bean scan="com.aspectran.embedded.*Configuration" mask="com.aspectran.embedded.*"/>
+    <bean scan="com.aspectran.embedded.**.*Configuration" mask="com.aspectran.embedded.service.*"/>
 
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>
@@ -58,19 +58,23 @@
             </parameters>
         </request>
         <transform type="transform/text" contentType="text/plain">
-            <template>
-                Using Builtin Token Template Engine
-                -------------------------------------
-                input-1: ${input-1}
-                input-2: ${input-2}
+            <template style="apon">
+                |-------------------------------------
+                |Using Builtin Token Template Engine
+                |-------------------------------------
+                |input-1: ${input-1}
+                |input-2: ${input-2}
+                |-------------------------------------
             </template>
         </transform>
     </translet>
 
-    <template id="echo" engine="token">
-        ID: ${id}
-        Name: ${name}
-        Email: ${email}
+    <template id="echo" engine="token" style="apon">
+        |
+        |ID: ${id}
+        |Name: ${name}
+        |Email: ${email}
+        |
     </template>
 
     <template id="selectQuery" engine="freemarker">
