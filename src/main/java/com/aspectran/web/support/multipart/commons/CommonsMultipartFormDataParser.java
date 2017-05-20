@@ -127,7 +127,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             if (maxRequestSize > -1) {
                 upload.setSizeMax(maxRequestSize);
             }
-            if (maxFileSize > -1){
+            if (maxFileSize > -1) {
                 upload.setFileSizeMax(maxFileSize);
             }
 
