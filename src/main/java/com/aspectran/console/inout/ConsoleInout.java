@@ -68,5 +68,9 @@ public interface ConsoleInout {
 
     Writer getUnclosableWriter() throws UnsupportedEncodingException;
 
+    void setStyle(String... styles);
+
+    void clearStyle();
+
 }
 

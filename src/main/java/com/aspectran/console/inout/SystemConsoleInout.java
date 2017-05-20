@@ -106,4 +106,14 @@ public class SystemConsoleInout extends AbstractConsoleInout {
         return System.console().writer();
     }
 
+    @Override
+    public void setStyle(String... styles) {
+        // Do Nothing
+    }
+
+    @Override
+    public void clearStyle() {
+        // Do Nothing
+    }
+
 }

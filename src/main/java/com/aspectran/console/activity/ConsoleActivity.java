@@ -42,7 +42,6 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -134,7 +133,9 @@ public class ConsoleActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
+            consoleInout.setStyle("bold");
             consoleInout.writeLine("Required parameters:");
+            consoleInout.clearStyle();
 
             for (ItemRule itemRule : parameterItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
@@ -142,8 +143,11 @@ public class ConsoleActivity extends CoreActivity {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
                 }
 
-                String mandatoryMarker = itemRule.isMandatory() ? "*" : " ";
-                consoleInout.writeLine(" %s %s: %s", mandatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+                String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                consoleInout.setStyle("red:light", "blink");
+                consoleInout.write(mandatoryMarker);
+                consoleInout.clearStyle();
+                consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
             }
 
             enterRequiredParameters(parameterItemRuleList);
@@ -154,13 +158,17 @@ public class ConsoleActivity extends CoreActivity {
         ItemRuleList missingItemRules1 = enterEachParameter(parameterItemRuleList);
 
         if (missingItemRules1 != null) {
+            consoleInout.setStyle("red:light");
             consoleInout.writeLine("Please enter a value for all required parameters:");
+            consoleInout.clearStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
-            if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
+            if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
+                consoleInout.setStyle("bold", "red");
                 consoleInout.writeLine("Missing required parameters:");
+                consoleInout.clearStyle();
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
@@ -178,7 +186,9 @@ public class ConsoleActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
+            consoleInout.setStyle("bold");
             consoleInout.writeLine("Required attributes:");
+            consoleInout.clearStyle();
 
             for (ItemRule itemRule : attributeItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
@@ -186,8 +196,11 @@ public class ConsoleActivity extends CoreActivity {
                     tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
                 }
 
-                String mandatoryMarker = itemRule.isMandatory() ? "*" : " ";
-                consoleInout.writeLine(" %s %s: %s", mandatoryMarker, itemRule.getName(), TokenParser.toString(tokens));
+                String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                consoleInout.setStyle("red:light", "blink");
+                consoleInout.write(mandatoryMarker);
+                consoleInout.clearStyle();
+                consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
             }
 
             enterRequiredAttributes(attributeItemRuleList);
@@ -198,27 +211,34 @@ public class ConsoleActivity extends CoreActivity {
         ItemRuleList missingItemRules1 = enterEachParameter(attributeItemRuleList);
 
         if (missingItemRules1 != null) {
+            consoleInout.setStyle("yellow");
             consoleInout.writeLine("Please enter a value for all required attributes:");
+            consoleInout.clearStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
-            if (missingItemRules2 != null && missingItemRules1.size() == missingItemRules2.size()) {
+            if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
-                String missingParamNames = StringUtils.joinCommaDelimitedList(itemNames);
-                consoleInout.writeLine("Missing required attributes: %s", missingParamNames);
-
+                consoleInout.setStyle("red");
+                consoleInout.writeLine("Missing required attributes:");
+                consoleInout.clearStyle();
+                for (String name : itemNames) {
+                    consoleInout.writeLine("   %s", name);
+                }
                 terminate();
             }
         }
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
+        consoleInout.setStyle("bold");
         consoleInout.writeLine("Enter a value for each token:");
+        consoleInout.clearStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>(itemRuleList.size());
 
         try {
-            Map<Token, ItemRule> inputTokens = new LinkedHashMap<>(itemRuleList.size());
+            Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>(itemRuleList.size());
             for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
@@ -235,17 +255,29 @@ public class ConsoleActivity extends CoreActivity {
                             }
                         }
                         if (!exists) {
-                            inputTokens.put(t1, itemRule);
+                            Set<ItemRule> rules = new LinkedHashSet<>();
+                            rules.add(itemRule);
+                            inputTokens.put(t1, rules);
+                        } else {
+                            Set<ItemRule> rules = inputTokens.get(t1);
+                            rules.add(itemRule);
                         }
                     }
                 }
             }
 
-            for (Map.Entry<Token, ItemRule> entry : inputTokens.entrySet()) {
+            for (Map.Entry<Token, Set<ItemRule>> entry : inputTokens.entrySet()) {
                 Token token = entry.getKey();
-                ItemRule itemRule = entry.getValue();
+                Set<ItemRule> rules = entry.getValue();
+                boolean security = false;
+                for (ItemRule ir : rules) {
+                    if (ir.isSecurity()) {
+                        security = true;
+                        break;
+                    }
+                }
                 String value;
-                if (itemRule.isSecurity()) {
+                if (security) {
                     value = consoleInout.readPassword("   %s: ", token.stringify());
                 } else {
                     value = consoleInout.readLine("   %s: ", token.stringify());
@@ -256,8 +288,8 @@ public class ConsoleActivity extends CoreActivity {
                 if (value != null) {
                     getRequestAdapter().setParameter(token.getName(), value);
                 } else {
-                    for (ItemRule ir : itemRuleList) {
-                        if (token.getName().equals(ir.getName()) || ir.containsToken(token)) {
+                    for (ItemRule ir : rules) {
+                        if (ir.isMandatory()) {
                             missingItemRules.add(ir);
                         }
                     }
