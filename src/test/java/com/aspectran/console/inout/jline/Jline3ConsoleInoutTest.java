@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.inout;
+package com.aspectran.console.inout.jline;
 
 import java.io.IOException;
 
-/**‰
+import com.aspectran.console.inout.ConsoleInout;
+
+/**
  * <p>Created: 2017. 3. 5.</p>
  */
 public class Jline3ConsoleInoutTest {

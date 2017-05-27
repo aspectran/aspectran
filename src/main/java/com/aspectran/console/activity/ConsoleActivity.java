@@ -133,9 +133,9 @@ public class ConsoleActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            consoleInout.setStyle("bold");
+            consoleInout.setStyle("WHITE");
             consoleInout.writeLine("Required parameters:");
-            consoleInout.clearStyle();
+            consoleInout.offStyle();
 
             for (ItemRule itemRule : parameterItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
@@ -144,9 +144,9 @@ public class ConsoleActivity extends CoreActivity {
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                consoleInout.setStyle("red:light", "blink");
+                consoleInout.setStyle("YELLOW");
                 consoleInout.write(mandatoryMarker);
-                consoleInout.clearStyle();
+                consoleInout.offStyle();
                 consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
             }
 
@@ -158,17 +158,17 @@ public class ConsoleActivity extends CoreActivity {
         ItemRuleList missingItemRules1 = enterEachParameter(parameterItemRuleList);
 
         if (missingItemRules1 != null) {
-            consoleInout.setStyle("red:light");
+            consoleInout.setStyle("YELLOW");
             consoleInout.writeLine("Please enter a value for all required parameters:");
-            consoleInout.clearStyle();
+            consoleInout.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
-                consoleInout.setStyle("bold", "red");
+                consoleInout.setStyle("RED");
                 consoleInout.writeLine("Missing required parameters:");
-                consoleInout.clearStyle();
+                consoleInout.offStyle();
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
@@ -186,9 +186,9 @@ public class ConsoleActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            consoleInout.setStyle("bold");
+            consoleInout.setStyle("WHITE");
             consoleInout.writeLine("Required attributes:");
-            consoleInout.clearStyle();
+            consoleInout.offStyle();
 
             for (ItemRule itemRule : attributeItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
@@ -197,9 +197,9 @@ public class ConsoleActivity extends CoreActivity {
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                consoleInout.setStyle("red:light", "blink");
+                consoleInout.setStyle("YELLOW");
                 consoleInout.write(mandatoryMarker);
-                consoleInout.clearStyle();
+                consoleInout.offStyle();
                 consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
             }
 
@@ -211,17 +211,17 @@ public class ConsoleActivity extends CoreActivity {
         ItemRuleList missingItemRules1 = enterEachParameter(attributeItemRuleList);
 
         if (missingItemRules1 != null) {
-            consoleInout.setStyle("yellow");
+            consoleInout.setStyle("YELLOW");
             consoleInout.writeLine("Please enter a value for all required attributes:");
-            consoleInout.clearStyle();
+            consoleInout.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
 
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
-                consoleInout.setStyle("red");
+                consoleInout.setStyle("RED");
                 consoleInout.writeLine("Missing required attributes:");
-                consoleInout.clearStyle();
+                consoleInout.offStyle();
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
@@ -233,7 +233,7 @@ public class ConsoleActivity extends CoreActivity {
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
         consoleInout.setStyle("bold");
         consoleInout.writeLine("Enter a value for each token:");
-        consoleInout.clearStyle();
+        consoleInout.offStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>(itemRuleList.size());
 

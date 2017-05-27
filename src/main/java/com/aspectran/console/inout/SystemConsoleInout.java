@@ -112,7 +112,7 @@ public class SystemConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
-    public void clearStyle() {
+    public void offStyle() {
         // Do Nothing
     }
 

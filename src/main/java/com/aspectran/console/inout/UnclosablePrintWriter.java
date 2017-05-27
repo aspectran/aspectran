@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 /**
  * The Class UnclosablePrintWriter.
@@ -29,7 +30,11 @@ import java.io.UnsupportedEncodingException;
 public class UnclosablePrintWriter extends PrintWriter {
 
     public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
-        super(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)), true);
+        this(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)));
+    }
+
+    public UnclosablePrintWriter(Writer writer) {
+        super(writer, true);
     }
 
     @Override

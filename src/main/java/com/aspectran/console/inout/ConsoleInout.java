@@ -70,7 +70,7 @@ public interface ConsoleInout {
 
     void setStyle(String... styles);
 
-    void clearStyle();
+    void offStyle();
 
 }
 

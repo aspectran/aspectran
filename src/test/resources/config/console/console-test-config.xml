@@ -5,7 +5,7 @@
 
     <description style="apon">
         |-----------------------------------------------------
-        |   Demonstrating the Aspectran console application
+        |   {{magenta}}Demonstrating the Aspectran console application{{off}}
         |-----------------------------------------------------
         |
         |Built-in commands for this console application:
@@ -133,7 +133,7 @@
     <translet name="login">
         <description style="apon">
             |
-            | If you enter the required ID and password for login, it will be printed on the console.
+            |   If you enter the required ID and password for login, it will be printed on the console.
             |
         </description>
         <request>

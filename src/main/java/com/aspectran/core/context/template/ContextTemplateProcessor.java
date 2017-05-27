@@ -120,7 +120,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             }
 
             if (writer == null) {
-                writer = (activity.getResponseAdapter() != null ? activity.getResponseAdapter().getWriter() : null);
+                if (activity.getResponseAdapter() != null) {
+                    writer = activity.getResponseAdapter().getWriter();
+                }
                 if (writer == null) {
                     throw new IllegalStateException("No such writer to transfer the output string");
                 }

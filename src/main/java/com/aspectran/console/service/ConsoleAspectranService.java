@@ -24,7 +24,7 @@ import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.console.inout.ConsoleInout;
 import com.aspectran.console.inout.ConsoleTerminatedException;
-import com.aspectran.console.inout.Jline3ConsoleInout;
+import com.aspectran.console.inout.jline.Jline3ConsoleInout;
 import com.aspectran.console.inout.SystemConsoleInout;
 import com.aspectran.console.service.command.CommandParser;
 import com.aspectran.core.activity.Activity;
