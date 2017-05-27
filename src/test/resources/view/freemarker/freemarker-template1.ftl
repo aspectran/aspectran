@@ -1,6 +1,6 @@
 -------------- Tesing for FreeMarkerViewDispatcher --------------
-<#list misc.fruits>
-<p>Fruits:</p>
+<#list fruits>
+<p>Fruits: ${fruits?join(', ')}</p>
 <ul>
     <#items as fruit>
     <li>${fruit}<#sep> and</#sep></li>

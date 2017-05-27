@@ -172,14 +172,12 @@ public class ViewDispatcherTest {
         fruits.add("Apple");
         fruits.add("Banana");
         fruits.add("Orange");
+        fruits.add("Strawberry");
 
-        Map<String, List<String>> misc = new HashMap<>();
-        misc.put("fruits", fruits);
+        Map<String, Object> attrs = new HashMap<>();
+        attrs.put("fruits", fruits);
 
-        Map<String, Object> attributeMap = new HashMap<>();
-        attributeMap.put("misc", misc);
-
-        Translet translet = aspectranService.translet("test/appended/freemarker/template1", attributeMap);
+        Translet translet = aspectranService.translet("test/appended/freemarker/template1", attrs);
         String result = translet.getResponseAdapter().getWriter().toString();
 
         System.out.println(result);

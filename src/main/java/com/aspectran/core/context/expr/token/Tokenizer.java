@@ -79,19 +79,15 @@ public class Tokenizer {
             switch (status) {
             case AT_TEXT:
                 textBuf.append(c);
-
                 if (Token.isTokenSymbol(c)) {
                     symbol = c;
                     status = AT_TOKEN_SYMBOL;
                     // abc$ --> tokenStartOffset: 3
                     tokenStartOffset = textBuf.length() - 1;
                 }
-
                 break;
-
             case AT_TOKEN_SYMBOL:
                 textBuf.append(c);
-
                 if (c == Token.START_BRACKET) {
                     status = AT_TOKEN_NAME;
                 } else {
@@ -104,20 +100,16 @@ public class Tokenizer {
                         status = AT_TEXT;
                     }
                 }
-
                 break;
-
             case AT_TOKEN_NAME:
             case AT_TOKEN_VALUE:
                 textBuf.append(c);
-
                 if (status == AT_TOKEN_NAME) {
                     if (c == Token.VALUE_SEPARATOR) {
                         status = AT_TOKEN_VALUE;
                         break;
                     }
                 }
-
                 if (c == Token.END_BRACKET) {
                     if (nameBuf.length() > 0 || valueBuf.length() > 0) {
                         // save previous non-token string
@@ -139,7 +131,6 @@ public class Tokenizer {
                     status = AT_TEXT;
                     break;
                 }
-
                 if (status == AT_TOKEN_NAME) {
                     if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
                         status = AT_TEXT;
@@ -149,7 +140,6 @@ public class Tokenizer {
                 } else {
                     valueBuf.append(c);
                 }
-
                 break;
             }
         }
