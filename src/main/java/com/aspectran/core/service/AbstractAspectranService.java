@@ -67,6 +67,10 @@ public abstract class AbstractAspectranService implements AspectranService {
         this.applicationAdapter = rootAspectranService.getApplicationAdapter();
         this.activityContext = rootAspectranService.getActivityContext();
         this.aspectranConfig = rootAspectranService.getAspectranConfig();
+
+        if (this.activityContext == null) {
+            throw new IllegalStateException("Oops! ActivityContext is not yet created.");
+        }
     }
 
     @Override
@@ -77,6 +81,10 @@ public abstract class AbstractAspectranService implements AspectranService {
     @Override
     public ActivityContext getActivityContext() {
         return activityContext;
+    }
+
+    public void setActivityContext(ActivityContext activityContext) {
+        this.activityContext = activityContext;
     }
 
     @Override
@@ -139,7 +147,7 @@ public abstract class AbstractAspectranService implements AspectranService {
         }
 
         try {
-            activityContext = activityContextBuilder.build();
+            activityContextBuilder.build();
         } catch (Exception e) {
             throw new AspectranServiceException("Could not load ActivityContext", e);
         }
@@ -151,7 +159,6 @@ public abstract class AbstractAspectranService implements AspectranService {
         }
 
         activityContextBuilder.destroy();
-        activityContext = null;
     }
 
     protected void startSchedulerService() throws SchedulerServiceException {

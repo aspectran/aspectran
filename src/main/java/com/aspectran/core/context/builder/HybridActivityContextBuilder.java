@@ -22,12 +22,12 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AbstractAspectranService;
 import com.aspectran.core.util.ShutdownHooks;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
-    private final AspectranService aspectranService;
+    private final AbstractAspectranService aspectranService;
 
     private ActivityContext activityContext;
 
@@ -45,7 +45,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         this.aspectranService = null;
     }
 
-    public HybridActivityContextBuilder(AspectranService aspectranService) {
+    public HybridActivityContextBuilder(AbstractAspectranService aspectranService) {
         super(aspectranService.getApplicationAdapter());
         this.aspectranService = aspectranService;
         setAspectranServiceController(aspectranService);
@@ -106,8 +106,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 activityContext = parser.parse(aspectranParameters);
             }
 
-            activityContext.initialize(aspectranService);
             this.activityContext = activityContext;
+
+            if (aspectranService != null) {
+                aspectranService.setActivityContext(activityContext);
+            }
+
+            activityContext.initialize(aspectranService);
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
@@ -144,6 +149,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 activityContext = null;
 
                 log.info("ActivityContext has been destroyed");
+            }
+
+            if (aspectranService != null) {
+                aspectranService.setActivityContext(null);
             }
 
             this.active.set(false);

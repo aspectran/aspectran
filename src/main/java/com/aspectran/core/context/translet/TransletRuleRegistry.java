@@ -88,7 +88,6 @@ public class TransletRuleRegistry {
         if (nameTokens == null || nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT) {
             return null;
         }
-
         return PathVariableMap.newInstance(nameTokens, requestTransletName);
     }
 
@@ -208,7 +207,6 @@ public class TransletRuleRegistry {
         transletRule.determineResponseRule();
 
         String transletName = applyTransletNamePattern(transletRule.getName());
-
         transletRule.setName(transletName);
 
         if (transletRule.getAllowedMethods() != null) {

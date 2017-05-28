@@ -57,24 +57,19 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         try {
             ServletContext servletContext = getServletContext();
             Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
-
+            WebAspectranService rootWebAspectranService = null;
             if (attr != null) {
                 if (!(attr instanceof WebAspectranService)) {
                     throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" + WebAspectranService.class.getName() + "]");
                 }
-
-                WebAspectranService rootAspectranService = (WebAspectranService)attr;
-                webAspectranService = WebAspectranService.create(this, rootAspectranService);
-                standalone = (rootAspectranService != webAspectranService);
+                rootWebAspectranService = (WebAspectranService)attr;
+                webAspectranService = WebAspectranService.create(this, rootWebAspectranService);
             } else {
                 webAspectranService = WebAspectranService.create(this);
-                standalone = true;
             }
-
+            standalone = (rootWebAspectranService != webAspectranService);
             if (standalone) {
                 log.info("AspectranService is running in standalone mode inside the servlet: " + this);
-            } else {
-                log.info("Detected RootAspectranService: " + webAspectranService.getActivityContext().getRootAspectranService());
             }
         } catch (Exception e) {
             log.error("Unable to initialize WebActivityServlet", e);
