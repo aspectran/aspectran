@@ -277,7 +277,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     /**
-     * Returns whether the <contents> element is explicitly declared.
+     * Returns whether the content element is explicitly declared.
      *
      * @return whether the content element is explicitly declared
      */

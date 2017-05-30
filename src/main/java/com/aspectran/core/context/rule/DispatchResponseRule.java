@@ -103,7 +103,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
      * Sets the dispatch name and its name tokens.
      *
      * @param name the new dispatch name
-     * @param name the name tokens
+     * @param nameTokens the name tokens
      */
     public void setName(String name, Token[] nameTokens) {
         this.name = name;
