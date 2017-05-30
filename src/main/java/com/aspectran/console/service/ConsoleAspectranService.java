@@ -24,8 +24,8 @@ import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.console.inout.ConsoleInout;
 import com.aspectran.console.inout.ConsoleTerminatedException;
-import com.aspectran.console.inout.jline.Jline3ConsoleInout;
 import com.aspectran.console.inout.SystemConsoleInout;
+import com.aspectran.console.inout.jline.Jline3ConsoleInout;
 import com.aspectran.console.service.command.CommandParser;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
@@ -43,7 +43,6 @@ import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -56,7 +55,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     private static final Log log = LogFactory.getLog(ConsoleAspectranService.class);
 
-    private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
+    private static final String DEFAULT_ROOT_CONTEXT = "config/root-config.xml";
 
     private SessionAdapter sessionAdapter;
 
@@ -293,19 +292,19 @@ public class ConsoleAspectranService extends BasicAspectranService {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
         }
 
-        Parameters contextParameters = aspectranConfig.touchAspectranContextConfig();
-        String rootContext = contextParameters.getString(AspectranContextConfig.root);
+        AspectranContextConfig contextConfig = aspectranConfig.touchAspectranContextConfig();
+        String rootContext = contextConfig.getString(AspectranContextConfig.root);
         if (rootContext == null || rootContext.length() == 0) {
-            contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            contextConfig.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
         }
 
         ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
         consoleAspectranService.initialize(aspectranConfig);
 
-        Parameters consoleParameters = aspectranConfig.getAspectranConsoleConfig();
-        if (consoleParameters != null) {
-            String consoleMode = consoleParameters.getString(AspectranConsoleConfig.mode);
-            String commandPrompt = consoleParameters.getString(AspectranConsoleConfig.prompt);
+        AspectranConsoleConfig consoleConfig = aspectranConfig.getAspectranConsoleConfig();
+        if (consoleConfig != null) {
+            String consoleMode = consoleConfig.getString(AspectranConsoleConfig.mode);
+            String commandPrompt = consoleConfig.getString(AspectranConsoleConfig.prompt);
             ConsoleInout consoleInout;
             if ("jline".equals(consoleMode)) {
                 consoleInout = new Jline3ConsoleInout();
@@ -316,9 +315,9 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 consoleInout.setCommandPrompt(commandPrompt);
             }
             consoleAspectranService.setConsoleInout(consoleInout);
-            boolean showDescription = BooleanUtils.toBoolean(consoleParameters.getBoolean(AspectranConsoleConfig.showDescription));
+            boolean showDescription = BooleanUtils.toBoolean(consoleConfig.getBoolean(AspectranConsoleConfig.showDescription));
             consoleAspectranService.setShowDescription(showDescription);
-            consoleAspectranService.setExposals(consoleParameters.getStringArray(AspectranConsoleConfig.exposals));
+            consoleAspectranService.setExposals(consoleConfig.getStringArray(AspectranConsoleConfig.exposals));
         } else {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
         }

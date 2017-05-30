@@ -47,7 +47,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     private static final Log log = LogFactory.getLog(EmbeddedAspectranService.class);
 
-    private static final String DEFAULT_ROOT_CONTEXT = "classpath:embedded-aspectran-config.xml";
+    private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
 
     private SessionAdapter sessionAdapter;
 

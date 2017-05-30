@@ -36,7 +36,6 @@ import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
@@ -62,7 +61,7 @@ public class WebAspectranService extends BasicAspectranService {
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/aspectran-config.xml";
+    private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/root-config.xml";
 
     private String uriDecoding;
 
@@ -206,7 +205,7 @@ public class WebAspectranService extends BasicAspectranService {
         WebAspectranService webAspectranService = new WebAspectranService(rootAspectranService);
         AspectranConfig aspectranConfig = rootAspectranService.getAspectranConfig();
         if (aspectranConfig != null) {
-            Parameters webConfig = aspectranConfig.getAspectranWebConfig();
+            AspectranWebConfig webConfig = aspectranConfig.getAspectranWebConfig();
             String defaultServletName = null;
             if (webConfig != null) {
                 webAspectranService.setUriDecoding(webConfig.getString(AspectranWebConfig.uriDecoding));
