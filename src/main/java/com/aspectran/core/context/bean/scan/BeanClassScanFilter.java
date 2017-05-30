@@ -20,6 +20,15 @@ package com.aspectran.core.context.bean.scan;
  */
 public interface BeanClassScanFilter {
 
-    String filter(String beanId, String resourceName, Class<?> scannedClass);
+    /**
+     * Filter the retrieved candidate classes.
+     * If null is returned instead of the bean ID, the candidate class is discarded without being included.
+     *
+     * @param beanId the bean id
+     * @param resourceName the resource name
+     * @param retrievedClass the retrieved class
+     * @return the bean id
+     */
+    String filter(String beanId, String resourceName, Class<?> retrievedClass);
 
 }
