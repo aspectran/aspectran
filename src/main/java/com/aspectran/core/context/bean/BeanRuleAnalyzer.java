@@ -83,9 +83,8 @@ public class BeanRuleAnalyzer {
     protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
         String factoryMethodName = beanRule.getFactoryMethodName();
 
-        Class<?> targetBeanClass;
-
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+        Class<?> targetBeanClass;
 
         if (m1 != null) {
             beanRule.setFactoryMethod(m1);
@@ -93,11 +92,9 @@ public class BeanRuleAnalyzer {
             targetBeanClass = m1.getReturnType();
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
-
             if (m2 == null) {
                 throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
-
             beanRule.setFactoryMethod(m2);
             targetBeanClass = m2.getReturnType();
         }
@@ -123,11 +120,9 @@ public class BeanRuleAnalyzer {
             beanRule.setInitMethodRequiresTranslet(true);
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
-
             if (m2 == null) {
                 throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
-
             beanRule.setInitMethod(m2);
         }
     }
@@ -139,11 +134,9 @@ public class BeanRuleAnalyzer {
 
         String destroyMethodName = beanRule.getDestroyMethodName();
         Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
-
         if (m == null) {
             throw new BeanRuleException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
         }
-
         beanRule.setDestroyMethod(m);
     }
 
@@ -170,13 +163,11 @@ public class BeanRuleAnalyzer {
     public static void checkRequiredProperty(BeanRule beanRule, Method method) {
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         String propertyName = dropCase(method.getName());
-
         if (propertyItemRuleMap != null) {
             if (propertyItemRuleMap.containsKey(propertyName)) {
                 return;
             }
         }
-
         throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
     }
 
