@@ -18,6 +18,7 @@ package com.aspectran.core.service;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ShutdownHooks;
 import com.aspectran.scheduler.service.SchedulerServiceException;
 
@@ -96,6 +97,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                 this.active.set(true);
 
                 log.info("AspectranService has been started successfully");
+                log.info("Welcome to Aspectran " + Aspectran.VERSION);
 
                 if (aspectranServiceLifeCycleListener != null) {
                     aspectranServiceLifeCycleListener.started();
