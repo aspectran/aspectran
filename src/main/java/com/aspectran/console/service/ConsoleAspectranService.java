@@ -23,7 +23,6 @@ import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.console.inout.ConsoleInout;
-import com.aspectran.console.inout.ConsoleTerminatedException;
 import com.aspectran.console.inout.SystemConsoleInout;
 import com.aspectran.console.inout.jline.Jline3ConsoleInout;
 import com.aspectran.console.service.command.CommandParser;
@@ -121,11 +120,11 @@ public class ConsoleAspectranService extends BasicAspectranService {
         this.showDescription = showDescription;
     }
 
-    protected void showDescription() {
+    public void showDescription() {
         showDescription(false);
     }
 
-    protected void showDescription(boolean force) {
+    public void showDescription(boolean force) {
         if (force || isShowDescription()) {
             if (getActivityContext().getDescription() != null) {
                 consoleInout.writeLine(getActivityContext().getDescription());
@@ -139,7 +138,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
      *
      * @param command the translet name
      */
-    protected void service(String command) {
+    public void service(String command) {
         if (!isExposable(command)) {
             log.info("Unexposable translet name: " + command);
             return;
@@ -201,64 +200,6 @@ public class ConsoleAspectranService extends BasicAspectranService {
             }
             if (activity != null) {
                 activity.finish();
-            }
-        }
-    }
-
-    public void service() {
-        try {
-            loop:
-            while (true) {
-                String command = consoleInout.readCommand();
-
-                if (command == null) {
-                    continue;
-                }
-                command = command.trim();
-                if (command.isEmpty()) {
-                    continue;
-                }
-
-                switch (command) {
-                    case "restart":
-                        log.info("Restarting the Aspectran Service...");
-                        restart();
-                        break;
-                    case "pause":
-                        log.info("Pausing the Aspectran Service...");
-                        pause();
-                        break;
-                    case "resume":
-                        log.info("Resuming the Aspectran Service...");
-                        resume();
-                        break;
-                    case "desc on":
-                        log.info("Descripton On");
-                        setShowDescription(true);
-                        break;
-                    case "desc off":
-                        log.info("Descripton Off");
-                        setShowDescription(false);
-                        break;
-                    case "help":
-                        showDescription(true);
-                        break ;
-                    case "quit":
-                        log.info("Goodbye");
-                        break loop;
-                    default:
-                        service(command);
-                        consoleInout.writeLine();
-                }
-            }
-        } catch (ConsoleTerminatedException e) {
-            // Do Nothing
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (isActive()) {
-                log.info("Do not terminate this application while destroying all scoped beans");
-                shutdown();
             }
         }
     }
