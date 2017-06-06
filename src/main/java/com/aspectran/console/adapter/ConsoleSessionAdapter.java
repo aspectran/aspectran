@@ -15,9 +15,8 @@
  */
 package com.aspectran.console.adapter;
 
-import java.util.Random;
-
 import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.context.session.BasicSessionData;
 
 /**
  * The Class ConsoleSessionAdapter.
@@ -26,49 +25,11 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
  */
 public class ConsoleSessionAdapter extends BasicSessionAdapter {
 
-    private final long creationTime = System.currentTimeMillis();
-
-    private final String id = generateSessionId();
-
     /**
      * Instantiates a new ConsoleSessionAdapter.
      */
     public ConsoleSessionAdapter() {
-        super(null);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public long getCreationTime() {
-        return creationTime;
-    }
-
-    @Override
-    public long getLastAccessedTime() {
-        return -1L;
-    }
-
-    @Override
-    public int getMaxInactiveInterval() {
-        return 0;
-    }
-
-    @Override
-    public void invalidate() {
-        // nothing to do
-    }
-
-    private String generateSessionId() {
-        long seed = creationTime;
-        seed ^= Runtime.getRuntime().freeMemory();
-
-        Random rnd = new Random(seed);
-
-        return Long.toString(Math.abs(rnd.nextLong()),16);
+        super(new BasicSessionData());
     }
 
 }

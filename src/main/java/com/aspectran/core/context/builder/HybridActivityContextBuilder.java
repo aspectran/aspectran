@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractAspectranService;
-import com.aspectran.core.util.ShutdownHooks;
+import com.aspectran.core.util.thread.ShutdownHooks;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 

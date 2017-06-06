@@ -34,7 +34,7 @@ public interface Response extends Replicable<Response> {
      *
      * @throws ResponseException the response exception
      */
-    void response(Activity activity) throws ResponseException;
+    void respond(Activity activity) throws ResponseException;
 
     /**
      * Gets the response type.

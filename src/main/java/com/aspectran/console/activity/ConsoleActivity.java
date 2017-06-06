@@ -69,6 +69,7 @@ public class ConsoleActivity extends CoreActivity {
     public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
         super(service.getActivityContext());
         setSessionAdapter(service.getSessionAdapter());
+        getSessionAdapter().updateLastAccessedTime();
 
         this.service = service;
         this.consoleInout = service.getConsoleInout();

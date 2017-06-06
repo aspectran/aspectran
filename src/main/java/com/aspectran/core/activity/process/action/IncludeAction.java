@@ -68,9 +68,7 @@ public class IncludeAction extends AbstractAction {
                 }
                 if (includeActionRule.getAttributeItemRuleMap() != null) {
                     Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
-                    for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                        innerActivity.getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
-                    }
+                    innerActivity.getRequestAdapter().putAllAttributes(valueMap);
                 }
             }
 

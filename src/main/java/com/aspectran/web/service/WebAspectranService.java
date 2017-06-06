@@ -88,7 +88,7 @@ public class WebAspectranService extends BasicAspectranService {
      * @param response current HTTP servlet response
      * @throws IOException if an input or output error occurs while the activity is handling the HTTP request
      */
-    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void serve(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUri = request.getRequestURI();
 
         if (uriDecoding != null) {

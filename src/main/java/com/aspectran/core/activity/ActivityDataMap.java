@@ -61,8 +61,8 @@ public class ActivityDataMap extends HashMap<String, Object> {
 
     private void prefillData() {
         if (requestAdapter != null) {
-            requestAdapter.fillPrameterMap(this);
-            requestAdapter.fillAttributeMap(this);
+            requestAdapter.fillAllPrameters(this);
+            requestAdapter.fillAllAttributes(this);
         }
         if (activity.getProcessResult() != null) {
             for (ContentResult cr : activity.getProcessResult()) {

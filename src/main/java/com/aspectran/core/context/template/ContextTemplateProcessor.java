@@ -191,7 +191,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         this.closed = false;
         this.active = true;
 
-        log.info("TemplateProcessor has been initialized");
+        log.info("TemplateProcessor initialization completed");
     }
 
     /**

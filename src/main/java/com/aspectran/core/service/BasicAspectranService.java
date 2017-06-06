@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.util.Aspectran;
-import com.aspectran.core.util.ShutdownHooks;
+import com.aspectran.core.util.thread.ShutdownHooks;
 import com.aspectran.scheduler.service.SchedulerServiceException;
 
 /**
@@ -218,6 +218,8 @@ public class BasicAspectranService extends AbstractAspectranService {
     public void shutdown() {
         if (!this.derivedService) {
             synchronized (this.serviceControlMonitor) {
+                log.info("Destroying all cached resources");
+
                 doShutdown();
                 removeShutdownTask();
 

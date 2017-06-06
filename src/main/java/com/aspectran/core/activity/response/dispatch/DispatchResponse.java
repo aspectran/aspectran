@@ -52,7 +52,7 @@ public class DispatchResponse implements Response {
     }
 
     @Override
-    public void response(Activity activity) {
+    public void respond(Activity activity) {
         try {
             if (debugEnabled) {
                 log.debug("response " + dispatchResponseRule);

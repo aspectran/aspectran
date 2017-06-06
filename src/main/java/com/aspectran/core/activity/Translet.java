@@ -272,6 +272,32 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setParameter(String name, String[] values);
 
     /**
+     * Return an unmutable Map of the request parameters,
+     * with parameter names as map keys and parameter values as map values.
+     * If the parameter value type is the String then map value will be of type String.
+     * If the parameter value type is the String array then map value will be of type String array.
+     *
+     * @return the unmutable parameter map
+     * @since 1.4.0
+     */
+    Map<String, Object> getAllParameters();
+
+    /**
+     * Returns the parameter copied to the new instance.
+     *
+     * @return the mutable parameter map
+     */
+    Map<String, Object> copyAllParameters();
+
+    /**
+     * Fills all parameters to the specified map.
+     *
+     * @param targetParameters the target parameter map to be filled
+     * @since 2.0.0
+     */
+    void fillAllPrameters(Map<String, Object> targetParameters);
+
+    /**
      * Returns a {@code FileParameter} object as a given activity's request parameter name,
      * or {@code null} if the parameter does not exist.
      *
@@ -329,9 +355,8 @@ public interface Translet extends BeanRegistry, MessageSource {
      * Removes the file parameter with the specified name.
      *
      * @param name a {@code String} specifying the name of the file parameter
-     * @return the removed file parameters
      */
-    FileParameter[] removeFileParameter(String name);
+    void removeFileParameter(String name);
 
     /**
      * Returns the value of the named attribute as a given type,
@@ -370,32 +395,13 @@ public interface Translet extends BeanRegistry, MessageSource {
     void removeAttribute(String name);
 
     /**
-     * Return a mutable Map of the request parameters,
-     * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the String then map value will be of type String.
-     * If the parameter value type is the String array then map value will be of type String array.
-     *
-     * @return the parameter map
-     * @since 1.4.0
-     */
-    Map<String, Object> getParameterMap();
-
-    /**
-     * Fills all parameters to the specified map.
-     *
-     * @param parameterMap the parameter map
-     * @since 2.0.0
-     */
-    void fillPrameterMap(Map<String, Object> parameterMap);
-
-    /**
      * Return a mutable {@code Map} of the request attributes,
      * with attribute names as map keys and attribute value as map value.
      *
      * @return the attribute map
      * @since 2.0.0
      */
-    Map<String, Object> getAttributeMap();
+    Map<String, Object> getAllAttributes();
 
     /**
      * Fills all attributes to the specified map.

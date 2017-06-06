@@ -138,7 +138,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
      *
      * @param command the translet name
      */
-    public void service(String command) {
+    public void serve(String command) {
         if (!isExposable(command)) {
             log.info("Unexposable translet name: " + command);
             return;

@@ -24,8 +24,8 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -213,6 +213,21 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
+    public Map<String, Object> getAllParameters() {
+        return getRequestAdapter().getAllParameters();
+    }
+
+    @Override
+    public Map<String, Object> copyAllParameters() {
+        return getRequestAdapter().copyAllParameters();
+    }
+
+    @Override
+    public void fillAllPrameters(Map<String, Object> targetParameters) {
+        getRequestAdapter().fillAllPrameters(targetParameters);
+    }
+
+    @Override
     public FileParameter getFileParameter(String name) {
         return getRequestAdapter().getFileParameter(name);
     }
@@ -238,8 +253,8 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public FileParameter[] removeFileParameter(String name) {
-        return getRequestAdapter().removeFileParameter(name);
+    public void removeFileParameter(String name) {
+        getRequestAdapter().removeFileParameter(name);
     }
 
     @Override
@@ -263,23 +278,13 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Map<String, Object> getParameterMap() {
-        return getRequestAdapter().getParameterMap();
-    }
-
-    @Override
-    public void fillPrameterMap(Map<String, Object> parameterMap) {
-        getRequestAdapter().fillPrameterMap(parameterMap);
-    }
-
-    @Override
-    public Map<String, Object> getAttributeMap() {
-        return getRequestAdapter().getAttributeMap();
+    public Map<String, Object> getAllAttributes() {
+        return getRequestAdapter().getAllAttributes();
     }
 
     @Override
     public void fillAttributeMap(Map<String, Object> attributeMap) {
-        getRequestAdapter().fillAttributeMap(attributeMap);
+        getRequestAdapter().fillAllAttributes(attributeMap);
     }
 
     @Override

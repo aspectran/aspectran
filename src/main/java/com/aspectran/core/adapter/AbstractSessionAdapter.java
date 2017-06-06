@@ -48,15 +48,8 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     @Override
     public String toString() {
-        if (adaptee == null) {
-            return super.toString();
-        }
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("id", getId());
-        tsb.append("creationTime", getCreationTime());
-        tsb.append("lastAccessedTime", getLastAccessedTime());
-        tsb.append("maxInactiveInterval", getMaxInactiveInterval());
-        tsb.append("attributeNames", getAttributeNames());
+        tsb.append("adaptee", adaptee);
         return tsb.toString();
     }
 

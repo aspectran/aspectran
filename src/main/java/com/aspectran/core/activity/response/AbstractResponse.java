@@ -28,7 +28,7 @@ import com.aspectran.web.support.http.HttpStatus;
  *
  * @since 3.0.0
  */
-public abstract class AdaptionalResponse {
+public abstract class AbstractResponse {
 
     private MultiValueMap<String, String> headers;
 

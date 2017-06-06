@@ -74,6 +74,8 @@ public interface SessionAdapter {
      */
     long getLastAccessedTime();
 
+    void updateLastAccessedTime();
+
     /**
      * Returns the maximum time interval, in seconds, that the servlet container will keep
      * this session open between client accesses.

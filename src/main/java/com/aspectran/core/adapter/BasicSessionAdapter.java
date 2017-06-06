@@ -15,57 +15,104 @@
  */
 package com.aspectran.core.adapter;
 
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.aspectran.core.context.bean.scope.SessionScope;
+import com.aspectran.core.context.session.BasicSessionData;
+import com.aspectran.core.util.thread.Locker;
+import com.aspectran.core.util.thread.Locker.Lock;
 
 /**
  * The Class BasicSessionAdapter.
  * 
  * @since 2.3.0
  */
-public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
+public class BasicSessionAdapter extends AbstractSessionAdapter {
 
-    private final Map<String, Object> attributes = new HashMap<>();
-
-    private final SessionScope sessionScope = new SessionScope();
+    private Locker locker = new Locker();
 
     /**
      * Instantiates a new BasicSessionAdapter.
-     *
-     * @param adaptee the adaptee object
      */
-    public BasicSessionAdapter(Object adaptee) {
-        super(adaptee);
+    public BasicSessionAdapter(BasicSessionData sessionData) {
+        super(sessionData);
+    }
+
+    @Override
+    public String getId() {
+        return ((BasicSessionData)adaptee).getId();
+    }
+
+    @Override
+    public long getCreationTime() {
+        return ((BasicSessionData)adaptee).getCreationTime();
+    }
+
+    @Override
+    public long getLastAccessedTime() {
+        try (Lock lock = locker.lockIfNotHeld()) {
+            return ((BasicSessionData)adaptee).getLastAccessedTime();
+        }
+    }
+
+    public void updateLastAccessedTime() {
+        try (Lock lock = locker.lockIfNotHeld()) {
+            ((BasicSessionData)adaptee).updateLastAccessedTime();
+        }
+    }
+
+    @Override
+    public int getMaxInactiveInterval() {
+        try (Lock lock = locker.lockIfNotHeld()) {
+            return ((BasicSessionData)adaptee).getMaxInactiveInterval();
+        }
+    }
+
+    public void setMaxInactiveInterval(int secs) {
+        try (Lock lock = locker.lockIfNotHeld()) {
+            ((BasicSessionData)adaptee).setMaxInactiveInterval(secs);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return (T)attributes.get(name);
+        try (Lock lock = locker.lockIfNotHeld()) {
+            return ((BasicSessionData)adaptee).getAttribute(name);
+        }
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
+        try (Lock lock = locker.lockIfNotHeld()) {
+            ((BasicSessionData)adaptee).setAttribute(name, value);
+        }
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(attributes.keySet());
+        try (Lock lock = locker.lockIfNotHeld()) {
+            return ((BasicSessionData)adaptee).getAttributeNames();
+        }
     }
 
     @Override
     public void removeAttribute(String name) {
-        attributes.remove(name);
+        try (Lock lock = locker.lockIfNotHeld()) {
+            ((BasicSessionData)adaptee).removeAttribute(name);
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        try (Lock lock = locker.lockIfNotHeld()) {
+            ((BasicSessionData)adaptee).invalidate();
+        }
     }
 
     @Override
     public SessionScope getSessionScope() {
-        return sessionScope;
+        return ((BasicSessionData)adaptee).getSessionScope();
     }
 
 }

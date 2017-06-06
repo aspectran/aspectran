@@ -40,12 +40,11 @@ public class ConsoleCommand {
         this.consoleInout = service.getConsoleInout();
     }
 
-    public void handle() {
+    public void serve() {
         try {
             loop:
             while (true) {
                 String command = consoleInout.readCommand();
-
                 if (command == null) {
                     continue;
                 }
@@ -82,15 +81,14 @@ public class ConsoleCommand {
                         gc();
                         break;
                     case "quit":
-                        log.info("Goodbye");
                         break loop;
                     default:
-                        service.service(command);
+                        service.serve(command);
                         consoleInout.writeLine();
                 }
             }
         } catch (ConsoleTerminatedException e) {
-            // Do Nothing
+            // Will be shutdown
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

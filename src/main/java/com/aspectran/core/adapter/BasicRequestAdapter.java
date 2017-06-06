@@ -20,6 +20,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.util.thread.Locker.Lock;
+
 /**
  * The Class BasicRequestAdapter.
   *
@@ -29,7 +31,7 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
 
     private String characterEncoding;
 
-    private Map<String, Object> attributeMap = new HashMap<>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     /**
      * Instantiates a new BasicRequestAdapter.
@@ -63,22 +65,60 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return (T)attributeMap.get(name);
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            return (T)attributes.get(name);
+        }
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        attributeMap.put(name, value);
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            if (value == null) {
+                attributes.remove(name);
+            } else {
+                attributes.put(name, value);
+            }
+        }
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(attributeMap.keySet());
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            return Collections.enumeration(attributes.keySet());
+        }
     }
 
     @Override
     public void removeAttribute(String name) {
-        attributeMap.remove(name);
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            attributes.remove(name);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getAllAttributes() {
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            return Collections.unmodifiableMap(attributes);
+        }
+    }
+
+    @Override
+    public void putAllAttributes(Map<String, Object> attributes) {
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            this.attributes.putAll(attributes);
+        }
+    }
+
+    @Override
+    public void fillAllAttributes(Map<String, Object> targetAttributes) {
+        if (targetAttributes == null) {
+            throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
+        }
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            if (attributes != null) {
+                targetAttributes.putAll(attributes);
+            }
+        }
     }
 
 }

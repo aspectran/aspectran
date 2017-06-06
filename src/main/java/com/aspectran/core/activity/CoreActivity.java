@@ -372,7 +372,7 @@ public class CoreActivity extends BasicActivity {
                 getResponseAdapter().flush();
             }
 
-            res.response(this);
+            res.respond(this);
 
             if (res.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)res;

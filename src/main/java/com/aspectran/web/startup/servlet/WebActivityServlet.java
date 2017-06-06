@@ -79,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        webAspectranService.service(req, res);
+        webAspectranService.serve(req, res);
     }
 
     @Override

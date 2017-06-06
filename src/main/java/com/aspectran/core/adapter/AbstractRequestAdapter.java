@@ -17,15 +17,16 @@ package com.aspectran.core.adapter;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.request.AdaptionalRequest;
+import com.aspectran.core.activity.request.AbstractRequest;
 import com.aspectran.core.context.bean.scope.RequestScope;
+import com.aspectran.core.util.thread.Locker;
 
 /**
  * The Class AbstractRequestAdapter.
   *
  * @since 2011. 3. 13.
 */
-public abstract class AbstractRequestAdapter extends AdaptionalRequest implements RequestAdapter {
+public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
     protected final Object adaptee;
 
@@ -65,15 +66,12 @@ public abstract class AbstractRequestAdapter extends AdaptionalRequest implement
 
     @Override
     public RequestScope getRequestScope(boolean create) {
-        if (requestScope == null && create) {
-            requestScope = new RequestScope();
+        try (Locker.Lock ignored = locker.lockIfNotHeld()) {
+            if (requestScope == null && create) {
+                requestScope = new RequestScope();
+            }
+            return requestScope;
         }
-        return requestScope;
-    }
-
-    @Override
-    public void setRequestScope(RequestScope requestScope) {
-        this.requestScope = requestScope;
     }
 
 }

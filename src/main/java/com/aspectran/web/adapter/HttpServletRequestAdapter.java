@@ -17,7 +17,9 @@ package com.aspectran.web.adapter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -93,6 +95,34 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     @Override
     public void removeAttribute(String name) {
         ((HttpServletRequest)adaptee).removeAttribute(name);
+    }
+
+    @Override
+    public Map<String, Object> getAllAttributes() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        fillAllAttributes(attrs);
+        return attrs;
+    }
+
+    @Override
+    public void putAllAttributes(Map<String, Object> attributes) {
+        if (attributes != null) {
+            for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+                setAttribute(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    @Override
+    public void fillAllAttributes(Map<String, Object> targetAttributes) {
+        if (targetAttributes == null) {
+            throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
+        }
+        Enumeration<String> names = getAttributeNames();
+        while(names.hasMoreElements()) {
+            String name = names.nextElement();
+            targetAttributes.put(name, getAttribute(name));
+        }
     }
 
     @Override

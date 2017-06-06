@@ -59,13 +59,6 @@ public interface RequestAdapter {
     RequestScope getRequestScope(boolean create);
 
     /**
-     * Sets the request scope.
-     *
-     * @param requestScope the new request scope
-     */
-    void setRequestScope(RequestScope requestScope);
-
-    /**
      * Returns the name of the character encoding used in the body of this request.
      *
      * @return a {@code String} containing the name of the character encoding,
@@ -95,7 +88,7 @@ public interface RequestAdapter {
      *
      * @return an {@code MultiValueMap} object, may be {@code null}
      */
-    MultiValueMap<String, String> getHeaders();
+    MultiValueMap<String, String> getAllHeaders();
 
     /**
      * Returns the value of the response header with the given name.
@@ -209,6 +202,32 @@ public interface RequestAdapter {
     void setParameter(String name, String[] values);
 
     /**
+     * Return an unmutable Map of the request parameters,
+     * with parameter names as map keys and parameter values as map values.
+     * If the parameter value type is the String then map value will be of type String.
+     * If the parameter value type is the String array then map value will be of type String array.
+     *
+     * @return the unmutable parameter map
+     * @since 1.4.0
+     */
+    Map<String, Object> getAllParameters();
+
+    /**
+     * Returns the parameter copied to the new instance.
+     *
+     * @return the mutable parameter map
+     */
+    Map<String, Object> copyAllParameters();
+
+    /**
+     * Fills all parameters to the specified map.
+     *
+     * @param targetParameters the target parameter map to be filled
+     * @since 2.0.0
+     */
+    void fillAllPrameters(Map<String, Object> targetParameters);
+
+    /**
      * Returns a {@code FileParameter} object as a given activity's request parameter name,
      * or {@code null} if the parameter does not exist.
      *
@@ -266,9 +285,8 @@ public interface RequestAdapter {
      * Removes the file parameter with the specified name.
      *
      * @param name a {@code String} specifying the name of the file parameter
-     * @return the removed file parameters
      */
-    FileParameter[] removeFileParameter(String name);
+    void removeFileParameter(String name);
 
     /**
      * Returns the value of the named attribute as a given type,
@@ -307,40 +325,27 @@ public interface RequestAdapter {
     void removeAttribute(String name);
 
     /**
-     * Return a mutable Map of the request parameters,
-     * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the String then map value will be of type String.
-     * If the parameter value type is the String array then map value will be of type String array.
-     *
-     * @return the parameter map
-     * @since 1.4.0
-     */
-    Map<String, Object> getParameterMap();
-
-    /**
-     * Fills all parameters to the specified map.
-     *
-     * @param targetParameterMap the target parameter map to be filled
-     * @since 2.0.0
-     */
-    void fillPrameterMap(Map<String, Object> targetParameterMap);
-
-    /**
-     * Return a mutable {@code Map} of the request attributes,
+     * Returns an unmutable map of the attributes,
      * with attribute names as map keys and attribute value as map value.
      *
-     * @return the attribute map
-     * @since 2.0.0
+     * @return an unmodifiable map of the attributes
      */
-    Map<String, Object> getAttributeMap();
+    Map<String, Object> getAllAttributes();
+
+    /**
+     * Copies all of the mappings from the specified attributes.
+     *
+     * @param attributes the specified attributes
+     */
+    void putAllAttributes(Map<String, Object> attributes);
 
     /**
      * Fills all attributes to the specified map.
      *
-     * @param targetAttributeMap the target attribute map to be filled
+     * @param targetAttributes the target attribute map to be filled
      * @since 2.0.0
      */
-    void fillAttributeMap(Map<String, Object> targetAttributeMap);
+    void fillAllAttributes(Map<String, Object> targetAttributes);
 
     /**
      * Returns whether request header has exceed the maximum length.

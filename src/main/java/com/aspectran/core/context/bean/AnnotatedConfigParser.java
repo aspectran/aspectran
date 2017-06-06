@@ -302,7 +302,11 @@ public class AnnotatedConfigParser {
     private void parseBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
         try {
             Bean beanAnno = method.getAnnotation(Bean.class);
-            String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
+            String beanId = StringUtils.emptyToNull(beanAnno.id());
+            if (beanId == null) {
+                beanId = method.getName();
+            }
+            beanId = applyNamespaceForBean(nameArray, beanId);
             ScopeType scopeType = beanAnno.scope();
             String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
             String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -335,7 +339,12 @@ public class AnnotatedConfigParser {
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) {
         try {
             Request requestAnno = method.getAnnotation(Request.class);
-            String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
+            String transletName = StringUtils.emptyToNull(requestAnno.translet());
+            if (transletName == null) {
+                transletName = method.getName();
+                transletName = transletName.replace('_', ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+            }
+            applyNamespaceForTranslet(nameArray, transletName);
             MethodType[] allowedMethods = requestAnno.method();
 
             String actionId = null;
@@ -425,14 +434,12 @@ public class AnnotatedConfigParser {
         }
 
         StringBuilder sb = new StringBuilder();
-
         for (int i = nameArray.length - 1; i >= 0; i--) {
             sb.append(nameArray[i]);
             if (i > 0) {
                 sb.append(ActivityContext.ID_SEPARATOR_CHAR);
             }
         }
-
         return sb.toString();
     }
 

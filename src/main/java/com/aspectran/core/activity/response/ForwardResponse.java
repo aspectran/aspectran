@@ -50,7 +50,7 @@ public class ForwardResponse implements Response {
     }
 
     @Override
-    public void response(Activity activity) {
+    public void respond(Activity activity) {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         if (requestAdapter == null) {
             return;

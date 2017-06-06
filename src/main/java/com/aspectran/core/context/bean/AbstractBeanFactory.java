@@ -376,7 +376,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
             instantiateSingletons();
 
-            log.info("BeanFactory has been initialized");
+            log.info("BeanFactory initialization completed");
         } else {
             log.warn("BeanFactory has already been initialized");
         }
@@ -445,7 +445,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         if (failedDestroyes > 0) {
             log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
         } else {
-            log.info("Singletons has been destroyed");
+            log.debug("Destroyed all cached singletons");
         }
     }
 

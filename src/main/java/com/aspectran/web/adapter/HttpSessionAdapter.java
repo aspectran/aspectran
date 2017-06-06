@@ -84,9 +84,14 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     public int getMaxInactiveInterval() {
         HttpSession session = getSession(false);
         if (session == null) {
-            return 0;
+            return -1;
         }
         return session.getMaxInactiveInterval();
+    }
+
+    @Override
+    public void updateLastAccessedTime() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

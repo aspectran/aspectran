@@ -62,7 +62,7 @@ public class TextTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void response(Activity activity) throws TransformResponseException {
+    public void respond(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;

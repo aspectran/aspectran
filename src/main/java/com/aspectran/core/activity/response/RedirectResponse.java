@@ -49,7 +49,7 @@ public class RedirectResponse implements Response {
     }
 
     @Override
-    public void response(Activity activity) throws ResponseException {
+    public void respond(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
