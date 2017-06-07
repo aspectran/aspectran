@@ -21,8 +21,8 @@ import java.net.URL;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.component.expr.token.Token;
+import com.aspectran.core.component.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;

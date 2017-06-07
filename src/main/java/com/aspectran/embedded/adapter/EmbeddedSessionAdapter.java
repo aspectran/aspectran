@@ -16,7 +16,7 @@
 package com.aspectran.embedded.adapter;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.context.session.BasicSessionData;
+import com.aspectran.core.component.session.BasicSessionData;
 
 /**
  * The Class EmbeddedSessionAdapter.

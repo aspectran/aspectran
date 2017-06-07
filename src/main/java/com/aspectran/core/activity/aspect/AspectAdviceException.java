@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.aspect;
 
-import com.aspectran.core.context.aspect.AspectException;
+import com.aspectran.core.component.aspect.AspectException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**

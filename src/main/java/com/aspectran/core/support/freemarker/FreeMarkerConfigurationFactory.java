@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.support.freemarker.directive.CustomTrimDirective;
 import com.aspectran.core.support.freemarker.directive.TrimDirective;
 import com.aspectran.core.support.freemarker.directive.TrimDirectiveGroup;

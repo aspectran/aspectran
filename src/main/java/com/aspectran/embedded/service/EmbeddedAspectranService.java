@@ -23,7 +23,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;

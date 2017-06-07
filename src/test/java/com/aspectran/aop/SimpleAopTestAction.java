@@ -16,8 +16,8 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.bean.annotation.Request;
+import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Request;
 
 /**
  * <p>Created: 2016. 11. 5.</p>

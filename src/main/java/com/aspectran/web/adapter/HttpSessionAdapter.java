@@ -22,8 +22,8 @@ import javax.servlet.http.HttpSession;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
+import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.scope.SessionScope;
 
 /**
  * The Class HttpSessionAdapter.

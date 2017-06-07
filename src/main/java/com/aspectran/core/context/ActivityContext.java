@@ -17,13 +17,13 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.env.ContextEnvironment;
-import com.aspectran.core.context.message.MessageSource;
-import com.aspectran.core.context.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.context.template.TemplateProcessor;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.component.aspect.AspectRuleRegistry;
+import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.env.ContextEnvironment;
+import com.aspectran.core.component.message.MessageSource;
+import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
+import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.service.AspectranService;
 
 /**

@@ -17,8 +17,8 @@ package com.aspectran.core.adapter;
 
 import java.util.Enumeration;
 
-import com.aspectran.core.context.bean.scope.SessionScope;
-import com.aspectran.core.context.session.BasicSessionData;
+import com.aspectran.core.component.bean.scope.SessionScope;
+import com.aspectran.core.component.session.BasicSessionData;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.Locker.Lock;
 

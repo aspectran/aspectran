@@ -22,13 +22,13 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.template.TemplateProcessor;
 
 /**
  * The Interface Activity.

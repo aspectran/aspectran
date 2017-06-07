@@ -19,11 +19,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.bean.InstantiatedBean;
-import com.aspectran.core.context.bean.ablility.DisposableBean;
-import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
+import com.aspectran.core.component.bean.InstantiatedBean;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.ItemParameters;

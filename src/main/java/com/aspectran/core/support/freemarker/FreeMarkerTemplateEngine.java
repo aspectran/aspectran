@@ -21,8 +21,8 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
-import com.aspectran.core.context.template.engine.TemplateEngine;
-import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
+import com.aspectran.core.component.template.engine.TemplateEngine;
+import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -26,8 +26,8 @@ import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.service.AspectranServiceException;
 
 /**

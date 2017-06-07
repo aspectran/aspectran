@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.scope.SessionScope;
+import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

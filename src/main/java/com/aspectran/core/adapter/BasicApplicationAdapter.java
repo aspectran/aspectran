@@ -27,7 +27,9 @@ import java.util.Map;
  */
 public class BasicApplicationAdapter extends AbstractApplicationAdapter {
 
-    private Map<String, Object> attributes = new HashMap<>();
+    private final Object lock = new Object();
+
+    private final Map<String, Object> attributes = new HashMap<>();
 
     /**
      * Instantiates a new BasicApplicationAdapter.
@@ -48,28 +50,28 @@ public class BasicApplicationAdapter extends AbstractApplicationAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        synchronized (this) {
+        synchronized (lock) {
             return (T)attributes.get(name);
         }
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        synchronized (this) {
+        synchronized (lock) {
             attributes.put(name, value);
         }
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        synchronized (this) {
+        synchronized (lock) {
             return Collections.enumeration(attributes.keySet());
         }
     }
 
     @Override
     public void removeAttribute(String name) {
-        synchronized (this) {
+        synchronized (lock) {
             attributes.remove(name);
         }
     }

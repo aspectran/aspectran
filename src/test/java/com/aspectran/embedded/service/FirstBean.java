@@ -15,7 +15,7 @@
  */
 package com.aspectran.embedded.service;
 
-import com.aspectran.core.context.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Autowired;
 
 public class FirstBean {
 

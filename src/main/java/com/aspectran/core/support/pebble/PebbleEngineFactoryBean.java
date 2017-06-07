@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.support.pebble;
 
-import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.mitchellbosecke.pebble.PebbleEngine;
 
 /**

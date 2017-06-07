@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.lang.reflect.Method;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**

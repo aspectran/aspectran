@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.component.expr.ItemEvaluator;
+import com.aspectran.core.component.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.util.MultiValueMap;
 

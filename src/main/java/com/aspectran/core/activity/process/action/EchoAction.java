@@ -17,8 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.component.expr.ItemEvaluator;
+import com.aspectran.core.component.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;

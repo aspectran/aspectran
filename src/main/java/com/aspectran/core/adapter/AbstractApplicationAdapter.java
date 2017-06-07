@@ -20,14 +20,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
-import com.aspectran.core.context.bean.scope.ApplicationScope;
+import com.aspectran.core.component.bean.scope.ApplicationScope;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AbstractApplicationAdapter.
-  *
+ *
  * @since 2011. 3. 13.
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {

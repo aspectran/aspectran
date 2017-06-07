@@ -15,10 +15,10 @@
  */
 package com.aspectran.embedded.service;
 
-import com.aspectran.core.context.bean.annotation.Autowired;
-import com.aspectran.core.context.bean.annotation.Bean;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.bean.annotation.Qualifier;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 
 @Configuration
 public class TestConfiguration {

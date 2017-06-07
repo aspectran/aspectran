@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;

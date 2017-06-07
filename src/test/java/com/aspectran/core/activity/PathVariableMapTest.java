@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.component.expr.token.Token;
+import com.aspectran.core.component.expr.token.Tokenizer;
 
 /**
  * <p>Created: 2016. 3. 1.</p>

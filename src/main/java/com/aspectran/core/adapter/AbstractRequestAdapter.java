@@ -18,7 +18,7 @@ package com.aspectran.core.adapter;
 import java.util.Map;
 
 import com.aspectran.core.activity.request.AbstractRequest;
-import com.aspectran.core.context.bean.scope.RequestScope;
+import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.util.thread.Locker;
 
 /**

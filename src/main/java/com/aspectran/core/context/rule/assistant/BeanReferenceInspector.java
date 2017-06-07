@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.context.bean.BeanRuleAnalyzer;
-import com.aspectran.core.context.bean.BeanRuleRegistry;
+import com.aspectran.core.component.bean.BeanRuleAnalyzer;
+import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;

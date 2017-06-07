@@ -24,15 +24,15 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
@@ -54,7 +54,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private String maskPattern;
 
-    private Parameters filterParameters;
+    private FilterParameters filterParameters;
 
     private RequestRule requestRule;
 
@@ -197,7 +197,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
      *
      * @return the filter parameters
      */
-    public Parameters getFilterParameters() {
+    public FilterParameters getFilterParameters() {
         return filterParameters;
     }
 
@@ -206,7 +206,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
      *
      * @param filterParameters the new filter parameters
      */
-    public void setFilterParameters(Parameters filterParameters) {
+    public void setFilterParameters(FilterParameters filterParameters) {
         this.filterParameters = filterParameters;
     }
 
@@ -609,7 +609,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
         ResponseRule rr = responseRule.replicate();
         if (rr.getResponse() != null) {
-            // assign dispatch name if the dispatch respone exists.
+            // assign dispatch name if the dispatch respone exists
             if (rr.getResponse() instanceof DispatchResponse) {
                 DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
                 DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();

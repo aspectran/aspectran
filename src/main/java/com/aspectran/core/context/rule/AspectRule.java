@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;

@@ -23,8 +23,8 @@ import org.quartz.SchedulerFactory;
 import org.quartz.impl.SchedulerRepository;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 
 /**
  * The type Quartz scheduler factory bean.

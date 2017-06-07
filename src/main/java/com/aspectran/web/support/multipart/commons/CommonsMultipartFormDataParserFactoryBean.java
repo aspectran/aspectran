@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.multipart.commons;
 
-import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**

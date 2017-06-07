@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.component.template.TemplateDataMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.template.TemplateDataMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

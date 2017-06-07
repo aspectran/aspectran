@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.support;
 
+import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.context.bean.aware.ActivityContextAware;
 
 /**
  * {@code BasePathFactoryBean} that returns the base path under which the application is running.

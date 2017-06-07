@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.context.bean.scope.RequestScope;
+import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 

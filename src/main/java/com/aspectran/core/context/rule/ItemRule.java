@@ -26,8 +26,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.component.expr.token.Token;
+import com.aspectran.core.component.expr.token.TokenParser;
 import com.aspectran.core.context.rule.params.CallParameters;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;

@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import com.aspectran.core.context.bean.scope.ApplicationScope;
+import com.aspectran.core.component.bean.scope.ApplicationScope;
 
 /**
  * The Interface ApplicationAdapter.

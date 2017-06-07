@@ -19,9 +19,9 @@ import java.util.List;
 
 import com.aspectran.core.activity.SessionScopeActivity;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**

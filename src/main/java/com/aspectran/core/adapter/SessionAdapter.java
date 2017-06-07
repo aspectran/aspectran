@@ -17,7 +17,7 @@ package com.aspectran.core.adapter;
 
 import java.util.Enumeration;
 
-import com.aspectran.core.context.bean.scope.SessionScope;
+import com.aspectran.core.component.bean.scope.SessionScope;
 
 /**
  * The Interface SessionAdapter.
