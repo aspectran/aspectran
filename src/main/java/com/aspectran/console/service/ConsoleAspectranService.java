@@ -36,8 +36,8 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranConsoleConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.service.AspectranServiceControlListener;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
@@ -271,7 +271,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
     }
 
     private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
-        aspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
+        aspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
             @Override
             public void started() {
                 aspectranService.pauseTimeout = 0;

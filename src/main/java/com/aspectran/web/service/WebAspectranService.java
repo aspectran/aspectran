@@ -33,8 +33,8 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.config.AspectranWebConfig;
 import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AspectranServiceControlListener;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.AspectranServiceLifeCycleListener;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -312,7 +312,7 @@ public class WebAspectranService extends BasicAspectranService {
     }
 
     private static void setAspectranServiceLifeCycleListener(final WebAspectranService webAspectranService) {
-        webAspectranService.setAspectranServiceLifeCycleListener(new AspectranServiceLifeCycleListener() {
+        webAspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
             @Override
             public void started() {
                 webAspectranService.pauseTimeout = 0L;

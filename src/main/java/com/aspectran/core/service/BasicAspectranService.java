@@ -27,9 +27,9 @@ import com.aspectran.scheduler.service.SchedulerServiceException;
  */
 public class BasicAspectranService extends AbstractAspectranService {
 
-    private final boolean derivedService;
+    private final boolean derived;
 
-    private AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener;
+    private AspectranServiceControlListener aspectranServiceControlListener;
 
     /** Flag that indicates whether this service is currently active */
     private final AtomicBoolean active = new AtomicBoolean();
@@ -50,17 +50,17 @@ public class BasicAspectranService extends AbstractAspectranService {
      */
     public BasicAspectranService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
-        this.derivedService = false;
+        this.derived = false;
     }
 
     public BasicAspectranService(AspectranService rootAspectranService) {
         super(rootAspectranService);
-        this.derivedService = true;
+        this.derived = true;
     }
 
     @Override
-    public void setAspectranServiceLifeCycleListener(AspectranServiceLifeCycleListener aspectranServiceLifeCycleListener) {
-        this.aspectranServiceLifeCycleListener = aspectranServiceLifeCycleListener;
+    public void setAspectranServiceControlListener(AspectranServiceControlListener aspectranServiceControlListener) {
+        this.aspectranServiceControlListener = aspectranServiceControlListener;
     }
 
     /**
@@ -77,7 +77,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void startup() throws AspectranServiceException {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     throw new AspectranServiceException("Could not start AspectranService because it has already been destroyed");
@@ -99,8 +99,8 @@ public class BasicAspectranService extends AbstractAspectranService {
                 log.info("AspectranService has been started successfully");
                 log.info("Welcome to Aspectran " + Aspectran.VERSION);
 
-                if (aspectranServiceLifeCycleListener != null) {
-                    aspectranServiceLifeCycleListener.started();
+                if (aspectranServiceControlListener != null) {
+                    aspectranServiceControlListener.started();
                 }
             }
         }
@@ -108,7 +108,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void restart() throws AspectranServiceException {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not restart AspectranService because it has already been destroyed");
@@ -134,8 +134,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 log.info("AspectranService has been restarted successfully");
 
-                if (aspectranServiceLifeCycleListener != null) {
-                    aspectranServiceLifeCycleListener.restarted(isHardReload());
+                if (aspectranServiceControlListener != null) {
+                    aspectranServiceControlListener.restarted(isHardReload());
                 }
             }
         }
@@ -143,7 +143,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void pause() throws SchedulerServiceException {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not pause AspectranService because it has already been destroyed");
@@ -159,8 +159,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 log.info("AspectranService has been paused");
 
-                if (aspectranServiceLifeCycleListener != null) {
-                    aspectranServiceLifeCycleListener.paused();
+                if (aspectranServiceControlListener != null) {
+                    aspectranServiceControlListener.paused();
                 }
             }
         }
@@ -168,7 +168,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void pause(long timeout) throws AspectranServiceException {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not pause AspectranService because it has already been destroyed");
@@ -183,8 +183,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 log.info("AspectranService has been paused and will resume after " + timeout + " ms");
 
-                if (aspectranServiceLifeCycleListener != null) {
-                    aspectranServiceLifeCycleListener.paused(timeout);
+                if (aspectranServiceControlListener != null) {
+                    aspectranServiceControlListener.paused(timeout);
                 }
             }
         }
@@ -192,7 +192,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void resume() throws AspectranServiceException {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
                     log.warn("Could not resume AspectranService because it has already been destroyed");
@@ -207,8 +207,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 log.info("AspectranService has been resumed");
 
-                if (aspectranServiceLifeCycleListener != null) {
-                    aspectranServiceLifeCycleListener.resumed();
+                if (aspectranServiceControlListener != null) {
+                    aspectranServiceControlListener.resumed();
                 }
             }
         }
@@ -216,7 +216,7 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     @Override
     public void shutdown() {
-        if (!this.derivedService) {
+        if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 log.info("Destroying all cached resources");
 
@@ -234,8 +234,8 @@ public class BasicAspectranService extends AbstractAspectranService {
      */
     private void doShutdown() {
         if (this.active.get() && this.closed.compareAndSet(false, true)) {
-            if (aspectranServiceLifeCycleListener != null) {
-                aspectranServiceLifeCycleListener.paused();
+            if (aspectranServiceControlListener != null) {
+                aspectranServiceControlListener.paused();
             }
 
             shutdownSchedulerService();
@@ -246,8 +246,8 @@ public class BasicAspectranService extends AbstractAspectranService {
 
             this.active.set(false);
 
-            if (aspectranServiceLifeCycleListener != null) {
-                aspectranServiceLifeCycleListener.stopped();
+            if (aspectranServiceControlListener != null) {
+                aspectranServiceControlListener.stopped();
             }
         }
     }

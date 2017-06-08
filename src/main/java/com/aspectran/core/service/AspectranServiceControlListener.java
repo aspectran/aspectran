@@ -20,7 +20,7 @@ import java.util.EventListener;
 /**
  * The listener interface for receiving AspectranService life-cycle events.
  */
-public interface AspectranServiceLifeCycleListener extends EventListener {
+public interface AspectranServiceControlListener extends EventListener {
 
     void started();
 
