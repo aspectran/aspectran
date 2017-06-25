@@ -95,6 +95,9 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
+            SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
+            setSessionAdapter(sessionAdapter);
+
             RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
             setRequestAdapter(requestAdapter);
 
@@ -110,18 +113,11 @@ public class WebActivity extends CoreActivity {
             if (contentEncoding) {
                 setGzipContentEncoded();
             }
+
+            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to specify adapters for web service activity", e);
         }
-    }
-
-    @Override
-    public SessionAdapter getSessionAdapter() {
-        if (super.getSessionAdapter() == null) {
-            SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
-            super.setSessionAdapter(sessionAdapter);
-        }
-        return super.getSessionAdapter();
     }
 
     @Override

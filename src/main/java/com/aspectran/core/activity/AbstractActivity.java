@@ -95,12 +95,10 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Sets the current activity.
-     *
-     * @param activity the new current activity
+     * Saves the current activity.
      */
-    protected void setCurrentActivity(Activity activity) {
-        context.setCurrentActivity(activity);
+    protected void saveCurrentActivity() {
+        context.setCurrentActivity(this);
     }
 
     /**
@@ -108,7 +106,7 @@ public abstract class AbstractActivity implements Activity {
      */
     protected void backupCurrentActivity() {
         outerActivity = getCurrentActivity();
-        setCurrentActivity(this);
+        saveCurrentActivity();
     }
 
     /**
@@ -116,7 +114,7 @@ public abstract class AbstractActivity implements Activity {
      */
     protected void removeCurrentActivity() {
         if (outerActivity != null) {
-            setCurrentActivity(outerActivity);
+            context.setCurrentActivity(outerActivity);
         } else {
             context.removeCurrentActivity();
         }

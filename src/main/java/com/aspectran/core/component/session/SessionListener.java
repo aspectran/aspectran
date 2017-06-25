@@ -13,23 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
+package com.aspectran.core.component.session;
 
-import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
+import java.util.EventListener;
 
 /**
- * The Class EmbeddedSessionAdapter.
+ * Interface for receiving notification events about BasicSession
+ * lifecycle changes.
+ *
+ * <p>Created: 2017. 6. 25.</p>
  */
-public class EmbeddedSessionAdapter extends BasicSessionAdapter {
+public interface SessionListener extends EventListener {
 
     /**
-     * Instantiates a new EmbeddedSessionAdapter.
+     * Receives notification that a session has been created.
      *
-     * @param session the default session
+     * @param session the basic session
      */
-    public EmbeddedSessionAdapter(BasicSession session) {
-        super(session);
-    }
+    void sessionCreated(BasicSession session);
+
+    /**
+     * Receives notification that a session is about to be invalidated.
+     *
+     * @param session the basic session
+     */
+    void sessionDestroyed(BasicSession session);
 
 }

@@ -42,11 +42,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     }
 
     @Override
-    public void release() {
-        adaptee = null;
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("adaptee", adaptee);

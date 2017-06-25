@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
-
-import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
+package com.aspectran.core.component.session;
 
 /**
- * The Class EmbeddedSessionAdapter.
+ * <p>Created: 2017. 6. 18.</p>
  */
-public class EmbeddedSessionAdapter extends BasicSessionAdapter {
+public class SessionScavenger {
 
-    /**
-     * Instantiates a new EmbeddedSessionAdapter.
-     *
-     * @param session the default session
-     */
-    public EmbeddedSessionAdapter(BasicSession session) {
-        super(session);
+    private SessionManager sessionManager;
+
+    public SessionScavenger(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
 }

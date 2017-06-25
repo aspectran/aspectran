@@ -38,7 +38,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private final URL[] resources;
 
-    private Map<String, Long> modifyTimeMap = new HashMap<String, Long>();
+    private Map<String, Long> modifyTimeMap = new HashMap<>();
 
     private boolean modified = false;
 
@@ -59,22 +59,18 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
             try {
                 File file = new File(url.toURI());
                 String filePath = file.getAbsolutePath();
-
                 long modifiedTime = file.lastModified();
 
                 if (cycle == 0) {
                     modifyTimeMap.put(filePath, modifiedTime);
                 } else {
                     Long modifiedTime2 = modifyTimeMap.get(filePath);
-
                     if (modifiedTime2 != null) {
                         if (modifiedTime != modifiedTime2) {
                             modified = true;
-
                             if (debugEnabled) {
                                 log.debug("Detected modified file: " + url);
                             }
-
                             break;
                         }
                     }

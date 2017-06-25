@@ -106,7 +106,6 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
 
             ProcessResult processResult = activity.getProcessResult();
-
             if (processResult != null) {
                 setAttribute(requestAdapter, processResult);
             }
@@ -135,7 +134,6 @@ public class JspViewDispatcher implements ViewDispatcher {
         for (ContentResult contentResult : processResult) {
             for (ActionResult actionResult : contentResult) {
                 Object actionResultValue = actionResult.getResultValue();
-
                 if (actionResultValue instanceof ProcessResult) {
                     setAttribute(requestAdapter, (ProcessResult)actionResultValue);
                 } else {

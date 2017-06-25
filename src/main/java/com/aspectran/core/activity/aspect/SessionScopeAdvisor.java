@@ -18,7 +18,6 @@ package com.aspectran.core.activity.aspect;
 import java.util.List;
 
 import com.aspectran.core.activity.SessionScopeActivity;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
@@ -41,6 +40,10 @@ public class SessionScopeAdvisor {
         this.afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
     }
 
+    public SessionScopeActivity getSessionScopeActivity() {
+        return activity;
+    }
+
     public void executeBeforeAdvice() {
         if (beforeAdviceRuleList != null) {
             activity.executeAdvice(beforeAdviceRuleList);
@@ -53,11 +56,11 @@ public class SessionScopeAdvisor {
         }
     }
 
-    public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
+    public static SessionScopeAdvisor create(ActivityContext context) {
         AspectRuleRegistry aspectRuleRegistry = context.getAspectRuleRegistry();
         AspectAdviceRuleRegistry aarr = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
         if (aarr != null) {
-            SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
+            SessionScopeActivity activity = new SessionScopeActivity(context);
             return new SessionScopeAdvisor(activity, aarr);
         } else {
             return null;

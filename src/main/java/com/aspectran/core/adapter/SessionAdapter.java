@@ -50,6 +50,8 @@ public interface SessionAdapter {
      */
     String getId();
 
+    boolean isNew();
+
     /**
      * Returns the time when this session was created, measured
      * in milliseconds since midnight January 1, 1970 GMT.
@@ -74,7 +76,7 @@ public interface SessionAdapter {
      */
     long getLastAccessedTime();
 
-    void updateLastAccessedTime();
+    void setMaxInactiveInterval(int interval);
 
     /**
      * Returns the maximum time interval, in seconds, that the servlet container will keep
@@ -132,9 +134,6 @@ public interface SessionAdapter {
      */
     void invalidate();
 
-    /**
-     * No longer use the adaptee object.
-     */
-    void release();
+    boolean isBasicSession();
 
 }

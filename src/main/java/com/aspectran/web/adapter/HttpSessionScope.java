@@ -18,6 +18,7 @@ package com.aspectran.web.adapter;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import com.aspectran.core.activity.SessionScopeActivity;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
@@ -31,25 +32,21 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
     private static final Log log = LogFactory.getLog(HttpSessionScope.class);
 
-    private SessionAdapter sessionAdapter;
-
     private SessionScopeAdvisor advisor;
 
     /**
      * Instantiates a new HttpSessionScope.
      *
-     * @param sessionAdapter the session adapter
      * @param advisor the session scope advisor
      */
-    public HttpSessionScope(SessionAdapter sessionAdapter, SessionScopeAdvisor advisor) {
-        this.sessionAdapter = sessionAdapter;
+    public HttpSessionScope(SessionScopeAdvisor advisor) {
         this.advisor = advisor;
     }
 
     @Override
     public void valueBound(HttpSessionBindingEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("New HttpSessionScope bound in session " + sessionAdapter);
+            log.debug("New HttpSessionScope bound in session " + event.getSession());
         }
 
         if (advisor != null) {
@@ -59,17 +56,20 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
-        sessionAdapter.release();
-
         if (log.isDebugEnabled()) {
-            log.debug("HttpSessionScope removed from session " + sessionAdapter);
+            log.debug("HttpSessionScope removed from session " + event.getSession());
         }
 
         if (advisor != null) {
+            SessionAdapter sessionAdapter = new AdviceHttpSessionAdapter(event.getSession());
+            SessionScopeActivity activity = advisor.getSessionScopeActivity();
+            activity.setSessionAdapter(sessionAdapter);
             advisor.executeAfterAdvice();
+            advisor = null;
         }
 
-        this.destroy();
+        // destroy the session scoped beans
+        destroy();
     }
 
 }

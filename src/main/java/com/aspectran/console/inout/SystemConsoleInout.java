@@ -108,12 +108,12 @@ public class SystemConsoleInout extends AbstractConsoleInout {
 
     @Override
     public void setStyle(String... styles) {
-        // Do Nothing
+        // Nothing to do
     }
 
     @Override
     public void offStyle() {
-        // Do Nothing
+        // Nothing to do
     }
 
 }

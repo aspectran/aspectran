@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
-
-import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
+package com.aspectran.core.component.session;
 
 /**
- * The Class EmbeddedSessionAdapter.
+ * <p>Created: 2017. 6. 25.</p>
  */
-public class EmbeddedSessionAdapter extends BasicSessionAdapter {
+public class SessionInactivityTimer {
 
-    /**
-     * Instantiates a new EmbeddedSessionAdapter.
-     *
-     * @param session the default session
-     */
-    public EmbeddedSessionAdapter(BasicSession session) {
-        super(session);
+    private long idleTimeout;
+
+    public long getIdleTimeout() {
+        return idleTimeout;
+    }
+
+    public void setIdleTimeout(long idleTimeout) {
+        this.idleTimeout = idleTimeout;
     }
 
 }

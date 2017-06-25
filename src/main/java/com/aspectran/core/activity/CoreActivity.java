@@ -33,6 +33,7 @@ import com.aspectran.core.component.expr.ItemEvaluator;
 import com.aspectran.core.component.expr.ItemExpressionParser;
 import com.aspectran.core.component.expr.token.Token;
 import com.aspectran.core.component.i18n.LocaleResolver;
+import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.translet.TransletInstantiationException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
@@ -163,7 +164,7 @@ public class CoreActivity extends BasicActivity {
                 if (isIncluded()) {
                     backupCurrentActivity();
                 } else {
-                    setCurrentActivity(this);
+                    saveCurrentActivity();
                 }
                 adapt();
             }
@@ -182,9 +183,17 @@ public class CoreActivity extends BasicActivity {
     }
 
     protected void adapt() throws AdapterException {
+        if (getSessionAdapter() != null && getSessionAdapter().isBasicSession()) {
+            BasicSession session = getSessionAdapter().getAdaptee();
+            session.access();
+        }
     }
 
     protected void release() {
+        if (getSessionAdapter() != null && getSessionAdapter().isBasicSession()) {
+            BasicSession session = getSessionAdapter().getAdaptee();
+            session.complete();
+        }
     }
 
     /**

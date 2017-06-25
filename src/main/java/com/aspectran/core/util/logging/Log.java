@@ -26,9 +26,9 @@ public interface Log {
 
     boolean isTraceEnabled();
 
-    void error(String s, Throwable e);
-
     void error(String s);
+
+    void error(String s, Throwable e);
 
     void debug(String s);
 

@@ -45,13 +45,13 @@ public class Slf4jImpl implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
-        log.error(s, e);
+    public void error(String s) {
+        log.error(s);
     }
 
     @Override
-    public void error(String s) {
-        log.error(s);
+    public void error(String s, Throwable e) {
+        log.error(s, e);
     }
 
     @Override

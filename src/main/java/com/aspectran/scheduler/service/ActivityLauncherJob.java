@@ -51,12 +51,12 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
-    private Activity runActivity(ActivityContext context, String transletName, JobExecutionContext jobExecutionContext) throws ActivityException {
+    private Activity runActivity(ActivityContext context, String transletName, JobExecutionContext jobExecutionContext)
+            throws ActivityException {
         RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
         ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
 
         Activity activity = null;
-
         try {
             activity = new JobActivity(context, requestAdapter, responseAdapter);
             activity.prepare(transletName);
@@ -66,7 +66,6 @@ public class ActivityLauncherJob implements Job {
                 activity.finish();
             }
         }
-
         return activity;
     }
 

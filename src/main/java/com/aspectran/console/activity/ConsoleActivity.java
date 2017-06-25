@@ -68,8 +68,6 @@ public class ConsoleActivity extends CoreActivity {
      */
     public ConsoleActivity(ConsoleAspectranService service, Writer[] redirectionWriters) {
         super(service.getActivityContext());
-        setSessionAdapter(service.getSessionAdapter());
-        getSessionAdapter().updateLastAccessedTime();
 
         this.service = service;
         this.consoleInout = service.getConsoleInout();
@@ -79,6 +77,8 @@ public class ConsoleActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
+            setSessionAdapter(service.newSessionAdapter());
+
             RequestAdapter requestAdapter = new ConsoleRequestAdapter();
             requestAdapter.setCharacterEncoding(consoleInout.getEncoding());
             setRequestAdapter(requestAdapter);
@@ -96,6 +96,8 @@ public class ConsoleActivity extends CoreActivity {
             ResponseAdapter responseAdapter = new ConsoleResponseAdapter(outputWriter);
             responseAdapter.setCharacterEncoding(consoleInout.getEncoding());
             setResponseAdapter(responseAdapter);
+
+            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to specify adapters for console service activity", e);
         }

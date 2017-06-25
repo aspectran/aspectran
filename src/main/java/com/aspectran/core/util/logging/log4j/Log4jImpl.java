@@ -44,13 +44,13 @@ public class Log4jImpl implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
-        log.log(FQCN, Level.ERROR, s, e);
+    public void error(String s) {
+        log.log(FQCN, Level.ERROR, s, null);
     }
 
     @Override
-    public void error(String s) {
-        log.log(FQCN, Level.ERROR, s, null);
+    public void error(String s, Throwable e) {
+        log.log(FQCN, Level.ERROR, s, e);
     }
 
     @Override

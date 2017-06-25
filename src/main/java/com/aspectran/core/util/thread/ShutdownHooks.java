@@ -58,42 +58,6 @@ public class ShutdownHooks {
         return task;
     }
 
-    private static synchronized void runTasks() {
-        if (log.isDebugEnabled()) {
-            log.debug("Running all shutdown-hook tasks");
-        }
-
-        // Iterate through copy of tasks list
-        Collections.reverse(tasks);
-        for (Task task : tasks.toArray(new Task[tasks.size()])) {
-            if (log.isDebugEnabled()) {
-                log.debug("Running task: " + task);
-            }
-            try {
-                task.run();
-            } catch (Throwable e) {
-                log.warn("Task failed", e);
-            }
-        }
-
-        tasks.clear();
-    }
-
-    private static Thread addHook(final Thread thread) {
-        if (log.isDebugEnabled()) {
-            log.debug("Registering shutdown-hook: " + thread);
-        }
-        try {
-            Runtime.getRuntime().addShutdownHook(thread);
-        } catch (AbstractMethodError e) {
-            // JDK 1.3+ only method. Bummer.
-            if (log.isDebugEnabled()) {
-                log.debug("Failed to register shutdown-hook" + e);
-            }
-        }
-        return thread;
-    }
-
     public static synchronized void remove(final Task task) {
         if (task == null) {
             throw new IllegalArgumentException("Argument 'task' must not be null");
@@ -114,6 +78,21 @@ public class ShutdownHooks {
         }
     }
 
+    private static Thread addHook(final Thread thread) {
+        if (log.isDebugEnabled()) {
+            log.debug("Registering shutdown-hook: " + thread);
+        }
+        try {
+            Runtime.getRuntime().addShutdownHook(thread);
+        } catch (AbstractMethodError e) {
+            // JDK 1.3+ only method. Bummer.
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to register shutdown-hook" + e);
+            }
+        }
+        return thread;
+    }
+
     private static void removeHook(final Thread thread) {
         if (log.isDebugEnabled()) {
             log.debug("Removing shutdown-hook: " + thread);
@@ -129,6 +108,27 @@ public class ShutdownHooks {
         } catch (IllegalStateException e) {
             // The VM is shutting down, not a big deal; ignore
         }
+    }
+
+    private static synchronized void runTasks() {
+        if (log.isDebugEnabled()) {
+            log.debug("Running all shutdown-hook tasks");
+        }
+
+        // Iterate through copy of tasks list
+        Collections.reverse(tasks);
+        for (Task task : tasks.toArray(new Task[tasks.size()])) {
+            if (log.isDebugEnabled()) {
+                log.debug("Running task: " + task);
+            }
+            try {
+                task.run();
+            } catch (Throwable e) {
+                log.warn("Task failed", e);
+            }
+        }
+
+        tasks.clear();
     }
 
     /**

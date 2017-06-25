@@ -37,12 +37,12 @@ public class NoLoggingImpl implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
+    public void error(String s) {
         // Do Nothing
     }
 
     @Override
-    public void error(String s) {
+    public void error(String s, Throwable e) {
         // Do Nothing
     }
 

@@ -30,7 +30,10 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.scope.Scope;
+import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.DefaultSessionManager;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranConsoleConfig;
@@ -56,9 +59,9 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     private static final String DEFAULT_ROOT_CONTEXT = "config/root-config.xml";
 
-    private SessionAdapter sessionAdapter;
+    private SessionManager sessionManager;
 
-    private SessionScopeAdvisor sessionScopeAdvisor;
+    private String sessionId;
 
     private long pauseTimeout;
 
@@ -72,26 +75,33 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() {
-        sessionAdapter = new ConsoleSessionAdapter();
-        sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
+        sessionManager = new DefaultSessionManager("CONSOLE");
+        sessionId = sessionManager.newSessionId(hashCode());
+
+        final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(getActivityContext());
         if (sessionScopeAdvisor != null) {
-            sessionScopeAdvisor.executeBeforeAdvice();
+            sessionManager.addEventListener(new SessionListener() {
+                @Override
+                public void sessionCreated(BasicSession session) {
+                    sessionScopeAdvisor.executeBeforeAdvice();
+                }
+
+                @Override
+                public void sessionDestroyed(BasicSession session) {
+                    sessionScopeAdvisor.executeAfterAdvice();
+                }
+            });
         }
     }
 
     @Override
     public void beforeContextDestroy() {
-        if (sessionScopeAdvisor != null) {
-            sessionScopeAdvisor.executeAfterAdvice();
-        }
-        if (sessionAdapter != null) {
-            Scope sessionScope = sessionAdapter.getSessionScope();
-            sessionScope.destroy();
-        }
+        sessionManager.destroy();
     }
 
-    public SessionAdapter getSessionAdapter() {
-        return sessionAdapter;
+    public SessionAdapter newSessionAdapter() {
+        BasicSession session = sessionManager.getSession(sessionId);
+        return new ConsoleSessionAdapter(session);
     }
 
     public ConsoleInout getConsoleInout() {
@@ -263,14 +273,14 @@ public class ConsoleAspectranService extends BasicAspectranService {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
         }
 
-        setAspectranServiceLifeCycleListener(consoleAspectranService);
+        setAspectranServiceControlListener(consoleAspectranService);
 
         consoleAspectranService.startup();
 
         return consoleAspectranService;
     }
 
-    private static void setAspectranServiceLifeCycleListener(final ConsoleAspectranService aspectranService) {
+    private static void setAspectranServiceControlListener(final ConsoleAspectranService aspectranService) {
         aspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
             @Override
             public void started() {

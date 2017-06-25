@@ -49,7 +49,6 @@ public class EmbeddedActivity extends CoreActivity {
      */
     public EmbeddedActivity(EmbeddedAspectranService service, Writer outputWriter) {
         super(service.getActivityContext());
-        setSessionAdapter(service.getSessionAdapter());
 
         this.service = service;
         this.outputWriter = outputWriter;
@@ -66,6 +65,8 @@ public class EmbeddedActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
+            setSessionAdapter(service.newSessionAdapter());
+
             RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
             setRequestAdapter(requestAdapter);
 
@@ -77,6 +78,8 @@ public class EmbeddedActivity extends CoreActivity {
                     requestAdapter.setAttribute(entry.getKey(), entry.getValue());
                 }
             }
+
+            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to specify adapters for embedded service activity", e);
         }

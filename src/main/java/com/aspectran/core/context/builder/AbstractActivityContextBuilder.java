@@ -272,11 +272,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     public void startReloadingTimer() {
-        if (autoReloadStartup) {
-            if (aspectranClassLoader != null) {
-                reloadingTimer = new ActivityContextReloadingTimer(aspectranServiceController, aspectranClassLoader.extractResources());
-                reloadingTimer.start(scanIntervalSeconds);
-            }
+        if (autoReloadStartup && aspectranClassLoader != null) {
+            reloadingTimer = new ActivityContextReloadingTimer(aspectranServiceController, aspectranClassLoader.extractResources());
+            reloadingTimer.start(scanIntervalSeconds);
         }
     }
 

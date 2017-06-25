@@ -40,7 +40,7 @@ public class ConsoleCommand {
         this.consoleInout = service.getConsoleInout();
     }
 
-    public void serve() {
+    public void perform() {
         try {
             loop:
             while (true) {

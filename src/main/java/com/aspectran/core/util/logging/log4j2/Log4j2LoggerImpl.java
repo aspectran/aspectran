@@ -46,13 +46,13 @@ public class Log4j2LoggerImpl implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
-        log.error(MARKER, s, e);
+    public void error(String s) {
+        log.error(MARKER, s);
     }
 
     @Override
-    public void error(String s) {
-        log.error(MARKER, s);
+    public void error(String s, Throwable e) {
+        log.error(MARKER, s, e);
     }
 
     @Override

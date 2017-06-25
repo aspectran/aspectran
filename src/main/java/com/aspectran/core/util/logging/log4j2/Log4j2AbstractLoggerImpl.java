@@ -50,13 +50,13 @@ public class Log4j2AbstractLoggerImpl implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
-        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s, e);
+    public void error(String s) {
+        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s);
     }
 
     @Override
-    public void error(String s) {
-        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s);
+    public void error(String s, Throwable e) {
+        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s, e);
     }
 
     @Override

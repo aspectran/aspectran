@@ -17,13 +17,17 @@ package com.aspectran.embedded.service;
 
 import java.util.Map;
 
+import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.scope.Scope;
+import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.DefaultSessionManager;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -36,7 +40,6 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embedded.activity.EmbeddedActivity;
 import com.aspectran.embedded.adapter.EmbeddedApplicationAdapter;
-import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
 
 /**
  * The Class EmbeddedAspectranService.
@@ -49,9 +52,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
 
-    private SessionAdapter sessionAdapter;
+    private SessionManager sessionManager;
 
-    private SessionScopeAdvisor sessionScopeAdvisor;
+    private String sessionId;
 
     private long pauseTimeout;
 
@@ -61,26 +64,33 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() {
-        sessionAdapter = new EmbeddedSessionAdapter();
-        sessionScopeAdvisor = SessionScopeAdvisor.newInstance(getActivityContext(), sessionAdapter);
+        sessionManager = new DefaultSessionManager("EMBEDDED");
+        sessionId = sessionManager.newSessionId(hashCode());
+
+        final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(getActivityContext());
         if (sessionScopeAdvisor != null) {
-            sessionScopeAdvisor.executeBeforeAdvice();
+            sessionManager.addEventListener(new SessionListener() {
+                @Override
+                public void sessionCreated(BasicSession session) {
+                    sessionScopeAdvisor.executeBeforeAdvice();
+                }
+
+                @Override
+                public void sessionDestroyed(BasicSession session) {
+                    sessionScopeAdvisor.executeAfterAdvice();
+                }
+            });
         }
     }
 
     @Override
     public void beforeContextDestroy() {
-        if (sessionScopeAdvisor != null) {
-            sessionScopeAdvisor.executeAfterAdvice();
-        }
-        if (sessionAdapter != null) {
-            Scope sessionScope = sessionAdapter.getSessionScope();
-            sessionScope.destroy();
-        }
+        sessionManager.destroy();
     }
 
-    public SessionAdapter getSessionAdapter() {
-        return sessionAdapter;
+    public SessionAdapter newSessionAdapter() {
+        BasicSession session = sessionManager.getSession(sessionId);
+        return new ConsoleSessionAdapter(session);
     }
 
     /**
@@ -270,7 +280,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap)
             throws AspectranServiceException {
         try {
-            InstantActivity activity = new InstantActivity(getActivityContext(), sessionAdapter);
+            InstantActivity activity = new InstantActivity(getActivityContext(), newSessionAdapter());
             if (parameterMap != null) {
                 activity.setParameterMap(parameterMap);
             }
@@ -285,14 +295,6 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing a template", e);
         }
-    }
-
-    @Override
-    public void shutdown() {
-        Scope scope = sessionAdapter.getSessionScope();
-        scope.destroy();
-
-        super.shutdown();
     }
 
     /**

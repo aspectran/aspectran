@@ -29,11 +29,14 @@ public final class SessionScopeActivity extends DefaultActivity {
      * Instantiates a new session scope activity.
      *
      * @param context the activity context
-     * @param sessionAdapter the session adapter
      */
-    public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
+    public SessionScopeActivity(ActivityContext context) {
         super(context);
-        setSessionAdapter(sessionAdapter);
+    }
+
+    @Override
+    public void setSessionAdapter(SessionAdapter sessionAdapter) {
+        super.setSessionAdapter(sessionAdapter);
     }
 
 }
