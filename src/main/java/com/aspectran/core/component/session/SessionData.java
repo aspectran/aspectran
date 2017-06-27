@@ -162,7 +162,7 @@ public class SessionData implements Serializable {
     }
 
     public long calcExpiryTime(long time) {
-        return (maxInactiveIntervalMS <= 0 ? 0 : (time + maxInactiveIntervalMS));
+        return (maxInactiveIntervalMS <= 0L ? 0L : (time + maxInactiveIntervalMS));
     }
 
     public void calcAndSetExpiryTime() {

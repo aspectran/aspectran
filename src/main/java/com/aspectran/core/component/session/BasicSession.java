@@ -205,7 +205,7 @@ public class BasicSession {
      */
     private void setInactivityTimer(long ms) {
         if (sessionInactivityTimer == null) {
-            sessionInactivityTimer = new SessionInactivityTimer();
+            sessionInactivityTimer = new SessionInactivityTimer(this);
         }
         sessionInactivityTimer.setIdleTimeout(ms);
     }
