@@ -17,10 +17,14 @@ package com.aspectran.core.component.session;
 
 import java.util.EventListener;
 
+import com.aspectran.core.util.thread.Scheduler;
+
 /**
  * <p>Created: 2017. 6. 12.</p>
  */
 public interface SessionManager {
+
+    Scheduler getScheduler();
 
     BasicSession getSession(String sessionId);
 

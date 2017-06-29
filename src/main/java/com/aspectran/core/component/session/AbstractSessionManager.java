@@ -22,8 +22,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Locker;
+import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
+import com.aspectran.core.util.thread.Scheduler;
 
 /**
+ * Abstract Implementation of SessionManager.
+ *
  * <p>Created: 2017. 6. 12.</p>
  */
 public abstract class AbstractSessionManager implements SessionManager {
@@ -42,6 +46,8 @@ public abstract class AbstractSessionManager implements SessionManager {
 
     private final List<SessionAttributeListener> sessionAttributeListeners = new CopyOnWriteArrayList<>();
 
+    private final Scheduler scheduler = new ScheduledExecutorScheduler();
+
     private final SessionScavenger sessionScavenger;
 
     public AbstractSessionManager(String serviceName, SessionDataStore sessionDataStore) {
@@ -49,6 +55,11 @@ public abstract class AbstractSessionManager implements SessionManager {
         this.sessionDataStore = sessionDataStore;
         this.sessionCache = new SessionCache();
         this.sessionScavenger = new SessionScavenger(this);
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        return scheduler;
     }
 
     @Override

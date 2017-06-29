@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.component.session;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.thread.Scheduler;
+import com.aspectran.core.util.thread.Scheduler.Task;
 
 /**
  * <p>Created: 2017. 6. 25.</p>
@@ -30,11 +30,11 @@ public class SessionInactivityTimer {
 
     private static final Log log = LogFactory.getLog(SessionInactivityTimer.class);
 
-    private final AtomicReference<ScheduledFuture<?>> timeout = new AtomicReference<>();
+    private final AtomicReference<Task> timeout = new AtomicReference<>();
+
+    private final Scheduler scheduler;
 
     private final BasicSession session;
-
-    private ScheduledThreadPoolExecutor scheduler;
 
     private volatile long idleTimeout;
 
@@ -47,11 +47,9 @@ public class SessionInactivityTimer {
         }
     };
 
-    public SessionInactivityTimer(BasicSession session) {
+    public SessionInactivityTimer(Scheduler scheduler, BasicSession session) {
+        this.scheduler = scheduler;
         this.session = session;
-
-        scheduler = new ScheduledThreadPoolExecutor(1);
-        scheduler.setRemoveOnCancelPolicy(true);
     }
 
     public long getIdleTimeout() {
@@ -66,11 +64,11 @@ public class SessionInactivityTimer {
             if(old <= idleTimeout) {
                 return;
             }
-            this.deactivate();
+            deactivate();
         }
 
         if(session.isValid() && session.isResident()) {
-            this.activate();
+            activate();
         }
     }
 
@@ -85,32 +83,21 @@ public class SessionInactivityTimer {
     }
 
     private void deactivate() {
-        ScheduledFuture<?> oldTimeout = timeout.getAndSet(null);
+        Task oldTimeout = timeout.getAndSet(null);
         if (oldTimeout != null) {
-            cancel(oldTimeout);
-        }
-    }
-
-    private void cancel(ScheduledFuture<?> timeout) {
-        timeout.cancel(false);
-    }
-
-    public void shutdown() throws Exception {
-        if (scheduler != null) {
-            scheduler.shutdownNow();
-            scheduler = null;
+            oldTimeout.cancel();
         }
     }
 
     private void scheduleIdleTimeout(long delay) {
-        ScheduledFuture<?> newTimeout = null;
+        Task newTimeout = null;
         if (session.isValid() && session.isResident() && delay > 0L) {
             newTimeout = scheduler.schedule(idleTask, delay, TimeUnit.MILLISECONDS);
         }
 
-        ScheduledFuture<?> oldTimeout = timeout.getAndSet(newTimeout);
+        Task oldTimeout = timeout.getAndSet(newTimeout);
         if (oldTimeout != null) {
-            cancel(oldTimeout);
+            oldTimeout.cancel();
         }
     }
 
@@ -119,6 +106,8 @@ public class SessionInactivityTimer {
             return -1;
         }
 
+        long idleTimestamp = this.idleTimestamp;
+        long idleTimeout = this.idleTimeout;
         long idleElapsed = System.currentTimeMillis() - idleTimestamp;
         long idleLeft = idleTimeout - idleElapsed;
 
@@ -140,6 +129,9 @@ public class SessionInactivityTimer {
     }
 
     private void idleExpired() {
+        if (session.getRequests() > 0) {
+            return;
+        }
         if (log.isDebugEnabled()) {
             log.debug("Timer expired for session " + session);
         }

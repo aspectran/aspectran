@@ -82,8 +82,9 @@ public class BasicSession {
             }
             retrieveSessionData(true);
             long lastAccessedTime = sessionData.getAccessedTime();
-            //if (_sessionInactivityTimer != null)
-            //    _sessionInactivityTimer.notIdle();
+            if (sessionInactivityTimer != null) {
+                sessionInactivityTimer.notIdle();
+            }
             sessionData.setAccessedTime(time);
             sessionData.setLastAccessedTime(lastAccessedTime);
             sessionData.calcAndSetExpiryTime(time);
@@ -205,7 +206,7 @@ public class BasicSession {
      */
     private void setInactivityTimer(long ms) {
         if (sessionInactivityTimer == null) {
-            sessionInactivityTimer = new SessionInactivityTimer(this);
+            sessionInactivityTimer = new SessionInactivityTimer(sessionManager.getScheduler(), this);
         }
         sessionInactivityTimer.setIdleTimeout(ms);
     }

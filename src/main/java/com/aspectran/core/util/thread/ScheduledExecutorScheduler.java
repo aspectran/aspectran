@@ -15,21 +15,20 @@
  */
 package com.aspectran.core.util.thread;
 
-import com.aspectran.core.component.session.BasicSession;
-import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2017. 6. 25.</p>
  */
 public class ScheduledExecutorScheduler implements Scheduler {
+
+    private static final Log log = LogFactory.getLog(ScheduledExecutorScheduler.class);
 
     private final Object lock = new Object();
 
@@ -45,6 +44,9 @@ public class ScheduledExecutorScheduler implements Scheduler {
             if (this.active.get()) {
                 throw new IllegalStateException("Failed to start " + this + " because it has already been started");
             }
+            if (log.isDebugEnabled()) {
+                log.debug("Starting " + this);
+            }
 
             executor = new ScheduledThreadPoolExecutor(1);
             executor.setRemoveOnCancelPolicy(true);
@@ -56,6 +58,10 @@ public class ScheduledExecutorScheduler implements Scheduler {
     public void stop() {
         synchronized (lock) {
             if (this.active.compareAndSet(true, false)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Stopping " + this);
+                }
+
                 executor.shutdownNow();
                 executor = null;
             }
