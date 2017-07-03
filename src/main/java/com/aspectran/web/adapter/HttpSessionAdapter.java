@@ -155,11 +155,6 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
-    @Override
-    public boolean isBasicSession() {
-        return false;
-    }
-
     /**
      * Creates a new HTTP session scope.
      */

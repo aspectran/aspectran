@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.component.session.SessionAccess;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -39,6 +40,11 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)adaptee;
+    }
+
+    @Override
+    public SessionAccess getSessionAccess() {
+        return null;
     }
 
     @Override

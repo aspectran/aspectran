@@ -52,13 +52,15 @@ public class SessionData implements Serializable {
 
     private long expiryTime;
 
-    public SessionData(String id, long creationTime) {
+    public SessionData(String id, long creationTime, long maxInactiveIntervalMS) {
         if (id == null) {
             throw new IllegalArgumentException("Argument 'id' must not be null");
         }
         this.id = id;
         this.creationTime = creationTime;
         this.lastAccessedTime = creationTime;
+        this.maxInactiveIntervalMS = maxInactiveIntervalMS;
+        calcAndSetExpiryTime(creationTime);
     }
 
     public String getId() {

@@ -30,7 +30,7 @@ import com.aspectran.core.util.thread.Locker.Lock;
  *
  * <p>Created: 2017. 6. 13.</p>
  */
-public class BasicSession {
+public class BasicSession implements SessionAccess {
 
     private static final Log log = LogFactory.getLog(BasicSession.class);
     
@@ -61,55 +61,61 @@ public class BasicSession {
         INVALIDATING
     }
 
-    protected BasicSession(SessionManager sessionManager, String id) {
+    protected BasicSession(SessionManager sessionManager, SessionData sessionData) {
         this.sessionManager = sessionManager;
-        this.id = id;
+        this.id = sessionData.getId();
+        this.sessionData = sessionData;
         this.newSession = true;
+        updateInactivityTimer();
     }
 
     public String getId() {
         return id;
     }
 
+    @Override
     public void access() {
-        access(System.currentTimeMillis());
-    }
-
-    public void access(long time) {
         try (Lock ignored = locker.lockIfNotHeld()) {
             if (!isValid()) {
                 return;
             }
-            retrieveSessionData(true);
+            if (!retrieveSessionData()) {
+                invalidate();
+                return;
+            }
             long lastAccessedTime = sessionData.getAccessedTime();
             if (sessionInactivityTimer != null) {
                 sessionInactivityTimer.notIdle();
             }
-            sessionData.setAccessedTime(time);
+            long now = System.currentTimeMillis();
+            sessionData.setAccessedTime(now);
             sessionData.setLastAccessedTime(lastAccessedTime);
-            sessionData.calcAndSetExpiryTime(time);
-            if (isExpiredAt(time)) {
+            sessionData.calcAndSetExpiryTime(now);
+            if (isExpiredAt(now)) {
                 invalidate();
             }
             requests++;
         }
     }
 
+    @Override
     public void complete() {
         try (Lock ignored = locker.lockIfNotHeld()) {
             if (requests == 1) {
                 requests = 0;
                 storeSessionData();
+                notNewSession();
             } else {
                 requests--;
             }
         }
     }
 
-    private void retrieveSessionData(boolean create) {
-        if (sessionData == null || requests == 0) {
-            sessionData = sessionManager.loadSessionData(id, create);
+    private boolean retrieveSessionData() {
+        if (!newSession && requests == 0) {
+            sessionData = sessionManager.loadSessionData(id, true);
         }
+        return (sessionData != null);
     }
 
     private void storeSessionData() {
@@ -129,7 +135,7 @@ public class BasicSession {
     public <T> T getAttribute(String name) {
         try (Lock ignored = locker.lockIfNotHeld()) {
             checkValidForRead();
-            return (sessionData != null ? sessionData.getAttribute(name) : null);
+            return sessionData.getAttribute(name);
         }
     }
 
@@ -187,7 +193,7 @@ public class BasicSession {
             checkValidForWrite();
             sessionData.setMaxInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiryTime();
-            //updateInactivityTimer();
+            updateInactivityTimer();
             if (log.isDebugEnabled()) {
                 if (secs <= 0) {
                     log.debug("Session " + id + " is now immortal (maxInactiveInterval=" + secs + ")");
@@ -196,6 +202,20 @@ public class BasicSession {
                 }
             }
 
+        }
+    }
+
+    /**
+     * Set the inactivity timer to the smaller of the session maxInactivity
+     * (ie session-timeout from web.xml), or the inactive eviction time.
+     */
+    private void updateInactivityTimer() {
+        long maxInactive =  sessionData.getMaxInactiveInterval();
+        if (maxInactive <= 0) {
+            stopInactivityTimer();
+        } else {
+            // sessions are not immortal
+            setInactivityTimer(maxInactive);
         }
     }
 
@@ -214,25 +234,21 @@ public class BasicSession {
     /**
      * Stop the session inactivity timer.
      */
-    public void stopInactivityTimer() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (sessionInactivityTimer != null) {
-                sessionInactivityTimer.setIdleTimeout(-1);
-                sessionInactivityTimer = null;
-                if (log.isDebugEnabled()) {
-                    log.debug("Session inactivity timer stopped");
-                }
+    private void stopInactivityTimer() {
+        if (sessionInactivityTimer != null) {
+            sessionInactivityTimer.setIdleTimeout(-1);
+            sessionInactivityTimer = null;
+            if (log.isDebugEnabled()) {
+                log.debug("Session inactivity timer stopped");
             }
         }
     }
 
     public void invalidate() {
-        if (beginInvalidate()) {
-            sessionManager.invalidate(id);
-        }
+        sessionManager.invalidate(id);
     }
 
-    private boolean beginInvalidate() {
+    protected boolean beginInvalidate() {
         boolean result = false;
         try (Lock ignored = locker.lockIfNotHeld()) {
             switch (state) {
@@ -242,6 +258,7 @@ public class BasicSession {
                 case VALID:
                     // only first change from valid to invalidating should be actionable
                     state = State.INVALIDATING;
+                    stopInactivityTimer();
                     result = true;
                     break;
                 default:
@@ -314,7 +331,7 @@ public class BasicSession {
         }
     }
 
-    protected void notNewSession() {
+    private void notNewSession() {
         this.newSession = false;
     }
 

@@ -26,9 +26,11 @@ public interface SessionManager {
 
     Scheduler getScheduler();
 
-    BasicSession getSession(String sessionId);
+    int getDefaultMaxIdleSecs();
 
-    BasicSession getSession(String sessionId, boolean create);
+    void setDefaultMaxIdleSecs(int defaultMaxIdleSecs);
+
+    BasicSession getSession(String sessionId);
 
     void invalidate(String id);
 

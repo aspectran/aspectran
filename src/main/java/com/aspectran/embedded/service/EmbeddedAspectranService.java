@@ -17,7 +17,6 @@ package com.aspectran.embedded.service;
 
 import java.util.Map;
 
-import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
@@ -40,6 +39,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embedded.activity.EmbeddedActivity;
 import com.aspectran.embedded.adapter.EmbeddedApplicationAdapter;
+import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
 
 /**
  * The Class EmbeddedAspectranService.
@@ -90,7 +90,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     public SessionAdapter newSessionAdapter() {
         BasicSession session = sessionManager.getSession(sessionId);
-        return new ConsoleSessionAdapter(session);
+        return new EmbeddedSessionAdapter(session);
     }
 
     /**

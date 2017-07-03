@@ -19,6 +19,7 @@ import java.util.Enumeration;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.SessionAccess;
 
 /**
  * The Class BasicSessionAdapter.
@@ -97,8 +98,8 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    public boolean isBasicSession() {
-        return true;
+    public SessionAccess getSessionAccess() {
+        return (SessionAccess)adaptee;
     }
 
 }

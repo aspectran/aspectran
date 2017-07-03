@@ -98,9 +98,4 @@ public class AdviceHttpSessionAdapter extends AbstractSessionAdapter {
         ((HttpSession)adaptee).invalidate();
     }
 
-    @Override
-    public boolean isBasicSession() {
-        return false;
-    }
-
 }

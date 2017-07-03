@@ -50,6 +50,8 @@ public abstract class AbstractSessionManager implements SessionManager {
 
     private final SessionScavenger sessionScavenger;
 
+    private int defaultMaxIdleSecs = -1;
+
     public AbstractSessionManager(String serviceName, SessionDataStore sessionDataStore) {
         this.sessionIdGenerator = new SessionIdGenerator(serviceName);
         this.sessionDataStore = sessionDataStore;
@@ -63,29 +65,40 @@ public abstract class AbstractSessionManager implements SessionManager {
     }
 
     @Override
-    public BasicSession getSession(String sessionId) {
-        return getSession(sessionId, true);
+    public int getDefaultMaxIdleSecs() {
+        return defaultMaxIdleSecs;
     }
 
     @Override
-    public BasicSession getSession(String id, boolean create) {
+    public void setDefaultMaxIdleSecs(int defaultMaxIdleSecs) {
+        this.defaultMaxIdleSecs = defaultMaxIdleSecs;
+    }
+
+    @Override
+    public BasicSession getSession(String id) {
         try (Locker.Lock ignored = locker.lockIfNotHeld()) {
             BasicSession session = sessionCache.get(id);
             if (session != null) {
-                session.notNewSession();
                 if (session.isValid() && session.isResident()) {
                     return session;
                 }
             }
             session = newSession(id);
-            session.setResident(true);
-            sessionCache.put(id, session);
             return session;
         }
     }
 
+    /**
+     * Create an entirely new Session.
+     *
+     * @param id
+     * @return
+     */
     private BasicSession newSession(String id) {
-        BasicSession session = new BasicSession(this, id);
+        SessionData sessionData = newSessionData(id);
+        BasicSession session = new BasicSession(this, sessionData);
+        session.setResident(true);
+        sessionCache.put(id, session);
         try {
             for (SessionListener listener : sessionListeners) {
                 listener.sessionCreated(session);
@@ -108,18 +121,20 @@ public abstract class AbstractSessionManager implements SessionManager {
         BasicSession session = sessionCache.remove(id);
         if (session != null) {
             session.setResident(false);
-        }
-        try {
-            sessionDataStore.delete(id);
-        } catch(Exception e) {
-            log.warn("Failed to delete session data", e);
-        }
-        try {
-            for (int i = sessionListeners.size() - 1; i >= 0; i--) {
-                sessionListeners.get(i).sessionDestroyed(session);
+            if (session.beginInvalidate()) {
+                try {
+                    sessionDataStore.delete(id);
+                } catch (Exception e) {
+                    log.warn("Failed to delete session data", e);
+                }
+                try {
+                    for (int i = sessionListeners.size() - 1; i >= 0; i--) {
+                        sessionListeners.get(i).sessionDestroyed(session);
+                    }
+                } catch (Exception e) {
+                    log.warn(e.getMessage(), e);
+                }
             }
-        } catch(Exception e) {
-            log.warn(e.getMessage(), e);
         }
         return session;
     }
@@ -150,7 +165,7 @@ public abstract class AbstractSessionManager implements SessionManager {
 
     private SessionData newSessionData(String id) {
         long now = System.currentTimeMillis();
-        return new SessionData(id, now);
+        return new SessionData(id, now, (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L));
     }
 
     @Override

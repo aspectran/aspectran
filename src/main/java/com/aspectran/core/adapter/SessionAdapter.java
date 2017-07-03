@@ -18,6 +18,7 @@ package com.aspectran.core.adapter;
 import java.util.Enumeration;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
+import com.aspectran.core.component.session.SessionAccess;
 
 /**
  * The Interface SessionAdapter.
@@ -134,6 +135,6 @@ public interface SessionAdapter {
      */
     void invalidate();
 
-    boolean isBasicSession();
+    SessionAccess getSessionAccess();
 
 }
