@@ -20,18 +20,19 @@ import java.util.Locale;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.Component;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.ContextBeanRegistry;
-import com.aspectran.core.component.env.ContextEnvironment;
-import com.aspectran.core.component.message.DelegatingMessageSource;
-import com.aspectran.core.component.message.MessageSource;
-import com.aspectran.core.component.message.NoSuchMessageException;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.ContextTemplateProcessor;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
+import com.aspectran.core.support.i18n.message.MessageSource;
+import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -41,7 +42,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
-public class AspectranActivityContext implements ActivityContext {
+public class AspectranActivityContext implements ActivityContext, Component {
 
     private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 

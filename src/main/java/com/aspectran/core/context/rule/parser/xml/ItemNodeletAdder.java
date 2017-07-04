@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.component.expr.token.Token;
-import com.aspectran.core.component.expr.token.TokenParser;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;

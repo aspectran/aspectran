@@ -19,10 +19,10 @@ import java.util.List;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
-import com.aspectran.core.component.expr.TokenEvaluator;
-import com.aspectran.core.component.expr.TokenExpressionParser;
-import com.aspectran.core.component.expr.token.Token;
-import com.aspectran.core.component.expr.token.Tokenizer;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;

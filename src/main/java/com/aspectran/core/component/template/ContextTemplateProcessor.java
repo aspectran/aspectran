@@ -22,11 +22,11 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityDataMap;
-import com.aspectran.core.component.expr.TokenEvaluator;
-import com.aspectran.core.component.expr.TokenExpressionParser;
-import com.aspectran.core.component.expr.token.Token;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

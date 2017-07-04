@@ -74,7 +74,7 @@ public class ScheduledExecutorScheduler implements Scheduler {
             return () -> false;
         } else {
             ScheduledFuture<?> result = executor.schedule(task, delay, unit);
-            return new ScheduledExecutorScheduler.ScheduledFutureTask(result);
+            return new ScheduledFutureTask(result);
         }
     }
 

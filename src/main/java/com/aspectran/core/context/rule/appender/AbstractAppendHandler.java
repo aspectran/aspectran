@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.appender;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.component.env.ContextEnvironment;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.StringUtils;

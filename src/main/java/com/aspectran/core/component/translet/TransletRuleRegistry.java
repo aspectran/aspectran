@@ -24,10 +24,10 @@ import java.util.Set;
 
 import com.aspectran.core.activity.PathVariableMap;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.expr.token.Token;
-import com.aspectran.core.component.expr.token.Tokenizer;
 import com.aspectran.core.component.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;

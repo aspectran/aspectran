@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.aspectran.core.component.expr.token.Token;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 
 /**

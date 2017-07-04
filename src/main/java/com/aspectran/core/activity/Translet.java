@@ -26,13 +26,13 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.message.MessageSource;
-import com.aspectran.core.component.message.NoSuchMessageException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.support.i18n.message.MessageSource;
+import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 
 /**
  * The Interface Translet.

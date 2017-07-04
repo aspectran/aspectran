@@ -18,7 +18,7 @@ package com.aspectran.core.activity;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.component.expr.token.Token;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 
 /**
