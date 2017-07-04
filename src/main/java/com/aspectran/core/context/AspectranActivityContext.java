@@ -62,9 +62,9 @@ public class AspectranActivityContext implements ActivityContext, Component {
 
     private ContextBeanRegistry contextBeanRegistry;
 
-    private ScheduleRuleRegistry scheduleRuleRegistry;
-
     private ContextTemplateProcessor contextTemplateProcessor;
+
+    private ScheduleRuleRegistry scheduleRuleRegistry;
 
     private TransletRuleRegistry transletRuleRegistry;
 
@@ -133,15 +133,6 @@ public class AspectranActivityContext implements ActivityContext, Component {
     }
 
     @Override
-    public ScheduleRuleRegistry getScheduleRuleRegistry() {
-        return scheduleRuleRegistry;
-    }
-
-    public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
-        this.scheduleRuleRegistry = scheduleRuleRegistry;
-    }
-
-    @Override
     public TemplateProcessor getTemplateProcessor() {
         return contextTemplateProcessor;
     }
@@ -153,6 +144,15 @@ public class AspectranActivityContext implements ActivityContext, Component {
      */
     public void setContextTemplateProcessor(ContextTemplateProcessor contextTemplateProcessor) {
         this.contextTemplateProcessor = contextTemplateProcessor;
+    }
+
+    @Override
+    public ScheduleRuleRegistry getScheduleRuleRegistry() {
+        return scheduleRuleRegistry;
+    }
+
+    public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
+        this.scheduleRuleRegistry = scheduleRuleRegistry;
     }
 
     @Override
@@ -217,12 +217,12 @@ public class AspectranActivityContext implements ActivityContext, Component {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws Exception {
         initialize(null);
     }
 
     @Override
-    public void initialize(AspectranService rootAspectranService) {
+    public void initialize(AspectranService rootAspectranService) throws Exception {
         if (rootAspectranService != null) {
             if (this.rootAspectranService != null) {
                 throw new UnsupportedOperationException("ActivityContext has already been initialized");
@@ -233,11 +233,20 @@ public class AspectranActivityContext implements ActivityContext, Component {
         Activity activity = new DefaultActivity(this);
         setDefaultActivity(activity);
 
+        if (aspectRuleRegistry != null) {
+            aspectRuleRegistry.initialize();
+        }
         if (contextBeanRegistry != null) {
-            contextBeanRegistry.initialize(this);
+            contextBeanRegistry.initialize();
         }
         if (contextTemplateProcessor != null) {
-            contextTemplateProcessor.initialize(this);
+            contextTemplateProcessor.initialize();
+        }
+        if (scheduleRuleRegistry != null) {
+            scheduleRuleRegistry.initialize();
+        }
+        if (transletRuleRegistry != null) {
+            transletRuleRegistry.initialize();
         }
         if (contextBeanRegistry != null) {
             initMessageSource();
@@ -246,21 +255,25 @@ public class AspectranActivityContext implements ActivityContext, Component {
 
     @Override
     public void destroy() {
+        if (transletRuleRegistry != null) {
+            transletRuleRegistry.destroy();
+            transletRuleRegistry = null;
+        }
+        if (scheduleRuleRegistry != null) {
+            scheduleRuleRegistry.destroy();
+            scheduleRuleRegistry = null;
+        }
         if (contextTemplateProcessor != null) {
             contextTemplateProcessor.destroy();
             contextTemplateProcessor = null;
         }
-        if (transletRuleRegistry != null) {
-            transletRuleRegistry.clear();
-            transletRuleRegistry = null;
-        }
-        if (aspectRuleRegistry != null) {
-            aspectRuleRegistry.clear();
-            aspectRuleRegistry = null;
-        }
         if (contextBeanRegistry != null) {
             contextBeanRegistry.destroy();
             contextBeanRegistry = null;
+        }
+        if (aspectRuleRegistry != null) {
+            aspectRuleRegistry.destroy();
+            aspectRuleRegistry = null;
         }
 
         removeDefaultActivity();

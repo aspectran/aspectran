@@ -23,10 +23,10 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -60,20 +60,18 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public abstract class AbstractBeanFactory implements BeanFactory {
+public abstract class AbstractBeanFactory extends AbstractComponent {
 
     protected final Log log = LogFactory.getLog(getClass());
+
+    protected final ActivityContext context;
 
     protected final BeanRuleRegistry beanRuleRegistry;
 
     private final BeanProxifierType beanProxifierType;
 
-    protected ActivityContext context;
-
-    /** Flag that indicates whether this context is currently active */
-    private final AtomicBoolean active = new AtomicBoolean();
-
-    public AbstractBeanFactory(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+    public AbstractBeanFactory(ActivityContext context, BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+        this.context = context;
         this.beanRuleRegistry = beanRuleRegistry;
         this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
     }
@@ -365,34 +363,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         return exposedBean;
     }
 
-    @Override
-    public synchronized void initialize(ActivityContext context) {
-        if (this.active.compareAndSet(false, true)) {
-            this.context = context;
-
-            if (log.isDebugEnabled()) {
-                log.debug("Initializing singletons...");
-            }
-
-            instantiateSingletons();
-
-            log.info("BeanFactory initialization completed");
-        } else {
-            log.warn("BeanFactory has already been initialized");
-        }
-    }
-
-    @Override
-    public void destroy() {
-        if (this.active.compareAndSet(true, false)) {
-            destroySingletons();
-
-            log.info("BeanFactory has been destroyed");
-        } else {
-            log.warn("BeanFactory has already been destroyed");
-        }
-    }
-
     /**
      * Instantiate all singletons(non-lazy-init).
      */
@@ -531,6 +501,22 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         }
 
         return constructorToUse;
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("Initializing singletons...");
+        }
+        instantiateSingletons();
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("Destroying singletons...");
+        }
+        destroySingletons();
     }
 
 }

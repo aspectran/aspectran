@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.aspectran.core.activity.PathVariableMap;
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
@@ -44,7 +45,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 /**
  * The Class TransletRuleRegistry.
  */
-public class TransletRuleRegistry {
+public class TransletRuleRegistry extends AbstractComponent {
 
     private final Log log = LogFactory.getLog(TransletRuleRegistry.class);
 
@@ -117,11 +118,6 @@ public class TransletRuleRegistry {
 
     public Collection<TransletRule> getTransletRules() {
         return transletRuleMap.values();
-    }
-
-    public void clear() {
-        transletRuleMap.clear();
-        restfulTransletRuleSet.clear();
     }
 
     public void addTransletRule(final TransletRule transletRule) {
@@ -294,6 +290,17 @@ public class TransletRuleRegistry {
             sb.append(defaultSettings.getTransletNameSuffix());
         }
         return sb.toString();
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+        // Nothing to do
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        transletRuleMap.clear();
+        restfulTransletRuleSet.clear();
     }
 
 }

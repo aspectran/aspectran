@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -26,7 +27,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class AspectRuleRegistry.
  */
-public class AspectRuleRegistry {
+public class AspectRuleRegistry extends AbstractComponent {
 
     private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
 
@@ -61,16 +62,22 @@ public class AspectRuleRegistry {
         return aspectRuleMap.values();
     }
 
-    public void clear() {
-        aspectRuleMap.clear();
-    }
-
     public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
         return sessionAspectAdviceRuleRegistry;
     }
 
     public void setSessionAspectAdviceRuleRegistry(AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry) {
         this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+        // Nothing to do
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        aspectRuleMap.clear();
     }
 
 }

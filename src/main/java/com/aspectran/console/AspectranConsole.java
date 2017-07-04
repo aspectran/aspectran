@@ -37,13 +37,20 @@ public class AspectranConsole {
 
         int exitStatus = 0;
 
+        ConsoleAspectranService service = null;
+
         try {
-            ConsoleAspectranService service = ConsoleAspectranService.create(aspectranConfigFile);
+            service = ConsoleAspectranService.create(aspectranConfigFile);
             ConsoleCommand command = new ConsoleCommand(service);
             command.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
+        } finally {
+            if (service != null) {
+                service.shutdown();
+            }
+
         }
 
         System.exit(exitStatus);

@@ -22,6 +22,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -35,8 +36,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
     private final ReadWriteLock singletonScopeLock = new ReentrantReadWriteLock();
 
-    public ContextBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
-        super(beanRuleRegistry, beanProxifierType);
+    public ContextBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+        super(context, beanRuleRegistry, beanProxifierType);
     }
 
     @Override

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
@@ -28,7 +29,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class ScheduleRuleRegistry.
  */
-public class ScheduleRuleRegistry {
+public class ScheduleRuleRegistry extends AbstractComponent {
 
     private final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
 
@@ -77,8 +78,13 @@ public class ScheduleRuleRegistry {
         return scheduleRuleMap.values();
     }
 
-    public void clear() {
-        scheduleRuleMap.clear();
+    @Override
+    protected void doInitialize() throws Exception {
+        // Nothing to do
     }
 
+    @Override
+    protected void doDestroy() throws Exception {
+        scheduleRuleMap.clear();
+    }
 }

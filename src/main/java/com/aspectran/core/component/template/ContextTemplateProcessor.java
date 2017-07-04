@@ -22,38 +22,33 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ContextTemplateProcessor.
  *
  * <p>Created: 2016. 1. 14.</p>
  */
-public class ContextTemplateProcessor implements TemplateProcessor {
+public class ContextTemplateProcessor extends AbstractComponent implements TemplateProcessor {
 
-    private final Log log = LogFactory.getLog(ContextTemplateProcessor.class);
+    private final ActivityContext context;
 
     private final TemplateRuleRegistry templateRuleRegistry;
-
-    private ActivityContext context;
-
-    private boolean active;
-
-    private boolean closed;
 
     /**
      * Instantiates a new context template processor.
      *
+     * @param context the activity context
      * @param templateRuleRegistry the template rule registry
      */
-    public ContextTemplateProcessor(TemplateRuleRegistry templateRuleRegistry) {
+    public ContextTemplateProcessor(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
+        this.context = context;
         this.templateRuleRegistry = templateRuleRegistry;
     }
 
@@ -175,36 +170,14 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         }
     }
 
-    /**
-     * Initialize TemplateProcessor.
-     *
-     * @param context the activity context
-     */
-    public synchronized void initialize(ActivityContext context) {
-        if (this.active) {
-            log.warn("TemplateProcessor has already been initialized");
-            return;
-        }
-
-        this.context = context;
-
-        this.closed = false;
-        this.active = true;
-
-        log.info("TemplateProcessor initialization completed");
+    @Override
+    protected void doInitialize() throws Exception {
+        templateRuleRegistry.initialize();
     }
 
-    /**
-     * Destroy TemplateProcessor.
-     */
-    public synchronized void destroy() {
-        if (this.active && !this.closed) {
-            templateRuleRegistry.clear();
-            this.closed = true;
-            this.active = false;
-
-            log.info("TemplateProcessor has been destroyed");
-        }
+    @Override
+    protected void doDestroy() throws Exception {
+        templateRuleRegistry.destroy();
     }
 
 }

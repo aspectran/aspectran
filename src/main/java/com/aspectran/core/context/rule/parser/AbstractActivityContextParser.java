@@ -126,7 +126,7 @@ abstract class AbstractActivityContextParser implements ActivityContextParser {
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      */
-    protected ActivityContext createActivityContext() throws BeanReferenceException {
+    protected ActivityContext createActivityContext() throws Exception {
         activityContext.setDescription(assistant.getAssistantLocal().getDescription());
 
         initContextEnvironment();
@@ -146,9 +146,9 @@ abstract class AbstractActivityContextParser implements ActivityContextParser {
         initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
 
         BeanProxifierType beanProxifierType = BeanProxifierType.resolve((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
+        ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(activityContext, beanRuleRegistry, beanProxifierType);
 
-        ContextTemplateProcessor contextTemplateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
+        ContextTemplateProcessor contextTemplateProcessor = new ContextTemplateProcessor(activityContext, templateRuleRegistry);
 
         assistant.release();
 
