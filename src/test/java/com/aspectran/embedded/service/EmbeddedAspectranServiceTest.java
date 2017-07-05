@@ -28,7 +28,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.AspectranServiceException;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
@@ -39,7 +38,7 @@ public class EmbeddedAspectranServiceTest {
     private EmbeddedAspectranService aspectranService;
 
     @Before
-    public void ready() throws IOException, AspectranServiceException {
+    public void ready() throws Exception {
         String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
         aspectranService = EmbeddedAspectranService.create(rootContextLocation);
         aspectranService.start();
@@ -53,7 +52,7 @@ public class EmbeddedAspectranServiceTest {
     }
 
     @Test
-    public void test1() throws AspectranServiceException, IOException {
+    public void test1() throws IOException {
         ActivityContext activityContext = aspectranService.getActivityContext();
         BeanRegistry beanRegistry = activityContext.getBeanRegistry();
         FirstBean firstBean = beanRegistry.getBean("thirdBean");
@@ -82,13 +81,13 @@ public class EmbeddedAspectranServiceTest {
     }
 
     @Test
-    public void test2() throws AspectranServiceException, IOException {
+    public void test2() throws IOException {
         Translet translet = aspectranService.translet("attr-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
     @Test
-    public void includeTest() throws AspectranServiceException, IOException {
+    public void includeTest() throws IOException {
         Translet translet = aspectranService.translet("include-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }

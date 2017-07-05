@@ -15,8 +15,6 @@
  */
 package com.aspectran.scheduler;
 
-import java.io.IOException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,7 +22,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.embedded.service.EmbeddedAspectranService;
 
 /**
@@ -36,7 +33,7 @@ public class AspectranSchedulerTest {
     private EmbeddedAspectranService aspectranService;
 
     @Before
-    public void ready() throws IOException, AspectranServiceException {
+    public void ready() throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootContext("classpath:config/scheduler/scheduler-config.xml");
         aspectranConfig.updateSchedulerConfig(0, true, true);

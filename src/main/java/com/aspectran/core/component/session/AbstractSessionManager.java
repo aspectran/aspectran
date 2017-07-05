@@ -19,6 +19,7 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Locker;
@@ -30,7 +31,7 @@ import com.aspectran.core.util.thread.Scheduler;
  *
  * <p>Created: 2017. 6. 12.</p>
  */
-public abstract class AbstractSessionManager implements SessionManager {
+public abstract class AbstractSessionManager extends AbstractComponent implements SessionManager {
 
     private static final Log log = LogFactory.getLog(AbstractSessionManager.class);
 
@@ -91,8 +92,8 @@ public abstract class AbstractSessionManager implements SessionManager {
     /**
      * Create an entirely new Session.
      *
-     * @param id
-     * @return
+     * @param id identity of session to create
+     * @return the basic session
      */
     private BasicSession newSession(String id) {
         SessionData sessionData = newSessionData(id);
@@ -171,11 +172,6 @@ public abstract class AbstractSessionManager implements SessionManager {
     @Override
     public String newSessionId(long seedTerm) {
         return sessionIdGenerator.newSessionId(seedTerm);
-    }
-
-    @Override
-    public void destroy() {
-        sessionCache.clear();
     }
 
     /**
@@ -270,6 +266,15 @@ public abstract class AbstractSessionManager implements SessionManager {
         if (value != null&&value instanceof SessionBindingListener) {
             ((SessionBindingListener)value).valueBound(session, name, value);
         }
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        sessionCache.clear();
     }
 
 }

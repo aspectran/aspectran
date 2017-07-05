@@ -270,7 +270,7 @@ public class BasicSession implements SessionAccess {
         return result;
     }
 
-    protected void finishInvalidate() throws IllegalStateException {
+    protected void finishInvalidate() {
         try (Lock ignored = locker.lockIfNotHeld()) {
             try {
                 if (log.isDebugEnabled()) {

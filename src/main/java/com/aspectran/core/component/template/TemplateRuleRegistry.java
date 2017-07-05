@@ -89,4 +89,5 @@ public class TemplateRuleRegistry extends AbstractComponent {
     protected void doDestroy() throws Exception {
         clear();
     }
+
 }

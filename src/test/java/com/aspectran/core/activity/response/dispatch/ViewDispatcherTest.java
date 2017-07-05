@@ -43,7 +43,6 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean;
 import com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
@@ -60,7 +59,7 @@ public class ViewDispatcherTest {
     private EmbeddedAspectranService aspectranService;
 
     @Before
-    public void ready() throws IOException, AspectranServiceException {
+    public void ready() throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         AspectranContextConfig contextConfig = aspectranConfig.newAspectranContextConfig();
 
@@ -142,7 +141,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testFreemarkerViewDispatcher() throws AspectranServiceException, IOException {
+    public void testFreemarkerViewDispatcher() throws IOException {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello");
         params.setParameter("param2", "world");
@@ -155,7 +154,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testEcho() throws AspectranServiceException, IOException {
+    public void testEcho() throws IOException {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello2");
         params.setParameter("param2", "world2");
@@ -168,7 +167,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testFreemarkerTemplate1() throws AspectranServiceException, IOException {
+    public void testFreemarkerTemplate1() throws IOException {
         List<String> fruits = new ArrayList<>();
         fruits.add("Apple");
         fruits.add("Banana");

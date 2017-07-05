@@ -87,4 +87,5 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     protected void doDestroy() throws Exception {
         scheduleRuleMap.clear();
     }
+    
 }

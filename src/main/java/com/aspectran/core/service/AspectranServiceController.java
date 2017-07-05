@@ -25,21 +25,21 @@ public interface AspectranServiceController {
      *
      * @throws AspectranServiceException the aspectran service exception
      */
-    void start() throws AspectranServiceException;
+    void start() throws Exception;
 
     /**
      * Restart an Aspectran Service.
      *
      * @throws AspectranServiceException the aspectran service exception
      */
-    void restart() throws AspectranServiceException;
+    void restart() throws Exception;
 
     /**
      * Pause an Aspectran Service.
      *
      * @throws AspectranServiceException the aspectran service exception
      */
-    void pause() throws AspectranServiceException;
+    void pause() throws Exception;
 
     /**
      * Pause an Aspectran Service for a specified period of time.
@@ -47,14 +47,14 @@ public interface AspectranServiceController {
      * @param timeout the maximum time to wait in milliseconds.
      * @throws AspectranServiceException the aspectran service exception
      */
-    void pause(long timeout) throws AspectranServiceException;
+    void pause(long timeout) throws Exception;
 
     /**
      * Continues an Aspectran Service after it has been paused.
      *
      * @throws AspectranServiceException the aspectran service exception
      */
-    void resume() throws AspectranServiceException;
+    void resume() throws Exception;
 
     /**
      * Destroys an Aspectran Service and any services that are dependent on this service.

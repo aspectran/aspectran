@@ -40,8 +40,6 @@ public interface SessionManager {
 
     void storeSessionData(String id, SessionData sessionData);
 
-    void destroy();
-
     /**
      * Adds an event listener for session-related events.
      *

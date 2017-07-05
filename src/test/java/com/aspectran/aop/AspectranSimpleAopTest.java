@@ -15,8 +15,6 @@
  */
 package com.aspectran.aop;
 
-import java.io.IOException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,14 +30,14 @@ public class AspectranSimpleAopTest {
     private EmbeddedAspectranService aspectranService;
 
     @Before
-    public void ready() throws IOException, AspectranServiceException {
+    public void ready() throws Exception {
         String rootContextLocation = "classpath:config/aop/simple-aop-test-config.xml";
         aspectranService = EmbeddedAspectranService.create(rootContextLocation);
         aspectranService.start();
     }
 
     @Test
-    public void test() throws AspectranServiceException, IOException {
+    public void test() throws AspectranServiceException {
         aspectranService.translet("/aop/test/target1");
         aspectranService.translet("/aop/test/target2");
     }

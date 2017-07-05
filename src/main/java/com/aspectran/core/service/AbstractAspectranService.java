@@ -18,6 +18,7 @@ package com.aspectran.core.service;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
+import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
@@ -90,7 +91,7 @@ public abstract class AbstractAspectranService implements AspectranService {
     @Override
     public AspectranClassLoader getAspectranClassLoader() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not initialized; Call initialize() method first");
+            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
         }
         return activityContextBuilder.getAspectranClassLoader();
     }
@@ -103,14 +104,14 @@ public abstract class AbstractAspectranService implements AspectranService {
     @Override
     public boolean isHardReload() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not initialized; Call initialize() method first");
+            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
         }
         return activityContextBuilder.isHardReload();
     }
 
     protected synchronized void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
-            throw new AspectranServiceException("AspectranService can not be initialized because ActivityContext has already been loaded");
+            throw new IllegalStateException("AspectranService can not be initialized because ActivityContext has already been loaded");
         }
 
         log.info("Initializing AspectranService...");
@@ -125,7 +126,7 @@ public abstract class AbstractAspectranService implements AspectranService {
             activityContextBuilder.initialize(aspectranContextConfig);
             activityContextBuilder.setAspectranServiceController(this);
         } catch (Exception e) {
-            throw new AspectranServiceException("Could not initialize AspectranService", e);
+            throw new AspectranServiceException("Could not prepare the AspectranService", e);
         }
     }
 
@@ -137,20 +138,15 @@ public abstract class AbstractAspectranService implements AspectranService {
         return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
     }
 
-    protected synchronized void loadActivityContext() throws AspectranServiceException {
+    protected synchronized void loadActivityContext() throws ActivityContextBuilderException {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
+            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
         }
-
         if (activityContext != null) {
-            throw new AspectranServiceException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading");
+            throw new IllegalStateException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading");
         }
 
-        try {
-            activityContextBuilder.build();
-        } catch (Exception e) {
-            throw new AspectranServiceException("Could not load ActivityContext", e);
-        }
+        activityContextBuilder.build();
     }
 
     protected synchronized void destroyActivityContext() {
@@ -177,7 +173,6 @@ public abstract class AbstractAspectranService implements AspectranService {
             if (waitOnShutdown) {
                 newSchedulerService.setWaitOnShutdown(true);
             }
-
             if (startDelaySeconds == -1) {
                 log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
                 startDelaySeconds = 5;

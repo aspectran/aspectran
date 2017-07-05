@@ -23,10 +23,12 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.Component;
 import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -63,8 +65,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     }
 
     @Override
-    public void afterContextLoaded() {
+    public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager("EMBEDDED");
+        ((Component)sessionManager).initialize();
+
         sessionId = sessionManager.newSessionId(hashCode());
 
         final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(getActivityContext());
@@ -85,7 +89,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     @Override
     public void beforeContextDestroy() {
-        sessionManager.destroy();
+        ((Component)sessionManager).destroy();
     }
 
     public SessionAdapter newSessionAdapter() {
@@ -98,9 +102,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      *
      * @param name the translet name
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name) throws AspectranServiceException {
+    public Translet translet(String name) {
         return translet(name, null, null, null);
     }
 
@@ -110,10 +113,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param name the translet name
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, ParameterMap parameterMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, ParameterMap parameterMap) {
         return translet(name, null, parameterMap, null);
     }
 
@@ -124,10 +125,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         return translet(name, null, parameterMap, attributeMap);
     }
 
@@ -137,10 +136,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param name the translet name
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, Map<String, Object> attributeMap) {
         return translet(name, null, null, attributeMap);
     }
 
@@ -150,9 +147,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param name the translet name
      * @param method the request method
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, MethodType method) throws AspectranServiceException {
+    public Translet translet(String name, MethodType method) {
         return translet(name, method, null, null);
     }
 
@@ -163,10 +159,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param method the request method
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, MethodType method, ParameterMap parameterMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, MethodType method, ParameterMap parameterMap) {
         return translet(name, method, parameterMap, null);
     }
 
@@ -177,10 +171,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param method the request method
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, MethodType method, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, MethodType method, Map<String, Object> attributeMap) {
         return translet(name, method, null, attributeMap);
     }
 
@@ -192,10 +184,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 log.warn("AspectranService has been paused, so did not run the translet \"" + name + "\"");
@@ -221,7 +211,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
                 log.debug("Translet activity was terminated");
             }
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while processing a translet", e);
+            throw new AspectranRuntimeException("An error occurred while executing a translet", e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -236,9 +226,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      *
      * @param templateId the template id
      * @return the output string of the template
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId) throws AspectranServiceException {
+    public String template(String templateId) {
         return template(templateId, null, null);
     }
 
@@ -248,10 +237,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @return the output string of the template
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId, ParameterMap parameterMap)
-            throws AspectranServiceException {
+    public String template(String templateId, ParameterMap parameterMap) {
         return template(templateId, parameterMap, null);
     }
 
@@ -261,10 +248,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param templateId the template id
      * @param attributeMap the attribute map
      * @return the output string of the template
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public String template(String templateId, Map<String, Object> attributeMap) {
         return template(templateId, null, attributeMap);
     }
 
@@ -275,10 +260,8 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the output string of the template
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap)
-            throws AspectranServiceException {
+    public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), newSessionAdapter());
             if (parameterMap != null) {
@@ -293,7 +276,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while processing a template", e);
+            throw new AspectranRuntimeException("An error occurred while processing a template", e);
         }
     }
 

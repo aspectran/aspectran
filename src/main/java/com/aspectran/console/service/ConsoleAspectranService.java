@@ -30,6 +30,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.Component;
 import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionListener;
@@ -74,8 +75,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
     }
 
     @Override
-    public void afterContextLoaded() {
+    public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager("CONSOLE");
+        ((Component)sessionManager).initialize();
+
         sessionId = sessionManager.newSessionId(hashCode());
 
         final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(getActivityContext());
@@ -96,7 +99,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     @Override
     public void beforeContextDestroy() {
-        sessionManager.destroy();
+        ((Component)sessionManager).destroy();
     }
 
     public SessionAdapter newSessionAdapter() {

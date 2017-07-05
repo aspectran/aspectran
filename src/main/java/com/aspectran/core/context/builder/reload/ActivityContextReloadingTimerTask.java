@@ -24,7 +24,6 @@ import java.util.TimerTask;
 
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.service.AspectranServiceController;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -85,7 +84,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
         if (modified) {
             try {
                 aspectranServiceController.restart();
-            } catch (AspectranServiceException e) {
+            } catch (Exception e) {
                 throw new AspectranRuntimeException(e);
             }
             modified = false;

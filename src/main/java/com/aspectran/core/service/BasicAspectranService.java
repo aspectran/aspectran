@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.thread.ShutdownHooks;
-import com.aspectran.scheduler.service.SchedulerServiceException;
 
 /**
  * The Class BasicAspectranService.
@@ -65,8 +64,10 @@ public class BasicAspectranService extends AbstractAspectranService {
 
     /**
      * This method is executed immediately after the ActivityContext is loaded.
+     *
+     * @throws Exception
      */
-    protected void afterContextLoaded() {
+    protected void afterContextLoaded() throws Exception {
     }
 
     /**
@@ -76,14 +77,14 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void start() throws AspectranServiceException {
+    public void start() throws Exception {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
-                    throw new AspectranServiceException("Could not start AspectranService because it has already been destroyed");
+                    throw new IllegalStateException("Could not start AspectranService because it has already been destroyed");
                 }
                 if (this.active.get()) {
-                    throw new AspectranServiceException("Could not start AspectranService because it has already been started");
+                    throw new IllegalStateException("Could not start AspectranService because it has already been started");
                 }
 
                 loadActivityContext();
@@ -106,7 +107,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void restart() throws AspectranServiceException {
+    public void restart() throws Exception {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
@@ -141,7 +142,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void pause() throws SchedulerServiceException {
+    public void pause() throws Exception {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
@@ -149,12 +150,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                     return;
                 }
 
-                try {
-                    pauseSchedulerService();
-                } catch (SchedulerServiceException e) {
-                    log.error("Could not pause AspectranService", e);
-                    throw e;
-                }
+                pauseSchedulerService();
 
                 log.info("AspectranService has been paused");
 
@@ -166,7 +162,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void pause(long timeout) throws AspectranServiceException {
+    public void pause(long timeout) throws Exception {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
@@ -174,11 +170,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                     return;
                 }
 
-                try {
-                    pauseSchedulerService();
-                } catch (SchedulerServiceException e) {
-                    throw new AspectranServiceException("Could not pause AspectranService", e);
-                }
+                pauseSchedulerService();
 
                 log.info("AspectranService has been paused and will resume after " + timeout + " ms");
 
@@ -190,7 +182,7 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void resume() throws AspectranServiceException {
+    public void resume() throws Exception {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
@@ -198,11 +190,7 @@ public class BasicAspectranService extends AbstractAspectranService {
                     return;
                 }
 
-                try {
-                    resumeSchedulerService();
-                } catch (SchedulerServiceException e) {
-                    throw new AspectranServiceException("Could not resume AspectranService", e);
-                }
+                resumeSchedulerService();
 
                 log.info("AspectranService has been resumed");
 

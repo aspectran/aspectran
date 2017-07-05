@@ -17,10 +17,15 @@ package com.aspectran.core.component.session;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
 /**
  * <p>Created: 2017. 6. 24.</p>
  */
 public class SessionCache {
+
+    private static final Log log = LogFactory.getLog(SessionCache.class);
 
     /** The cache of sessions in a hashmap */
     private final ConcurrentHashMap<String, BasicSession> sessions = new ConcurrentHashMap<>();
@@ -44,9 +49,16 @@ public class SessionCache {
     }
 
     public void clear() {
-        for (BasicSession session: sessions.values()) {
-            if (session.isValid() && session.isResident()) {
-                session.invalidate();
+        int loop = 99;
+        while (!sessions.isEmpty() && loop-- >= 0) {
+            for (BasicSession session : sessions.values()) {
+                if (session.isValid() && session.isResident()) {
+                    try {
+                        session.invalidate();
+                    } catch (Exception e) {
+                        log.warn("Failed to invalidate the session", e);
+                    }
+                }
             }
         }
         sessions.clear();
