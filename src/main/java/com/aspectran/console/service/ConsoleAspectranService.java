@@ -250,7 +250,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
         }
 
         ConsoleAspectranService consoleAspectranService = new ConsoleAspectranService();
-        consoleAspectranService.initialize(aspectranConfig);
+        consoleAspectranService.prepare(aspectranConfig);
 
         AspectranConsoleConfig consoleConfig = aspectranConfig.getAspectranConsoleConfig();
         if (consoleConfig != null) {
@@ -274,8 +274,6 @@ public class ConsoleAspectranService extends BasicAspectranService {
         }
 
         setAspectranServiceControlListener(consoleAspectranService);
-
-        consoleAspectranService.startup();
 
         return consoleAspectranService;
     }

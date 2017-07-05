@@ -131,12 +131,13 @@ public class ViewDispatcherTest {
         parameters.addRule(aspectran1);
 
         aspectranService = EmbeddedAspectranService.create(aspectranConfig);
+        aspectranService.start();
     }
 
     @After
     public void finish() {
         if (aspectranService != null) {
-            aspectranService.shutdown();
+            aspectranService.stop();
         }
     }
 

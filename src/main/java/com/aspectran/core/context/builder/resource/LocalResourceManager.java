@@ -58,7 +58,7 @@ public class LocalResourceManager extends ResourceManager {
             this.resourceLocationSubLen = this.resourceLocation.length() + 1;
 
             if (!file.isDirectory()
-                    && (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
+                    || (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
                 throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
             }
 
@@ -101,7 +101,6 @@ public class LocalResourceManager extends ResourceManager {
     private void findResource(File target, List<File> jarFileList) {
         target.listFiles(file -> {
             String filePath = file.getAbsolutePath();
-
             String resourceName = filePath.substring(resourceLocationSubLen);
 
             try {
@@ -127,7 +126,6 @@ public class LocalResourceManager extends ResourceManager {
 
         try {
             jarFile = new JarFile(target);
-
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
                 resourceEntries.putResource(target, entry);

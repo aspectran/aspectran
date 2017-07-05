@@ -32,9 +32,9 @@ public interface SchedulerService {
 
     void setExposals(String[] exposals);
 
-    void startup() throws SchedulerServiceException;
+    void start() throws SchedulerServiceException;
 
-    void startup(int delaySeconds) throws SchedulerServiceException;
+    void start(int delaySeconds) throws SchedulerServiceException;
 
     void shutdown() throws SchedulerServiceException;
 

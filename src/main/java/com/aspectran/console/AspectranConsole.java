@@ -41,6 +41,7 @@ public class AspectranConsole {
 
         try {
             service = ConsoleAspectranService.create(aspectranConfigFile);
+            service.start();
             ConsoleCommand command = new ConsoleCommand(service);
             command.perform();
         } catch (Exception e) {
@@ -48,7 +49,7 @@ public class AspectranConsole {
             exitStatus = 1;
         } finally {
             if (service != null) {
-                service.shutdown();
+                service.stop();
             }
 
         }

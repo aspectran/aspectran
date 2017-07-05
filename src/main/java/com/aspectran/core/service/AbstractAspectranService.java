@@ -108,7 +108,7 @@ public abstract class AbstractAspectranService implements AspectranService {
         return activityContextBuilder.isHardReload();
     }
 
-    protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected synchronized void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
             throw new AspectranServiceException("AspectranService can not be initialized because ActivityContext has already been loaded");
         }
@@ -184,7 +184,7 @@ public abstract class AbstractAspectranService implements AspectranService {
             }
 
             newSchedulerService.setExposals(exposals);
-            newSchedulerService.startup(startDelaySeconds);
+            newSchedulerService.start(startDelaySeconds);
 
             schedulerService = newSchedulerService;
 

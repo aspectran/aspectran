@@ -70,13 +70,13 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     /**
-     * The ActivityContext is executed just before it is destroyed.
+     * This method executed just before the ActivityContext is destroyed.
      */
     protected void beforeContextDestroy() {
     }
 
     @Override
-    public void startup() throws AspectranServiceException {
+    public void start() throws AspectranServiceException {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
                 if (this.closed.get()) {
@@ -93,7 +93,6 @@ public class BasicAspectranService extends AbstractAspectranService {
 
                 startSchedulerService();
 
-                this.closed.set(false);
                 this.active.set(true);
 
                 log.info("AspectranService has been started successfully");
@@ -119,9 +118,9 @@ public class BasicAspectranService extends AbstractAspectranService {
                     return;
                 }
 
-                doShutdown();
+                doDestroy();
 
-                log.info("AspectranService has been shut down successfully");
+                log.info("AspectranService has been stopped successfully");
 
                 loadActivityContext();
 
@@ -215,15 +214,11 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
         if (!this.derived) {
             synchronized (this.serviceControlMonitor) {
-                log.info("Destroying all cached resources");
-
-                doShutdown();
+                doDestroy();
                 removeShutdownTask();
-
-                log.info("AspectranService has been shut down successfully");
             }
         }
     }
@@ -232,17 +227,21 @@ public class BasicAspectranService extends AbstractAspectranService {
      * Actually performs destroys the singletons in the bean registry.
      * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
      */
-    private void doShutdown() {
+    private void doDestroy() {
         if (this.active.get() && this.closed.compareAndSet(false, true)) {
             if (aspectranServiceControlListener != null) {
                 aspectranServiceControlListener.paused();
             }
+
+            log.info("Destroying all cached resources");
 
             shutdownSchedulerService();
 
             beforeContextDestroy();
 
             destroyActivityContext();
+
+            log.info("AspectranService has been stopped successfully");
 
             this.active.set(false);
 
@@ -261,7 +260,7 @@ public class BasicAspectranService extends AbstractAspectranService {
             // Register a task to destroy the activity context on shutdown
             this.shutdownTask = ShutdownHooks.add(() -> {
                 synchronized (serviceControlMonitor) {
-                    doShutdown();
+                    doDestroy();
                     removeShutdownTask();
                 }
             });
@@ -283,11 +282,6 @@ public class BasicAspectranService extends AbstractAspectranService {
     @Override
     public boolean isActive() {
         return this.active.get();
-    }
-
-    @Override
-    public AspectranServiceController getAspectranServiceController() {
-        return this;
     }
 
 }

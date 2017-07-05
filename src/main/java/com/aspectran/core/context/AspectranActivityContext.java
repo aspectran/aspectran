@@ -15,12 +15,10 @@
  */
 package com.aspectran.core.context;
 
-import java.util.Locale;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.Component;
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.ContextBeanRegistry;
@@ -32,7 +30,6 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
-import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -42,7 +39,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
-public class AspectranActivityContext implements ActivityContext, Component {
+public class AspectranActivityContext extends AbstractComponent implements ActivityContext {
 
     private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
@@ -107,6 +104,14 @@ public class AspectranActivityContext implements ActivityContext, Component {
     @Override
     public AspectranService getRootAspectranService() {
         return rootAspectranService;
+    }
+
+    @Override
+    public void setRootAspectranService(AspectranService rootAspectranService) {
+        if (isRunning()) {
+            throw new IllegalStateException("ActivityContext is already running");
+        }
+        this.rootAspectranService = rootAspectranService;
     }
 
     @Override
@@ -178,16 +183,6 @@ public class AspectranActivityContext implements ActivityContext, Component {
     }
 
     @Override
-    public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
-        return getMessageSource().getMessage(code, args, defaultMessage, locale);
-    }
-
-    @Override
-    public String getMessage(String code, Object args[], Locale locale) throws NoSuchMessageException {
-        return getMessageSource().getMessage(code, args, locale);
-    }
-
-    @Override
     public Activity getDefaultActivity() {
         return defaultActivityHolder.get();
     }
@@ -216,20 +211,28 @@ public class AspectranActivityContext implements ActivityContext, Component {
         currentActivityHolder.remove();
     }
 
-    @Override
-    public void initialize() throws Exception {
-        initialize(null);
+    /**
+     * Initialize the MessageSource.
+     * Use parent's if none defined in this context.
+     */
+    private void initMessageSource() {
+        if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
+            messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
+            if (log.isDebugEnabled()) {
+                log.debug("Using MessageSource [" + messageSource + "]");
+            }
+        } else {
+            // Use empty MessageSource to be able to accept getMessage calls.
+            messageSource = new DelegatingMessageSource();
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
+                        "': using default [" + messageSource + "]");
+            }
+        }
     }
 
     @Override
-    public void initialize(AspectranService rootAspectranService) throws Exception {
-        if (rootAspectranService != null) {
-            if (this.rootAspectranService != null) {
-                throw new UnsupportedOperationException("ActivityContext has already been initialized");
-            }
-            this.rootAspectranService = rootAspectranService;
-        }
-
+    protected void doInitialize() throws Exception {
         Activity activity = new DefaultActivity(this);
         setDefaultActivity(activity);
 
@@ -254,7 +257,7 @@ public class AspectranActivityContext implements ActivityContext, Component {
     }
 
     @Override
-    public void destroy() {
+    protected void doDestroy() throws Exception {
         if (transletRuleRegistry != null) {
             transletRuleRegistry.destroy();
             transletRuleRegistry = null;
@@ -277,40 +280,6 @@ public class AspectranActivityContext implements ActivityContext, Component {
         }
 
         removeDefaultActivity();
-    }
-
-    /**
-     * Initialize the MessageSource.
-     * Use parent's if none defined in this context.
-     */
-    private void initMessageSource() {
-        if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
-            messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
-            if (log.isDebugEnabled()) {
-                log.debug("Using MessageSource [" + messageSource + "]");
-            }
-        } else {
-            // Use empty MessageSource to be able to accept getMessage calls.
-            messageSource = new DelegatingMessageSource();
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
-                        "': using default [" + messageSource + "]");
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("activeProfiles", contextEnvironment.getActiveProfiles());
-        tsb.append("defaultProfiles", contextEnvironment.getDefaultProfiles());
-        tsb.append("applicationAdapter", applicationAdapter);
-        tsb.append("aspectRuleRegistry", aspectRuleRegistry);
-        tsb.append("beanRegistry", contextBeanRegistry);
-        tsb.append("transletRuleRegistry", transletRuleRegistry);
-        tsb.append("templateProcessor", contextTemplateProcessor);
-        tsb.append("messageSource", messageSource);
-        return tsb.toString();
     }
 
 }

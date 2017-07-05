@@ -292,7 +292,7 @@ public class WebAspectranService extends BasicAspectranService {
         }
 
         WebAspectranService webAspectranService = new WebAspectranService(servletContext);
-        webAspectranService.initialize(aspectranConfig);
+        webAspectranService.prepare(aspectranConfig);
 
         AspectranWebConfig webConfig = aspectranConfig.getAspectranWebConfig();
         String defaultServletName = null;
@@ -305,8 +305,6 @@ public class WebAspectranService extends BasicAspectranService {
         webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 
         setAspectranServiceLifeCycleListener(webAspectranService);
-
-        webAspectranService.startup();
 
         return webAspectranService;
     }

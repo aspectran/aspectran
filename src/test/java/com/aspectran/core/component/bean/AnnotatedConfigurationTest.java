@@ -44,6 +44,7 @@ public class AnnotatedConfigurationTest {
     public void ready() throws IOException, AspectranServiceException {
         String rootContextLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
         aspectranService = EmbeddedAspectranService.create(rootContextLocation);
+        aspectranService.start();
     }
 
     @Test
@@ -54,7 +55,7 @@ public class AnnotatedConfigurationTest {
 
     @After
     public void finish() {
-        aspectranService.shutdown();
+        aspectranService.stop();
     }
 
 }

@@ -75,11 +75,4 @@ public interface AspectranService extends AspectranServiceController {
      */
     boolean isActive();
 
-    /**
-     * Returns the aspectran service controller.
-     *
-     * @return the aspectran service controller
-     */
-    AspectranServiceController getAspectranServiceController();
-
 }

@@ -67,6 +67,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             } else {
                 webAspectranService = WebAspectranService.create(this);
             }
+            webAspectranService.start();
             standalone = (rootWebAspectranService != webAspectranService);
             if (standalone) {
                 log.info("AspectranService is running in standalone mode inside the servlet: " + this);
@@ -89,7 +90,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         if (standalone) {
             log.info("Do not terminate the application server while destroying all scoped beans");
 
-            webAspectranService.shutdown();
+            webAspectranService.stop();
 
             log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
         }

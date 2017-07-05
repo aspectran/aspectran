@@ -42,12 +42,13 @@ public class AspectranSchedulerTest {
         aspectranConfig.updateSchedulerConfig(0, true, true);
 
         aspectranService = EmbeddedAspectranService.create(aspectranConfig);
+        aspectranService.start();
     }
 
     @After
     public void finish() {
         if (aspectranService != null) {
-            aspectranService.shutdown();
+            aspectranService.stop();
         }
     }
 

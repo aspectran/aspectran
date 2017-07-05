@@ -101,13 +101,13 @@ public class QuartzSchedulerService implements SchedulerService {
     }
 
     @Override
-    public void startup(int delaySeconds) throws SchedulerServiceException {
+    public void start(int delaySeconds) throws SchedulerServiceException {
         this.startDelaySeconds = delaySeconds;
-        startup();
+        start();
     }
 
     @Override
-    public synchronized void startup() throws SchedulerServiceException {
+    public synchronized void start() throws SchedulerServiceException {
         if (context.getScheduleRuleRegistry() == null) {
             return;
         }
@@ -173,7 +173,7 @@ public class QuartzSchedulerService implements SchedulerService {
     public void restart(ActivityContext context) throws SchedulerServiceException {
         this.context = context;
         shutdown();
-        startup();
+        start();
     }
 
     @Override

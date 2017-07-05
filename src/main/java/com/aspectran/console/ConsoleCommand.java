@@ -94,7 +94,6 @@ public class ConsoleCommand {
         } finally {
             if (service.isActive()) {
                 log.info("Do not terminate this application while destroying all scoped beans");
-                service.shutdown();
             }
         }
     }

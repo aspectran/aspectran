@@ -31,7 +31,7 @@ import com.aspectran.core.support.i18n.message.MessageSource;
  *
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
-public interface ActivityContext extends MessageSource {
+public interface ActivityContext {
 
     String ID_SEPARATOR = ".";
 
@@ -76,9 +76,17 @@ public interface ActivityContext extends MessageSource {
     /**
      * Returns the Aspectran Service that created the current ActivityContext.
      *
-     * @return the origin aspectran service
+     * @return the root aspectran service
      */
     AspectranService getRootAspectranService();
+
+    /**
+     * Sets the Aspectran Service that created the current ActivityContext.
+     * It is set only once, just after the ActivityContext is created.
+     *
+     * @param rootAspectranService the origin aspectran service
+     */
+    void setRootAspectranService(AspectranService rootAspectranService);
 
     /**
      * Gets the aspect rule registry.
@@ -147,25 +155,5 @@ public interface ActivityContext extends MessageSource {
      * Removes the current activity.
      */
     void removeCurrentActivity();
-
-    /**
-     * Initializes the ActivityContext.
-     */
-    void initialize() throws Exception;
-
-    /**
-     * Initializes the ActivityContext.
-     * Sets the Aspectran Service that created the current ActivityContext.
-     * It is set only once, just after the ActivityContext is created.
-     *
-     * @param rootAspectranService the origin aspectran service
-     * @throws Exception if the aspectran service fails to initialize
-     */
-    void initialize(AspectranService rootAspectranService) throws Exception;
-
-    /**
-     * Destroy the aspectran context.
-     */
-    void destroy();
 
 }

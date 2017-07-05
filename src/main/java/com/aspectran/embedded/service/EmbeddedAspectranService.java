@@ -331,11 +331,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         }
 
         EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
-        aspectranService.initialize(aspectranConfig);
+        aspectranService.prepare(aspectranConfig);
 
         setAspectranServiceLifeCycleListener(aspectranService);
-
-        aspectranService.startup();
 
         return aspectranService;
     }

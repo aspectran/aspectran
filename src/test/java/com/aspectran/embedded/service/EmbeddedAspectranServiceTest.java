@@ -42,12 +42,13 @@ public class EmbeddedAspectranServiceTest {
     public void ready() throws IOException, AspectranServiceException {
         String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
         aspectranService = EmbeddedAspectranService.create(rootContextLocation);
+        aspectranService.start();
     }
 
     @After
     public void finish() {
         if (aspectranService != null) {
-            aspectranService.shutdown();
+            aspectranService.stop();
         }
     }
 

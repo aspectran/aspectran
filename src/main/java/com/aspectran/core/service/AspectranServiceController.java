@@ -25,7 +25,7 @@ public interface AspectranServiceController {
      *
      * @throws AspectranServiceException the aspectran service exception
      */
-    void startup() throws AspectranServiceException;
+    void start() throws AspectranServiceException;
 
     /**
      * Restart an Aspectran Service.
@@ -59,6 +59,6 @@ public interface AspectranServiceController {
     /**
      * Destroys an Aspectran Service and any services that are dependent on this service.
      */
-    void shutdown();
+    void stop();
 
 }

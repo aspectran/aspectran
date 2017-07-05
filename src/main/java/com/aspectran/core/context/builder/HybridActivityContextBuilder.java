@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
+import com.aspectran.core.component.Component;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
@@ -110,9 +111,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (aspectranService != null) {
                 aspectranService.setActivityContext(activityContext);
+                activityContext.setRootAspectranService(aspectranService);
             }
 
-            activityContext.initialize(aspectranService);
+            ((Component)activityContext).initialize();
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
@@ -145,7 +147,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             getApplicationAdapter().getApplicationScope().destroy();
 
             if (activityContext != null) {
-                activityContext.destroy();
+                ((Component)activityContext).destroy();
                 activityContext = null;
 
                 log.info("ActivityContext has been destroyed");
