@@ -67,7 +67,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             } else {
                 webAspectranService = WebAspectranService.create(this);
             }
-            webAspectranService.start();
+            if (!webAspectranService.isRunning()) {
+                webAspectranService.start();
+            }
             standalone = (rootWebAspectranService != webAspectranService);
             if (standalone) {
                 log.info("AspectranService is running in standalone mode inside the servlet: " + this);

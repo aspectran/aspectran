@@ -151,7 +151,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     protected synchronized void destroyActivityContext() {
         if (activityContextBuilder == null) {
-            throw new UnsupportedOperationException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
+            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
         }
 
         activityContextBuilder.destroy();

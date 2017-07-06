@@ -69,10 +69,10 @@ public interface AspectranService extends AspectranServiceController {
     boolean isHardReload();
 
     /**
-     * Returns whether this AspectranService is currently active.
+     * Returns whether this AspectranService is currently started.
      *
      * @return whether the AspectranService is still active
      */
-    boolean isActive();
+    boolean isRunning();
 
 }

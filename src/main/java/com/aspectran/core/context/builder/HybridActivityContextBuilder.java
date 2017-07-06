@@ -149,8 +149,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             if (activityContext != null) {
                 ((Component)activityContext).destroy();
                 activityContext = null;
-
-                log.info("ActivityContext has been destroyed");
             }
 
             if (aspectranService != null) {
