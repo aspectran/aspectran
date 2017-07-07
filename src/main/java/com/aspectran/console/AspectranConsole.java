@@ -42,6 +42,7 @@ public class AspectranConsole {
         try {
             service = ConsoleAspectranService.create(aspectranConfigFile);
             service.start();
+
             ConsoleCommand command = new ConsoleCommand(service);
             command.perform();
         } catch (Exception e) {

@@ -27,6 +27,8 @@ public interface AspectranServiceController {
      */
     void start() throws Exception;
 
+    void startIfNotRunning() throws Exception;
+
     /**
      * Restart an Aspectran Service.
      *

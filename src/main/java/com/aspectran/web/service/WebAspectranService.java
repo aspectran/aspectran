@@ -67,7 +67,7 @@ public class WebAspectranService extends BasicAspectranService {
 
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
-    private long pauseTimeout;
+    private long pauseTimeout = -1L;
 
     private WebAspectranService(ServletContext servletContext) {
         super(new WebApplicationAdapter(servletContext));

@@ -64,7 +64,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     private String sessionId;
 
-    private long pauseTimeout;
+    private long pauseTimeout = -1L;
 
     private ConsoleInout consoleInout;
 

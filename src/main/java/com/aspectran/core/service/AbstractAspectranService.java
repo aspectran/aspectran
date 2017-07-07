@@ -70,7 +70,7 @@ public abstract class AbstractAspectranService implements AspectranService {
         this.aspectranConfig = rootAspectranService.getAspectranConfig();
 
         if (this.activityContext == null) {
-            throw new IllegalStateException("Oops! ActivityContext is not yet created.");
+            throw new IllegalStateException("Oops! ActivityContext is not yet created");
         }
     }
 

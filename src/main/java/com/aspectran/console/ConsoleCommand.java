@@ -92,7 +92,7 @@ public class ConsoleCommand {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (service.isRunning()) {
+            if (service.isActive()) {
                 log.info("Do not terminate this application while destroying all scoped beans");
             }
         }
