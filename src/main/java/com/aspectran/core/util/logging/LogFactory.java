@@ -51,7 +51,7 @@ public final class LogFactory {
         try {
             return logConstructor.newInstance(logger);
         } catch (Throwable t) {
-            throw new LogException("Error creating logger for logger " + logger + ".  Cause: " + t, t);
+            throw new LogException("Error creating logger for logger " + logger, t);
         }
     }
 
@@ -106,7 +106,7 @@ public final class LogFactory {
             }
             logConstructor = candidate;
         } catch (Throwable t) {
-            throw new LogException("Error setting Log implementation.  Cause: " + t, t);
+            throw new LogException("Error setting Log implementation", t);
         }
     }
 

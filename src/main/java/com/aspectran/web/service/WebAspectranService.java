@@ -33,9 +33,9 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.config.AspectranWebConfig;
 import com.aspectran.core.service.AspectranService;
-import com.aspectran.core.service.AspectranServiceControlListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
+import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
@@ -304,20 +304,20 @@ public class WebAspectranService extends BasicAspectranService {
 
         webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 
-        setAspectranServiceLifeCycleListener(webAspectranService);
+        setServiceStateListener(webAspectranService);
 
         return webAspectranService;
     }
 
-    private static void setAspectranServiceLifeCycleListener(final WebAspectranService webAspectranService) {
-        webAspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
+    private static void setServiceStateListener(final WebAspectranService webAspectranService) {
+        webAspectranService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
                 webAspectranService.pauseTimeout = 0L;
             }
 
             @Override
-            public void restarted(boolean hardReload) {
+            public void restarted() {
                 started();
             }
 

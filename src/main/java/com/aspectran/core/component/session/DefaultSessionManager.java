@@ -20,8 +20,8 @@ package com.aspectran.core.component.session;
  */
 public class DefaultSessionManager extends AbstractSessionManager {
 
-    public DefaultSessionManager(String serviceName) {
-        super(serviceName, new DefaultSessionDataStore());
+    public DefaultSessionManager(String groupName) {
+        super(groupName, new DefaultSessionDataStore());
     }
 
 }

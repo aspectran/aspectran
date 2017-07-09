@@ -34,4 +34,32 @@ public interface Component {
      */
     void destroy();
 
+    /**
+     * Returns whether the component is currently available.
+     *
+     * @return if true, the component is currently available
+     */
+    boolean isAvailable();
+
+    /**
+     * Returns whether or not the component has been initialized.
+     *
+     * @return ㅑf true, the component has been initialized
+     */
+    boolean isInitialized();
+
+    /**
+     * Returns whether or not the component has been destroyed.
+     *
+     * @return ㅑf true, the component has been destroyed
+     */
+    boolean isDestroyed();
+
+    /**
+     * Returns the component name.
+     *
+     * @return the component name
+     */
+    String getComponentName();
+
 }

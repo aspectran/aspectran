@@ -2,7 +2,7 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%-5level] %msg%n</pattern>
+            <pattern>{%level} %msg%n</pattern>
         </encoder>
     </appender>
     <Logger name="com.aspectran" level="debug" additivity="false">

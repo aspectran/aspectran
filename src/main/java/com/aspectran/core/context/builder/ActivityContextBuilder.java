@@ -21,7 +21,7 @@ import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.service.AspectranServiceController;
+import com.aspectran.core.service.ServiceController;
 
 /**
  * Strategy interface for building ActivityContext.
@@ -68,9 +68,9 @@ public interface ActivityContextBuilder {
 
     void setHardReload(boolean hardReload);
 
-    AspectranServiceController getAspectranServiceController();
+    ServiceController getAspectranServiceController();
 
-    void setAspectranServiceController(AspectranServiceController aspectranServiceController);
+    void setAspectranServiceController(ServiceController aspectranServiceController);
 
     AspectranClassLoader getAspectranClassLoader();
 

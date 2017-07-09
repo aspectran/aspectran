@@ -53,8 +53,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     private int defaultMaxIdleSecs = -1;
 
-    public AbstractSessionManager(String serviceName, SessionDataStore sessionDataStore) {
-        this.sessionIdGenerator = new SessionIdGenerator(serviceName);
+    public AbstractSessionManager(String groupName, SessionDataStore sessionDataStore) {
+        this.sessionIdGenerator = new SessionIdGenerator(groupName);
         this.sessionDataStore = sessionDataStore;
         this.sessionCache = new SessionCache();
         this.sessionScavenger = new SessionScavenger(this);
@@ -270,10 +270,12 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     @Override
     protected void doInitialize() throws Exception {
+        scheduler.start();
     }
 
     @Override
     protected void doDestroy() throws Exception {
+        scheduler.stop();
         sessionCache.clear();
     }
 

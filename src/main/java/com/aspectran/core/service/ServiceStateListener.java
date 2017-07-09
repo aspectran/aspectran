@@ -18,20 +18,38 @@ package com.aspectran.core.service;
 import java.util.EventListener;
 
 /**
- * The listener interface for receiving AspectranService life-cycle events.
+ * The listener interface for receiving service state change events.
  */
-public interface AspectranServiceControlListener extends EventListener {
+public interface ServiceStateListener extends EventListener {
 
+    /**
+     * This method is called when the service is started.
+     */
     void started();
 
-    void restarted(boolean hardReload);
+    /**
+     * This method is called when the service is restarted.
+     */
+    void restarted();
 
+    /**
+     * This method is called when the service is paused.
+     */
     void paused(long millis);
 
+    /**
+     * This method is called when the service is paused for a period of time.
+     */
     void paused();
 
+    /**
+     * This method is called when the service is resumed.
+     */
     void resumed();
 
+    /**
+     * This method is called when the service is stopped.
+     */
     void stopped();
 
 }

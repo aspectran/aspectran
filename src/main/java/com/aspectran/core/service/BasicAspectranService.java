@@ -24,23 +24,10 @@ import com.aspectran.core.util.thread.ShutdownHooks;
  */
 public class BasicAspectranService extends AbstractAspectranService {
 
-    private final boolean derived;
-
     private final AspectranService rootAspectranService;
-
-    /** Synchronization Monitor used for this service control */
-    private final Object serviceControlMonitor = new Object();
-
-    /** Flag that indicates whether this service is currently active */
-    private volatile boolean active;
-
-    /** Flag that indicates whether this service has been destroyed already */
-    private volatile boolean destroyed;
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;
-
-    private AspectranServiceControlListener aspectranServiceControlListener;
 
     /**
      * Instantiates a new Basic aspectran service.
@@ -50,23 +37,16 @@ public class BasicAspectranService extends AbstractAspectranService {
     public BasicAspectranService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
         this.rootAspectranService = null;
-        this.derived = false;
     }
 
     public BasicAspectranService(AspectranService rootAspectranService) {
         super(rootAspectranService);
         this.rootAspectranService = rootAspectranService;
-        this.derived = true;
     }
 
     @Override
     public boolean isDerived() {
-        return derived;
-    }
-
-    @Override
-    public void setAspectranServiceControlListener(AspectranServiceControlListener aspectranServiceControlListener) {
-        this.aspectranServiceControlListener = aspectranServiceControlListener;
+        return (rootAspectranService != null);
     }
 
     /**
@@ -84,171 +64,62 @@ public class BasicAspectranService extends AbstractAspectranService {
     }
 
     @Override
-    public void start() throws Exception {
-        synchronized (this.serviceControlMonitor) {
-            if (destroyed) {
-                throw new IllegalStateException("Already destroyed AspectranService can not be reactivated");
-            }
-            if (active) {
-                throw new IllegalStateException("AspectranService is already activated");
-            }
+    public void doStart() throws Exception {
+        log.info("Welcome to Aspectran " + Aspectran.VERSION);
 
-            doStart();
+        startAspectranService();
+        if (!isDerived()) {
             registerShutdownTask();
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.started();
-            }
-
-            if (!this.derived) {
-                log.info("AspectranService has been started successfully");
-                log.info("Welcome to Aspectran " + Aspectran.VERSION);
-            } else {
-                log.info("Started AspectranService derived from " + rootAspectranService);
-            }
         }
     }
 
     @Override
-    public void startIfNotRunning() throws Exception {
-        if (!isActive()) {
-            start();
-        }
+    public void doRestart() throws Exception {
+        stopAspectranService();
+        startAspectranService();
     }
 
     @Override
-    public void restart() throws Exception {
-        if (this.derived) {
-            throw new UnsupportedOperationException("Derived services can not be restarted");
-        }
-        synchronized (this.serviceControlMonitor) {
-            if (destroyed) {
-                log.warn("Could not restart AspectranService because it has already been destroyed");
-                return;
-            }
-            if (!active) {
-                log.warn("Could not restart AspectranService because it is currently stopped");
-                return;
-            }
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.paused();
-            }
-
-            doDestroy();
-            doStart();
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.restarted(isHardReload());
-            }
-            log.info("AspectranService has been restarted successfully");
-        }
+    public void doPause() throws Exception {
+        pauseSchedulerService();
     }
 
     @Override
-    public void pause() throws Exception {
-        synchronized (this.serviceControlMonitor) {
-            if (!active) {
-                log.warn("AspectranService is not activated");
-                return;
-            }
-
-            if (!derived) {
-                pauseSchedulerService();
-            }
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.paused();
-            }
-            log.info("AspectranService has been paused");
-        }
+    public void doPause(long timeout) throws Exception {
+        pauseSchedulerService(timeout);
     }
 
     @Override
-    public void pause(long timeout) throws Exception {
-        synchronized (this.serviceControlMonitor) {
-            if (!active) {
-                log.warn("AspectranService is not activated");
-                return;
-            }
-
-            if (!derived) {
-                pauseSchedulerService();
-            }
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.paused(timeout);
-            }
-            log.info("AspectranService has been paused and will resume after " + timeout + " ms");
-        }
+    public void doResume() throws Exception {
+        resumeSchedulerService();
     }
 
     @Override
-    public void resume() throws Exception {
-        synchronized (this.serviceControlMonitor) {
-            if (!active) {
-                log.warn("AspectranService is not activated");
-                return;
-            }
-
-            if (!derived) {
-                resumeSchedulerService();
-            }
-
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.resumed();
-            }
-            log.info("AspectranService has been resumed");
-        }
+    public void doStop() {
+        stopAspectranService();
+        removeShutdownTask();
     }
 
-    @Override
-    public void stop() {
-        synchronized (this.serviceControlMonitor) {
-            if (aspectranServiceControlListener != null) {
-                aspectranServiceControlListener.stopped();
-            }
+    private void startAspectranService() throws Exception {
+        loadActivityContext();
+        afterContextLoaded();
+        startSchedulerService();
 
-            doDestroy();
-            removeShutdownTask();
-
-            log.info("AspectranService has been stopped successfully");
+        if (isDerived()) {
+            log.info(getServiceName() + " derived from " + rootAspectranService);
         }
-    }
-
-    @Override
-    public boolean isActive() {
-        synchronized (serviceControlMonitor) {
-            return active;
-        }
-    }
-
-    private void doStart() throws Exception {
-        if (!derived) {
-            loadActivityContext();
-            afterContextLoaded();
-            startSchedulerService();
-        }
-
-        destroyed = false;
-        active = true;
     }
 
     /**
      * Actually performs destroys the singletons in the bean registry.
      * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
      */
-    private void doDestroy() {
-        if (!derived) {
-            log.info("Destroying all cached resources");
+    private void stopAspectranService() {
+        log.info("Destroying all cached resources");
 
-            shutdownSchedulerService();
-            beforeContextDestroy();
-            destroyActivityContext();
-        }
-
-        destroyed = true;
-        active = false;
+        stopSchedulerService();
+        beforeContextDestroy();
+        destroyActivityContext();
     }
 
     /**
@@ -256,7 +127,7 @@ public class BasicAspectranService extends AbstractAspectranService {
      * on JVM shutdown unless it has already been closed at that time.
      */
     private void registerShutdownTask() {
-        if (!this.derived && this.shutdownTask == null) {
+        if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
             this.shutdownTask = ShutdownHooks.add(this::stop);
         }

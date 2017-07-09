@@ -40,6 +40,7 @@ import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
+import com.aspectran.core.service.AbstractServiceContoller;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -48,7 +49,7 @@ import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 /**
  * The Class QuartzSchedulerService.
  */
-public class QuartzSchedulerService implements SchedulerService {
+public class QuartzSchedulerService extends AbstractServiceContoller implements SchedulerService {
 
     public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
@@ -101,13 +102,54 @@ public class QuartzSchedulerService implements SchedulerService {
     }
 
     @Override
-    public void start(int delaySeconds) throws SchedulerServiceException {
-        this.startDelaySeconds = delaySeconds;
-        start();
+    public boolean isDerived() {
+        return false;
     }
 
     @Override
-    public synchronized void start() throws SchedulerServiceException {
+    protected void doStart() throws Exception {
+        startSchedulerService();
+    }
+
+    @Override
+    protected void doRestart() throws Exception {
+        stopSchedulerService();
+        startSchedulerService();
+    }
+
+    @Override
+    protected void doPause() throws Exception {
+        try {
+            for (Scheduler scheduler : schedulerSet) {
+                scheduler.pauseAll();
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not pause all schedulers", e);
+        }
+    }
+
+    @Override
+    protected void doPause(long timeout) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void doResume() throws Exception {
+        try {
+            for (Scheduler scheduler : schedulerSet) {
+                scheduler.resumeAll();
+            }
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not resume all schedulers", e);
+        }
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        stopSchedulerService();
+    }
+
+    private void startSchedulerService() throws SchedulerServiceException {
         if (context.getScheduleRuleRegistry() == null) {
             return;
         }
@@ -145,14 +187,7 @@ public class QuartzSchedulerService implements SchedulerService {
         }
     }
 
-    @Override
-    public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
-        this.waitOnShutdown = waitForJobsToComplete;
-        shutdown();
-    }
-
-    @Override
-    public synchronized void shutdown() throws SchedulerServiceException {
+    private void stopSchedulerService() throws SchedulerServiceException {
         log.info("Now try to shutting down QuartzSchedulerService");
 
         try {
@@ -169,56 +204,29 @@ public class QuartzSchedulerService implements SchedulerService {
         }
     }
 
-    @Override
-    public void restart(ActivityContext context) throws SchedulerServiceException {
-        this.context = context;
-        shutdown();
-        start();
-    }
-
-    @Override
-    public synchronized void pause() throws SchedulerServiceException {
-        try {
-            for (Scheduler scheduler : schedulerSet) {
-                scheduler.pauseAll();
+    public void pause(String scheduleId) throws SchedulerServiceException {
+        synchronized (getLock()) {
+            try {
+                Scheduler scheduler = getScheduler(scheduleId);
+                if (scheduler != null && scheduler.isStarted()) {
+                    scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
+                }
+            } catch (Exception e) {
+                throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'", e);
             }
-        } catch (Exception e) {
-            throw new SchedulerServiceException("Could not pause all schedulers", e);
         }
     }
 
-    @Override
-    public synchronized void pause(String scheduleId) throws SchedulerServiceException {
-        try {
-            Scheduler scheduler = getScheduler(scheduleId);
-            if (scheduler != null && scheduler.isStarted()) {
-                scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
-            }
-        } catch (Exception e) {
-            throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'", e);
-        }
-    }
-
-    @Override
-    public synchronized void resume() throws SchedulerServiceException {
-        try {
-            for (Scheduler scheduler : schedulerSet) {
-                scheduler.resumeAll();
-            }
-        } catch (Exception e) {
-            throw new SchedulerServiceException("Could not resume all schedulers", e);
-        }
-    }
-
-    @Override
     public synchronized void resume(String scheduleId) throws SchedulerServiceException {
-        try {
-            Scheduler scheduler = getScheduler(scheduleId);
-            if (scheduler != null && scheduler.isStarted()) {
-                scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
+        synchronized (getLock()) {
+            try {
+                Scheduler scheduler = getScheduler(scheduleId);
+                if (scheduler != null && scheduler.isStarted()) {
+                    scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
+                }
+            } catch (Exception e) {
+                throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'", e);
             }
-        } catch (Exception e) {
-            throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'", e);
         }
     }
 

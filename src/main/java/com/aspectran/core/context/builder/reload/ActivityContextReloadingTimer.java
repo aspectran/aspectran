@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.aspectran.core.service.AspectranServiceController;
+import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -30,7 +30,7 @@ public class ActivityContextReloadingTimer {
 
     private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
-    private final AspectranServiceController aspectranServiceController;
+    private final ServiceController aspectranServiceController;
 
     private final URL[] resources;
 
@@ -38,7 +38,7 @@ public class ActivityContextReloadingTimer {
 
     private TimerTask timerTask;
 
-    public ActivityContextReloadingTimer(AspectranServiceController aspectranServiceController, URL[] resources) {
+    public ActivityContextReloadingTimer(ServiceController aspectranServiceController, URL[] resources) {
         this.aspectranServiceController = aspectranServiceController;
         this.resources = resources;
 

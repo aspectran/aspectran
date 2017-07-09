@@ -15,12 +15,12 @@
  */
 package com.aspectran.scheduler.service;
 
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.service.ServiceController;
 
 /**
  * The Interface SchedulerService.
  */
-public interface SchedulerService {
+public interface SchedulerService extends ServiceController {
 
     int getStartDelaySeconds();
 
@@ -31,23 +31,5 @@ public interface SchedulerService {
     void setWaitOnShutdown(boolean waitOnShutdown);
 
     void setExposals(String[] exposals);
-
-    void start() throws SchedulerServiceException;
-
-    void start(int delaySeconds) throws SchedulerServiceException;
-
-    void shutdown() throws SchedulerServiceException;
-
-    void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
-
-    void restart(ActivityContext context) throws SchedulerServiceException;
-
-    void pause() throws SchedulerServiceException;
-
-    void pause(String schedulerId) throws SchedulerServiceException;
-
-    void resume() throws SchedulerServiceException;
-
-    void resume(String schedulerId) throws SchedulerServiceException;
 
 }

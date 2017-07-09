@@ -30,44 +30,44 @@ public class ScheduledExecutorScheduler implements Scheduler {
 
     private static final Log log = LogFactory.getLog(ScheduledExecutorScheduler.class);
 
-    private final Object lock = new Object();
-
     private final AtomicBoolean active = new AtomicBoolean();
 
     private volatile ScheduledThreadPoolExecutor executor;
 
-    public ScheduledExecutorScheduler() {
-    }
-
+    @Override
     public void start() {
-        synchronized (lock) {
-            if (this.active.get()) {
-                throw new IllegalStateException("Failed to start " + this + " because it has already been started");
-            }
+        if (this.active.compareAndSet(false, true)) {
             if (log.isDebugEnabled()) {
                 log.debug("Starting " + this);
             }
 
             executor = new ScheduledThreadPoolExecutor(1);
             executor.setRemoveOnCancelPolicy(true);
-
-            this.active.set(true);
-        }
-    }
-
-    public void stop() {
-        synchronized (lock) {
-            if (this.active.compareAndSet(true, false)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Stopping " + this);
-                }
-
-                executor.shutdownNow();
-                executor = null;
+        } else {
+            if (log.isDebugEnabled()) {
+                log.warn("Already Started " + this);
             }
         }
     }
 
+    @Override
+    public void stop() {
+        if (this.active.compareAndSet(true, false)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Stopping " + this);
+            }
+
+            executor.shutdownNow();
+            executor = null;
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return active.get();
+    }
+
+    @Override
     public Task schedule(Runnable task, long delay, TimeUnit unit) {
         ScheduledThreadPoolExecutor executor = this.executor;
         if (executor == null) {

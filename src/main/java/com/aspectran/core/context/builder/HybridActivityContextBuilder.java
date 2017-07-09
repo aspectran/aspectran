@@ -90,7 +90,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             newAspectranClassLoader();
 
-            log.info("Building ActivityContext with root configuration: " + rootContext);
+            log.info("Building an ActivityContext with " + rootContext);
 
             long startTime = System.currentTimeMillis();
 

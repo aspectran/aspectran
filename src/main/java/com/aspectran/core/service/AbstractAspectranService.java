@@ -29,12 +29,11 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
-import com.aspectran.scheduler.service.SchedulerServiceException;
 
 /**
  * The Class AbstractAspectranService.
  */
-public abstract class AbstractAspectranService implements AspectranService {
+public abstract class AbstractAspectranService extends AbstractServiceContoller implements AspectranService {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -52,7 +51,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 
     private SchedulerService schedulerService;
 
-    AbstractAspectranService(ApplicationAdapter applicationAdapter) {
+    public AbstractAspectranService(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
@@ -60,7 +59,7 @@ public abstract class AbstractAspectranService implements AspectranService {
         this.applicationAdapter = applicationAdapter;
     }
 
-    AbstractAspectranService(AspectranService rootAspectranService) {
+    public AbstractAspectranService(AspectranService rootAspectranService) {
         if (rootAspectranService == null) {
             throw new IllegalArgumentException("Argument 'rootAspectranService' must not be null");
         }
@@ -109,12 +108,10 @@ public abstract class AbstractAspectranService implements AspectranService {
         return activityContextBuilder.isHardReload();
     }
 
-    protected synchronized void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
             throw new IllegalStateException("AspectranService can not be initialized because ActivityContext has already been loaded");
         }
-
-        log.info("Initializing AspectranService...");
 
         try {
             this.aspectranConfig = aspectranConfig;
@@ -138,7 +135,7 @@ public abstract class AbstractAspectranService implements AspectranService {
         return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
     }
 
-    protected synchronized void loadActivityContext() throws ActivityContextBuilderException {
+    protected void loadActivityContext() throws ActivityContextBuilderException {
         if (activityContextBuilder == null) {
             throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
         }
@@ -149,15 +146,15 @@ public abstract class AbstractAspectranService implements AspectranService {
         activityContextBuilder.build();
     }
 
-    protected synchronized void destroyActivityContext() {
+    protected void destroyActivityContext() {
         if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
+            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state; First, call the initialize() method");
         }
 
         activityContextBuilder.destroy();
     }
 
-    protected void startSchedulerService() throws SchedulerServiceException {
+    protected void startSchedulerService() throws Exception {
         if (this.aspectranSchedulerConfig == null) {
             return;
         }
@@ -168,51 +165,43 @@ public abstract class AbstractAspectranService implements AspectranService {
         boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
 
         if (schedulerStartup) {
-            SchedulerService newSchedulerService = new QuartzSchedulerService(activityContext);
-
-            if (waitOnShutdown) {
-                newSchedulerService.setWaitOnShutdown(true);
-            }
             if (startDelaySeconds == -1) {
                 log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
                 startDelaySeconds = 5;
             }
 
-            newSchedulerService.setExposals(exposals);
-            newSchedulerService.start(startDelaySeconds);
-
-            schedulerService = newSchedulerService;
-
-            log.info("SchedulerService has been started");
-        }
-    }
-
-    protected boolean shutdownSchedulerService() {
-        if (schedulerService != null) {
-            try {
-                schedulerService.shutdown();
-                schedulerService = null;
-                log.info("SchedulerService has been shut down");
-            } catch (Exception e) {
-                log.error("SchedulerService did not shutdown cleanly", e);
-                return false;
+            SchedulerService newSchedulerService = new QuartzSchedulerService(activityContext);
+            if (waitOnShutdown) {
+                newSchedulerService.setWaitOnShutdown(true);
             }
-        }
+            newSchedulerService.setExposals(exposals);
+            newSchedulerService.setStartDelaySeconds(startDelaySeconds);
+            newSchedulerService.start();
 
-        return true;
+            this.schedulerService = newSchedulerService;
+        }
     }
 
-    protected void pauseSchedulerService() throws SchedulerServiceException {
+    protected void stopSchedulerService() {
+        if (schedulerService != null) {
+            schedulerService.stop();
+            schedulerService = null;
+        }
+    }
+
+    protected void pauseSchedulerService() throws Exception {
         if (schedulerService != null) {
             schedulerService.pause();
-            log.info("SchedulerService has been paused");
         }
     }
 
-    protected void resumeSchedulerService() throws SchedulerServiceException {
+    protected void pauseSchedulerService(long timeout) throws Exception {
+        log.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time.");
+    }
+
+    protected void resumeSchedulerService() throws Exception {
         if (schedulerService != null) {
             schedulerService.resume();
-            log.info("SchedulerService has been resumed");
         }
     }
 

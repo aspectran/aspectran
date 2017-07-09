@@ -32,9 +32,9 @@ import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceControlListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
+import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
@@ -66,7 +66,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() throws Exception {
-        sessionManager = new DefaultSessionManager("EMBEDDED");
+        sessionManager = new DefaultSessionManager("EMB");
         ((Component)sessionManager).initialize();
 
         sessionId = sessionManager.newSessionId(hashCode());
@@ -90,6 +90,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     @Override
     public void beforeContextDestroy() {
         ((Component)sessionManager).destroy();
+        sessionManager = null;
     }
 
     public SessionAdapter newSessionAdapter() {
@@ -316,20 +317,20 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
         aspectranService.prepare(aspectranConfig);
 
-        setAspectranServiceLifeCycleListener(aspectranService);
+        setServiceLifeCycleListener(aspectranService);
 
         return aspectranService;
     }
 
-    private static void setAspectranServiceLifeCycleListener(final EmbeddedAspectranService aspectranService) {
-        aspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
+    private static void setServiceLifeCycleListener(final EmbeddedAspectranService aspectranService) {
+        aspectranService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
                 aspectranService.pauseTimeout = 0;
             }
 
             @Override
-            public void restarted(boolean hardReload) {
+            public void restarted() {
                 started();
             }
 

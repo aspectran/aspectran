@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.component;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -29,11 +27,7 @@ public abstract class AbstractComponent implements Component {
 
     private final Object lock = new Object();
 
-    private volatile boolean initializing;
-
     private volatile boolean initialized;
-
-    private volatile boolean destroying;
 
     private volatile boolean destroyed;
 
@@ -45,62 +39,65 @@ public abstract class AbstractComponent implements Component {
     public void initialize() throws Exception {
         synchronized (lock) {
             if (destroyed) {
-                throw new IllegalStateException("Already destroyed component " + this);
+                throw new IllegalStateException("Already destroyed " + getComponentName());
             }
             if (initialized) {
-                throw new IllegalStateException("Already initialized component " + this);
+                throw new IllegalStateException("Already initialized " + getComponentName());
             }
-
-            initializing = true;
 
             doInitialize();
 
-            initializing = false;
-            initialized = true;
+            log.info("Initialized " + getComponentName());
 
-            log.info("Initialized " + this.getClass().getSimpleName());
+            initialized = true;
         }
     }
 
     @Override
     public void destroy() {
         synchronized (lock) {
-            if (destroyed) {
-                throw new IllegalStateException("Already destroyed " + this);
-            }
             if (!initialized) {
-                throw new IllegalStateException("Not initialized " + this);
+                throw new IllegalStateException("Not yet initialized " + getComponentName());
             }
-
-            destroying = true;
+            if (destroyed) {
+                throw new IllegalStateException("Already destroyed " + getComponentName());
+            }
 
             try {
                 doDestroy();
+                log.info("Destroyed " + getComponentName());
             } catch (Exception e) {
-                log.warn("Failed to destroy " + this, e);
+                log.warn("Failed to destroy " + getComponentName(), e);
             }
 
-            destroying = false;
             destroyed = true;
-
-            log.info("Destroyed " + this.getClass().getSimpleName());
         }
     }
 
-    public boolean isRunning() {
-        return (initializing || initialized);
-    }
-
+    @Override
     public boolean isAvailable() {
-        return (initialized && !destroying);
+        synchronized (lock) {
+            return (initialized && !destroyed);
+        }
     }
 
+    @Override
     public boolean isInitialized() {
-        return (initialized);
+        synchronized (lock) {
+            return initialized;
+        }
     }
 
+    @Override
     public boolean isDestroyed() {
-        return destroyed;
+        synchronized (lock) {
+            return destroyed;
+        }
+    }
+
+    @Override
+    public String getComponentName() {
+        return getClass().getSimpleName() + '@' + Integer.toString(hashCode(), 16);
     }
 
 }

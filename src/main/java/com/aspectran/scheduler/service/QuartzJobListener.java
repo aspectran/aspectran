@@ -15,8 +15,6 @@
  */
 package com.aspectran.scheduler.service;
 
-import java.io.IOException;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
@@ -50,12 +48,8 @@ public class QuartzJobListener implements JobListener {
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
         JobActivityReport report = new JobActivityReport(context, jobException);
-        try {
-            Activity activity = (Activity)context.get(QuartzSchedulerService.ACTIVITY_DATA_KEY);
-            report.reporting(activity);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Activity activity = (Activity)context.get(QuartzSchedulerService.ACTIVITY_DATA_KEY);
+        report.reporting(activity);
     }
 
 }

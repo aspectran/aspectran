@@ -55,15 +55,13 @@ public class ConsoleCommand {
 
                 switch (command) {
                     case "restart":
-                        log.info("Restarting the Aspectran Service...");
+                        log.info("Restarting the AspectranService...");
                         service.restart();
                         break;
                     case "pause":
-                        log.info("Pausing the Aspectran Service...");
                         service.pause();
                         break;
                     case "resume":
-                        log.info("Resuming the Aspectran Service...");
                         service.resume();
                         break;
                     case "desc on":
@@ -77,8 +75,11 @@ public class ConsoleCommand {
                     case "help":
                         service.showDescription(true);
                         break ;
+                    case "mem":
+                        mem(false);
+                        break;
                     case "gc":
-                        gc();
+                        mem(true);
                         break;
                     case "quit":
                         break loop;
@@ -90,7 +91,7 @@ public class ConsoleCommand {
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occurred while executing the console command", e);
         } finally {
             if (service.isActive()) {
                 log.info("Do not terminate this application while destroying all scoped beans");
@@ -99,23 +100,13 @@ public class ConsoleCommand {
     }
 
     /**
-     * Perform a garbage collection.
+     * Displays memory usage.
+     *
+     * @param gc if true, perform a garbage collection
      */
-    public void gc() throws Exception {
+    private void mem(boolean gc) throws Exception {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
-
-		// Let the finilizer finish its work and remove objects from its queue
-        System.gc(); // asyncronous garbage collector might already run
-        System.gc(); // to make sure it does a full gc call it twice
-        System.runFinalization();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
-
-        long after = Runtime.getRuntime().freeMemory();
 
         consoleInout.setStyle("yellow");
         consoleInout.write("   Total memory: ");
@@ -125,18 +116,37 @@ public class ConsoleCommand {
         consoleInout.write("   Used memory: ");
         consoleInout.setStyle("fg:off");
         consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(total - before));
-        consoleInout.setStyle("yellow");
-        consoleInout.write("   Free memory before GC: ");
-        consoleInout.setStyle("fg:off");
-        consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
-        consoleInout.setStyle("yellow");
-        consoleInout.write("   Free memory after GC: ");
-        consoleInout.setStyle("fg:off");
-        consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after));
-        consoleInout.setStyle("yellow");
-        consoleInout.write("   Memory gained with GC: ");
-        consoleInout.setStyle("fg:off");
-        consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after - before));
+        if (gc) {
+            // Let the finilizer finish its work and remove objects from its queue
+            System.gc(); // asyncronous garbage collector might already run
+            System.gc(); // to make sure it does a full gc call it twice
+            System.runFinalization();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+
+            long after = Runtime.getRuntime().freeMemory();
+
+            consoleInout.setStyle("yellow");
+            consoleInout.write("   Free memory before GC: ");
+            consoleInout.setStyle("fg:off");
+            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
+            consoleInout.setStyle("yellow");
+            consoleInout.write("   Free memory after GC: ");
+            consoleInout.setStyle("fg:off");
+            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after));
+            consoleInout.setStyle("yellow");
+            consoleInout.write("   Memory gained with GC: ");
+            consoleInout.setStyle("fg:off");
+            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after - before));
+        } else {
+            consoleInout.setStyle("yellow");
+            consoleInout.write("   Free memory: ");
+            consoleInout.setStyle("fg:off");
+            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
+        }
         consoleInout.writeLine();
         consoleInout.offStyle();
     }

@@ -40,9 +40,9 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranConsoleConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
-import com.aspectran.core.service.AspectranServiceControlListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
+import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
@@ -76,7 +76,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() throws Exception {
-        sessionManager = new DefaultSessionManager("CONSOLE");
+        sessionManager = new DefaultSessionManager("CON");
         ((Component)sessionManager).initialize();
 
         sessionId = sessionManager.newSessionId(hashCode());
@@ -100,6 +100,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
     @Override
     public void beforeContextDestroy() {
         ((Component)sessionManager).destroy();
+        sessionManager = null;
     }
 
     public SessionAdapter newSessionAdapter() {
@@ -276,13 +277,13 @@ public class ConsoleAspectranService extends BasicAspectranService {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
         }
 
-        setAspectranServiceControlListener(consoleAspectranService);
+        setServiceStateListener(consoleAspectranService);
 
         return consoleAspectranService;
     }
 
-    private static void setAspectranServiceControlListener(final ConsoleAspectranService aspectranService) {
-        aspectranService.setAspectranServiceControlListener(new AspectranServiceControlListener() {
+    private static void setServiceStateListener(final ConsoleAspectranService aspectranService) {
+        aspectranService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
                 aspectranService.pauseTimeout = 0;
@@ -290,7 +291,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             }
 
             @Override
-            public void restarted(boolean hardReload) {
+            public void restarted() {
                 started();
             }
 
@@ -309,7 +310,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
             @Override
             public void resumed() {
-                started();
+                aspectranService.pauseTimeout = 0;
             }
 
             @Override

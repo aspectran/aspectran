@@ -26,7 +26,7 @@ import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.service.AspectranServiceController;
+import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -63,7 +63,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ActivityContextReloadingTimer reloadingTimer;
 
-    private AspectranServiceController aspectranServiceController;
+    private ServiceController aspectranServiceController;
 
     private AspectranClassLoader aspectranClassLoader;
 
@@ -185,12 +185,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public AspectranServiceController getAspectranServiceController() {
+    public ServiceController getAspectranServiceController() {
         return aspectranServiceController;
     }
 
     @Override
-    public void setAspectranServiceController(AspectranServiceController aspectranServiceController) {
+    public void setAspectranServiceController(ServiceController aspectranServiceController) {
         this.aspectranServiceController = aspectranServiceController;
     }
 

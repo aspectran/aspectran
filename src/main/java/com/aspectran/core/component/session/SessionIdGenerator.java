@@ -24,22 +24,24 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Session ID Generator.
+ *
  * <p>Created: 2017. 6. 12.</p>
  */
-class SessionIdGenerator {
+public class SessionIdGenerator {
 
     private static final Log log = LogFactory.getLog(SessionIdGenerator.class);
 
     private static final AtomicLong counter = new AtomicLong();
 
-    private String serviceName;
+    private String groupName;
 
     private Random random;
 
     private boolean weakRandom;
 
-    SessionIdGenerator(String serviceName) {
-        this.serviceName = serviceName;
+    public SessionIdGenerator(String groupName) {
+        this.groupName = groupName;
         initRandom();
     }
 
@@ -49,7 +51,7 @@ class SessionIdGenerator {
      * @param seedTerm the seed for RNG
      * @return a new unique session id
      */
-    String newSessionId(long seedTerm) {
+    public String newSessionId(long seedTerm) {
         synchronized (random) {
             long r0;
             if (weakRandom) {
@@ -72,8 +74,8 @@ class SessionIdGenerator {
             }
 
             StringBuilder id = new StringBuilder();
-            if (!StringUtils.isEmpty(serviceName)) {
-                id.append(serviceName);
+            if (!StringUtils.isEmpty(groupName)) {
+                id.append(groupName);
             }
             id.append(Long.toString(r0,36));
             id.append(Long.toString(r1,36));

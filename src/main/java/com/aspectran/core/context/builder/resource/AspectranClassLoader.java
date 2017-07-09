@@ -153,7 +153,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     private AspectranClassLoader createChild(String resourceLocation) throws InvalidResourceException {
         if (!firstborn) {
-            throw new UnsupportedOperationException("Only the firstborn AspectranClassLoader can create a child");
+            throw new IllegalStateException("Only the firstborn AspectranClassLoader can create a child");
         }
 
         AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
@@ -178,7 +178,7 @@ public class AspectranClassLoader extends ClassLoader {
      */
     public void excludePackage(String packageName) {
         if (excludePackageNames == null) {
-            excludePackageNames = new HashSet<String>();
+            excludePackageNames = new HashSet<>();
         }
 
         excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR_CHAR);
@@ -400,19 +400,15 @@ public class AspectranClassLoader extends ClassLoader {
     @Override
     public URL getResource(String name) {
         URL url = super.getResource(name);
-
         if (url == null) {
             Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root), name);
-
             if (res.hasMoreElements()) {
                 url = res.nextElement();
             }
         }
-
         if (url == null) {
             return findResource(name);
         }
-
         return url;
     }
 
@@ -425,11 +421,9 @@ public class AspectranClassLoader extends ClassLoader {
 
         URL url = null;
         Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(owner), resourceName);
-
         if (res.hasMoreElements()) {
             url = res.nextElement();
         }
-
         if (url == null) {
             return null;
         }
@@ -529,21 +523,17 @@ public class AspectranClassLoader extends ClassLoader {
 
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader cl = null;
-
         try {
             cl = Thread.currentThread().getContextClassLoader();
         } catch (Throwable ex) {
             // ignore
         }
-
         if (cl == null) {
             cl = AspectranClassLoader.class.getClassLoader();
         }
-
         if (cl == null) {
             cl = ClassLoader.getSystemClassLoader();
         }
-
         return cl;
     }
 
@@ -560,11 +550,9 @@ public class AspectranClassLoader extends ClassLoader {
 
     public static String packageNameToResourceName(String packageName) {
         String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
-
         if (StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
-
         return resourceName;
     }
 
@@ -593,11 +581,9 @@ public class AspectranClassLoader extends ClassLoader {
                     resourceLocations[i] = basePath + resourceLocations[i];
                 }
             }
-
             if (resourceLocations[i].indexOf('\\') != -1) {
                 resourceLocations[i] = resourceLocations[i].replace('\\', '/');
             }
-
             if (StringUtils.endsWith(resourceLocations[i], ResourceUtils.PATH_SPEPARATOR_CHAR)) {
                 resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
             }

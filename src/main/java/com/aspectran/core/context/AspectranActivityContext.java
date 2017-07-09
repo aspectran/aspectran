@@ -30,7 +30,6 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
-import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -108,8 +107,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public void setRootAspectranService(AspectranService rootAspectranService) {
-        if (isRunning()) {
-            throw new IllegalStateException("ActivityContext is already running");
+        if (isInitialized()) {
+            throw new IllegalStateException("ActivityContext is already initialized");
         }
         this.rootAspectranService = rootAspectranService;
     }
