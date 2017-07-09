@@ -77,10 +77,19 @@ public interface Activity extends BeanRegistry {
     void finish();
 
     /**
-     * Throws an Activity Terminated Exception in order to end the current activity.
-     * @throws ActivityTerminatedException if an activity is terminated during processing
+     * Throws an Activity Terminated Exception in order to terminate the current activity.
+     *
+     * @throws ActivityTerminatedException if an Activity terminated without completion
      */
     void terminate();
+
+    /**
+     * Throws an Activity Terminated Exception in order to terminate the current activity.
+     *
+     * @param cause the termination cause
+     * @throws ActivityTerminatedException if an Activity terminated without completion
+     */
+    void terminate(String cause);
 
     /**
      * Gets the request http method.

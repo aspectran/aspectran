@@ -175,7 +175,7 @@ public class ConsoleActivity extends CoreActivity {
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
-                terminate();
+                terminate("Missing required parameters");
             }
         }
     }
@@ -228,7 +228,7 @@ public class ConsoleActivity extends CoreActivity {
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
-                terminate();
+                terminate("Missing required attributes");
             }
         }
     }

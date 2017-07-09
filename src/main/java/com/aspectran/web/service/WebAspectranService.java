@@ -142,7 +142,7 @@ public class WebAspectranService extends BasicAspectranService {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet activity was terminated");
+                log.debug("Translet did not complete and terminated; Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             log.error("An error occurred while processing a web activity", e);

@@ -424,6 +424,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public void terminate(String cause) {
+        throw new ActivityTerminatedException(cause);
+    }
+
+    @Override
     public void registerAspectRule(AspectRule aspectRule) {
         if (!isAcceptable(aspectRule)) {
             return;

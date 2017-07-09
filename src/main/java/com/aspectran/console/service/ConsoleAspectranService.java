@@ -195,10 +195,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
             activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            log.info("Unknown translet name: " + command);
+            log.info("Unregistered Translet: " + command);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet activity was terminated");
+                log.debug("Translet did not complete and terminated: " + e.getMessage());
             }
         } catch (Exception e) {
             log.error("Console activity failed to perform", e);
@@ -208,7 +208,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
                     try {
                         writer.close();
                     } catch (IOException e) {
-                        log.error("Failed to close writer: " + e.getMessage(), e);
+                        log.error("Redirection writer close failed: " + e.getMessage(), e);
                     }
                 }
             }
