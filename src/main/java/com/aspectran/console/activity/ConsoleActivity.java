@@ -300,7 +300,7 @@ public class ConsoleActivity extends CoreActivity {
             }
         } catch (ConsoleTerminatedException e) {
             log.info("User interrupt occurred");
-            throw new ActivityTerminatedException();
+            terminate("User interrupt occurred");
         }
 
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));

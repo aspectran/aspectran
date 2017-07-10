@@ -97,7 +97,7 @@ public class WebAspectranService extends BasicAspectranService {
 
         if (!isExposable(requestUri)) {
             if (log.isDebugEnabled()) {
-                log.debug("Unexposable translet [" + requestUri + "] in WebAspectranService " + this);
+                log.debug("Unexposable translet [" + requestUri + "] in WebAspectranService");
             }
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -109,7 +109,9 @@ public class WebAspectranService extends BasicAspectranService {
 
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                log.debug("AspectranService has been paused, so did not respond to the request URI \"" + requestUri + "\"");
+                if (log.isDebugEnabled()) {
+                    log.debug("AspectranService has been paused, so did not respond to the request URI \"" + requestUri + "\"");
+                }
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
             } else {
@@ -124,8 +126,8 @@ public class WebAspectranService extends BasicAspectranService {
             activity.prepare(requestUri, request.getMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            if (log.isTraceEnabled()) {
-                log.trace("Unknown translet name: " + requestUri);
+            if (log.isDebugEnabled()) {
+                log.debug("Unregistered translet [" + requestUri + "] in WebAspectranService");
             }
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {
@@ -145,7 +147,7 @@ public class WebAspectranService extends BasicAspectranService {
                 log.debug("Translet did not complete and terminated; Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing a web activity", e);
+            log.error("An error occurred while processing a Web Activity", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (activity != null) {

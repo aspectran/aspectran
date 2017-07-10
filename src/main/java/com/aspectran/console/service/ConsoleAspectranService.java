@@ -154,7 +154,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
      */
     public void serve(String command) {
         if (!isExposable(command)) {
-            log.info("Unexposable translet name: " + command);
+            log.info("Unexposable Translet: " + command);
             return;
         }
 
@@ -183,7 +183,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             try {
                 redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
             } catch (Exception e) {
-                log.warn("Invalid redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
+                log.warn("Invalid Redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
                 return;
             }
         }
@@ -201,7 +201,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 log.debug("Translet did not complete and terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("Console activity failed to perform", e);
+            log.error("An error occurred while processing a Console Activity", e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {
