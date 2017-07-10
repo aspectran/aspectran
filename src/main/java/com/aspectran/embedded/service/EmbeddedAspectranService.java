@@ -189,7 +189,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                log.warn("AspectranService has been paused, so did not run the translet \"" + name + "\"");
+                if (log.isDebugEnabled()) {
+                    log.debug("AspectranService is paused, so did not execute the translet: " + name);
+                }
                 return null;
             } else {
                 pauseTimeout = 0L;
@@ -209,7 +211,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet did not complete and terminated; Cause: " + e.getMessage());
+                log.debug("Translet did not complete and terminated: " + e.getMessage());
             }
         } catch (Exception e) {
             throw new AspectranRuntimeException("An error occurred while processing a Embedded Activity", e);
