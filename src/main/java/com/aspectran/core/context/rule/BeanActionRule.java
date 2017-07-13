@@ -111,20 +111,20 @@ public class BeanActionRule implements BeanReferenceInspectable {
         this.methodName = methodName;
     }
 
-    public boolean isRequiresTranslet() {
-        return requiresTranslet;
-    }
-
-    public void setRequiresTranslet(boolean requiresTranslet) {
-        this.requiresTranslet = requiresTranslet;
-    }
-
     public Method getMethod() {
         return method;
     }
 
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public boolean isRequiresTranslet() {
+        return requiresTranslet;
+    }
+
+    public void setRequiresTranslet(boolean requiresTranslet) {
+        this.requiresTranslet = requiresTranslet;
     }
 
     /**

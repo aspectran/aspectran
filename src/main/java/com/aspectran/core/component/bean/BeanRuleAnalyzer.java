@@ -30,7 +30,7 @@ import com.aspectran.core.util.MethodUtils;
  */
 public class BeanRuleAnalyzer {
 
-    public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
+    private static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
     public static Class<?> determineBeanClass(BeanRule beanRule) {
         Class<?> targetBeanClass;
@@ -106,10 +106,10 @@ public class BeanRuleAnalyzer {
 
     public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isInitializableBean()) {
-            throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
+            throw new BeanRuleException("Bean initialization method is duplicated; Already implemented the InitializableBean", beanRule);
         }
         if (beanRule.isInitializableTransletBean()) {
-            throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
+            throw new BeanRuleException("Bean initialization method is duplicated; Already implemented the InitializableTransletBean", beanRule);
         }
 
         String initMethodName = beanRule.getInitMethodName();
@@ -129,7 +129,7 @@ public class BeanRuleAnalyzer {
 
     public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isDisposableBean()) {
-            throw new BeanRuleException("Bean destroy method is duplicated. Already implemented the DisposableBean", beanRule);
+            throw new BeanRuleException("Bean destroy method is duplicated; Already implemented the DisposableBean", beanRule);
         }
 
         String destroyMethodName = beanRule.getDestroyMethodName();
@@ -146,7 +146,6 @@ public class BeanRuleAnalyzer {
             String methodName = beanActionRule.getMethodName();
 
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
             if (m1 != null) {
                 beanActionRule.setMethod(m1);
                 beanActionRule.setRequiresTranslet(true);
@@ -156,6 +155,7 @@ public class BeanRuleAnalyzer {
                     throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
                 }
                 beanActionRule.setMethod(m2);
+                beanActionRule.setRequiresTranslet(false);
             }
         }
     }

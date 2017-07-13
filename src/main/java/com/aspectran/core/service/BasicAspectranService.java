@@ -129,7 +129,11 @@ public class BasicAspectranService extends AbstractAspectranService {
     private void registerShutdownTask() {
         if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
-            this.shutdownTask = ShutdownHooks.add(this::stop);
+            this.shutdownTask = ShutdownHooks.add(() -> {
+                if (isActive()) {
+                    stop();
+                }
+            });
         }
     }
 

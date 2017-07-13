@@ -40,8 +40,6 @@ public class MethodActionRule {
 
     private AspectAdviceRule aspectAdviceRule;
 
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-
     public String getActionId() {
         return actionId;
     }
@@ -68,17 +66,11 @@ public class MethodActionRule {
     }
 
     public String getMethodName() {
-        if (method != null)
-            return method.getName();
-        return null;
+        return (method != null ? method.getName() : null);
     }
 
     public boolean isRequiresTranslet() {
         return requiresTranslet;
-    }
-
-    public void setRequiresTranslet(boolean requiresTranslet) {
-        this.requiresTranslet = requiresTranslet;
     }
 
     /**
@@ -99,24 +91,6 @@ public class MethodActionRule {
         this.aspectAdviceRule = aspectAdviceRule;
     }
 
-    /**
-     * Gets the aspect advice rule registry.
-     *
-     * @return the aspect advice rule registry
-     */
-    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-        return aspectAdviceRuleRegistry;
-    }
-
-    /**
-     * Sets the aspect advice rule registry.
-     *
-     * @param aspectAdviceRuleRegistry the new aspect advice rule registry
-     */
-    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -125,7 +99,6 @@ public class MethodActionRule {
         }
         tsb.append("method", method);
         tsb.append("aspectAdviceRule", aspectAdviceRule);
-        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
         return tsb.toString();
     }
 

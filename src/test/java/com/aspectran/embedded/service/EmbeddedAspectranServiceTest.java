@@ -15,6 +15,8 @@
  */
 package com.aspectran.embedded.service;
 
+import static junit.framework.TestCase.assertEquals;
+
 import java.io.IOException;
 
 import org.junit.After;
@@ -24,6 +26,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -90,6 +93,14 @@ public class EmbeddedAspectranServiceTest {
     public void includeTest() throws IOException {
         Translet translet = aspectranService.translet("include-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
+    }
+
+    @Test
+    public void actionCallTest() throws IOException {
+        Translet translet = aspectranService.translet("add-up");
+        ActivityDataMap dataMap = translet.getActivityDataMap();
+        //System.out.println("Result: " + dataMap.get("result"));
+        assertEquals(dataMap.get("result"), 10);
     }
 
 }

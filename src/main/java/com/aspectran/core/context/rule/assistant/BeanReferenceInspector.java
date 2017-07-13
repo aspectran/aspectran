@@ -41,7 +41,7 @@ public class BeanReferenceInspector {
     private final Map<Object, Set<BeanReferenceInspectable>> relationMap;
 
     public BeanReferenceInspector() {
-        relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
+        relationMap = new LinkedHashMap<>();
     }
 
     /**
@@ -52,9 +52,8 @@ public class BeanReferenceInspector {
      */
     public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
         Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
-
         if (ruleSet == null) {
-            ruleSet = new LinkedHashSet<BeanReferenceInspectable>();
+            ruleSet = new LinkedHashSet<>();
             ruleSet.add(someRule);
             relationMap.put(beanIdOrClass, ruleSet);
         } else {

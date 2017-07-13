@@ -47,7 +47,7 @@ public class BeanAction extends AbstractAction {
 
     private AspectAdviceRule aspectAdviceRule;
 
-    private volatile Boolean needTranslet;
+    private Boolean requiresTranslet;
 
     /**
      * Instantiates a new BeanAction.
@@ -118,36 +118,30 @@ public class BeanAction extends AbstractAction {
             }
 
             Method method = beanActionRule.getMethod();
-            boolean requiresTranslet = beanActionRule.isRequiresTranslet();
-
             if (method != null) {
                 if (argumentItemRuleMap == null) {
-                    return MethodAction.invokeMethod(activity, bean, method, requiresTranslet);
+                    return MethodAction.invokeMethod(activity, bean, method, beanActionRule.isRequiresTranslet());
                 } else {
-                    Object[] args = createArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
+                    Object[] args = createArugments(activity, argumentItemRuleMap, evaluator, beanActionRule.isRequiresTranslet());
                     return method.invoke(bean, args);
                 }
             } else {
                 String methodName = beanActionRule.getMethodName();
                 Object result;
-
-                if (needTranslet == null) {
+                if (requiresTranslet == null) {
                     try {
                         result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
-                        needTranslet = Boolean.TRUE;
+                        requiresTranslet = Boolean.TRUE;
                     } catch (NoSuchMethodException e) {
                         if (log.isDebugEnabled()) {
-                            log.debug("The method that requires the Translet argument is not found. " +
-                                    "Therefore, the method is called continuously without the Translet " +
-                                    "argument. beanActionRule " + beanActionRule);
+                            log.debug("No have a Translet argument; beanActionRule " + beanActionRule);
                         }
-                        needTranslet = Boolean.FALSE;
+                        requiresTranslet = Boolean.FALSE;
                         result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
                     }
                 } else {
-                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, needTranslet);
+                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, requiresTranslet);
                 }
-
                 return result;
             }
         } catch (Exception e) {

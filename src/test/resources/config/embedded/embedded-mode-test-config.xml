@@ -7,9 +7,11 @@
         Aspectran configuration for embedded mode for tests
     </description>
 
-    <bean scan="com.aspectran.embedded.**.*Bean" mask="com.aspectran.embedded.service.*"/>
+    <bean scan="com.aspectran.embedded.service.**.*Bean" mask="com.aspectran.embedded.service.**"/>
 
-    <bean scan="com.aspectran.embedded.**.*Configuration" mask="com.aspectran.embedded.service.*"/>
+    <bean scan="com.aspectran.embedded.service.**.*Configuration" mask="com.aspectran.embedded.service.**"/>
+
+    <bean scan="com.aspectran.embedded.service.**.*Action" mask="com.aspectran.embedded.service.**"/>
 
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>
@@ -147,6 +149,17 @@
         <transform type="transform/text" contentType="text/plain">
             <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
         </transform>
+    </translet>
+
+    <translet name="add-up">
+        <action id="result" bean="action.TestAction" method="addUp">
+            <arguments>
+                <item value="1" valueType="int"/>
+                <item value="2" valueType="int"/>
+                <item value="3" valueType="int"/>
+                <item valueType="int">#{action.TestAction^arg4}</item>
+            </arguments>
+        </action>
     </translet>
 
 </aspectran>

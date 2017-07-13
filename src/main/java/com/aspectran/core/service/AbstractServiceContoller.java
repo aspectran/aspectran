@@ -160,7 +160,8 @@ public abstract class AbstractServiceContoller implements ServiceController {
     public void stop() {
         synchronized (lock) {
             if (!active) {
-                throw new IllegalStateException(getServiceName() + " is already stopped");
+                log.warn(getServiceName() + " is already stopped");
+                return;
             }
 
             if (serviceStateListener != null) {
