@@ -36,7 +36,7 @@ public interface SessionManager {
 
     String newSessionId(long seedTerm);
 
-    SessionData loadSessionData(String id, boolean create);
+    SessionData loadSessionData(String id);
 
     void storeSessionData(String id, SessionData sessionData);
 

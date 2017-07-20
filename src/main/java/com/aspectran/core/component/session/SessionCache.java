@@ -56,7 +56,7 @@ public class SessionCache {
                     try {
                         session.invalidate();
                     } catch (Exception e) {
-                        log.warn("Failed to invalidate the session", e);
+                        log.warn("Failed to invalidate the session " + session, e);
                     }
                 }
             }

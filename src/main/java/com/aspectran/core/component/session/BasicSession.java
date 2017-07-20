@@ -66,7 +66,6 @@ public class BasicSession implements SessionAccess {
         this.id = sessionData.getId();
         this.sessionData = sessionData;
         this.newSession = true;
-        updateInactivityTimer();
     }
 
     public String getId() {
@@ -94,6 +93,7 @@ public class BasicSession implements SessionAccess {
             if (isExpiredAt(now)) {
                 invalidate();
             }
+        } finally {
             requests++;
         }
     }
@@ -102,18 +102,17 @@ public class BasicSession implements SessionAccess {
     public void complete() {
         try (Lock ignored = locker.lockIfNotHeld()) {
             if (requests == 1) {
-                requests = 0;
                 storeSessionData();
                 notNewSession();
-            } else {
-                requests--;
             }
+        } finally {
+            requests--;
         }
     }
 
     private boolean retrieveSessionData() {
         if (!newSession && requests == 0) {
-            sessionData = sessionManager.loadSessionData(id, true);
+            sessionData = sessionManager.loadSessionData(id);
         }
         return (sessionData != null);
     }
@@ -201,7 +200,6 @@ public class BasicSession implements SessionAccess {
                     log.debug("Session " + id + " maxInactiveInterval=" + secs);
                 }
             }
-
         }
     }
 
@@ -258,7 +256,6 @@ public class BasicSession implements SessionAccess {
                 case VALID:
                     // only first change from valid to invalidating should be actionable
                     state = State.INVALIDATING;
-                    stopInactivityTimer();
                     result = true;
                     break;
                 default:
@@ -323,6 +320,12 @@ public class BasicSession implements SessionAccess {
 
     protected void setResident(boolean resident) {
         this.resident = resident;
+
+        if (resident) {
+            updateInactivityTimer();
+        } else {
+            stopInactivityTimer();
+        }
     }
 
     public boolean isNew() throws IllegalStateException {

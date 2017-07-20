@@ -49,15 +49,12 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     private final Scheduler scheduler = new ScheduledExecutorScheduler();
 
-    private final SessionScavenger sessionScavenger;
-
     private int defaultMaxIdleSecs = -1;
 
     public AbstractSessionManager(String groupName, SessionDataStore sessionDataStore) {
         this.sessionIdGenerator = new SessionIdGenerator(groupName);
         this.sessionDataStore = sessionDataStore;
         this.sessionCache = new SessionCache();
-        this.sessionScavenger = new SessionScavenger(this);
     }
 
     @Override
@@ -141,18 +138,13 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     @Override
-    public SessionData loadSessionData(String id, boolean create) {
-        SessionData data;
+    public SessionData loadSessionData(String id) {
         try {
-            data = sessionDataStore.load(id);
+            return sessionDataStore.load(id);
         } catch(Exception e) {
             log.warn("Failed to load session data", e);
             return null;
         }
-        if (data == null && create) {
-            data = newSessionData(id);
-        }
-        return data;
     }
 
     @Override
