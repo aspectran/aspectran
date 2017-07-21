@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the service interface for embedded Aspectran.
+ * A package that provides the ability to embed Aspectran into other applications.
  */
-package com.aspectran.embedded.service;
+package com.aspectran.embed;

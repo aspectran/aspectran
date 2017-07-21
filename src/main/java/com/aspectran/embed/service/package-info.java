@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
-
-import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
-
 /**
- * The Class EmbeddedSessionAdapter.
+ * Contains a variant of the service interface for embedded Aspectran.
  */
-public class EmbeddedSessionAdapter extends BasicSessionAdapter {
-
-    /**
-     * Instantiates a new EmbeddedSessionAdapter.
-     *
-     * @param session the default session
-     */
-    public EmbeddedSessionAdapter(BasicSession session) {
-        super(session);
-    }
-
-}
+package com.aspectran.embed.service;

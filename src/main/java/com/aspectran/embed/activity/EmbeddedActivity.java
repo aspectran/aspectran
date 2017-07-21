@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.activity;
+package com.aspectran.embed.activity;
 
 import java.io.Writer;
 import java.util.Map;
@@ -24,9 +24,9 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.embedded.adapter.EmbeddedRequestAdapter;
-import com.aspectran.embedded.adapter.EmbeddedResponseAdapter;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
+import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
+import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
+import com.aspectran.embed.service.EmbeddedAspectranService;
 
 /**
  * The Class EmbeddedActivity.

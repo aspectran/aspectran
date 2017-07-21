@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.service;
+package com.aspectran.embed.adapter;
 
-import com.aspectran.core.component.bean.annotation.Autowired;
-import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Configuration;
-import com.aspectran.core.component.bean.annotation.Qualifier;
+import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.component.session.BasicSession;
 
-@Configuration
-public class TestConfiguration {
+/**
+ * The Class EmbeddedSessionAdapter.
+ */
+public class EmbeddedSessionAdapter extends BasicSessionAdapter {
 
-    @Autowired
-    @Qualifier("FirstBean")
-    private FirstBean firstBean;
-
-    @Bean(id = "thirdBean", lazyInit = true)
-    public FirstBean getThirdBean() {
-        return firstBean;
+    /**
+     * Instantiates a new EmbeddedSessionAdapter.
+     *
+     * @param session the default session
+     */
+    public EmbeddedSessionAdapter(BasicSession session) {
+        super(session);
     }
 
 }

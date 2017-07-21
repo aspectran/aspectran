@@ -46,7 +46,7 @@ import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean;
 import com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedAspectranService;
 
 /**
  * Test case for dispatching Views.

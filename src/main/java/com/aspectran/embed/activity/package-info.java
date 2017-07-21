@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.service;
-
-public class SecondBean {
-
-    public static final String message = "This is the second bean.";
-
-    public SecondBean() {
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-}
+/**
+ * Contains a variant of the activity interface for embedded Aspectran.
+ */
+package com.aspectran.embed.activity;

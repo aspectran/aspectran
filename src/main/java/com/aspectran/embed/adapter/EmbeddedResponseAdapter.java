@@ -13,7 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.embed.adapter;
+
+import java.io.Writer;
+
+import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.context.rule.type.ContentType;
+
 /**
- * Contains a variant of the activity interface for embedded Aspectran.
+ * The Class EmbeddedResponseAdapter.
  */
-package com.aspectran.embedded.activity;
+public class EmbeddedResponseAdapter extends BasicResponseAdapter {
+
+    /**
+     * Instantiates a new EmbeddedResponseAdapter.
+     *
+     * @param outputWriter the writer for output
+     */
+    public EmbeddedResponseAdapter(Writer outputWriter) {
+        super(null, outputWriter);
+
+        setContentType(ContentType.TEXT_PLAIN.toString());
+    }
+
+}

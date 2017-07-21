@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedAspectranService;
 
 /**
  * <p>Created: 2016. 9. 7.</p>

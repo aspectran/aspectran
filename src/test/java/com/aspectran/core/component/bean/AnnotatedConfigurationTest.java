@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedAspectranService;
 
 import test.anno.ThirdResult;
 

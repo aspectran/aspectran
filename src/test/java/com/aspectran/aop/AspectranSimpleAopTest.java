@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embedded.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedAspectranService;
 
 /**
  * <p>Created: 2016. 11. 5.</p>

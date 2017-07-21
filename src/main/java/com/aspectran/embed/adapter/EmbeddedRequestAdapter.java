@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
+package com.aspectran.embed.adapter;
 
-import com.aspectran.core.adapter.BasicApplicationAdapter;
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
- * The Class EmbeddedApplicationAdapter.
+ * The Class EmbeddedRequestAdapter.
  */
-public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
-
-    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embedded.workingDir";
+public class EmbeddedRequestAdapter extends BasicRequestAdapter {
 
     /**
-     * Instantiates a new EmbeddedApplicationAdapter.
+     * Instantiates a new EmbeddedRequestAdapter.
      */
-    public EmbeddedApplicationAdapter() {
+    public EmbeddedRequestAdapter() {
         super(null);
+    }
 
-        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-        if (basePath != null) {
-            setBasePath(basePath);
-        }
+    /**
+     * Instantiates a new EmbeddedRequestAdapter.
+     *
+     * @param parameterMap the parameter map
+     */
+    public EmbeddedRequestAdapter(ParameterMap parameterMap) {
+        super(null, parameterMap);
     }
 
 }

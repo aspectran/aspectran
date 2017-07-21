@@ -13,30 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.adapter;
+package com.aspectran.embed.service.action;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.BasicRequestAdapter;
+public class TestAction {
 
-/**
- * The Class EmbeddedRequestAdapter.
- */
-public class EmbeddedRequestAdapter extends BasicRequestAdapter {
-
-    /**
-     * Instantiates a new EmbeddedRequestAdapter.
-     */
-    public EmbeddedRequestAdapter() {
-        super(null);
+    public int addUp(int arg1, int arg2, int arg3, int arg4) {
+        return arg1 + arg2 + arg3 + arg4;
     }
 
-    /**
-     * Instantiates a new EmbeddedRequestAdapter.
-     *
-     * @param parameterMap the parameter map
-     */
-    public EmbeddedRequestAdapter(ParameterMap parameterMap) {
-        super(null, parameterMap);
+    public int getArg4() {
+        return 4;
     }
 
 }

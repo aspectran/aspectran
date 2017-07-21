@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embedded.service;
+package com.aspectran.embed.service;
 
 import java.util.Map;
 
@@ -39,9 +39,9 @@ import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.embedded.activity.EmbeddedActivity;
-import com.aspectran.embedded.adapter.EmbeddedApplicationAdapter;
-import com.aspectran.embedded.adapter.EmbeddedSessionAdapter;
+import com.aspectran.embed.activity.EmbeddedActivity;
+import com.aspectran.embed.adapter.EmbeddedApplicationAdapter;
+import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
 
 /**
  * The Class EmbeddedAspectranService.
@@ -319,12 +319,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
         aspectranService.prepare(aspectranConfig);
 
-        setServiceLifeCycleListener(aspectranService);
+        setServiceStateListener(aspectranService);
 
         return aspectranService;
     }
 
-    private static void setServiceLifeCycleListener(final EmbeddedAspectranService aspectranService) {
+    private static void setServiceStateListener(final EmbeddedAspectranService aspectranService) {
         aspectranService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

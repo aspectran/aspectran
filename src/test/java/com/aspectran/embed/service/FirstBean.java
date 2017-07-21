@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Contains a variant of the adapter interface for embedded Aspectran.
- */
-package com.aspectran.embedded.adapter;
+package com.aspectran.embed.service;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+
+public class FirstBean {
+
+    @Autowired
+    private SecondBean secondBean;
+
+    public String getMessage() {
+        return secondBean.getMessage();
+    }
+
+}

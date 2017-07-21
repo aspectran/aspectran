@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * A package that provides the ability to embed Aspectran in other applications.
- */
-package com.aspectran.embedded;
+package com.aspectran.embed.service;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Qualifier;
+
+@Configuration
+public class TestConfiguration {
+
+    @Autowired
+    @Qualifier("FirstBean")
+    private FirstBean firstBean;
+
+    @Bean(id = "thirdBean", lazyInit = true)
+    public FirstBean getThirdBean() {
+        return firstBean;
+    }
+
+}
