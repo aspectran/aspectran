@@ -22,7 +22,11 @@ import com.aspectran.core.util.thread.Scheduler;
 /**
  * <p>Created: 2017. 6. 12.</p>
  */
-public interface SessionManager {
+public interface SessionHandler {
+
+    SessionIdGenerator getSessionIdGenerator();
+
+    SessionCache getSessionCache();
 
     Scheduler getScheduler();
 
@@ -30,15 +34,48 @@ public interface SessionManager {
 
     void setDefaultMaxIdleSecs(int defaultMaxIdleSecs);
 
-    BasicSession getSession(String sessionId);
+    /**
+     * Called by the {@link SessionHandler} when a session is first accessed by a request.
+     *
+     * @param session the session object
+     * @see #complete(Session)
+     */
+    void access(Session session);
 
+    /**
+     * Called by the {@link SessionHandler} when a session is last accessed by a request.
+     *
+     * @param session the session object
+     * @see #access(Session)
+     */
+    void complete(Session session);
+
+    /**
+     * Creates a new {@link Session}.
+     *
+     * @param id the session id
+     * @return the new session object
+     */
+    Session newSession(String id);
+
+    /**
+     * Get a known existing session.
+     *
+     * @param id the session id
+     * @return a Session or null if none exists
+     */
+    Session getSession(String id);
+
+    /**
+     * Called when a session has expired.
+     *
+     * @param id the id to invalidate
+     */
     void invalidate(String id);
 
     String newSessionId(long seedTerm);
 
-    SessionData loadSessionData(String id);
-
-    void storeSessionData(String id, SessionData sessionData);
+    SessionAgent newSessionAgent();
 
     /**
      * Adds an event listener for session-related events.
@@ -72,6 +109,22 @@ public interface SessionManager {
      * @param oldValue previous value of the attribute
      * @param newValue  new value of the attribute
      */
-    void sessionAttributeChanged(BasicSession session, String name, Object oldValue, Object newValue);
+    void sessionAttributeChanged(Session session, String name, Object oldValue, Object newValue);
+
+    /**
+     * Call the activation listeners.
+     * This must be called holding the lock.
+     *
+     * @param session the session
+     */
+    void didActivate(Session session);
+
+    /**
+     * Call the passivation listeners.
+     * This must be called holding the lock.
+     *
+     * @param session the session
+     */
+    void willPassivate(Session session);
 
 }

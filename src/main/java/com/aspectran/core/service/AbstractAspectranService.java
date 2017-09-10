@@ -196,7 +196,7 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
     }
 
     protected void pauseSchedulerService(long timeout) throws Exception {
-        log.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time.");
+        log.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time");
     }
 
     protected void resumeSchedulerService() throws Exception {

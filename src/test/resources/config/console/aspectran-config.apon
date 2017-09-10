@@ -10,6 +10,9 @@ context: {
     }
     profiles: {
     }
+    session: {
+        timeout: 10
+    }
 }
 scheduler: {
     startDelaySeconds: 3

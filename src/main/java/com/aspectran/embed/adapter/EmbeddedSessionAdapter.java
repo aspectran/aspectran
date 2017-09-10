@@ -16,7 +16,7 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.SessionAgent;
 
 /**
  * The Class EmbeddedSessionAdapter.
@@ -26,10 +26,10 @@ public class EmbeddedSessionAdapter extends BasicSessionAdapter {
     /**
      * Instantiates a new EmbeddedSessionAdapter.
      *
-     * @param session the default session
+     * @param agent the session agent
      */
-    public EmbeddedSessionAdapter(BasicSession session) {
-        super(session);
+    public EmbeddedSessionAdapter(SessionAgent agent) {
+        super(agent);
     }
 
 }

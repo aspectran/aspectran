@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
+import java.util.Set;
+
 /**
  * <p>Created: 2017. 6. 15.</p>
  */
@@ -46,5 +48,44 @@ public interface SessionDataStore {
      * @throws Exception if unable to delete session data
      */
     boolean delete(String id) throws Exception;
+
+    /**
+     * Test if data exists for a given session id.
+     *
+     * @param id Identity of session whose existance should be checked
+     * @return true if valid, non-expired session exists
+     * @throws Exception if problem checking existance with persistence layer
+     */
+    boolean exists(String id) throws Exception;
+
+    /**
+     * Create a new SessionData.
+     *
+     * @param id the id
+     * @param createdTime the timestamp when created
+     * @param accessedTime the timestamp when accessed
+     * @param lastAccessedTime the timestamp when last accessed
+     * @param maxInactiveIntervalMS the max inactive time in milliseconds
+     * @return  a new SessionData object
+     */
+    SessionData newSessionData (String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS);
+
+    /**
+     * Called periodically, this method should search the data store
+     * for sessions that have been expired for a 'reasonable' amount
+     * of time.
+     * @param candidates if provided, these are keys of sessions that
+     * the SessionDataStore thinks has expired and should be verified by the
+     * SessionDataStore
+     * @return set of session ids
+     */
+    Set<String> getExpired (Set<String> candidates);
+
+    /**
+     * True if this type of datastore will passivate session objects.
+     *
+     * @return true if this store can passivate sessions, false otherwise
+     */
+    boolean isPassivating ();
 
 }

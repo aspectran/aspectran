@@ -15,16 +15,32 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.context.AspectranCheckedException;
+
 /**
- * <p>Created: 2017. 7. 2.</p>
+ * <p>Created: 2017. 9. 7.</p>
  */
-public interface SessionAccess {
+public class UnreadableSessionDataException extends AspectranCheckedException {
 
-    /**
-     * Called by the {@link com.aspectran.core.activity.CoreActivity} when a session is first accessed by a request.
-     */
-    void access();
+    private static final long serialVersionUID = 799147544009142489L;
 
-    void complete();
+    private final String id;
+
+    private final String groupName;
+
+    public UnreadableSessionDataException(String id, String groupName, Throwable t) {
+        super ("Unreadable session " + id + " for " + groupName, t);
+        this.id = id;
+        this.groupName = groupName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
 
 }
+

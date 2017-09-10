@@ -59,6 +59,11 @@ public class Log4jImpl implements Log {
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        log.log(FQCN, Level.DEBUG, s, e);
+    }
+
+    @Override
     public void info(String s) {
         log.log(FQCN, Level.INFO, s, null);
     }

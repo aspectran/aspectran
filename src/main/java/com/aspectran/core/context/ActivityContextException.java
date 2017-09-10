@@ -74,4 +74,5 @@ public class ActivityContextException extends AspectranCheckedException {
     public ActivityContextException(String msg, Throwable cause) {
         super(msg, cause);
     }
+
 }

@@ -57,6 +57,11 @@ public class Jdk14LoggingImpl implements Log {
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        log.log(Level.FINE, s, e);
+    }
+
+    @Override
     public void info(String s) {
         log.log(Level.INFO, s);
     }
@@ -75,5 +80,6 @@ public class Jdk14LoggingImpl implements Log {
     public void warn(String s, Throwable e) {
         log.log(Level.WARNING, s, e);
     }
+
 
 }

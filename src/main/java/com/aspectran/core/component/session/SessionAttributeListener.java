@@ -29,7 +29,7 @@ public interface SessionAttributeListener {
      * @param name the name with which the object is bound or unbound
      * @param value the new value of the attribute that has been added
      */
-    void attributeAdded(BasicSession session, String name, Object value);
+    void attributeAdded(Session session, String name, Object value);
 
     /**
      * Receives notification that an attribute has been removed from a session.
@@ -38,7 +38,7 @@ public interface SessionAttributeListener {
      * @param name the name with which the object is bound or unbound
      * @param value the old value of the attribute that has been removed
      */
-    void attributeRemoved(BasicSession session, String name, Object value);
+    void attributeRemoved(Session session, String name, Object value);
 
     /**
      * Receives notification that an attribute has been replaced in a session.
@@ -47,6 +47,6 @@ public interface SessionAttributeListener {
      * @param name the name with which the object is bound or unbound
      * @param value the old value of the attribute that has been removed
      */
-    void attributeReplaced(BasicSession session, String name, Object value);
+    void attributeReplaced(Session session, String name, Object value);
 
 }

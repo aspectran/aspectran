@@ -28,7 +28,10 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
+import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.translet.TransletInstantiationException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
@@ -182,14 +185,22 @@ public class CoreActivity extends BasicActivity {
     }
 
     protected void adapt() throws AdapterException {
-        if (getSessionAdapter() != null && getSessionAdapter().getSessionAccess() != null) {
-            getSessionAdapter().getSessionAccess().access();
+        if (getSessionAdapter() != null) {
+            SessionAdapter sessionAdapter = getSessionAdapter();
+            if (sessionAdapter instanceof BasicSessionAdapter) {
+                SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
+                agent.access();
+            }
         }
     }
 
     protected void release() {
-        if (getSessionAdapter() != null && getSessionAdapter().getSessionAccess() != null) {
-            getSessionAdapter().getSessionAccess().complete();
+        if (getSessionAdapter() != null) {
+            SessionAdapter sessionAdapter = getSessionAdapter();
+            if (sessionAdapter instanceof BasicSessionAdapter) {
+                SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
+                agent.complete();
+            }
         }
     }
 

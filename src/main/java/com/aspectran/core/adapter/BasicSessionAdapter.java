@@ -18,8 +18,7 @@ package com.aspectran.core.adapter;
 import java.util.Enumeration;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.component.session.BasicSession;
-import com.aspectran.core.component.session.SessionAccess;
+import com.aspectran.core.component.session.SessionAgent;
 
 /**
  * The Class BasicSessionAdapter.
@@ -31,75 +30,74 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
     /**
      * Instantiates a new BasicSessionAdapter.
      *
-     * @param session the basic session
+     * @param agent the session agent
      */
-    public BasicSessionAdapter(BasicSession session) {
-        super(session);
+    public BasicSessionAdapter(SessionAgent agent) {
+        super(agent);
     }
 
     @Override
     public String getId() {
-        return ((BasicSession)adaptee).getId();
+        return ((SessionAgent)adaptee).getId();
     }
 
     @Override
     public boolean isNew() {
-        return ((BasicSession)adaptee).isNew();
+        return ((SessionAgent)adaptee).isNew();
     }
 
     @Override
     public long getCreationTime() {
-        return ((BasicSession)adaptee).getCreationTime();
+        return ((SessionAgent)adaptee).getCreationTime();
     }
 
     @Override
     public long getLastAccessedTime() {
-        return ((BasicSession)adaptee).getLastAccessedTime();
+        return ((SessionAgent)adaptee).getLastAccessedTime();
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        return ((BasicSession)adaptee).getMaxInactiveInterval();
+        return ((SessionAgent)adaptee).getMaxInactiveInterval();
     }
 
     public void setMaxInactiveInterval(int secs) {
-        ((BasicSession)adaptee).setMaxInactiveInterval(secs);
+        ((SessionAgent)adaptee).setMaxInactiveInterval(secs);
+    }
+
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return ((SessionAgent)adaptee).getAttributeNames();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return ((BasicSession)adaptee).getAttribute(name);
+        return ((SessionAgent)adaptee).getAttribute(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        ((BasicSession)adaptee).setAttribute(name, value);
-    }
-
-    @Override
-    public Enumeration<String> getAttributeNames() {
-        return ((BasicSession)adaptee).getAttributeNames();
+        ((SessionAgent)adaptee).setAttribute(name, value);
     }
 
     @Override
     public void removeAttribute(String name) {
-        ((BasicSession)adaptee).removeAttribute(name);
+        ((SessionAgent)adaptee).removeAttribute(name);
     }
 
     @Override
     public void invalidate() {
-        ((BasicSession)adaptee).invalidate();
+        ((SessionAgent)adaptee).invalidate();
     }
 
     @Override
     public SessionScope getSessionScope() {
-        return ((BasicSession)adaptee).getSessionScope();
+        return ((SessionAgent)adaptee).getSessionScope();
     }
 
-    @Override
-    public SessionAccess getSessionAccess() {
-        return (SessionAccess)adaptee;
+    public SessionAgent getSessionAgent() {
+        return (SessionAgent)adaptee;
     }
 
 }

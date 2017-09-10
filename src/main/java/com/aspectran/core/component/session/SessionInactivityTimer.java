@@ -32,9 +32,9 @@ public class SessionInactivityTimer extends IdleTimeout {
 
     private static final Log log = LogFactory.getLog(SessionInactivityTimer.class);
 
-    private final BasicSession session;
+    private final Session session;
 
-    public SessionInactivityTimer(Scheduler scheduler, BasicSession session) {
+    public SessionInactivityTimer(Scheduler scheduler, Session session) {
         super(scheduler);
         this.session = session;
     }
@@ -48,7 +48,7 @@ public class SessionInactivityTimer extends IdleTimeout {
     public void idleExpired() {
         if (session.getRequests() <= 0) {
             if (log.isDebugEnabled()) {
-                log.debug("Timer expired for session " + session);
+                log.debug("Timer expired for session " + session.getId());
             }
             session.invalidate();
         }

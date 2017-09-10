@@ -53,6 +53,12 @@ public class StdOutImpl implements Log {
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        System.out.println(s);
+        e.printStackTrace(System.out);
+    }
+
+    @Override
     public void info(String s) {
         System.out.println(s);
     }

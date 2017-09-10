@@ -24,13 +24,15 @@ import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.Component;
-import com.aspectran.core.component.session.BasicSession;
-import com.aspectran.core.component.session.DefaultSessionManager;
+import com.aspectran.core.component.session.Session;
+import com.aspectran.core.component.session.DefaultSessionHandler;
+import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionListener;
-import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.AspectranContextSessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
@@ -54,9 +56,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
 
-    private SessionManager sessionManager;
-
-    private String sessionId;
+    private SessionHandler sessionHandler;
 
     private long pauseTimeout = -1L;
 
@@ -66,21 +66,27 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() throws Exception {
-        sessionManager = new DefaultSessionManager("EMB");
-        ((Component)sessionManager).initialize();
+        sessionHandler = new DefaultSessionHandler("EMB");
 
-        sessionId = sessionManager.newSessionId(hashCode());
+        AspectranContextConfig contextConfig = getAspectranConfig().touchAspectranContextConfig();
+        AspectranContextSessionConfig sessionConfig = contextConfig.getParameters(AspectranContextConfig.session);
+        if (sessionConfig != null) {
+            int sessionTimeout = sessionConfig.getInt(AspectranContextSessionConfig.timeout);
+            sessionHandler.setDefaultMaxIdleSecs(sessionTimeout);
+        }
+
+        ((Component)sessionHandler).initialize();
 
         final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(getActivityContext());
         if (sessionScopeAdvisor != null) {
-            sessionManager.addEventListener(new SessionListener() {
+            sessionHandler.addEventListener(new SessionListener() {
                 @Override
-                public void sessionCreated(BasicSession session) {
+                public void sessionCreated(Session session) {
                     sessionScopeAdvisor.executeBeforeAdvice();
                 }
 
                 @Override
-                public void sessionDestroyed(BasicSession session) {
+                public void sessionDestroyed(Session session) {
                     sessionScopeAdvisor.executeAfterAdvice();
                 }
             });
@@ -89,13 +95,13 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     @Override
     public void beforeContextDestroy() {
-        ((Component)sessionManager).destroy();
-        sessionManager = null;
+        ((Component)sessionHandler).destroy();
+        sessionHandler = null;
     }
 
     public SessionAdapter newSessionAdapter() {
-        BasicSession session = sessionManager.getSession(sessionId);
-        return new EmbeddedSessionAdapter(session);
+        SessionAgent agent = sessionHandler.newSessionAgent();
+        return new EmbeddedSessionAdapter(agent);
     }
 
     /**

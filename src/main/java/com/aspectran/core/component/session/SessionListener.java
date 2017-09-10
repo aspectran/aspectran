@@ -30,13 +30,13 @@ public interface SessionListener extends EventListener {
      *
      * @param session the basic session
      */
-    void sessionCreated(BasicSession session);
+    void sessionCreated(Session session);
 
     /**
      * Receives notification that a session is about to be invalidated.
      *
      * @param session the basic session
      */
-    void sessionDestroyed(BasicSession session);
+    void sessionDestroyed(Session session);
 
 }

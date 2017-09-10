@@ -18,10 +18,29 @@ package com.aspectran.core.component.session;
 /**
  * <p>Created: 2017. 6. 12.</p>
  */
-public class DefaultSessionManager extends AbstractSessionManager {
+public class DefaultSessionHandler extends AbstractSessionHandler {
 
-    public DefaultSessionManager(String groupName) {
-        super(groupName, new DefaultSessionDataStore());
+    private String groupName;
+
+    public DefaultSessionHandler(String groupName) {
+        this.groupName = groupName;
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+        super.doInitialize();
+
+        SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(groupName);
+        setSessionIdGenerator(sessionIdGenerator);
+
+        DefaultSessionCache sessionCache = new DefaultSessionCache(this);
+        setSessionCache(sessionCache);
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        super.doDestroy();
+        getSessionCache().clear();
     }
 
 }

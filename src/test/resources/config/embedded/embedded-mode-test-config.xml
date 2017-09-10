@@ -7,11 +7,11 @@
         Aspectran configuration for embedded mode for tests
     </description>
 
-    <bean scan="com.aspectran.embedded.service.**.*Bean" mask="com.aspectran.embedded.service.**"/>
+    <bean scan="com.aspectran.embed.service.**.*Bean" mask="com.aspectran.embed.service.**"/>
 
-    <bean scan="com.aspectran.embedded.service.**.*Configuration" mask="com.aspectran.embedded.service.**"/>
+    <bean scan="com.aspectran.embed.service.**.*Configuration" mask="com.aspectran.embed.service.**"/>
 
-    <bean scan="com.aspectran.embedded.service.**.*Action" mask="com.aspectran.embedded.service.**"/>
+    <bean scan="com.aspectran.embed.service.**.*Action" mask="com.aspectran.embed.service.**"/>
 
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>

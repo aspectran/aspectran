@@ -32,6 +32,8 @@ public interface Log {
 
     void debug(String s);
 
+    void debug(String s, Throwable e);
+
     void info(String s);
 
     void trace(String s);

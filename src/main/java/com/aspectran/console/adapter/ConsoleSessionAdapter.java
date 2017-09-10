@@ -16,7 +16,7 @@
 package com.aspectran.console.adapter;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.SessionAgent;
 
 /**
  * The Class ConsoleSessionAdapter.
@@ -28,10 +28,10 @@ public class ConsoleSessionAdapter extends BasicSessionAdapter {
     /**
      * Instantiates a new ConsoleSessionAdapter.
      *
-     * @param session the default session
+     * @param agent the session agent
      */
-    public ConsoleSessionAdapter(BasicSession session) {
-        super(session);
+    public ConsoleSessionAdapter(SessionAgent agent) {
+        super(agent);
     }
 
 }

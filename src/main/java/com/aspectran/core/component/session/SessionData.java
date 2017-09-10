@@ -42,23 +42,28 @@ public class SessionData implements Serializable {
 
     private final long creationTime;
 
-    private long maxInactiveIntervalMS;
-
     /** the time of the last access */
     private long accessedTime;
 
     /** the time of the last access excluding this one */
     private long lastAccessedTime;
 
+    private long maxInactiveIntervalMS;
+
     private long expiryTime;
 
-    public SessionData(String id, long creationTime, long maxInactiveIntervalMS) {
+    private boolean dirty;
+
+    private long lastSaved; //time in msec since last save
+
+    public SessionData(String id, long creationTime, long accessedTime,  long lastAccessedTime, long maxInactiveIntervalMS) {
         if (id == null) {
             throw new IllegalArgumentException("Argument 'id' must not be null");
         }
         this.id = id;
         this.creationTime = creationTime;
-        this.lastAccessedTime = creationTime;
+        this.accessedTime = accessedTime;
+        this.lastAccessedTime = lastAccessedTime;
         this.maxInactiveIntervalMS = maxInactiveIntervalMS;
         calcAndSetExpiryTime(creationTime);
     }
@@ -77,13 +82,19 @@ public class SessionData implements Serializable {
     }
 
     public <T> T setAttribute(String name, Object value) {
+        T old;
         if (value == null) {
             // noinspection unchecked
-            return (T)attributes.remove(name);
+            old = (T)attributes.remove(name);
         } else {
             // noinspection unchecked
-            return (T)attributes.put(name, value);
+            old = (T)attributes.put(name, value);
         }
+        if (value == null && old == null) {
+            return null;
+        }
+        dirty = true;
+        return old;
     }
 
     public Enumeration<String> getAttributeNames() {
@@ -127,14 +138,6 @@ public class SessionData implements Serializable {
         return creationTime;
     }
 
-    public long getMaxInactiveInterval() {
-        return maxInactiveIntervalMS;
-    }
-
-    public void setMaxInactiveInterval(long maxInactiveInterval) {
-        this.maxInactiveIntervalMS = maxInactiveInterval;
-    }
-
     public long getAccessedTime() {
         return accessedTime;
     }
@@ -149,6 +152,14 @@ public class SessionData implements Serializable {
 
     public void setLastAccessedTime(long lastAccessedTime) {
         this.lastAccessedTime = lastAccessedTime;
+    }
+
+    public long getMaxInactiveInterval() {
+        return maxInactiveIntervalMS;
+    }
+
+    public void setMaxInactiveInterval(long maxInactiveInterval) {
+        this.maxInactiveIntervalMS = maxInactiveInterval;
     }
 
     public long getExpiryTime() {
@@ -180,6 +191,22 @@ public class SessionData implements Serializable {
             return false; // never expires
         }
         return (expiryTime <= time);
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public long getLastSaved() {
+        return lastSaved;
+    }
+
+    public void setLastSaved(long lastSaved) {
+        this.lastSaved = lastSaved;
     }
 
     @Override

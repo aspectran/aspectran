@@ -61,6 +61,11 @@ public class Log4j2LoggerImpl implements Log {
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        log.debug(MARKER, s, e);
+    }
+
+    @Override
     public void info(String s) {
         log.info(MARKER, s);
     }

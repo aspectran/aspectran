@@ -18,7 +18,6 @@ package com.aspectran.core.adapter;
 import java.util.Enumeration;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.component.session.SessionAccess;
 
 /**
  * The Interface SessionAdapter.
@@ -134,7 +133,5 @@ public interface SessionAdapter {
      * Invalidates this session then unbinds any objects bound to it.
      */
     void invalidate();
-
-    SessionAccess getSessionAccess();
 
 }

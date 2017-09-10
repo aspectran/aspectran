@@ -60,6 +60,11 @@ public class Slf4jImpl implements Log {
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        log.debug(s, e);
+    }
+
+    @Override
     public void info(String s) {
         log.info(s);
     }

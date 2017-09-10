@@ -55,6 +55,11 @@ public class JakartaCommonsLoggingImpl implements com.aspectran.core.util.loggin
     }
 
     @Override
+    public void debug(String s, Throwable e) {
+        log.debug(s, e);
+    }
+
+    @Override
     public void info(String s) {
         log.info(s);
     }
