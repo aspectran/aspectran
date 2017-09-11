@@ -128,7 +128,8 @@ public class SessionAgent {
         if (!create) {
             return null;
         }
-        return sessionHandler.newSession(id);
+        session = sessionHandler.newSession(id);
+        return session;
     }
 
 }

@@ -18,9 +18,9 @@ package com.aspectran.core.component.session;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
@@ -36,9 +36,9 @@ public class SessionData implements Serializable {
 
     private final String id;
 
-    private final Map<String, Object> attributes = new HashMap<>();
+    private final Map<String, Object> attributes;
 
-    private final SessionScope sessionScope = new SessionScope();
+    private final SessionScope sessionScope;
 
     private final long creationTime;
 
@@ -66,6 +66,8 @@ public class SessionData implements Serializable {
         this.lastAccessedTime = lastAccessedTime;
         this.maxInactiveIntervalMS = maxInactiveIntervalMS;
         calcAndSetExpiryTime(creationTime);
+        this.attributes = new ConcurrentHashMap<>();
+        this.sessionScope = new SessionScope();
     }
 
     public String getId() {

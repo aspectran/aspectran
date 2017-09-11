@@ -334,53 +334,33 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    /**
-     * Returns the maximum time the session is valid.
-     *
-     * @return the maximum amount of time session remained valid
-     */
+    @Override
     public long getSessionTimeMax() {
         return sessionTimeStats.getMax();
     }
 
-    /**
-     * Returns the total amount of time all sessions remained valid.
-     *
-     * @return the total amount of time all sessions remained valid
-     */
+    @Override
     public long getSessionTimeTotal() {
         return sessionTimeStats.getTotal();
     }
 
-    /**
-     * Returns the mean amount of time session remained valid.
-     *
-     * @return the mean amount of time session remained valid
-     */
+    @Override
     public double getSessionTimeMean() {
         return sessionTimeStats.getMean();
     }
 
-    /**
-     * Returns the standard deviation of amount of time session remained valid.
-     *
-     * @return the standard deviation of amount of time session remained valid
-     */
+    @Override
     public double getSessionTimeStdDev() {
         return sessionTimeStats.getStdDev();
     }
 
-    /**
-     * Returns the total number of sessions created by this manager.
-     *
-     * @return the total number of sessions created by this manager
-     */
+    @Override
     public int getSessionsCreated() {
         return (int)sessionsCreatedStats.getCurrent();
     }
 
     /**
-     * Reset the session usage statistics.
+     * Resets the session usage statistics.
      */
     public void statsReset() {
         sessionsCreatedStats.reset();

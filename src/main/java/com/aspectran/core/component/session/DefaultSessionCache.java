@@ -77,27 +77,22 @@ public class DefaultSessionCache extends AbstractSessionCache {
         return result;
     }
 
-    /**
-     * @return the number of sessions in the cache
-     */
+    @Override
     public long getSessionsCurrent() {
         return statistic.getCurrent();
     }
 
-    /**
-     * @return the max number of sessions in the cache
-     */
+    @Override
     public long getSessionsMax() {
         return statistic.getMax();
     }
 
-    /**
-     * @return a running total of sessions in the cache
-     */
+    @Override
     public long getSessionsTotal() {
         return statistic.getTotal();
     }
 
+    @Override
     public void resetStats() {
         statistic.reset();
     }

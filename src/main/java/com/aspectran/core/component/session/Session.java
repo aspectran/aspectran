@@ -168,7 +168,7 @@ public class Session {
      * (ie session-timeout from web.xml), or the inactive eviction time.
      */
     public void updateInactivityTimer () {
-        try (Lock lock = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lockIfNotHeld()) {
             if (log.isDebugEnabled()) {
                 log.debug("updateInactivityTimer");
             }

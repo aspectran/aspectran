@@ -33,11 +33,11 @@ public interface SessionCache {
     /**
      * A SessionDataStore that is the authoritative source
      * of session information.
-     * @param sds
+     * @param sds the session data store
      */
     void setSessionDataStore(SessionDataStore sds);
 
-    int getEvictionPolicy ();
+    int getEvictionPolicy();
 
     /**
      * Sessions in this cache can be:
@@ -48,10 +48,10 @@ public interface SessionCache {
      * </ul>
      *
      * @param policy -1 is never evict; 0 is evict-on-exit; and any other positive
-     * value is the time in seconds that a session can be idle before it can
-     * be evicted.
+     *      value is the time in seconds that a session can be idle before it can
+     *      be evicted.
      */
-    void setEvictionPolicy (int policy);
+    void setEvictionPolicy(int policy);
 
     boolean isSaveOnCreate();
 
@@ -61,7 +61,8 @@ public interface SessionCache {
      * If the data for a session exists but is unreadable,
      * the SessionCache can instruct the SessionDataStore to delete it.
      *
-     * @param removeUnloadableSessions
+     * @param removeUnloadableSessions whether or not SessionCache will delete
+     *      session data that can not be loaded from the SessionDataStore
      */
     void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
 
@@ -70,25 +71,25 @@ public interface SessionCache {
      * immediately saved. If false, a session that is created and
      * invalidated within a single request is never persisted.
      *
-     * @param saveOnCreate
+     * @param saveOnCreate if true, immediately save the newly created session
      */
     void setSaveOnCreate(boolean saveOnCreate);
 
-    boolean isSaveOnInactiveEviction ();
+    boolean isSaveOnInactiveEviction();
 
     /**
      * Whether or not a a session that is about to be evicted should
      * be saved before being evicted.
      *
-     * @param saveOnEvict
+     * @param saveOnEvict if true, save the session before eviction
      */
-    void setSaveOnInactiveEviction (boolean saveOnEvict);
+    void setSaveOnInactiveEviction(boolean saveOnEvict);
 
     /**
      * Get an existing Session. If necessary, the cache will load the data for
      * the session from the configured SessionDataStore.
      *
-     * @param id
+     * @param id the session id
      * @return the Session if one exists, null otherwise
      * @throws Exception
      */
@@ -100,8 +101,8 @@ public interface SessionCache {
      * implementations may want to delay writing out Session contents
      * until the last request exits a Session.
      *
-     * @param id
-     * @param session
+     * @param id the session id
+     * @param session the session object
      * @throws Exception
      */
     void put(String id, Session session) throws Exception;
@@ -110,7 +111,7 @@ public interface SessionCache {
      * Check to see if a session exists: WILL consult the
      * SessionDataStore.
      *
-     * @param id
+     * @param id the session id
      * @return true if the session exists, false otherwise
      * @throws Exception
      */
@@ -120,9 +121,9 @@ public interface SessionCache {
      * Check to see if a Session is in the cache. Does NOT consult
      * the SessionDataStore.
      *
-     * @param id
+     * @param id the session id
      * @return true if a Session object matching the id is present
-     * in the cache, false otherwise
+     *      in the cache, false otherwise
      * @throws Exception
      */
     boolean contains(String id) throws Exception;
@@ -131,7 +132,7 @@ public interface SessionCache {
      * Remove a Session completely: from both this
      * cache and the SessionDataStore.
      *
-     * @param id
+     * @param id the session id
      * @return the Session that was removed, null otherwise
      * @throws Exception
      */
@@ -153,7 +154,7 @@ public interface SessionCache {
      * Check a Session to see if it might be appropriate to
      * evict or expire.
      *
-     * @param session
+     * @param session the session object
      */
     void checkInactiveSession(Session session);
 
@@ -161,10 +162,33 @@ public interface SessionCache {
 
     /**
      * Re-materialize a Session that has previously existed.
-     * @param data
+     *
+     * @param data the session data
      * @return a Session object for the data supplied
      */
-    Session newSession (SessionData data);
+    Session newSession(SessionData data);
+
+    /**
+     * @return the number of sessions in the cache
+     */
+    long getSessionsCurrent();
+
+    /**
+     * @return the max number of sessions in the cache
+     */
+    long getSessionsMax();
+
+    /**
+     * Returns a running total of sessions in the cache.
+     *
+     * @return a running total of sessions in the cache
+     */
+    long getSessionsTotal();
+
+    /**
+     * Resets the running total session count in the cache.
+     */
+    void resetStats();
 
     void clear();
 

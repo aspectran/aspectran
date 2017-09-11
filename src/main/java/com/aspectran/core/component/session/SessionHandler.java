@@ -17,12 +17,13 @@ package com.aspectran.core.component.session;
 
 import java.util.EventListener;
 
+import com.aspectran.core.component.Component;
 import com.aspectran.core.util.thread.Scheduler;
 
 /**
  * <p>Created: 2017. 6. 12.</p>
  */
-public interface SessionHandler {
+public interface SessionHandler extends Component {
 
     SessionIdGenerator getSessionIdGenerator();
 
@@ -126,5 +127,45 @@ public interface SessionHandler {
      * @param session the session
      */
     void willPassivate(Session session);
+
+    /**
+     * Returns the maximum time the session is valid.
+     *
+     * @return the maximum amount of time session remained valid
+     */
+    long getSessionTimeMax();
+
+    /**
+     * Returns the total amount of time all sessions remained valid.
+     *
+     * @return the total amount of time all sessions remained valid
+     */
+    long getSessionTimeTotal();
+
+    /**
+     * Returns the mean amount of time session remained valid.
+     *
+     * @return the mean amount of time session remained valid
+     */
+    double getSessionTimeMean();
+
+    /**
+     * Returns the standard deviation of amount of time session remained valid.
+     *
+     * @return the standard deviation of amount of time session remained valid
+     */
+    double getSessionTimeStdDev();
+
+    /**
+     * Returns the total number of sessions created by this manager.
+     *
+     * @return the total number of sessions created by this manager
+     */
+    int getSessionsCreated();
+
+    /**
+     * Resets the session usage statistics.
+     */
+    void statsReset();
 
 }

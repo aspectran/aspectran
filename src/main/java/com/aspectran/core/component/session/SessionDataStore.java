@@ -66,7 +66,7 @@ public interface SessionDataStore {
      * @param accessedTime the timestamp when accessed
      * @param lastAccessedTime the timestamp when last accessed
      * @param maxInactiveIntervalMS the max inactive time in milliseconds
-     * @return  a new SessionData object
+     * @return a new SessionData object
      */
     SessionData newSessionData (String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS);
 
@@ -74,9 +74,10 @@ public interface SessionDataStore {
      * Called periodically, this method should search the data store
      * for sessions that have been expired for a 'reasonable' amount
      * of time.
+     *
      * @param candidates if provided, these are keys of sessions that
-     * the SessionDataStore thinks has expired and should be verified by the
-     * SessionDataStore
+     *      the SessionDataStore thinks has expired and should be verified by the
+     *      SessionDataStore
      * @return set of session ids
      */
     Set<String> getExpired (Set<String> candidates);

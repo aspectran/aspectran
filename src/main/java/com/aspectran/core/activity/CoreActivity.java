@@ -185,8 +185,8 @@ public class CoreActivity extends BasicActivity {
     }
 
     protected void adapt() throws AdapterException {
-        if (getSessionAdapter() != null) {
-            SessionAdapter sessionAdapter = getSessionAdapter();
+        SessionAdapter sessionAdapter = getSessionAdapter();
+        if (sessionAdapter != null) {
             if (sessionAdapter instanceof BasicSessionAdapter) {
                 SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
                 agent.access();
@@ -195,8 +195,8 @@ public class CoreActivity extends BasicActivity {
     }
 
     protected void release() {
-        if (getSessionAdapter() != null) {
-            SessionAdapter sessionAdapter = getSessionAdapter();
+        SessionAdapter sessionAdapter = getSessionAdapter();
+        if (sessionAdapter != null) {
             if (sessionAdapter instanceof BasicSessionAdapter) {
                 SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
                 agent.complete();

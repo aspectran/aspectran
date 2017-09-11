@@ -172,7 +172,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                             break;
                         }
 
-                        try (Lock lock = session.lock()) {
+                        try (Lock ignored = session.lock()) {
                             //swap it in instead of the placeholder
                             boolean success = doReplace(id, phs, session);
                             if (!success) {
@@ -200,7 +200,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 } else {
                     //my placeholder didn't win, check the session returned
                     phsLock.close();
-                    try (Lock lock = s.lock()) {
+                    try (Lock ignored = s.lock()) {
                         //is it a placeholder? or is a non-resident session? In both cases, chuck it away and start again
                         if (!s.isResident() || s instanceof PlaceHolderSession) {
                             continue;
@@ -211,7 +211,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 }
             } else {
                 //check the session returned
-                try (Lock lock = session.lock()) {
+                try (Lock ignored = session.lock()) {
                     //is it a placeholder? or is it passivated? In both cases, chuck it away and start again
                     if (!session.isResident() || session instanceof PlaceHolderSession) {
                         continue;
@@ -285,7 +285,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("No SessionDataStore, putting into SessionCache only id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) {//ensure it is in our map
+                if (doPutIfAbsent(id, session) == null) { //ensure it is in our map
                     session.updateInactivityTimer();
                 }
                 return;
@@ -413,6 +413,9 @@ public abstract class AbstractSessionCache implements SessionCache {
         if (log.isDebugEnabled()) {
             log.debug("SessionDataStore checking expiration on " + candidates);
         }
+        if (sessionDataStore == null) {
+            return null;
+        }
         Set<String> allCandidates = sessionDataStore.getExpired(candidates);
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
@@ -480,11 +483,11 @@ public abstract class AbstractSessionCache implements SessionCache {
         if (log.isDebugEnabled()) {
             log.debug("Creating new session id=" + id);
         }
-        SessionData sessionData = sessionDataStore.newSessionData(id, time, time, time, maxInactiveIntervalMS);
+        SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
         Session session = newSession(sessionData);
         try {
             if (isSaveOnCreate() && sessionDataStore != null) {
-                sessionDataStore.store(id, session.getSessionData());
+                sessionDataStore.store(id, sessionData);
             }
         } catch (Exception e) {
             log.warn("Save of new session " + id + " failed", e);
