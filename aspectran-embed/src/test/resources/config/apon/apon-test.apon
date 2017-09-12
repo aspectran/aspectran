@@ -1,0 +1,158 @@
+# APON Sample Document
+aspectran: {
+    settings: {
+        transletNamePattern: *.job
+    }
+    bean: {
+        id: *
+        scan: test.**.*Schedule
+        mask: test.**.*
+        scope: singleton
+    }
+    bean: {
+        id: defaultScheduler1
+        class: com.aspectran.scheduler.support.QuartzSchedulerFactoryBean
+        scope: singleton
+        properties: {
+            item: {
+                type: properties
+                name: quartzProperties
+                value: {
+                    org.quartz.scheduler.instanceName: AspectranQuartzScheduler-1
+                    org.quartz.scheduler.rmi.export: false
+                    org.quartz.scheduler.rmi.proxy: false
+                    org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+                    org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+                    org.quartz.threadPool.threadCount: 10
+                    org.quartz.threadPool.threadPriority: 5
+                    org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+                    org.quartz.jobStore.misfireThreshold: 60000
+                    org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+                }
+            }
+        }
+    }
+    bean: {
+        id: schedulerFactory
+        class: org.quartz.impl.StdSchedulerFactory
+        scope: singleton
+        constructor: {
+            arguments: {
+                item: {
+                    type: properties
+                    value: {
+                        org.quartz.scheduler.instanceName: AspectranQuartzScheduler-2
+                        org.quartz.scheduler.rmi.export: false
+                        org.quartz.scheduler.rmi.proxy: false
+                        org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+                        org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+                        org.quartz.threadPool.threadCount: 10
+                        org.quartz.threadPool.threadPriority: 5
+                        org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+                        org.quartz.jobStore.misfireThreshold: 60000
+                        org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+                    }
+                }
+            }
+        }
+    }
+    bean: {
+        id: defaultScheduler2
+        scope: singleton
+        offerBean: schedulerFactory
+        offerMethod: getScheduler
+    }
+    schedules: {
+        id: scheduler1
+        scheduler: {
+            bean: defaultScheduler1
+            trigger: {
+                type: simple
+                intervalInSeconds: 3
+                repeatCount: 10
+            }
+        }
+        job: {
+            translet: job1
+        }
+    }
+    schedules: {
+        id: scheduler2
+        scheduler: {
+            bean: defaultScheduler2
+            trigger: {
+                type: simple
+                startDelaySeconds: 2
+                intervalInSeconds: 1
+                repeatCount: 10
+            }
+        }
+        job: {
+            translet: job2
+        }
+    }
+    translet: {
+        name: job1
+        action: {
+            bean: class:test.ScheduleAction
+            method: delay
+            arguments: {
+                item: {
+                    value: 1
+                    valueType: long
+                }
+            }
+        }
+        transform: {
+            type: transform/text
+            contentType: text/plain
+            template: {
+                content: (1) Hello, World!
+            }
+        }
+    }
+    translet: {
+        name: job2
+        action: {
+            bean: class:test.ScheduleAction
+            method: delay
+            arguments: {
+                item: {
+                    value: 2
+                    valueType: long
+                }
+            }
+        }
+        transform: {
+            type: transform/text
+            contentType: text/plain
+            template: {
+                content: (2) Hello, World!
+            }
+        }
+    }
+}
+representsNull: {
+    string(string): null
+    int(int): null
+    text(text): null
+}
+representsText(text): (
+    |line-1
+    |line-2
+    |line-3
+)
+
+textArray(text): [
+    (
+        |line 1-1
+        |line 1-2
+    )
+    (
+        |line 2-1
+        |line 2-2
+    )
+]
+quoteEscape: {
+    string1: abc"de'fg
+}

@@ -1,0 +1,25 @@
+context: {
+    base: ./target/test-classes
+    root: /WEB-INF/aspectran/config/test-root.xml
+    encoding: utf-8
+    resources: [
+        /WEB-INF/aspectran/config
+    ]
+    profiles: {
+        active: dev, stage, prod
+    }
+    hybridLoad: false
+    autoReload: {
+        reloadMode: hard
+        scanIntervalSeconds: 5
+        startup: false
+    }
+}
+scheduler: {
+    startDelaySeconds: 10
+    waitOnShutdown: true
+    startup: true
+}
+web: {
+    uriDecoding: utf-8
+}
