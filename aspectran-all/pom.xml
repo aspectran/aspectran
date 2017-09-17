@@ -16,12 +16,12 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-console</artifactId>
+            <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-core</artifactId>
+            <artifactId>aspectran-console</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

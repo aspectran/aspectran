@@ -15,7 +15,7 @@
     </description>
     <organization>
         <name>The Aspectran Project</name>
-        <url>http://www.aspectran.com</url>
+        <url>http://www.aspectran.com/</url>
     </organization>
     <licenses>
         <license>
@@ -30,12 +30,15 @@
         <developer>
             <name>Juho Jeong</name>
             <email>aspectran@gmail.com</email>
-            <timezone>+9</timezone>
+            <url>http://www.aspectran.com/</url>
+            <organization>The Aspectran Project</organization>
+            <organizationUrl>http://www.aspectran.com/</organizationUrl>
             <roles>
                 <role>Owner</role>
                 <role>Founder</role>
                 <role>Committer</role>
             </roles>
+            <timezone>+9</timezone>
         </developer>
     </developers>
 
@@ -65,35 +68,34 @@
     </distributionManagement>
 
     <modules>
-        <module>aspectran-all</module>
-        <module>aspectran-console</module>
         <module>aspectran-core</module>
+        <module>aspectran-console</module>
         <module>aspectran-embed</module>
         <module>aspectran-web</module>
+        <module>aspectran-all</module>
+        <module>aspectran</module>
     </modules>
 
     <properties>
-        <clirr.comparisonVersion>4.1.0</clirr.comparisonVersion>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssZ</maven.build.timestamp.format>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
         <maven.compiler.testSource>1.8</maven.compiler.testSource>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssZ</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- plugins configuration -->
-        <javadoc.version>2.10.4</javadoc.version>
-        <surefire.version>2.20</surefire.version>
+        <clirr.comparisonVersion>4.1.0</clirr.comparisonVersion>
         <findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 
         <!-- OSGi configuration properties -->
         <osgi.symbolicName>${project.groupId}.${project.artifactId}</osgi.symbolicName>
         <osgi.export>${project.groupId}.*;version=${project.version};-noimport:=true</osgi.export>
-        <osgi.import>*</osgi.import>
-        <osgi.dynamicImport />
-        <osgi.private />
+        <osgi.private>!*</osgi.private>
+        <osgi.import>*;resolution:=optional</osgi.import>
+        <osgi.dynamicImport>*</osgi.dynamicImport>
         <osgi.copyright>Copyright (c) ${project.inceptionYear}–2017 Juho Jeong. All rights reserved.</osgi.copyright>
 
         <!-- Animal Sniffer Signature -->
@@ -101,6 +103,129 @@
         <signature.artifact>java18</signature.artifact>
         <signature.version>1.0</signature.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aspectran-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aspectran-console</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aspectran-embed</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>aspectran-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.22.0-CR2</version>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>3.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline</artifactId>
+                <version>3.4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>4.4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.3.3</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.5</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.23</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mitchellbosecke</groupId>
+                <artifactId>pebble</artifactId>
+                <version>2.4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <pluginManagement>
@@ -142,13 +267,42 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.2</version>
                     <configuration>
+                        <compilerVersion>1.8</compilerVersion>
+                        <fork>true</fork>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <debug>true</debug>
                         <optimize>true</optimize>
-                        <!-- Slightly faster builds, see https://issues.apache.org/jira/browse/MCOMPILER-209 -->
-                        <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>true</showWarnings>
+                        <compilerArgument>-Xlint:-options</compilerArgument>
+                        <meminitial>256m</meminitial>
+                        <maxmem>1024m</maxmem>
+                        <excludes>
+                            <exclude>**/package-info.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                                <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                            </manifestEntries>
+                        </archive>
                     </configuration>
                 </plugin>
 
@@ -168,6 +322,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
+                    <configuration>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -217,7 +374,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${surefire.version}</version>
+                    <version>2.20</version>
                 </plugin>
 
                 <plugin>
@@ -291,6 +448,7 @@
                 </executions>
             </plugin>
 
+            <!-- always produce osgi bundles -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -306,6 +464,7 @@
                 </executions>
                 <configuration>
                     <excludeDependencies>true</excludeDependencies>
+                    <manifestLocation>${project.build.directory}/osgi</manifestLocation>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
                         <supportedProjectType>bundle</supportedProjectType>
@@ -314,13 +473,45 @@
                     </supportedProjectTypes>
                     <instructions>
                         <Bundle-SymbolicName>${osgi.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
+                        <Bundle-Copyright>${osgi.copyright}</Bundle-Copyright>
                         <Export-Package>${osgi.export}</Export-Package>
                         <Private-Package>${osgi.private}</Private-Package>
                         <Import-Package>${osgi.import}</Import-Package>
                         <DynamicImport-Package>${osgi.dynamicImport}</DynamicImport-Package>
-                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
-                        <Bundle-Copyright>${osgi.copyright}</Bundle-Copyright>
                     </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 
@@ -330,16 +521,17 @@
                 <version>3.0.2</version>
                 <configuration>
                     <archive>
+                        <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Built-By>Juho Jeong</Built-By>
-                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
                             <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                             <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
                         </manifestEntries>
+                        <index>true</index>
                     </archive>
                 </configuration>
             </plugin>
@@ -408,7 +600,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc.version}</version>
+                <version>2.10.4</version>
                 <reportSets>
                     <reportSet>
                         <id>default</id>
@@ -443,7 +635,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${surefire.version}</version>
+                <version>2.20</version>
             </plugin>
 
             <plugin>
@@ -537,27 +729,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
-                                <configuration>
-                                    <archive>
-                                        <manifest>
-                                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                        </manifest>
-                                        <manifestEntries>
-                                            <Built-By>Juho Jeong</Built-By>
-                                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                                        </manifestEntries>
-                                    </archive>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -565,7 +742,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${javadoc.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
