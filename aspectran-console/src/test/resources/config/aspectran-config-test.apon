@@ -15,6 +15,18 @@ context: {
         startup: false
     }
 }
+session: {
+    timeout: 60
+    evictionPolicy: -1
+    saveOnCreate: false
+    saveOnInactiveEviction: false
+    removeUnloadableSessions: false
+    storeType: file
+    fileStore: {
+        path: /sessions
+        deleteUnrestorableFiles: false
+    }
+}
 scheduler: {
     startDelaySeconds: 10
     waitOnShutdown: true

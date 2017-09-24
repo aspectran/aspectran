@@ -19,25 +19,28 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranContextSessionConfig extends AbstractParameters {
+public class AspectranSessionFileStoreConfig extends AbstractParameters {
 
-    public static final ParameterDefinition timeout;
+    public static final ParameterDefinition path;
+    public static final ParameterDefinition deleteUnrestorableFiles;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        timeout = new ParameterDefinition("timeout", ParameterValueType.INT);
+        path = new ParameterDefinition("path", ParameterValueType.STRING);
+        deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-            timeout
+            path,
+            deleteUnrestorableFiles
         };
     }
 
-    public AspectranContextSessionConfig() {
+    public AspectranSessionFileStoreConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranContextSessionConfig(String text) {
+    public AspectranSessionFileStoreConfig(String text) {
         super(parameterDefinitions, text);
     }
 

@@ -21,6 +21,9 @@ import com.aspectran.core.util.thread.Scheduler;
 import java.util.EventListener;
 
 /**
+ * The session handler is responsible for session start, session exists, session write,
+ * time to live and session destroy.
+ *
  * <p>Created: 2017. 6. 12.</p>
  */
 public interface SessionHandler extends Component {
@@ -75,8 +78,6 @@ public interface SessionHandler extends Component {
     void invalidate(String id);
 
     String newSessionId(long seedTerm);
-
-    SessionAgent newSessionAgent();
 
     /**
      * Adds an event listener for session-related events.

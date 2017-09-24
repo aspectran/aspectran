@@ -29,16 +29,17 @@ import static org.awaitility.Awaitility.await;
  *
  * <p>Created: 2017. 9. 12.</p>
  */
-public class SessionHandlerTest {
+public class SessionManagerTest {
 
     private Log log = LogFactory.getLog(getClass());
 
     @Test
     public void testShortLifecycle() throws Exception {
-        SessionHandler sessionHandler = new DefaultSessionHandler("TEST1-");
-        sessionHandler.initialize();
+        SessionManager sessionManager = new DefaultSessionManager();
+        sessionManager.setGroupName("TEST1-");
+        sessionManager.initialize();
 
-        SessionAgent agent = sessionHandler.newSessionAgent();
+        SessionAgent agent = sessionManager.newSessionAgent();
 
         log.info("Created Session: " + agent.getSession(true));
 
@@ -58,11 +59,14 @@ public class SessionHandlerTest {
 
     @Test
     public void testInactivityTimer() throws Exception {
-        SessionHandler sessionHandler = new DefaultSessionHandler("TEST2-");
-        sessionHandler.setDefaultMaxIdleSecs(1);
-        sessionHandler.initialize();
+        SessionManager sessionManager = new DefaultSessionManager();
+        sessionManager.setGroupName("TEST2-");
+        sessionManager.initialize();
 
-        SessionAgent agent = sessionHandler.newSessionAgent();
+        SessionHandler sessionHandler = sessionManager.getSessionHandler();
+        sessionHandler.setDefaultMaxIdleSecs(1);
+
+        SessionAgent agent = sessionManager.newSessionAgent();
 
         log.info("Created Session: " + agent.getSession(true));
 

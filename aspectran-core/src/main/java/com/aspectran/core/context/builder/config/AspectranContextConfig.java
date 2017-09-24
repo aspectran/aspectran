@@ -27,7 +27,6 @@ public class AspectranContextConfig extends AbstractParameters {
     public static final ParameterDefinition encoding;
     public static final ParameterDefinition resources;
     public static final ParameterDefinition profiles;
-    public static final ParameterDefinition session;
     public static final ParameterDefinition hybridLoad;
     public static final ParameterDefinition autoReload;
     public static final ParameterDefinition parameters;
@@ -40,7 +39,6 @@ public class AspectranContextConfig extends AbstractParameters {
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
         profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
-        session = new ParameterDefinition("session", AspectranContextSessionConfig.class);
         hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
@@ -51,7 +49,6 @@ public class AspectranContextConfig extends AbstractParameters {
             encoding,
             resources,
             profiles,
-            session,
             hybridLoad,
             autoReload,
             parameters

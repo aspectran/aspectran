@@ -34,7 +34,7 @@ public class SessionIdGenerator {
 
     private static final AtomicLong counter = new AtomicLong();
 
-    private String groupName;
+    private final String groupName;
 
     private Random random;
 

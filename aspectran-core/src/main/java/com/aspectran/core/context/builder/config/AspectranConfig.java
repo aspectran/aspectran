@@ -22,6 +22,7 @@ import com.aspectran.core.util.apon.Parameters;
 public class AspectranConfig extends AbstractParameters {
 
     public static final ParameterDefinition context;
+    public static final ParameterDefinition session;
     public static final ParameterDefinition scheduler;
     public static final ParameterDefinition console;
     public static final ParameterDefinition web;
@@ -30,12 +31,14 @@ public class AspectranConfig extends AbstractParameters {
 
     static {
         context = new ParameterDefinition("context", AspectranContextConfig.class);
+        session = new ParameterDefinition("session", AspectranSessionConfig.class);
         scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
         console = new ParameterDefinition("console", AspectranConsoleConfig.class);
         web = new ParameterDefinition("web", AspectranWebConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
             context,
+            session,
             scheduler,
             console,
             web
@@ -64,6 +67,22 @@ public class AspectranConfig extends AbstractParameters {
 
     public void putAspectranContextConfig(AspectranContextConfig aspectranContextConfig) {
         putValue(context, aspectranContextConfig);
+    }
+
+    public AspectranSessionConfig newAspectranSessionConfig() {
+        return newParameters(session);
+    }
+
+    public AspectranSessionConfig touchAspectranSessionConfig() {
+        return touchParameters(session);
+    }
+
+    public AspectranSessionConfig getAspectranSessionConfig() {
+        return getParameters(session);
+    }
+
+    public void putAspectranSessionConfig(AspectranSessionConfig aspectranSessionConfig) {
+        putValue(session, aspectranSessionConfig);
     }
 
     public AspectranSchedulerConfig newAspectranSchedulerConfig() {

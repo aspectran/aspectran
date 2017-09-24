@@ -64,17 +64,17 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session newSession(SessionData data) {
-        return new Session(getSessionHandler(), data);
-    }
-
-    @Override
     public boolean doReplace(String id, Session oldValue, Session newValue) {
         boolean result = sessions.replace(id,  oldValue, newValue);
         if (result && (oldValue instanceof PlaceHolderSession)) {
             statistic.increment();
         }
         return result;
+    }
+
+    @Override
+    public Session newSession(SessionData data) {
+        return new Session(getSessionHandler(), data);
     }
 
     @Override

@@ -35,14 +35,16 @@ public abstract class AbstractSessionCache implements SessionCache {
     protected SessionDataStore sessionDataStore;
 
     /**
-     * When, if ever, to evict sessions: never; only when the last request for them finishes; after inactivity time (expressed as secs)
+     * When, if ever, to evict sessions: never; only when the last request for
+     * them finishes; after inactivity time (expressed as secs)
      */
     protected int evictionPolicy = SessionCache.NEVER_EVICT;
 
     /**
-     * If true, as soon as a new session is created, it will be persisted to the SessionDataStore
+     * If true, as soon as a new session is created, it will be persisted to
+     * the SessionDataStore
      */
-    protected boolean saveOnCreate = false;
+    protected boolean saveOnCreate;
 
     /**
      * If true, a session that will be evicted from the cache because it has been
@@ -111,7 +113,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * If a session's data cannot be loaded from the store without error, remove
      * it from the persistent store.
      *
-     * @param removeUnloadableSessions
+     * @param removeUnloadableSessions whether to delete sessions that can not be loaded
      */
     @Override
     public void setRemoveUnloadableSessions(boolean removeUnloadableSessions) {

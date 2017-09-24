@@ -183,6 +183,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Remove session from manager.
+     *
      * @param id the session to remove
      * @return if the session was removed
      */
@@ -206,10 +207,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public String newSessionId(long seedTerm) {
         return sessionIdGenerator.newSessionId(seedTerm);
-    }
-
-    public SessionAgent newSessionAgent() {
-        return new SessionAgent(this);
     }
 
     /**
