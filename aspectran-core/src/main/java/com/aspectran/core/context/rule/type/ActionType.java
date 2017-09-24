@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Type of Action.
+ * Supported Action types.
  * 
  * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */

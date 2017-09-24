@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Type of BeanReferrer.
+ * Supported Bean referrer types.
  * 
  * <p>Created: 2016. 2. 20.</p>
  */

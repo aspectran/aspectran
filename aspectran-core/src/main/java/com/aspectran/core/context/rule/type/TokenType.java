@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum TokenType.
+ * Supported Token types.
  * 
  * <p>Created: 2008. 03. 29 AM 1:21:48</p>
  */

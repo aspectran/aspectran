@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum ResponseType.
+ * Supported Response types.
  * 
  * <p>Created: 2008. 05. 02 AM 16:21:38</p>
  */

@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum TransformType.
+ * Supported Transform types.
  * 
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */

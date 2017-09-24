@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum ItemValueType.
+ * Supported Item value types.
  * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */

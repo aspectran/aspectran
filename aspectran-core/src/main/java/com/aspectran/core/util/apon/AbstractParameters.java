@@ -117,6 +117,17 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public boolean isValueAssigned(String name) {
+        Parameter p = parameterValueMap.get(name);
+        return (p != null && p.isAssigned());
+    }
+
+    @Override
+    public boolean isValueAssigned(ParameterDefinition parameterDefinition) {
+        return isValueAssigned(parameterDefinition.getName());
+    }
+
+    @Override
     public Parameter getParameter(String name) {
         Parameter p = parameterValueMap.get(name);
         if (!addable && p == null) {

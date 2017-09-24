@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum ScopeType.
+ * Supported Scope types.
  * 
  * <p>Created: 2008. 12. 22 PM 2:48:00</p>
  */

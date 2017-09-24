@@ -35,9 +35,37 @@ public interface Parameters {
 
     Set<String> getParameterNameSet();
 
+    /**
+     * Returns whether this parameter exists.
+     *
+     * @param name the parameter name
+     * @return {@code true} if this parameter exists, otherwise {@code false}
+     */
     boolean hasParameter(String name);
 
+    /**
+     * Returns whether this parameter exists.
+     *
+     * @param parameterDefinition the parameter definition
+     * @return {@code true} if this parameter exists, otherwise {@code false}
+     */
     boolean hasParameter(ParameterDefinition parameterDefinition);
+
+    /**
+     * Returns whether a value has been assigned to this parameter.
+     *
+     * @param name the parameter name
+     * @return {@code true} if a value has been assigned to this parameter, otherwise {@code false}
+     */
+    boolean isValueAssigned(String name);
+
+    /**
+     * Returns whether a value has been assigned to this parameter.
+     *
+     * @param parameterDefinition the parameter definition
+     * @return {@code true} if a value has been assigned to this parameter, otherwise {@code false}
+     */
+    boolean isValueAssigned(ParameterDefinition parameterDefinition);
 
     /**
      * Return the value for the specified parameter,
@@ -625,6 +653,12 @@ public interface Parameters {
 
     <T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition);
 
+    /**
+     * Returns whether the parameter can be added after the parameters instance is created.
+     *
+     * @return {@code true} if the parameter can be added after the parameters instance is created,
+     *      otherwise {@code false}
+     */
     boolean isAddable();
 
     String describe();

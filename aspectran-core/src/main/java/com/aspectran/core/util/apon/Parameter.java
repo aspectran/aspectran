@@ -61,12 +61,25 @@ public interface Parameter {
      */
     boolean isArray();
 
+    /**
+     * Returns whether the value of the array is represented using square brackets.
+     *
+     * @return {@code true} if the value of the array is represented using square brackets,
+     *      otherwise {@code false}
+     */
     boolean isBracketed();
 
     /**
-     * Returns whether a value was assigned to the parameter value.
+     * Returns whether this is a predefined parameter.
      *
-     * @return {@code true} if a value was assigned to the parameter value, otherwise {@code false}
+     * @return {@code true} if this is a predefined parameter, otherwise {@code false}
+     */
+    boolean isPredefined();
+
+    /**
+     * Returns whether a parameter has been assigned a value.
+     *
+     * @return {@code true} if a parameter has been assigned a value, otherwise {@code false}
      */
     boolean isAssigned();
 
