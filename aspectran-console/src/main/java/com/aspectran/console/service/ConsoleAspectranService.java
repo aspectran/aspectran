@@ -75,9 +75,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("CON");
 
-        AspectranContextConfig contextConfig = getAspectranConfig().touchAspectranContextConfig();
-        AspectranSessionConfig sessionConfig = contextConfig.getParameters(AspectranConfig.session);
-        sessionManager.setSessionConfig(sessionConfig);
+        AspectranSessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        if (sessionConfig != null) {
+            sessionManager.setSessionConfig(sessionConfig);
+        }
 
         sessionManager.initialize();
     }
