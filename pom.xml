@@ -13,15 +13,16 @@
         Aspectran is a lightweight Java application framework for
         building Web, console-based, and embedded applications.
     </description>
+
     <organization>
         <name>The Aspectran Project</name>
         <url>http://www.aspectran.com/</url>
     </organization>
+
     <licenses>
         <license>
-            <name>The Apache Software License, Version 2.0</name>
+            <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
         </license>
     </licenses>
     <inceptionYear>2008</inceptionYear>
