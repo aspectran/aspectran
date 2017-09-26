@@ -88,11 +88,7 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
 
     @Override
     public String readLine() {
-        try {
-            return reader.readLine();
-        } catch (UserInterruptException e) {
-            throw new ConsoleTerminatedException();
-        }
+        return readLine(null);
     }
 
     @Override
@@ -106,20 +102,12 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
 
     @Override
     public String readLine(String format, Object... args) {
-        try {
-            return reader.readLine(String.format(format, args));
-        } catch (UserInterruptException e) {
-            throw new ConsoleTerminatedException();
-        }
+        return readLine(String.format(format, args));
     }
 
     @Override
     public String readPassword() {
-        try {
-            return reader.readLine(MASK_CHAR);
-        } catch (UserInterruptException e) {
-            throw new ConsoleTerminatedException();
-        }
+        return readPassword(null);
     }
 
     @Override
@@ -133,11 +121,7 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
 
     @Override
     public String readPassword(String format, Object... args) {
-        try {
-            return reader.readLine(String.format(format, args), MASK_CHAR);
-        } catch (UserInterruptException e) {
-            throw new ConsoleTerminatedException();
-        }
+        return readPassword(String.format(format, args));
     }
 
     @Override

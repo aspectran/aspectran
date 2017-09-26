@@ -15,8 +15,9 @@
  */
 package com.aspectran.console.inout;
 
-import java.io.OutputStream;
-import java.io.Writer;
+import org.jline.reader.UserInterruptException;
+
+import java.io.*;
 import java.nio.charset.Charset;
 
 /**
@@ -33,12 +34,26 @@ public class SystemConsoleInout extends AbstractConsoleInout {
 
     @Override
     public String readLine() {
-        return System.console().readLine();
+        return readLine(null);
     }
 
     @Override
     public String readLine(String prompt) {
-        return System.console().readLine(prompt);
+        try {
+            if (System.console() != null) {
+                return System.console().readLine(prompt);
+            } else {
+                if (prompt != null) {
+                    write(prompt);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                return reader.readLine();
+            }
+        } catch (UserInterruptException e) {
+            throw new ConsoleTerminatedException();
+        } catch (IOException e) {
+            throw new IOError(e);
+        }
     }
 
     @Override
@@ -48,17 +63,21 @@ public class SystemConsoleInout extends AbstractConsoleInout {
 
     @Override
     public String readPassword() {
-        return new String(System.console().readPassword());
+        return readPassword(null);
     }
 
     @Override
     public String readPassword(String prompt) {
-        return new String(System.console().readPassword(prompt));
+        if (System.console() != null) {
+            return new String(System.console().readPassword(prompt));
+        } else {
+            return readLine(prompt);
+        }
     }
 
     @Override
     public String readPassword(String format, Object... args) {
-        return new String(System.console().readPassword(String.format(format, args)));
+        return readPassword(String.format(format, args));
     }
 
     @Override
