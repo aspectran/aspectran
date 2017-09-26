@@ -55,7 +55,6 @@ public class ConsoleCommand {
 
                 switch (command) {
                     case "restart":
-                        log.info("Restarting the AspectranService...");
                         service.restart();
                         break;
                     case "pause":

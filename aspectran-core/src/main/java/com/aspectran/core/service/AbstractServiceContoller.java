@@ -65,11 +65,13 @@ public abstract class AbstractServiceContoller implements ServiceController {
                 throw new IllegalStateException(getServiceName() + " is already started");
             }
 
+            log.info("Starting the service...");
+
             if (!isDerived()) {
                 doStart();
             }
 
-            log.info(getServiceName() + " has been started successfully");
+            log.info(getServiceName() + " started successfully");
 
             if (serviceStateListener != null) {
                 serviceStateListener.started();
@@ -86,6 +88,8 @@ public abstract class AbstractServiceContoller implements ServiceController {
                 throw new IllegalStateException(getServiceName() + " is not yet started");
             }
 
+            log.info("Restarting the service...");
+
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
             }
@@ -94,7 +98,7 @@ public abstract class AbstractServiceContoller implements ServiceController {
                 doRestart();
             }
 
-            log.info(getServiceName() + " has been restarted successfully");
+            log.info(getServiceName() + " restarted successfully");
 
             if (serviceStateListener != null) {
                 serviceStateListener.restarted();
@@ -164,6 +168,8 @@ public abstract class AbstractServiceContoller implements ServiceController {
                 return;
             }
 
+            log.info("Stopping the service...");
+
             if (serviceStateListener != null) {
                 try {
                     serviceStateListener.stopped();
@@ -175,7 +181,7 @@ public abstract class AbstractServiceContoller implements ServiceController {
             if (!isDerived()) {
                 try {
                     doStop();
-                    log.info(getServiceName() + " has been stopped successfully");
+                    log.info(getServiceName() + " stopped successfully");
                 } catch (Exception e) {
                     log.error(getServiceName() + " was not stopped normally", e);
                 }
