@@ -32,7 +32,6 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embed.activity.EmbeddedActivity;
@@ -65,9 +64,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("EMB");
 
-        AspectranContextConfig contextConfig = getAspectranConfig().touchAspectranContextConfig();
-        AspectranSessionConfig sessionConfig = contextConfig.getParameters(AspectranConfig.session);
-        sessionManager.setSessionConfig(sessionConfig);
+        AspectranSessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        if (sessionConfig != null) {
+            sessionManager.setSessionConfig(sessionConfig);
+        }
 
         sessionManager.initialize();
     }
@@ -289,15 +289,15 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      */
     public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        Parameters contextParameters = aspectranConfig.getAspectranContextConfig();
-        if (contextParameters == null) {
-            contextParameters = aspectranConfig.newAspectranContextConfig();
+        AspectranContextConfig contextConfig = aspectranConfig.getAspectranContextConfig();
+        if (contextConfig == null) {
+            contextConfig = aspectranConfig.newAspectranContextConfig();
         }
 
-        String rootContext = contextParameters.getString(AspectranContextConfig.root);
+        String rootContext = contextConfig.getString(AspectranContextConfig.root);
         if (rootContext == null || rootContext.isEmpty()) {
-            if (contextParameters.getParameter(AspectranContextConfig.parameters) == null) {
-                contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            if (contextConfig.getParameter(AspectranContextConfig.parameters) == null) {
+                contextConfig.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
             }
         }
 
