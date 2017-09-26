@@ -65,10 +65,9 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("EMB");
 
-        AspectranSessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
-        if (sessionConfig != null) {
-            sessionManager.setSessionConfig(sessionConfig);
-        }
+        AspectranContextConfig contextConfig = getAspectranConfig().touchAspectranContextConfig();
+        AspectranSessionConfig sessionConfig = contextConfig.getParameters(AspectranConfig.session);
+        sessionManager.setSessionConfig(sessionConfig);
 
         sessionManager.initialize();
     }
@@ -290,15 +289,15 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      */
     public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        AspectranContextConfig contextConfig = aspectranConfig.getAspectranContextConfig();
-        if (contextConfig == null) {
-            contextConfig = aspectranConfig.newAspectranContextConfig();
+        Parameters contextParameters = aspectranConfig.getAspectranContextConfig();
+        if (contextParameters == null) {
+            contextParameters = aspectranConfig.newAspectranContextConfig();
         }
 
-        String rootContext = contextConfig.getString(AspectranContextConfig.root);
+        String rootContext = contextParameters.getString(AspectranContextConfig.root);
         if (rootContext == null || rootContext.isEmpty()) {
-            if (contextConfig.getParameter(AspectranContextConfig.parameters) == null) {
-                contextConfig.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            if (contextParameters.getParameter(AspectranContextConfig.parameters) == null) {
+                contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
             }
         }
 
