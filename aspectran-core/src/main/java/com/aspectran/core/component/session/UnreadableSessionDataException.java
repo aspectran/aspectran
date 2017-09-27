@@ -26,20 +26,13 @@ public class UnreadableSessionDataException extends AspectranCheckedException {
 
     private final String id;
 
-    private final String groupName;
-
-    public UnreadableSessionDataException(String id, String groupName, Throwable t) {
-        super ("Unreadable session " + id + " for " + groupName, t);
+    public UnreadableSessionDataException(String id, Throwable t) {
+        super ("Unreadable session " + id, t);
         this.id = id;
-        this.groupName = groupName;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getGroupName() {
-        return groupName;
     }
 
 }

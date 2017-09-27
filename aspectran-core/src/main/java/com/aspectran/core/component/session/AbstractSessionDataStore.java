@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>Created: 2017. 9. 10.</p>
  */
-public abstract class AbstractSessionDataStore implements SessionDataStore {
+public abstract class AbstractSessionDataStore extends AbstractComponent implements SessionDataStore {
 
     private static final Log log = LogFactory.getLog(AbstractSessionDataStore.class);
 
@@ -138,6 +139,20 @@ public abstract class AbstractSessionDataStore implements SessionDataStore {
      */
     public void setSavePeriodSec(int savePeriodSec) {
         this.savePeriodSec = savePeriodSec;
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+    }
+
+    protected void checkInitialized() throws IllegalStateException {
+        if (isInitialized()) {
+            throw new IllegalStateException("Already initialized");
+        }
     }
 
 }

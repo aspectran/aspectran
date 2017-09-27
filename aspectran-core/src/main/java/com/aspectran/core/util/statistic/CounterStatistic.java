@@ -30,8 +30,9 @@
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
 //
-
 package com.aspectran.core.util.statistic;
+
+import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAccumulator;
@@ -42,32 +43,30 @@ import java.util.concurrent.atomic.LongAdder;
  * Keep total, current and maximum values of a counter that
  * can be incremented and decremented. The total refers only
  * to increments.
- *
  */
-public class CounterStatistic
-{
-    protected final LongAccumulator _max = new LongAccumulator(Math::max,0L);
-    protected final AtomicLong _current = new AtomicLong();
-    protected final LongAdder _total = new LongAdder();
+public class CounterStatistic {
 
-    public void reset()
-    {
-        _total.reset();
-        _max.reset();
-        long current=_current.get();
-        _total.add(current);
-        _max.accumulate(current);
+    protected final LongAccumulator max = new LongAccumulator(Math::max,0L);
+
+    protected final AtomicLong current = new AtomicLong();
+
+    protected final LongAdder total = new LongAdder();
+
+    public void reset() {
+        total.reset();
+        max.reset();
+        long current = this.current.get();
+        total.add(current);
+        max.accumulate(current);
     }
 
-    public void reset(final long value)
-    {
-        _current.set(value);
-        _total.reset();
-        _max.reset();
-        if (value>0)
-        {
-            _total.add(value);
-            _max.accumulate(value);
+    public void reset(final long value) {
+        current.set(value);
+        total.reset();
+        max.reset();
+        if (value > 0) {
+            total.add(value);
+            max.accumulate(value);
         }
     }
 
@@ -75,13 +74,11 @@ public class CounterStatistic
      * @param delta the amount to add to the count
      * @return the new value
      */
-    public long add(final long delta)
-    {
-        long value=_current.addAndGet(delta);
-        if (delta > 0)
-        {
-            _total.add(delta);
-            _max.accumulate(value);
+    public long add(final long delta) {
+        long value = current.addAndGet(delta);
+        if (delta > 0) {
+            total.add(delta);
+            max.accumulate(value);
         }
         return value;
     }
@@ -90,11 +87,10 @@ public class CounterStatistic
      * increment the value by one
      * @return the new value, post increment
      */
-    public long increment()
-    {
-        long value=_current.incrementAndGet();
-        _total.increment();
-        _max.accumulate(value);
+    public long increment() {
+        long value = current.incrementAndGet();
+        total.increment();
+        max.accumulate(value);
         return value;
     }
 
@@ -102,38 +98,38 @@ public class CounterStatistic
      * decrement by 1
      * @return the new value, post-decrement
      */
-    public long decrement()
-    {
-        return _current.decrementAndGet();
+    public long decrement() {
+        return current.decrementAndGet();
     }
 
     /**
      * @return max value
      */
-    public long getMax()
-    {
-        return _max.get();
+    public long getMax() {
+        return max.get();
     }
 
     /**
      * @return current value
      */
-    public long getCurrent()
-    {
-        return _current.get();
+    public long getCurrent() {
+        return current.get();
     }
 
     /**
      * @return total value
      */
-    public long getTotal()
-    {
-        return _total.sum();
+    public long getTotal() {
+        return total.sum();
     }
 
     @Override
-    public String toString()
-    {
-        return String.format("%s@%x{c=%d,m=%d,t=%d}",this.getClass().getSimpleName(),hashCode(),_current.get(),_max.get(),_total.sum());
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
+        tsb.append("current", current.get());
+        tsb.append("max", max.get());
+        tsb.append("total", total.sum());
+        return tsb.toString();
     }
+
 }

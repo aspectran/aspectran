@@ -23,9 +23,9 @@ package com.aspectran.core.context.rule.type;
 public enum SessionStoreType {
 
     NONE("none"),
-    FILE("file"),
-    MONGODB("mongodb"),
-    JDBC("jdbc");
+    FILE("file");
+    //MONGODB("mongodb"),
+    //JDBC("jdbc");
 
     private final String alias;
 
