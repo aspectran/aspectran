@@ -32,7 +32,7 @@ import java.util.Map;
  */
 class AspectranDtdResolver implements EntityResolver {
 
-    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-4.dtd";
+    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-4.dtd";
 
     private static final Map<String, String> doctypeMap = new HashMap<>();
 

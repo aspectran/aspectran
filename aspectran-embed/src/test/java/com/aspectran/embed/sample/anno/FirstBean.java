@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.service;
+package com.aspectran.embed.sample.anno;
 
-public class SecondBean {
+import com.aspectran.core.component.bean.annotation.Autowired;
 
-    public static final String message = "This is the second bean.";
+public class FirstBean {
 
-    public SecondBean() {
-    }
+    @Autowired
+    private SecondBean secondBean;
 
     public String getMessage() {
-        return message;
+        return secondBean.getMessage();
     }
 
 }

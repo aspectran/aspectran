@@ -26,13 +26,13 @@
         |
     </description>
 
-    <bean class="sample.SampleAction">
+    <bean id="sampleAction" class="com.aspectran.console.sample.SampleAction">
         <description>
             Defines one sample action that contains the helloWorld method.
         </description>
     </bean>
 
-    <bean id="sampleAdvice" class="sample.SampleAdvice">
+    <bean id="sampleAdvice" class="com.aspectran.console.sample.SampleAdvice">
         <description>
             Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
             singleton 스코프를 가지는 Bean을 정의합니다.
@@ -47,7 +47,7 @@
         </description>
         <joinpoint type="translet">
             pointcut: {
-                +: hello@class:sample.SampleAction^helloWorld
+                +: hello@sampleAction^helloWorld
             }
         </joinpoint>
         <advice bean="sampleAdvice">
@@ -66,7 +66,7 @@
             helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
         </description>
         <transform type="transform/text">
-            <action id="helloData" bean="class:sample.SampleAction" method="helloWorld"/>
+            <action id="helloData" bean="sampleAction" method="helloWorld"/>
         </transform>
     </translet>
 

@@ -367,6 +367,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
      * Instantiate all singletons(non-lazy-init).
      */
     private void instantiateSingletons() {
+        if (log.isDebugEnabled()) {
+            log.debug("Initializing singletons in " + this);
+        }
+
         Activity activity = context.getDefaultActivity();
 
         for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
@@ -415,7 +419,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         if (failedDestroyes > 0) {
             log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
         } else {
-            log.debug("Destroyed all cached singletons");
+            log.debug("Destroyed all cached singletons in " + this);
         }
     }
 
@@ -505,17 +509,11 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     @Override
     protected void doInitialize() throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("Initializing singletons...");
-        }
         instantiateSingletons();
     }
 
     @Override
     protected void doDestroy() throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("Destroying singletons...");
-        }
         destroySingletons();
     }
 

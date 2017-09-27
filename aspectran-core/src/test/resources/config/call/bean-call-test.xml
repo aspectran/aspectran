@@ -7,11 +7,11 @@
         This is an Aspectran configuration for testing bean calls.
     </description>
 
-    <bean id="firstBean" class="test.call.FirstBean"/>
-    <bean id="secondBean" class="test.call.SecondBean"/>
-    <bean id="thirdBean" class="test.call.ThirdBean"/>
+    <bean id="firstBean" class="com.aspectran.core.sample.call.FirstBean"/>
+    <bean id="secondBean" class="com.aspectran.core.sample.call.SecondBean"/>
+    <bean id="thirdBean" class="com.aspectran.core.sample.call.ThirdBean"/>
 
-    <bean id="totalBean" class="test.call.TotalBean">
+    <bean id="totalBean" class="com.aspectran.core.sample.call.TotalBean">
         <properties>
             <item name="numerics" type="array">
                 <value><call bean="firstBean"/></value>

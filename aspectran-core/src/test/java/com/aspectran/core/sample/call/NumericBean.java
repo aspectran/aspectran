@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.service;
+package com.aspectran.core.sample.call;
 
-public class SecondBean {
+/**
+ * <p>Created: 2017. 3. 18.</p>
+ */
+public interface NumericBean {
 
-    public static final String message = "This is the second bean.";
-
-    public SecondBean() {
-    }
-
-    public String getMessage() {
-        return message;
-    }
+    int getNumber();
 
 }

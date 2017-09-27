@@ -7,7 +7,7 @@
         Aspectran Annotated Configuration Test
     </description>
 
-    <bean scan="test.anno.**.*Bean" />
-    <bean scan="test.anno.**.*Configuration" />
+    <bean scan="com.aspectran.embed.sample.anno.**.*Bean" />
+    <bean scan="com.aspectran.embed.sample.anno.**.*Configuration" />
 
 </aspectran>

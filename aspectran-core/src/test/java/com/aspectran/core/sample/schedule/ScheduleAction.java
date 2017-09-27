@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.service;
+package com.aspectran.core.sample.schedule;
 
-public class SecondBean {
+public class ScheduleAction {
 
-    public static final String message = "This is the second bean.";
-
-    public SecondBean() {
-    }
-
-    public String getMessage() {
-        return message;
+    public void delay(long millis) throws InterruptedException {
+        if (millis > 0) {
+            Thread.sleep(millis);
+        }
     }
 
 }

@@ -41,16 +41,16 @@ public class AspectranSchedulerTest {
         aspectranService.start();
     }
 
+    @Test
+    public void dummyTest() throws InterruptedException {
+        Thread.sleep(3000);
+    }
+
     @After
     public void finish() {
         if (aspectranService != null) {
             aspectranService.stop();
         }
-    }
-
-    @Test
-    public void dummyTest() throws InterruptedException {
-        Thread.sleep(3000);
     }
 
 }

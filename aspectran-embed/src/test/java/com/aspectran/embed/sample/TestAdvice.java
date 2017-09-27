@@ -13,17 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.service;
+package com.aspectran.embed.sample;
 
-public class SecondBean {
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
-    public static final String message = "This is the second bean.";
+public class TestAdvice {
 
-    public SecondBean() {
+    private final Log log = LogFactory.getLog(TestAdvice.class);
+
+    public String welcome(Translet translet) {
+        String msg = "Welcome to Aspectran!";
+
+        log.info(msg);
+
+        return msg;
     }
 
-    public String getMessage() {
-        return message;
+    public String goodbye(Translet translet) {
+        log.info("activityDataMap " + translet.getActivityDataMap(true));
+
+        String msg = "Goodbye!";
+
+        log.info(msg);
+
+        return msg;
     }
 
 }

@@ -8,8 +8,6 @@
         <setting name="transletNamePattern" value="*.job"/>
     </settings>
 
-    <bean id="*" scan="test.**.*Schedule" mask="test.**.*"/>
-
     <bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean">
         <properties>
             <item type="properties" name="quartzProperties">
@@ -69,8 +67,10 @@
         <job translet="job2"/>
     </schedule>
 
+    <bean id="scheduleAction" class="com.aspectran.core.sample.schedule.ScheduleAction"/>
+
     <translet name="job1">
-        <action bean="class:test.ScheduleAction" method="delay">
+        <action bean="scheduleAction" method="delay">
             <arguments>
                 <item valueType="long">1</item>
             </arguments>
@@ -81,7 +81,7 @@
     </translet>
 
     <translet name="job2">
-        <action bean="class:test.ScheduleAction" method="delay">
+        <action bean="scheduleAction" method="delay">
             <arguments>
                 <item valueType="long">2</item>
             </arguments>

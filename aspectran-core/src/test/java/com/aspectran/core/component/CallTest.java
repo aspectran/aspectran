@@ -22,13 +22,13 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.parser.ActivityContextParserException;
+import com.aspectran.core.sample.call.NumericBean;
+import com.aspectran.core.sample.call.TotalBean;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import test.call.NumericBean;
-import test.call.TotalBean;
 
 import java.io.File;
 import java.io.IOException;

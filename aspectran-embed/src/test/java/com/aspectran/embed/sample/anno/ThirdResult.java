@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.service;
+package com.aspectran.embed.sample.anno;
 
-public class SecondBean {
+public class ThirdResult {
 
-    public static final String message = "This is the second bean.";
+    private FirstBean firstBean;
 
-    public SecondBean() {
+    public ThirdResult(FirstBean firstBean) {
+        this.firstBean = firstBean;
     }
 
     public String getMessage() {
-        return message;
+        return firstBean.getMessage();
     }
 
 }

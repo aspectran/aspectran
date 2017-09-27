@@ -167,8 +167,8 @@
         </transform>
     </translet>
 
-    <bean id="*" scan="test.**.*Advice" mask="test.**.*"/>
-    <bean id="*" scan="test.**.*Action" mask="test.**.*"/>
+    <bean id="*" scan="com.aspectran.core.sample.**.*Advice" mask="com.aspectran.core.sample.**.*"/>
+    <bean id="*" scan="com.aspectran.core.sample.**.*Action" mask="com.aspectran.core.sample.**.*"/>
 
     <aspect id="simplestAdviceAspect" order="1">
         <description>
@@ -178,10 +178,10 @@
         </description>
         <joinpoint type="translet">
             pointcut: {
-                +: hello@class:test.TestAction^helloWorld
+                +: hello@TestAction^helloWorld
             }
         </joinpoint>
-        <advice bean="class:test.TestAdvice">
+        <advice bean="TestAdvice">
             <before>
                 <action method="welcome"/>
             </before>
@@ -197,7 +197,7 @@
             helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
         </description>
         <transform type="transform/text">
-            <action id="helloData" bean="class:test.TestAction" method="helloWorld"/>
+            <action id="helloData" bean="TestAction" method="helloWorld"/>
         </transform>
     </translet>
 

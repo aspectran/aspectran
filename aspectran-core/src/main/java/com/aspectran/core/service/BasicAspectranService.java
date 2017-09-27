@@ -115,7 +115,7 @@ public class BasicAspectranService extends AbstractAspectranService {
      * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
      */
     private void stopAspectranService() {
-        log.info("Destroying all cached resources");
+        log.info("Destroying all cached resources...");
 
         stopSchedulerService();
         beforeContextDestroy();
