@@ -69,7 +69,7 @@ public class ClassLoadingObjectInputStream extends ObjectInputStream {
             classObjs[i] = cl;
         }
         try {
-            return Proxy.getProxyClass(hasNonPublicInterface ? nonPublicLoader : loader,classObjs);
+            return Proxy.getProxyClass(hasNonPublicInterface ? nonPublicLoader : loader, classObjs);
         } catch (IllegalArgumentException e) {
             throw new ClassNotFoundException(null, e);
         }    

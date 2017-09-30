@@ -31,6 +31,10 @@ public interface SessionManager extends Component {
 
     void setSessionConfig(AspectranSessionConfig sessionConfig);
 
+    SessionDataStore getSessionDataStore();
+
+    void setSessionDataStore(SessionDataStore sessionDataStore);
+
     SessionHandler getSessionHandler();
 
     SessionAgent newSessionAgent();

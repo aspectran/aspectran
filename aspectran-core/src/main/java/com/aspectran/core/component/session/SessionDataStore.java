@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.component.Component;
+
 import java.util.Set;
 
 /**
  * <p>Created: 2017. 6. 15.</p>
  */
-public interface SessionDataStore {
+public interface SessionDataStore extends Component {
 
     /**
      * Read in session data.

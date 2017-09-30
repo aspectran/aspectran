@@ -19,6 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +72,49 @@ public class SessionManagerTest {
         log.info("Created Session: " + agent.getSession(true));
 
         await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getSessionsCurrent() == 0);
+    }
+
+    @Test
+    public void testFileSessionStore() throws Exception {
+        SessionManager sessionManager = new DefaultSessionManager();
+        sessionManager.setGroupName("TEST3-");
+
+        SessionHandler sessionHandler = sessionManager.getSessionHandler();
+        sessionHandler.setDefaultMaxIdleSecs(3);
+
+        File storeDir = new File("./target/sessions");
+        storeDir.mkdir();
+
+        FileSessionDataStore sessionDataStore = new FileSessionDataStore();
+        sessionDataStore.setStoreDir(storeDir);
+        sessionDataStore.initialize();
+
+        sessionManager.setSessionDataStore(sessionDataStore);
+        sessionManager.initialize();
+
+        for (int i = 0; i < 10; i++) {
+            SessionAgent agent = sessionManager.newSessionAgent();
+
+            log.info("=================================================");
+            log.info("Created Session: " + agent.getSession(true));
+
+            for (int j = 0; j <= i; j++) {
+                agent.setAttribute("attr" + j, "val-" + j);
+            }
+
+            Enumeration<String> enumeration = agent.getAttributeNames();
+            while (enumeration.hasMoreElements()) {
+                String key = enumeration.nextElement();
+                log.info("getAttribute " + key + "=" + agent.getAttribute(key));
+            }
+
+            TimeUnit.MILLISECONDS.sleep(50);
+
+            agent.complete();
+            //agent.invalidate();
+        }
+
+        await().atMost(15, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getSessionsCurrent() == 0);
     }
 
 }

@@ -37,6 +37,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     private AspectranSessionConfig sessionConfig;
 
+    private SessionDataStore sessionDataStore;
+
     public DefaultSessionManager() {
         this(null);
     }
@@ -66,6 +68,16 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     @Override
+    public SessionDataStore getSessionDataStore() {
+        return sessionDataStore;
+    }
+
+    @Override
+    public void setSessionDataStore(SessionDataStore sessionDataStore) {
+        this.sessionDataStore = sessionDataStore;
+    }
+
+    @Override
     public SessionHandler getSessionHandler() {
         return this;
     }
@@ -87,29 +99,37 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
             setSessionCache(sessionCache);
         }
 
+        if (sessionDataStore != null) {
+            getSessionCache().setSessionDataStore(sessionDataStore);
+        }
+
         if (sessionConfig != null) {
             if (sessionConfig.isValueAssigned(AspectranSessionConfig.timeout)) {
                 int timeout = sessionConfig.getInt(AspectranSessionConfig.timeout);
                 setDefaultMaxIdleSecs(timeout);
             }
 
-            String storeType = sessionConfig.getString(AspectranSessionConfig.storeType);
-            SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-            if (sessionStoreType == SessionStoreType.FILE) {
-                FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                AspectranSessionFileStoreConfig fileStoreConfig = sessionConfig.getParameters(AspectranSessionConfig.fileStore);
+            if (getSessionCache().getSessionDataStore() != null) {
+                String storeType = sessionConfig.getString(AspectranSessionConfig.storeType);
+                SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
+                if (sessionStoreType == SessionStoreType.FILE) {
+                    FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
+                    AspectranSessionFileStoreConfig fileStoreConfig = sessionConfig.getParameters(AspectranSessionConfig.fileStore);
 
-                String path = fileStoreConfig.getString(AspectranSessionFileStoreConfig.path);
-                if (StringUtils.hasText(path)) {
-                    fileSessionDataStore.setStoreDir(new File(path));
+                    String path = fileStoreConfig.getString(AspectranSessionFileStoreConfig.path);
+                    if (StringUtils.hasText(path)) {
+                        fileSessionDataStore.setStoreDir(new File(path));
+                    }
+
+                    Boolean deleteUnrestorableFiles = fileStoreConfig.getBoolean(AspectranSessionFileStoreConfig.deleteUnrestorableFiles);
+                    if (deleteUnrestorableFiles != null) {
+                        fileSessionDataStore.setDeleteUnrestorableFiles(deleteUnrestorableFiles);
+                    }
+
+                    fileSessionDataStore.initialize();
+
+                    getSessionCache().setSessionDataStore(fileSessionDataStore);
                 }
-
-                Boolean deleteUnrestorableFiles = fileStoreConfig.getBoolean(AspectranSessionFileStoreConfig.deleteUnrestorableFiles);
-                if (deleteUnrestorableFiles != null) {
-                    fileSessionDataStore.setDeleteUnrestorableFiles(deleteUnrestorableFiles);
-                }
-
-                getSessionCache().setSessionDataStore(fileSessionDataStore);
             }
         }
 

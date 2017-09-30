@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -34,12 +35,6 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     private File storeDir;
 
     private boolean deleteUnrestorableFiles = false;
-
-    @Override
-    protected void doInitialize() throws Exception {
-        initializeStore();
-        super.doInitialize();
-    }
 
     public File getStoreDir() {
         return storeDir;
@@ -75,61 +70,59 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     public Set<String> doGetExpired(final Set<String> candidates) {
         final long now = System.currentTimeMillis();
         Set<String> expired = new HashSet<>();
-        Set<String> idsWithContext = new HashSet<>();
+        Set<String> ids = new HashSet<>();
 
-        //one pass to get all idWithContext
-        File[] files = storeDir.listFiles((dir, name) -> {
+        // one pass to get all id
+        storeDir.listFiles((dir, name) -> {
             if (dir != storeDir) {
                 return false;
             }
 
-            //dir may contain files that don't match our naming pattern
+            // dir may contain files that don't match our naming pattern
             if (!match(name)) {
                 return false;
             }
 
-            String idWithContext = getIdWithContextFromString(name);
-            if (StringUtils.hasText(idWithContext)) {
-                idsWithContext.add(idWithContext);
+            String id = getIdFromString(name);
+            if (StringUtils.hasText(id)) {
+                ids.add(id);
             }
             return true;
         });
 
-        //got the list of all sessionids with their contexts, remove all old files for each one
-        for (String idWithContext : idsWithContext) {
-            deleteOldFiles(storeDir, idWithContext);
+        // got the list of all sessionids, remove all old files for each one
+        for (String id : ids) {
+            deleteOldFiles(storeDir, id);
         }
 
-        //now find sessions that have expired in any context
-        files = storeDir.listFiles((dir, name) -> {
+        // now find sessions that have expired
+        storeDir.listFiles((dir, name) -> {
             if (dir != storeDir) {
                 return false;
             }
 
-            //dir may contain files that don't match our naming pattern
+            // dir may contain files that don't match our naming pattern
             if (!match(name)) {
                 return false;
             }
 
             try {
                 long expiry = getExpiryFromString(name);
-                return (expiry > 0 && expiry < now);
+                if (expiry > 0 && expiry < now) {
+                    expired.add(getIdFromString(name));
+                }
             } catch (Exception e) {
-                return false;
+                // ignored
             }
+
+            return false;
         });
 
-        if (files != null) {
-            for (File f : files) {
-                expired.add(getIdFromFile(f));
-            }
-        }
-
-        //check candidates that were not found to be expired, perhaps they no
-        //longer exist and they should be expired
+        // check candidates that were not found to be expired, perhaps they no
+        // longer exist and they should be expired
         for (String c : candidates) {
             if (!expired.contains(c)) {
-                //check if the file exists
+                // check if the file exists
                 File f = getFile(storeDir, c);
                 if (f == null || !f.exists()) {
                     expired.add(c);
@@ -145,7 +138,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         final AtomicReference<SessionData> reference = new AtomicReference<>();
         final AtomicReference<Exception> exception = new AtomicReference<>();
         Runnable r = () -> {
-            //get rid of all but the newest file for a session
+            // get rid of all but the newest file for a session
             File file = deleteOldFiles(storeDir, id);
 
             if (file == null || !file.exists()) {
@@ -181,28 +174,19 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     @Override
     public void doStore(String id, SessionData data, long lastSaveTime) throws Exception {
         if (storeDir != null) {
-            //remove any existing files for the session
+            // remove any existing files for the session
             deleteAllFiles(storeDir, id);
 
-            //make a fresh file using the latest session expiry
+            // make a fresh file using the latest session expiry
             File file = new File(storeDir, getIdWithExpiry(data));
 
             try(FileOutputStream fos = new FileOutputStream(file,false)) {
                 save(fos, id, data);
             } catch (Exception e) {
                 e.printStackTrace();
-                file.delete(); // No point keeping the file if we didn't save the whole session
+                file.delete(); //  No point keeping the file if we didn't save the whole session
                 throw new UnwriteableSessionDataException(id, e);
             }
-        }
-    }
-
-    public void initializeStore () {
-        if (storeDir == null) {
-            throw new IllegalStateException("No file store specified");
-        }
-        if (!storeDir.exists()) {
-            storeDir.mkdirs();
         }
     }
 
@@ -217,12 +201,12 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         if (sessionFile == null || !sessionFile.exists()) {
             return false;
         }
-        //check the expiry
+        // check the expiry
         long expiry = getExpiryFromFile(sessionFile);
         if (expiry <= 0) {
-            return true; //never expires
+            return true; // never expires
         } else {
-            return (expiry > System.currentTimeMillis()); //hasn't yet expired
+            return (expiry > System.currentTimeMillis()); // hasn't yet expired
         }
     }
 
@@ -230,25 +214,10 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
      * Get the session id with its expiry time.
      *
      * @param data the session data
-     * @return the session id plus context and expiry
+     * @return the session id plus expiry
      */
     private String getIdWithExpiry(SessionData data) {
-        return data.getExpiryTime() + "_" + data.getId();
-    }
-
-
-    /**
-     * Work out which session id the file relates to.
-     *
-     * @param file the file to check
-     * @return the session id the file relates to.
-     */
-    private String getIdFromFile(File file) {
-        if (file == null) {
-            return null;
-        }
-        String name = file.getName();
-        return name.substring(name.lastIndexOf('_') + 1);
+        return data.getId() + "_" + data.getExpiryTime();
     }
 
     /**
@@ -268,34 +237,21 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         if (!StringUtils.hasText(filename) || !filename.contains("_")) {
             throw new IllegalStateException("Invalid or missing filename");
         }
-        String s = filename.substring(0, filename.indexOf('_'));
+        String s = filename.substring(filename.lastIndexOf('_') + 1);
         return Long.parseLong(s);
     }
 
     /**
-     * Extract the session id and context from the filename.
-     *
-     * @param file the file whose name to use
-     * @return the session id plus context
-     */
-    private String getIdWithContextFromFile(File file) {
-        if (file == null) {
-            return null;
-        }
-        return getIdWithContextFromString(file.getName());
-    }
-
-    /**
-     * Extract the session id and context from the filename
+     * Extract the session id from the filename.
      *
      * @param filename the name of the file to use
-     * @return the session id plus context
+     * @return the session id
      */
-    private String getIdWithContextFromString(String filename) {
+    private String getIdFromString(String filename) {
         if (!StringUtils.hasText(filename) || filename.indexOf('_') < 0) {
             return null;
         }
-        return filename.substring(filename.indexOf('_') + 1);
+        return filename.substring(0, filename.lastIndexOf('_'));
     }
 
     /**
@@ -311,12 +267,12 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
 
         String[] parts = filename.split("_");
 
-        //Need at least 2 parts for a valid filename
+        // Need at least 2 parts for a valid filename
         return (parts.length >= 2);
     }
 
     /**
-     * Find a File for the session id for the current context.
+     * Find a File for the session id.
      *
      * @param storeDir the session storage directory
      * @param id the session id
@@ -331,19 +287,19 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     }
 
     /**
-     * Remove all existing session files for the session in the context.
+     * Remove all existing session files.
      *
      * @param storeDir where the session files are stored
-     * @param idInContext the session id within a particular context
+     * @param id the session id
      */
-    private void deleteAllFiles(final File storeDir, final String idInContext) {
-        File[] files = storeDir.listFiles ((dir, name) -> (dir == storeDir && (name.contains(idInContext))));
-        //no files for that id
+    private void deleteAllFiles(final File storeDir, final String id) {
+        File[] files = storeDir.listFiles ((dir, name) -> (dir == storeDir && (name.contains(id))));
+        // no files for that id
         if (files == null || files.length < 1) {
             return;
         }
 
-        //delete all files
+        // delete all files
         for (File f : files) {
             try {
                 Files.deleteIfExists(f.toPath());
@@ -354,7 +310,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     }
 
     /**
-     * Delete all but the most recent file for a given session id in a context.
+     * Delete all but the most recent file for a given session id.
      *
      * @param storeDir the directory in which sessions are stored
      * @param id the id of the session
@@ -371,36 +327,36 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             return name.contains(id);
         });
 
-        //no file for that session
+        // no file for that session
         if (files == null || files.length == 0) {
             return null;
         }
 
-        //delete all but the most recent file
+        // delete all but the most recent file
         File newest = null;
         for (File f : files) {
             try {
                 if (newest == null) {
-                    //haven't looked at any files yet
+                    // haven't looked at any files yet
                     newest = f;
                 } else {
                     if (f.lastModified() > newest.lastModified()) {
-                        //this file is more recent
+                        // this file is more recent
                         Files.deleteIfExists(newest.toPath());
                         newest = f;
                     } else if (f.lastModified() < newest.lastModified()) {
-                        //this file is older
+                        // this file is older
                         Files.deleteIfExists(f.toPath());
                     } else {
-                        //files have same last modified times, decide based on latest expiry time
+                        // files have same last modified times, decide based on latest expiry time
                         long exp1 = getExpiryFromFile(newest);
                         long exp2 = getExpiryFromFile(f);
                         if (exp2 >= exp1) {
-                            //this file has a later expiry date
+                            // this file has a later expiry date
                             Files.deleteIfExists(newest.toPath());
                             newest = f;
                         } else {
-                            //this file has an earlier expiry date
+                            // this file has an earlier expiry date
                             Files.deleteIfExists(f.toPath());
                         }
                     }
@@ -449,7 +405,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     private SessionData load(InputStream is, String expectedId) throws Exception {
         try {
             DataInputStream di = new DataInputStream(is);
-            String id = di.readUTF(); //the actual id from inside the file
+            String id = di.readUTF(); // the actual id from inside the file
             long created = di.readLong();
             long accessed = di.readLong();
             long lastAccessed = di.readLong();
@@ -460,7 +416,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             data.setExpiryTime(expiry);
             data.setMaxInactiveInterval(maxIdle);
 
-            // Attributes
+            //  Attributes
             restoreAttributes(di, di.readInt(), data);
 
             return data;
@@ -475,19 +431,34 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
      * @param is the input stream containing session data
      * @param size number of attributes
      * @param data the data to restore to
-     * @throws Exception
+     * @throws Exception if the input stream is invalid or fails to read
      */
     private void restoreAttributes(InputStream is, int size, SessionData data) throws Exception {
         if (size > 0) {
             // input stream should not be closed here
             Map<String, Object> attributes = new HashMap<>();
-            ClassLoadingObjectInputStream ois =  new ClassLoadingObjectInputStream(is);
+            ObjectInputStream ois =  new ClassLoadingObjectInputStream(is);
             for (int i = 0; i < size; i++) {
                 String key = ois.readUTF();
                 Object value = ois.readObject();
-                attributes.put(key,value);
+                attributes.put(key, value);
             }
             data.putAllAttributes(attributes);
+        }
+    }
+
+    @Override
+    protected void doInitialize() throws Exception {
+        initializeStore();
+        super.doInitialize();
+    }
+
+    private void initializeStore () {
+        if (storeDir == null) {
+            throw new IllegalStateException("No file store specified");
+        }
+        if (!storeDir.exists()) {
+            storeDir.mkdirs();
         }
     }
 
