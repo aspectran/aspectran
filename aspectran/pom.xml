@@ -11,16 +11,9 @@
     </parent>
 
     <artifactId>aspectran</artifactId>
+    <packaging>jar</packaging>
 
     <name>Aspectran Bundle</name>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-    <inceptionYear>2008</inceptionYear>
 
     <dependencies>
         <dependency>
@@ -125,8 +118,88 @@
     </dependencies>
 
     <build>
-        <outputDirectory>target/classes</outputDirectory>
         <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <!-- sources -->
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-core</artifactId>
+                                    <classifier>sources</classifier>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-console</artifactId>
+                                    <classifier>sources</classifier>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-embed</artifactId>
+                                    <classifier>sources</classifier>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-web</artifactId>
+                                    <classifier>sources</classifier>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                                </artifactItem>
+                                <!-- resources -->
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-core</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <excludes>**/*.class</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-console</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <excludes>**/*.class</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-embed</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <excludes>**/*.class</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>aspectran-web</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <excludes>**/*.class</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -140,10 +213,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/../aspectran-core/src/main/java</source>
-                                <source>${basedir}/../aspectran-console/src/main/java</source>
-                                <source>${basedir}/../aspectran-embed/src/main/java</source>
-                                <source>${basedir}/../aspectran-web/src/main/java</source>
+                                <source>${project.build.directory}/generated-sources</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -156,71 +226,13 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/../aspectran-core/src/main/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-console/src/main/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-embed/src/main/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-web/src/main/resources</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/../aspectran-core/src/test/java</source>
-                                <source>${basedir}/../aspectran-console/src/test/java</source>
-                                <source>${basedir}/../aspectran-embed/src/test/java</source>
-                                <source>${basedir}/../aspectran-web/src/test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-test-resource</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>add-test-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-core/src/test/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-console/src/test/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-embed/src/test/resources</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/../aspectran-web/src/test/resources</directory>
+                                    <directory>${project.build.directory}/generated-resources</directory>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Export-Package>*;-noimport:=true</Export-Package>
-                        <Import-Package>*</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
 </project>

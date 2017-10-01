@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>aspectran-all</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>Aspectran All-in-One</name>
 
