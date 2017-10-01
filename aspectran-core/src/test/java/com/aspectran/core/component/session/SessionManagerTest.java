@@ -108,7 +108,7 @@ public class SessionManagerTest {
                 log.info("getAttribute " + key + "=" + agent.getAttribute(key));
             }
 
-            TimeUnit.MILLISECONDS.sleep(50);
+            TimeUnit.MILLISECONDS.sleep(30);
 
             agent.complete();
             //agent.invalidate();

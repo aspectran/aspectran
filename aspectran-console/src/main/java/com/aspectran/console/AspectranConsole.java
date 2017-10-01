@@ -28,16 +28,14 @@ public class AspectranConsole {
 
     public static void main(String[] args) {
         String aspectranConfigFile;
-
         if (args.length > 0) {
             aspectranConfigFile = args[0];
         } else {
             aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
         }
 
-        int exitStatus = 0;
-
         ConsoleAspectranService service = null;
+        int exitStatus = 0;
 
         try {
             service = ConsoleAspectranService.create(aspectranConfigFile);
