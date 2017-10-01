@@ -215,6 +215,7 @@ public class WebAspectranService extends BasicAspectranService {
             }
             webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
         }
+        setServiceStateListener(webAspectranService);
         return webAspectranService;
     }
 
