@@ -1,0 +1,104 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        Configure the Jetty Server with Aspectran
+    </description>
+
+    <environment>
+        <properties>
+            <item name="jetty.server.port" value="8080"/>
+            <item name="jetty.server.minThreads" value="10"/>
+            <item name="jetty.server.maxThreads" value="100"/>
+        </properties>
+    </environment>
+
+    <bean id="jetty.server" class="com.aspectran.with.jetty.JettyServer">
+        <constructor>
+            <arguments>
+                <item name="threadPool">
+                    <call bean="jetty.threadPool"/>
+                </item>
+            </arguments>
+        </constructor>
+        <properties>
+            <item name="autoStart" valueType="boolean">true</item>
+            <item name="connectors" type="array">
+                <value><call bean="jetty.connector"/></value>
+            </item>
+            <item name="handler">
+                <call bean="jetty.handler"/>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.threadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+        <properties>
+            <item name="minThreads" value="%{jetty.server.minThreads}" valueType="int"/>
+            <item name="maxThreads" value="%{jetty.server.maxThreads}" valueType="int"/>
+        </properties>
+    </bean>
+
+    <bean id="jetty.connector" class="org.eclipse.jetty.server.ServerConnector">
+        <constructor>
+            <arguments>
+                <item><call bean="jetty.server"/></item>
+            </arguments>
+        </constructor>
+        <properties>
+            <item name="port" value="%{jetty.server.port}" valueType="int"/>
+        </properties>
+    </bean>
+
+    <bean id="jetty.handler" class="org.eclipse.jetty.server.handler.HandlerCollection">
+        <properties>
+            <item name="handlers" type="array">
+                <value><call bean="jetty.contexts"/></value>
+                <value><call bean="jetty.resourceHandler"/></value>
+                <value><call bean="jetty.defaultHandler"/></value>
+                <value><call bean="jetty.requestLog"/></value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+        <properties>
+            <item name="handlers" type="array">
+                <value><call bean="jetty.contexts.root"/></value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.contexts.root" class="com.aspectran.with.jetty.JettyWebAppContext">
+        <properties>
+            <item name="contextPath" value="/"/>
+            <item name="war" value="#{basePath}/webapps/root"/>
+            <item name="persistTempDirectory" value="true" valueType="boolean"/>
+        </properties>
+    </bean>
+
+    <bean id="jetty.resourceHandler" class="org.eclipse.jetty.server.handler.ResourceHandler" scope="prototype"/>
+
+    <bean id="jetty.defaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler" scope="prototype"/>
+
+    <bean id="jetty.requestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">
+        <properties>
+            <item name="requestLog">#{jetty.ncsaRequestLog}</item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.ncsaRequestLog" class="org.eclipse.jetty.server.NCSARequestLog" scope="prototype">
+        <properties>
+            <item name="filename">#{basePath}/logs/test-yyyy_mm_dd.request.log</item>
+            <item name="filenameDateFormat">yyyy_MM_dd</item>
+            <item name="logDateFormat">yyyy-MM-dd HH:mm:ss Z</item>
+            <item name="logTimeZone">GMT+9</item>
+            <item name="retainDays" valueType="int">90</item>
+            <item name="append" valueType="boolean">true</item>
+            <item name="logLatency" valueType="boolean">true</item>
+        </properties>
+    </bean>
+
+</aspectran>

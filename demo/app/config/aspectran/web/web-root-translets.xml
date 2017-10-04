@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+        <description>
+            JSP View Dispatcher를 등록합니다.
+        </description>
+        <properties>
+            <item name="prefix">/WEB-INF/jsp/</item>
+            <item name="suffix">.jsp</item>
+        </properties>
+    </bean>
+
+    <aspect id="transletSettings">
+        <description>
+            요청 정보를 분석 및 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+        </description>
+        <joinpoint type="translet"/>
+        <settings>
+            <setting name="characterEncoding" value="utf-8"/>
+            <setting name="contentEncoding" value="gzip"/>
+            <setting name="viewDispatcher" value="jspViewDispatcher"/>
+        </settings>
+    </aspect>
+
+    <append file="/config/aspectran/web/main-translets.xml"/>
+    <append file="/config/aspectran/web/hello-world-translets.xml"/>
+    <append file="/config/aspectran/web/gs-rest-service-translets.xml"/>
+
+</aspectran>

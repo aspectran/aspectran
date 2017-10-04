@@ -1,0 +1,78 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        This is an Aspectran configuration for printing "Hello, World.".
+    </description>
+
+    <bean id="helloAction" class="com.aspectran.demo.hello.HelloAction">
+        <description>
+            Defines a Hello Action Bean that contains the helloWorld() method.
+        </description>
+    </bean>
+
+    <bean id="helloAdvice" class="com.aspectran.demo.hello.HelloAdvice">
+        <description>
+            Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.
+        </description>
+    </bean>
+
+    <aspect id="helloAdviceAspect">
+        <description>
+            If a Translet that executes the helloWorld method of the sampleAction bean is found,
+            executes the welcome() method of the sampleAdvice bean before executing the translet,
+            and executes the goodbye() method of the sampleAdvice bean after executing the translet.
+        </description>
+        <joinpoint type="translet">
+            pointcut: {
+                +: hello*@helloAction^helloWorld
+            }
+        </joinpoint>
+        <advice bean="helloAdvice">
+            <before>
+                <action method="welcome"/>
+            </before>
+            <after>
+                <action method="goodbye"/>
+            </after>
+        </advice>
+    </aspect>
+
+    <translet name="hello">
+        <description style="apon">
+            |
+            |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
+            |   Maybe the words "Hello, World." will be printed on the console.
+            |   Is it difficult to find the words "Hello, World." printed on the console?
+            |   If so, try running the "hello2" command.
+            |---------------------------------------------------------------------------------------------------------
+        </description>
+        <transform type="transform/text">
+            <action id="helloWorld" bean="helloAction" method="helloWorld"/>
+        </transform>
+    </translet>
+
+    <translet name="hello2">
+        <description style="apon">
+            |
+            |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console with margins.
+            |   Maybe the word "Hello, World" will be printed on the console with proper margin.
+            |---------------------------------------------------------------------------------------------------------
+        </description>
+        <action id="helloWorld" bean="helloAction" method="helloWorld"/>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{bg:green}}                         {{off}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
+                |   {{bg:green}}   {{magenta,bg:white}}   @{helloWorld}   {{bg:blue}}   {{off}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
+                |   {{magenta,bg:blue}}                         {{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>

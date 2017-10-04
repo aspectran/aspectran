@@ -1,0 +1,29 @@
+context: {
+    root: /config/aspectran/root-config.xml
+    resources: [
+        /classes
+        /resources
+    ]
+    hybridLoad: false
+    autoReload: {
+        reloadMode: soft
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    profiles: {
+    }
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    startup: false
+}
+web: {
+    uriDecoding: utf-8
+    defaultServletName: default
+}
+console: {
+    mode: jline
+    prompt: "{{BLUE}}Demo{{YELLOW,bold}}>{{off}} "
+    showDescription: true
+}
