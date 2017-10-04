@@ -14,6 +14,8 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Log log = LogFactory.getLog(JettyServer.class);
 
+    private boolean autoStart;
+
     public JettyServer() {
         super();
     }
@@ -26,9 +28,17 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         super(pool);
     }
 
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
+    }
+
     @Override
     public void initialize() throws Exception {
         System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
+
+        if (autoStart) {
+            start();
+        }
     }
 
     @Override
