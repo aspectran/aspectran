@@ -4,6 +4,10 @@
 
 <aspectran>
 
+    <description>
+        A collection of Translets for the Restful Web Service example.
+    </description>
+
     <settings>
         <setting name="transletNamePattern" value="/examples/gs-rest-service/*"/>
     </settings>

@@ -4,9 +4,14 @@
 
 <aspectran>
 
+    <description>
+        An Aspectran configuration for Web Application Service.
+        Note that the name of the Translet corresponding to the request URI always starts with a forward slash (/).
+    </description>
+
     <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
         <description>
-            JSP View Dispatcher를 등록합니다.
+            Register a JSP View Dispatcher.
         </description>
         <properties>
             <item name="prefix">/WEB-INF/jsp/</item>
@@ -16,7 +21,7 @@
 
     <aspect id="transletSettings">
         <description>
-            요청 정보를 분석 및 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+            Specifies the environment variables used during request and response processing.
         </description>
         <joinpoint type="translet"/>
         <settings>
@@ -26,8 +31,8 @@
         </settings>
     </aspect>
 
-    <append file="/config/aspectran/web/main-translets.xml"/>
-    <append file="/config/aspectran/web/hello-world-translets.xml"/>
-    <append file="/config/aspectran/web/gs-rest-service-translets.xml"/>
+    <append file="/config/aspectran/web/translets/main.xml"/>
+    <append file="/config/aspectran/web/translets/hello-world.xml"/>
+    <append file="/config/aspectran/web/translets/gs-rest-service.xml"/>
 
 </aspectran>

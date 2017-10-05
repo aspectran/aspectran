@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        This is an Aspectran configuration for printing "Hello, World.".
+        An Aspectran configuration for printing "Hello, World!".
     </description>
 
     <bean id="helloAction" class="com.aspectran.demo.hello.HelloAction">
@@ -44,8 +44,8 @@
         <description style="apon">
             |
             |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
-            |   Maybe the words "Hello, World." will be printed on the console.
-            |   Is it difficult to find the words "Hello, World." printed on the console?
+            |   Maybe the words "Hello, World!" will be printed on the console.
+            |   Is it difficult to find the words "Hello, World!" printed on the console?
             |   If so, try running the "hello2" command.
             |---------------------------------------------------------------------------------------------------------
         </description>

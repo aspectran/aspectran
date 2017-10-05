@@ -4,9 +4,10 @@
 <aspectran>
 
     <description>
-        This is an Aspectran configuration for printing "Hello, World.".
+        An Aspectran configuration for Console Application Service.
+        Note that the name of a Translet that starts with a forward slash (/) is also accessible from the web environment.
     </description>
 
-    <append file="/config/aspectran/console/jetty-control-translets.xml"/>
+    <append file="/config/aspectran/console/translets/hello.xml"/>
 
 </aspectran>

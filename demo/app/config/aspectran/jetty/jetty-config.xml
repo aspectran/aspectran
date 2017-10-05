@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        Configure the Jetty Server with Aspectran
+        An Aspectran configuration for running Jetty Server.
     </description>
 
     <environment>
@@ -100,5 +100,7 @@
             <item name="logLatency" valueType="boolean">true</item>
         </properties>
     </bean>
+
+    <append file="/config/aspectran/jetty/translets/jetty-controller.xml"/>
 
 </aspectran>

@@ -1,0 +1,58 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        A collection of commands for controlling the Jetty Server.
+    </description>
+
+    <translet name="jetty">
+        <description style="apon">
+            |
+            |{{underline}}To control Jetty, try one of the following commands:{{off}}
+            |   {{green}}jetty start{{fg:off}} - Runs a Jetty Server
+            |   {{green}}jetty stop{{fg:off}} - Stops the currently running Jetty Server
+        </description>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="jetty start">
+        <description style="apon">
+            |
+            |   {{RED}}Starting the Jetty Server...{{off}}
+            |---------------------------------------------------------------------------------------------------------
+        </description>
+        <action bean="jetty.server" method="start"/>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="jetty stop">
+        <description style="apon">
+            |
+            |   {{RED}}Stopping the Jetty Server...{{off}}
+            |---------------------------------------------------------------------------------------------------------
+        </description>
+        <action bean="jetty.server" method="stop"/>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>

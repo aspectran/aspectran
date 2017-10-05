@@ -4,6 +4,10 @@
 
 <aspectran>
 
+    <description>
+        A collection of Translets for the main page.
+    </description>
+
     <translet name="/">
         <dispatch name="template">
             <echo id="page">
