@@ -31,7 +31,7 @@ public class Aspectran {
             if (version != null) {
                 VERSION = version;
             } else {
-                VERSION = "4.2.0-SNAPSHOT";
+                VERSION = "5.0.0-SNAPSHOT";
             }
         }
 
