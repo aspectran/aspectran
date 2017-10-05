@@ -11,7 +11,7 @@
     <artifactId>aspectran-demo</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran Demo</name>
+    <name>Aspectran Demo App</name>
 
     <licenses>
         <license>
@@ -60,6 +60,12 @@
                                 <exclude>.gitignore</exclude>
                             </excludes>
                         </fileset>
+                        <fileset>
+                            <directory>app/webapps/root/WEB-INF/lib</directory>
+                            <includes>
+                                <include>taglibs-standard-*.jar</include>
+                            </includes>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -67,7 +73,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy</id>
+                        <id>copy-1</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
@@ -83,8 +89,8 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-resources-01</id>
-                        <phase>compile</phase>
+                        <id>copy-resources-1</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -100,8 +106,8 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-resources-02</id>
-                        <phase>compile</phase>
+                        <id>copy-resources-2</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -111,6 +117,25 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-3</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>app/webapps/root/WEB-INF/lib</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>app/lib</directory>
+                                    <includes>
+                                        <include>taglibs-standard-*.jar</include>
+                                    </includes>
                                 </resource>
                             </resources>
                             <overwrite>true</overwrite>
@@ -139,12 +164,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>remote-shell</artifactId>
+            <artifactId>aspectran-remote-shell</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>with-jetty</artifactId>
+            <artifactId>aspectran-with-jetty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
