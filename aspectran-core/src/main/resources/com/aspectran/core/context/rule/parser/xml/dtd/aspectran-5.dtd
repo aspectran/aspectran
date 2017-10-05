@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  XML DTD for the Aspectran Configuration File, Version 4.0
+  XML DTD for the Aspectran Configuration File, Version 5.0
 
   Copyright 2008-2017 Juho Jeong
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-  SYSTEM "http://aspectran.github.io/dtd/aspectran-4.dtd">
+  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+  SYSTEM "http://aspectran.github.io/dtd/aspectran-5.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
-  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-                             "http://aspectran.github.io/dtd/aspectran-4.dtd">
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                             "http://aspectran.github.io/dtd/aspectran-5.dtd">
 -->
 
 <!ELEMENT aspectran (
@@ -146,7 +146,8 @@
   (description?, request?, content*, contents?, response*, exception?) |
   (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
   (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
-  (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+  (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, parameters?, attributes?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
