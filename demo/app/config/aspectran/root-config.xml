@@ -1,6 +1,5 @@
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
-
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
 <aspectran>
 
     <description style="apon">
@@ -19,6 +18,10 @@
         |{{underline}}Commands that can run examples:{{underline:off}}
         |   {{green}}hello{{fg:off}} - Runs the helloWorld() method of the sampleAction bean and prints the returned value.
         |   {{green}}hello2{{fg:off}} - Runs the helloWorld() method of the sampleAction bean and prints the returned value with margins.
+        |   {{green}}echo{{fg:off}} - It accepts parameters and print as is.
+        |   {{green}}echo2{{fg:off}} - It accepts parameters and attributes, and print them as is.
+        |   {{green}}login{{fg:off}} - It accepts parameters used for login and print them.
+        |   {{green}}chpw{{fg:off}} - It accepts parameters for changing the password and print them.
         |
         |{{underline}}To control Jetty, try one of the following commands:{{underline:off}}
         |   {{green}}jetty{{fg:off}} - Displays commands required to control Jetty Server
