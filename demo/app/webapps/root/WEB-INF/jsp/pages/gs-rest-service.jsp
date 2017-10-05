@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
     <h2 style="margin:0;">Customer List</h2>
@@ -185,7 +186,7 @@ function saveCustomer() {
 function deleteCustomer() {
   var id = $("input[name=id]").val();
   if(!id) {
-    alert("삭제할 고객을 선택하세요.");
+    alert("Please select a customer to remove.");
     return;
   }
   $.ajax({
