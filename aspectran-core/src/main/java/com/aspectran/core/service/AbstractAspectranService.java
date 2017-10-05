@@ -159,10 +159,10 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
             return;
         }
 
-        String[] exposals = this.aspectranSchedulerConfig.getStringArray(AspectranSchedulerConfig.exposals);
         boolean schedulerStartup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
         int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
         boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
+        String[] exposals = this.aspectranSchedulerConfig.getStringArray(AspectranSchedulerConfig.exposals);
 
         if (schedulerStartup) {
             if (startDelaySeconds == -1) {
@@ -174,8 +174,8 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
             if (waitOnShutdown) {
                 newSchedulerService.setWaitOnShutdown(true);
             }
-            newSchedulerService.setExposals(exposals);
             newSchedulerService.setStartDelaySeconds(startDelaySeconds);
+            newSchedulerService.setExposals(exposals);
             newSchedulerService.start();
 
             this.schedulerService = newSchedulerService;

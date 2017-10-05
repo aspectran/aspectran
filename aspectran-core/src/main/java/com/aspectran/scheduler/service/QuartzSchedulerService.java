@@ -92,6 +92,7 @@ public class QuartzSchedulerService extends AbstractServiceContoller implements 
         this.waitOnShutdown = waitOnShutdown;
     }
 
+    @Override
     public void setExposals(String[] exposals) {
         pluralWildcardPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
     }
