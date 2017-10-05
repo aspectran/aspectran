@@ -66,6 +66,40 @@ class TransletNodeletAdder implements NodeletAdder {
                 transletRule.setDescription(text);
             }
         });
+        parser.addNodelet(xpath, "/translet/parameters", (node, attributes, text) -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+        });
+        parser.addNodelet(xpath, "/translet/parameters", new ItemNodeletAdder(assistant));
+        parser.addNodelet(xpath, "/translet/parameters/end()", (node, attributes, text) -> {
+            ItemRuleMap irm = assistant.popObject();
+            if (!irm.isEmpty()) {
+                TransletRule transletRule = assistant.peekObject();
+                RequestRule requestRule = transletRule.getRequestRule();
+                if (requestRule == null) {
+                    requestRule = RequestRule.newInstance(null, null);
+                    transletRule.setRequestRule(requestRule);
+                }
+                requestRule.setParameterItemRuleMap(irm);
+            }
+        });
+        parser.addNodelet(xpath, "/translet/attributes", (node, attributes, text) -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+        });
+        parser.addNodelet(xpath, "/translet/attributes", new ItemNodeletAdder(assistant));
+        parser.addNodelet(xpath, "/translet/attributes/end()", (node, attributes, text) -> {
+            ItemRuleMap irm = assistant.popObject();
+            if (!irm.isEmpty()) {
+                TransletRule transletRule = assistant.peekObject();
+                RequestRule requestRule = transletRule.getRequestRule();
+                if (requestRule == null) {
+                    requestRule = RequestRule.newInstance(null, null);
+                    transletRule.setRequestRule(requestRule);
+                }
+                requestRule.setAttributeItemRuleMap(irm);
+            }
+        });
         parser.addNodelet(xpath, "/translet", new ActionNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet/request", (node, attributes, text) -> {
@@ -82,7 +116,6 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/translet/request/parameters", new ItemNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet/request/parameters/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
-
             if (!irm.isEmpty()) {
                 RequestRule requestRule = assistant.peekObject();
                 requestRule.setParameterItemRuleMap(irm);
@@ -95,7 +128,6 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/translet/request/attributes", new ItemNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet/request/attributes/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
-
             if (!irm.isEmpty()) {
                 RequestRule requestRule = assistant.peekObject();
                 requestRule.setAttributeItemRuleMap(irm);
@@ -124,7 +156,6 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/translet/contents/content", new ActionNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet/contents/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
-
             if (!actionList.isEmpty()) {
                 ContentList contentList = assistant.peekObject();
                 contentList.addActionList(actionList);
@@ -132,7 +163,6 @@ class TransletNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(xpath, "/translet/contents/end()", (node, attributes, text) -> {
             ContentList contentList = assistant.popObject();
-
             if (!contentList.isEmpty()) {
                 TransletRule transletRule = assistant.peekObject();
                 transletRule.setContentList(contentList);
@@ -149,7 +179,6 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
         parser.addNodelet(xpath, "/translet/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
-
             if (!actionList.isEmpty()) {
                 TransletRule transletRule = assistant.peekObject();
                 ContentList contentList = transletRule.touchContentList(true, true);
