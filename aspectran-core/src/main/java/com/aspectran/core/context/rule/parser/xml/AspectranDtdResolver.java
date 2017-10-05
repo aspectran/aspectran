@@ -32,15 +32,15 @@ import java.util.Map;
  */
 class AspectranDtdResolver implements EntityResolver {
 
-    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-4.dtd";
+    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-5.dtd";
 
     private static final Map<String, String> doctypeMap = new HashMap<>();
 
     private final boolean validating;
 
     static {
-        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN".toUpperCase(), ASPECTRAN_DTD);
-        doctypeMap.put("aspectran-4.dtd".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("aspectran-5.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 
     AspectranDtdResolver() {
