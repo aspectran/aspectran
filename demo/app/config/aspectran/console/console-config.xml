@@ -1,0 +1,12 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+
+<aspectran>
+
+    <description>
+        This is an Aspectran configuration for printing "Hello, World.".
+    </description>
+
+    <append file="/config/aspectran/console/jetty-control-translets.xml"/>
+
+</aspectran>
