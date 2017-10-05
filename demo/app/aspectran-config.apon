@@ -27,6 +27,6 @@ web: {
 }
 console: {
     mode: jline
-    prompt: "{{BLUE}}Demo{{YELLOW,bold}}>{{off}} "
+    prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
     showDescription: true
 }
