@@ -8,7 +8,7 @@
         <version>4.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>remote-shell</artifactId>
+    <artifactId>aspectran-remote-shell</artifactId>
     <packaging>jar</packaging>
 
     <name>Aspectran Remote Shell</name>
