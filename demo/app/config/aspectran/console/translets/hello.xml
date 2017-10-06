@@ -42,7 +42,7 @@
 
     <translet name="hello">
         <description style="apon">
-            |
+            |---------------------------------------------------------------------------------------------------------
             |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
             |   Maybe the words "Hello, World!" will be printed on the console.
             |   Is it difficult to find the words "Hello, World!" printed on the console?
@@ -56,7 +56,7 @@
 
     <translet name="hello2">
         <description style="apon">
-            |
+            |---------------------------------------------------------------------------------------------------------
             |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console with margins.
             |   Maybe the word "Hello, World" will be printed on the console with proper margin.
             |---------------------------------------------------------------------------------------------------------
