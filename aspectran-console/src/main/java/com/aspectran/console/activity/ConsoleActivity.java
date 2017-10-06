@@ -135,7 +135,7 @@ public class ConsoleActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            consoleInout.setStyle("WHITE");
+            consoleInout.setStyle("underline");
             consoleInout.writeLine("Required parameters:");
             consoleInout.offStyle();
 
@@ -146,7 +146,7 @@ public class ConsoleActivity extends CoreActivity {
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                consoleInout.setStyle("YELLOW");
+                consoleInout.setStyle("GREEN");
                 consoleInout.write(mandatoryMarker);
                 consoleInout.offStyle();
                 consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
@@ -161,7 +161,7 @@ public class ConsoleActivity extends CoreActivity {
 
         if (missingItemRules1 != null) {
             consoleInout.setStyle("YELLOW");
-            consoleInout.writeLine("Please enter a value for all required parameters:");
+            consoleInout.writeLine("Missing required parameters.");
             consoleInout.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
@@ -170,10 +170,11 @@ public class ConsoleActivity extends CoreActivity {
                 String[] itemNames = missingItemRules2.getItemNames();
                 consoleInout.setStyle("RED");
                 consoleInout.writeLine("Missing required parameters:");
-                consoleInout.offStyle();
+                consoleInout.setStyle("WHITE");
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
+                consoleInout.offStyle();
                 terminate("Missing required parameters");
             }
         }
@@ -188,7 +189,7 @@ public class ConsoleActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            consoleInout.setStyle("WHITE");
+            consoleInout.setStyle("underline");
             consoleInout.writeLine("Required attributes:");
             consoleInout.offStyle();
 
@@ -199,7 +200,7 @@ public class ConsoleActivity extends CoreActivity {
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                consoleInout.setStyle("YELLOW");
+                consoleInout.setStyle("GREEN");
                 consoleInout.write(mandatoryMarker);
                 consoleInout.offStyle();
                 consoleInout.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
@@ -214,7 +215,7 @@ public class ConsoleActivity extends CoreActivity {
 
         if (missingItemRules1 != null) {
             consoleInout.setStyle("YELLOW");
-            consoleInout.writeLine("Please enter a value for all required attributes:");
+            consoleInout.writeLine("Missing required attributes.");
             consoleInout.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
@@ -223,17 +224,18 @@ public class ConsoleActivity extends CoreActivity {
                 String[] itemNames = missingItemRules2.getItemNames();
                 consoleInout.setStyle("RED");
                 consoleInout.writeLine("Missing required attributes:");
-                consoleInout.offStyle();
+                consoleInout.setStyle("WHITE");
                 for (String name : itemNames) {
                     consoleInout.writeLine("   %s", name);
                 }
+                consoleInout.offStyle();
                 terminate("Missing required attributes");
             }
         }
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
-        consoleInout.setStyle("bold");
+        consoleInout.setStyle("underline");
         consoleInout.writeLine("Enter a value for each token:");
         consoleInout.offStyle();
 
