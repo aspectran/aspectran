@@ -17,7 +17,12 @@ package com.aspectran.console.inout;
 
 import org.jline.reader.UserInterruptException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**

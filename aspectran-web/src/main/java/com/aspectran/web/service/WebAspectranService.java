@@ -21,8 +21,8 @@ import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.config.AspectranContextConfig;
-import com.aspectran.core.context.builder.config.AspectranWebConfig;
+import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.WebConfig;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
@@ -206,12 +206,12 @@ public class WebAspectranService extends BasicAspectranService {
         WebAspectranService webAspectranService = new WebAspectranService(rootAspectranService);
         AspectranConfig aspectranConfig = rootAspectranService.getAspectranConfig();
         if (aspectranConfig != null) {
-            AspectranWebConfig webConfig = aspectranConfig.getAspectranWebConfig();
+            WebConfig webConfig = aspectranConfig.getWebConfig();
             String defaultServletName = null;
             if (webConfig != null) {
-                webAspectranService.setUriDecoding(webConfig.getString(AspectranWebConfig.uriDecoding));
-                defaultServletName = webConfig.getString(AspectranWebConfig.defaultServletName);
-                webAspectranService.setExposals(webConfig.getStringArray(AspectranWebConfig.exposals));
+                webAspectranService.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
+                defaultServletName = webConfig.getString(WebConfig.defaultServletName);
+                webAspectranService.setExposals(webConfig.getStringArray(WebConfig.exposals));
             }
             webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
         }
@@ -287,21 +287,21 @@ public class WebAspectranService extends BasicAspectranService {
             aspectranConfig = new AspectranConfig();
         }
 
-        AspectranContextConfig contextConfig = aspectranConfig.touchAspectranContextConfig();
-        String rootContext = contextConfig.getString(AspectranContextConfig.root);
-        if (rootContext == null || rootContext.isEmpty()) {
-            contextConfig.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
+        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
+        if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
+            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
         }
 
         WebAspectranService webAspectranService = new WebAspectranService(servletContext);
         webAspectranService.prepare(aspectranConfig);
 
-        AspectranWebConfig webConfig = aspectranConfig.getAspectranWebConfig();
+        WebConfig webConfig = aspectranConfig.getWebConfig();
         String defaultServletName = null;
         if (webConfig != null) {
-            webAspectranService.setUriDecoding(webConfig.getString(AspectranWebConfig.uriDecoding));
-            defaultServletName = webConfig.getString(AspectranWebConfig.defaultServletName);
-            webAspectranService.setExposals(webConfig.getStringArray(AspectranWebConfig.exposals));
+            webAspectranService.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
+            defaultServletName = webConfig.getString(WebConfig.defaultServletName);
+            webAspectranService.setExposals(webConfig.getStringArray(WebConfig.exposals));
         }
 
         webAspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);

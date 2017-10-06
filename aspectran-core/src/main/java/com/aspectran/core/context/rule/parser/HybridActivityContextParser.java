@@ -34,18 +34,18 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ActivityContext parse(String rootContext) throws ActivityContextParserException {
+    public ActivityContext parse(String rootConfigLocation) throws ActivityContextParserException {
         try {
-            if (rootContext == null) {
-                throw new IllegalArgumentException("Argument 'rootContext' must not be null");
+            if (rootConfigLocation == null) {
+                throw new IllegalArgumentException("Argument 'rootConfigLocation' must not be null");
             }
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
-            appendHandler.handle(resolveAppender(rootContext));
+            appendHandler.handle(resolveAppender(rootConfigLocation));
 
             return createActivityContext();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse an ActivityContext with " + rootContext, e);
+            throw new ActivityContextParserException("Failed to parse an ActivityContext with " + rootConfigLocation, e);
         }
     }
 

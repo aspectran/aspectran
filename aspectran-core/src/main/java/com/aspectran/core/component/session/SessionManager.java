@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.Component;
-import com.aspectran.core.context.builder.config.AspectranSessionConfig;
+import com.aspectran.core.context.builder.config.SessionConfig;
 
 /**
  * The session manager initializes and destroys the session handler and session cache.
@@ -27,9 +27,9 @@ public interface SessionManager extends Component {
 
     void setGroupName(String groupName);
 
-    AspectranSessionConfig getSessionConfig();
+    SessionConfig getSessionConfig();
 
-    void setSessionConfig(AspectranSessionConfig sessionConfig);
+    void setSessionConfig(SessionConfig sessionConfig);
 
     SessionDataStore getSessionDataStore();
 

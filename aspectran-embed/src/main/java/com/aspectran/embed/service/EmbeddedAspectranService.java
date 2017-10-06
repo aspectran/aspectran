@@ -25,8 +25,8 @@ import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.config.AspectranContextConfig;
-import com.aspectran.core.context.builder.config.AspectranSessionConfig;
+import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.BasicAspectranService;
@@ -64,7 +64,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("EMB");
 
-        AspectranSessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }
@@ -271,13 +271,13 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     /**
      * Returns a new instance of EmbeddedAspectranService.
      *
-     * @param rootContext the root configuration file
+     * @param rootConfigLocation the root configuration location
      * @return the embedded aspectran service
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService create(String rootContext) throws AspectranServiceException {
+    public static EmbeddedAspectranService create(String rootConfigLocation) throws AspectranServiceException {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootContext(rootContext);
+        aspectranConfig.updateRootConfigLocation(rootConfigLocation);
         return create(aspectranConfig);
     }
 
@@ -289,15 +289,15 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      */
     public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        AspectranContextConfig contextConfig = aspectranConfig.getAspectranContextConfig();
+        ContextConfig contextConfig = aspectranConfig.getContextConfig();
         if (contextConfig == null) {
-            contextConfig = aspectranConfig.newAspectranContextConfig();
+            contextConfig = aspectranConfig.newContextConfig();
         }
 
-        String rootContext = contextConfig.getString(AspectranContextConfig.root);
-        if (rootContext == null || rootContext.isEmpty()) {
-            if (contextConfig.getParameter(AspectranContextConfig.parameters) == null) {
-                contextConfig.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
+        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
+        if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
+            if (contextConfig.getParameter(ContextConfig.parameters) == null) {
+                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
             }
         }
 

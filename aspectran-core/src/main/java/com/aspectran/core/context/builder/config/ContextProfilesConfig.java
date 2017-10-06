@@ -19,28 +19,28 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranSessionFileStoreConfig extends AbstractParameters {
+public class ContextProfilesConfig extends AbstractParameters {
 
-    public static final ParameterDefinition path;
-    public static final ParameterDefinition deleteUnrestorableFiles;
+    public static final ParameterDefinition activeProfiles;
+    public static final ParameterDefinition defaultProfiles;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        path = new ParameterDefinition("path", ParameterValueType.STRING);
-        deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ParameterValueType.STRING);
+        activeProfiles = new ParameterDefinition("active", ParameterValueType.STRING, true);
+        defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            path,
-            deleteUnrestorableFiles
+            activeProfiles,
+            defaultProfiles
         };
     }
 
-    public AspectranSessionFileStoreConfig() {
+    public ContextProfilesConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranSessionFileStoreConfig(String text) {
+    public ContextProfilesConfig(String text) {
         super(parameterDefinitions, text);
     }
 

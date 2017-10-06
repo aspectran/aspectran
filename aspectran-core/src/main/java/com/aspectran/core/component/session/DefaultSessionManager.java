@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.config.AspectranSessionConfig;
-import com.aspectran.core.context.builder.config.AspectranSessionFileStoreConfig;
+import com.aspectran.core.context.builder.config.SessionConfig;
+import com.aspectran.core.context.builder.config.SessionFileStoreConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.StringUtils;
 
@@ -35,7 +35,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     private String groupName;
 
-    private AspectranSessionConfig sessionConfig;
+    private SessionConfig sessionConfig;
 
     private SessionDataStore sessionDataStore;
 
@@ -58,12 +58,12 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     @Override
-    public AspectranSessionConfig getSessionConfig() {
+    public SessionConfig getSessionConfig() {
         return sessionConfig;
     }
 
     @Override
-    public void setSessionConfig(AspectranSessionConfig sessionConfig) {
+    public void setSessionConfig(SessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
     }
 
@@ -104,24 +104,24 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (sessionConfig != null) {
-            if (sessionConfig.isValueAssigned(AspectranSessionConfig.timeout)) {
-                int timeout = sessionConfig.getInt(AspectranSessionConfig.timeout);
+            if (sessionConfig.isValueAssigned(SessionConfig.timeout)) {
+                int timeout = sessionConfig.getInt(SessionConfig.timeout);
                 setDefaultMaxIdleSecs(timeout);
             }
 
             if (getSessionCache().getSessionDataStore() != null) {
-                String storeType = sessionConfig.getString(AspectranSessionConfig.storeType);
+                String storeType = sessionConfig.getString(SessionConfig.storeType);
                 SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
                 if (sessionStoreType == SessionStoreType.FILE) {
                     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                    AspectranSessionFileStoreConfig fileStoreConfig = sessionConfig.getParameters(AspectranSessionConfig.fileStore);
+                    SessionFileStoreConfig fileStoreConfig = sessionConfig.getParameters(SessionConfig.fileStore);
 
-                    String path = fileStoreConfig.getString(AspectranSessionFileStoreConfig.path);
+                    String path = fileStoreConfig.getString(SessionFileStoreConfig.path);
                     if (StringUtils.hasText(path)) {
                         fileSessionDataStore.setStoreDir(new File(path));
                     }
 
-                    Boolean deleteUnrestorableFiles = fileStoreConfig.getBoolean(AspectranSessionFileStoreConfig.deleteUnrestorableFiles);
+                    Boolean deleteUnrestorableFiles = fileStoreConfig.getBoolean(SessionFileStoreConfig.deleteUnrestorableFiles);
                     if (deleteUnrestorableFiles != null) {
                         fileSessionDataStore.setDeleteUnrestorableFiles(deleteUnrestorableFiles);
                     }

@@ -36,7 +36,7 @@ public interface ActivityContextParser {
 
     void setHybridLoad(boolean hybridLoad);
 
-    ActivityContext parse(String rootContext) throws ActivityContextParserException;
+    ActivityContext parse(String rootConfigLocation) throws ActivityContextParserException;
 
     ActivityContext parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 

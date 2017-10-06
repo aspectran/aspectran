@@ -30,11 +30,11 @@ public class AspectranConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        context = new ParameterDefinition("context", AspectranContextConfig.class);
-        session = new ParameterDefinition("session", AspectranSessionConfig.class);
-        scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
-        console = new ParameterDefinition("console", AspectranConsoleConfig.class);
-        web = new ParameterDefinition("web", AspectranWebConfig.class);
+        context = new ParameterDefinition("context", ContextConfig.class);
+        session = new ParameterDefinition("session", SessionConfig.class);
+        scheduler = new ParameterDefinition("scheduler", SchedulerConfig.class);
+        console = new ParameterDefinition("console", ConsoleConfig.class);
+        web = new ParameterDefinition("web", WebConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
             context,
@@ -53,96 +53,96 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterDefinitions, text);
     }
 
-    public AspectranContextConfig newAspectranContextConfig() {
+    public ContextConfig newContextConfig() {
         return newParameters(context);
     }
 
-    public AspectranContextConfig touchAspectranContextConfig() {
+    public ContextConfig touchContextConfig() {
         return touchParameters(context);
     }
 
-    public AspectranContextConfig getAspectranContextConfig() {
+    public ContextConfig getContextConfig() {
         return getParameters(context);
     }
 
-    public void putAspectranContextConfig(AspectranContextConfig aspectranContextConfig) {
-        putValue(context, aspectranContextConfig);
+    public void putContextConfig(ContextConfig contextConfig) {
+        putValue(context, contextConfig);
     }
 
-    public AspectranSessionConfig newAspectranSessionConfig() {
+    public SessionConfig newSessionConfig() {
         return newParameters(session);
     }
 
-    public AspectranSessionConfig touchAspectranSessionConfig() {
+    public SessionConfig touchSessionConfig() {
         return touchParameters(session);
     }
 
-    public AspectranSessionConfig getAspectranSessionConfig() {
+    public SessionConfig getSessionConfig() {
         return getParameters(session);
     }
 
-    public void putAspectranSessionConfig(AspectranSessionConfig aspectranSessionConfig) {
-        putValue(session, aspectranSessionConfig);
+    public void putSessionConfig(SessionConfig sessionConfig) {
+        putValue(session, sessionConfig);
     }
 
-    public AspectranSchedulerConfig newAspectranSchedulerConfig() {
+    public SchedulerConfig newSchedulerConfig() {
         return newParameters(scheduler);
     }
 
-    public AspectranSchedulerConfig touchAspectranSchedulerConfig() {
+    public SchedulerConfig touchSchedulerConfig() {
         return touchParameters(scheduler);
     }
 
-    public AspectranSchedulerConfig getAspectranSchedulerConfig() {
+    public SchedulerConfig getSchedulerConfig() {
         return getParameters(scheduler);
     }
 
-    public void putAspectranSchedulerConfig(AspectranSchedulerConfig aspectranSchedulerConfig) {
-        putValue(scheduler, aspectranSchedulerConfig);
+    public void putSchedulerConfig(SchedulerConfig schedulerConfig) {
+        putValue(scheduler, schedulerConfig);
     }
 
-    public AspectranConsoleConfig newAspectranConsoleConfig() {
+    public ConsoleConfig newConsoleConfig() {
         return newParameters(console);
     }
 
-    public AspectranConsoleConfig touchAspectranConsoleConfig() {
+    public ConsoleConfig touchConsoleConfig() {
         return touchParameters(console);
     }
 
-    public AspectranConsoleConfig getAspectranConsoleConfig() {
+    public ConsoleConfig getConsoleConfig() {
         return getParameters(console);
     }
 
-    public void putAspectranConsoleConfig(AspectranConsoleConfig aspectranConsoleConfig) {
-        putValue(console, aspectranConsoleConfig);
+    public void putConsoleConfig(ConsoleConfig consoleConfig) {
+        putValue(console, consoleConfig);
     }
 
-    public AspectranConsoleConfig newAspectranWebConfig() {
+    public WebConfig newWebConfig() {
         return newParameters(web);
     }
 
-    public AspectranConsoleConfig touchAspectranWebConfig() {
+    public WebConfig touchWebConfig() {
         return touchParameters(web);
     }
 
-    public AspectranWebConfig getAspectranWebConfig() {
+    public WebConfig getWebConfig() {
         return getParameters(web);
     }
 
-    public void putAspectranWebConfig(AspectranWebConfig aspectranWebConfig) {
-        putValue(web, aspectranWebConfig);
+    public void putWebConfig(WebConfig webConfig) {
+        putValue(web, webConfig);
     }
 
-    public void updateRootContext(String rootContext) {
+    public void updateRootConfigLocation(String rootConfigLocation) {
         Parameters contextParameters = touchParameters(context);
-        contextParameters.putValue(AspectranContextConfig.root, rootContext);
+        contextParameters.putValue(ContextConfig.root, rootConfigLocation);
     }
 
     public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
         Parameters schedulerParameters = touchParameters(scheduler);
-        schedulerParameters.putValue(AspectranSchedulerConfig.startDelaySeconds, startDelaySeconds);
-        schedulerParameters.putValue(AspectranSchedulerConfig.waitOnShutdown, waitOnShutdown);
-        schedulerParameters.putValue(AspectranSchedulerConfig.startup, startup);
+        schedulerParameters.putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
+        schedulerParameters.putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
+        schedulerParameters.putValue(SchedulerConfig.startup, startup);
     }
 
 }

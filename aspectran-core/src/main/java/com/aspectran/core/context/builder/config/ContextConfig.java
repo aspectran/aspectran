@@ -20,7 +20,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranContextConfig extends AbstractParameters {
+public class ContextConfig extends AbstractParameters {
 
     public static final ParameterDefinition base;
     public static final ParameterDefinition root;
@@ -38,9 +38,9 @@ public class AspectranContextConfig extends AbstractParameters {
         root = new ParameterDefinition("root", ParameterValueType.STRING);
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
-        profiles = new ParameterDefinition("profiles", AspectranContextProfilesConfig.class);
+        profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
         hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
-        autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
+        autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -55,11 +55,11 @@ public class AspectranContextConfig extends AbstractParameters {
         };
     }
 
-    public AspectranContextConfig() {
+    public ContextConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranContextConfig(String text) {
+    public ContextConfig(String text) {
         super(parameterDefinitions, text);
     }
 

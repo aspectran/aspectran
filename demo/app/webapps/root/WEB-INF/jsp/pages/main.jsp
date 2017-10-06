@@ -1,9 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="panel white t50 b20">
   <div class="undercon" style="text-align:center;font-size:100px;font-weight:bold;color:#ccc;padding:50px 0;">
-    <svg
-      xmlns:svg="http://www.w3.org/2000/svg"
-      xmlns="http://www.w3.org/2000/svg"
+    <svg xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       width="33%" viewBox="0 0 971 971"
       onload="init(evt)">

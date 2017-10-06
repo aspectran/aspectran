@@ -19,7 +19,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranSessionConfig extends AbstractParameters {
+public class SessionConfig extends AbstractParameters {
 
     public static final ParameterDefinition timeout;
     public static final ParameterDefinition evictionPolicy;
@@ -38,7 +38,7 @@ public class AspectranSessionConfig extends AbstractParameters {
         saveOnInactiveEviction = new ParameterDefinition("saveOnInactiveEviction", ParameterValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterDefinition("removeUnloadableSessions", ParameterValueType.BOOLEAN);
         storeType = new ParameterDefinition("storeType", ParameterValueType.STRING);
-        fileStore = new ParameterDefinition("fileStore", AspectranSessionFileStoreConfig.class);
+        fileStore = new ParameterDefinition("fileStore", SessionFileStoreConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
             timeout,
@@ -51,11 +51,11 @@ public class AspectranSessionConfig extends AbstractParameters {
         };
     }
 
-    public AspectranSessionConfig() {
+    public SessionConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranSessionConfig(String text) {
+    public SessionConfig(String text) {
         super(parameterDefinitions, text);
     }
 

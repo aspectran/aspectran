@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.params.AspectranParameters;
@@ -30,7 +30,7 @@ public interface ActivityContextBuilder {
 
     ApplicationAdapter getApplicationAdapter();
 
-    AspectranContextConfig getAspectranContextConfig();
+    ContextConfig getContextConfig();
 
     String getBasePath();
 
@@ -40,9 +40,9 @@ public interface ActivityContextBuilder {
 
     void setAspectranParameters(AspectranParameters aspectranParameters);
 
-    String getRootContext();
+    String getRootConfigLocation();
 
-    void setRootContext(String rootContext);
+    void setRootConfigLocation(String rootConfigLocation);
 
     String getEncoding();
 
@@ -74,7 +74,7 @@ public interface ActivityContextBuilder {
 
     AspectranClassLoader getAspectranClassLoader();
 
-    void initialize(AspectranContextConfig aspectranContextConfig) throws InvalidResourceException;
+    void initialize(ContextConfig aspectranContextConfig) throws InvalidResourceException;
 
     void startReloadingTimer();
 
@@ -82,7 +82,7 @@ public interface ActivityContextBuilder {
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 
-    ActivityContext build(String rootContext) throws ActivityContextBuilderException;
+    ActivityContext build(String rootConfigLocation) throws ActivityContextBuilderException;
 
     ActivityContext build() throws ActivityContextBuilderException;
 

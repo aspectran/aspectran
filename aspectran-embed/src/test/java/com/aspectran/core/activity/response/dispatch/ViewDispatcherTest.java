@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.config.AspectranContextConfig;
+import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -60,9 +60,9 @@ public class ViewDispatcherTest {
     @Before
     public void ready() throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AspectranContextConfig contextConfig = aspectranConfig.newAspectranContextConfig();
+        ContextConfig contextConfig = aspectranConfig.newContextConfig();
 
-        AspectranParameters parameters = contextConfig.newParameters(AspectranContextConfig.parameters);
+        AspectranParameters parameters = contextConfig.newParameters(ContextConfig.parameters);
         parameters.setDefaultTemplateEngineBean("freemarker");
 
         BeanRule freeMarkerConfigurationBeanRule = new BeanRule();

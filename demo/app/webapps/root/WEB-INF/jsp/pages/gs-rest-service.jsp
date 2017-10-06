@@ -212,7 +212,7 @@ function updateApproval(approved) {
   $.ajax({
     type: "PUT",
     url: backend + "/gs-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
-		dataType: "json",
+    dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
     },

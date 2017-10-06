@@ -41,8 +41,8 @@ public class EmbeddedAspectranServiceTest {
 
     @Before
     public void ready() throws Exception {
-        String rootContextLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
-        aspectranService = EmbeddedAspectranService.create(rootContextLocation);
+        String rootConfigLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
+        aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
         aspectranService.start();
     }
 

@@ -18,15 +18,15 @@ scheduler: {
     waitOnShutdown: true
     startup: false
 }
+console: {
+    mode: jline
+    prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
+    showDescription: true
+}
 web: {
     uriDecoding: utf-8
     defaultServletName: default
     exposals: [
         /**
     ]
-}
-console: {
-    mode: jline
-    prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
-    showDescription: true
 }

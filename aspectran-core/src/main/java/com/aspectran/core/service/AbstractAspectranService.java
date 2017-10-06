@@ -21,8 +21,8 @@ import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.config.AspectranContextConfig;
-import com.aspectran.core.context.builder.config.AspectranSchedulerConfig;
+import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.SchedulerConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -41,7 +41,7 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
 
     private AspectranConfig aspectranConfig;
 
-    private AspectranSchedulerConfig aspectranSchedulerConfig;
+    private SchedulerConfig schedulerConfig;
 
     private ActivityContextBuilder activityContextBuilder;
 
@@ -115,9 +115,9 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
 
         try {
             this.aspectranConfig = aspectranConfig;
-            this.aspectranSchedulerConfig = aspectranConfig.getAspectranSchedulerConfig();
+            this.schedulerConfig = aspectranConfig.getSchedulerConfig();
 
-            AspectranContextConfig aspectranContextConfig = aspectranConfig.getAspectranContextConfig();
+            ContextConfig aspectranContextConfig = aspectranConfig.getContextConfig();
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.initialize(aspectranContextConfig);
@@ -155,14 +155,14 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
     }
 
     protected void startSchedulerService() throws Exception {
-        if (this.aspectranSchedulerConfig == null) {
+        if (this.schedulerConfig == null) {
             return;
         }
 
-        boolean schedulerStartup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
-        int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
-        boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
-        String[] exposals = this.aspectranSchedulerConfig.getStringArray(AspectranSchedulerConfig.exposals);
+        boolean schedulerStartup = this.schedulerConfig.getBoolean(SchedulerConfig.startup);
+        int startDelaySeconds = this.schedulerConfig.getInt(SchedulerConfig.startDelaySeconds.getName(), -1);
+        boolean waitOnShutdown = this.schedulerConfig.getBoolean(SchedulerConfig.waitOnShutdown);
+        String[] exposals = this.schedulerConfig.getStringArray(SchedulerConfig.exposals);
 
         if (schedulerStartup) {
             if (startDelaySeconds == -1) {

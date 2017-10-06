@@ -19,34 +19,31 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranConsoleConfig extends AbstractParameters {
+public class WebConfig extends AbstractParameters {
 
-    public static final ParameterDefinition mode;
-    public static final ParameterDefinition prompt;
-    public static final ParameterDefinition showDescription;
+    public static final ParameterDefinition uriDecoding;
+    public static final ParameterDefinition defaultServletName;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        mode = new ParameterDefinition("mode", ParameterValueType.STRING);
-        prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
-        showDescription = new ParameterDefinition("showDescription", ParameterValueType.BOOLEAN);
+        uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
+        defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            mode,
-            prompt,
-            showDescription,
+            uriDecoding,
+            defaultServletName,
             exposals
         };
     }
 
-    public AspectranConsoleConfig() {
+    public WebConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranConsoleConfig(String text) {
+    public WebConfig(String text) {
         super(parameterDefinitions, text);
     }
 

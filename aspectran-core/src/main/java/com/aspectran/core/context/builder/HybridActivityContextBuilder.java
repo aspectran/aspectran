@@ -61,9 +61,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+    public ActivityContext build(String rootConfigLocation) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setRootContext(rootContext);
+            setRootConfigLocation(rootConfigLocation);
             return doBuild();
         }
     }
@@ -81,16 +81,16 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 throw new IllegalStateException("An ActivityContext already activated");
             }
 
-            String rootContext = getRootContext();
+            String rootConfigLocation = getRootConfigLocation();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (rootContext == null && aspectranParameters == null) {
-                throw new IllegalArgumentException("Either context.root or context.parameters must be specified in AspectranContextConfig: " + getAspectranContextConfig());
+            if (rootConfigLocation == null && aspectranParameters == null) {
+                throw new IllegalArgumentException("Either context.root or context.parameters must be specified in AspectranContextConfig: " + getContextConfig());
             }
 
             newAspectranClassLoader();
 
-            log.info("Building an ActivityContext with " + rootContext);
+            log.info("Building an ActivityContext with " + rootConfigLocation);
 
             long startTime = System.currentTimeMillis();
 
@@ -101,8 +101,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             parser.setHybridLoad(isHybridLoad());
 
             ActivityContext activityContext;
-            if (rootContext != null) {
-                activityContext = parser.parse(rootContext);
+            if (rootConfigLocation != null) {
+                activityContext = parser.parse(rootConfigLocation);
             } else {
                 activityContext = parser.parse(aspectranParameters);
             }
@@ -128,7 +128,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             return activityContext;
         } catch (Exception e) {
-            throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + getAspectranContextConfig(), e);
+            throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + getContextConfig(), e);
         }
     }
 

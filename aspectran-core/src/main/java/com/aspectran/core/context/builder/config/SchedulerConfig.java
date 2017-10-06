@@ -19,44 +19,35 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranContextAutoReloadConfig extends AbstractParameters {
+public class SchedulerConfig extends AbstractParameters {
 
-    /**
-     * The reload mode, which is either "hard" or "soft".
-     */
-    public static final ParameterDefinition reloadMode;
-
-    /**
-     * The interval in seconds between scanning the specified resouces for file changes.
-     * If file changes are detected, the activity context is reloaded.
-     */
-    public static final ParameterDefinition scanIntervalSeconds;
-
-    /**
-     *  Defaults to {@code false}, which disables automatic reloading.
-     */
+    public static final ParameterDefinition startDelaySeconds;
+    public static final ParameterDefinition waitOnShutdown;
     public static final ParameterDefinition startup;
+    public static final ParameterDefinition exposals;
 
-    private final static ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        reloadMode = new ParameterDefinition("reloadMode", ParameterValueType.STRING);
-        scanIntervalSeconds = new ParameterDefinition("scanIntervalSeconds", ParameterValueType.INT);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
         startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
+        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            reloadMode,
-            scanIntervalSeconds,
-            startup
+            startDelaySeconds,
+            waitOnShutdown,
+            startup,
+            exposals
         };
     }
 
-    public AspectranContextAutoReloadConfig() {
+    public SchedulerConfig() {
         super(parameterDefinitions);
     }
 
-    public AspectranContextAutoReloadConfig(String text) {
-        super(parameterDefinitions, text);
+    public SchedulerConfig(String plaintext) {
+        super(parameterDefinitions, plaintext);
     }
 
 }

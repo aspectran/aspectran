@@ -30,8 +30,8 @@ public class AspectranSimpleAopTest {
 
     @Before
     public void ready() throws Exception {
-        String rootContextLocation = "classpath:config/aop/simple-aop-test-config.xml";
-        aspectranService = EmbeddedAspectranService.create(rootContextLocation);
+        String rootConfigLocation = "classpath:config/aop/simple-aop-test-config.xml";
+        aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
         aspectranService.start();
     }
 

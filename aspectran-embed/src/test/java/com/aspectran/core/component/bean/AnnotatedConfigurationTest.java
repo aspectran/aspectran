@@ -40,8 +40,8 @@ public class AnnotatedConfigurationTest {
 
     @Before
     public void ready() throws Exception {
-        String rootContextLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
-        aspectranService = EmbeddedAspectranService.create(rootContextLocation);
+        String rootConfigLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
+        aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
         aspectranService.start();
     }
 

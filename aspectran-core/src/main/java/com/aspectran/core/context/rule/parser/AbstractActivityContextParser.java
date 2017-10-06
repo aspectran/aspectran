@@ -268,18 +268,18 @@ abstract class AbstractActivityContextParser implements ActivityContextParser {
         }
     }
 
-    protected RuleAppender resolveAppender(String rootContext) {
+    protected RuleAppender resolveAppender(String rootConfigLocation) {
         RuleAppender appender;
-        if (rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+        if (rootConfigLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            String resource = rootConfigLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             appender = new ResourceRuleAppender(assistant.getClassLoader(), resource);
-        } else if (rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-            String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
+        } else if (rootConfigLocation.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            String filePath = rootConfigLocation.substring(ResourceUtils.FILE_URL_PREFIX.length());
             appender = new FileRuleAppender(filePath);
         } else {
-            appender = new FileRuleAppender(assistant.getBasePath(), rootContext);
+            appender = new FileRuleAppender(assistant.getBasePath(), rootConfigLocation);
         }
-        if (rootContext.toLowerCase().endsWith(".apon")) {
+        if (rootConfigLocation.toLowerCase().endsWith(".apon")) {
             appender.setAppenderFileFormatType(AppenderFileFormatType.APON);
         } else {
             appender.setAppenderFileFormatType(AppenderFileFormatType.XML);
