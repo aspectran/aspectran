@@ -73,12 +73,12 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/finally/thrown", (node, attributes, text) -> {
             String exceptionType = attributes.get("type");
 
-            ExceptionThrownRule etr = new ExceptionThrownRule();
+            AspectAdviceRule aspectAdviceRule = assistant.peekObject();
+            ExceptionThrownRule etr = new ExceptionThrownRule(aspectAdviceRule);
             if (exceptionType != null) {
                 String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
                 etr.setExceptionTypes(exceptionTypes);
             }
-
             assistant.pushObject(etr);
         });
         parser.addNodelet(xpath, "/finally/thrown", new ActionNodeletAdder(assistant));
