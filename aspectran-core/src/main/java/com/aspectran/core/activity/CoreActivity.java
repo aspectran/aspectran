@@ -441,7 +441,7 @@ public class CoreActivity extends BasicActivity {
     @Override
     public void handleException(ExceptionRule exceptionRule) {
         if (log.isDebugEnabled()) {
-            log.debug("Exception handling for raised exception: " + getOriginRaisedException());
+            log.debug("Handling for raised exception: " + getRootCauseOfRaisedException());
         }
 
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
@@ -570,12 +570,12 @@ public class CoreActivity extends BasicActivity {
             return new CoreTranslet(activity);
         }
 
-        //create a custom translet instance
+        // create a custom translet instance
         try {
-            Constructor<?> transletImplementConstructor = transletImplementationClass.getConstructor(CoreActivity.class);
+            Class<?>[] types = new Class<?>[] { CoreActivity.class };
             Object[] args = new Object[] { activity };
-
-            return (CoreTranslet)transletImplementConstructor.newInstance(args);
+            Constructor<?> transletImplementCtor = transletImplementationClass.getConstructor(types);
+            return (CoreTranslet)transletImplementCtor.newInstance(args);
         } catch (Exception e) {
             throw new TransletInstantiationException(transletInterfaceClass, transletImplementationClass, e);
         }

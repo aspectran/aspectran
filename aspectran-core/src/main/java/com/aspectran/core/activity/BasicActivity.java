@@ -48,7 +48,7 @@ public abstract class BasicActivity extends AbstractActivity {
     }
 
     /**
-     * Executes an action.
+     * Executes advice action.
      *
      * @param action the executable action
      */
@@ -65,7 +65,7 @@ public abstract class BasicActivity extends AbstractActivity {
             }
         } catch (Exception e) {
             setRaisedException(e);
-            throw new ActionExecutionException("Failed to execute action " + action, e);
+            throw new ActionExecutionException("Failed to execute advice action " + action, e);
         }
     }
 
@@ -164,7 +164,7 @@ public abstract class BasicActivity extends AbstractActivity {
 
     protected void handleException(ExceptionRule exceptionRule) {
         if (log.isDebugEnabled()) {
-            log.debug("Handle raised exception: " + getOriginRaisedException());
+            log.debug("Handling for raised exception: " + getRootCauseOfRaisedException());
         }
 
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());

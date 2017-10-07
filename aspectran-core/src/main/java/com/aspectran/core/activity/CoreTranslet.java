@@ -403,8 +403,8 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Throwable getOriginRaisedException() {
-        return activity.getOriginRaisedException();
+    public Throwable getRootCauseOfRaisedException() {
+        return activity.getRootCauseOfRaisedException();
     }
 
     @Override

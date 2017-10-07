@@ -522,11 +522,11 @@ public interface Translet extends BeanRegistry, MessageSource {
     Throwable getRaisedException();
 
     /**
-     * Returns the origin raised exception instance.
+     * Returns the innermost one of the chained (wrapped) exceptions.
      *
-     * @return the origin raised exception instance
+     * @return the innermost one of the chained (wrapped) exceptions
      */
-    Throwable getOriginRaisedException();
+    Throwable getRootCauseOfRaisedException();
 
     /**
      * Returns an interface class for the {@code Translet}.

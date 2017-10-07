@@ -185,11 +185,11 @@ public interface Activity extends BeanRegistry {
     Throwable getRaisedException();
 
     /**
-     * Returns an instance of the originally raised exception.
+     * Returns the innermost one of the chained (wrapped) exceptions.
      *
-     * @return an instance of the originally raised exception
+     * @return the innermost one of the chained (wrapped) exceptions
      */
-    Throwable getOriginRaisedException();
+    Throwable getRootCauseOfRaisedException();
 
     /**
      * Sets an instance of the currently raised exception.
