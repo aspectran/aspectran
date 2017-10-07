@@ -71,7 +71,7 @@ public class BeanClassScanner extends ClassScanner {
 
     public void setBeanClassScanFilter(Class<?> beanClassScanFilterClass) {
         try {
-            beanClassScanFilter = (BeanClassScanFilter)beanClassScanFilterClass.newInstance();
+            beanClassScanFilter = (BeanClassScanFilter)ClassUtils.createInstance(beanClassScanFilterClass, false);
         } catch (Exception e) {
             throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
         }

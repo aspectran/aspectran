@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -387,7 +388,7 @@ public class ParameterValue implements Parameter {
         }
 
         try {
-            Parameters p = parametersClass.newInstance();
+            Parameters p = ClassUtils.createInstance(parametersClass, false);
             p.setPrototype(prototype);
             putValue(p);
             return p;

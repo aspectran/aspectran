@@ -220,7 +220,7 @@ public class BeanUtils {
                         return; // don't instantiate child path if value is null
                     } else {
                         try {
-                            child = type.newInstance();
+                            child = ClassUtils.createInstance(type, false);
                             setObject(parent, property, child);
                         } catch (Exception e) {
                             throw new InvocationTargetException(e, "Cannot set value of property '" + name
