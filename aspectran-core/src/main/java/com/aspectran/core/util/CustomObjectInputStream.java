@@ -1,23 +1,22 @@
-//
-//  ========================================================================
-//  Copyright (c) 1995-2017 Mort Bay Consulting Pty. Ltd.
-//  ------------------------------------------------------------------------
-//  All rights reserved. This program and the accompanying materials
-//  are made available under the terms of the Eclipse Public License v1.0
-//  and Apache License v2.0 which accompanies this distribution.
-//
-//      The Eclipse Public License is available at
-//      http://www.eclipse.org/legal/epl-v10.html
-//
-//      The Apache License v2.0 is available at
-//      http://www.opensource.org/licenses/apache2.0.php
-//
-//  You may elect to redistribute this code under either of these licenses.
-//  ========================================================================
-//
+/*
+ * Copyright 2008-2017 Juho Jeong
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.core.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
@@ -26,29 +25,30 @@ import java.lang.reflect.Proxy;
  * For re-inflating serialized objects, this class uses the thread context classloader
  * rather than the jvm's default classloader selection.
  */
-public class ClassLoadingObjectInputStream extends ObjectInputStream {
+public class CustomObjectInputStream extends ObjectInputStream {
 
-    public ClassLoadingObjectInputStream(java.io.InputStream in) throws IOException {
+    public CustomObjectInputStream(InputStream in) throws IOException {
         super(in);
     }
 
-    public ClassLoadingObjectInputStream() throws IOException {
+    public CustomObjectInputStream() throws IOException {
         super();
     }
 
     @Override
-    public Class<?> resolveClass(java.io.ObjectStreamClass cl) throws IOException, ClassNotFoundException {
+    public Class<?> resolveClass(java.io.ObjectStreamClass cl)
+            throws IOException, ClassNotFoundException {
         try {
             return Class.forName(cl.getName(), false, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             return super.resolveClass(cl);
         }
     }
-    
-    @Override
-    protected Class<?> resolveProxyClass(String[] interfaces) throws IOException, ClassNotFoundException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
+    @Override
+    protected Class<?> resolveProxyClass(String[] interfaces)
+            throws IOException, ClassNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         ClassLoader nonPublicLoader = null;
         boolean hasNonPublicInterface = false;
 
@@ -69,7 +69,9 @@ public class ClassLoadingObjectInputStream extends ObjectInputStream {
             classObjs[i] = cl;
         }
         try {
-            return Proxy.getProxyClass(hasNonPublicInterface ? nonPublicLoader : loader, classObjs);
+            @SuppressWarnings("deprecation")
+            Class<?> proxyClass = Proxy.getProxyClass(hasNonPublicInterface ? nonPublicLoader : loader, classObjs);
+            return proxyClass;
         } catch (IllegalArgumentException e) {
             throw new ClassNotFoundException(null, e);
         }    
