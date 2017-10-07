@@ -39,7 +39,7 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { new Integer(1) };
+        Object[] args = { Integer.valueOf(1) };
         Class<?>[] paramTypes = { Integer.class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", null, paramTypes);
@@ -53,7 +53,7 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { new Object[] { new Integer(1), new Integer(2) } };
+        Object[] args = { new Object[] { Integer.valueOf(1), Integer.valueOf(2) } };
         Class<?>[] paramTypes = { Integer[].class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", args, paramTypes);
@@ -116,10 +116,10 @@ public class MethodUtilsTest {
         Class<?> paramTypes1 = Integer[].class;
         Class<?> paramTypes2 = int[].class;
 
-        boolean result1 = ClassUtils.isAssignable(paramTypes1, paramTypes2);
+        boolean result1 = TypeUtils.isAssignable(paramTypes1, paramTypes2);
         assertTrue(result1);
 
-        boolean result2 = ClassUtils.isAssignable(paramTypes2, paramTypes1);
+        boolean result2 = TypeUtils.isAssignable(paramTypes2, paramTypes1);
         assertTrue(result2);
     }
 

@@ -146,7 +146,7 @@ public class ReflectionUtils {
      * @return the type difference weight
      */
     public static float getTypeDifferenceWeight(Class<?> paramType, Object destArg) {
-        if (!ClassUtils.isAssignableValue(paramType, destArg)) {
+        if (!TypeUtils.isAssignableValue(paramType, destArg)) {
             return Float.MAX_VALUE;
         }
         return getTypeDifferenceWeight(paramType, (destArg != null ? destArg.getClass() : null));
@@ -196,9 +196,9 @@ public class ReflectionUtils {
             }
 
             if ((destClass.isPrimitive()
-                    && srcClass.equals(ClassUtils.getPrimitiveWrapper(destClass)))
+                    && srcClass.equals(TypeUtils.getPrimitiveWrapper(destClass)))
                     || (srcClass.isPrimitive()
-                    && destClass.equals(ClassUtils.getPrimitiveWrapper(srcClass)))) {
+                    && destClass.equals(TypeUtils.getPrimitiveWrapper(srcClass)))) {
                 return 0.1f;
             }
         }

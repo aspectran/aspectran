@@ -857,12 +857,12 @@ public class MethodUtils {
                     boolean paramMatch = true;
                     for (int n = 0; n < methodParamSize; n++) {
                         if (args != null) {
-                            if (!ClassUtils.isAssignableValue(methodsParams[n], args[n])) {
+                            if (!TypeUtils.isAssignableValue(methodsParams[n], args[n])) {
                                 paramMatch = false;
                                 break;
                             }
                         } else {
-                            if (!ClassUtils.isAssignable(methodsParams[n], paramTypes[n])) {
+                            if (!TypeUtils.isAssignable(methodsParams[n], paramTypes[n])) {
                                 paramMatch = false;
                                 break;
                             }
