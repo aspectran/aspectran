@@ -288,13 +288,13 @@ public class AponReader extends AponFormat {
                     } else if (parameterValueType == ParameterValueType.BOOLEAN) {
                         parameterValue.putValue(Boolean.valueOf(value));
                     } else if (parameterValueType == ParameterValueType.INT) {
-                        parameterValue.putValue(new Integer(value));
+                        parameterValue.putValue(Integer.valueOf(value));
                     } else if (parameterValueType == ParameterValueType.LONG) {
-                        parameterValue.putValue(new Long(value));
+                        parameterValue.putValue(Long.valueOf(value));
                     } else if (parameterValueType == ParameterValueType.FLOAT) {
-                        parameterValue.putValue(new Float(value));
+                        parameterValue.putValue(Float.valueOf(value));
                     } else if (parameterValueType == ParameterValueType.DOUBLE) {
-                        parameterValue.putValue(new Double(value));
+                        parameterValue.putValue(Double.valueOf(value));
                     }
                 }
             }
