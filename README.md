@@ -43,9 +43,6 @@ Describes the process of developing a simple web application using Aspectran.
 ## [Download](http://www.aspectran.com/getting-started/download/)
 Provides information on downloading the Aspectran library directly and information about Aspectran Atifact for Maven users.
 
-## [User Guides](http://www.aspectran.com/docs/guides/)
-Provides user guide documentation for Aspectran users.
-
 ## [API Reference](http://www.aspectran.com/docs/api/)
 Provides Aspectran API documentation.
 * [http://api.aspectran.com/4.1.0/](http://api.aspectran.com/)
