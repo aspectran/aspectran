@@ -26,7 +26,6 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
 
 /**
  * The Class ResponseRule.
@@ -134,8 +133,12 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     }
 
     public static ResponseRule newInstance(String name, String characterEncoding) {
-        if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
-            throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+        if (characterEncoding != null) {
+            try {
+                Charset.forName(characterEncoding);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Unsupported character encoding name: " + characterEncoding, e);
+            }
         }
 
         ResponseRule responseRule = new ResponseRule();

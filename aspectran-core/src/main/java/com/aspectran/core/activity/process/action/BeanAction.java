@@ -185,8 +185,9 @@ public class BeanAction extends AbstractAction {
         return args;
     }
 
-    private static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap,
-                                       ItemEvaluator evaluator, boolean requiresTranslet)
+    private static Object invokeMethod(Activity activity, Object bean, String methodName,
+                                       ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator,
+                                       boolean requiresTranslet)
         throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;

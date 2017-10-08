@@ -192,7 +192,7 @@ public class RuleToParamsConverter {
     private AppendParameters toAppendParameters(RuleAppender appender) {
         AppendRule appendRule = appender.getAppendRule();
         if (appendRule == null) {
-            throw new IllegalArgumentException("All Appenders except the Root Appender must have an AppendRule");
+            throw new IllegalArgumentException("Every appender except Root Appender requires an AppendRule");
         }
         return toAppendParameters(appendRule);
     }
@@ -393,18 +393,30 @@ public class RuleToParamsConverter {
 
         RequestRule requestRule = transletRule.getRequestRule();
         if (requestRule != null) {
-            RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
-            requestParameters.putValueNonNull(RequestParameters.method, requestRule.getAllowedMethod());
-            requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
+            if (requestRule.isImplicit()) {
+                ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
+                if (parameterItemRuleMap != null) {
+                    transletParameters.putValue(TransletParameters.parameters, toItemHolderParameters(parameterItemRuleMap));
+                }
 
-            ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
-            if (parameterItemRuleMap != null) {
-                requestParameters.putValue(RequestParameters.parameters, toItemHolderParameters(parameterItemRuleMap));
-            }
+                ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+                if (attributeItemRuleMap != null) {
+                    transletParameters.putValue(TransletParameters.attributes, toItemHolderParameters(attributeItemRuleMap));
+                }
+            } else {
+                RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
+                requestParameters.putValueNonNull(RequestParameters.method, requestRule.getAllowedMethod());
+                requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 
-            ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
-            if (attributeItemRuleMap != null) {
-                requestParameters.putValue(RequestParameters.attributes, toItemHolderParameters(attributeItemRuleMap));
+                ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
+                if (parameterItemRuleMap != null) {
+                    requestParameters.putValue(RequestParameters.parameters, toItemHolderParameters(parameterItemRuleMap));
+                }
+
+                ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+                if (attributeItemRuleMap != null) {
+                    requestParameters.putValue(RequestParameters.attributes, toItemHolderParameters(attributeItemRuleMap));
+                }
             }
         }
 

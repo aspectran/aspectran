@@ -77,7 +77,7 @@ class TransletNodeletAdder implements NodeletAdder {
                 TransletRule transletRule = assistant.peekObject();
                 RequestRule requestRule = transletRule.getRequestRule();
                 if (requestRule == null) {
-                    requestRule = RequestRule.newInstance(null, null);
+                    requestRule = RequestRule.newInstance(true);
                     transletRule.setRequestRule(requestRule);
                 }
                 requestRule.setParameterItemRuleMap(irm);
@@ -94,7 +94,7 @@ class TransletNodeletAdder implements NodeletAdder {
                 TransletRule transletRule = assistant.peekObject();
                 RequestRule requestRule = transletRule.getRequestRule();
                 if (requestRule == null) {
-                    requestRule = RequestRule.newInstance(null, null);
+                    requestRule = RequestRule.newInstance(true);
                     transletRule.setRequestRule(requestRule);
                 }
                 requestRule.setAttributeItemRuleMap(irm);

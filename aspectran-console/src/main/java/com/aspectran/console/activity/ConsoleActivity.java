@@ -135,7 +135,7 @@ public class ConsoleActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            consoleInout.setStyle("underline");
+            consoleInout.setStyle("WHITE", "underline");
             consoleInout.writeLine("Required parameters:");
             consoleInout.offStyle();
 
@@ -189,7 +189,7 @@ public class ConsoleActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            consoleInout.setStyle("underline");
+            consoleInout.setStyle("WHITE", "underline");
             consoleInout.writeLine("Required attributes:");
             consoleInout.offStyle();
 

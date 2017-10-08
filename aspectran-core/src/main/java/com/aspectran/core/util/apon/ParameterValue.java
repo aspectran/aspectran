@@ -388,7 +388,8 @@ public class ParameterValue implements Parameter {
         }
 
         try {
-            Parameters p = ClassUtils.createInstance(parametersClass, false);
+            Parameters p = ClassUtils.createInstance(parametersClass);
+            assert p != null;
             p.setPrototype(prototype);
             putValue(p);
             return p;

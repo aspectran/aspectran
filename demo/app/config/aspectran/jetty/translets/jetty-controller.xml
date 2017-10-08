@@ -17,7 +17,7 @@
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |
             </template>
         </transform>
@@ -26,14 +26,14 @@
     <translet name="jetty start">
         <description style="apon">
             |
-            |   {{RED}}Starting the Jetty Server...{{off}}
-            |---------------------------------------------------------------------------------------------------------
+            |   {{WHITE}}Starting the Jetty Server...{{off}}
+            |-----------------------------------------------------------------------------------------
         </description>
         <action bean="jetty.server" method="start"/>
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |
             </template>
         </transform>
@@ -42,14 +42,14 @@
     <translet name="jetty stop">
         <description style="apon">
             |
-            |   {{RED}}Stopping the Jetty Server...{{off}}
-            |---------------------------------------------------------------------------------------------------------
+            |   {{WHITE}}Stopping the Jetty Server...{{off}}
+            |-----------------------------------------------------------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{red}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |
             </template>
         </transform>

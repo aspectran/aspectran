@@ -1,6 +1,6 @@
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.ClassLoadingObjectInputStream;
+import com.aspectran.core.util.CustomObjectInputStream;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
@@ -437,7 +437,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         if (size > 0) {
             // input stream should not be closed here
             Map<String, Object> attributes = new HashMap<>();
-            ObjectInputStream ois =  new ClassLoadingObjectInputStream(is);
+            ObjectInputStream ois =  new CustomObjectInputStream(is);
             for (int i = 0; i < size; i++) {
                 String key = ois.readUTF();
                 Object value = ois.readObject();

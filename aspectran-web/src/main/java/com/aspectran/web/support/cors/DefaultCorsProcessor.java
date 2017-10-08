@@ -145,7 +145,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     @Override
     public void sendError(Translet translet) throws IOException {
-        Throwable t = translet.getOriginRaisedException();
+        Throwable t = translet.getRootCauseOfRaisedException();
 
         if (t instanceof CorsException) {
             CorsException corsException = (CorsException)t;

@@ -75,7 +75,7 @@ public class TransletFileScanner extends FileScanner {
 
     public void setTemplateFileScanFilter(Class<?> templateFileScanFilterClass) {
         try {
-            templateFileScanFilter = (TransletFileScanFilter)ClassUtils.createInstance(templateFileScanFilterClass, false);
+            templateFileScanFilter = (TransletFileScanFilter)ClassUtils.createInstance(templateFileScanFilterClass);
         } catch (Exception e) {
             throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
         }

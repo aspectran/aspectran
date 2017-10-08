@@ -47,17 +47,17 @@ public class BeanInstantiationException extends BeanException {
      * @param cause the root cause
      */
     public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
-        this(cause.getMessage(), beanClass, cause);
+        this(beanClass, cause.getMessage(), cause);
     }
 
     /**
      * Create a new BeanInstantiationException.
      *
-     * @param msg the detail message
      * @param beanClass the offending bean class
+     * @param msg the detail message
      * @param cause the root cause
      */
-    public BeanInstantiationException(String msg, Class<?> beanClass, Throwable cause) {
+    public BeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
         this.beanClass = beanClass;
     }
@@ -65,10 +65,10 @@ public class BeanInstantiationException extends BeanException {
     /**
      * Create a new BeanInstantiationException.
      *
-     * @param msg the detail message
      * @param beanClass the offending bean class
+     * @param msg the detail message
      */
-    public BeanInstantiationException(String msg, Class<?> beanClass) {
+    public BeanInstantiationException(Class<?> beanClass, String msg) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
         this.beanClass = beanClass;
     }

@@ -839,7 +839,9 @@ public class MethodUtils {
             ReflectionUtils.makeAccessible(method); // Default access superclass workaround
             cacheMethod(md, method);
             return method;
-        } catch (NoSuchMethodException e) { /* SWALLOW */ }
+        } catch (NoSuchMethodException e) {
+            // ignore
+        }
 
         // search through all methods
         int paramSize = paramTypes.length;

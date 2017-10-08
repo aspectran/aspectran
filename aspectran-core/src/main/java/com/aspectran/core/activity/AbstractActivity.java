@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -147,7 +148,7 @@ public abstract class AbstractActivity implements Activity {
     public void setRaisedException(Throwable raisedException) {
         if (this.raisedException == null) {
             if (log.isDebugEnabled()) {
-                log.error("Raised exception: ", raisedException);
+                log.error("Raised exception: ", ExceptionUtils.getRootCause(raisedException));
             }
             this.raisedException = raisedException;
         }
@@ -159,15 +160,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public Throwable getOriginRaisedException() {
-        if (raisedException != null) {
-            for (Throwable t = raisedException; t != null; t = t.getCause()) {
-                if (t.getCause() == null) {
-                    return t;
-                }
-            }
-        }
-        return null;
+    public Throwable getRootCauseOfRaisedException() {
+        return ExceptionUtils.getRootCause(raisedException);
     }
 
     /**
@@ -343,7 +337,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Put advice result.
+     * Puts the result of the advice.
      *
      * @param aspectAdviceRule the aspect advice rule
      * @param adviceActionResult the advice action result

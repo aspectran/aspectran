@@ -195,7 +195,7 @@ public class AspectranClassLoader extends ClassLoader {
         }
 
         if (excludeClassNames == null) {
-            excludeClassNames = new HashSet<String>();
+            excludeClassNames = new HashSet<>();
         }
 
         excludeClassNames.add(className);
@@ -375,7 +375,7 @@ public class AspectranClassLoader extends ClassLoader {
             try  {
                 classData = loadClassData(name, root);
             } catch (InvalidResourceException e) {
-                log.error("Failed to load class '" + name + "'", e);
+                log.error("Failed to load class: " + name, e);
             }
 
             if (classData != null) {
@@ -444,7 +444,7 @@ public class AspectranClassLoader extends ClassLoader {
 
             return output.toByteArray();
         } catch (IOException e) {
-            throw new InvalidResourceException("Cannot read a class file '" + url + "'", e);
+            throw new InvalidResourceException("Cannot read a class file: " + url, e);
         }
     }
 

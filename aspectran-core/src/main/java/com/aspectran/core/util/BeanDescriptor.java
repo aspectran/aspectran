@@ -18,7 +18,6 @@ package com.aspectran.core.util;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ReflectPermission;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -116,7 +115,7 @@ public class BeanDescriptor {
     private void addSetterConflict(Map<String, List<Method>> conflictingSetters, String name, Method method) {
         List<Method> list = conflictingSetters.get(name);
         if (list == null) {
-            list = new ArrayList<Method>();
+            list = new ArrayList<>();
             conflictingSetters.put(name, list);
         }
         list.add(method);
@@ -161,19 +160,19 @@ public class BeanDescriptor {
     }
 
     /**
-     * This method returns an array containing all methods declared in this
-     * class and any superclass. We use this method, instead of the simpler
-     * Class.readMethods(), because we want to look for private methods as well.
+     * This method returns an array containing all methods exposed in this
+     * class and any superclass. In the future, Java is not pleased to have
+     * access to private or protected methods.
      *
      * @param cls the class
-     * @return an array containing all methods in this class
+     * @return an array containing all the public methods in this class
      */
     private Method[] getAllMethods(Class<?> cls) {
         Map<String, Method> uniqueMethods = new HashMap<>();
         Class<?> currentClass = cls;
 
         while (currentClass != null) {
-            addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
+            addUniqueMethods(uniqueMethods, currentClass.getMethods());
 
             // we also need to look for interface methods -
             // because the class may be abstract
@@ -194,13 +193,7 @@ public class BeanDescriptor {
         for (Method currentMethod : methods) {
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);
-                // check to see if the method is already known
-                // if it is known, then an extended class must have
-                // overridden a method
                 if (!uniqueMethods.containsKey(signature)) {
-                    if (canAccessPrivateMethods()) {
-                        ReflectionUtils.makeAccessible(currentMethod);
-                    }
                     uniqueMethods.put(signature, currentMethod);
                 }
             }
@@ -224,25 +217,13 @@ public class BeanDescriptor {
         return sb.toString();
     }
 
-    private static boolean canAccessPrivateMethods() {
-        try {
-            SecurityManager securityManager = System.getSecurityManager();
-            if (null != securityManager) {
-                securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
-            }
-        } catch (SecurityException e) {
-            return false;
-        }
-        return true;
-    }
-
     private static String dropCase(String name) {
         if (name.startsWith("is")) {
             name = name.substring(2);
         } else if (name.startsWith("get") || name.startsWith("set")) {
             name = name.substring(3);
         } else {
-            throw new IllegalArgumentException("Error parsing property name '" + name + "'.  Didn't start with 'is', 'get' or 'set'.");
+            throw new IllegalArgumentException("Error parsing property name '" + name + "'; Didn't start with 'is', 'get' or 'set'");
         }
         if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
             name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
@@ -359,7 +340,8 @@ public class BeanDescriptor {
 
     /**
      * Gets an instance of ClassDescriptor for the specified class.
-     * @param clazz the class for which to lookup the method cache.
+     *
+     * @param clazz the class for which to lookup the method cache
      * @return the method cache for the class
      */
     public static BeanDescriptor getInstance(Class<?> clazz) {
@@ -375,6 +357,11 @@ public class BeanDescriptor {
         }
     }
 
+    /**
+     * You can manually turn off caching enabled by default.
+     *
+     * @param cacheEnabling if true, turn caching on; otherwise, turn off caching
+     */
     public static synchronized void setCacheEnabled(boolean cacheEnabling) {
         cacheEnabled = cacheEnabling;
         if (!cacheEnabled) {
@@ -384,6 +371,7 @@ public class BeanDescriptor {
 
     /**
      * Clear the ClassDescriptor cache.
+     *
      * @return the number of cached ClassDescriptor cleared
      */
     public static synchronized int clearCache() {

@@ -596,7 +596,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         }
         if (transletRule.getResponseRuleList() != null) {
             List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-            List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
+            List<ResponseRule> newResponseRuleList = new ArrayList<>(responseRuleList.size());
             for (ResponseRule responseRule : responseRuleList) {
                 ResponseRule rr = replicate(responseRule, newDispatchName);
                 newResponseRuleList.add(rr);

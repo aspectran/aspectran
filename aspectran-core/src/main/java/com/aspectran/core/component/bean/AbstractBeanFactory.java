@@ -41,6 +41,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.util.logging.Log;
@@ -451,17 +452,17 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) throws BeanInstantiationException {
         if (beanClass.isInterface())
-            throw new BeanInstantiationException("Specified class is an interface", beanClass);
+            throw new BeanInstantiationException(beanClass, "Specified class is an interface");
 
         Constructor<?> constructorToUse;
 
         try {
             constructorToUse = getMatchConstructor(beanClass, args);
             if (constructorToUse == null) {
-                constructorToUse = beanClass.getDeclaredConstructor(argTypes);
+                constructorToUse = ClassUtils.findConstructor(beanClass, argTypes);
             }
         } catch (NoSuchMethodException e) {
-            throw new BeanInstantiationException("No default constructor found", beanClass, e);
+            throw new BeanInstantiationException(beanClass, "No default constructor found", e);
         }
 
         return newInstance(constructorToUse, args);
@@ -478,14 +479,14 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 ctor.setAccessible(true);
             }
             return ctor.newInstance(args);
-        } catch (InstantiationException ex) {
-            throw new BeanInstantiationException("Is it an abstract class?", ctor.getDeclaringClass(), ex);
-        } catch (IllegalAccessException ex) {
-            throw new BeanInstantiationException("Has the class definition changed? Is the constructor accessible?", ctor.getDeclaringClass(), ex);
-        } catch (IllegalArgumentException ex) {
-            throw new BeanInstantiationException("Illegal arguments for constructor", ctor.getDeclaringClass(), ex);
-        } catch (InvocationTargetException ex) {
-            throw new BeanInstantiationException("Constructor threw exception", ctor.getDeclaringClass(), ex.getTargetException());
+        } catch (InstantiationException e) {
+            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Is it an abstract class?", e);
+        } catch (IllegalAccessException e) {
+            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Has the class definition changed? Is the constructor accessible?", e);
+        } catch (IllegalArgumentException e) {
+            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Illegal arguments for constructor", e);
+        } catch (InvocationTargetException e) {
+            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Constructor threw exception", e.getTargetException());
         }
     }
 

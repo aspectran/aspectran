@@ -116,7 +116,7 @@ public class AnnotatedConfigParser {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Parsed id based bean rules: " + idBasedBeanRuleMap.size());
+            log.debug("Parsed ID-based bean rules: " + idBasedBeanRuleMap.size());
         }
 
         for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
@@ -130,7 +130,7 @@ public class AnnotatedConfigParser {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Parsed type based bean rules: " + typeBasedBeanRuleMap.size());
+            log.debug("Parsed Type-based bean rules: " + typeBasedBeanRuleMap.size());
         }
 
         for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {

@@ -16,6 +16,9 @@ public class ExceptionUtils {
      * of chained (wrapped) exceptions.
      */
     public static Throwable getRootCause(Throwable t) {
+        if (t == null) {
+            return null;
+        }
         while (t.getCause() != null) {
             t = t.getCause();
         }

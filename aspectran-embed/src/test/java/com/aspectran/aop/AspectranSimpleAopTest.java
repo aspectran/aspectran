@@ -36,9 +36,13 @@ public class AspectranSimpleAopTest {
     }
 
     @Test
-    public void test() throws AspectranServiceException {
-        aspectranService.translet("/aop/test/target1");
-        aspectranService.translet("/aop/test/target2");
+    public void test1() throws AspectranServiceException {
+        aspectranService.translet("aop/test/target1");
+    }
+
+    @Test
+    public void test2() throws AspectranServiceException {
+        aspectranService.translet("aop/test/target2");
     }
 
     @After

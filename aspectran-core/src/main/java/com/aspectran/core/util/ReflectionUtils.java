@@ -46,7 +46,7 @@ public class ReflectionUtils {
                 field.setAccessible(false);
             }
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Could not access field: " + e.getMessage());
+            throw new IllegalStateException("Could not access field: " + field, ExceptionUtils.getRootCause(e));
         }
     }
 
@@ -64,7 +64,7 @@ public class ReflectionUtils {
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalStateException("Could not access method: " + e.getMessage());
+            throw new IllegalStateException("Could not access method: " + method, ExceptionUtils.getRootCause(e));
         }
     }
 
@@ -78,14 +78,20 @@ public class ReflectionUtils {
      * @return true, if successful
      * @see java.lang.reflect.Field#setAccessible
      */
+    @SuppressWarnings("deprecation") // on JDK 9
     public static boolean makeAccessible(Field field) {
-        if ((!Modifier.isPublic(field.getModifiers())
-                || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
-                || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
-            field.setAccessible(true);
-            return true;
+        try {
+            if ((!Modifier.isPublic(field.getModifiers())
+                    || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+                    || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
+                field.setAccessible(true);
+                return true;
+            }
+            return false;
+        } catch (SecurityException se) {
+            Class<?> declClass = field.getDeclaringClass();
+            throw new IllegalArgumentException("Can not access " + field + " (from class " + declClass.getName() + "; failed to set access: " + se.getMessage());
         }
-        return false;
     }
 
     /**
@@ -98,12 +104,18 @@ public class ReflectionUtils {
      * @return true, if successful
      * @see java.lang.reflect.Method#setAccessible
      */
+    @SuppressWarnings("deprecation") // on JDK 9
     public static boolean makeAccessible(Method method) {
-        if ((!Modifier.isPublic(method.getModifiers())
-                || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
-                && !method.isAccessible()) {
-            method.setAccessible(true);
-            return true;
+        try {
+            if ((!Modifier.isPublic(method.getModifiers())
+                    || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+                    && !method.isAccessible()) {
+                method.setAccessible(true);
+                return true;
+            }
+        } catch (SecurityException se) {
+            Class<?> declClass = method.getDeclaringClass();
+            throw new IllegalArgumentException("Can not access " + method + " (from class " + declClass.getName() + "; failed to set access: " + se.getMessage());
         }
         return false;
     }

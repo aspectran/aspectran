@@ -19,7 +19,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
 
 /**
  * The Class RequestRule.
@@ -34,6 +33,8 @@ public class RequestRule {
 
     public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
 
+    private boolean implicit;
+
     private String characterEncoding;
 
     private MethodType allowedMethod;
@@ -43,6 +44,24 @@ public class RequestRule {
     private ItemRuleMap attributeItemRuleMap;
 
     public RequestRule() {
+    }
+
+    /**
+     * Gets whether the request rule is implicitly generated.
+     *
+     * @return true if this request rule is implicit; otherwise false
+     */
+    public boolean isImplicit() {
+        return implicit;
+    }
+
+    /**
+     * Sets whether the request rule is implicitly generated.
+     *
+     * @param implicit whether this request rule is implicit
+     */
+    protected void setImplicit(boolean implicit) {
+        this.implicit = implicit;
     }
 
     /**
@@ -177,9 +196,14 @@ public class RequestRule {
         return tsb.toString();
     }
 
+    public static RequestRule newInstance(boolean implicit) {
+        RequestRule requestRule = new RequestRule();
+        requestRule.setImplicit(implicit);
+        return requestRule;
+    }
+
     public static RequestRule newInstance(String allowedMethod, String characterEncoding) {
         MethodType allowedethodType = null;
-
         if (allowedMethod != null) {
             allowedethodType = MethodType.resolve(allowedMethod);
             if (allowedethodType == null) {
@@ -187,8 +211,12 @@ public class RequestRule {
             }
         }
 
-        if (characterEncoding != null && !Charset.isSupported(characterEncoding)) {
-            throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
+        if (characterEncoding != null) {
+            try {
+                Charset.forName(characterEncoding);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Unsupported character encoding name: " + characterEncoding, e);
+            }
         }
 
         RequestRule requestRule = new RequestRule();

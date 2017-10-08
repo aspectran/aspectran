@@ -19,14 +19,11 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectranService;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AspectranSchedulerTest {
 
     private EmbeddedAspectranService aspectranService;

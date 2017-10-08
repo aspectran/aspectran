@@ -405,6 +405,28 @@ public class ParamsToRuleConverter {
             transletRule.setRequestRule(requestRule);
         }
 
+        ItemHolderParameters parametersItemHolderParameters = transletParameters.getParameters(TransletParameters.parameters);
+        if (parametersItemHolderParameters != null) {
+            RequestRule requestRule = transletRule.getRequestRule();
+            if (requestRule == null) {
+                requestRule = RequestRule.newInstance(true);
+                transletRule.setRequestRule(requestRule);
+            }
+            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
+            requestRule.setParameterItemRuleMap(parameterItemRuleMap);
+        }
+
+        ItemHolderParameters attributesItemHolderParameters = transletParameters.getParameters(TransletParameters.attributes);
+        if (attributesItemHolderParameters != null) {
+            RequestRule requestRule = transletRule.getRequestRule();
+            if (requestRule == null) {
+                requestRule = RequestRule.newInstance(true);
+                transletRule.setRequestRule(requestRule);
+            }
+            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
+            requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
+        }
+
         ContentsParameters contentsParameters = transletParameters.getParameters(TransletParameters.contents);
         if (contentsParameters != null) {
             ContentList contentList = convertAsContentList(contentsParameters);
@@ -479,18 +501,18 @@ public class ParamsToRuleConverter {
     private RequestRule convertAsRequestRule(RequestParameters requestParameters) {
         String allowedMethod = requestParameters.getString(RequestParameters.method);
         String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
-        ItemHolderParameters parameterItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
-        ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
+        ItemHolderParameters parametersItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
+        ItemHolderParameters attributesItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 
         RequestRule requestRule = RequestRule.newInstance(allowedMethod, characterEncoding);
 
-        if (parameterItemHolderParameters != null) {
-            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParameters);
+        if (parametersItemHolderParameters != null) {
+            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
             requestRule.setParameterItemRuleMap(parameterItemRuleMap);
         }
 
-        if (attributeItemHolderParameters != null) {
-            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributeItemHolderParameters);
+        if (attributesItemHolderParameters != null) {
+            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
             requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
         }
 

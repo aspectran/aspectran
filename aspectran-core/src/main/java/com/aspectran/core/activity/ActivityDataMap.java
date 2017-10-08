@@ -24,7 +24,8 @@ import java.util.HashMap;
 /**
  * The Class ActivityDataMap.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ * <p>This class is generally not thread-safe.
+ * It is primarily designed for use in a single thread only.</p>
  */
 public class ActivityDataMap extends HashMap<String, Object> {
 

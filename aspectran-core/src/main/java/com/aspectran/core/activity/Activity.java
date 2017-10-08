@@ -61,33 +61,33 @@ public interface Activity extends BeanRegistry {
     void prepare(String transletName, MethodType requestMethod);
 
     /**
-     * Perform a prepared activity.
+     * Performs prepared activity.
      */
     void perform();
 
     /**
-     * Perform a prepared activity but does not respond to the client.
+     * Performs prepared activity but does not respond to the client.
      */
     void performWithoutResponse();
 
     /**
-     * Finish the activity.
+     * Finish current activity.
      * It must be called before exiting activity.
      */
     void finish();
 
     /**
-     * Throws an Activity Terminated Exception in order to terminate the current activity.
+     * Throws an Activity Terminated Exception to terminate current activity.
      *
      * @throws ActivityTerminatedException if an Activity terminated without completion
      */
     void terminate();
 
     /**
-     * Throws an Activity Terminated Exception in order to terminate the current activity.
+     * Throws an ActivityTerminatedException with the reason for terminating the current activity.
      *
      * @param cause the termination cause
-     * @throws ActivityTerminatedException if an Activity terminated without completion
+     * @throws ActivityTerminatedException the exception to terminate activity
      */
     void terminate(String cause);
 
@@ -129,28 +129,28 @@ public interface Activity extends BeanRegistry {
     Object getProcessResult(String actionId);
 
     /**
-     * Execute the aspect advices.
+     * Execute aspect advices with a given rules.
      *
-     * @param aspectAdviceRuleList the aspect advice rule list
+     * @param aspectAdviceRuleList the aspect advice rules
      */
     void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
 
     /**
-     * Execute the aspect advices without throw exceptions.
+     * Execute aspect advices with a given rules, and does not raise exceptions.
      *
-     * @param aspectAdviceRuleList the aspect advice rule list
+     * @param aspectAdviceRuleList the aspect advice rules
      */
     void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 
     /**
-     * Execute the aspect advice.
+     * Executes an aspect advice with the given rule.
      *
      * @param aspectAdviceRule the aspect advice rule
      */
     void executeAdvice(AspectAdviceRule aspectAdviceRule);
 
     /**
-     * Execute the aspect advice without throw exceptions.
+     * Executes an aspect advice with a given rule, and does not raise an exception.
      *
      * @param aspectAdviceRule the aspect advice rule
      */
