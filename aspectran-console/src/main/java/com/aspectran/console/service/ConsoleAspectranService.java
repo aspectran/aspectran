@@ -39,6 +39,7 @@ import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -65,6 +66,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
     private ConsoleInout consoleInout;
 
     private boolean showDescription;
+
+    private String usage;
 
     private ConsoleAspectranService() throws IOException {
         super(new ConsoleApplicationAdapter());
@@ -120,16 +123,22 @@ public class ConsoleAspectranService extends BasicAspectranService {
         this.showDescription = showDescription;
     }
 
-    public void showDescription() {
-        showDescription(false);
+    public String getUsage() {
+        return usage;
     }
 
-    public void showDescription(boolean force) {
-        if (force || isShowDescription()) {
-            if (getActivityContext().getDescription() != null) {
-                consoleInout.writeLine(getActivityContext().getDescription());
-                consoleInout.flush();
-            }
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
+
+    public void printUsage() {
+        if (StringUtils.hasText(usage)) {
+            consoleInout.write(usage);
+            consoleInout.flush();
+        }
+        if (isShowDescription() && getActivityContext().getDescription() != null) {
+            consoleInout.write(getActivityContext().getDescription());
+            consoleInout.flush();
         }
     }
 
@@ -256,8 +265,8 @@ public class ConsoleAspectranService extends BasicAspectranService {
                 consoleInout.setCommandPrompt(commandPrompt);
             }
             consoleAspectranService.setConsoleInout(consoleInout);
-            boolean showDescription = BooleanUtils.toBoolean(consoleConfig.getBoolean(ConsoleConfig.showDescription));
-            consoleAspectranService.setShowDescription(showDescription);
+            consoleAspectranService.setShowDescription(BooleanUtils.toBoolean(consoleConfig.getBoolean(ConsoleConfig.showDescription)));
+            consoleAspectranService.setUsage(consoleConfig.getString(ConsoleConfig.usage));
             consoleAspectranService.setExposals(consoleConfig.getStringArray(ConsoleConfig.exposals));
         } else {
             consoleAspectranService.setConsoleInout(new SystemConsoleInout());
@@ -273,7 +282,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             @Override
             public void started() {
                 aspectranService.pauseTimeout = 0;
-                aspectranService.showDescription();
+                aspectranService.printUsage();
             }
 
             @Override

@@ -33,6 +33,8 @@ public class AspectranConfigTest {
         AspectranConfig aspectranConfig = new AspectranConfig();
         AponReader.parse(file, aspectranConfig);
 
+        //System.out.println(aspectranConfig.toString());
+
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 
         AponWriter aponWriter = new AponWriter(outputFile);

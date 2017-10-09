@@ -72,7 +72,7 @@ public class ConsoleCommand {
                         service.setShowDescription(false);
                         break;
                     case "help":
-                        service.showDescription(true);
+                        service.printUsage();
                         break ;
                     case "mem":
                         mem(false);

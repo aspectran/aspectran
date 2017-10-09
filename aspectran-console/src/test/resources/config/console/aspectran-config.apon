@@ -20,4 +20,18 @@ console: {
     mode: jline
     prompt: "test-console-app> "
     showDescription: true
+    usage: (
+        |
+        |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}
+        |
+        |{{underline}}Built-in commands for this console application:{{underline:off}}
+        |   {{green}}desc on{{fg:off}} - Prints a description of the command each time the command is executed
+        |   {{green}}desc off{{fg:off}} - Turns off print a description of the command each time the command is executed
+        |   {{green}}help{{fg:off}} - Prints help for the available commands that was displayed at startup
+        |   {{green}}restart{{fg:off}} - Restarts this console application
+        |   {{green}}mem{{fg:off}} - Shows memory usage
+        |   {{green}}gc{{fg:off}} - Performs a garbage collection
+        |   {{green}}quit{{fg:off}} - Exits from this console application
+        |
+    )
 }

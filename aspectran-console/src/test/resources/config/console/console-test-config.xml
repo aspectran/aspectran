@@ -1,20 +1,9 @@
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
 
 <aspectran>
 
     <description style="apon">
-        |
-        |   {{bold}}--- Testing the Aspectran console application ---{{bold:off}}
-        |
-        |{{underline}}Built-in commands for this console application:{{underline:off}}
-        |   {{green}}desc on{{fg:off}} - Prints a description of the command each time the command is executed
-        |   {{green}}desc off{{fg:off}} - Turns off print a description of the command each time the command is executed
-        |   {{green}}help{{fg:off}} - Prints help for the available commands that was displayed at startup
-        |   {{green}}restart{{fg:off}} - Restarts this console application
-        |   {{green}}gc{{fg:off}} - Performs a garbage collection
-        |   {{green}}quit{{fg:off}} - Exits from this console application
-        |
         |Commands that can run the examples:
         |   hello - Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
         |   echo - It accepts parameters and print them to the console.

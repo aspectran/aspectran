@@ -24,6 +24,7 @@ public class ConsoleConfig extends AbstractParameters {
     public static final ParameterDefinition mode;
     public static final ParameterDefinition prompt;
     public static final ParameterDefinition showDescription;
+    public static final ParameterDefinition usage;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -32,12 +33,14 @@ public class ConsoleConfig extends AbstractParameters {
         mode = new ParameterDefinition("mode", ParameterValueType.STRING);
         prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
         showDescription = new ParameterDefinition("showDescription", ParameterValueType.BOOLEAN);
+        usage = new ParameterDefinition("usage", ParameterValueType.TEXT);
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
             mode,
             prompt,
             showDescription,
+            usage,
             exposals
         };
     }

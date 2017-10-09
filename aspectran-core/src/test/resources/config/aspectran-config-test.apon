@@ -16,10 +16,28 @@ context: {
     }
 }
 scheduler: {
-    startDelaySeconds: 10
+    startDelaySeconds: 3
     waitOnShutdown: true
-    startup: true
+    startup: false
+}
+console: {
+    mode: jline
+    prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
+    showDescription: true
+    usage: (
+        |
+        |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}
+
+        |
+        |   ======================================================
+        |
+
+    )
 }
 web: {
     uriDecoding: utf-8
+    defaultServletName: default
+    exposals: [
+        /**
+    ]
 }
