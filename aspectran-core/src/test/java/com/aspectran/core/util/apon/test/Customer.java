@@ -20,25 +20,12 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
-/**
- * 고객정보 레코드를 정의합니다.
- * 임의로 APON의 Parameters 객체를 이용합니다. 
- */
 public class Customer extends AbstractParameters implements Parameters {
 
-    /** 고객번호 */
     public static final ParameterDefinition id;
-
-    /** 이름 */
     public static final ParameterDefinition name;
-
-    /** 나이 */
     public static final ParameterDefinition age;
-
-    /** 에피소드 */
     public static final ParameterDefinition episode;
-
-    /** 승인 여부 */
     public static final ParameterDefinition approved;
 
     private static final ParameterDefinition[] parameterDefinitions;

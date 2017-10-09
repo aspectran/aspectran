@@ -82,7 +82,7 @@ public class InvalidParameterException extends AponException {
      * @return the string
      */
     protected static String createMessage(int lineNumber, String line, String trim, String msg) {
-        int column = (trim != null) ? line.indexOf(trim) : 0;
+        int column = (trim != null ? line.indexOf(trim) : 0);
         StringBuilder sb = new StringBuilder();
         if (msg != null) {
             sb.append(msg);
