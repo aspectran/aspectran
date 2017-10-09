@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.apon.AponFormat;
 
 /**
  * Contains methods to transform a given string to a specific style.
@@ -31,23 +32,32 @@ public class StringStyler {
         StringBuilder sb = new StringBuilder(content.length());
         int start = 0;
         int line = 0;
+        boolean flag = false;
         for (int end = 0; end < content.length(); end++) {
             char c = content.charAt(end);
-            if (start == 0 && c == '|') {
+            if (start == 0 && c == AponFormat.TEXT_LINE_START) {
                 if (line > 0) {
-                    sb.append(ActivityContext.LINE_SEPARATOR);
+                    sb.append(AponFormat.NEXT_LINE_CHAR);
+                    flag = true;
                 }
                 start = end + 1;
                 line++;
             } else if (start > 0) {
                 if (c == '\n' || c == '\r') {
-                    sb.append(content.substring(start, end));
+                    if (end > start) {
+                        sb.append(content.substring(start, end));
+                        flag = false;
+                    }
                     start = 0;
                 }
             }
         }
         if (start > 0) {
-            sb.append(content.substring(start));
+            if (start < content.length()) {
+                sb.append(content.substring(start));
+            }
+        } else if (flag) {
+            sb.append(AponFormat.NEXT_LINE_CHAR);
         }
         return sb.toString();
     }

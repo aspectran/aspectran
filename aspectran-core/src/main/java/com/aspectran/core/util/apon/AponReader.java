@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,17 +50,17 @@ public class AponReader extends AponFormat {
     /**
      * Instantiates a new AponReader.
      *
-     * @param reader the character stream whose content is parsed as APON.
+     * @param reader the character stream whose contents can be parsed as APON
      */
     public AponReader(Reader reader) {
         this.reader = new BufferedReader(reader);
     }
 
     /**
-     * Converts an APON formatted string into a VariableParameters object.
+     * Converts an APON formatted string into a {@link VariableParameters} object.
      *
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public Parameters read() throws IOException {
         Parameters parameters = new VariableParameters();
@@ -71,7 +73,7 @@ public class AponReader extends AponFormat {
      * @param <T> the generic type
      * @param parameters the parameters object
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public <T extends Parameters> T read(T parameters) throws IOException {
         addable = parameters.isAddable();
@@ -80,17 +82,16 @@ public class AponReader extends AponFormat {
     }
 
     /**
-     * Creates a Parameters object by parsing the content of the specified character stream as APON.
+     * Creates a {@link Parameters} object by parsing the content of the specified character stream as APON.
      *
      * @param parameters the parameters
      * @param openBracket the left bracket character
      * @param name the parameter name
      * @param parameterValue the parameter value
      * @param parameterValueType the value type of the parameter
-     * @return the current line number
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
-    private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
+    private void valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
             ParameterValueType parameterValueType) throws IOException {
         Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 
@@ -115,12 +116,12 @@ public class AponReader extends AponFormat {
                 vlen = value.length();
                 cchar = (vlen == 1) ? value.charAt(0) : NO_CONTROL_CHAR;
                 if (SQUARE_BRACKET_CLOSE == cchar) {
-                    return lineNumber;
+                    return;
                 }
             } else {
                 if (tlen == 1) {
                     if (openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0)) {
-                        return lineNumber;
+                        return;
                     }
                 }
 
@@ -207,9 +208,7 @@ public class AponReader extends AponFormat {
                     parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
                 }
                 if (ROUND_BRACKET_OPEN == cchar) {
-                    StringBuilder sb = new StringBuilder();
-                    valuelizeText(sb);
-                    parameterValue.putValue(sb.toString());
+                    parameterValue.putValue(valuelizeText());
                 } else if (NULL.equals(value)) {
                     parameterValue.putValue(null);
                 } else {
@@ -311,31 +310,39 @@ public class AponReader extends AponFormat {
         } else if (openBracket == SQUARE_BRACKET_OPEN) {
             throw new MissingClosingBracketException("square", name, parameterValue);
         }
-
-        return lineNumber;
     }
 
-    private int valuelizeText(StringBuilder sb) throws IOException {
+    private String valuelizeText() throws IOException {
         String line;
         String trim = null;
+        String str = null;
         int tlen;
         char tchar;
+        StringBuilder sb = null;
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
             trim = line.trim();
             tlen = trim.length();
-            tchar = tlen > 0 ? trim.charAt(0) : NO_CONTROL_CHAR;
+            tchar = (tlen > 0 ? trim.charAt(0) : NO_CONTROL_CHAR);
 
             if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar) {
-                return lineNumber;
+                if (str != null && str.length() == 0) {
+                    sb.append(NEXT_LINE_CHAR);
+                }
+                return (sb != null ? sb.toString() : StringUtils.EMPTY);
             }
 
             if (TEXT_LINE_START == tchar) {
-                if (sb.length() > 0) {
+                if (sb == null) {
+                    sb = new StringBuilder();
+                } else {
                     sb.append(NEXT_LINE_CHAR);
                 }
-                sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
+                str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
+                if (str.length() > 0) {
+                    sb.append(str);
+                }
             } else if (tlen > 0) {
                 throw new InvalidParameterException(lineNumber, line, trim,
                         "The closing round bracket was missing or Each text line is must start with a ';' character");
@@ -361,7 +368,7 @@ public class AponReader extends AponFormat {
     /**
      * Closes the reader.
      *
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public void close() throws IOException {
         if (reader != null) {
@@ -405,7 +412,7 @@ public class AponReader extends AponFormat {
      *
      * @param file the file to parse
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(File file) throws IOException {
         return parse(file, (String)null);
@@ -417,7 +424,7 @@ public class AponReader extends AponFormat {
      * @param file the file to parse
      * @param encoding the character encoding
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(File file, String encoding) throws IOException {
         Parameters parameters = new VariableParameters();
@@ -431,7 +438,7 @@ public class AponReader extends AponFormat {
      * @param file the file to parse
      * @param parameters the parameters object
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(File file, T parameters) throws IOException {
         return parse(file, null, parameters);
@@ -445,7 +452,7 @@ public class AponReader extends AponFormat {
      * @param encoding the character encoding
      * @param parameters the parameters object
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(File file, String encoding, T parameters) throws IOException {
         AponReader aponReader = null;
@@ -467,8 +474,8 @@ public class AponReader extends AponFormat {
      * Converts to a Parameters object from a character-input stream.
      *
      * @param reader the character-input stream
-     * @return the parameters
-     * @throws IOException an I/O error occurs.
+     * @return the parameters object
+     * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(Reader reader) throws IOException {
         AponReader aponReader = new AponReader(reader);
@@ -482,7 +489,7 @@ public class AponReader extends AponFormat {
      * @param reader the character-input stream
      * @param parameters the parameters object
      * @return the parameters object
-     * @throws IOException an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(Reader reader, T parameters) throws IOException {
         AponReader aponReader = new AponReader(reader);

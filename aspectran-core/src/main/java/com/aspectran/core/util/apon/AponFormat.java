@@ -29,7 +29,7 @@ public class AponFormat {
 
     protected static final char ROUND_BRACKET_CLOSE = ')';
 
-    protected static final char TEXT_LINE_START = '|';
+    public static final char TEXT_LINE_START = '|';
 
     protected static final char NAME_VALUE_SEPARATOR = ':';
 
@@ -43,7 +43,7 @@ public class AponFormat {
 
     protected static final char ESCAPE_CHAR = '\\';
 
-    protected static final char NEXT_LINE_CHAR = '\n';
+    public static final char NEXT_LINE_CHAR = '\n';
 
     protected static final String INDENT_STRING = "\t";
 
