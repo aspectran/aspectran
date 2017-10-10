@@ -8,10 +8,10 @@ if [ $TRAVIS_REPO_SLUG == "aspectran/aspectran" ] && [ "$TRAVIS_PULL_REQUEST" ==
   if [ $TRAVIS_JDK_VERSION == "oraclejdk8" ]; then
 
     # Deploy to sonatype
-    ./mvnw clean deploy -Dmaven.test.skip=true -q --settings ./travis/settings.xml
+    ./mvnw clean deploy -Dmaven.test.skip=true -q --settings ./.travis/settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
 
-    ./mvnw clean test jacoco:report coveralls:report -q --settings ./travis/settings.xml
+    ./mvnw clean test jacoco:report coveralls:report -q --settings ./.travis/settings.xml
     echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
 
   else
