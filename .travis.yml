@@ -12,15 +12,15 @@ cache:
 
 before_install:
   - chmod +x mvnw
-  - chmod +x ./travis/install.sh
-  - chmod +x ./travis/after_success.sh
+  - chmod +x ./.travis/install.sh
+  - chmod +x ./.travis/after_success.sh
   - echo "MAVEN_OPTS='-Dlicense.skip=true'" > ~/.mavenrc
 
 install:
-  - ./travis/install.sh
+  - ./.travis/install.sh
 
 after_success:
-  - ./travis/after_success.sh
+  - ./.travis/after_success.sh
 
 env:
   global:

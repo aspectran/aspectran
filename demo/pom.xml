@@ -159,12 +159,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-web</artifactId>
+            <artifactId>aspectran-remote</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-remote-shell</artifactId>
+            <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

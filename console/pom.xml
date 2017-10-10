@@ -38,6 +38,11 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.aesh</groupId>
+            <artifactId>aesh-readline</artifactId>
+            <version>1.1</version>
+        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.javassist</groupId>
