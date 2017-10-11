@@ -377,8 +377,6 @@
     <profiles>
         <profile>
             <id>full</id>
-            <!-- Only include in full profile as this will not work on Java9 yet -->
-            <!-- https://issues.apache.org/jira/browse/JXR-133 -->
             <build>
                 <plugins>
                     <!-- Generate Xref -->
