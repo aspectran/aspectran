@@ -11,7 +11,7 @@
     <artifactId>aspectran-demo</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran Demo App</name>
+    <name>Aspectran Demo</name>
 
     <licenses>
         <license>
