@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * A package for building console-based applications based on the Aspectran infrastructure.
+ * Provides an interface for executing commands in an application built with Aspectran.
  */
 package com.aspectran.console;

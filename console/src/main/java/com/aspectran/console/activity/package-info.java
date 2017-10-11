@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the activity interface for console-based application.
+ * Contains a variant of the activity interface for command-line application.
  */
 package com.aspectran.console.activity;

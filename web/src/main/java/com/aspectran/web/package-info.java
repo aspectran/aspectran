@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * A package for building web applications based on the Aspectran infrastructure.
+ * Provides overall functionality for building web applications within a web application container.
  */
 package com.aspectran.web;

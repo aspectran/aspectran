@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Aspectran is a Java framework for building Web and command-line applications.
+ * Supports for building standalone Web application that is built-in Jetty server.
  */
-package com.aspectran;
+package com.aspectran.with.jetty;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the adapter interface for console-based application.
+ * Contains a variant of the adapter interface for command-line application.
  */
 package com.aspectran.console.adapter;
