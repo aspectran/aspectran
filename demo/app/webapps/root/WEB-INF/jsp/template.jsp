@@ -33,7 +33,7 @@
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Quick Start Guide" />
-    <meta property="og:description" content="Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications." />
+    <meta property="og:description" content="Aspectran is a Java framework for building Web and command-line applications." />
     <meta property="og:url" content="http://www.aspectran.com/getting-started/quickstart/" />
     <meta property="og:site_name" content="Aspectran" />
     <!-- Search Engine Optimization -->
@@ -164,7 +164,7 @@
             <div class="medium-4 large-4 columns">
                 <a href="http://www.aspectran.com/info/"><h5>About Aspectran</h5></a>
                 <p>
-                    <a href="http://www.aspectran.com/info/">Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications.</a>
+                    <a href="http://www.aspectran.com/info/">Aspectran is a Java framework for building Web and command-line applications.</a>
                 </p>
             </div>
             <div class="small-6 medium-3 large-3 large-offset-1 columns">
