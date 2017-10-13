@@ -16,6 +16,7 @@
     <name>Aspectran All-in-One</name>
 
     <properties>
+        <main.basedir>${project.parent.basedir}</main.basedir>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
         <dependencyVersionsDir>${project.build.directory}/versions</dependencyVersionsDir>
     </properties>
@@ -391,13 +392,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <linkJavadoc>true</linkJavadoc>
-                            <destDir>${project.build.directory}/xref</destDir>
-                            <javadocDir>${project.build.directory}/api</javadocDir>
-                            <docTitle>Aspectran Source Xref (${project.version})</docTitle>
-                            <windowTitle>Aspectran Source Xref (${project.version})</windowTitle>
-                        </configuration>
                     </plugin>
 
                     <!-- Generate Javadoc -->
@@ -409,26 +403,6 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
-                                <configuration>
-                                    <excludePackageNames>*.demo</excludePackageNames>
-                                    <docfilessubdirs>true</docfilessubdirs>
-                                    <outputDirectory>${project.build.directory}/api</outputDirectory>
-                                    <overview>${project.basedir}/src/javadoc/overview.html</overview>
-                                    <doctitle>Aspectran API Reference (${project.version})</doctitle>
-                                    <windowtitle>Aspectran API Reference (${project.version})</windowtitle>
-                                    <locale>en_US</locale>
-                                    <archive>
-                                        <manifest>
-                                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                        </manifest>
-                                        <manifestEntries>
-                                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                                        </manifestEntries>
-                                    </archive>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

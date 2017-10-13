@@ -21,6 +21,10 @@
     </licenses>
     <inceptionYear>2008</inceptionYear>
 
+    <properties>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
+
     <build>
         <outputDirectory>target/classes</outputDirectory>
         <plugins>

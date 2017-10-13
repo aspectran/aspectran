@@ -79,6 +79,7 @@
     </modules>
 
     <properties>
+        <main.basedir>${project.basedir}</main.basedir>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
@@ -238,34 +239,47 @@
                     <artifactId>license-maven-plugin</artifactId>
                     <version>3.0</version>
                     <configuration>
-                        <header>${project.basedir}/license.txt</header>
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
+                        <header>${main.basedir}/header-template.txt</header>
+                        <failIfMissing>true</failIfMissing>
+                        <aggregate>true</aggregate>
+                        <strictCheck>true</strictCheck>
+                        <properties>
+                            <copyright-range>${project.inceptionYear}-2017</copyright-range>
+                        </properties>
                         <mapping>
                             <java>SLASHSTAR_STYLE</java>
                         </mapping>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>core/src/main/java/com/aspectran/core/util/logging/**</exclude>
+                            <exclude>core/src/main/java/com/aspectran/core/util/statistic/**</exclude>
+                            <exclude>core/src/main/java/com/aspectran/core/util/xml/**</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
 
                 <!-- Antrun here only to override eclipse settings -->
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>1.8</version>
                 </plugin>
 
                 <!-- Assembly here only to override eclipse settings -->
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.2</version>
                 </plugin>
 
                 <plugin>
@@ -290,7 +304,26 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                                <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                            </manifestEntries>
+                            <index>true</index>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.0.1</version>
                     <configuration>
@@ -309,54 +342,63 @@
                 </plugin>
 
                 <plugin>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <linkJavadoc>true</linkJavadoc>
+                        <destDir>${project.build.directory}/xref</destDir>
+                        <javadocDir>${project.build.directory}/api</javadocDir>
+                        <docTitle>Aspectran Source Xref (${project.version})</docTitle>
+                        <windowTitle>Aspectran Source Xref (${project.version})</windowTitle>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <excludePackageNames>*.demo</excludePackageNames>
+                        <docfilessubdirs>true</docfilessubdirs>
+                        <outputDirectory>${project.build.directory}/api</outputDirectory>
+                        <doctitle>Aspectran API Reference (${project.version})</doctitle>
+                        <windowtitle>Aspectran API Reference (${project.version})</windowtitle>
+                        <locale>en_US</locale>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.eluder.coveralls</groupId>
                     <artifactId>coveralls-maven-plugin</artifactId>
                     <version>4.3.0</version>
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.0.2</version>
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                    <configuration>
-                        <deployAtEnd>true</deployAtEnd>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>2.5.2</version>
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
                     <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <releaseProfiles>release</releaseProfiles>
+                        <deployAtEnd>true</deployAtEnd>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.1.0</version>
                 </plugin>
 
                 <plugin>
@@ -366,7 +408,6 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.6</version>
                     <executions>
@@ -380,7 +421,6 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.20.1</version>
                     <configuration>
@@ -393,12 +433,6 @@
                             <exclude>**/*TestUtil*</exclude>
                         </excludes>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>2.5</version>
                 </plugin>
 
                 <plugin>
@@ -418,7 +452,6 @@
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M1</version>
                 <executions>
@@ -509,7 +542,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
@@ -522,43 +554,28 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0-M1</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                        </manifestEntries>
-                    </archive>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <breakiterator>true</breakiterator>
+                    <version>false</version>
+                    <author>false</author>
+                    <keywords>true</keywords>
                 </configuration>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                        </manifestEntries>
-                        <index>true</index>
-                    </archive>
-                </configuration>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -612,7 +629,7 @@
                                 <propertyregex property="longCommitHash" input="${gitOutput.lastCommit}" regexp="^[0-9a-f]+ ([0-9a-f]{40}) .*$" select="\1" casesensitive="true" defaultValue="0000000000000000000000000000000000000000" />
                                 <propertyregex property="commitDate" input="${gitOutput.lastCommit}" regexp="^[0-9a-f]+ [0-9a-f]{40} (.*)$" select="\1" casesensitive="true" defaultValue="1970-01-01 00:00:00 +0000" />
 
-                                <!-- Get the information abount whether the repository is clean or dirty -->
+                                <!-- Get the information about whether the repository is clean or dirty -->
                                 <exec executable="git" outputproperty="gitOutput.repoStatus" resultproperty="gitExitCode.repoStatus" failonerror="false" failifexecutionfails="false">
                                     <arg value="status" />
                                     <arg value="--porcelain" />
@@ -639,9 +656,6 @@
                                 <echo>Current commit: ${shortCommitHash} on ${commitDate}</echo>
 
                                 <!-- Generate the .properties file. -->
-                                <!--
-                                <property name="metaInfDir" value="${project.basedir}/src/main/resources/META-INF" />
-                                -->
                                 <property name="metaInfDir" value="${project.build.outputDirectory}/META-INF" />
                                 <property name="versionPropFile" value="${metaInfDir}/${project.groupId}.versions.properties" />
                                 <mkdir dir="${metaInfDir}" />
@@ -689,9 +703,11 @@
     <reporting>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>2.9</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -737,13 +753,11 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.20.1</version>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-changes-plugin</artifactId>
                 <version>2.12.1</version>
                 <configuration>
@@ -796,16 +810,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
-                <version>2.8</version>
-                <configuration>
-                    <comparisonVersion>${clirr.comparisonVersion}</comparisonVersion>
-                </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.4</version>
             </plugin>
 
             <plugin>
@@ -828,17 +837,12 @@
     <profiles>
         <profile>
             <id>license</id>
-            <activation>
-                <file>
-                    <!-- project.basedir is invalid in this location, use basedir -->
-                    <exists>${basedir}/license.txt</exists>
-                </file>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.mycila</groupId>
                         <artifactId>license-maven-plugin</artifactId>
+                        <version>3.0</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
@@ -857,7 +861,6 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
@@ -870,7 +873,6 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <executions>
                             <execution>
@@ -878,32 +880,11 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
-                                <configuration>
-                                    <excludePackageNames>*.demo</excludePackageNames>
-                                    <docfilessubdirs>true</docfilessubdirs>
-                                    <outputDirectory>${project.build.directory}/api</outputDirectory>
-                                    <overview>${project.basedir}/src/javadoc/overview.html</overview>
-                                    <doctitle>Aspectran API Reference (${project.version})</doctitle>
-                                    <windowtitle>Aspectran API Reference (${project.version})</windowtitle>
-                                    <locale>en_US</locale>
-                                    <archive>
-                                        <manifest>
-                                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                        </manifest>
-                                        <manifestEntries>
-                                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                                        </manifestEntries>
-                                    </archive>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
 
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.6</version>
                         <executions>
