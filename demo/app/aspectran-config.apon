@@ -20,7 +20,7 @@ scheduler: {
 }
 console: {
     mode: jline
-    prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
+    prompt: "{{GREEN}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
     showDescription: true
     usage: (
         |
