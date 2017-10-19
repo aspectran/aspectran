@@ -172,60 +172,49 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     /**
-     * Add a package name to exclude.
+     * Adds packages that this ClassLoader should not handle.
+     * Any class whose fully-qualified name starts with the name registered here will be handled
+     * by the parent ClassLoader in the usual fashion.
      *
-     * @param packageName the package name to exclude
+     * @param packageNames package names that we be compared against fully qualified package names to exclude
      */
-    public void excludePackage(String packageName) {
-        if (excludePackageNames == null) {
-            excludePackageNames = new HashSet<>();
+    public void excludePackage(String... packageNames) {
+        if (packageNames == null) {
+            excludePackageNames = null;
+        } else {
+            for (String packageName : packageNames) {
+                if (excludePackageNames == null) {
+                    excludePackageNames = new HashSet<>();
+                }
+                excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR_CHAR);
+            }
         }
-
-        excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR_CHAR);
     }
 
     /**
-     * Add a class name to exclude.
+     * Adds classes that this ClassLoader should not handle.
+     * Any class whose fully-qualified name starts with the name registered here will be handled
+     * by the parent ClassLoader in the usual fashion.
      *
-     * @param className the class name to exclude
+     * @param classNames class names that we be compared against fully qualified class names to exclude
      */
-    public void excludeClass(String className) {
-        if (isExcludePackage(className)) {
-            return;
-        }
-
-        if (excludeClassNames == null) {
-            excludeClassNames = new HashSet<>();
-        }
-
-        excludeClassNames.add(className);
-    }
-
-    public void excludePackage(String[] packageNames) {
-        if (packageNames == null) {
-            excludePackageNames = null;
-            return;
-        }
-
-        for (String packageName : packageNames) {
-            excludePackage(packageName);
-        }
-    }
-
-    public void excludeClass(String[] classNames) {
+    public void excludeClass(String... classNames) {
         if (classNames == null) {
             excludeClassNames = null;
-            return;
-        }
-
-        for (String className : classNames) {
-            excludeClass(className);
+        } else {
+            for (String className : classNames) {
+                if (!isExcludePackage(className)) {
+                    if (excludeClassNames == null) {
+                        excludeClassNames = new HashSet<>();
+                    }
+                    excludeClassNames.add(className);
+                }
+            }
         }
     }
 
     private boolean isExcluded(String className) {
-        return isExcludePackage(className) || isExcludeClass(className);
-
+        return (isExcludePackage(className) || isExcludeClass(className));
     }
 
     private boolean isExcludePackage(String className) {
@@ -236,7 +225,6 @@ public class AspectranClassLoader extends ClassLoader {
                 }
             }
         }
-
         return false;
     }
 
@@ -341,7 +329,6 @@ public class AspectranClassLoader extends ClassLoader {
         List<URL> resources = new LinkedList<>();
 
         URL url;
-
         while (res.hasMoreElements()) {
             url = res.nextElement();
             if (!ResourceUtils.URL_PROTOCOL_JAR.equals(url.getProtocol())) {

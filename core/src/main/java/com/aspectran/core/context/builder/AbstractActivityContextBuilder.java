@@ -200,21 +200,23 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected void newAspectranClassLoader() throws InvalidResourceException {
         if (aspectranClassLoader == null || hardReload) {
+            // The major packages in Aspectran are excluded because they
+            // are already loaded by the parent class loader running Aspectran.
             String[] excludePackageNames = new String[] {
                     "com.aspectran.console",
                     "com.aspectran.core",
-                    "com.aspectran.embedded",
                     "com.aspectran.scheduler",
-                    "com.aspectran.web"
+                    "com.aspectran.embed",
+                    "com.aspectran.remote",
+                    "com.aspectran.web",
+                    "com.aspectran.with.jetty"
             };
 
             AspectranClassLoader acl = new AspectranClassLoader();
             acl.excludePackage(excludePackageNames);
-
             if (resourceLocations != null && resourceLocations.length > 0) {
                 acl.setResourceLocations(resourceLocations);
             }
-
             aspectranClassLoader = acl;
             applicationAdapter.setClassLoader(acl);
         }
