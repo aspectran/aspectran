@@ -40,23 +40,25 @@ public interface ConsoleInout {
 
     String readLine(String prompt);
 
-    String readLine(String format, Object ...args);
+    String readLine(String format, Object... args);
 
     String readPassword();
 
     String readPassword(String prompt);
 
-    String readPassword(String format, Object ...args);
+    String readPassword(String format, Object... args);
 
     void write(String string);
 
-    void write(String format, Object ...args);
+    void write(String format, Object... args);
 
     void writeLine(String string);
 
-    void writeLine(String format, Object ...args);
+    void writeLine(String format, Object... args);
 
     void writeLine();
+
+    void clearScreen();
 
     void flush();
 

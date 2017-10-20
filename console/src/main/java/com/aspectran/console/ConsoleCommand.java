@@ -64,15 +64,18 @@ public class ConsoleCommand {
                         service.resume();
                         break;
                     case "desc on":
-                        log.info("Descripton On");
+                        log.info("Description On");
                         service.setShowDescription(true);
                         break;
                     case "desc off":
-                        log.info("Descripton Off");
+                        log.info("Description Off");
                         service.setShowDescription(false);
                         break;
                     case "help":
                         service.printUsage();
+                        break ;
+                    case "clear":
+                        consoleInout.clearScreen();
                         break ;
                     case "mem":
                         mem(false);

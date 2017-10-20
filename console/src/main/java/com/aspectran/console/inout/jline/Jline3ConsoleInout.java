@@ -166,6 +166,12 @@ public class Jline3ConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
+    public void clearScreen() {
+        writeRawText("\033[2J");
+        flush();
+    }
+
+    @Override
     public void flush() {
         try {
             getWriter().flush();

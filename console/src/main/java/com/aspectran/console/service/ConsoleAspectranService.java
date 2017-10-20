@@ -190,7 +190,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
             activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            log.info("Unregistered Translet: " + command);
+            log.info("translet: " + command + ": command not found");
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Translet did not complete and terminated: " + e.getMessage());

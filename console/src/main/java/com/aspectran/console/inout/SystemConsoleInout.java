@@ -91,7 +91,7 @@ public class SystemConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
-    public void write(String format, Object ...args) {
+    public void write(String format, Object... args) {
         System.console().format(format, args);
     }
 
@@ -101,7 +101,7 @@ public class SystemConsoleInout extends AbstractConsoleInout {
     }
 
     @Override
-    public void writeLine(String format, Object ...args) {
+    public void writeLine(String format, Object... args) {
         write(format, args);
         System.out.println();
     }
@@ -109,6 +109,11 @@ public class SystemConsoleInout extends AbstractConsoleInout {
     @Override
     public void writeLine() {
         System.out.println();
+    }
+
+    @Override
+    public void clearScreen() {
+        // Nothing to do
     }
 
     @Override
