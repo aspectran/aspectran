@@ -9,9 +9,10 @@
 
     <environment>
         <properties>
-            <item name="jetty.server.port" value="8080"/>
-            <item name="jetty.server.minThreads" value="10"/>
-            <item name="jetty.server.maxThreads" value="100"/>
+            <item name="jetty.startup" value="false" valueType="boolean"/>
+            <item name="jetty.server.port" value="8080" valueType="int"/>
+            <item name="jetty.server.minThreads" value="10" valueType="int"/>
+            <item name="jetty.server.maxThreads" value="100" valueType="int"/>
         </properties>
     </environment>
 
@@ -24,7 +25,7 @@
             </arguments>
         </constructor>
         <properties>
-            <item name="autoStart" valueType="boolean">true</item>
+            <item name="autoStart" value="%{jetty.startup}"/>
             <item name="connectors" type="array">
                 <value><call bean="jetty.connector"/></value>
             </item>
@@ -36,8 +37,8 @@
 
     <bean id="jetty.threadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
         <properties>
-            <item name="minThreads" value="%{jetty.server.minThreads}" valueType="int"/>
-            <item name="maxThreads" value="%{jetty.server.maxThreads}" valueType="int"/>
+            <item name="minThreads" value="%{jetty.server.minThreads}"/>
+            <item name="maxThreads" value="%{jetty.server.maxThreads}"/>
         </properties>
     </bean>
 
@@ -48,7 +49,7 @@
             </arguments>
         </constructor>
         <properties>
-            <item name="port" value="%{jetty.server.port}" valueType="int"/>
+            <item name="port" value="%{jetty.server.port}"/>
         </properties>
     </bean>
 

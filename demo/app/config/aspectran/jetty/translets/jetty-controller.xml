@@ -11,14 +11,14 @@
         <description style="apon">
             |
             |{{underline}}To control Jetty, try one of the following commands:{{off}}
-            |   {{green}}jetty start{{fg:off}} - Runs a Jetty Server
-            |   {{green}}jetty stop{{fg:off}} - Stops the currently running Jetty Server
+            |   {{CYAN}}jetty start{{fg:off}} - Runs a Jetty Server
+            |   {{CYAN}}jetty stop{{fg:off}} - Stops the currently running Jetty Server
         </description>
         <transform type="transform/text">
             <template style="apon">
-                |
-                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
-                |
+                |--------------------------------------
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |--------------------------------------
             </template>
         </transform>
     </translet>
@@ -32,8 +32,10 @@
         <action bean="jetty.server" method="start"/>
         <transform type="transform/text">
             <template style="apon">
-                |
-                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |-----------------------------------------------------------------------------------------
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |-----------------------------------------------------------------------------------------
+                |   Web server started on localhost:%{jetty.server.port}
                 |
             </template>
         </transform>
@@ -48,8 +50,8 @@
         <action bean="jetty.server" method="stop"/>
         <transform type="transform/text">
             <template style="apon">
-                |
-                |   {{yellow}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |-----------------------------------------------------------------------------------------
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |
             </template>
         </transform>
