@@ -203,7 +203,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             // The major packages in Aspectran are excluded because they
             // are already loaded by the parent class loader running Aspectran.
             String[] excludePackageNames = new String[] {
-                    "com.aspectran.console",
+                    "com.aspectran.shell",
                     "com.aspectran.core",
                     "com.aspectran.scheduler",
                     "com.aspectran.embed",

@@ -1,0 +1,14 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        An Aspectran configuration for Aspectran Shell.
+        Note that the name of a Translet that starts with a forward slash (/) is also accessible from the web environment.
+    </description>
+
+    <append file="/config/aspectran/shell/translets/hello.xml"/>
+    <append file="/config/aspectran/shell/translets/echo.xml"/>
+
+</aspectran>

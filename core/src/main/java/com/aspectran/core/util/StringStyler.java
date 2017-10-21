@@ -38,7 +38,6 @@ public class StringStyler {
             if (start == 0 && c == AponFormat.TEXT_LINE_START) {
                 if (line > 0) {
                     sb.append(AponFormat.NEXT_LINE_CHAR);
-                    flag = true;
                 }
                 start = end + 1;
                 line++;
@@ -46,18 +45,13 @@ public class StringStyler {
                 if (c == '\n' || c == '\r') {
                     if (end > start) {
                         sb.append(content.substring(start, end));
-                        flag = false;
                     }
                     start = 0;
                 }
             }
         }
-        if (start > 0) {
-            if (start < content.length()) {
-                sb.append(content.substring(start));
-            }
-        } else if (flag) {
-            sb.append(AponFormat.NEXT_LINE_CHAR);
+        if (start > 0 && start < content.length()) {
+            sb.append(content.substring(start));
         }
         return sb.toString();
     }

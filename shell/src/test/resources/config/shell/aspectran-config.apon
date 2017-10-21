@@ -1,0 +1,36 @@
+context: {
+    root: classpath:config/shell/shell-test-root-config.xml
+    resources: [
+    ]
+    hybridLoad: false
+    autoReload: {
+        reloadMode: soft
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    profiles: {
+    }
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    startup: false
+}
+shell: {
+    prompt: "test-console-app> "
+    descriptable: true
+    usage: (
+        |
+        |   --- Aspectran Demo Application ---
+        |
+        |Built-in commands for this console application:
+        |   desc on   Prints a description of the command each time the command is executed
+        |   desc off  Turns off print a description of the command each time the command is executed
+        |   help      Prints help for the available commands that was displayed at startup
+        |   restart   Restarts this console application
+        |   mem       Shows memory usage
+        |   gc        Performs a garbage collection
+        |   quit      Exits from this console application
+        |
+    )
+}

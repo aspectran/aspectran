@@ -33,7 +33,7 @@ public class AspectranConfig extends AbstractParameters {
         context = new ParameterDefinition("context", ContextConfig.class);
         session = new ParameterDefinition("session", SessionConfig.class);
         scheduler = new ParameterDefinition("scheduler", SchedulerConfig.class);
-        console = new ParameterDefinition("console", ConsoleConfig.class);
+        console = new ParameterDefinition("shell", ShellConfig.class);
         web = new ParameterDefinition("web", WebConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -101,19 +101,19 @@ public class AspectranConfig extends AbstractParameters {
         putValue(scheduler, schedulerConfig);
     }
 
-    public ConsoleConfig newConsoleConfig() {
+    public ShellConfig newConsoleConfig() {
         return newParameters(console);
     }
 
-    public ConsoleConfig touchConsoleConfig() {
+    public ShellConfig touchConsoleConfig() {
         return touchParameters(console);
     }
 
-    public ConsoleConfig getConsoleConfig() {
+    public ShellConfig getConsoleConfig() {
         return getParameters(console);
     }
 
-    public void putConsoleConfig(ConsoleConfig consoleConfig) {
+    public void putConsoleConfig(ShellConfig consoleConfig) {
         putValue(console, consoleConfig);
     }
 

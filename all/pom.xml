@@ -36,7 +36,14 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-console</artifactId>
+            <artifactId>aspectran-shell</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-shell-jline</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
@@ -55,7 +62,7 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <!-- Add optional dependencies explicitly for aspectran-console -->
+        <!-- Add optional dependencies explicitly for aspectran-shell -->
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
@@ -322,8 +329,8 @@
                             <packages>com.aspectran.core*:com.aspectran.scheduler*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Console</title>
-                            <packages>com.aspectran.console*</packages>
+                            <title>Aspectran Shell</title>
+                            <packages>com.aspectran.shell*</packages>
                         </group>
                         <group>
                             <title>Aspectran Embed</title>

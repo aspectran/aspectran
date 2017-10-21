@@ -20,10 +20,9 @@ scheduler: {
     waitOnShutdown: true
     startup: false
 }
-console: {
-    mode: jline
+shell: {
     prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
-    showDescription: true
+    descriptable: true
     usage: (
         |
         |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}

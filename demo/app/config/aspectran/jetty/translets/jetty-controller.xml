@@ -11,14 +11,14 @@
         <description style="apon">
             |
             |{{underline}}To control Jetty, try one of the following commands:{{off}}
-            |   {{CYAN}}jetty start{{fg:off}} - Runs a Jetty Server
-            |   {{CYAN}}jetty stop{{fg:off}} - Stops the currently running Jetty Server
+            |   {{CYAN}}jetty start{{fg:off}}  Runs a Jetty Server
+            |   {{CYAN}}jetty stop{{fg:off}}   Stops the currently running Jetty Server
         </description>
         <transform type="transform/text">
             <template style="apon">
-                |--------------------------------------
+                |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
-                |--------------------------------------
+                |
             </template>
         </transform>
     </translet>
@@ -33,8 +33,8 @@
         <transform type="transform/text">
             <template style="apon">
                 |-----------------------------------------------------------------------------------------
+                |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
-                |-----------------------------------------------------------------------------------------
                 |   Web server started on localhost:%{jetty.server.port}
                 |
             </template>
@@ -51,6 +51,7 @@
         <transform type="transform/text">
             <template style="apon">
                 |-----------------------------------------------------------------------------------------
+                |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |
             </template>

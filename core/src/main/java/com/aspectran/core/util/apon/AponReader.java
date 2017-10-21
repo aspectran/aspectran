@@ -327,9 +327,6 @@ public class AponReader extends AponFormat {
             tchar = (tlen > 0 ? trim.charAt(0) : NO_CONTROL_CHAR);
 
             if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar) {
-                if (str != null && str.length() == 0) {
-                    sb.append(NEXT_LINE_CHAR);
-                }
                 return (sb != null ? sb.toString() : StringUtils.EMPTY);
             }
 

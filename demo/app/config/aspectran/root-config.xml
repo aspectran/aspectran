@@ -24,7 +24,7 @@
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
 
     <append file="/config/aspectran/jetty/jetty-config.xml"/>
-    <append file="/config/aspectran/console/console-config.xml"/>
+    <append file="/config/aspectran/shell/shell-config.xml"/>
     <append file="/config/aspectran/web/web-config.xml"/>
 
 </aspectran>

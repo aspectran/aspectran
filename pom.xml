@@ -71,7 +71,8 @@
         <module>all</module>
         <module>core</module>
         <module>embed</module>
-        <module>console</module>
+        <module>shell</module>
+        <module>shell-jline</module>
         <module>remote</module>
         <module>web</module>
         <module>with-jetty</module>
@@ -117,7 +118,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>aspectran-console</artifactId>
+                <artifactId>aspectran-shell</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
