@@ -15,6 +15,6 @@
  */
 /**
  * Contains core classes for Aspectran Shell.
- * Aspectran Shell provides an interactive shell to run Aspectran's Translets with commands.
+ * Aspectran Shell provides an interactive shell to run Aspectran's Translets from the command line.
  */
 package com.aspectran.shell;
