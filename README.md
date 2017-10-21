@@ -35,7 +35,7 @@ The main features of Aspectran are as follows:
 
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
-* `com.aspectran.console`: Provides an interface for executing commands in an application built with Aspectran
+* `com.aspectran.shell`: Provides an interactive shell to run Aspectran's Translets from the command line
 * `com.aspectran.embed`: Provides the ability to embed Aspectran in other Java applications
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
 * `com.aspectran.with.jetty`: Supports for building standalone Web application that is built-in Jetty server
@@ -55,7 +55,7 @@ Aspectran can also be used with more low-level jars:
     <!-- You can use this to build a command line application. -->
     <dependency>
       <groupId>com.aspectran</groupId>
-      <artifactId>aspectran-console</artifactId>
+      <artifactId>aspectran-shell</artifactId>
       <version>5.0.0-SNAPSHOT</version>
     </dependency>
     <!-- You can use this as a library for building other applications. -->
