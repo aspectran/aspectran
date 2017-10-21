@@ -1,0 +1,160 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        This is an example using the Freemarker template engine.
+    </description>
+
+    <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
+        <properties>
+            <item name="freemarkerSettings" type="properties">
+                <value name="incompatible_improvements">2.3.23</value>
+                <value name="template_exception_handler">rethrow</value>
+                <value name="default_encoding">UTF-8</value>
+                <value name="number_format">0.####</value>
+            </item>
+            <item name="trimDirectives" valueType="parameters">
+                directive: {
+                    name: trim
+                }
+                directive: {
+                    name: where
+                    prefix: "WHERE "
+                    deprefixes: [
+                        "and "
+                        "and\t"
+                        "or "
+                        "or\t"
+                    ]
+                }
+                directive: {
+                    name: set
+                    prefix: "SET "
+                    desuffixes: ","
+                }
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="freemarker" class="com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine">
+        <constructor>
+            <arguments>
+                <item><call bean="freemarkerConfigurationFactory"/></item>
+            </arguments>
+        </constructor>
+    </bean>
+
+    <translet name="free">
+        <description style="apon">
+            |
+            |   It uses the Freemarker template engine to output the values of the input parameters to the console.
+            |
+        </description>
+        <request>
+            <parameters>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </parameters>
+        </request>
+        <transform type="transform/text">
+            <template engine="freemarker" style="apon">
+                |-------------------------------------
+                |The input parameters are as follows:
+                |-------------------------------------
+                |input_1: ${input_1}
+                |input_2: ${input_2}
+                |-------------------------------------
+                |Templated by Freemarker engine
+                |-------------------------------------
+            </template>
+        </transform>
+    </translet>
+
+    <template id="selectOne" engine="freemarker" style="apon">
+        <![CDATA[
+        |--------------------------------------------------------
+        |SELECT
+        |    id,
+        |    name,
+        |    email
+        |FROM users
+        |<@directive.where>
+        |    <#if id?has_content>
+        |    id = :id
+        |    </#if>
+        |    <#if name?has_content>
+        |    AND name = :name
+        |    </#if>
+        |    <#if email?has_content>
+        |    AND email LIKE :email||'%'
+        |    </#if>
+        |</@directive.where>
+        |ORDER BY name
+        |--------------------------------------------------------
+        | The values to be set in the PreparedStatement instance.
+        | id    = ${id?default("")}
+        | name  = ${name?default("")}
+        | email = ${email?default("")}
+        |--------------------------------------------------------
+        ]]>
+    </template>
+
+    <template id="updateOne" engine="freemarker" style="apon">
+        <![CDATA[
+        |--------------------------------------------------------
+        |UPDATE users
+        |<@directive.set>
+        |    name = :name,
+        |    email = :email,
+        |</@directive.set>
+        |<@directive.where>
+        |    id = :id
+        |</@directive.where>
+        |--------------------------------------------------------
+        | The values to be set in the PreparedStatement instance.
+        | id    = ${id?default("")}
+        | name  = ${name?default("")}
+        | email = ${email?default("")}
+        |--------------------------------------------------------
+        ]]>
+    </template>
+
+    <translet name="select">
+        <description style="apon">
+            |
+            |   This example generates a simple SQL SELECT statement using the Freemarker template engine.
+            |
+        </description>
+        <request>
+            <parameters>
+                <item name="id"/>
+                <item name="name"/>
+                <item name="email"/>
+            </parameters>
+        </request>
+        <transform type="transform/text">
+        	<call template="selectOne"/>
+        </transform>
+    </translet>
+
+    <translet name="update">
+        <description style="apon">
+            |
+            |   This example generates a simple SQL UPDATE statement using the Freemarker template engine.
+            |
+        </description>
+        <request>
+            <parameters>
+                <item name="id" mandatory="true"/>
+                <item name="name" mandatory="true">${name:Jane}</item>
+                <item name="email" mandatory="true">${email:jane@mail.com}</item>
+            </parameters>
+        </request>
+        <transform type="transform/text">
+        	<call template="updateOne"/>
+        </transform>
+    </translet>
+
+</aspectran>
