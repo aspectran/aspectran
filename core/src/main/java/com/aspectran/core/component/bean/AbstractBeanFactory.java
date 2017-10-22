@@ -27,6 +27,7 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JdkDynamicBeanProxy;
@@ -300,6 +301,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private void invokeAwareMethods(Object bean) {
         if (bean instanceof Aware) {
+            if (bean instanceof CurrentActivityAware) {
+                ((CurrentActivityAware)bean).setCurrentActivity(context.getCurrentActivity());
+            }
             if (bean instanceof ActivityContextAware) {
                 ((ActivityContextAware)bean).setActivityContext(context);
             }
