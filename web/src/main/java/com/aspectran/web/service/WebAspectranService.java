@@ -126,7 +126,7 @@ public class WebAspectranService extends BasicAspectranService {
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Unregistered translet [" + requestUri + "] in WebAspectranService");
+                log.debug("No translet mapped to the request URI [" + requestUri + "]");
             }
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {
@@ -143,10 +143,10 @@ public class WebAspectranService extends BasicAspectranService {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet did not complete and terminated: " + e.getMessage());
+                log.debug("Activity terminated without completion: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing a Web Activity", e);
+            log.error("An error occurred while processing the web activity", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (activity != null) {

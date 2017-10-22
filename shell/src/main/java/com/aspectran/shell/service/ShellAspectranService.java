@@ -144,7 +144,7 @@ public class ShellAspectranService extends BasicAspectranService {
     /**
      * Process the actual dispatching to the activity.
      *
-     * @param command the translet name
+     * @param command the translet name mapped to the command
      */
     public void serve(String command) {
         if (!isExposable(command)) {
@@ -189,13 +189,13 @@ public class ShellAspectranService extends BasicAspectranService {
             activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            log.info("translet: " + command + ": command not found");
+            log.info("No translet mapped to the command [" + command + "]");
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet did not complete and terminated: " + e.getMessage());
+                log.debug("Activity terminated without completion: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing an activity on the shell service", e);
+            log.error("An error occurred while processing the command", e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {

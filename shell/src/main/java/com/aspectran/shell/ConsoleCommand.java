@@ -93,7 +93,7 @@ public class ConsoleCommand {
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
         } catch (Exception e) {
-            log.error("An error occurred while executing the shell command", e);
+            log.error("An error occurred while processing the command", e);
         } finally {
             if (service.isActive()) {
                 log.info("Do not terminate this application while destroying all scoped beans");

@@ -196,10 +196,10 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet did not complete and terminated: " + e.getMessage());
+                log.debug("Activity terminated without completion: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing an activity on the embedded service", e);
+            throw new AspectranRuntimeException("An error occurred while processing the aspectran activity", e);
         } finally {
             if (activity != null) {
                 activity.finish();
