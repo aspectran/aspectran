@@ -182,7 +182,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <!-- Populate the properties whose key is groupId:artifactId:type
-                                             and whose value is the path to the artifact -->
+                         and whose value is the path to the artifact -->
                     <execution>
                         <id>locate-dependencies</id>
                         <phase>initialize</phase>
@@ -384,14 +384,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                </manifest>
-                                <index>true</index>
-                            </archive>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
