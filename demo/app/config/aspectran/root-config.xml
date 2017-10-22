@@ -4,12 +4,12 @@
 
     <description style="apon">
         |{{underline}}Commands that can run examples:{{underline:off}}
-        |   {{CYAN}}hello{{fg:off}}     Runs the helloWorld() method of the sampleAction bean and prints the returned value
-        |   {{CYAN}}hello2{{fg:off}}    Runs the helloWorld() method of the sampleAction bean and prints the returned value with margins
-        |   {{CYAN}}echo{{fg:off}}      It accepts parameters and print as is
-        |   {{CYAN}}echo2{{fg:off}}     It accepts parameters and attributes, and print them as is
-        |   {{CYAN}}login{{fg:off}}     It accepts parameters used for login and print them
-        |   {{CYAN}}chpw{{fg:off}}      It accepts parameters for changing the password and print them
+        |   {{CYAN}}hello{{fg:off}}        Runs the helloWorld() method of the sampleAction bean and prints the returned value
+        |   {{CYAN}}hello2{{fg:off}}       Runs the helloWorld() method of the sampleAction bean and prints the returned value with margins
+        |   {{CYAN}}echo{{fg:off}}         It accepts parameters and print as is
+        |   {{CYAN}}echo2{{fg:off}}        It accepts parameters and attributes, and print them as is
+        |   {{CYAN}}login{{fg:off}}        It accepts parameters used for login and print them
+        |   {{CYAN}}chpw{{fg:off}}         It accepts parameters for changing the password and print them
         |
         |{{underline}}To control Jetty, try one of the following commands:{{underline:off}}
         |   {{MAGENTA}}jetty{{fg:off}}        Displays commands required to control Jetty server
@@ -22,6 +22,27 @@
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+
+    <aspect id="errorReport">
+        <description>
+            Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
+        </description>
+        <joinpoint type="translet"/>
+        <exception>
+            <thrown>
+                <transform type="transform/text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}An Error Occurred!{{off}}
+                        |{{BLUE}}-----------------------------------------------------------------------------------------{{off}}
+                        |   #{currentTranslet^rootCauseOfRaisedException}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
 
     <append file="/config/aspectran/jetty/jetty-config.xml"/>
     <append file="/config/aspectran/shell/shell-config.xml"/>

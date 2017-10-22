@@ -19,21 +19,19 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "{{GREEN}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
+    prompt: "{{GREEN}}aspectran-demo{{YELLOW,bold}}>{{off}} "
     descriptable: true
     usage: (
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}
         |
         |{{underline}}Built-in commands for this console application:{{underline:off}}
-        |   {{GREEN}}help{{fg:off}}      Prints help for the available commands
-        |   {{GREEN}}desc on{{fg:off}}   Turns on the ability to print a description of the command
-        |   {{GREEN}}desc off{{fg:off}}  Turns off the ability to print a description of the command
-        |   {{GREEN}}clear{{fg:off}}     Clear the screen
-        |   {{GREEN}}restart{{fg:off}}   Restarts this console application
-        |   {{GREEN}}mem{{fg:off}}       Shows memory usage
-        |   {{GREEN}}gc{{fg:off}}        Performs a garbage collection
-        |   {{GREEN}}quit{{fg:off}}      Exits from this console application
+        |   {{GREEN}}help{{fg:off}}         Prints help for the available commands
+        |   {{GREEN}}desc on{{fg:off}}      Turns on the ability to print a description of the command
+        |   {{GREEN}}desc off{{fg:off}}     Turns off the ability to print a description of the command
+        |   {{GREEN}}clear{{fg:off}}        Clear the screen
+        |   {{GREEN}}restart{{fg:off}}      Restarts this console application
+        |   {{GREEN}}quit{{fg:off}}         Exits from this console application
         |
     )
 }

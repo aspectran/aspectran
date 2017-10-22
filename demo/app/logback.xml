@@ -14,12 +14,6 @@
     <logger name="org.eclipse.jetty" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="org.apache.jasper" level="info" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-    <logger name="org.apache.tomcat" level="info" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>

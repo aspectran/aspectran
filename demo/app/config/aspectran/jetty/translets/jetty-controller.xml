@@ -39,6 +39,19 @@
                 |
             </template>
         </transform>
+        <!--
+        <exception>
+            <thrown type="java.net.BindException">
+                <transform type="transform/text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}Jetty Server Error - Port %{jetty.server.port} already in use{{off}}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+        -->
     </translet>
 
     <translet name="jetty stop">
