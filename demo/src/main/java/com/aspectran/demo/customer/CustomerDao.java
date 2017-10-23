@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 고객 정보 DAO
+ * The DAO to retrieve or manipulate customer data.
  */
 public class CustomerDao {
     
@@ -36,8 +36,8 @@ public class CustomerDao {
     private static final AtomicInteger counter = new AtomicInteger();
     
     public CustomerDao() {
-        // 10명의 고객을 미리 생성합니다.
-        customerMap = new ConcurrentSkipListMap<Integer, Customer>();
+        // Pre-create 10 customers whose names begin with "Guest"
+        customerMap = new ConcurrentSkipListMap<>();
         
         for(int i = 1; i <= 10; i++) {
             Customer customer = new Customer();
@@ -53,7 +53,7 @@ public class CustomerDao {
     }
     
     public Customer getCustomer(int id) {
-        log.info(id + "번 고객의 상세정보를 조회합니다");
+        log.debug("Gets the details of customer: " + id);
 
         Customer customer = customerMap.get(id);
         
@@ -63,20 +63,20 @@ public class CustomerDao {
 
     public boolean isCustomer(int id) {
         if(customerMap.containsKey(id)) {
-            log.info(id + "번 고객은 등록되어 있습니다");
+            log.debug("Customer " + id + " exists");
             return true;
         } else {
-            log.info(id + "번 고객은 등록되어 있지 않습니다");
+            log.debug("Customer " + id + " does not exists");
             return false;
         }
     }
     
     public List<Customer> getCustomerList() {
-        log.info("전체 고객 목록을 조회합니다");
+        log.debug("Get a list of all customers");
 
-        List<Customer> customerList = new ArrayList<Customer>(customerMap.values());
+        List<Customer> customerList = new ArrayList<>(customerMap.values());
         
-        log.info(customerList.size() + "명의 고객이 조회되었습니다");
+        log.debug("Retrieved " + customerList.size() + " customers");
         
         return customerList;
     }
@@ -87,7 +87,7 @@ public class CustomerDao {
         
         customerMap.put(id, customer);
 
-        log.info(id + "번 고객이 등록되었습니다");
+        log.debug("Customer " + id + " is registered");
         
         return id;
     }
@@ -96,7 +96,7 @@ public class CustomerDao {
         int id = customer.getInt(Customer.id);
         
         if(customerMap.containsKey(id)) {
-            log.info(id + "번 고객의 정보를 수정합니다");
+            log.debug("Update customer: " + id);
             customerMap.put(id, customer);
             return true;
         }
@@ -106,7 +106,7 @@ public class CustomerDao {
 
     public synchronized boolean deleteCustomer(int id) {
         if(customerMap.containsKey(id)) {
-            log.info(id + "번 고객의 정보를 삭제합니다");
+            log.debug("Delete customer: " + id);
             customerMap.remove(id);
             return true;
         }
@@ -118,7 +118,7 @@ public class CustomerDao {
         Customer customer = customerMap.get(id);
         
         if(customer != null) {
-            log.info(id + "번 고객에 대해 승인처리를 합니다. (승인여부: " + approved + ")");
+            log.debug(id + "Approval for customer " + id + " (approved: " + approved + ")");
             customer.putValue(Customer.approved, approved);
             return true;
         }
@@ -130,7 +130,7 @@ public class CustomerDao {
         Customer customer = customerMap.get(id);
         
         if(customer != null) {
-            log.info(id + "번 고객에 대해 승인여부를 조회합니다");
+            log.debug("Returns whether customer " + id + " is approved");
             return customer.getBoolean(Customer.approved);
         }
         
