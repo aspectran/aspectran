@@ -270,18 +270,8 @@ public class StringUtils {
      * @see java.lang.String#startsWith
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
-        if (str == null || prefix == null) {
-            return false;
-        }
-        if (str.startsWith(prefix)) {
-            return true;
-        }
-        if (str.length() < prefix.length()) {
-            return false;
-        }
-        String lcStr = str.substring(0, prefix.length()).toLowerCase();
-        String lcPrefix = prefix.toLowerCase();
-        return lcStr.equals(lcPrefix);
+        return (str != null && prefix != null && str.length() >= prefix.length() &&
+                str.regionMatches(true, 0, prefix, 0, prefix.length()));
     }
 
     /**
@@ -294,19 +284,8 @@ public class StringUtils {
      * @see java.lang.String#endsWith
      */
     public static boolean endsWithIgnoreCase(String str, String suffix) {
-        if (str == null || suffix == null) {
-            return false;
-        }
-        if (str.endsWith(suffix)) {
-            return true;
-        }
-        if (str.length() < suffix.length()) {
-            return false;
-        }
-
-        String lcStr = str.substring(str.length() - suffix.length()).toLowerCase();
-        String lcSuffix = suffix.toLowerCase();
-        return lcStr.equals(lcSuffix);
+        return (str != null && suffix != null && str.length() >= suffix.length() &&
+                str.regionMatches(true, str.length() - suffix.length(), suffix, 0, suffix.length()));
     }
 
     /**
@@ -339,18 +318,26 @@ public class StringUtils {
         return (str == null || str.length() == 0 ? null : str);
     }
 
+    /**
+     * Test if the given {@code String} starts with the specified prefix character.
+     *
+     * @param str the {@code String} to check
+     * @param prefix the prefix character to look for
+     * @see java.lang.String#startsWith
+     */
     public static boolean startsWith(String str, char prefix) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        return (str.charAt(0) == prefix);
+        return (str != null && !str.isEmpty() && (str.charAt(0) == prefix));
     }
 
+    /**
+     * Test if the given {@code String} ends with the specified prefix character.
+     *
+     * @param str the {@code String} to check
+     * @param suffix the prefix character to look for
+     * @see java.lang.String#startsWith
+     */
     public static boolean endsWith(String str, char suffix) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        return (str.charAt(str.length() - 1) == suffix);
+        return (str != null && !str.isEmpty() && (str.charAt(str.length() - 1) == suffix));
     }
 
     /**
@@ -365,24 +352,19 @@ public class StringUtils {
         if (str == null || search == null || replace == null) {
             return str;
         }
-
         StringBuilder sb = new StringBuilder();
-
         int searchLen = search.length();
         int stringLen = str.length();
         int oldIndex = 0;
         int index;
-
         while ((index = str.indexOf(search, oldIndex)) >= 0) {
             sb.append(str.substring(oldIndex, index));
             sb.append(replace);
             oldIndex = index + searchLen;
         }
-
         if (oldIndex < stringLen) {
             sb.append(str.substring(oldIndex, stringLen));
         }
-
         return sb.toString();
     }
 
@@ -398,40 +380,30 @@ public class StringUtils {
         if (str == null || search == null || replace == null) {
             return str;
         }
-
         StringBuilder sb = new StringBuilder(str);
-
         int loop = (search.length <= replace.length) ? search.length : replace.length;
         int start = 0;
         int end;
         int searchLen;
         int replaceLen;
-
         for (int i = 0; i < loop; i++) {
             if (search[i] == null || replace[i] == null) {
                 continue;
             }
-
             searchLen = search[i].length();
             replaceLen = replace[i].length();
-
             while (true) {
                 if (sb.length() == 0) {
                     break;
                 }
-
                 start = sb.indexOf(search[i], start + replaceLen);
-
                 if (start == -1) {
                     break;
                 }
-
                 end = start + searchLen;
-
                 sb.replace(start, end, replace[i]);
             }
         }
-
         return sb.toString();
     }
 
@@ -446,35 +418,28 @@ public class StringUtils {
         if (isEmpty(str)) {
             return new String[0];
         }
-
         int cnt = search(str, delim);
         String[] item = new String[cnt + 1];
-
         if (cnt == 0) {
             item[0] = str;
             return item;
         }
-
         int idx = 0;
         int pos1 = 0;
         int pos2 = str.indexOf(delim);
         int delimLen = delim.length();
-
         while (pos2 >= 0) {
             item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
             pos1 = pos2 + delimLen;
             pos2 = str.indexOf(delim, pos1);
         }
-
         if (pos1 < str.length()) {
             item[idx] = str.substring(pos1);
         }
-
         if (item[cnt] == null) {
             item[cnt] = EMPTY;
         }
-
         return item;
     }
 
@@ -489,7 +454,6 @@ public class StringUtils {
     public static String[] split(String str, String delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
-
         for (int i = 0; i < arr1.length; i++) {
             if (i < arr2.length) {
                 arr1[i] = arr2[i];
@@ -497,10 +461,8 @@ public class StringUtils {
                 arr1[i] = EMPTY;
             }
         }
-
         return arr1;
     }
-
 
     /**
      * Returns an array of strings separated by the delimiter string.
@@ -513,34 +475,27 @@ public class StringUtils {
         if (isEmpty(str)) {
             return new String[0];
         }
-
         int cnt = search(str, delim);
         String[] item = new String[cnt + 1];
-
         if (cnt == 0) {
             item[0] = str;
             return item;
         }
-
         int idx = 0;
         int pos1 = 0;
         int pos2 = str.indexOf(delim);
-
         while (pos2 >= 0) {
             item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
             pos1 = pos2 + 1;
             pos2 = str.indexOf(delim, pos1);
         }
-
         if (pos1 < str.length()) {
             item[idx] = str.substring(pos1);
         }
-
         if (item[cnt] == null) {
             item[cnt] = EMPTY;
         }
-
         return item;
     }
 
@@ -555,7 +510,6 @@ public class StringUtils {
     public static String[] split(String str, char delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
-
         for (int i = 0; i < arr1.length; i++) {
             if (i < arr2.length) {
                 arr1[i] = arr2[i];
@@ -563,7 +517,6 @@ public class StringUtils {
                 arr1[i] = EMPTY;
             }
         }
-
         return arr1;
     }
 
@@ -580,20 +533,16 @@ public class StringUtils {
         int keywLen = keyw.length();
         int pos = 0;
         int cnt = 0;
-
         if (keywLen == 0) {
             return 0;
         }
-
         while ((pos = str.indexOf(keyw, pos)) != -1) {
             pos += keywLen;
             cnt++;
-
             if (pos >= strLen) {
                 break;
             }
         }
-
         return cnt;
     }
 
@@ -845,7 +794,7 @@ public class StringUtils {
         } catch (NumberFormatException e)  {
             String msg = "Size must be specified as bytes (B), " +
                     "kibibytes (KB), mebibytes (MB), gibibytes (GB). " +
-                    "E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB.";
+                    "E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB";
             throw new NumberFormatException(msg + " " + e.getMessage());
         }
         long l = Math.round(d * 1024 * 1024 * 1024L);
