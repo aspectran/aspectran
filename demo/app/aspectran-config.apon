@@ -25,13 +25,13 @@ shell: {
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}
         |
-        |{{underline}}Built-in commands for this console application:{{underline:off}}
-        |   {{GREEN}}help{{fg:off}}         Prints help for the available commands
-        |   {{GREEN}}desc on{{fg:off}}      Turns on the ability to print a description of the command
-        |   {{GREEN}}desc off{{fg:off}}     Turns off the ability to print a description of the command
+        |{{underline}}These are built-in commands in Aspectran Shell:{{underline:off}}
+        |   {{GREEN}}help{{fg:off}}         Display help for the available commands
+        |   {{GREEN}}desc on{{fg:off}}      Turn on the ability to print a description of the command
+        |   {{GREEN}}desc off{{fg:off}}     Turn off the ability to print a description of the command
         |   {{GREEN}}clear{{fg:off}}        Clear the screen
-        |   {{GREEN}}restart{{fg:off}}      Restarts this console application
-        |   {{GREEN}}quit{{fg:off}}         Exits from this console application
+        |   {{GREEN}}restart{{fg:off}}      Restart Aspectran Shell to reload all resources
+        |   {{GREEN}}quit{{fg:off}}         Releases all resources and Exits
         |
     )
 }
