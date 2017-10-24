@@ -187,14 +187,14 @@ public interface Translet extends BeanRegistry, MessageSource {
     ProcessResult touchProcessResult(String contentsName, int initialCapacity);
 
     /**
-     * Returns the activity's data map.
+     * Returns an Activity Data Map containing the activity result data.
      *
-     * @return the activity's data map
+     * @return the activity data map
      */
     ActivityDataMap getActivityDataMap();
 
     /**
-     * Returns the activity's data map.
+     * Returns an Activity Data Map containing the activity result data.
      *
      * @param prefill whether data pre-fill.
      * @return the activity data map

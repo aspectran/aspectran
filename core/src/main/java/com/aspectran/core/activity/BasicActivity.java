@@ -28,6 +28,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class BasicActivity.
@@ -131,14 +132,22 @@ public abstract class BasicActivity extends AbstractActivity {
                     }
                 }
 
-                Object adviceActionResult = action.execute(this);
+                Object result = action.execute(this);
 
-                if (adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-                    putAdviceResult(aspectAdviceRule, adviceActionResult);
+                if (result != null && result != ActionResult.NO_RESULT) {
+                    putAdviceResult(aspectAdviceRule, result);
+
+                    if (action.getActionType() == ActionType.ECHO) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> echos = (Map<String, Object>)result;
+                        for (Map.Entry<String, Object> item : echos.entrySet()) {
+                            getRequestAdapter().setAttribute(item.getKey(), item.getValue());
+                        }
+                    }
                 }
 
                 if (log.isTraceEnabled()) {
-                    log.trace("adviceActionResult " + adviceActionResult);
+                    log.trace("adviceActionResult " + result);
                 }
             } catch(Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {

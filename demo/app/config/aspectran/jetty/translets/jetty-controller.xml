@@ -39,7 +39,6 @@
                 |
             </template>
         </transform>
-        <!--
         <exception>
             <thrown type="java.net.BindException">
                 <transform type="transform/text">
@@ -51,7 +50,6 @@
                 </transform>
             </thrown>
         </exception>
-        -->
     </translet>
 
     <translet name="jetty stop">

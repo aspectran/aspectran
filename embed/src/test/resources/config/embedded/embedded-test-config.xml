@@ -7,6 +7,10 @@
         Aspectran configuration for embedded mode for tests
     </description>
 
+    <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
     <bean scan="com.aspectran.embed.service.**.*Bean" mask="com.aspectran.embed.service.**"/>
 
     <bean scan="com.aspectran.embed.service.**.*Configuration" mask="com.aspectran.embed.service.**"/>
@@ -51,6 +55,40 @@
             </arguments>
         </constructor>
     </bean>
+
+    <aspect id="transletSettings">
+        <description>
+            Specifies the environment variables used during request and response processing.
+        </description>
+        <joinpoint type="translet"/>
+        <advice>
+            <before>
+                <echo>
+                    <attributes>
+                        <item name="data">
+                            <call bean="currentActivityData"/>
+                        </item>
+                    </attributes>
+                </echo>
+            </before>
+        </advice>
+    </aspect>
+
+    <translet name="echo123">
+        <parameters>
+            <item name="input-1">1</item>
+            <item name="input-2">2</item>
+            <item name="input-3">3</item>
+        </parameters>
+        <transform type="transform/text" contentType="text/plain">
+            <template engine="token" style="apon">
+                |------------------------------------------------
+                |${input-1}${input-2}${input-3}
+                |@{data^input-1}@{data^input-2}@{data^input-3}
+                |------------------------------------------------
+            </template>
+        </transform>
+    </translet>
 
     <translet name="echo">
         <request>

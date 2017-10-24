@@ -26,6 +26,11 @@
                 |   input-2: ${input-2}
                 |   input-3: ${input-3}
                 |----------------------------------------------------------
+                |Retrieve from the Activity data map:
+                |   input-1: @{data^input-1}
+                |   input-2: @{data^input-2}
+                |   input-3: @{data^input-3}
+                |----------------------------------------------------------
             </template>
         </transform>
     </translet>

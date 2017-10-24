@@ -41,7 +41,7 @@ public class EmbeddedAspectranServiceTest {
 
     @Before
     public void ready() throws Exception {
-        String rootConfigLocation = "classpath:config/embedded/embedded-mode-test-config.xml";
+        String rootConfigLocation = "classpath:config/embedded/embedded-test-config.xml";
         aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
         aspectranService.start();
     }
@@ -100,6 +100,12 @@ public class EmbeddedAspectranServiceTest {
         ActivityDataMap dataMap = translet.getActivityDataMap();
         //System.out.println("Result: " + dataMap.get("result"));
         assertEquals(dataMap.get("result"), 10);
+    }
+
+    @Test
+    public void testEcho123() throws IOException {
+        Translet translet = aspectranService.translet("echo123");
+        System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
 }

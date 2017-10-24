@@ -1,25 +1,26 @@
 package com.aspectran.core.support;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 
 /**
- * {@code CurrentTransletFactoryBean} that returns the {@code Translet} for the current request.
+ * {@code CurrentActivityDataFactoryBean} that returns the {@code ActivityDataMap} for the current request.
  * It should be declared as a {@code request} or {@code prototype} bean because it is intended
- * to use the value that the current {@code Translet} has.
+ * to use the value that the current Translet has.
  *
- * <p>Created: 2017. 10. 22.</p>
+ * <p>Created: 2017. 10. 24.</p>
  */
-public class CurrentTransletFactoryBean implements CurrentActivityAware, FactoryBean<Translet> {
+public class CurrentActivityDataFactoryBean implements CurrentActivityAware, FactoryBean<ActivityDataMap> {
 
     private String attributeName;
 
     private Translet translet;
 
     /**
-     * Returns whether the current {@code Translet} is registered as an attribute
+     * Returns whether the current {@code ActivityDataMap} is registered as an attribute
      * in the request scope.
      *
      * @return
@@ -29,7 +30,7 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     }
 
     /**
-     * Returns the attribute name of the current {@code Translet} specified to register
+     * Returns the attribute name of the current {@code ActivityDataMap} specified to register
      * in the request scope.
      *
      * @return the attribute name
@@ -39,10 +40,10 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     }
 
     /**
-     * Specifies the attribute name for registering the current {@code Translet} as an attribute
+     * Specifies the attribute name for registering the current {@code ActivityDataMap} as an attribute
      * in the request scope.
      *
-     * @param attributeName the attribute name of the current {@code Translet} to be registered
+     * @param attributeName the attribute name of the current {@code ActivityDataMap} to be registered
      *                      in the request scope.
      */
     public void setAttributeName(String attributeName) {
@@ -54,13 +55,13 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
         translet = activity.getTranslet();
 
         if (attributeName != null) {
-            translet.setAttribute(attributeName, translet);
+            translet.setAttribute(attributeName, translet.getActivityDataMap());
         }
     }
 
     @Override
-    public Translet getObject() throws Exception {
-        return translet;
+    public ActivityDataMap getObject() throws Exception {
+        return translet.getActivityDataMap();
     }
 
 }

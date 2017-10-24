@@ -23,6 +23,25 @@
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
     <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
+    <aspect id="activityDataAccessibility">
+        <description>
+            The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
+        </description>
+        <joinpoint type="translet"/>
+        <advice>
+            <before>
+                <echo>
+                    <attributes>
+                        <item name="data">
+                            <call bean="currentActivityData"/>
+                        </item>
+                    </attributes>
+                </echo>
+            </before>
+        </advice>
+    </aspect>
 
     <aspect id="errorReport">
         <description>
