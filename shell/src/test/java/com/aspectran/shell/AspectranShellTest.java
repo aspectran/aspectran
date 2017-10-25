@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell;
 
-import com.aspectran.shell.command.ShellCommands;
+import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.service.ShellAspectranService;
 
 /**
@@ -33,8 +33,8 @@ public class AspectranShellTest {
         try {
             ShellAspectranService service = ShellAspectranService.create(aspectranConfigFile);
             service.start();
-            ShellCommands command = new ShellCommands(service);
-            command.perform();
+            ShellCommander commander = new ShellCommander(service);
+            commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;

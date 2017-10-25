@@ -1,25 +1,30 @@
 package com.aspectran.shell.command.builtins;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.service.ShellAspectranService;
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DescCommand extends AbstractCommand {
+
+    private static final Log log = LogFactory.getLog(DescCommand.class);
 
     private static final String NAMESPACE = "builtin";
 
     private static final String COMMAND_NAME = "desc";
 
-    private static final Map<String, String> arguments;
+    private static final Map<String, String> options;
 
     static {
-        arguments = new LinkedHashMap<>();
-        arguments.put("-on", "Turn on the ability to print a description of the command");
-        arguments.put("-off", "Turn off the ability to print a description of the command");
+        options = new LinkedHashMap<>();
+        options.put("-on", "Turn on the ability to print a description of the command");
+        options.put("-off", "Turn off the ability to print a description of the command");
     }
 
     public DescCommand(ShellAspectranService service) {
@@ -28,16 +33,18 @@ public class DescCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        DescOptions descOptions = new DescOptions();
-        JCommander.newBuilder()
-                .addObject(descOptions)
-                .build()
-                .parse(args);
+        DescOptions descOptions = parse(args, new DescOptions());
 
         if (descOptions.on) {
+            log.info("Description On");
             getService().setDescriptable(true);
         } else if (descOptions.off) {
+            log.info("Description Off");
             getService().setDescriptable(false);
+        } else if (descOptions.help) {
+            printUsage();
+        } else {
+            printUsage();
         }
 
         return null;
@@ -68,8 +75,8 @@ public class DescCommand extends AbstractCommand {
             }
 
             @Override
-            public Map<String, String> getArguments() {
-                return arguments;
+            public Map<String, String> getOptions() {
+                return options;
             }
 
         };
@@ -77,10 +84,16 @@ public class DescCommand extends AbstractCommand {
 
     private class DescOptions {
 
-        @Parameter(names = "-on", required = false, description = "Turn on the ability to print a description of the command")
+        @Parameter
+        private List<String> dummy = new ArrayList<>();
+
+        @Parameter(names = "-help", help = true, description = "Print this message")
+        public boolean help;
+
+        @Parameter(names = "-on", description = "Turn on the ability to print a description of the command")
         public boolean on = false;
 
-        @Parameter(names = "-off", required = false, description = "Turn off the ability to print a description of the command")
+        @Parameter(names = "-off", description = "Turn off the ability to print a description of the command")
         public boolean off = false;
 
     }

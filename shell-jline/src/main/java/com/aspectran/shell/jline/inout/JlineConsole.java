@@ -67,7 +67,7 @@ public class JlineConsole extends AbstractConsole {
     }
 
     @Override
-    public String readCommand() {
+    public String readCommandLine() {
         try {
             String prompt = toAnsi(getCommandPrompt());
             return commandReader.readLine(prompt);

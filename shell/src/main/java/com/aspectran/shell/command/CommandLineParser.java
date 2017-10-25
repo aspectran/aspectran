@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class CommandLineParser {
 
-    private static final Pattern redirectionOperatorPattern = Pattern.compile("(>>)|(>)|(\")|(\')");
+    private static final Pattern REDIRECTION_OPERATOR_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
     private static final char ESCAPE = '\\';
 
@@ -92,20 +92,20 @@ public class CommandLineParser {
     /**
      * Parse the command.
      *
-     * @param command the command
+     * @param commandLine the command line
      */
-    private void parse(String command) {
-        String[] tokens = StringUtils.tokenize(command, " ", true);
+    private void parse(String commandLine) {
+        String[] tokens = splitCommandLine(commandLine);
 
         if (tokens.length > 1) {
-            requestMethod = MethodType.resolve(tokens[0]);
+            this.requestMethod = MethodType.resolve(tokens[0]);
             if (requestMethod != null) {
-                this.command = command.substring(tokens[0].length()).trim();
+                this.command = commandLine.substring(tokens[0].length()).trim();
             }
         }
 
-        if (requestMethod == null) {
-            this.command = command;
+        if (this.requestMethod == null) {
+            this.command = commandLine;
         }
 
         parseRedirection(this.command);
@@ -117,7 +117,7 @@ public class CommandLineParser {
      * @param buffer the translet name to parse
      */
     private void parseRedirection(String buffer) {
-        Matcher matcher = redirectionOperatorPattern.matcher(buffer);
+        Matcher matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
         List<CommandLineRedirection> redirectionList = new ArrayList<>();
         CommandLineRedirection prevRedirectionOperation = null;
         boolean haveDoubleQuote = false;
@@ -134,7 +134,7 @@ public class CommandLineParser {
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.APPEND_OUT);
                 redirectionList.add(prevRedirectionOperation);
                 buffer = buffer.substring(matcher.end(1));
-                matcher = redirectionOperatorPattern.matcher(buffer);
+                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
             }
             else if (matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
                 String string = buffer.substring(0, matcher.start(2)).trim();
@@ -146,7 +146,7 @@ public class CommandLineParser {
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.OVERWRITE_OUT);
                 redirectionList.add(prevRedirectionOperation);
                 buffer = buffer.substring(matcher.end(2));
-                matcher = redirectionOperatorPattern.matcher(buffer);
+                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
             }
             else if (matcher.group(3) != null) {
                 if ((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
@@ -168,14 +168,14 @@ public class CommandLineParser {
     }
 
     /**
-     * Returns the command parser.
+     * Returns the command line parser.
      *
-     * @param command the command
-     * @return the command parser
+     * @param commandLine the command line
+     * @return the command line parser
      */
-    public static CommandLineParser parseCommand(String command) {
+    public static CommandLineParser parseCommandLine(String commandLine) {
         CommandLineParser parser = new CommandLineParser();
-        parser.parse(command);
+        parser.parse(commandLine);
         return parser;
     }
 
@@ -191,6 +191,10 @@ public class CommandLineParser {
             }
         }
         return sb.toString();
+    }
+
+    public static String[] splitCommandLine(String commandLine) {
+        return StringUtils.tokenize(commandLine, " ", true);
     }
 
 }

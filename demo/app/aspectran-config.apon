@@ -19,7 +19,12 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "{{GREEN}}aspectran-demo{{YELLOW,bold}}>{{off}} "
+    prompt: "{{GREEN}}aspectran-demo{{YELLOW}}>{{off}} "
+    commands: [
+        com.aspectran.shell.command.builtins.DescCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
     descriptable: true
     usage: (
         |

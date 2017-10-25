@@ -34,7 +34,7 @@ public interface Console {
 
     void setCommandPrompt(String commandPrompt);
 
-    String readCommand();
+    String readCommandLine();
 
     String readLine();
 

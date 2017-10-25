@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
 public class DefaultConsole extends AbstractConsole {
 
     @Override
-    public String readCommand() {
+    public String readCommandLine() {
         return readLine(getCommandPrompt());
     }
 

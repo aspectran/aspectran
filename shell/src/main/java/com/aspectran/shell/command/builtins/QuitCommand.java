@@ -1,10 +1,9 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.Command;
+import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.service.ShellAspectranService;
 
-import java.util.Collections;
 import java.util.Map;
 
 public class QuitCommand extends AbstractCommand {
@@ -19,8 +18,7 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().restart();
-        return null;
+        throw new ConsoleTerminatedException();
     }
 
     @Override
@@ -48,8 +46,8 @@ public class QuitCommand extends AbstractCommand {
             }
 
             @Override
-            public Map<String, String> getArguments() {
-                return Collections.emptyMap();
+            public Map<String, String> getOptions() {
+                return null;
             }
 
         };

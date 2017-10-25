@@ -68,9 +68,9 @@ public interface Command {
         /**
          * Use this method is to provide a map of the command arguments.
          *
-         * @return Map<String, String> key is argument, value = description of arg.
+         * @return
          */
-        Map<String, String> getArguments();
+        Map<String, String> getOptions();
 
     }
 

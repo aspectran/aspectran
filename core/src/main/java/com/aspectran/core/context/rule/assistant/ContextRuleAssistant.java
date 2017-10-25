@@ -538,7 +538,7 @@ public class ContextRuleAssistant {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Failed to load class: " + className, e);
+            throw new IllegalArgumentException("Unable to load class: " + className, e);
         }
     }
 

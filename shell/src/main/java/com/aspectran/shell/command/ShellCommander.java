@@ -26,33 +26,49 @@ import com.aspectran.core.util.logging.LogFactory;
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ShellCommands {
+public class ShellCommander {
 
-    private static final Log log = LogFactory.getLog(ShellCommands.class);
+    private static final Log log = LogFactory.getLog(ShellCommander.class);
 
     private final ShellAspectranService service;
 
     private final Console console;
 
-    public ShellCommands(ShellAspectranService service) {
+    private final CommandRegistry commandRegistry;
+
+    public ShellCommander(ShellAspectranService service) {
         this.service = service;
         this.console = service.getConsole();
+        this.commandRegistry = service.getCommandRegistry();
     }
 
     public void perform() {
         try {
-            loop:
             while (true) {
-                String command = console.readCommand();
-                if (command == null) {
+                String commandLine = console.readCommandLine();
+                if (commandLine == null) {
                     continue;
                 }
-                command = command.trim();
-                if (command.isEmpty()) {
+                commandLine = commandLine.trim();
+                if (commandLine.isEmpty()) {
                     continue;
                 }
 
-                switch (command) {
+                CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(commandLine);
+                String[] args = CommandLineParser.splitCommandLine(commandLineParser.getCommand());
+
+                String commandName = (args.length > 0 ? args[0] : null);
+                Command command = commandRegistry.getCommand(commandName);
+
+                if (command != null) {
+                    command.execute(args);
+                } else {
+                    service.serve(commandLine);
+                    console.writeLine();
+                }
+
+/*
+                switch (commandLine) {
                     case "restart":
                         service.restart();
                         break;
@@ -85,14 +101,15 @@ public class ShellCommands {
                     case "quit":
                         break loop;
                     default:
-                        service.serve(command);
+                        service.serve(commandLine);
                         console.writeLine();
                 }
+*/
             }
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
         } catch (Exception e) {
-            log.error("An error occurred while processing the command", e);
+            log.error("An error occurred while executing the command", e);
         } finally {
             if (service.isActive()) {
                 log.info("Do not terminate this application while destroying all scoped beans");

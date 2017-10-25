@@ -39,6 +39,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.adapter.ShellApplicationAdapter;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.command.CommandLineParser;
@@ -64,6 +65,10 @@ public class ShellAspectranService extends BasicAspectranService {
 
     private Console console;
 
+    private String[] commands;
+
+    private CommandRegistry commandRegistry;
+
     private boolean descriptable;
 
     private String usage;
@@ -74,14 +79,18 @@ public class ShellAspectranService extends BasicAspectranService {
 
     @Override
     public void afterContextLoaded() throws Exception {
+        if (commands != null) {
+            CommandRegistry commandRegistry = new CommandRegistry(this);
+            commandRegistry.addCommand(commands);
+            setCommandRegistry(commandRegistry);
+        }
+
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("CON");
-
         SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }
-
         sessionManager.initialize();
     }
 
@@ -102,6 +111,22 @@ public class ShellAspectranService extends BasicAspectranService {
 
     private void setConsole(Console console) {
         this.console = console;
+    }
+
+    public String[] getCommands() {
+        return commands;
+    }
+
+    private void setCommands(String[] commands) {
+        this.commands = commands;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    private void setCommandRegistry(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
     }
 
     /**
@@ -147,7 +172,9 @@ public class ShellAspectranService extends BasicAspectranService {
      * @param command the translet name mapped to the command
      */
     public void serve(String command) {
-        if (!isExposable(command)) {
+        CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(command);
+
+        if (!isExposable(commandLineParser.getCommand())) {
             log.info("Unexposable Translet: " + command);
             return;
         }
@@ -170,9 +197,7 @@ public class ShellAspectranService extends BasicAspectranService {
             }
         }
 
-        CommandLineParser commandLineParser = CommandLineParser.parseCommand(command);
         Writer[] redirectionWriters = null;
-
         if (commandLineParser.getRedirectionList() != null) {
             try {
                 redirectionWriters = commandLineParser.getRedirectionWriters(console);
@@ -229,6 +254,7 @@ public class ShellAspectranService extends BasicAspectranService {
      * Returns a new instance of ConsoleAspectranService.
      *
      * @param aspectranConfigFile the aspectran configuration file
+     * @param console the console
      * @return the shell aspectran service
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
@@ -256,6 +282,7 @@ public class ShellAspectranService extends BasicAspectranService {
      * Returns a new instance of ConsoleAspectranService.
      *
      * @param aspectranConfigFile the aspectran configuration file
+     * @param console the console
      * @return the shell aspectran service
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
@@ -276,17 +303,21 @@ public class ShellAspectranService extends BasicAspectranService {
         ShellAspectranService shellAspectranService = new ShellAspectranService();
         shellAspectranService.prepare(aspectranConfig);
 
-        if (console == null) {
-            console = new DefaultConsole();
-        }
-
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
+            if (console != null) {
+                shellAspectranService.setConsole(console);
+            } else {
+                shellAspectranService.setConsole(new DefaultConsole());
+            }
             String commandPrompt = shellConfig.getString(ShellConfig.prompt);
             if (commandPrompt != null) {
-                console.setCommandPrompt(commandPrompt);
+                shellAspectranService.getConsole().setCommandPrompt(commandPrompt);
             }
-            shellAspectranService.setConsole(console);
+            String[] commands = shellConfig.getStringArray(ShellConfig.commands);
+            if (commands != null && commands.length > 0) {
+                shellAspectranService.setCommands(commands);
+            }
             shellAspectranService.setDescriptable(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.descriptable)));
             shellAspectranService.setUsage(shellConfig.getString(ShellConfig.usage));
             shellAspectranService.setExposals(shellConfig.getStringArray(ShellConfig.exposals));

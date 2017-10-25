@@ -29,7 +29,7 @@ public class CommandParserTest {
 
     @Test
     public void testCommandParser() {
-        CommandLineParser commandParser = CommandLineParser.parseCommand("GET /path/method >> abcde.txt > 12345.txt");
+        CommandLineParser commandParser = CommandLineParser.parseCommandLine("GET /path/method >> abcde.txt > 12345.txt");
         System.out.println(commandParser.getRequestMethod());
         System.out.println(commandParser.getCommand());
         System.out.println(commandParser.getRedirectionList());
@@ -37,7 +37,7 @@ public class CommandParserTest {
 
     @Test
     public void testRedirectionOperators() {
-        List<CommandLineRedirection> list = CommandLineParser.parseCommand(">> abcde > 12345").getRedirectionList();
+        List<CommandLineRedirection> list = CommandLineParser.parseCommandLine(">> abcde > 12345").getRedirectionList();
         Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
         Assert.assertEquals(list.get(0).getOperand(), "abcde");
         Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
@@ -46,7 +46,7 @@ public class CommandParserTest {
 
     @Test
     public void testRedirectionOperators2() {
-        List<CommandLineRedirection> list = CommandLineParser.parseCommand("> '<abcde>' >> 12345").getRedirectionList();
+        List<CommandLineRedirection> list = CommandLineParser.parseCommandLine("> '<abcde>' >> 12345").getRedirectionList();
         Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
         Assert.assertEquals(list.get(0).getOperand(), "'<abcde>'");
         Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);

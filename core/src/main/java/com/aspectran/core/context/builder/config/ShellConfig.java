@@ -22,6 +22,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class ShellConfig extends AbstractParameters {
 
     public static final ParameterDefinition prompt;
+    public static final ParameterDefinition commands;
     public static final ParameterDefinition descriptable;
     public static final ParameterDefinition usage;
     public static final ParameterDefinition exposals;
@@ -30,12 +31,14 @@ public class ShellConfig extends AbstractParameters {
 
     static {
         prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
+        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
         descriptable = new ParameterDefinition("descriptable", ParameterValueType.BOOLEAN);
         usage = new ParameterDefinition("usage", ParameterValueType.TEXT);
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
             prompt,
+            commands,
             descriptable,
             usage,
             exposals

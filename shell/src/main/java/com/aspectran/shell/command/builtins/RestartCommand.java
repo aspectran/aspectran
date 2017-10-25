@@ -4,7 +4,6 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.service.ShellAspectranService;
 
-import java.util.Collections;
 import java.util.Map;
 
 public class RestartCommand extends AbstractCommand {
@@ -48,8 +47,8 @@ public class RestartCommand extends AbstractCommand {
             }
 
             @Override
-            public Map<String, String> getArguments() {
-                return Collections.emptyMap();
+            public Map<String, String> getOptions() {
+                return null;
             }
 
         };
