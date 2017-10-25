@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.inout;
+package com.aspectran.shell.console;
 
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 /**
- * The Abstract Class for Console I/O.
- *
- * <p>Created: 2017. 3. 4.</p>
+ * The Class UnclosablePrintWriter.
+ * 
+ * @since 2016. 1. 22.
  */
-public abstract class AbstractConsoleInout implements ConsoleInout {
+public class UnclosablePrintWriter extends PrintWriter {
 
-    private String commandPrompt = DEFAULT_COMMAND_PROMPT;
+    public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
+        this(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)));
+    }
 
-    @Override
-    public String getCommandPrompt() {
-        return commandPrompt;
+    public UnclosablePrintWriter(Writer writer) {
+        super(writer, true);
     }
 
     @Override
-    public void setCommandPrompt(String commandPrompt) {
-        this.commandPrompt = commandPrompt;
-    }
-
-    @Override
-    public Writer getUnclosableWriter() throws UnsupportedEncodingException {
-        return new UnclosablePrintWriter(getOutput(), getEncoding());
+    public void close() {
+        // Do not close the shell output stream until the application is terminated.
     }
 
 }

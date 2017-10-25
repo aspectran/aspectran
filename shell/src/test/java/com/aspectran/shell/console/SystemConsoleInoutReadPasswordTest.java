@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.inout;
+package com.aspectran.shell.console;
 
 import java.io.IOException;
 
@@ -23,10 +23,10 @@ import java.io.IOException;
 public class SystemConsoleInoutReadPasswordTest {
 
     public static void main(String argv[]) throws IOException {
-        ConsoleInout consoleInout = new SystemConsoleInout();
+        Console console = new DefaultConsole();
         String prompt = "System> ";
         while (true) {
-            String line = consoleInout.readPassword(prompt);
+            String line = console.readPassword(prompt);
             if ("quit".equals(line)) {
                 break;
             }

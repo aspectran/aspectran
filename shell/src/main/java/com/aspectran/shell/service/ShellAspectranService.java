@@ -39,9 +39,9 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.adapter.ShellApplicationAdapter;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
-import com.aspectran.shell.inout.ConsoleInout;
-import com.aspectran.shell.inout.SystemConsoleInout;
-import com.aspectran.shell.service.command.CommandParser;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.command.CommandLineParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class ShellAspectranService extends BasicAspectranService {
 
     private long pauseTimeout = -1L;
 
-    private ConsoleInout consoleInout;
+    private Console console;
 
     private boolean descriptable;
 
@@ -96,12 +96,12 @@ public class ShellAspectranService extends BasicAspectranService {
         return new ShellSessionAdapter(agent);
     }
 
-    public ConsoleInout getConsoleInout() {
-        return consoleInout;
+    public Console getConsole() {
+        return console;
     }
 
-    private void setConsoleInout(ConsoleInout consoleInout) {
-        this.consoleInout = consoleInout;
+    private void setConsole(Console console) {
+        this.console = console;
     }
 
     /**
@@ -132,12 +132,12 @@ public class ShellAspectranService extends BasicAspectranService {
 
     public void printUsage() {
         if (StringUtils.hasText(usage)) {
-            consoleInout.writeLine(usage);
-            consoleInout.flush();
+            console.writeLine(usage);
+            console.flush();
         }
         if (isDescriptable() && getActivityContext().getDescription() != null) {
-            consoleInout.writeLine(getActivityContext().getDescription());
-            consoleInout.flush();
+            console.writeLine(getActivityContext().getDescription());
+            console.flush();
         }
     }
 
@@ -170,14 +170,14 @@ public class ShellAspectranService extends BasicAspectranService {
             }
         }
 
-        CommandParser commandParser = CommandParser.parseCommand(command);
+        CommandLineParser commandLineParser = CommandLineParser.parseCommand(command);
         Writer[] redirectionWriters = null;
 
-        if (commandParser.getRedirectionList() != null) {
+        if (commandLineParser.getRedirectionList() != null) {
             try {
-                redirectionWriters = commandParser.getRedirectionWriters(consoleInout);
+                redirectionWriters = commandLineParser.getRedirectionWriters(console);
             } catch (Exception e) {
-                log.warn("Invalid Redirection: " + CommandParser.serialize(commandParser.getRedirectionList()), e);
+                log.warn("Invalid Redirection: " + CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
                 return;
             }
         }
@@ -186,7 +186,7 @@ public class ShellAspectranService extends BasicAspectranService {
 
         try {
             activity = new ShellActivity(this, redirectionWriters);
-            activity.prepare(commandParser.getTransletName(), commandParser.getRequestMethod());
+            activity.prepare(commandLineParser.getCommand(), commandLineParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
             log.info("No translet mapped to the command [" + command + "]");
@@ -233,10 +233,10 @@ public class ShellAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
      */
-    public static ShellAspectranService create(String aspectranConfigFile, ConsoleInout consoleInout)
+    public static ShellAspectranService create(String aspectranConfigFile, Console console)
             throws AspectranServiceException, IOException {
         File file = ResourceUtils.getFile(aspectranConfigFile, AspectranClassLoader.getDefaultClassLoader());
-        return create(file, consoleInout);
+        return create(file, console);
     }
 
     /**
@@ -260,7 +260,7 @@ public class ShellAspectranService extends BasicAspectranService {
      * @throws AspectranServiceException the aspectran service exception
      * @throws IOException if an I/O error has occurred
      */
-    public static ShellAspectranService create(File aspectranConfigFile, ConsoleInout consoleInout)
+    public static ShellAspectranService create(File aspectranConfigFile, Console console)
             throws AspectranServiceException, IOException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {
@@ -273,30 +273,30 @@ public class ShellAspectranService extends BasicAspectranService {
             contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
         }
 
-        ShellAspectranService consoleAspectranService = new ShellAspectranService();
-        consoleAspectranService.prepare(aspectranConfig);
+        ShellAspectranService shellAspectranService = new ShellAspectranService();
+        shellAspectranService.prepare(aspectranConfig);
 
-        if (consoleInout == null) {
-            consoleInout = new SystemConsoleInout();
+        if (console == null) {
+            console = new DefaultConsole();
         }
 
-        ShellConfig consoleConfig = aspectranConfig.getConsoleConfig();
-        if (consoleConfig != null) {
-            String commandPrompt = consoleConfig.getString(ShellConfig.prompt);
+        ShellConfig shellConfig = aspectranConfig.getShellConfig();
+        if (shellConfig != null) {
+            String commandPrompt = shellConfig.getString(ShellConfig.prompt);
             if (commandPrompt != null) {
-                consoleInout.setCommandPrompt(commandPrompt);
+                console.setCommandPrompt(commandPrompt);
             }
-            consoleAspectranService.setConsoleInout(consoleInout);
-            consoleAspectranService.setDescriptable(BooleanUtils.toBoolean(consoleConfig.getBoolean(ShellConfig.descriptable)));
-            consoleAspectranService.setUsage(consoleConfig.getString(ShellConfig.usage));
-            consoleAspectranService.setExposals(consoleConfig.getStringArray(ShellConfig.exposals));
+            shellAspectranService.setConsole(console);
+            shellAspectranService.setDescriptable(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.descriptable)));
+            shellAspectranService.setUsage(shellConfig.getString(ShellConfig.usage));
+            shellAspectranService.setExposals(shellConfig.getStringArray(ShellConfig.exposals));
         } else {
-            consoleAspectranService.setConsoleInout(new SystemConsoleInout());
+            shellAspectranService.setConsole(new DefaultConsole());
         }
 
-        setServiceStateListener(consoleAspectranService);
+        setServiceStateListener(shellAspectranService);
 
-        return consoleAspectranService;
+        return shellAspectranService;
     }
 
     private static void setServiceStateListener(final ShellAspectranService aspectranService) {

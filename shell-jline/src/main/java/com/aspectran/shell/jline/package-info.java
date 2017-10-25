@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains classes that take advantage of the JLine library to handle console input and output.
+ * Contains classes that take advantage of the JLine library to handle shell input and output.
  */
 package com.aspectran.shell.jline;

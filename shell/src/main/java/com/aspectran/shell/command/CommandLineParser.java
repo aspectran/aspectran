@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.service.command;
+package com.aspectran.shell.command;
 
-import com.aspectran.shell.inout.ConsoleInout;
+import com.aspectran.shell.console.Console;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 
@@ -32,9 +32,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The Command Parser.
+ * The Command Line Parser.
  */
-public class CommandParser {
+public class CommandLineParser {
 
     private static final Pattern redirectionOperatorPattern = Pattern.compile("(>>)|(>)|(\")|(\')");
 
@@ -42,14 +42,14 @@ public class CommandParser {
 
     private MethodType requestMethod;
 
-    private String transletName;
+    private String command;
 
-    private List<CommandRedirection> redirectionList;
+    private List<CommandLineRedirection> redirectionList;
 
     /**
-     * Instantiates a new Command parser.
+     * Instantiates a new Command line parser.
      */
-    private CommandParser() {
+    private CommandLineParser() {
     }
 
     /**
@@ -66,22 +66,22 @@ public class CommandParser {
      *
      * @return the translet name
      */
-    public String getTransletName() {
-        return transletName;
+    public String getCommand() {
+        return command;
     }
 
-    public List<CommandRedirection> getRedirectionList() {
+    public List<CommandLineRedirection> getRedirectionList() {
         return redirectionList;
     }
 
-    public Writer[] getRedirectionWriters(ConsoleInout consoleInout) throws FileNotFoundException, UnsupportedEncodingException {
+    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException, UnsupportedEncodingException {
         if (redirectionList != null) {
             List<Writer> writerList = new ArrayList<>(redirectionList.size());
-            for (CommandRedirection redirection : redirectionList) {
+            for (CommandLineRedirection redirection : redirectionList) {
                 File file = new File(redirection.getOperand());
-                boolean append = (redirection.getOperator() == CommandRedirection.Operator.APPEND_OUT);
+                boolean append = (redirection.getOperator() == CommandLineRedirection.Operator.APPEND_OUT);
                 OutputStream stream = new FileOutputStream(file, append);
-                writerList.add(new OutputStreamWriter(stream, consoleInout.getEncoding()));
+                writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
             }
             return writerList.toArray(new Writer[writerList.size()]);
         } else {
@@ -100,15 +100,15 @@ public class CommandParser {
         if (tokens.length > 1) {
             requestMethod = MethodType.resolve(tokens[0]);
             if (requestMethod != null) {
-                transletName = command.substring(tokens[0].length()).trim();
+                this.command = command.substring(tokens[0].length()).trim();
             }
         }
 
         if (requestMethod == null) {
-            transletName = command;
+            this.command = command;
         }
 
-        parseRedirection(transletName);
+        parseRedirection(this.command);
     }
 
     /**
@@ -118,8 +118,8 @@ public class CommandParser {
      */
     private void parseRedirection(String buffer) {
         Matcher matcher = redirectionOperatorPattern.matcher(buffer);
-        List<CommandRedirection> redirectionList = new ArrayList<>();
-        CommandRedirection prevRedirectionOperation = null;
+        List<CommandLineRedirection> redirectionList = new ArrayList<>();
+        CommandLineRedirection prevRedirectionOperation = null;
         boolean haveDoubleQuote = false;
         boolean haveSingleQuote = false;
 
@@ -129,9 +129,9 @@ public class CommandParser {
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
-                    this.transletName = string;
+                    this.command = string;
                 }
-                prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.APPEND_OUT);
+                prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.APPEND_OUT);
                 redirectionList.add(prevRedirectionOperation);
                 buffer = buffer.substring(matcher.end(1));
                 matcher = redirectionOperatorPattern.matcher(buffer);
@@ -141,9 +141,9 @@ public class CommandParser {
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
-                    this.transletName = string;
+                    this.command = string;
                 }
-                prevRedirectionOperation = new CommandRedirection(CommandRedirection.Operator.OVERWRITE_OUT);
+                prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.OVERWRITE_OUT);
                 redirectionList.add(prevRedirectionOperation);
                 buffer = buffer.substring(matcher.end(2));
                 matcher = redirectionOperatorPattern.matcher(buffer);
@@ -173,16 +173,16 @@ public class CommandParser {
      * @param command the command
      * @return the command parser
      */
-    public static CommandParser parseCommand(String command) {
-        CommandParser parser = new CommandParser();
+    public static CommandLineParser parseCommand(String command) {
+        CommandLineParser parser = new CommandLineParser();
         parser.parse(command);
         return parser;
     }
 
-    public static String serialize(List<CommandRedirection> redirectionList) {
+    public static String serialize(List<CommandLineRedirection> redirectionList) {
         StringBuilder sb = new StringBuilder();
         if (redirectionList != null) {
-            for (CommandRedirection redirection : redirectionList) {
+            for (CommandLineRedirection redirection : redirectionList) {
                 if (sb.length() > 0) {
                     sb.append(" ");
                 }

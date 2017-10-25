@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell;
 
+import com.aspectran.shell.command.ShellCommands;
 import com.aspectran.shell.service.ShellAspectranService;
 
 /**
@@ -41,8 +42,8 @@ public class AspectranShell {
             service = ShellAspectranService.create(aspectranConfigFile);
             service.start();
 
-            ConsoleCommand command = new ConsoleCommand(service);
-            command.perform();
+            ShellCommands commands = new ShellCommands(service);
+            commands.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
@@ -50,7 +51,6 @@ public class AspectranShell {
             if (service != null) {
                 service.stop();
             }
-
         }
 
         System.exit(exitStatus);

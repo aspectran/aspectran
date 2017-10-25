@@ -13,7 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * A package for enhanced shell input and output.
+package com.aspectran.shell.console;
+
+import java.io.IOException;
+
+/**‰
+ * <p>Created: 2017. 3. 5.</p>
  */
-package com.aspectran.shell.inout;
+public class SystemConsoleInoutTest {
+
+    public static void main(String argv[]) throws IOException {
+        Console console = new DefaultConsole();
+        String prompt = "System> ";
+        while (true) {
+            String line = console.readLine(prompt);
+            if ("quit".equals(line)) {
+                break;
+            }
+        }
+    }
+
+}

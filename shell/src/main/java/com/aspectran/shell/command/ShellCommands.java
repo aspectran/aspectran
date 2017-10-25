@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell;
+package com.aspectran.shell.command;
 
-import com.aspectran.shell.inout.ConsoleInout;
-import com.aspectran.shell.inout.ConsoleTerminatedException;
+import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellAspectranService;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -27,24 +26,24 @@ import com.aspectran.core.util.logging.LogFactory;
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ConsoleCommand {
+public class ShellCommands {
 
-    private static final Log log = LogFactory.getLog(ConsoleCommand.class);
+    private static final Log log = LogFactory.getLog(ShellCommands.class);
 
     private final ShellAspectranService service;
 
-    private final ConsoleInout consoleInout;
+    private final Console console;
 
-    public ConsoleCommand(ShellAspectranService service) {
+    public ShellCommands(ShellAspectranService service) {
         this.service = service;
-        this.consoleInout = service.getConsoleInout();
+        this.console = service.getConsole();
     }
 
     public void perform() {
         try {
             loop:
             while (true) {
-                String command = consoleInout.readCommand();
+                String command = console.readCommand();
                 if (command == null) {
                     continue;
                 }
@@ -75,7 +74,7 @@ public class ConsoleCommand {
                         service.printUsage();
                         break ;
                     case "clear":
-                        consoleInout.clearScreen();
+                        console.clearScreen();
                         break ;
                     case "mem":
                         mem(false);
@@ -87,7 +86,7 @@ public class ConsoleCommand {
                         break loop;
                     default:
                         service.serve(command);
-                        consoleInout.writeLine();
+                        console.writeLine();
                 }
             }
         } catch (ConsoleTerminatedException e) {
@@ -110,14 +109,14 @@ public class ConsoleCommand {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
 
-        consoleInout.setStyle("yellow");
-        consoleInout.write("   Total memory: ");
-        consoleInout.setStyle("fg:off");
-        consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(total));
-        consoleInout.setStyle("yellow");
-        consoleInout.write("   Used memory: ");
-        consoleInout.setStyle("fg:off");
-        consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(total - before));
+        console.setStyle("yellow");
+        console.write("   Total memory: ");
+        console.setStyle("fg:off");
+        console.writeLine(StringUtils.convertToHumanFriendlyByteSize(total));
+        console.setStyle("yellow");
+        console.write("   Used memory: ");
+        console.setStyle("fg:off");
+        console.writeLine(StringUtils.convertToHumanFriendlyByteSize(total - before));
         if (gc) {
             // Let the finilizer finish its work and remove objects from its queue
             System.gc(); // asyncronous garbage collector might already run
@@ -131,26 +130,26 @@ public class ConsoleCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            consoleInout.setStyle("yellow");
-            consoleInout.write("   Free memory before GC: ");
-            consoleInout.setStyle("fg:off");
-            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
-            consoleInout.setStyle("yellow");
-            consoleInout.write("   Free memory after GC: ");
-            consoleInout.setStyle("fg:off");
-            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after));
-            consoleInout.setStyle("yellow");
-            consoleInout.write("   Memory gained with GC: ");
-            consoleInout.setStyle("fg:off");
-            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(after - before));
+            console.setStyle("yellow");
+            console.write("   Free memory before GC: ");
+            console.setStyle("fg:off");
+            console.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
+            console.setStyle("yellow");
+            console.write("   Free memory after GC: ");
+            console.setStyle("fg:off");
+            console.writeLine(StringUtils.convertToHumanFriendlyByteSize(after));
+            console.setStyle("yellow");
+            console.write("   Memory gained with GC: ");
+            console.setStyle("fg:off");
+            console.writeLine(StringUtils.convertToHumanFriendlyByteSize(after - before));
         } else {
-            consoleInout.setStyle("yellow");
-            consoleInout.write("   Free memory: ");
-            consoleInout.setStyle("fg:off");
-            consoleInout.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
+            console.setStyle("yellow");
+            console.write("   Free memory: ");
+            console.setStyle("fg:off");
+            console.writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
         }
-        consoleInout.writeLine();
-        consoleInout.offStyle();
+        console.writeLine();
+        console.offStyle();
     }
 
 }

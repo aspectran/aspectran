@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.inout;
-
-import org.jline.reader.UserInterruptException;
+package com.aspectran.shell.console;
 
 import java.io.BufferedReader;
 import java.io.IOError;
@@ -31,7 +29,7 @@ import java.nio.charset.Charset;
  *
  * <p>Created: 2017. 3. 4.</p>
  */
-public class SystemConsoleInout extends AbstractConsoleInout {
+public class DefaultConsole extends AbstractConsole {
 
     @Override
     public String readCommand() {
@@ -55,8 +53,6 @@ public class SystemConsoleInout extends AbstractConsoleInout {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 return reader.readLine();
             }
-        } catch (UserInterruptException e) {
-            throw new ConsoleTerminatedException();
         } catch (IOException e) {
             throw new IOError(e);
         }

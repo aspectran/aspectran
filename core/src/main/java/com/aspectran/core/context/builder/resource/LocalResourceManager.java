@@ -94,7 +94,7 @@ public class LocalResourceManager extends ResourceManager {
                 findResourceFromJAR(file);
             }
         } catch (Exception e) {
-            throw new InvalidResourceException("Faild to find resource from [" + resourceLocation + "]", e);
+            throw new InvalidResourceException("Failed to find resource from [" + resourceLocation + "]", e);
         }
     }
 

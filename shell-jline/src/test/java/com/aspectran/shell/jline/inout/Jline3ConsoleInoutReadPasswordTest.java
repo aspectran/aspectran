@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline.inout;
 
-import com.aspectran.shell.inout.ConsoleInout;
+import com.aspectran.shell.console.Console;
 
 import java.io.IOException;
 
@@ -25,10 +25,10 @@ import java.io.IOException;
 public class Jline3ConsoleInoutReadPasswordTest {
 
     public static void main(String argv[]) throws IOException {
-        ConsoleInout consoleInout = new JlineConsoleInout();
+        Console console = new JlineConsole();
         String prompt = "JLine3> ";
         while (true) {
-            String line = consoleInout.readPassword(prompt);
+            String line = console.readPassword(prompt);
             if ("quit".equals(line)) {
                 break;
             }

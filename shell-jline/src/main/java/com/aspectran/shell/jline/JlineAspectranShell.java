@@ -15,8 +15,8 @@
  */
 package com.aspectran.shell.jline;
 
-import com.aspectran.shell.ConsoleCommand;
-import com.aspectran.shell.jline.inout.JlineConsoleInout;
+import com.aspectran.shell.command.ShellCommands;
+import com.aspectran.shell.jline.inout.JlineConsole;
 import com.aspectran.shell.service.ShellAspectranService;
 
 /**
@@ -42,10 +42,10 @@ public class JlineAspectranShell {
         int exitStatus = 0;
 
         try {
-            service = ShellAspectranService.create(aspectranConfigFile, new JlineConsoleInout());
+            service = ShellAspectranService.create(aspectranConfigFile, new JlineConsole());
             service.start();
 
-            ConsoleCommand command = new ConsoleCommand(service);
+            ShellCommands command = new ShellCommands(service);
             command.perform();
         } catch (Exception e) {
             e.printStackTrace();

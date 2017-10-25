@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.service.command;
+package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * <p>Created: 2017. 3. 8.</p>
  */
-public class CommandRedirection {
+public class CommandLineRedirection {
 
     private final Operator operator;
 
     private String operand;
 
-    public CommandRedirection(Operator operator) {
+    public CommandLineRedirection(Operator operator) {
         this.operator = operator;
     }
 
@@ -47,8 +47,8 @@ public class CommandRedirection {
         if (this == o) {
             return true;
         }
-        if (o instanceof CommandRedirection) {
-            CommandRedirection cr = (CommandRedirection)o;
+        if (o instanceof CommandLineRedirection) {
+            CommandLineRedirection cr = (CommandLineRedirection)o;
             if (cr.getOperand().equals(operand) &&
                     cr.getOperator().equals(operator)) {
                 return true;

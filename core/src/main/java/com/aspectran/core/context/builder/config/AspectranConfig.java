@@ -24,7 +24,7 @@ public class AspectranConfig extends AbstractParameters {
     public static final ParameterDefinition context;
     public static final ParameterDefinition session;
     public static final ParameterDefinition scheduler;
-    public static final ParameterDefinition console;
+    public static final ParameterDefinition shell;
     public static final ParameterDefinition web;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -33,14 +33,14 @@ public class AspectranConfig extends AbstractParameters {
         context = new ParameterDefinition("context", ContextConfig.class);
         session = new ParameterDefinition("session", SessionConfig.class);
         scheduler = new ParameterDefinition("scheduler", SchedulerConfig.class);
-        console = new ParameterDefinition("shell", ShellConfig.class);
+        shell = new ParameterDefinition("shell", ShellConfig.class);
         web = new ParameterDefinition("web", WebConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
             context,
             session,
             scheduler,
-            console,
+            shell,
             web
         };
     }
@@ -101,20 +101,20 @@ public class AspectranConfig extends AbstractParameters {
         putValue(scheduler, schedulerConfig);
     }
 
-    public ShellConfig newConsoleConfig() {
-        return newParameters(console);
+    public ShellConfig newShellConfig() {
+        return newParameters(shell);
     }
 
-    public ShellConfig touchConsoleConfig() {
-        return touchParameters(console);
+    public ShellConfig touchShellConfig() {
+        return touchParameters(shell);
     }
 
-    public ShellConfig getConsoleConfig() {
-        return getParameters(console);
+    public ShellConfig getShellConfig() {
+        return getParameters(shell);
     }
 
-    public void putConsoleConfig(ShellConfig consoleConfig) {
-        putValue(console, consoleConfig);
+    public void putShellConfig(ShellConfig shellConfig) {
+        putValue(shell, shellConfig);
     }
 
     public WebConfig newWebConfig() {

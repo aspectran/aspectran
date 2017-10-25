@@ -37,7 +37,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private final URL[] resources;
 
-    private Map<String, Long> modifyTimeMap = new HashMap<>();
+    private Map<String, Long> modifiedTimeMap = new HashMap<>();
 
     private boolean modified = false;
 
@@ -61,9 +61,9 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
                 long modifiedTime = file.lastModified();
 
                 if (cycle == 0) {
-                    modifyTimeMap.put(filePath, modifiedTime);
+                    modifiedTimeMap.put(filePath, modifiedTime);
                 } else {
-                    Long modifiedTime2 = modifyTimeMap.get(filePath);
+                    Long modifiedTime2 = modifiedTimeMap.get(filePath);
                     if (modifiedTime2 != null) {
                         if (modifiedTime != modifiedTime2) {
                             modified = true;

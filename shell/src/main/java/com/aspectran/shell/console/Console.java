@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.inout;
+package com.aspectran.shell.console;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +26,7 @@ import java.io.Writer;
  *
  * @since 4.0.0
  */
-public interface ConsoleInout {
+public interface Console {
 
     String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
 

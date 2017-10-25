@@ -15,9 +15,9 @@
  */
 package com.aspectran.shell.jline.inout;
 
-import com.aspectran.shell.inout.AbstractConsoleInout;
-import com.aspectran.shell.inout.ConsoleTerminatedException;
-import com.aspectran.shell.inout.UnclosablePrintWriter;
+import com.aspectran.shell.console.AbstractConsole;
+import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.console.UnclosablePrintWriter;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.jline.builtins.Options;
@@ -42,9 +42,9 @@ import java.nio.charset.Charset;
  *
  * <p>Created: 2017. 3. 4.</p>
  */
-public class JlineConsoleInout extends AbstractConsoleInout {
+public class JlineConsole extends AbstractConsole {
 
-    private static final Log log = LogFactory.getLog(AbstractConsoleInout.class);
+    private static final Log log = LogFactory.getLog(AbstractConsole.class);
 
     private static final String APP_NAME = "Aspectran Shell";
 
@@ -60,7 +60,7 @@ public class JlineConsoleInout extends AbstractConsoleInout {
     
     private AttributedStyle style;
 
-    public JlineConsoleInout() throws IOException {
+    public JlineConsole() throws IOException {
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
         this.reader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
         this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
