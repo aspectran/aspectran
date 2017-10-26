@@ -2,6 +2,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.service.ShellAspectranService;
 
 import java.util.Map;
@@ -12,8 +13,8 @@ public class RestartCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "restart";
 
-    public RestartCommand(ShellAspectranService service) {
-        super(service);
+    public RestartCommand(CommandRegistry registry) {
+        super(registry);
     }
 
     @Override

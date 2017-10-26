@@ -1,5 +1,8 @@
 package com.aspectran.shell.command;
 
+import org.apache.commons.cli.Option;
+
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -70,7 +73,7 @@ public interface Command {
          *
          * @return
          */
-        Map<String, String> getOptions();
+        Collection<Option> getOptions();
 
     }
 

@@ -1,6 +1,7 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.service.ShellAspectranService;
 
@@ -12,8 +13,8 @@ public class QuitCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "quit";
 
-    public QuitCommand(ShellAspectranService service) {
-        super(service);
+    public QuitCommand(CommandRegistry registry) {
+        super(registry);
     }
 
     @Override

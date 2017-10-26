@@ -2,6 +2,8 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.shell.service.ShellAspectranService;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,10 +15,20 @@ public class CommandRegistry {
 
     private Map<String, Command> commands = new LinkedHashMap<>();
 
+    private CommandLineParser parser = new DefaultParser();
+
     private ShellAspectranService service;
 
     public CommandRegistry(ShellAspectranService service) {
         this.service = service;
+    }
+
+    public ShellAspectranService getService() {
+        return service;
+    }
+
+    public CommandLineParser getParser() {
+        return parser;
     }
 
     public Command getCommand(String commandName) {
