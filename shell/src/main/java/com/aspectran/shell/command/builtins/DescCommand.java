@@ -4,8 +4,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
+import com.aspectran.shell.command.option.Option;
+import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
@@ -27,15 +27,15 @@ public class DescCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        CommandLine line = parse(args);
+        ParsedOptions options = parse(args);
 
-        if (line.hasOption("on")) {
+        if (options.hasOption("on")) {
             log.info("Description On");
             getService().setDescriptable(true);
-        } else if (line.hasOption("off")) {
+        } else if (options.hasOption("off")) {
             log.info("Description Off");
             getService().setDescriptable(false);
-        } else if (line.hasOption("help")) {
+        } else if (options.hasOption("help")) {
             printUsage();
         } else {
             printUsage();

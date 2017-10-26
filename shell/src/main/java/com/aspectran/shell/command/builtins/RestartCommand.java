@@ -3,9 +3,9 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.command.option.Option;
 
-import java.util.Map;
+import java.util.Collection;
 
 public class RestartCommand extends AbstractCommand {
 
@@ -48,7 +48,7 @@ public class RestartCommand extends AbstractCommand {
             }
 
             @Override
-            public Map<String, String> getOptions() {
+            public Collection<Option> getOptions() {
                 return null;
             }
 
