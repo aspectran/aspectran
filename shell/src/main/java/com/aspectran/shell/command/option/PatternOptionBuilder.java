@@ -85,15 +85,13 @@ public class PatternOptionBuilder
     public static final Class<URL> URL_VALUE = URL.class;
 
     /**
-     * Retrieve the class that <code>ch</code> represents.
+     * Retrieve the class that {@code ch} represents.
      *
      * @param ch the specified character
-     * @return The class that <code>ch</code> represents
+     * @return the class that {@code ch} represents
      */
-    public static Object getValueClass(final char ch)
-    {
-        switch (ch)
-        {
+    public static Object getValueClass(final char ch) {
+        switch (ch) {
             case '@':
                 return PatternOptionBuilder.OBJECT_VALUE;
             case ':':
@@ -118,14 +116,13 @@ public class PatternOptionBuilder
     }
 
     /**
-     * Returns whether <code>ch</code> is a value code, i.e.
+     * Returns whether {@code ch} is a value code, i.e.
      * whether it represents a class in a pattern.
      *
      * @param ch the specified character
-     * @return true if <code>ch</code> is a value code, otherwise false.
+     * @return true if {@code ch} is a value code, otherwise false
      */
-    public static boolean isValueCode(final char ch)
-    {
+    public static boolean isValueCode(final char ch) {
         return ch == '@'
                 || ch == ':'
                 || ch == '%'
@@ -139,30 +136,26 @@ public class PatternOptionBuilder
     }
 
     /**
-     * Returns the {@link Options} instance represented by <code>pattern</code>.
+     * Returns the {@link Options} instance represented by {@code pattern}.
      *
      * @param pattern the pattern string
-     * @return The {@link Options} instance
+     * @return the {@link Options} instance
      */
-    public static Options parsePattern(final String pattern)
-    {
+    public static Options parsePattern(String pattern) {
         char opt = ' ';
         boolean required = false;
         Class<?> type = null;
 
-        final Options options = new Options();
+        Options options = new Options();
 
-        for (int i = 0; i < pattern.length(); i++)
-        {
-            final char ch = pattern.charAt(i);
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
 
             // a value code comes after an option and specifies
             // details about it
-            if (!isValueCode(ch))
-            {
-                if (opt != ' ')
-                {
-                    final Option option = Option.builder(String.valueOf(opt))
+            if (!isValueCode(ch)) {
+                if (opt != ' ') {
+                    Option option = Option.builder(String.valueOf(opt))
                         .hasArg(type != null)
                         .required(required)
                         .type(type)
@@ -172,24 +165,18 @@ public class PatternOptionBuilder
                     options.addOption(option);
                     required = false;
                     type = null;
-                    opt = ' ';
                 }
 
                 opt = ch;
-            }
-            else if (ch == '!')
-            {
+            } else if (ch == '!') {
                 required = true;
-            }
-            else
-            {
-                type = (Class<?>) getValueClass(ch);
+            } else {
+                type = (Class<?>)getValueClass(ch);
             }
         }
 
-        if (opt != ' ')
-        {
-            final Option option = Option.builder(String.valueOf(opt))
+        if (opt != ' ') {
+            Option option = Option.builder(String.valueOf(opt))
                 .hasArg(type != null)
                 .required(required)
                 .type(type)
@@ -201,4 +188,5 @@ public class PatternOptionBuilder
 
         return options;
     }
+    
 }

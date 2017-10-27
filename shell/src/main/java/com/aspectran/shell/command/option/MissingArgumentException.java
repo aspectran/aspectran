@@ -30,7 +30,7 @@ public class MissingArgumentException extends OptionParseException {
     private Option option;
 
     /**
-     * Construct a new <code>MissingArgumentException</code>
+     * Construct a new {@code MissingArgumentException}
      * with the specified detail message.
      *
      * @param message the detail message
@@ -40,7 +40,7 @@ public class MissingArgumentException extends OptionParseException {
     }
 
     /**
-     * Construct a new <code>MissingArgumentException</code>
+     * Construct a new {@code MissingArgumentException}
      * with the specified detail message.
      *
      * @param option the option requiring an argument

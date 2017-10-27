@@ -18,7 +18,7 @@ scheduler: {
 }
 shell: {
     prompt: "test-console-app> "
-    descriptable: true
+    verbose: true
     usage: (
         |
         |   --- Aspectran Demo Application ---

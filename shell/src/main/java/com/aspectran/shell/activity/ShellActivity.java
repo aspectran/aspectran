@@ -117,7 +117,7 @@ public class ShellActivity extends CoreActivity {
      * Prints a description for the {@code Translet}.
      */
     private void showDescription() {
-        if (service.isDescriptable()) {
+        if (service.isVerbose()) {
             String description = getTranslet().getDescription();
             if (description != null) {
                 console.writeLine(description);

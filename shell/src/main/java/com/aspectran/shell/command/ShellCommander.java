@@ -80,11 +80,11 @@ public class ShellCommander {
                         break;
                     case "desc on":
                         log.info("Description On");
-                        service.setDescriptable(true);
+                        service.setVerbose(true);
                         break;
                     case "desc off":
                         log.info("Description Off");
-                        service.setDescriptable(false);
+                        service.setVerbose(false);
                         break;
                     case "help":
                         service.printUsage();

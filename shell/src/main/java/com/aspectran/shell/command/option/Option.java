@@ -75,7 +75,7 @@ public class Option implements Cloneable, Serializable {
     private List<String> values = new ArrayList<>();
 
     /** the character that is the value separator */
-    private char valuesep;
+    private char valueSeparator;
 
     /**
      * Private constructor used by the nested Builder class.
@@ -91,7 +91,7 @@ public class Option implements Cloneable, Serializable {
         this.optionalArg = builder.optionalArg;
         this.required = builder.required;
         this.type = builder.type;
-        this.valuesep = builder.valuesep;
+        this.valueSeparator = builder.valueSeparator;
     }
     
     /**
@@ -103,7 +103,7 @@ public class Option implements Cloneable, Serializable {
      * @throws IllegalArgumentException if there are any non valid
      *      Option characters in <code>opt</code>.
      */
-    public Option(String opt, final String description) throws IllegalArgumentException {
+    public Option(String opt, String description) throws IllegalArgumentException {
         this(opt, null, false, description);
     }
 
@@ -116,7 +116,7 @@ public class Option implements Cloneable, Serializable {
      * @throws IllegalArgumentException if there are any non valid
      *      Option characters in <code>opt</code>.
      */
-    public Option(String opt, final boolean hasArg, final String description) throws IllegalArgumentException {
+    public Option(String opt, boolean hasArg, String description) throws IllegalArgumentException {
         this(opt, null, hasArg, description);
     }
 
@@ -130,7 +130,7 @@ public class Option implements Cloneable, Serializable {
      * @throws IllegalArgumentException if there are any non valid
      *      Option characters in <code>opt</code>.
      */
-    public Option(String opt, final String longOpt, final boolean hasArg, final String description)
+    public Option(String opt, String longOpt, boolean hasArg, String description)
            throws IllegalArgumentException {
         // ensure that the option is valid
         OptionValidator.validateOption(opt);
@@ -184,7 +184,7 @@ public class Option implements Cloneable, Serializable {
     /**
      * Retrieve the type of this Option.
      * 
-     * @return The type of this option
+     * @return the type of this option
      */
     public Object getType() {
         return type;
@@ -228,6 +228,8 @@ public class Option implements Cloneable, Serializable {
     }
 
     /**
+     * Returns whether this Option can have an optional argument.
+     *
      * @return whether this Option can have an optional argument
      */
     public boolean hasOptionalArg() {
@@ -235,7 +237,7 @@ public class Option implements Cloneable, Serializable {
     }
 
     /** 
-     * Query to see if this Option has a long name
+     * Query to see if this Option has a long name.
      *
      * @return boolean flag indicating existence of a long name
      */
@@ -243,8 +245,8 @@ public class Option implements Cloneable, Serializable {
         return longOpt != null;
     }
 
-    /** 
-     * Query to see if this Option requires an argument
+    /**
+     * Query to see if this Option requires an argument.
      *
      * @return boolean flag indicating if an argument is required
      */
@@ -337,10 +339,10 @@ public class Option implements Cloneable, Serializable {
      * Sets the value separator.  For example if the argument value
      * was a Java property, the value separator would be '='.
      *
-     * @param sep The value separator
+     * @param valueSeparator the value separator
      */
-    public void setValueSeparator(char sep) {
-        this.valuesep = sep;
+    public void setValueSeparator(char valueSeparator) {
+        this.valueSeparator = valueSeparator;
     }
 
     /**
@@ -349,7 +351,7 @@ public class Option implements Cloneable, Serializable {
      * @return the value separator character
      */
     public char getValueSeparator() {
-        return valuesep;
+        return valueSeparator;
     }
 
     /**
@@ -358,7 +360,7 @@ public class Option implements Cloneable, Serializable {
      * @return whether this Option has specified a value separator
      */
     public boolean hasValueSeparator() {
-        return valuesep > 0;
+        return (valueSeparator > 0);
     }
 
     /** 
@@ -398,7 +400,7 @@ public class Option implements Cloneable, Serializable {
      * in the value, parsing is ceased and the remaining characters are
      * added as a single token.
      *
-     * @param value the String to be processed.
+     * @param value the String to be processed
      */
     private void processValue(String value) {
         // this Option has a separator character
@@ -498,8 +500,11 @@ public class Option implements Cloneable, Serializable {
     }
 
     /**
+     * Returns the values of this Option as a List
+     * or null if there are no values.
+     *
      * @return the values of this Option as a List
-     * or null if there are no values
+     *      or null if there are no values
      */
     public List<String> getValuesList() {
         return values;
@@ -508,7 +513,7 @@ public class Option implements Cloneable, Serializable {
     /** 
      * Dump state, suitable for debugging.
      *
-     * @return Stringified form of this object
+     * @return the stringified form of this object
      */
     @Override
     public String toString() {
@@ -549,7 +554,7 @@ public class Option implements Cloneable, Serializable {
             return false;
         }
 
-        final Option option = (Option) o;
+        Option option = (Option) o;
 
         if (opt != null ? !opt.equals(option.opt) : option.opt != null) {
             return false;
@@ -687,7 +692,7 @@ public class Option implements Cloneable, Serializable {
         private Class<?> type = String.class;
 
         /** the character that is the value separator */
-        private char valuesep;
+        private char valueSeparator;
 
         /**
          * Constructs a new <code>Builder</code> with the minimum
@@ -704,7 +709,7 @@ public class Option implements Cloneable, Serializable {
         /**
          * Sets the display name for the argument value.
          *
-         * @param argName the display name for the argument value.
+         * @param argName the display name for the argument value
          * @return this builder, to allow method chaining
          */
         public Builder argName(String argName) {
@@ -715,7 +720,7 @@ public class Option implements Cloneable, Serializable {
         /**
          * Sets the description for this option.
          *
-         * @param description the description of the option.
+         * @param description the description of the option
          * @return this builder, to allow method chaining
          */
         public Builder desc(String description) {
@@ -749,7 +754,7 @@ public class Option implements Cloneable, Serializable {
          * Sets whether the Option can have an optional argument.
          *
          * @param isOptional specifies whether the Option can have
-         * an optional argument.
+         *      an optional argument
          * @return this builder, to allow method chaining
          */
         public Builder optionalArg(boolean isOptional) {
@@ -815,11 +820,11 @@ public class Option implements Cloneable, Serializable {
          * String propertyValue = line.getOptionValues("D")[1]; // will be "value"
          * </pre>
          *
-         * @param sep The value separator.
+         * @param valueSeparator the value separator.
          * @return this builder, to allow method chaining
          */
-        public Builder valueSeparator(char sep) {
-            valuesep = sep;
+        public Builder valueSeparator(char valueSeparator) {
+            this.valueSeparator = valueSeparator;
             return this;
         }
         
@@ -840,7 +845,7 @@ public class Option implements Cloneable, Serializable {
          */
         public Builder hasArg(boolean hasArg) {
             // set to UNINITIALIZED when no arg is specified to be compatible with OptionBuilder
-            numberOfArgs = hasArg ? 1 : Option.UNINITIALIZED;
+            numberOfArgs = (hasArg ? 1 : Option.UNINITIALIZED);
             return this;
         }
 

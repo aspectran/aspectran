@@ -302,7 +302,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to
      * System.out.
      *
@@ -314,7 +314,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to 
      * System.out.
      *
@@ -327,7 +327,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to
      * System.out.
      *
@@ -341,7 +341,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to 
      * System.out.
      *
@@ -356,7 +356,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to
      * System.out.
      *
@@ -371,7 +371,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.  This method prints help information to
      * System.out.
      *
@@ -390,7 +390,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.
      *
      * @param pw the writer to which the help will be written
@@ -411,7 +411,7 @@ public class HelpFormatter {
 
 
     /**
-     * Print the help for <code>options</code> with the specified
+     * Print the help for {@code options} with the specified
      * command line syntax.
      *
      * @param pw the writer to which the help will be written
@@ -775,8 +775,8 @@ public class HelpFormatter {
     }
 
     /**
-     * Finds the next text wrap position after <code>startPos</code> for the
-     * text in <code>text</code> with the column width <code>width</code>.
+     * Finds the next text wrap position after {@code startPos} for the
+     * text in {@code text} with the column width {@code width}.
      * The wrap point is the last position before startPos+width having a 
      * whitespace character (space, \n, \r). If there is no whitespace character
      * before startPos+width, it will return startPos+width.
@@ -823,7 +823,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Return a String of padding of length <code>len</code>.
+     * Return a String of padding of length {@code len}.
      *
      * @param len The length of the String of padding to create.
      * @return The String of padding
@@ -854,7 +854,7 @@ public class HelpFormatter {
     }
 
     /**
-     * This class implements the <code>Comparator</code> interface
+     * This class implements the {@code Comparator} interface
      * for comparing Options.
      */
     private static class OptionComparator implements Comparator<Option>, Serializable {

@@ -9,20 +9,20 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
-public class DescCommand extends AbstractCommand {
+public class VerboseCommand extends AbstractCommand {
 
-    private static final Log log = LogFactory.getLog(DescCommand.class);
+    private static final Log log = LogFactory.getLog(VerboseCommand.class);
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "desc";
+    private static final String COMMAND_NAME = "verbose";
 
-    public DescCommand(CommandRegistry registry) {
+    public VerboseCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(new Option("help", "Print this message"));
-        addOption(new Option("on", "Turn on the ability to print a description of the command"));
-        addOption(new Option("off", "Turn off the ability to print a description of the command"));
+        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
+        addOption(new Option("on", "Enable verbose output"));
+        addOption(new Option("off", "Disable verbose output"));
     }
 
     @Override
@@ -30,11 +30,11 @@ public class DescCommand extends AbstractCommand {
         ParsedOptions options = parse(args);
 
         if (options.hasOption("on")) {
-            log.info("Description On");
-            getService().setDescriptable(true);
+            log.info("Enabled verbose mode");
+            getService().setVerbose(true);
         } else if (options.hasOption("off")) {
-            log.info("Description Off");
-            getService().setDescriptable(false);
+            log.info("Disabled verbose mode");
+            getService().setVerbose(false);
         } else if (options.hasOption("help")) {
             printUsage();
         } else {
@@ -60,12 +60,12 @@ public class DescCommand extends AbstractCommand {
 
             @Override
             public String getDescription() {
-                return "Turn on or off the ability to print a description of the command";
+                return "Turns verbose mode on or off";
             }
 
             @Override
             public String getUsage() {
-                return "Type 'desc [-on] [-off]'";
+                return "Type 'verbose [-h] [-on] [-off]'";
             }
 
             @Override

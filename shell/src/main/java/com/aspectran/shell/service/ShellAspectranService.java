@@ -69,7 +69,8 @@ public class ShellAspectranService extends BasicAspectranService {
 
     private CommandRegistry commandRegistry;
 
-    private boolean descriptable;
+    /** if verbose mode is on, a detailed description is printed each time the command is executed. */
+    private boolean verbose;
 
     private String usage;
 
@@ -130,21 +131,25 @@ public class ShellAspectranService extends BasicAspectranService {
     }
 
     /**
+     * Tests if the verbose mode is enabled.
+     * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Returns a flag indicating whether to show the description or not.
      *
-     * @return true if description should be shown
+     * @return true if the verbose mode is enabled
      */
-    public boolean isDescriptable() {
-        return descriptable;
+    public boolean isVerbose() {
+        return verbose;
     }
 
     /**
+     * Enables or disables the verbose mode.
+     * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Sets a flag indicating whether to show the description or not.
      *
-     * @param descriptable true if description should be shown
+     * @param verbose true to enable the verbose mode; false to disable.
      */
-    public void setDescriptable(boolean descriptable) {
-        this.descriptable = descriptable;
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     public String getUsage() {
@@ -160,7 +165,7 @@ public class ShellAspectranService extends BasicAspectranService {
             console.writeLine(usage);
             console.flush();
         }
-        if (isDescriptable() && getActivityContext().getDescription() != null) {
+        if (isVerbose() && getActivityContext().getDescription() != null) {
             console.writeLine(getActivityContext().getDescription());
             console.flush();
         }
@@ -318,7 +323,7 @@ public class ShellAspectranService extends BasicAspectranService {
             if (commands != null && commands.length > 0) {
                 shellAspectranService.setCommands(commands);
             }
-            shellAspectranService.setDescriptable(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.descriptable)));
+            shellAspectranService.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
             shellAspectranService.setUsage(shellConfig.getString(ShellConfig.usage));
             shellAspectranService.setExposals(shellConfig.getStringArray(ShellConfig.exposals));
         } else {

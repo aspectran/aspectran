@@ -22,7 +22,7 @@ scheduler: {
 }
 shell: {
     prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{off}} "
-    descriptable: true
+    verbose: true
     usage: (
         |
         |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}

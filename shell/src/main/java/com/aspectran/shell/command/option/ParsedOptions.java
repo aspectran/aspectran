@@ -31,9 +31,10 @@ import java.util.Properties;
  * It allows querying of a boolean {@link #hasOption(String opt)},
  * in addition to retrieving the {@link #getOptionValue(String opt)}
  * for options requiring arguments.
- * <p>
+ * </p><p>
  * Additionally, any left-over or unrecognized arguments,
  * are available for further processing.
+ * </p>
  */
 public class ParsedOptions implements Serializable {
 
@@ -84,9 +85,9 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Return a version of this <code>Option</code> converted to a particular type.
+     * Return a version of this {@code Option} converted to a particular type.
      *
-     * @param option the name of the option
+     * @param option the option
      * @return the value parsed into a particular object
      * @throws OptionParseException if there are problems turning the option value into the desired type
      * @see PatternOptionBuilder
@@ -103,7 +104,7 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Return a version of this <code>Option</code> converted to a particular type.
+     * Return a version of this {@code Option} converted to a particular type.
      *
      * @param opt the name of the option
      * @return the value parsed into a particular object
@@ -115,7 +116,7 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Return a version of this <code>Option</code> converted to a particular type.
+     * Return a version of this {@code Option} converted to a particular type.
      *
      * @param opt the name of the option
      * @return the value parsed into a particular object
@@ -131,7 +132,7 @@ public class ParsedOptions implements Serializable {
      *
      * @param option the name of the option.
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise null.
+     *      otherwise null
      */
     public String getOptionValue(Option option) {
         if (option == null) {
@@ -145,7 +146,7 @@ public class ParsedOptions implements Serializable {
      * Retrieve the first argument, if any, of this option.
      *
      * @param opt the name of the option
-     * @return Value of the argument if option is set, and has an argument,
+     * @return the value of the argument if option is set, and has an argument,
      *      otherwise null
      */
     public String getOptionValue(String opt) {
@@ -167,7 +168,7 @@ public class ParsedOptions implements Serializable {
      * Retrieves the array of values, if any, of an option.
      *
      * @param option string name of the option
-     * @return values of the argument if option is set, and has an argument,
+     * @return the values of the argument if option is set, and has an argument,
      *      otherwise null
      */
     public String[] getOptionValues(Option option) {
@@ -184,7 +185,7 @@ public class ParsedOptions implements Serializable {
      * Retrieves the array of values, if any, of an option.
      *
      * @param opt string name of the option
-     * @return Values of the argument if option is set, and has an argument,
+     * @return the values of the argument if option is set, and has an argument,
      *      otherwise null
      */
     public String[] getOptionValues(String opt) {
@@ -192,10 +193,10 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Retrieves the option object given the long or short option as a String
+     * Retrieves the option object given the long or short option as a String.
      *
-     * @param opt short or long name of the option
-     * @return Canonicalized option
+     * @param opt the short or long name of the option
+     * @return the canonicalized option
      */
     private Option resolveOption(String opt) {
         opt = Util.stripLeadingHyphens(opt);
@@ -206,7 +207,6 @@ public class ParsedOptions implements Serializable {
             if (opt.equals(option.getLongOpt())) {
                 return option;
             }
-
         }
         return null;
     }
@@ -225,13 +225,13 @@ public class ParsedOptions implements Serializable {
     /**
      * Retrieve the first argument, if any, of an option.
      *
-     * @param option name of the option
-     * @param defaultValue is the default value to be returned if the option
+     * @param option the name of the option
+     * @param defaultValue the default value to be returned if the option
      *      is not specified
-     * @return Value of the argument if option is set, and has an argument,
-     *      otherwise <code>defaultValue</code>
+     * @return the value of the argument if option is set, and has an argument,
+     *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(Option option, final String defaultValue) {
+    public String getOptionValue(Option option, String defaultValue) {
         String answer = getOptionValue(option);
         return (answer != null ? answer : defaultValue);
     }
@@ -243,9 +243,9 @@ public class ParsedOptions implements Serializable {
      * @param defaultValue the default value to be returned if the option
      *      is not specified
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise <code>defaultValue</code>
+     *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(String opt, final String defaultValue) {
+    public String getOptionValue(String opt, String defaultValue) {
         return getOptionValue(resolveOption(opt), defaultValue);
     }
 
@@ -256,9 +256,9 @@ public class ParsedOptions implements Serializable {
      * @param defaultValue the default value to be returned if the option
      *      is not specified
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise <code>defaultValue</code>
+     *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(char opt, final String defaultValue) {
+    public String getOptionValue(char opt, String defaultValue) {
         return getOptionValue(String.valueOf(opt), defaultValue);
     }
 
@@ -270,8 +270,8 @@ public class ParsedOptions implements Serializable {
      * (<tt>-Dfoo</tt>) it is considered as a boolean flag and the value is
      * <tt>"true"</tt>.
      *
-     * @param option name of the option
-     * @return The Properties mapped by the option, never <tt>null</tt>
+     * @param option the option to be processed
+     * @return the Properties mapped by the option, never <tt>null</tt>
      *         even if the option doesn't exists
      */
     public Properties getOptionProperties(Option option) {
@@ -325,7 +325,7 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Retrieve any left-over non-recognized options and arguments
+     * Retrieve any left-over non-recognized options and arguments.
      *
      * @return remaining items passed in but not parsed as an array
      */
@@ -338,7 +338,7 @@ public class ParsedOptions implements Serializable {
     /**
      * Retrieve any left-over non-recognized options and arguments.
      *
-     * @return remaining items passed in but not parsed as a <code>List</code>
+     * @return remaining items passed in but not parsed as a {@link List}
      */
     public List<String> getArgList() {
         return args;
@@ -357,7 +357,7 @@ public class ParsedOptions implements Serializable {
      * Add an option to the command line.
      * The values of the option are stored.
      *
-     * @param opt the processed option
+     * @param opt the option to be processed
      */
     protected void addOption(Option opt) {
         options.add(opt);
@@ -366,7 +366,7 @@ public class ParsedOptions implements Serializable {
     /**
      * Returns an iterator over the Option members of ParsedOptions.
      *
-     * @return an <code>Iterator</code> over the processed {@link Option}
+     * @return an {@code Iterator} over the processed {@link Option}
      *      members of this {@link ParsedOptions}
      */
     public Iterator<Option> iterator() {
@@ -389,18 +389,19 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * A nested builder class to create <code>CommandLine</code> instance
+     * A nested builder class to create {@code ParsedOptions} instance
      * using descriptive methods.
      */
     public static final class Builder {
 
         /**
-         * CommandLine that is being build by this Builder.
+         * ParsedOptions that is being build by this Builder.
          */
         private final ParsedOptions parsedOptions = new ParsedOptions();
 
         /**
-         * Add an option to the command line. The values of the option are stored.
+         * Add an option to the command line.
+         * The values of the option are stored.
          *
          * @param opt the processed option
          * @return this Builder instance for method chaining
