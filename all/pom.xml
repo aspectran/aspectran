@@ -18,7 +18,6 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
-        <dependencyVersionsDir>${project.build.directory}/versions</dependencyVersionsDir>
 
         <!-- plugins configuration -->
         <javadoc.title>Aspectran API Reference (${project.version})</javadoc.title>
@@ -62,16 +61,11 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <!-- Add optional dependencies explicitly for aspectran-shell -->
         <dependency>
-            <groupId>org.jline</groupId>
-            <artifactId>jline</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <scope>runtime</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-jetty</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <!-- Add optional dependencies explicitly for aspectran-web -->
@@ -178,6 +172,36 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Disable all plugin executions configured by jar packaging -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testResources</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -228,38 +252,6 @@
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
-                    <!-- Instead of generating a new version property file, merge others' version property files into one. -->
-                    <execution>
-                        <id>write-version-properties</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>merge-version-properties</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <taskdef resource="net/sf/antcontrib/antlib.xml" />
-                                <propertyselector property="versions" match="^(${project.groupId}:(?!aspectran-demo)[^:]+:jar(?::[^:]+)?)$" select="\1" />
-                                <for list="${versions}" param="x">
-                                    <sequential>
-                                        <unzip src="${@{x}}" dest="${dependencyVersionsDir}">
-                                            <patternset>
-                                                <include name="META-INF/${project.groupId}.versions.properties" />
-                                            </patternset>
-                                        </unzip>
-                                        <concat destfile="${project.build.outputDirectory}/META-INF/${project.groupId}.versions.properties" append="true">
-                                            <path path="${dependencyVersionsDir}/META-INF/${project.groupId}.versions.properties" />
-                                        </concat>
-                                    </sequential>
-                                </for>
-                                <delete dir="${dependencyVersionsDir}" quiet="true" />
-                            </target>
-                        </configuration>
-                    </execution>
-
                     <!-- Clean everything once finished so that IDE doesn't find the unpacked files. -->
                     <execution>
                         <id>clean-source-directory</id>
@@ -270,7 +262,6 @@
                         <configuration>
                             <target>
                                 <delete dir="${generatedSourceDir}" quiet="true" />
-                                <delete dir="${dependencyVersionsDir}" quiet="true" />
                                 <delete dir="${project.build.outputDirectory}" quiet="true" />
                             </target>
                         </configuration>
@@ -358,36 +349,6 @@
                 </executions>
             </plugin>
 
-            <!-- Disable OSGi bundle manifest generation -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-manifest</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Override the default JAR configuration -->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>all-in-one-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Disable animal sniffer -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -395,35 +356,6 @@
                 <executions>
                     <execution>
                         <id>default</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Disable all plugin executions configured by jar packaging -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-resources</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testResources</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
                         <phase>none</phase>
                     </execution>
                 </executions>

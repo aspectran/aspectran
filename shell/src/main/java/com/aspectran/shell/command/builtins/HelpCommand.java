@@ -9,18 +9,18 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
-public class VerboseCommand extends AbstractCommand {
+public class HelpCommand extends AbstractCommand {
 
-    private static final Log log = LogFactory.getLog(VerboseCommand.class);
+    private static final Log log = LogFactory.getLog(HelpCommand.class);
 
     private static final String NAMESPACE = "builtin";
 
     private static final String COMMAND_NAME = "verbose";
 
-    public VerboseCommand(CommandRegistry registry) {
+    public HelpCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
+        addOption(Option.builder("a").longOpt("all").desc("Prints all the available commands").build());
         addOption(new Option("on", "Enable verbose output"));
         addOption(new Option("off", "Disable verbose output"));
     }
@@ -30,11 +30,11 @@ public class VerboseCommand extends AbstractCommand {
         ParsedOptions options = parse(args);
 
         if (options.hasOption("on")) {
+            log.info("Enabled verbose mode");
             getService().setVerbose(true);
-            getConsole().writeLine("Enabled verbose mode");
         } else if (options.hasOption("off")) {
+            log.info("Disabled verbose mode");
             getService().setVerbose(false);
-            getConsole().writeLine("Disabled verbose mode");
         } else if (options.hasOption("help")) {
             printUsage();
         } else {
@@ -60,12 +60,12 @@ public class VerboseCommand extends AbstractCommand {
 
             @Override
             public String getDescription() {
-                return "Turns verbose mode on or off";
+                return "Display help information about Aspectran Shell";
             }
 
             @Override
             public String getUsage() {
-                return "Type 'verbose [-h|--help] [-on] [-off]'";
+                return "Type 'help [-h|--help] [-a|--all]'";
             }
 
             @Override

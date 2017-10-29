@@ -16,7 +16,7 @@
 package com.aspectran.shell;
 
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.service.ShellService;
 
 /**
  * Testcase for Aspectran Shell.
@@ -31,7 +31,7 @@ public class AspectranShellTest {
         int exitStatus = 0;
 
         try {
-            ShellAspectranService service = ShellAspectranService.create(aspectranConfigFile);
+            ShellService service = ShellService.create(aspectranConfigFile);
             service.start();
             ShellCommander commander = new ShellCommander(service);
             commander.perform();

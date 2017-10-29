@@ -62,7 +62,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ActivityContextReloadingTimer reloadingTimer;
 
-    private ServiceController aspectranServiceController;
+    private ServiceController serviceController;
 
     private AspectranClassLoader aspectranClassLoader;
 
@@ -184,13 +184,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public ServiceController getAspectranServiceController() {
-        return aspectranServiceController;
+    public ServiceController getServiceController() {
+        return serviceController;
     }
 
     @Override
-    public void setAspectranServiceController(ServiceController aspectranServiceController) {
-        this.aspectranServiceController = aspectranServiceController;
+    public void setServiceController(ServiceController serviceController) {
+        this.serviceController = serviceController;
     }
 
     @Override
@@ -275,7 +275,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     public void startReloadingTimer() {
         if (autoReloadStartup && aspectranClassLoader != null) {
-            reloadingTimer = new ActivityContextReloadingTimer(aspectranServiceController, aspectranClassLoader.extractResources());
+            reloadingTimer = new ActivityContextReloadingTimer(serviceController, aspectranClassLoader.extractResources());
             reloadingTimer.start(scanIntervalSeconds);
         }
     }

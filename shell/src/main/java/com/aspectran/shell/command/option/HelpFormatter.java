@@ -68,10 +68,10 @@ import java.util.List;
  */
 public class HelpFormatter {
 
-    /** default number of characters per line */
+    /** Default number of characters per line */
     public static final int DEFAULT_WIDTH = 74;
 
-    /** default padding to the left of each line */
+    /** Default padding to the left of each line */
     public static final int DEFAULT_LEFT_PAD = 1;
 
     /** number of space characters to be prefixed to each description line */
@@ -80,16 +80,16 @@ public class HelpFormatter {
     /** the string to display at the beginning of the usage statement */
     public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
 
-    /** default prefix for shortOpts */
+    /** Default prefix for shortOpts */
     public static final String DEFAULT_OPT_PREFIX = "-";
 
-    /** default prefix for long Option */
+    /** Default prefix for long Option */
     public static final String DEFAULT_LONG_OPT_PREFIX = "--";
 
-    /** default separator displayed between a long Option and its value */
+    /** Default separator displayed between a long Option and its value */
     public static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
 
-    /** default name for an argument */
+    /** Default name for an argument */
     public static final String DEFAULT_ARG_NAME = "arg";
 
     private int defaultWidth = DEFAULT_WIDTH;
@@ -623,9 +623,9 @@ public class HelpFormatter {
      * Render the specified Options and return the rendered Options
      * in a StringBuffer.
      *
-     * @param sb The StringBuffer to place the rendered Options into.
-     * @param width The number of characters to display per line
-     * @param options The command line Options
+     * @param sb the StringBuffer to place the rendered Options into.
+     * @param width the number of characters to display per line
+     * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
      * @return the StringBuffer with the rendered Options contents.

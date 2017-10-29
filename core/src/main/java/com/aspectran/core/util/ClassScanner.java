@@ -59,7 +59,7 @@ public class ClassScanner {
      * @throws IOException if an I/O error has occurred
      */
     public Map<String, Class<?>> scan(String classNamePattern) throws IOException {
-        final Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
+        final Map<String, Class<?>> scannedClasses = new LinkedHashMap<>();
         scan(classNamePattern, scannedClasses);
         return scannedClasses;
     }
@@ -89,24 +89,27 @@ public class ClassScanner {
             throw new IllegalArgumentException("Argument 'classNamePattern' must not be null");
         }
 
-        classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
+        classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
 
         String basePackageName = determineBasePackageName(classNamePattern);
+        if (basePackageName == null) {
+            return;
+        }
 
         String subPattern;
-        if (basePackageName != null && classNamePattern.length() > basePackageName.length()) {
+        if (classNamePattern.length() > basePackageName.length()) {
             subPattern = classNamePattern.substring(basePackageName.length());
         } else {
             subPattern = StringUtils.EMPTY;
         }
 
-        WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
+        WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
 
         Enumeration<URL> resources = classLoader.getResources(basePackageName);
 
-        if (basePackageName != null && !StringUtils.endsWith(basePackageName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
-            basePackageName += ResourceUtils.PATH_SPEPARATOR_CHAR;
+        if (!StringUtils.endsWith(basePackageName, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+            basePackageName += ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
         }
 
         while (resources.hasMoreElements()) {
@@ -144,12 +147,12 @@ public class ClassScanner {
             if (file.isDirectory()) {
                 String relativePackageName2;
                 if (relativePackageName == null) {
-                    relativePackageName2 = fileName + ResourceUtils.PATH_SPEPARATOR;
+                    relativePackageName2 = fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
                 } else {
-                    relativePackageName2 = relativePackageName + fileName + ResourceUtils.PATH_SPEPARATOR;
+                    relativePackageName2 = relativePackageName + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
                 }
 
-                String basePath2 = targetPath + fileName + ResourceUtils.PATH_SPEPARATOR;
+                String basePath2 = targetPath + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
                 scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
             } else if (fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
                 String className;
@@ -206,10 +209,10 @@ public class ClassScanner {
 
         try {
             //Looking for matching resources in jar file [" + jarFileUrl + "]"
-            if (!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
+            if (!entryNamePrefix.endsWith(ResourceUtils.REGULAR_FILE_SEPARATOR)) {
                 // Root entry path must end with slash to allow for proper matching.
                 // The Sun JRE does not return a slash here, but BEA JRockit does.
-                entryNamePrefix = entryNamePrefix + ResourceUtils.PATH_SPEPARATOR;
+                entryNamePrefix = entryNamePrefix + ResourceUtils.REGULAR_FILE_SEPARATOR;
             }
 
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -230,9 +233,7 @@ public class ClassScanner {
             // Close jar file, but only if freshly obtained -
             // not from JarURLConnection, which might cache the file reference.
             if (newJarFile) {
-                if (jarFile != null) {
-                    jarFile.close();
-                }
+                jarFile.close();
             }
         }
     }
@@ -256,7 +257,7 @@ public class ClassScanner {
     }
 
     private String determineBasePackageName(String classNamePattern) {
-        WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
+        WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
 
         boolean matched = matcher.matches(classNamePattern);
@@ -270,18 +271,18 @@ public class ClassScanner {
             if (WildcardPattern.hasWildcards(str)) {
                 break;
             }
-            sb.append(str).append(ResourceUtils.PATH_SPEPARATOR_CHAR);
+            sb.append(str).append(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
         }
         return sb.toString();
     }
 
     private Class<?> loadClass(String className) {
-        className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+        className = className.replace(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Class loading failed. class name: " + className, e);
+            throw new RuntimeException("Unable to load class: " + className, e);
         }
     }
 

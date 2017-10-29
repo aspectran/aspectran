@@ -31,9 +31,9 @@ import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
 
 /**
- * The Class AbstractAspectranService.
+ * The Class AbstractCoreService.
  */
-public abstract class AbstractAspectranService extends AbstractServiceContoller implements AspectranService {
+public abstract class AbstractCoreService extends AbstractServiceContoller implements CoreService {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -51,7 +51,7 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
 
     private SchedulerService schedulerService;
 
-    public AbstractAspectranService(ApplicationAdapter applicationAdapter) {
+    public AbstractCoreService(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
@@ -59,14 +59,14 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
         this.applicationAdapter = applicationAdapter;
     }
 
-    public AbstractAspectranService(AspectranService rootAspectranService) {
-        if (rootAspectranService == null) {
-            throw new IllegalArgumentException("Argument 'rootAspectranService' must not be null");
+    public AbstractCoreService(CoreService rootService) {
+        if (rootService == null) {
+            throw new IllegalArgumentException("Argument 'rootService' must not be null");
         }
 
-        this.applicationAdapter = rootAspectranService.getApplicationAdapter();
-        this.activityContext = rootAspectranService.getActivityContext();
-        this.aspectranConfig = rootAspectranService.getAspectranConfig();
+        this.applicationAdapter = rootService.getApplicationAdapter();
+        this.activityContext = rootService.getActivityContext();
+        this.aspectranConfig = rootService.getAspectranConfig();
 
         if (this.activityContext == null) {
             throw new IllegalStateException("Oops! ActivityContext is not yet created");
@@ -110,7 +110,7 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
 
     protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
-            throw new IllegalStateException("AspectranService can not be initialized because ActivityContext has already been loaded");
+            throw new IllegalStateException("ActivityContext has already been loaded");
         }
 
         try {
@@ -121,9 +121,9 @@ public abstract class AbstractAspectranService extends AbstractServiceContoller 
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.initialize(aspectranContextConfig);
-            activityContextBuilder.setAspectranServiceController(this);
+            activityContextBuilder.setServiceController(this);
         } catch (Exception e) {
-            throw new AspectranServiceException("Could not prepare the AspectranService", e);
+            throw new AspectranServiceException("Unable to prepare the service", e);
         }
     }
 

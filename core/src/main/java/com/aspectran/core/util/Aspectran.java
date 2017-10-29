@@ -21,24 +21,44 @@ public class Aspectran {
 
     public static final String POWERED_BY;
 
+    public static final String POWERED_BY_LINK;
+
+    public static final boolean STABLE;
+
     static {
         Package pkg = Aspectran.class.getPackage();
-        if (pkg != null && "Aspectran.com".equals(pkg.getImplementationVendor()) &&
+        if (pkg != null && "The Aspectran Project".equals(pkg.getImplementationVendor()) &&
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
         } else {
-            String version = System.getProperty("aspectran.version");
-            if (version != null) {
-                VERSION = version;
-            } else {
-                VERSION = "5.0.0-SNAPSHOT";
-            }
+            VERSION = System.getProperty("aspectran.version", "5.0.0-SNAPSHOT");
         }
 
-        POWERED_BY = "<a href=\"http://www.aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
+        POWERED_BY = "Powered by Aspectran " + VERSION;
+        POWERED_BY_LINK = "<a href=\"http://www.aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
+
+        // Show warning when RC# or M# is in version string
+        STABLE = !VERSION.matches("^.*\\.(RC|M)[0-9]+$");
     }
 
+    /**
+     * No public constructor to prevent instances from being created.
+     */
     private Aspectran() {
+    }
+
+    public static String getVersion() {
+        return VERSION;
+    }
+
+    /**
+     * Prints Aspectran information to {@link System#err}.
+     */
+    public static void main(String[] args) {
+        System.err.println(VERSION);
+        System.err.println(POWERED_BY);
+        System.err.println(POWERED_BY_LINK);
+        System.err.println(STABLE);
     }
 
 }

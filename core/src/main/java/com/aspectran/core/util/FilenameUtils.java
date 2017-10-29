@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
  * Utility methods for General filename and filepath manipulation.
  * <p>
  * This class defines six components within a filename
- * (example C:\dev\project\file.txt):
+ * (example C:\dev\project\file.txt):</p>
  * <ul>
  * <li>the prefix - C:\</li>
  * <li>the path - dev\project\</li>
@@ -48,7 +48,7 @@ public class FilenameUtils {
      * Gets the name minus the path from a full filename.
      * <p>
      * This method will handle a file in either Unix or Windows format.
-     * The text after the last forward or backslash is returned.
+     * The text after the last forward or backslash is returned.</p>
      * <pre>
      * a/b/c.txt --&gt; c.txt
      * a.txt     --&gt; a.txt
@@ -56,7 +56,7 @@ public class FilenameUtils {
      * a/b/c/    --&gt; ""
      * </pre>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename  the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
@@ -73,7 +73,7 @@ public class FilenameUtils {
      * Gets the base name, minus the full path and extension, from a full filename.
      * <p>
      * This method will handle a file in either Unix or Windows format.
-     * The text after the last forward or backslash and before the last dot is returned.
+     * The text after the last forward or backslash and before the last dot is returned.</p>
      * <pre>
      * a/b/c.txt --&gt; c
      * a.txt     --&gt; a
@@ -81,7 +81,7 @@ public class FilenameUtils {
      * a/b/c/    --&gt; ""
      * </pre>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename  the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
@@ -94,7 +94,7 @@ public class FilenameUtils {
      * Gets the extension of a filename.
      * <p>
      * This method returns the textual part of the filename after the last dot.
-     * There must be no directory separator after the dot.
+     * There must be no directory separator after the dot.</p>
      * <pre>
      * foo.txt      --&gt; "txt"
      * a/b/c.jpg    --&gt; "jpg"
@@ -102,7 +102,7 @@ public class FilenameUtils {
      * a/b/c        --&gt; ""
      * </pre>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename the filename to retrieve the extension of.
      * @return the extension of the file or an empty string if none exists.
@@ -123,7 +123,7 @@ public class FilenameUtils {
      * Removes the extension from a filename.
      * <p>
      * This method returns the textual part of the filename before the last dot.
-     * There must be no directory separator after the dot.
+     * There must be no directory separator after the dot.</p>
      * <pre>
      * foo.txt    --&gt; foo
      * a\b\c.jpg  --&gt; a\b\c
@@ -131,7 +131,7 @@ public class FilenameUtils {
      * a.b\c      --&gt; a.b\c
      * </pre>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename  the filename to query, null returns null
      * @return the filename minus the extension
@@ -152,9 +152,9 @@ public class FilenameUtils {
      * Returns the index of the last directory separator character.
      * <p>
      * This method will handle a file in either Unix or Windows format.
-     * The position of the last forward or backslash is returned.
+     * The position of the last forward or backslash is returned.</p>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename  the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there
@@ -174,9 +174,9 @@ public class FilenameUtils {
      * <p>
      * This method also checks that there is no directory separator after the last dot.
      * To do this it uses {@link #indexOfLastSeparator(String)} which will
-     * handle a file in either Unix or Windows format.
+     * handle a file in either Unix or Windows format.</p>
      * <p>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * The output will be the same irrespective of the machine that the code is running on.</p>
      *
      * @param filename  the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there

@@ -17,6 +17,7 @@ package com.aspectran.core.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +32,14 @@ import java.util.StringTokenizer;
  */
 public class BeanUtils {
 
+    /** An empty immutable {@code Object} array. */
     private static final Object[] NO_ARGUMENTS = new Object[0];
 
     /**
      * Returns an array of the readable properties exposed by a bean
      *
-     * @param object The bean
-     * @return The properties
+     * @param object the bean
+     * @return the properties
      */
     public static String[] getReadablePropertyNames(Object object) {
         return getBeanDescriptor(object.getClass()).getReadablePropertyNames();
@@ -46,8 +48,8 @@ public class BeanUtils {
     /**
      * Returns an array of the writeable properties exposed by a bean
      *
-     * @param object The bean
-     * @return The properties
+     * @param object the bean
+     * @return the properties
      */
     public static String[] getWriteablePropertyNames(Object object) {
         return getBeanDescriptor(object.getClass()).getWriteablePropertyNames();
@@ -57,9 +59,9 @@ public class BeanUtils {
      * Returns the class that the setter expects to receive as a parameter when
      * setting a property value.
      *
-     * @param object The bean to check
-     * @param name The name of the property
-     * @return The type of the property
+     * @param object the bean to check
+     * @param name the name of the property
+     * @return the type of the property
      * @throws NoSuchMethodException the no such method exception
      */
     public static Class<?> getPropertyTypeForSetter(Object object, String name) throws NoSuchMethodException {
@@ -93,9 +95,9 @@ public class BeanUtils {
     /**
      * Returns the class that the getter will return when reading a property value.
      *
-     * @param object The bean to check
-     * @param name The name of the property
-     * @return The type of the property
+     * @param object the bean to check
+     * @param name the name of the property
+     * @return the type of the property
      * @throws NoSuchMethodException the no such method exception
      */
     public static Class<?> getPropertyTypeForGetter(Object object, String name) throws NoSuchMethodException {
@@ -130,8 +132,8 @@ public class BeanUtils {
      * Returns the class that the getter will return when reading a property value.
      *
      * @param type The class to check
-     * @param name The name of the property
-     * @return The type of the property
+     * @param name the name of the property
+     * @return the type of the property
      * @throws NoSuchMethodException the no such method exception
      */
     public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
@@ -153,8 +155,8 @@ public class BeanUtils {
      * setting a property value.
      *
      * @param type The class to check
-     * @param name The name of the property
-     * @return The type of the property
+     * @param name the name of the property
+     * @return the type of the property
      * @throws NoSuchMethodException the no such method exception
      */
     public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
@@ -172,11 +174,49 @@ public class BeanUtils {
     }
 
     /**
-     * Gets an Object property from a bean.
+     * Invokes the static method of the specified class to get the bean property value.
      *
-     * @param object The bean
-     * @param name The property name
-     * @return The property value (as an Object)
+     * @param clazz the class for which to lookup
+     * @param name the property name
+     * @return the property value (as an Object)
+     * @throws InvocationTargetException the invocation target exception
+     */
+    public static Object getObject(Class<?> clazz, String name) throws InvocationTargetException {
+        try {
+            BeanDescriptor cd = getBeanDescriptor(clazz);
+            Method method = cd.getGetter(name);
+            if (!Modifier.isStatic(method.getModifiers())) {
+                throw new IllegalArgumentException("Non-static method " + method + " in " + clazz);
+            }
+            try {
+                return method.invoke(null, NO_ARGUMENTS);
+            } catch (Throwable t) {
+                throw unwrapThrowable(t);
+            }
+        } catch (InvocationTargetException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new InvocationTargetException(t, "Could not get property '" + name +
+                    "' from " + clazz.getName() + ". Cause: " + t.toString());
+        }
+    }
+
+    public static boolean hasStaticProperty(Class<?> clazz, String name) {
+        try {
+            BeanDescriptor cd = getBeanDescriptor(clazz);
+            Method method = cd.getGetter(name);
+            return Modifier.isStatic(method.getModifiers());
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /**
+     * Gets a property value from a static class.
+     *
+     * @param object the bean
+     * @param name the property name
+     * @return the property value (as an Object)
      * @throws InvocationTargetException the invocation target exception
      */
     public static Object getObject(Object object, String name) throws InvocationTargetException {
@@ -198,9 +238,9 @@ public class BeanUtils {
     /**
      * Sets the value of a bean property to an Object.
      *
-     * @param object The bean to change
-     * @param name The name of the property to set
-     * @param value The new value to set
+     * @param object the bean to change
+     * @param name the name of the property to set
+     * @param value the new value to set
      * @throws InvocationTargetException the invocation target exception
      * @throws NoSuchMethodException the no such method exception
      */
@@ -242,9 +282,9 @@ public class BeanUtils {
     /**
      * Checks to see if a bean has a writable property be a given name.
      *
-     * @param object The bean to check
-     * @param propertyName The property to check for
-     * @return True if the property exists and is writable
+     * @param object the bean to check
+     * @param propertyName the property to check for
+     * @return true if the property exists and is writable
      * @throws NoSuchMethodException the no such method exception
      */
     public static boolean hasWritableProperty(Object object, String propertyName) throws NoSuchMethodException {
@@ -273,9 +313,9 @@ public class BeanUtils {
     /**
      * Checks to see if a bean has a readable property be a given name.
      *
-     * @param object The bean to check
-     * @param propertyName The property to check for
-     * @return True if the property exists and is readable
+     * @param object the bean to check
+     * @param propertyName the property to check for
+     * @return true if the property exists and is readable
      * @throws NoSuchMethodException the no such method exception
      */
     public static boolean hasReadableProperty(Object object, String propertyName) throws NoSuchMethodException {
@@ -323,12 +363,6 @@ public class BeanUtils {
                     } else {
                         BeanDescriptor cd = getBeanDescriptor(object.getClass());
                         Method method = cd.getGetter(name);
-
-                        if (method == null) {
-                            throw new NoSuchMethodException("No GET method for property " + name +
-                                    " on instance of " + object.getClass().getName());
-                        }
-
                         try {
                             value = method.invoke(object, NO_ARGUMENTS);
                         } catch (Throwable t) {
@@ -363,14 +397,7 @@ public class BeanUtils {
                 } else {
                     BeanDescriptor cd = getBeanDescriptor(object.getClass());
                     Method method = cd.getSetter(name);
-
-                    if (method == null) {
-                        throw new NoSuchMethodException("No SET method for property " + name +
-                                " on instance of " + object.getClass().getName());
-                    }
-
                     Object[] params = new Object[] { value };
-
                     try {
                         method.invoke(object, params);
                     } catch (Throwable t) {
@@ -556,8 +583,8 @@ public class BeanUtils {
     /**
      * Gets an instance of BeanDescriptor for the specified class.
      *
-     * @param clazz The class for which to lookup the ClassDescriptor cache.
-     * @return The ClassDescriptor cache for the class
+     * @param clazz the class for which to lookup the ClassDescriptor cache.
+     * @return the ClassDescriptor cache for the class
      */
     private static BeanDescriptor getBeanDescriptor(Class<?> clazz) {
         return BeanDescriptor.getInstance(clazz);

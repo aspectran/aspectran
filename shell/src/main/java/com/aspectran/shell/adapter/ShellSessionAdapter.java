@@ -19,14 +19,14 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * The Class ConsoleSessionAdapter.
- * 
+ * The Class ShellSessionAdapter.
+ *
  * @since 2.3.0
  */
 public class ShellSessionAdapter extends BasicSessionAdapter {
 
     /**
-     * Instantiates a new ConsoleSessionAdapter.
+     * Instantiates a new ShellSessionAdapter.
      *
      * @param agent the session agent
      */

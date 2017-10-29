@@ -24,7 +24,7 @@ public class ShellConfig extends AbstractParameters {
     public static final ParameterDefinition prompt;
     public static final ParameterDefinition commands;
     public static final ParameterDefinition verbose;
-    public static final ParameterDefinition usage;
+    public static final ParameterDefinition welcome;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -33,14 +33,14 @@ public class ShellConfig extends AbstractParameters {
         prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
         commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
         verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
-        usage = new ParameterDefinition("usage", ParameterValueType.TEXT);
+        welcome = new ParameterDefinition("welcome", ParameterValueType.TEXT);
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
             prompt,
             commands,
             verbose,
-            usage,
+            welcome,
             exposals
         };
     }

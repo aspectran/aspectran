@@ -28,8 +28,8 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.logging.Log;
@@ -41,13 +41,13 @@ import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
 import java.util.Map;
 
 /**
- * The Class EmbeddedAspectranService.
+ * The Class AspectranEmbeddedService.
  *
  * @since 3.0.0
  */
-public class EmbeddedAspectranService extends BasicAspectranService {
+class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedService {
 
-    private static final Log log = LogFactory.getLog(EmbeddedAspectranService.class);
+    private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
 
     private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
 
@@ -55,7 +55,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
 
     private long pauseTimeout = -1L;
 
-    public EmbeddedAspectranService() {
+    public AspectranEmbeddedService() {
         super(new EmbeddedApplicationAdapter());
     }
 
@@ -78,13 +78,14 @@ public class EmbeddedAspectranService extends BasicAspectranService {
         sessionManager = null;
     }
 
+    @Override
     public SessionAdapter newSessionAdapter() {
         SessionAgent agent = sessionManager.newSessionAgent();
         return new EmbeddedSessionAdapter(agent);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @return the {@code Translet} object
@@ -94,76 +95,82 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, ParameterMap parameterMap) {
         return translet(name, null, parameterMap, null);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         return translet(name, null, parameterMap, attributeMap);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, Map<String, Object> attributeMap) {
         return translet(name, null, null, attributeMap);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param method the request method
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, MethodType method) {
         return translet(name, method, null, null);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param method the request method
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, MethodType method, ParameterMap parameterMap) {
         return translet(name, method, parameterMap, null);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param method the request method
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, MethodType method, Map<String, Object> attributeMap) {
         return translet(name, method, null, attributeMap);
     }
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @param method the request method
@@ -171,11 +178,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
+    @Override
     public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranService is paused, so did not execute the translet: " + name);
+                    log.debug("AspectranEmbeddedService is paused, so did not execute the translet: " + name);
                 }
                 return null;
             } else {
@@ -199,7 +207,7 @@ public class EmbeddedAspectranService extends BasicAspectranService {
                 log.debug("Activity terminated without completion: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing the aspectran activity", e);
+            throw new AspectranRuntimeException("An error occurred while processing an EmbeddedActivity", e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -210,22 +218,24 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     }
 
     /**
-     * Evaluate the template without any provided variables.
+     * Evaluates the template without any provided variables.
      *
      * @param templateId the template id
      * @return the output string of the template
      */
+    @Override
     public String template(String templateId) {
         return template(templateId, null, null);
     }
 
     /**
-     * Evaluate the template with a set of parameters.
+     * Evaluates the template with a set of parameters.
      *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @return the output string of the template
      */
+    @Override
     public String template(String templateId, ParameterMap parameterMap) {
         return template(templateId, parameterMap, null);
     }
@@ -237,18 +247,20 @@ public class EmbeddedAspectranService extends BasicAspectranService {
      * @param attributeMap the attribute map
      * @return the output string of the template
      */
+    @Override
     public String template(String templateId, Map<String, Object> attributeMap) {
         return template(templateId, null, attributeMap);
     }
 
     /**
-     * Evaluate the template with a set of parameters and a set of attributes.
+     * Evaluates the template with a set of parameters and attributes.
      *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the output string of the template
      */
+    @Override
     public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), newSessionAdapter());
@@ -269,26 +281,26 @@ public class EmbeddedAspectranService extends BasicAspectranService {
     }
 
     /**
-     * Returns a new instance of EmbeddedAspectranService.
+     * Returns a new instance of {@code EmbeddedService}.
      *
      * @param rootConfigLocation the root configuration location
-     * @return the embedded aspectran service
+     * @return the instance of {@code EmbeddedService}
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService create(String rootConfigLocation) throws AspectranServiceException {
+    protected static EmbeddedService create(String rootConfigLocation) throws AspectranServiceException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootConfigLocation(rootConfigLocation);
         return create(aspectranConfig);
     }
 
     /**
-     * Returns a new instance of EmbeddedAspectranService.
+     * Returns a new instance of {@code EmbeddedService}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the embedded aspectran service
+     * @return the instance of {@code EmbeddedService}
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static EmbeddedAspectranService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected static EmbeddedService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
         ContextConfig contextConfig = aspectranConfig.getContextConfig();
         if (contextConfig == null) {
             contextConfig = aspectranConfig.newContextConfig();
@@ -301,19 +313,19 @@ public class EmbeddedAspectranService extends BasicAspectranService {
             }
         }
 
-        EmbeddedAspectranService aspectranService = new EmbeddedAspectranService();
-        aspectranService.prepare(aspectranConfig);
+        AspectranEmbeddedService service = new AspectranEmbeddedService();
+        service.prepare(aspectranConfig);
 
-        setServiceStateListener(aspectranService);
+        setServiceStateListener(service);
 
-        return aspectranService;
+        return service;
     }
 
-    private static void setServiceStateListener(final EmbeddedAspectranService aspectranService) {
-        aspectranService.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final AspectranEmbeddedService service) {
+        service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                aspectranService.pauseTimeout = 0;
+                service.pauseTimeout = 0;
             }
 
             @Override
@@ -326,12 +338,12 @@ public class EmbeddedAspectranService extends BasicAspectranService {
                 if (millis < 0L) {
                     throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
                 }
-                aspectranService.pauseTimeout = System.currentTimeMillis() + millis;
+                service.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
             public void paused() {
-                aspectranService.pauseTimeout = -1L;
+                service.pauseTimeout = -1L;
             }
 
             @Override

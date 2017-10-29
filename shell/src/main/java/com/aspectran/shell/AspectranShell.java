@@ -16,7 +16,7 @@
 package com.aspectran.shell;
 
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.service.ShellService;
 
 /**
  * Main entry point for the Aspectran Shell.
@@ -25,7 +25,7 @@ import com.aspectran.shell.service.ShellAspectranService;
  */
 public class AspectranShell {
 
-    private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
+    public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static void main(String[] args) {
         String aspectranConfigFile;
@@ -35,11 +35,11 @@ public class AspectranShell {
             aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
         }
 
-        ShellAspectranService service = null;
+        ShellService service = null;
         int exitStatus = 0;
 
         try {
-            service = ShellAspectranService.create(aspectranConfigFile);
+            service = ShellService.create(aspectranConfigFile);
             service.start();
 
             ShellCommander commander = new ShellCommander(service);

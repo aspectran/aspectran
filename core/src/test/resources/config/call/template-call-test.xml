@@ -35,4 +35,8 @@
         line-3
     </template>
 
+    <template id="aspectranVersion" style="compressed">
+        #{class:com.aspectran.core.util.Aspectran^version}
+    </template>
+
 </aspectran>

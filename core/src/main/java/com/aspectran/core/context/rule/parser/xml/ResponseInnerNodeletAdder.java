@@ -78,7 +78,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             TransformRule transformRule = assistant.peekObject(1);
             transformRule.setTemplateRule(templateRule);
 
-            assistant.resolveBeanClass(templateRule.getTemplateTokens());
+            assistant.resolveBeanClass(templateRule);
         });
         parser.addNodelet(xpath, "/transform/call", (node, attributes, text) -> {
             String template = StringUtils.emptyToNull(attributes.get("template"));

@@ -20,11 +20,11 @@ import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 /**
- * The Class BasicAspectranService.
+ * The Class AspectranCoreService.
  */
-public class BasicAspectranService extends AbstractAspectranService {
+public class AspectranCoreService extends AbstractCoreService {
 
-    private final AspectranService rootAspectranService;
+    private final CoreService rootService;
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;
@@ -34,19 +34,19 @@ public class BasicAspectranService extends AbstractAspectranService {
      *
      * @param applicationAdapter the application adapter
      */
-    public BasicAspectranService(ApplicationAdapter applicationAdapter) {
+    public AspectranCoreService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
-        this.rootAspectranService = null;
+        this.rootService = null;
     }
 
-    public BasicAspectranService(AspectranService rootAspectranService) {
-        super(rootAspectranService);
-        this.rootAspectranService = rootAspectranService;
+    public AspectranCoreService(CoreService rootService) {
+        super(rootService);
+        this.rootService = rootService;
     }
 
     @Override
     public boolean isDerived() {
-        return (rootAspectranService != null);
+        return (rootService != null);
     }
 
     /**
@@ -106,7 +106,7 @@ public class BasicAspectranService extends AbstractAspectranService {
         startSchedulerService();
 
         if (isDerived()) {
-            log.info(getServiceName() + " derived from " + rootAspectranService);
+            log.info(getServiceName() + " derived from " + rootService);
         }
     }
 

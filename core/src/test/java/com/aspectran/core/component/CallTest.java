@@ -85,16 +85,20 @@ public class CallTest {
         System.out.println(result2);
 
         String result4 = templateProcessor.process("aponStyle");
-        System.out.println(" === aponStyle ===");
+        System.out.println("=== aponStyle ===");
         System.out.println(result4);
 
         String result5 = templateProcessor.process("compactStyle");
-        System.out.println(" === compactStyle ===");
+        System.out.println("=== compactStyle ===");
         System.out.println(result5);
 
         String result6 = templateProcessor.process("compressedStyle");
-        System.out.println(" === compressedStyle ===");
+        System.out.println("=== compressedStyle ===");
         System.out.println(result6);
+
+        String result7 = templateProcessor.process("aspectranVersion");
+        System.out.println("=== static method call ===");
+        System.out.println(result7);
     }
 
     @After

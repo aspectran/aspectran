@@ -23,7 +23,7 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.MessageSource;
 
 /**
@@ -76,17 +76,17 @@ public interface ActivityContext {
     /**
      * Returns the Aspectran Service that created the current ActivityContext.
      *
-     * @return the root aspectran service
+     * @return the root service
      */
-    AspectranService getRootAspectranService();
+    CoreService getRootService();
 
     /**
      * Sets the Aspectran Service that created the current ActivityContext.
      * It is set only once, just after the ActivityContext is created.
      *
-     * @param rootAspectranService the origin aspectran service
+     * @param rootService the root service
      */
-    void setRootAspectranService(AspectranService rootAspectranService);
+    void setRootService(CoreService rootService);
 
     /**
      * Gets the aspect rule registry.

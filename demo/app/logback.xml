@@ -5,13 +5,13 @@
             <pattern>%level %d{HH:mm:ss.SSS} %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.aspectran" level="info" additivity="false">
+    <logger name="com.aspectran" level="error" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
     <logger name="org.quartz" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="org.eclipse.jetty" level="info" additivity="false">
+    <logger name="org.eclipse.jetty" level="error" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
     <root level="info">

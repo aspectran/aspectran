@@ -26,10 +26,10 @@ import java.util.Properties;
  */
 public class SimpleOptionParser implements OptionParser
 {
-    /** the parsed options instance. */
+    /** The parsed options instance. */
     protected ParsedOptions parsedOptions;
     
-    /** the current options. */
+    /** The current options. */
     protected Options options;
 
     /**
@@ -39,19 +39,19 @@ public class SimpleOptionParser implements OptionParser
      */
     protected boolean stopAtNonOption;
 
-    /** the token currently processed */
+    /** The token currently processed */
     protected String currentToken;
  
-    /** the last option parsed */
+    /** The last option parsed */
     protected Option currentOption;
  
-    /** flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line */
+    /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line */
     protected boolean skipParsing;
  
-    /** the required options and groups expected to be found when parsing the command line */
+    /** The required options and groups expected to be found when parsing the command line */
     protected List<Object> expectedOpts;
 
-    /** flag indicating if partial matching of long options is supported */
+    /** Flag indicating if partial matching of long options is supported */
     private boolean allowPartialMatching;
 
     /**

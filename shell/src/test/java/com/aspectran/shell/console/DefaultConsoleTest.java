@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline.inout;
-
-import com.aspectran.shell.console.Console;
+package com.aspectran.shell.console;
 
 import java.io.IOException;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class Jline3ConsoleInoutTest {
+public class DefaultConsoleTest {
 
     public static void main(String argv[]) throws IOException {
-        Console console = new JlineConsole();
-        String prompt = "JLine3> ";
+        Console console = new DefaultConsole();
+        String prompt = "> ";
         while (true) {
             String line = console.readLine(prompt);
             if ("quit".equals(line)) {

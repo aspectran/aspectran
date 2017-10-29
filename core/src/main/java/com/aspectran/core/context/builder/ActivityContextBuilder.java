@@ -68,9 +68,9 @@ public interface ActivityContextBuilder {
 
     void setHardReload(boolean hardReload);
 
-    ServiceController getAspectranServiceController();
+    ServiceController getServiceController();
 
-    void setAspectranServiceController(ServiceController aspectranServiceController);
+    void setServiceController(ServiceController serviceController);
 
     AspectranClassLoader getAspectranClassLoader();
 

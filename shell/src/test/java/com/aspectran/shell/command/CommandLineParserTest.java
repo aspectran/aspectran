@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.service.command;
+package com.aspectran.shell.command;
 
-import com.aspectran.shell.command.CommandLineParser;
-import com.aspectran.shell.command.CommandLineRedirection;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,14 +23,17 @@ import java.util.List;
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class CommandParserTest {
+public class CommandLineParserTest {
 
     @Test
-    public void testCommandParser() {
-        CommandLineParser commandParser = CommandLineParser.parseCommandLine("GET /path/method >> abcde.txt > 12345.txt");
-        System.out.println(commandParser.getRequestMethod());
-        System.out.println(commandParser.getCommand());
-        System.out.println(commandParser.getRedirectionList());
+    public void testCommandLineParser() {
+        CommandLineParser parser = CommandLineParser.parseCommandLine("GET /path/work1 >> abcde.txt > 12345.txt");
+        Assert.assertEquals(parser.getRequestMethod().toString(), "GET");
+        Assert.assertEquals(parser.getCommand(), "/path/work1");
+        Assert.assertEquals(parser.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
+        //System.out.println(parser.getRequestMethod());
+        //System.out.println(parser.getCommand());
+        //System.out.println(parser.getRedirectionList());
     }
 
     @Test

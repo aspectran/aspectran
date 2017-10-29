@@ -21,21 +21,20 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * Test case for scanning classes.
  */
 public class ClassScannerTest {
 
     @Test
-    public void test1() throws IOException {
-        System.out.println("--------------------------------");
-        System.out.println(" Test case for scanning classes ");
-        System.out.println("--------------------------------");
-
+    public void testScanClass() throws IOException {
         ClassScanner scanner = new ClassScanner(AspectranClassLoader.getDefaultClassLoader());
-        Map<String, Class<?>> map = scanner.scan("com.aspectran.**.*Test");
+        Map<String, Class<?>> map = scanner.scan("com.aspectran.**.util.*Test");
         for (Map.Entry<String, Class<?>> entry : map.entrySet()) {
-            System.out.println(entry.getValue() + " - " + entry.getKey());
+            //System.out.println(entry.getKey() + " - " + entry.getValue().getName());
+            assertTrue(entry.getKey().endsWith(entry.getValue().getName().replace('.', '/') + ".class"));
         }
     }
 

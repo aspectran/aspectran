@@ -32,7 +32,6 @@
         <action bean="jetty.server" method="start"/>
         <transform type="transform/text">
             <template style="apon">
-                |-----------------------------------------------------------------------------------------
                 |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |   Web server started on localhost:%{jetty.server.port}
@@ -61,7 +60,6 @@
         <action bean="jetty.server" method="stop"/>
         <transform type="transform/text">
             <template style="apon">
-                |-----------------------------------------------------------------------------------------
                 |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
                 |

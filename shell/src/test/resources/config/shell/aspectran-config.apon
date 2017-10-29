@@ -19,9 +19,9 @@ scheduler: {
 shell: {
     prompt: "test-console-app> "
     verbose: true
-    usage: (
+    welcome: (
         |
-        |   --- Aspectran Demo Application ---
+        |   {{BLUE}}--- Aspectran Demo Application ---{{off}}
         |
         |Built-in commands for this console application:
         |   desc on   Prints a description of the command each time the command is executed

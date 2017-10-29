@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline.inout;
+package com.aspectran.shell.jline.console;
 
-import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import org.jline.builtins.Options;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -43,8 +41,6 @@ import java.nio.charset.Charset;
  * <p>Created: 2017. 3. 4.</p>
  */
 public class JlineConsole extends AbstractConsole {
-
-    private static final Log log = LogFactory.getLog(AbstractConsole.class);
 
     private static final String APP_NAME = "Aspectran Shell";
 

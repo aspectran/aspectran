@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
@@ -352,19 +353,41 @@ public class TokenExpressionParser implements TokenEvaluator {
      * @return an instance of the bean
      */
     protected Object getBean(Token token) {
-        Object value;
         if (token.getAlternativeValue() != null) {
-            value = activity.getBean((Class<?>)token.getAlternativeValue());
+            Object value;
+            try {
+                value = activity.getBean((Class<?>)token.getAlternativeValue());
+            } catch (RequiredTypeBeanNotFoundException e) {
+                if (token.getGetterName() != null) {
+                    try {
+                        value = BeanUtils.getObject((Class<?>)token.getAlternativeValue(), token.getGetterName());
+                        if (value == null) {
+                            value = token.getDefaultValue();
+                        }
+                        return value;
+                    } catch (InvocationTargetException e2) {
+                        // ignore
+                    }
+                }
+                throw e;
+            }
+            if (token.getGetterName() != null) {
+                value = getBeanProperty(value, token.getGetterName());
+            }
+            if (value == null) {
+                value = token.getDefaultValue();
+            }
+            return value;
         } else {
-            value = activity.getBean(token.getName());
+            Object value = activity.getBean(token.getName());
+            if (value != null && token.getGetterName() != null) {
+                value = getBeanProperty(value, token.getGetterName());
+            }
+            if (value == null) {
+                value = token.getDefaultValue();
+            }
+            return value;
         }
-        if (value != null && token.getGetterName() != null) {
-            value = getBeanProperty(value, token.getGetterName());
-        }
-        if (value == null) {
-            value = token.getDefaultValue();
-        }
-        return value;
     }
 
     /**

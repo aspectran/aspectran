@@ -64,7 +64,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
             }
         }
         if (scheduleRule.getSchedulerBeanId() != null) {
-            assistantLocal.getAssistant().resolveBeanClass(scheduleRule.getSchedulerBeanId(), scheduleRule);
+            assistantLocal.getAssistant().resolveBeanClass(scheduleRule);
         }
 
         scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);

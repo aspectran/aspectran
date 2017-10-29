@@ -18,14 +18,14 @@ package com.aspectran.shell.adapter;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
- * The Class ConsoleRequestAdapter.
+ * The Class ShellRequestAdapter.
  * 
  * @since 2016. 1. 18.
  */
 public class ShellRequestAdapter extends BasicRequestAdapter {
 
     /**
-     * Instantiates a new ConsoleRequestAdapter.
+     * Instantiates a new ShellRequestAdapter.
      */
     public ShellRequestAdapter() {
         super(null);

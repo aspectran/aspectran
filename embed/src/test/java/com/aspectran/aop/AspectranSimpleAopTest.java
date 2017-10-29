@@ -16,7 +16,7 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embed.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,28 +26,28 @@ import org.junit.Test;
  */
 public class AspectranSimpleAopTest {
 
-    private EmbeddedAspectranService aspectranService;
+    private EmbeddedService service;
 
     @Before
     public void ready() throws Exception {
         String rootConfigLocation = "classpath:config/aop/simple-aop-test-config.xml";
-        aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
-        aspectranService.start();
+        service = EmbeddedService.create(rootConfigLocation);
+        service.start();
     }
 
     @Test
     public void test1() throws AspectranServiceException {
-        aspectranService.translet("aop/test/target1");
+        service.translet("aop/test/target1");
     }
 
     @Test
     public void test2() throws AspectranServiceException {
-        aspectranService.translet("aop/test/target2");
+        service.translet("aop/test/target2");
     }
 
     @After
     public void finish() {
-        aspectranService.stop();
+        service.stop();
     }
 
 }

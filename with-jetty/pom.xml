@@ -36,7 +36,7 @@
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- JETTY DEPENDENCIES -->
+        <!-- Jetty dependencies -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>

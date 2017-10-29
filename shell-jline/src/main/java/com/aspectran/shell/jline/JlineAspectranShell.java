@@ -15,9 +15,10 @@
  */
 package com.aspectran.shell.jline;
 
+import com.aspectran.shell.AspectranShell;
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.jline.inout.JlineConsole;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.jline.console.JlineConsole;
+import com.aspectran.shell.service.ShellService;
 
 /**
  * Main entry point for the Aspectran Shell using JLine.
@@ -28,25 +29,23 @@ import com.aspectran.shell.service.ShellAspectranService;
  */
 public class JlineAspectranShell {
 
-    private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
-
     public static void main(String[] args) {
         String aspectranConfigFile;
         if (args.length > 0) {
             aspectranConfigFile = args[0];
         } else {
-            aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
+            aspectranConfigFile = AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
         }
 
-        ShellAspectranService service = null;
+        ShellService service = null;
         int exitStatus = 0;
 
         try {
-            service = ShellAspectranService.create(aspectranConfigFile, new JlineConsole());
+            service = ShellService.create(aspectranConfigFile, new JlineConsole());
             service.start();
 
-            ShellCommander command = new ShellCommander(service);
-            command.perform();
+            ShellCommander commander = new ShellCommander(service);
+            commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;

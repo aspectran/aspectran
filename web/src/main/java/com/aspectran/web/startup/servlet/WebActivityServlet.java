@@ -17,7 +17,7 @@ package com.aspectran.web.startup.servlet;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.service.WebAspectranService;
+import com.aspectran.web.service.WebService;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -38,7 +38,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 
-    private WebAspectranService webAspectranService;
+    private WebService webService;
 
     private boolean standalone;
 
@@ -55,21 +55,21 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
         try {
             ServletContext servletContext = getServletContext();
-            Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
-            WebAspectranService rootWebAspectranService = null;
-            if (attr != null) {
-                if (!(attr instanceof WebAspectranService)) {
-                    throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" + WebAspectranService.class.getName() + "]");
+            Object object = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
+            WebService bootService = null;
+            if (object != null) {
+                if (!(object instanceof WebService)) {
+                    throw new IllegalStateException("Context attribute [" + object + "] is not of type [" + WebService.class.getName() + "]");
                 }
-                rootWebAspectranService = (WebAspectranService)attr;
-                webAspectranService = WebAspectranService.create(this, rootWebAspectranService);
+                bootService = (WebService)object;
+                webService = WebService.create(this, bootService);
             } else {
-                webAspectranService = WebAspectranService.create(this);
+                webService = WebService.create(this);
             }
-            standalone = (rootWebAspectranService != webAspectranService);
+            standalone = (bootService != webService);
             if (standalone) {
-                webAspectranService.start();
-                log.info("AspectranService is running in standalone mode inside the servlet: " + this);
+                webService.start();
+                log.info("WebService is running in standalone mode inside the servlet: " + this);
             }
         } catch (Exception e) {
             log.error("Unable to initialize WebActivityServlet", e);
@@ -79,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        webAspectranService.serve(req, res);
+        webService.serve(req, res);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         if (standalone) {
             log.info("Do not terminate the application server while destroying all scoped beans");
 
-            webAspectranService.stop();
+            webService.stop();
 
             log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
         }

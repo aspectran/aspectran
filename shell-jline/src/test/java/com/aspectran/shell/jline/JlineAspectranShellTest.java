@@ -16,8 +16,8 @@
 package com.aspectran.shell.jline;
 
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.jline.inout.JlineConsole;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.jline.console.JlineConsole;
+import com.aspectran.shell.service.ShellService;
 
 /**
  * <p>Created: 2017. 3. 26.</p>
@@ -30,10 +30,10 @@ public class JlineAspectranShellTest {
         int exitStatus = 0;
 
         try {
-            ShellAspectranService service = ShellAspectranService.create(aspectranConfigFile, new JlineConsole());
+            ShellService service = ShellService.create(aspectranConfigFile, new JlineConsole());
             service.start();
-            ShellCommander command = new ShellCommander(service);
-            command.perform();
+            ShellCommander commander = new ShellCommander(service);
+            commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;

@@ -26,7 +26,7 @@ public class MissingArgumentException extends OptionParseException {
     /** @serial */
     private static final long serialVersionUID = 3097819241980741135L;
 
-    /** the option requiring additional arguments */
+    /** The option requiring additional arguments */
     private Option option;
 
     /**

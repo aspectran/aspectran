@@ -60,9 +60,9 @@ public class ResourceUtils {
 
     public static final String JAR_URL_SEPARATOR = "!/";
 
-    public static final String PATH_SPEPARATOR = "/";
+    public static final String REGULAR_FILE_SEPARATOR = "/";
 
-    public static final char PATH_SPEPARATOR_CHAR = '/';
+    public static final char REGULAR_FILE_SEPARATOR_CHAR = '/';
 
     public static boolean isUrl(String resourceLocation) {
         if (resourceLocation == null) {
@@ -185,8 +185,8 @@ public class ResourceUtils {
             } catch (MalformedURLException ex) {
                 // Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
                 // This usually indicates that the jar file resides in the file system.
-                if (!jarFile.startsWith(PATH_SPEPARATOR)) {
-                    jarFile = PATH_SPEPARATOR + jarFile;
+                if (!jarFile.startsWith(REGULAR_FILE_SEPARATOR)) {
+                    jarFile = REGULAR_FILE_SEPARATOR + jarFile;
                 }
                 return new URL(FILE_URL_PREFIX + jarFile);
             }
@@ -206,15 +206,15 @@ public class ResourceUtils {
     /**
      * Returns the URL of the resource on the classpath.
      *
-     * @param loader the classloader used to load the resource
+     * @param classLoader the class loader used to load the resource
      * @param resource the resource to find
      * @return the resource
      * @throws IOException if the resource cannot be found or read
      */
-    public static URL getResourceURL(String resource, ClassLoader loader) throws IOException {
+    public static URL getResourceURL(String resource, ClassLoader classLoader) throws IOException {
         URL url = null;
-        if (loader != null) {
-            url = loader.getResource(resource);
+        if (classLoader != null) {
+            url = classLoader.getResource(resource);
         }
         if (url == null) {
             url = ClassLoader.getSystemResource(resource);

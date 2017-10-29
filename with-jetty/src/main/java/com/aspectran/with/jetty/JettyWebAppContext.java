@@ -18,10 +18,10 @@ package com.aspectran.with.jetty;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.service.WebAspectranService;
+import com.aspectran.web.service.WebService;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
@@ -87,15 +87,15 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         //setClassLoader(new URLClassLoader(new URL[0], context.getClassLoader()));
 
         if (!standalone) {
-            AspectranService rootAspectranService = context.getRootAspectranService();
-            WebAspectranService webAspectranService = WebAspectranService.create(getServletContext(), rootAspectranService);
-            webAspectranService.start();
+            CoreService rootService = context.getRootService();
+            WebService webService = WebService.create(getServletContext(), rootService);
+            webService.start();
 
-            setAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, webAspectranService);
+            setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
         }
     }
 
-    private static List<ContainerInitializer> jspInitializers() {
+    private List<ContainerInitializer> jspInitializers() {
         JettyJasperInitializer sci = new JettyJasperInitializer();
         ContainerInitializer initializer = new ContainerInitializer(sci, null);
         List<ContainerInitializer> initializers = new ArrayList<>();

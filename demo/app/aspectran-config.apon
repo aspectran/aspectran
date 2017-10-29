@@ -19,7 +19,7 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "{{GREEN}}aspectran-demo{{YELLOW}}>{{off}} "
+    prompt: "{{CYAN}}aspectran-demo{{YELLOW}}>{{off}} "
     commands: [
         com.aspectran.shell.command.builtins.VerboseCommand
         com.aspectran.shell.command.builtins.RestartCommand
@@ -27,11 +27,15 @@ shell: {
     ]
     verbose: true
     welcome: (
+        |{{BLUE}}-----------------=====================
+        |          ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}
+        |=====================-----------------{{off}}
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}
         |
-        |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}
-        |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}
+        |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
+        |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
+        |If you want a list of all supported commands type {{GREEN}}`help -all`{{off}}.
         |
         |{{underline}}These are built-in commands in Aspectran Shell:{{underline:off}}
         |   {{GREEN}}help{{fg:off}}         Display help for the available commands

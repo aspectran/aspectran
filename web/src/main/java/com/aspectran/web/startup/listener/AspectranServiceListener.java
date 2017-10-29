@@ -15,10 +15,9 @@
  */
 package com.aspectran.web.startup.listener;
 
-import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.service.WebAspectranService;
+import com.aspectran.web.service.WebService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -30,15 +29,15 @@ public class AspectranServiceListener implements ServletContextListener {
 
     private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-    private AspectranService aspectranService;
+    private WebService webService;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         log.info("Initializing AspectranServiceListener...");
 
         try {
-            aspectranService = WebAspectranService.create(event.getServletContext());
-            aspectranService.start();
+            webService = WebService.create(event.getServletContext());
+            webService.start();
         } catch (Exception e) {
             log.error("AspectranServiceListener initialization failed", e);
         }
@@ -46,11 +45,11 @@ public class AspectranServiceListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        if (aspectranService != null) {
+        if (webService != null) {
             log.info("Do not terminate the server while the all scoped bean destroying");
 
-            aspectranService.stop();
-            aspectranService = null;
+            webService.stop();
+            webService = null;
 
             log.info("Successfully destroyed AspectranServiceListener: " + this);
         }

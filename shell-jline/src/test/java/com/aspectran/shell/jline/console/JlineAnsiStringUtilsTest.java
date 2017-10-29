@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline.inout;
+package com.aspectran.shell.jline.console;
 
 import org.jline.utils.AttributedStringBuilder;
 import org.junit.Test;

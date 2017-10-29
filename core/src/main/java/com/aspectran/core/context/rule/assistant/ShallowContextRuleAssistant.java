@@ -171,12 +171,12 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
+    public void resolveBeanClass(ScheduleRule scheduleRule) {
         // shallow
     }
 
     @Override
-    public void resolveBeanClass(String beanId, TemplateRule templateRule) {
+    public void resolveBeanClass(TemplateRule templateRule) {
         // shallow
     }
 

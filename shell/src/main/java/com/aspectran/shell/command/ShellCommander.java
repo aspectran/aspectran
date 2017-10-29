@@ -15,11 +15,11 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.service.ShellAspectranService;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.service.ShellService;
 
 /**
  * The Console Command Handler.
@@ -30,13 +30,13 @@ public class ShellCommander {
 
     private static final Log log = LogFactory.getLog(ShellCommander.class);
 
-    private final ShellAspectranService service;
+    private final ShellService service;
 
     private final Console console;
 
     private final CommandRegistry commandRegistry;
 
-    public ShellCommander(ShellAspectranService service) {
+    public ShellCommander(ShellService service) {
         this.service = service;
         this.console = service.getConsole();
         this.commandRegistry = service.getCommandRegistry();

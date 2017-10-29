@@ -16,7 +16,7 @@
 package com.aspectran.scheduler;
 
 import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.embed.service.EmbeddedAspectranService;
+import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.junit.Test;
  */
 public class AspectranSchedulerTest {
 
-    private EmbeddedAspectranService aspectranService;
+    private EmbeddedService service;
 
     @Before
     public void ready() throws Exception {
@@ -34,8 +34,8 @@ public class AspectranSchedulerTest {
         aspectranConfig.updateRootConfigLocation("classpath:config/scheduler/scheduler-config.xml");
         aspectranConfig.updateSchedulerConfig(0, true, true);
 
-        aspectranService = EmbeddedAspectranService.create(aspectranConfig);
-        aspectranService.start();
+        service = EmbeddedService.create(aspectranConfig);
+        service.start();
     }
 
     @Test
@@ -45,8 +45,8 @@ public class AspectranSchedulerTest {
 
     @After
     public void finish() {
-        if (aspectranService != null) {
-            aspectranService.stop();
+        if (service != null) {
+            service.stop();
         }
     }
 

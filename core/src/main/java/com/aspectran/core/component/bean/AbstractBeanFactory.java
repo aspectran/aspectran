@@ -109,7 +109,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private Object createNormalBean(BeanRule beanRule, Activity activity) {
         try {
-            Object bean;
             Object[] args;
             Class<?>[] argTypes;
 
@@ -137,7 +136,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 argTypes = MethodUtils.EMPTY_CLASS_PARAMETERS;
             }
 
-            bean = createBeanInstance(beanRule, args, argTypes);
+            final Object bean = createBeanInstance(beanRule, args, argTypes);
 
             if (beanRule.isSingleton()) {
                 beanRule.setInstantiatedBean(new InstantiatedBean(bean));

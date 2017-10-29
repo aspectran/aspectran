@@ -38,43 +38,43 @@ import java.util.List;
  */
 public class Option implements Cloneable, Serializable {
 
-    /** constant that specifies the number of argument values has not been specified */
+    /** Constant that specifies the number of argument values has not been specified */
     public static final int UNINITIALIZED = -1;
 
-    /** constant that specifies the number of argument values is infinite */
+    /** Constant that specifies the number of argument values is infinite */
     public static final int UNLIMITED_VALUES = -2;
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
 
-    /** the name of the option */
+    /** The name of the option */
     private final String opt;
 
-    /** the long representation of the option */
+    /** The long representation of the option */
     private String longOpt;
 
-    /** the name of the argument for this option */
+    /** The name of the argument for this option */
     private String argName;
 
-    /** description of the option */
+    /** Description of the option */
     private String description;
 
-    /** specifies whether this option is required to be present */
+    /** Specifies whether this option is required to be present */
     private boolean required;
 
-    /** specifies whether the argument value of this Option is optional */
+    /** Specifies whether the argument value of this Option is optional */
     private boolean optionalArg;
 
-    /** the number of argument values this option can have */
+    /** The number of argument values this option can have */
     private int numberOfArgs = UNINITIALIZED;
 
-    /** the type of this Option */
+    /** The type of this Option */
     private Class<?> type = String.class;
 
-    /** the list of argument values **/
+    /** The list of argument values **/
     private List<String> values = new ArrayList<>();
 
-    /** the character that is the value separator */
+    /** The character that is the value separator */
     private char valueSeparator;
 
     /**

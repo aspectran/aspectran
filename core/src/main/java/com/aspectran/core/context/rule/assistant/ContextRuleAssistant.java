@@ -496,32 +496,38 @@ public class ContextRuleAssistant {
     /**
      * Resolve bean class for the schedule rule.
      *
-     * @param beanId the bean id
      * @param scheduleRule the schedule rule
      */
-    public void resolveBeanClass(String beanId, ScheduleRule scheduleRule) {
-        Class<?> beanClass = resolveBeanClass(beanId);
-        if (beanClass != null) {
-            scheduleRule.setSchedulerBeanClass(beanClass);
-            reserveBeanReference(beanClass, scheduleRule);
-        } else {
-            reserveBeanReference(beanId, scheduleRule);
+    public void resolveBeanClass(ScheduleRule scheduleRule) {
+        String beanId = scheduleRule.getSchedulerBeanId();
+        if (beanId != null) {
+            Class<?> beanClass = resolveBeanClass(beanId);
+            if (beanClass != null) {
+                scheduleRule.setSchedulerBeanClass(beanClass);
+                reserveBeanReference(beanClass, scheduleRule);
+            } else {
+                reserveBeanReference(beanId, scheduleRule);
+            }
         }
     }
 
     /**
      * Resolve bean class for the template rule.
      *
-     * @param beanId the bean id
      * @param templateRule the template rule
      */
-    public void resolveBeanClass(String beanId, TemplateRule templateRule) {
-        Class<?> beanClass = resolveBeanClass(beanId);
-        if (beanClass != null) {
-            templateRule.setEngineBeanClass(beanClass);
-            reserveBeanReference(beanClass, templateRule);
+    public void resolveBeanClass(TemplateRule templateRule) {
+        String beanId = templateRule.getEngineBeanId();
+        if (beanId != null) {
+            Class<?> beanClass = resolveBeanClass(beanId);
+            if (beanClass != null) {
+                templateRule.setEngineBeanClass(beanClass);
+                reserveBeanReference(beanClass, templateRule);
+            } else {
+                reserveBeanReference(beanId, templateRule);
+            }
         } else {
-            reserveBeanReference(beanId, templateRule);
+            resolveBeanClass(templateRule.getTemplateTokens());
         }
     }
 
@@ -660,7 +666,7 @@ public class ContextRuleAssistant {
      * @return the bean rules
      */
     public Collection<BeanRule> getBeanRules() {
-        Set<BeanRule> beanRuleSet = new HashSet<BeanRule>();
+        Set<BeanRule> beanRuleSet = new HashSet<>();
         beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRuleMap().values());
         for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
             beanRuleSet.addAll(brs);

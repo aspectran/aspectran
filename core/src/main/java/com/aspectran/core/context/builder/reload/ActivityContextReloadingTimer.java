@@ -30,7 +30,7 @@ public class ActivityContextReloadingTimer {
 
     private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
-    private final ServiceController aspectranServiceController;
+    private final ServiceController serviceController;
 
     private final URL[] resources;
 
@@ -38,8 +38,8 @@ public class ActivityContextReloadingTimer {
 
     private TimerTask timerTask;
 
-    public ActivityContextReloadingTimer(ServiceController aspectranServiceController, URL[] resources) {
-        this.aspectranServiceController = aspectranServiceController;
+    public ActivityContextReloadingTimer(ServiceController serviceController, URL[] resources) {
+        this.serviceController = serviceController;
         this.resources = resources;
 
         init();
@@ -58,7 +58,7 @@ public class ActivityContextReloadingTimer {
             log.debug("Starting ActivityContextReloadingTimer...");
         }
 
-        timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
+        timerTask = new ActivityContextReloadingTimerTask(serviceController, resources);
 
         timer = new Timer();
         timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);

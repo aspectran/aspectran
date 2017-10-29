@@ -17,10 +17,12 @@ package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -75,17 +77,31 @@ public class BeanReferenceInspector {
             Set<BeanReferenceInspectable> set = entry.getValue();
 
             BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
-
             if (beanRule == null && beanIdOrClass instanceof Class<?>) {
-                beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>) beanIdOrClass);
+                beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>)beanIdOrClass);
             }
 
             if (beanRule == null) {
-                unknownBeanIdList.add(beanIdOrClass);
-
+                boolean skip = false;
+                // TODO 빈규칙이 존재하지 않을 경우 정적 메쏘드 호출 유효 처리 예외
                 for (BeanReferenceInspectable o : set) {
-                    log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
-                            "' on " + o.getBeanReferrerType() + " " + o);
+                    if (o instanceof Token) {
+                        Token t = (Token)o;
+                        if (t.getAlternativeValue() != null && t.getGetterName() != null) {
+                            if (BeanUtils.hasStaticProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
+                                skip = true;
+                            }
+                        }
+                    }
+                }
+
+                if (!skip) {
+                    unknownBeanIdList.add(beanIdOrClass);
+
+                    for (BeanReferenceInspectable o : set) {
+                        log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
+                                "' on " + o.getBeanReferrerType() + " " + o);
+                    }
                 }
             } else {
                 for (BeanReferenceInspectable o : set) {

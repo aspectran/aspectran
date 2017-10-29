@@ -20,21 +20,20 @@ import org.junit.Test;
 import java.io.File;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * Test case for scanning files.
  */
 public class FileScannerTest {
 
     @Test
-    public void test1() {
-        System.out.println("------------------------------");
-        System.out.println(" Test case for scanning files ");
-        System.out.println("------------------------------");
-
+    public void testFileScan() {
         FileScanner scanner = new FileScanner("./target/test-classes");
-        Map<String, File> map = scanner.scan("**/*Test.class");
+        Map<String, File> map = scanner.scan("**/util/*Test.class");
         for (Map.Entry<String, File> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + " - " + entry.getValue());
+            //System.out.println(entry.getKey() + " - " + entry.getValue());
+            assertTrue(entry.getValue().toString().replace(File.separatorChar, '/').endsWith(entry.getKey()));
         }
     }
 

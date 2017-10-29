@@ -95,7 +95,7 @@ public class ResourceManager {
     }
 
     public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-        if (StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
+        if (StringUtils.endsWith(name, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
 
@@ -158,7 +158,7 @@ public class ResourceManager {
     }
 
     public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-        if (StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
+        if (StringUtils.endsWith(name, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
 

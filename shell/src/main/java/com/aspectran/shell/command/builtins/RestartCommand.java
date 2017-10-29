@@ -19,6 +19,7 @@ public class RestartCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
+        getService().getConsole().clearScreen();
         getService().restart();
         return null;
     }

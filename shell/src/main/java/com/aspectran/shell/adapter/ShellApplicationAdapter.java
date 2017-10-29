@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * The Class ConsoleApplicationAdapter.
+ * The Class ShellApplicationAdapter.
  * 
  * @since 2016. 1. 18.
  */
@@ -31,7 +31,7 @@ public class ShellApplicationAdapter extends BasicApplicationAdapter {
     private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.shell.workingDir";
 
     /**
-     * Instantiates a new ConsoleApplicationAdapter.
+     * Instantiates a new ShellApplicationAdapter.
      *
      * @throws IOException if an I/O error has occurred
      */

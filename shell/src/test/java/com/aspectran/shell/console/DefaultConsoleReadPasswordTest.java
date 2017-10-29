@@ -20,13 +20,13 @@ import java.io.IOException;
 /**‰
  * <p>Created: 2017. 3. 5.</p>
  */
-public class SystemConsoleInoutTest {
+public class DefaultConsoleReadPasswordTest {
 
     public static void main(String argv[]) throws IOException {
         Console console = new DefaultConsole();
-        String prompt = "System> ";
+        String prompt = "> ";
         while (true) {
-            String line = console.readLine(prompt);
+            String line = console.readPassword(prompt);
             if ("quit".equals(line)) {
                 break;
             }

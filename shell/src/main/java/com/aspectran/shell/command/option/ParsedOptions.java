@@ -41,10 +41,10 @@ public class ParsedOptions implements Serializable {
     /** @serial */
     private static final long serialVersionUID = -875791688751934582L;
 
-    /** the unrecognized options/arguments */
+    /** The unrecognized options/arguments */
     private final List<String> args = new LinkedList<>();
 
-    /** the processed options */
+    /** The processed options */
     private final List<Option> options = new ArrayList<>();
 
     /**

@@ -20,7 +20,8 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.OptionParseException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.service.ShellAspectranService;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.service.ShellService;
 
 public abstract class AbstractCommand implements Command {
 
@@ -32,8 +33,12 @@ public abstract class AbstractCommand implements Command {
         this.registry = registry;
     }
 
-    public ShellAspectranService getService() {
+    public ShellService getService() {
         return registry.getService();
+    }
+
+    public Console getConsole() {
+        return registry.getService().getConsole();
     }
 
     protected void addOption(Option option) {

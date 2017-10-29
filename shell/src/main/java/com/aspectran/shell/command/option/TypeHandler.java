@@ -16,6 +16,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.core.util.ClassUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,21 +31,20 @@ import java.util.Date;
  * of conversion functionalities to ConvertUtils component in Commons
  * already. BeanUtils I think.
  */
-public class TypeHandler
-{
+public class TypeHandler {
+
     /**
      * Returns the {@code Object} of type {@code obj}
      * with the value of {@code str}.
      *
      * @param str the command line value
      * @param obj the type of argument
-     * @return The instance of {@code obj} initialised with
-     * the value of {@code str}.
+     * @return the instance of {@code obj} initialised with
+     *      the value of {@code str}.
      * @throws OptionParseException if the value creation for the given object type failed
      */
-    public static Object createValue(final String str, final Object obj) throws OptionParseException
-    {
-        return createValue(str, (Class<?>) obj);
+    public static Object createValue(String str, Object obj) throws OptionParseException {
+        return createValue(str, (Class<?>)obj);
     }
 
     /**
@@ -52,13 +53,12 @@ public class TypeHandler
      *
      * @param str the command line value
      * @param clazz the type of argument
-     * @return The instance of {@code clazz} initialised with
-     * the value of {@code str}.
+     * @return the instance of {@code clazz} initialised with
+     *      the value of {@code str}.
      * @throws OptionParseException if the value creation for the given class failed
      */
     @SuppressWarnings("unchecked") // returned value will have type T because it is fixed by clazz
-    public static <T> T createValue(final String str, final Class<T> clazz) throws OptionParseException
-    {
+    public static <T> T createValue(final String str, final Class<T> clazz) throws OptionParseException {
         if (PatternOptionBuilder.STRING_VALUE == clazz)
         {
             return (T) str;
@@ -102,32 +102,23 @@ public class TypeHandler
     }
 
     /**
-      * Create an Object from the classname and empty constructor.
+      * Creates an instance with the specified class name and an empty constructor.
       *
-      * @param classname the argument value
+      * @param className the class name
       * @return the initialised object
       * @throws OptionParseException if the class could not be found or the object could not be created
       */
-    public static Object createObject(final String classname) throws OptionParseException
-    {
+    public static Object createObject(String className) throws OptionParseException {
         Class<?> cl;
-
-        try
-        {
-            cl = Class.forName(classname);
+        try {
+            cl = Class.forName(className);
+        } catch (ClassNotFoundException cnfe) {
+            throw new OptionParseException("Unable to find the class: " + className);
         }
-        catch (final ClassNotFoundException cnfe)
-        {
-            throw new OptionParseException("Unable to find the class: " + classname);
-        }
-        
-        try
-        {
-            return cl.newInstance();
-        }
-        catch (final Exception e)
-        {
-            throw new OptionParseException(e.getClass().getName() + "; Unable to create an instance of: " + classname);
+        try {
+            return ClassUtils.createInstance(cl);
+        } catch (final Exception e) {
+            throw new OptionParseException(e.getClass().getName() + "; Unable to create an instance of: " + className);
         }
     }
 
@@ -139,18 +130,13 @@ public class TypeHandler
      * @return the number represented by {@code str}
      * @throws OptionParseException if {@code str} is not a number
      */
-    public static Number createNumber(final String str) throws OptionParseException
-    {
-        try
-        {
-            if (str.indexOf('.') != -1)
-            {
+    public static Number createNumber(String str) throws OptionParseException {
+        try {
+            if (str.indexOf('.') != -1) {
                 return Double.valueOf(str);
             }
             return Long.valueOf(str);
-        }
-        catch (final NumberFormatException e)
-        {
+        } catch (final NumberFormatException e) {
             throw new OptionParseException(e.getMessage());
         }
     }
@@ -159,17 +145,13 @@ public class TypeHandler
      * Returns the class whose name is {@code classname}.
      *
      * @param classname the class name
-     * @return The class if it is found
+     * @return the class if it is found
      * @throws OptionParseException if the class could not be found
      */
-    public static Class<?> createClass(final String classname) throws OptionParseException
-    {
-        try
-        {
+    public static Class<?> createClass(final String classname) throws OptionParseException {
+        try {
             return Class.forName(classname);
-        }
-        catch (final ClassNotFoundException e)
-        {
+        } catch (final ClassNotFoundException e) {
             throw new OptionParseException("Unable to find the class: " + classname);
         }
     }
@@ -178,15 +160,14 @@ public class TypeHandler
      * Returns the date represented by {@code str}.
      * <p>
      * This method is not yet implemented and always throws an
-     * {@link UnsupportedOperationException}.
+     * {@link UnsupportedOperationException}.</p>
      *
      * @param str the date string
      * @return The date if {@code str} is a valid date string,
      * otherwise return null.
      * @throws UnsupportedOperationException always
      */
-    public static Date createDate(final String str)
-    {
+    public static Date createDate(String str) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -197,14 +178,10 @@ public class TypeHandler
      * @return The URL in {@code str} is well-formed
      * @throws OptionParseException if the URL in {@code str} is not well-formed
      */
-    public static URL createURL(final String str) throws OptionParseException
-    {
-        try
-        {
+    public static URL createURL(String str) throws OptionParseException {
+        try {
             return new URL(str);
-        }
-        catch (final MalformedURLException e)
-        {
+        } catch (final MalformedURLException e) {
             throw new OptionParseException("Unable to parse the URL: " + str);
         }
     }
@@ -213,10 +190,9 @@ public class TypeHandler
      * Returns the File represented by {@code str}.
      *
      * @param str the File location
-     * @return The file represented by {@code str}.
+     * @return the file represented by {@code str}.
      */
-    public static File createFile(final String str)
-    {
+    public static File createFile(final String str) {
         return new File(str);
     }
 
@@ -224,7 +200,7 @@ public class TypeHandler
      * Returns the opened FileInputStream represented by {@code str}.
      *
      * @param str the file location
-     * @return The file input stream represented by {@code str}
+     * @return the file input stream represented by {@code str}
      * @throws OptionParseException if the file is not exist or not readable
      */
     public static FileInputStream openFile(String str) throws OptionParseException {
@@ -245,10 +221,10 @@ public class TypeHandler
      * @return The File[] represented by {@code str}.
      * @throws UnsupportedOperationException always
      */
-    public static File[] createFiles(final String str)
-    {
+    public static File[] createFiles(final String str) {
         // to implement/port:
         //        return FileW.findFiles(str);
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
 }

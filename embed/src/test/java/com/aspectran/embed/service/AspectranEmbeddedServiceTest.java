@@ -35,27 +35,27 @@ import static junit.framework.TestCase.assertEquals;
  * <p>Created: 2016. 9. 7.</p>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class EmbeddedAspectranServiceTest {
+public class AspectranEmbeddedServiceTest {
 
-    private EmbeddedAspectranService aspectranService;
+    private EmbeddedService service;
 
     @Before
     public void ready() throws Exception {
         String rootConfigLocation = "classpath:config/embedded/embedded-test-config.xml";
-        aspectranService = EmbeddedAspectranService.create(rootConfigLocation);
-        aspectranService.start();
+        service = EmbeddedService.create(rootConfigLocation);
+        service.start();
     }
 
     @After
     public void finish() {
-        if (aspectranService != null) {
-            aspectranService.stop();
+        if (service != null) {
+            service.stop();
         }
     }
 
     @Test
     public void test1() throws IOException {
-        ActivityContext activityContext = aspectranService.getActivityContext();
+        ActivityContext activityContext = service.getActivityContext();
         BeanRegistry beanRegistry = activityContext.getBeanRegistry();
         FirstBean firstBean = beanRegistry.getBean("thirdBean");
 
@@ -64,7 +64,7 @@ public class EmbeddedAspectranServiceTest {
 
         Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
 
-        Translet translet = aspectranService.translet("echo");
+        Translet translet = service.translet("echo");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
 
         ParameterMap params = new ParameterMap();
@@ -72,31 +72,31 @@ public class EmbeddedAspectranServiceTest {
         params.setParameter("name", "aspectran");
         params.setParameter("email", "aspectran@aspectran.com");
 
-        String echo = aspectranService.template("echo", params);
+        String echo = service.template("echo", params);
         System.out.println(echo);
 
-        String selectQuery = aspectranService.template("selectQuery", params);
+        String selectQuery = service.template("selectQuery", params);
         System.out.println(selectQuery);
 
-        String updateQuery = aspectranService.template("updateQuery", params);
+        String updateQuery = service.template("updateQuery", params);
         System.out.println(updateQuery);
     }
 
     @Test
     public void test2() throws IOException {
-        Translet translet = aspectranService.translet("attr-test");
+        Translet translet = service.translet("attr-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
     @Test
     public void includeTest() throws IOException {
-        Translet translet = aspectranService.translet("include-test");
+        Translet translet = service.translet("include-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
     @Test
     public void actionCallTest() throws IOException {
-        Translet translet = aspectranService.translet("add-up");
+        Translet translet = service.translet("add-up");
         ActivityDataMap dataMap = translet.getActivityDataMap();
         //System.out.println("Result: " + dataMap.get("result"));
         assertEquals(dataMap.get("result"), 10);
@@ -104,7 +104,7 @@ public class EmbeddedAspectranServiceTest {
 
     @Test
     public void testEcho123() throws IOException {
-        Translet translet = aspectranService.translet("echo123");
+        Translet translet = service.translet("echo123");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 

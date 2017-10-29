@@ -15,9 +15,9 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.console.Console;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.shell.console.Console;
 
 import java.io.File;
 import java.io.FileNotFoundException;

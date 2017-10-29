@@ -27,7 +27,7 @@ public class MissingOptionException extends OptionParseException {
     /** @serial */
     private static final long serialVersionUID = -3648528884089184961L;
 
-    /** the list of missing options and groups */
+    /** The list of missing options and groups */
     private List<?> missingOptions;
 
     /**

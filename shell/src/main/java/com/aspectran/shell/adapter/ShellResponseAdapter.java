@@ -20,14 +20,14 @@ import com.aspectran.core.adapter.BasicResponseAdapter;
 import java.io.Writer;
 
 /**
- * The Class ConsoleResponseAdapter.
+ * The Class ShellResponseAdapter.
  * 
  * @since 2016. 1. 18.
  */
 public class ShellResponseAdapter extends BasicResponseAdapter {
 
     /**
-     * Instantiates a new ConsoleResponseAdapter.
+     * Instantiates a new ShellResponseAdapter.
      *
      * @param writer the writer to output
      */

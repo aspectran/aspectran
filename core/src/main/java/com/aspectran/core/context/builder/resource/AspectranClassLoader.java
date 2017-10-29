@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -509,35 +511,53 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     public static ClassLoader getDefaultClassLoader() {
-        ClassLoader cl = null;
-        try {
-            cl = Thread.currentThread().getContextClassLoader();
-        } catch (Throwable ex) {
-            // ignore
+        if (System.getSecurityManager() == null) {
+            ClassLoader cl = null;
+            try {
+                cl = Thread.currentThread().getContextClassLoader();
+            } catch (Throwable ex) {
+                // ignore
+            }
+            if (cl == null) {
+                cl = AspectranClassLoader.class.getClassLoader();
+            }
+            if (cl == null) {
+                cl = ClassLoader.getSystemClassLoader();
+            }
+            return cl;
+        } else {
+            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
+                ClassLoader cl = null;
+                try {
+                    cl = Thread.currentThread().getContextClassLoader();
+                } catch (Throwable ex) {
+                    // ignore
+                }
+                if (cl == null) {
+                    cl = AspectranClassLoader.class.getClassLoader();
+                }
+                if (cl == null) {
+                    cl = ClassLoader.getSystemClassLoader();
+                }
+                return cl;
+            });
         }
-        if (cl == null) {
-            cl = AspectranClassLoader.class.getClassLoader();
-        }
-        if (cl == null) {
-            cl = ClassLoader.getSystemClassLoader();
-        }
-        return cl;
     }
 
     public static String resourceNameToClassName(String resourceName) {
         String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-        className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+        className = className.replace(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
         return className;
     }
 
     public static String classNameToResourceName(String className) {
-        return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR)
+        return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)
                 + ClassUtils.CLASS_FILE_SUFFIX;
     }
 
     public static String packageNameToResourceName(String packageName) {
-        String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
-        if (StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR)) {
+        String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+        if (StringUtils.endsWith(resourceName, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
         return resourceName;
@@ -568,10 +588,8 @@ public class AspectranClassLoader extends ClassLoader {
                     resourceLocations[i] = basePath + resourceLocations[i];
                 }
             }
-            if (resourceLocations[i].indexOf('\\') != -1) {
-                resourceLocations[i] = resourceLocations[i].replace('\\', '/');
-            }
-            if (StringUtils.endsWith(resourceLocations[i], ResourceUtils.PATH_SPEPARATOR_CHAR)) {
+            resourceLocations[i] = resourceLocations[i].replace(File.separatorChar, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+            if (StringUtils.endsWith(resourceLocations[i], ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
                 resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
             }
         }

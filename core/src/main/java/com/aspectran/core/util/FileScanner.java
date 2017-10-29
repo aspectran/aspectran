@@ -23,7 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The Class FileScanner.
+ * A utility class that finds files corresponding to a given pattern.
+ * Note that the file separator always uses a slash (/), regardless of the OS.
  *
  * @author Juho Jeong
  * @since 1.3.0
@@ -43,7 +44,7 @@ public class FileScanner {
     }
 
     public Map<String, File> scan(String filePathPattern) {
-        final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+        final Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(filePathPattern, scannedFiles);
         return scannedFiles;
     }
@@ -86,7 +87,7 @@ public class FileScanner {
     }
 
     public Map<String, File> scan(String basePath, String filePathPattern) {
-        final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+        final Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(basePath, filePathPattern, scannedFiles);
         return scannedFiles;
     }

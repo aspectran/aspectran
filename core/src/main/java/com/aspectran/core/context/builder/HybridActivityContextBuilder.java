@@ -21,14 +21,14 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
-import com.aspectran.core.service.AbstractAspectranService;
+import com.aspectran.core.service.AbstractCoreService;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
-    private final AbstractAspectranService aspectranService;
+    private final AbstractCoreService coreService;
 
     private ActivityContext activityContext;
 
@@ -43,13 +43,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     public HybridActivityContextBuilder() {
         super(new BasicApplicationAdapter());
-        this.aspectranService = null;
+        this.coreService = null;
     }
 
-    public HybridActivityContextBuilder(AbstractAspectranService aspectranService) {
-        super(aspectranService.getApplicationAdapter());
-        this.aspectranService = aspectranService;
-        setAspectranServiceController(aspectranService);
+    public HybridActivityContextBuilder(AbstractCoreService coreService) {
+        super(coreService.getApplicationAdapter());
+        this.coreService = coreService;
+        setServiceController(coreService);
     }
 
     @Override
@@ -109,9 +109,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             this.activityContext = activityContext;
 
-            if (aspectranService != null) {
-                aspectranService.setActivityContext(activityContext);
-                activityContext.setRootAspectranService(aspectranService);
+            if (coreService != null) {
+                coreService.setActivityContext(activityContext);
+                activityContext.setRootService(coreService);
             }
 
             ((Component)activityContext).initialize();
@@ -151,8 +151,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 activityContext = null;
             }
 
-            if (aspectranService != null) {
-                aspectranService.setActivityContext(null);
+            if (coreService != null) {
+                coreService.setActivityContext(null);
             }
 
             this.active.set(false);
@@ -164,7 +164,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
      * on JVM shutdown unless it has already been closed at that time.
      */
     private void registerDestroyTask() {
-        if (this.aspectranService == null && this.shutdownTask == null) {
+        if (this.coreService == null && this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
             this.shutdownTask = ShutdownHooks.add(() -> {
                 synchronized (this.buildDestroyMonitor) {

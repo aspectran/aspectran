@@ -15,12 +15,6 @@
  */
 package com.aspectran.shell.activity;
 
-import com.aspectran.shell.adapter.ShellRequestAdapter;
-import com.aspectran.shell.adapter.ShellResponseAdapter;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.command.ConsoleTerminatedException;
-import com.aspectran.shell.console.MultiWriter;
-import com.aspectran.shell.service.ShellAspectranService;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
@@ -34,6 +28,12 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.adapter.ShellRequestAdapter;
+import com.aspectran.shell.adapter.ShellResponseAdapter;
+import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.MultiWriter;
+import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
 import java.util.ArrayList;
@@ -53,19 +53,19 @@ public class ShellActivity extends CoreActivity {
 
     private static final Log log = LogFactory.getLog(ShellActivity.class);
 
-    private final ShellAspectranService service;
+    private final ShellService service;
 
     private final Console console;
 
     private final Writer[] redirectionWriters;
 
     /**
-     * Instantiates a new ConsoleActivity.
+     * Instantiates a new ShellActivity.
      *
-     * @param service the shell aspectran service
+     * @param service the shell service
      * @param redirectionWriters the redirection writers
      */
-    public ShellActivity(ShellAspectranService service, Writer[] redirectionWriters) {
+    public ShellActivity(ShellService service, Writer[] redirectionWriters) {
         super(service.getActivityContext());
 
         this.service = service;

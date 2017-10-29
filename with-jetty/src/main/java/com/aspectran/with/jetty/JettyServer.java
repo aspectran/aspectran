@@ -23,6 +23,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 /**
+ * The Jetty Server.
+ *
  * <p>Created: 2016. 12. 22.</p>
  */
 public class JettyServer extends Server implements InitializableBean, DisposableBean {

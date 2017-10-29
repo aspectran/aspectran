@@ -21,9 +21,9 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 
 /**
- * The Interface AspectranService.
+ * The Interface CoreService.
  */
-public interface AspectranService extends ServiceController {
+public interface CoreService extends ServiceController {
 
     /**
      * Gets the application adapter.
