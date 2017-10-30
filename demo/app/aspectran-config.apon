@@ -27,11 +27,8 @@ shell: {
     ]
     verbose: true
     welcome: (
-        |{{BLUE}}-----------------=====================
-        |          ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}
-        |=====================-----------------{{off}}
         |
-        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}
+        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
         |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
         |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.

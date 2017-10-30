@@ -50,16 +50,16 @@ public class BeanReferenceInspector {
      * Reserves to bean reference inspection.
      *
      * @param beanIdOrClass the bean id or class
-     * @param someRule the some rule
+     * @param inspectable the object to be inspected
      */
-    public void reserve(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+    public void reserve(Object beanIdOrClass, BeanReferenceInspectable inspectable) {
         Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
         if (ruleSet == null) {
             ruleSet = new LinkedHashSet<>();
-            ruleSet.add(someRule);
+            ruleSet.add(inspectable);
             relationMap.put(beanIdOrClass, ruleSet);
         } else {
-            ruleSet.add(someRule);
+            ruleSet.add(inspectable);
         }
     }
 
@@ -76,14 +76,23 @@ public class BeanReferenceInspector {
             Object beanIdOrClass = entry.getKey();
             Set<BeanReferenceInspectable> set = entry.getValue();
 
-            BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
-            if (beanRule == null && beanIdOrClass instanceof Class<?>) {
-                beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>)beanIdOrClass);
+            BeanRule beanRule;
+            if (beanIdOrClass instanceof Class<?>) {
+                BeanRule[] beanRules = beanRuleRegistry.getBeanRules((Class<?>)beanIdOrClass);
+                if (beanRules != null && beanRules.length == 1) {
+                    beanRule = beanRules[0];
+                } else {
+                    beanRule = null;
+                }
+                if (beanRule == null) {
+                    beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>)beanIdOrClass);
+                }
+            } else {
+                beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
             }
 
             if (beanRule == null) {
                 boolean skip = false;
-                // TODO 빈규칙이 존재하지 않을 경우 정적 메쏘드 호출 유효 처리 예외
                 for (BeanReferenceInspectable o : set) {
                     if (o instanceof Token) {
                         Token t = (Token)o;
@@ -94,10 +103,8 @@ public class BeanReferenceInspector {
                         }
                     }
                 }
-
                 if (!skip) {
                     unknownBeanIdList.add(beanIdOrClass);
-
                     for (BeanReferenceInspectable o : set) {
                         log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
                                 "' on " + o.getBeanReferrerType() + " " + o);

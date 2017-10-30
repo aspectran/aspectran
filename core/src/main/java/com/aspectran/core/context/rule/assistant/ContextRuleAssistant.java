@@ -522,7 +522,7 @@ public class ContextRuleAssistant {
             Class<?> beanClass = resolveBeanClass(beanId);
             if (beanClass != null) {
                 templateRule.setEngineBeanClass(beanClass);
-                reserveBeanReference(beanClass, templateRule);
+                    reserveBeanReference(beanClass, templateRule);
             } else {
                 reserveBeanReference(beanId, templateRule);
             }
@@ -548,12 +548,12 @@ public class ContextRuleAssistant {
         }
     }
 
-    public void reserveBeanReference(String beanId, BeanReferenceInspectable someRule) {
-        beanReferenceInspector.reserve(beanId, someRule);
+    public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
+        beanReferenceInspector.reserve(beanId, inspectable);
     }
 
-    public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
-        beanReferenceInspector.reserve(beanClass, someRule);
+    public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
+        beanReferenceInspector.reserve(beanClass, inspectable);
     }
 
     public BeanReferenceInspector getBeanReferenceInspector() {

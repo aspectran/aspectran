@@ -17,36 +17,20 @@ package com.aspectran.shell.service;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.session.DefaultSessionManager;
-import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
-import com.aspectran.core.context.builder.config.SessionConfig;
 import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpressionParser;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.type.TokenDirectiveType;
-import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
-import com.aspectran.shell.adapter.ShellApplicationAdapter;
-import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.command.CommandLineParser;
-import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 
@@ -59,163 +43,16 @@ import java.io.Writer;
  *
  * @since 2016. 1. 18.
  */
-class AspectranShellService extends AspectranCoreService implements ShellService {
+class AspectranShellService extends AbstractShellService {
 
     private static final Log log = LogFactory.getLog(AspectranShellService.class);
 
     private static final String DEFAULT_ROOT_CONTEXT = "/config/aspectran/root-config.xml";
 
-    private SessionManager sessionManager;
-
     private long pauseTimeout = -1L;
 
-    private Console console;
-
-    private String[] commands;
-
-    private CommandRegistry commandRegistry;
-
-    /** If verbose mode is on, a detailed description is printed each time the command is executed. */
-    private boolean verbose;
-
-    private String welcomeMessage;
-
-    private Token[] welcomeMessageTokens;
-
     private AspectranShellService() throws IOException {
-        super(new ShellApplicationAdapter());
-    }
-
-    @Override
-    public void afterContextLoaded() throws Exception {
-        if (commands != null) {
-            CommandRegistry commandRegistry = new CommandRegistry(this);
-            commandRegistry.addCommand(commands);
-            setCommandRegistry(commandRegistry);
-        }
-
-        sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("SHL");
-        SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
-        if (sessionConfig != null) {
-            sessionManager.setSessionConfig(sessionConfig);
-        }
-        sessionManager.initialize();
-    }
-
-    @Override
-    public void beforeContextDestroy() {
-        sessionManager.destroy();
-        sessionManager = null;
-    }
-
-    @Override
-    public SessionAdapter newSessionAdapter() {
-        SessionAgent agent = sessionManager.newSessionAgent();
-        return new ShellSessionAdapter(agent);
-    }
-
-    @Override
-    public Console getConsole() {
-        return console;
-    }
-
-    private void setConsole(Console console) {
-        this.console = console;
-    }
-
-    @Override
-    public String[] getCommands() {
-        return commands;
-    }
-
-    private void setCommands(String[] commands) {
-        this.commands = commands;
-    }
-
-    @Override
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    private void setCommandRegistry(CommandRegistry commandRegistry) {
-        this.commandRegistry = commandRegistry;
-    }
-
-    /**
-     * Tests if the verbose mode is enabled.
-     * If verbose mode is on, a detailed description is printed each time the command is executed.
-     * Returns a flag indicating whether to show the description or not.
-     *
-     * @return true if the verbose mode is enabled
-     */
-    @Override
-    public boolean isVerbose() {
-        return verbose;
-    }
-
-    /**
-     * Enables or disables the verbose mode.
-     * If verbose mode is on, a detailed description is printed each time the command is executed.
-     * Sets a flag indicating whether to show the description or not.
-     *
-     * @param verbose true to enable the verbose mode; false to disable
-     */
-    @Override
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
-
-    @Override
-    public String getWelcomeMessage() {
-        return welcomeMessage;
-    }
-
-    @Override
-    public void setWelcomeMessage(String welcomeMessage) {
-        this.welcomeMessage = welcomeMessage;
-    }
-
-    @Override
-    public void printWelcomeMessage() {
-        if (StringUtils.hasText(welcomeMessage)) {
-            if (welcomeMessageTokens == null) {
-                welcomeMessageTokens = TokenParser.makeTokens(welcomeMessage, true);
-                if (welcomeMessageTokens != null) {
-                    try {
-                        for (Token token : welcomeMessageTokens) {
-                            if (token != null && token.getType() == TokenType.BEAN) {
-                                if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                                    Class<?> beanClass = getAspectranClassLoader().loadClass(token.getValue());
-                                    token.setAlternativeValue(beanClass);
-                                }
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        welcomeMessageTokens = null;
-                        log.error("Failed to parsing welcome message", e);
-                    }
-                }
-            }
-        }
-
-        if (welcomeMessageTokens != null) {
-            TokenEvaluator evaluator = new TokenExpressionParser(getActivityContext().getDefaultActivity());
-            String message = evaluator.evaluateAsString(welcomeMessageTokens);
-            console.writeLine(message);
-            console.flush();
-        } else if (welcomeMessage != null) {
-            console.writeLine(welcomeMessage);
-            console.flush();
-        }
-    }
-
-    @Override
-    public void printHelp() {
-        if (isVerbose() && getActivityContext().getDescription() != null) {
-            console.writeLine(getActivityContext().getDescription());
-            console.flush();
-        }
+        super();
     }
 
     /**
@@ -262,7 +99,7 @@ class AspectranShellService extends AspectranCoreService implements ShellService
         Writer[] redirectionWriters = null;
         if (commandLineParser.getRedirectionList() != null) {
             try {
-                redirectionWriters = commandLineParser.getRedirectionWriters(console);
+                redirectionWriters = commandLineParser.getRedirectionWriters(getConsole());
             } catch (Exception e) {
                 log.warn("Invalid Redirection: " + CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
                 return;
@@ -276,7 +113,7 @@ class AspectranShellService extends AspectranCoreService implements ShellService
             activity.prepare(commandLineParser.getCommand(), commandLineParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            console.writeLine("No translet mapped to the command [" + commandLineParser.getCommand() + "]");
+            getConsole().writeLine("No translet mapped to the command [" + commandLineParser.getCommand() + "]");
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated without completion: " + e.getMessage());
