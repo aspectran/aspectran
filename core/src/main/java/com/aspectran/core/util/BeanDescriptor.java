@@ -57,9 +57,9 @@ public class BeanDescriptor {
 
     private Map<String, Class<?>> writeType = new HashMap<>();
 
-    private BeanDescriptor(Class<?> clazz) {
-        this.className = clazz.getName();
-        Method[] methods = getAllMethods(clazz);
+    private BeanDescriptor(Class<?> beanClass) {
+        this.className = beanClass.getName();
+        Method[] methods = getAllMethods(beanClass);
 
         addReadMethods(methods);
         addWriteMethods(methods);
@@ -132,7 +132,7 @@ public class BeanDescriptor {
                 if (expectedType == null) {
                     throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
                             propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
-                            "specification and can cause unpredicatble results.");
+                            "specification and can cause unpredictable results.");
                 } else {
                     Iterator<Method> methods = setters.iterator();
                     Method setter = null;
@@ -146,7 +146,7 @@ public class BeanDescriptor {
                     if (setter == null) {
                         throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
                                 propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
-                                "specification and can cause unpredicatble results.");
+                                "specification and can cause unpredictable results.");
                     }
                     addWriteMethod(propName, setter);
                 }
@@ -164,12 +164,12 @@ public class BeanDescriptor {
      * class and any superclass. In the future, Java is not pleased to have
      * access to private or protected methods.
      *
-     * @param cls the class
+     * @param beanClass the class
      * @return an array containing all the public methods in this class
      */
-    private Method[] getAllMethods(Class<?> cls) {
+    private Method[] getAllMethods(Class<?> beanClass) {
         Map<String, Method> uniqueMethods = new HashMap<>();
-        Class<?> currentClass = cls;
+        Class<?> currentClass = beanClass;
 
         while (currentClass != null) {
             addUniqueMethods(uniqueMethods, currentClass.getMethods());
@@ -185,7 +185,6 @@ public class BeanDescriptor {
         }
 
         Collection<Method> methods = uniqueMethods.values();
-
         return methods.toArray(new Method[methods.size()]);
     }
 
@@ -223,7 +222,8 @@ public class BeanDescriptor {
         } else if (name.startsWith("get") || name.startsWith("set")) {
             name = name.substring(3);
         } else {
-            throw new IllegalArgumentException("Error parsing property name '" + name + "'; Didn't start with 'is', 'get' or 'set'");
+            throw new IllegalArgumentException("Error parsing property name '" + name +
+                    "'; Didn't start with 'is', 'get' or 'set'");
         }
         if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
             name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
@@ -234,14 +234,15 @@ public class BeanDescriptor {
     /**
      * Gets the setter for a property as a Method object.
      *
-     * @param propertyName the name of the property
+     * @param name the name of the property
      * @return the setter method
      * @throws NoSuchMethodException when a setter method cannot be found
      */
-    public Method getSetter(String propertyName) throws NoSuchMethodException {
-        Method method = writeMethods.get(propertyName);
+    public Method getSetter(String name) throws NoSuchMethodException {
+        Method method = writeMethods.get(name);
         if (method == null) {
-            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
+            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
+                    "' in class '" + className + "'");
         }
         return method;
     }
@@ -249,14 +250,15 @@ public class BeanDescriptor {
     /**
      * Gets the getter for a property as a Method object.
      *
-     * @param propertyName the name of the property
-     * @return The Method
+     * @param name the name of the property
+     * @return the Method
      * @throws NoSuchMethodException the no such method exception
      */
-    public Method getGetter(String propertyName) throws NoSuchMethodException {
-        Method method = readMethods.get(propertyName);
+    public Method getGetter(String name) throws NoSuchMethodException {
+        Method method = readMethods.get(name);
         if (method == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
+            throw new NoSuchMethodException("There is no READABLE property named '" + name +
+                    "' in class '" + className + "'");
         }
         return method;
     }
@@ -264,14 +266,15 @@ public class BeanDescriptor {
     /**
      * Gets the type for a property setter.
      *
-     * @param propertyName the name of the property
-     * @return The Class of the propery setter
+     * @param name the name of the property
+     * @return the Class of the property setter
      * @throws NoSuchMethodException the no such method exception
      */
-    public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
-        Class<?> clazz = writeType.get(propertyName);
+    public Class<?> getSetterType(String name) throws NoSuchMethodException {
+        Class<?> clazz = writeType.get(name);
         if (clazz == null) {
-            throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
+            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
+                    "' in class '" + className + "'");
         }
         return clazz;
     }
@@ -279,14 +282,15 @@ public class BeanDescriptor {
     /**
      * Gets the type for a property getter.
      *
-     * @param propertyName the name of the property
-     * @return The Class of the propery getter
+     * @param name the name of the property
+     * @return the Class of the property getter
      * @throws NoSuchMethodException the no such method exception
      */
-    public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
-        Class<?> clazz = readTypes.get(propertyName);
+    public Class<?> getGetterType(String name) throws NoSuchMethodException {
+        Class<?> clazz = readTypes.get(name);
         if (clazz == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
+            throw new NoSuchMethodException("There is no READABLE property named '" + name +
+                    "' in class '" + className + "'");
         }
         return clazz;
     }
@@ -294,26 +298,26 @@ public class BeanDescriptor {
     /**
      * Gets an array of the readable properties for an object.
      *
-     * @return The array
+     * @return the array
      */
     public String[] getReadablePropertyNames() {
         return readablePropertyNames;
     }
 
     /**
-     * Gets an array of the writeable properties for an object.
+     * Gets an array of the writable properties for an object.
      *
-     * @return The array
+     * @return the array
      */
     public String[] getWriteablePropertyNames() {
         return writeablePropertyNames;
     }
 
     /**
-     * Check to see if a class has a writeable property by name.
+     * Check to see if a class has a writable property by name.
      *
      * @param propertyName the name of the property to check
-     * @return true if the object has a writeable property by the name
+     * @return true if the object has a writable property by the name
      */
     public boolean hasWritableProperty(String propertyName) {
         return writeMethods.keySet().contains(propertyName);

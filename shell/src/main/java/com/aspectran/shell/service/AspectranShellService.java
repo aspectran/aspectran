@@ -27,6 +27,12 @@ import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.config.SessionConfig;
 import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
@@ -73,6 +79,8 @@ class AspectranShellService extends AspectranCoreService implements ShellService
     private boolean verbose;
 
     private String welcomeMessage;
+
+    private Token[] welcomeMessageTokens;
 
     private AspectranShellService() throws IOException {
         super(new ShellApplicationAdapter());
@@ -171,6 +179,32 @@ class AspectranShellService extends AspectranCoreService implements ShellService
     @Override
     public void printWelcomeMessage() {
         if (StringUtils.hasText(welcomeMessage)) {
+            if (welcomeMessageTokens == null) {
+                welcomeMessageTokens = TokenParser.makeTokens(welcomeMessage, true);
+                if (welcomeMessageTokens != null) {
+                    try {
+                        for (Token token : welcomeMessageTokens) {
+                            if (token != null && token.getType() == TokenType.BEAN) {
+                                if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
+                                    Class<?> beanClass = getAspectranClassLoader().loadClass(token.getValue());
+                                    token.setAlternativeValue(beanClass);
+                                }
+                            }
+                        }
+                    } catch (ClassNotFoundException e) {
+                        welcomeMessageTokens = null;
+                        log.error("Failed to parsing welcome message", e);
+                    }
+                }
+            }
+        }
+
+        if (welcomeMessageTokens != null) {
+            TokenEvaluator evaluator = new TokenExpressionParser(getActivityContext().getDefaultActivity());
+            String message = evaluator.evaluateAsString(welcomeMessageTokens);
+            console.writeLine(message);
+            console.flush();
+        } else if (welcomeMessage != null) {
             console.writeLine(welcomeMessage);
             console.flush();
         }

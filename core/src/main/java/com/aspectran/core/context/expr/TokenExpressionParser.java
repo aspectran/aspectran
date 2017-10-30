@@ -360,7 +360,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             } catch (RequiredTypeBeanNotFoundException e) {
                 if (token.getGetterName() != null) {
                     try {
-                        value = BeanUtils.getObject((Class<?>)token.getAlternativeValue(), token.getGetterName());
+                        value = BeanUtils.getProperty((Class<?>)token.getAlternativeValue(), token.getGetterName());
                         if (value == null) {
                             value = token.getDefaultValue();
                         }
@@ -371,7 +371,7 @@ public class TokenExpressionParser implements TokenEvaluator {
                 }
                 throw e;
             }
-            if (token.getGetterName() != null) {
+            if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }
             if (value == null) {
@@ -400,7 +400,7 @@ public class TokenExpressionParser implements TokenEvaluator {
     protected Object getBeanProperty(final Object object, String propertyName) {
         Object value;
         try {
-            value = BeanUtils.getObject(object, propertyName);
+            value = BeanUtils.getProperty(object, propertyName);
         } catch (InvocationTargetException e) {
             // ignore
             value = null;
@@ -409,7 +409,7 @@ public class TokenExpressionParser implements TokenEvaluator {
     }
 
     /**
-     * Returns an Envirionment variable that matches the given token.
+     * Returns an Environment variable that matches the given token.
      *
      * <pre>
      *   %{classpath:/com/aspectran/sample.properties}

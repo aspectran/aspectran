@@ -34,6 +34,8 @@ public interface ServiceStateListener extends EventListener {
 
     /**
      * This method is called when the service is paused.
+     *
+     * @param millis the number of seconds the service should pause execution
      */
     void paused(long millis);
 

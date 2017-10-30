@@ -88,7 +88,7 @@ public class BeanReferenceInspector {
                     if (o instanceof Token) {
                         Token t = (Token)o;
                         if (t.getAlternativeValue() != null && t.getGetterName() != null) {
-                            if (BeanUtils.hasStaticProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
+                            if (BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
                                 skip = true;
                             }
                         }

@@ -53,6 +53,8 @@ public class Aspectran {
 
     /**
      * Prints Aspectran information to {@link System#err}.
+     *
+     * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {
         System.err.println(VERSION);

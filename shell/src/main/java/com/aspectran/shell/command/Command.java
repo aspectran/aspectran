@@ -28,8 +28,9 @@ public interface Command {
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.
      *
-     * @param args
+     * @param args the command line arguments
      * @return
+     * @throws Exception if an error occurs during command execution
      */
     String execute(String[] args) throws Exception;
 

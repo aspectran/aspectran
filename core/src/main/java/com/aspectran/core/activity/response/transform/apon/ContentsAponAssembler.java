@@ -135,7 +135,7 @@ public class ContentsAponAssembler {
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 Parameters p = new VariableParameters();
                 for (String name : readablePropertyNames) {
-                    Object value = BeanUtils.getObject(object, name);
+                    Object value = BeanUtils.getProperty(object, name);
                     checkCircularReference(object, value);
                     p.putValue(name, assemble(value));
                 }

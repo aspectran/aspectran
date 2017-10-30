@@ -23,7 +23,8 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
      * Returns whether the current {@code ActivityDataMap} is registered as an attribute
      * in the request scope.
      *
-     * @return
+     * @return true if the current {@code ActivityDataMap} is registered as an attribute
+     *      in the request scope; otherwise false
      */
     public boolean isAttributable() {
         return (attributeName != null);

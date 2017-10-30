@@ -18,6 +18,8 @@ package com.aspectran.core.component.session;
 import java.util.Set;
 
 /**
+ * The Interface SessionCache.
+ *
  * <p>Created: 2017. 6. 24.</p>
  */
 public interface SessionCache {
@@ -91,7 +93,7 @@ public interface SessionCache {
      *
      * @param id the session id
      * @return the Session if one exists, null otherwise
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     Session get(String id) throws Exception;
 
@@ -103,7 +105,7 @@ public interface SessionCache {
      *
      * @param id the session id
      * @param session the session object
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     void put(String id, Session session) throws Exception;
 
@@ -113,7 +115,7 @@ public interface SessionCache {
      *
      * @param id the session id
      * @return true if the session exists, false otherwise
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     boolean exists(String id) throws Exception;
 
@@ -124,7 +126,7 @@ public interface SessionCache {
      * @param id the session id
      * @return true if a Session object matching the id is present
      *      in the cache, false otherwise
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     boolean contains(String id) throws Exception;
 
@@ -134,7 +136,7 @@ public interface SessionCache {
      *
      * @param id the session id
      * @return the Session that was removed, null otherwise
-     * @throws Exception
+     * @throws Exception if an error occurs when deleting a session
      */
     Session delete(String id) throws Exception;
 

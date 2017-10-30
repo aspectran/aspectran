@@ -141,6 +141,8 @@ public abstract class AbstractSessionCache implements SessionCache {
      * If the session object is not in this session store, try getting
      * the data for it from a SessionDataStore associated with the
      * session manager.
+     *
+     * @param id the session id
      */
     @Override
     public Session get(String id) throws Exception {

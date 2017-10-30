@@ -125,7 +125,9 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             }
         } else if (itemType == ItemType.ARRAY) {
             Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
-            return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+            if (values != null) {
+                return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+            }
         } else if (itemType == ItemType.LIST) {
             List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
             if (list != null) {
@@ -153,7 +155,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
     private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {
         Object value = evaluate(parameterName, tokens);
-        return (value == null || valueType == null) ? value : valuelize(value, valueType);
+        return ((value == null || valueType == null) ? value : valuelize(value, valueType));
     }
 
     @SuppressWarnings("all")

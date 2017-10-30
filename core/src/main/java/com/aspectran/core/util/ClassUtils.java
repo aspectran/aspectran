@@ -34,6 +34,9 @@ public abstract class ClassUtils {
      * specified type. Instantiation is done using default no-argument
      * constructor.
      *
+     * @param <T> the generic type
+     * @param cls the class to check
+     * @return an instantiated object
      * @throws IllegalArgumentException If instantiation fails for any reason;
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
@@ -57,6 +60,10 @@ public abstract class ClassUtils {
      * Method that can be called to try to create an instantiate of
      * specified type.
      *
+     * @param <T> the generic type
+     * @param cls the class to check
+     * @param args the arguments
+     * @return an instantiated object
      * @throws IllegalArgumentException If instantiation fails for any reason;
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
@@ -85,6 +92,7 @@ public abstract class ClassUtils {
      *
      * @param cls the class to check
      * @param parameterTypes the parameter types of the desired constructor
+     * @param <T> the generic type
      * @return the constructor reference
      * @throws NoSuchMethodException if no such constructor exists
      */
@@ -100,7 +108,8 @@ public abstract class ClassUtils {
         }
         // must be public
         if (!Modifier.isPublic(ctor.getModifiers())) {
-            throw new IllegalArgumentException("Default constructor for " + cls.getName() + " is not accessible (non-public?): not allowed to try modify access via Reflection: can not instantiate type");
+            throw new IllegalArgumentException("Default constructor for " + cls.getName() +
+                    " is not accessible (non-public?): not allowed to try modify access via Reflection: can not instantiate type");
         }
         return ctor;
     }

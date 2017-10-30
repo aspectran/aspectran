@@ -309,7 +309,7 @@ public class ContentsXMLReader implements XMLReader {
             String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
             if (readableProperyNames != null && readableProperyNames.length > 0) {
                 for (String name : readableProperyNames) {
-                    Object value = BeanUtils.getObject(object, name);
+                    Object value = BeanUtils.getProperty(object, name);
                     checkCircularReference(object, value);
 
                     handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);

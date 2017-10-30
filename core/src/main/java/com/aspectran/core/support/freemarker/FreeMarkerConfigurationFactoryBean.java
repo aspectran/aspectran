@@ -33,7 +33,7 @@ public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationF
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
-     * if not overridden by a preconfigured FreeMarker Configuation.
+     * if not overridden by a preconfigured FreeMarker Configuration.
      *
      * @throws Exception Exceptions occurring when you configure FreeMarker
      */

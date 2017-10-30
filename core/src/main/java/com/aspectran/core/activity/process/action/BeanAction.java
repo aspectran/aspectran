@@ -113,7 +113,7 @@ public class BeanAction extends AbstractAction {
 
                 // set properties for ActionBean
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+                    BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
                 }
             }
 

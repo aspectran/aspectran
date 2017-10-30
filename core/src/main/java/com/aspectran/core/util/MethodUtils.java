@@ -72,7 +72,7 @@ public class MethodUtils {
     /**
      * Sets the value of a bean property to an Object.
      *
-     * @param object The bean to change
+     * @param object the bean to change
      * @param setterName The property name or setter method name
      * @param arg use this argument
      * @throws NoSuchMethodException the no such method exception
@@ -88,7 +88,7 @@ public class MethodUtils {
     /**
      * Sets the value of a bean property to an Object.
      *
-     * @param object The bean to change
+     * @param object the bean to change
      * @param setterName The property name or setter method name
      * @param args use this arguments
      * @throws NoSuchMethodException the no such method exception
@@ -113,7 +113,7 @@ public class MethodUtils {
     /**
      * Gets an Object property from a bean.
      *
-     * @param object The bean
+     * @param object the bean
      * @param getterName The property name or getter method name
      * @return the property value (as an Object)
      * @throws NoSuchMethodException the no such method exception
@@ -128,7 +128,7 @@ public class MethodUtils {
     /**
      * Gets an Object property from a bean.
      *
-     * @param object The bean
+     * @param object the bean
      * @param getterName The property name or getter method name
      * @param arg use this argument
      * @return the property value (as an Object)
@@ -145,7 +145,7 @@ public class MethodUtils {
     /**
      * Gets an Object property from a bean.
      *
-     * @param object The bean
+     * @param object the bean
      * @param getterName The property name or getter method name
      * @param args use this arguments
      * @return the property value (as an Object)

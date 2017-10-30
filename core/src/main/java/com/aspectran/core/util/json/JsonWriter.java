@@ -181,7 +181,7 @@ public class JsonWriter implements Flushable {
                 openCurlyBracket();
 
                 for (int i = 0; i < readablePropertyNames.length; i++) {
-                    Object value = BeanUtils.getObject(object, readablePropertyNames[i]);
+                    Object value = BeanUtils.getProperty(object, readablePropertyNames[i]);
                     checkCircularReference(object, value);
 
                     writeName(readablePropertyNames[i]);

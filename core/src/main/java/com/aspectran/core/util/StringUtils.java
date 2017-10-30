@@ -323,6 +323,7 @@ public class StringUtils {
      *
      * @param str the {@code String} to check
      * @param prefix the prefix character to look for
+     * @return true if the string starts with the specified prefix; otherwise false
      * @see java.lang.String#startsWith
      */
     public static boolean startsWith(String str, char prefix) {
@@ -334,7 +335,8 @@ public class StringUtils {
      *
      * @param str the {@code String} to check
      * @param suffix the prefix character to look for
-     * @see java.lang.String#startsWith
+     * @return true if the string ends with the specified suffix; otherwise false
+     * @see java.lang.String#endsWith
      */
     public static boolean endsWith(String str, char suffix) {
         return (str != null && !str.isEmpty() && (str.charAt(str.length() - 1) == suffix));
