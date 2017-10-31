@@ -23,7 +23,7 @@ import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.ItemParameters;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -42,7 +42,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_RULE;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.BEAN_RULE;
 
     private String id;
 
@@ -747,7 +747,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     }
 
     @Override
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

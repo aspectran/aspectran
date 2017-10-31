@@ -20,7 +20,7 @@ package com.aspectran.core.context.rule.type;
  * 
  * <p>Created: 2016. 2. 20.</p>
  */
-public enum BeanReferrerType {
+public enum BeanRefererType {
 
     ASPECT_RULE("aspectRule"),
     SCHEDULE_RULE("scheduleRule"),
@@ -31,7 +31,7 @@ public enum BeanReferrerType {
 
     private final String alias;
 
-    BeanReferrerType(String alias) {
+    BeanRefererType(String alias) {
         this.alias = alias;
     }
 
@@ -47,8 +47,8 @@ public enum BeanReferrerType {
      * @param alias the bean referrer type as a {@code String}
      * @return a {@code BeanReferrerType}, may be {@code null}
      */
-    public static BeanReferrerType resolve(String alias) {
-        for (BeanReferrerType type : values()) {
+    public static BeanRefererType resolve(String alias) {
+        for (BeanRefererType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }

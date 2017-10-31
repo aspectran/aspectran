@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.params.TriggerParameters;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class ScheduleRule implements BeanReferenceInspectable {
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.SCHEDULE_RULE;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.SCHEDULE_RULE;
 
     private String id;
 
@@ -132,7 +132,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
     }
 
     @Override
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

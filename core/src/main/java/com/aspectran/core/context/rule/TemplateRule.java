@@ -20,7 +20,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
@@ -42,7 +42,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TEMPLATE_RULE;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.TEMPLATE_RULE;
 
     private String id;
 
@@ -342,7 +342,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     }
 
     @Override
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

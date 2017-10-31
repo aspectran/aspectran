@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.util.MethodUtils;
 
 import java.lang.reflect.Method;
@@ -140,7 +141,7 @@ public class BeanRuleAnalyzer {
         beanRule.setDestroyMethod(m);
     }
 
-    public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
+    public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule, RuleAppender ruleAppender) {
         if (beanActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
             String methodName = beanActionRule.getMethodName();
@@ -152,7 +153,8 @@ public class BeanRuleAnalyzer {
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
-                    throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
+                    throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
+                            " in " + ruleAppender.getQualifiedName(), beanRule);
                 }
                 beanActionRule.setMethod(m2);
                 beanActionRule.setRequiresTranslet(false);

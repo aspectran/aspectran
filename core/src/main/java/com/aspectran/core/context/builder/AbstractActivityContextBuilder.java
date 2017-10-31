@@ -208,7 +208,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     "com.aspectran.embed",
                     "com.aspectran.shell",
                     "com.aspectran.shell-jline",
-                    "com.aspectran.remote",
                     "com.aspectran.web",
                     "com.aspectran.with.jetty"
             };

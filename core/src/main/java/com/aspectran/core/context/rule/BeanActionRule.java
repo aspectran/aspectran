@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  */
 public class BeanActionRule implements BeanReferenceInspectable {
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.BEAN_ACTION_RULE;
 
     private String actionId;
 
@@ -240,7 +240,7 @@ public class BeanActionRule implements BeanReferenceInspectable {
         propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

@@ -19,7 +19,7 @@ import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.JoinpointType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
@@ -77,7 +77,7 @@ import java.util.List;
  */
 public class AspectRule implements BeanReferenceInspectable {
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.ASPECT_RULE;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.ASPECT_RULE;
 
     private String id;
 
@@ -257,7 +257,7 @@ public class AspectRule implements BeanReferenceInspectable {
     }
 
     @Override
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

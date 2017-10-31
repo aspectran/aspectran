@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.ability;
 
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 
 /**
  * The Interface BeanReferenceInspectable.
@@ -26,6 +26,6 @@ import com.aspectran.core.context.rule.type.BeanReferrerType;
  */
 public interface BeanReferenceInspectable {
 
-    BeanReferrerType getBeanReferrerType();
+    BeanRefererType getBeanRefererType();
     
 }

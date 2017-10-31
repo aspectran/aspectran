@@ -85,12 +85,20 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             AspectranParameters aspectranParameters = getAspectranParameters();
 
             if (rootConfigLocation == null && aspectranParameters == null) {
-                throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " + getContextConfig());
+                if (getContextConfig() != null) {
+                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " + getContextConfig());
+                } else {
+                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified");
+                }
             }
 
             newAspectranClassLoader();
 
-            log.info("Building an ActivityContext with " + rootConfigLocation);
+            if (rootConfigLocation != null) {
+                log.info("Building an ActivityContext with " + rootConfigLocation);
+            } else {
+                log.info("Building an ActivityContext with AspectranParameters");
+            }
 
             long startTime = System.currentTimeMillis();
 

@@ -41,10 +41,10 @@ public class BeanReferenceException extends ActivityContextParserException {
     /**
      * Constructor to create exception with a message.
      *
-     * @param unknownBeanIdList the unknown bean id list
+     * @param brokenReferences the list of beans that can not find
      */
-    public BeanReferenceException(List<Object> unknownBeanIdList) {
-        super(getMessage(unknownBeanIdList));
+    public BeanReferenceException(List<Object> brokenReferences) {
+        super(getMessage(brokenReferences));
     }
 
     /**
@@ -59,7 +59,7 @@ public class BeanReferenceException extends ActivityContextParserException {
     /**
      * Sets the bean reference inspector.
      *
-     * @param beanReferenceInspector the new bean reference inspector
+     * @param beanReferenceInspector the bean reference inspector
      */
     public void setBeanReferenceInspector(BeanReferenceInspector beanReferenceInspector) {
         this.beanReferenceInspector = beanReferenceInspector;
@@ -68,17 +68,17 @@ public class BeanReferenceException extends ActivityContextParserException {
     /**
      * Gets the message.
      *
-     * @param unknownBeanIdList the unknown bean id list
+     * @param brokenReferences the list of beans that can not find
      * @return the message
      */
-    private static String getMessage(List<Object> unknownBeanIdList) {
+    private static String getMessage(List<Object> brokenReferences) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Cannot resolve reference to bean [");
-        for (int i = 0; i < unknownBeanIdList.size(); i++) {
+        sb.append("Unable to resolve reference to bean [");
+        for (int i = 0; i < brokenReferences.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(unknownBeanIdList.get(i));
+            sb.append(brokenReferences.get(i));
         }
         sb.append("]");
         return sb.toString();

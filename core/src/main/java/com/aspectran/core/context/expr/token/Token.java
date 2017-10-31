@@ -17,7 +17,7 @@ package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -80,7 +80,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class Token implements BeanReferenceInspectable, Replicable {
 
-    private static final BeanReferrerType BEAN_REFERRER_TYPE = BeanReferrerType.TOKEN;
+    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.TOKEN;
 
     static final char BEAN_SYMBOL = '#';
 
@@ -284,7 +284,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
     }
 
     @Override
-    public BeanReferrerType getBeanReferrerType() {
+    public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
 

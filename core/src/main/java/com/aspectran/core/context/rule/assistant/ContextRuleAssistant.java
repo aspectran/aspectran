@@ -35,7 +35,6 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
-import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -367,7 +366,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Backup assistant local.
+     * Backup the assistant local.
      *
      * @return the assistant local
      */
@@ -379,7 +378,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Restore assistant local.
+     * Restore the assistant local.
      *
      * @param oldAssistantLocal the old assistant local
      */
@@ -388,9 +387,9 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Checks if is pointcut pattern verifiable.
+     * Returns whether the pointcut pattern validation is required.
      *
-     * @return true, if is pointcut pattern verifiable
+     * @return true if pointcut pattern validation is required
      */
     public boolean isPointcutPatternVerifiable() {
         DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
@@ -400,32 +399,32 @@ public class ContextRuleAssistant {
     /**
      * Resolve bean class for the aspect rule.
      *
-     * @param beanId the bean id
+     * @param beanIdOrClass the bean's id or class name
      * @param aspectRule the aspect rule
      */
-    public void resolveAdviceBeanClass(String beanId, AspectRule aspectRule) {
-        Class<?> beanClass = resolveBeanClass(beanId);
+    public void resolveAdviceBeanClass(String beanIdOrClass, AspectRule aspectRule) {
+        Class<?> beanClass = resolveBeanClass(beanIdOrClass);
         if (beanClass != null) {
             aspectRule.setAdviceBeanClass(beanClass);
             reserveBeanReference(beanClass, aspectRule);
         } else {
-            reserveBeanReference(beanId, aspectRule);
+            reserveBeanReference(beanIdOrClass, aspectRule);
         }
     }
 
     /**
      * Resolve bean class for bean action rule.
      *
-     * @param beanId the bean id
+     * @param beanIdOrClass the bean's id or class name
      * @param beanActionRule the bean action rule
      */
-    public void resolveActionBeanClass(String beanId, BeanActionRule beanActionRule) {
-        Class<?> beanClass = resolveBeanClass(beanId);
+    public void resolveActionBeanClass(String beanIdOrClass, BeanActionRule beanActionRule) {
+        Class<?> beanClass = resolveBeanClass(beanIdOrClass);
         if (beanClass != null) {
             beanActionRule.setBeanClass(beanClass);
             reserveBeanReference(beanClass, beanActionRule);
         } else {
-            reserveBeanReference(beanId, beanActionRule);
+            reserveBeanReference(beanIdOrClass, beanActionRule);
         }
     }
 
@@ -532,9 +531,9 @@ public class ContextRuleAssistant {
         }
     }
 
-    private Class<?> resolveBeanClass(String beanId) {
-        if (beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-            String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+    private Class<?> resolveBeanClass(String beanIdOrClass) {
+        if (beanIdOrClass != null && beanIdOrClass.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+            String className = beanIdOrClass.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             return loadClass(className);
         } else {
             return null;
@@ -550,11 +549,11 @@ public class ContextRuleAssistant {
     }
 
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanId, inspectable);
+        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanClass, inspectable);
+        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     public BeanReferenceInspector getBeanReferenceInspector() {
