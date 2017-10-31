@@ -57,6 +57,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     @Override
     public void handle(RuleAppender appender) throws Exception {
+        setCurrentRuleAppender(appender);
+
         AssistantLocal assistantLocal = getContextRuleAssistant().backupAssistantLocal();
 
         boolean hybridon = false;

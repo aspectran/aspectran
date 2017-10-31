@@ -38,6 +38,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private List<RuleAppender> pendingList;
 
+    private RuleAppender currentRuleAppender;
+
     AbstractAppendHandler(ContextRuleAssistant assistant) {
         this.assistant = assistant;
         this.environment = assistant.getContextEnvironment();
@@ -106,6 +108,14 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     @Override
     public List<RuleAppender> getPendingList() {
         return pendingList;
+    }
+
+    public RuleAppender getCurrentRuleAppender() {
+        return currentRuleAppender;
+    }
+
+    public void setCurrentRuleAppender(RuleAppender currentRuleAppender) {
+        this.currentRuleAppender = currentRuleAppender;
     }
 
 }

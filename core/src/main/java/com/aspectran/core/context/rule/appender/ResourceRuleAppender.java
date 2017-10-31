@@ -41,6 +41,10 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
         setLastModified(System.currentTimeMillis());
     }
 
+    public String getQualifiedName() {
+        return resource;
+    }
+
     @Override
     public InputStream getInputStream() throws IOException {
         InputStream inputStream = classLoader.getResourceAsStream(resource);

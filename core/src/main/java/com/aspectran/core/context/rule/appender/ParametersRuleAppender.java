@@ -37,6 +37,10 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
         setAppenderFileFormatType(AppenderFileFormatType.APON);
     }
 
+    public String getQualifiedName() {
+        return null;
+    }
+
     @Override
     public long getLastModified() {
         throw new UnsupportedOperationException();

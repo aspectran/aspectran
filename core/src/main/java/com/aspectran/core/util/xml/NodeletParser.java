@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -54,9 +55,9 @@ public class NodeletParser {
 
     private final Log log = LogFactory.getLog(NodeletParser.class);
 
-    protected final static Map<String, String> EMPTY_ATTRIBUTES = new HashMap<String, String>();
+    protected final static Map<String, String> EMPTY_ATTRIBUTES = new HashMap<>();
 
-    private Map<String, Nodelet> nodeletMap = new HashMap<String, Nodelet>();
+    private Map<String, Nodelet> nodeletMap = new HashMap<>();
 
     private boolean validating;
 
@@ -66,10 +67,13 @@ public class NodeletParser {
      * Registers a nodelet for the specified XPath. Current XPaths supported
      * are:
      * <ul>
-     * <li> Text Path - /rootElement/childElement/text()
-     * <li> Attribute Path  - /rootElement/childElement/@theAttribute
-     * <li> Element Path - /rootElement/childElement/theElement
-     * <li> All Elements Named - //theElement
+     * <li> Element Path - /rootElement/childElement/theElement </li>
+     * <li> Element Path - /rootElement/childElement/theElement/end() </li>
+     * <!--
+     * <li> Text Path - /rootElement/childElement/text() </li>
+     * <li> Attribute Path  - /rootElement/childElement/@theAttribute </li>
+     * <li> All Elements Named - //theElement </li>
+     * -->
      * </ul>
      *
      * @param xpath the xpath
@@ -83,13 +87,16 @@ public class NodeletParser {
      * Registers a nodelet for the specified XPath. Current XPaths supported
      * are:
      * <ul>
-     * <li> Text Path - /rootElement/childElement/text()
-     * <li> Attribute Path  - /rootElement/childElement/@theAttribute
-     * <li> Element Path - /rootElement/childElement/theElement
-     * <li> All Elements Named - //theElement
+     * <li> Element Path - /rootElement/childElement/theElement </li>
+     * <li> Element Path - /rootElement/childElement/theElement/end() </li>
+     * <!--
+     * <li> Text Path - /rootElement/childElement/text() </li>
+     * <li> Attribute Path  - /rootElement/childElement/@theAttribute </li>
+     * <li> All Elements Named - //theElement </li>
+     * -->
      * </ul>
      *
-     * @param prefix the prefix xpath
+     * @param prefix the prefix of xpath
      * @param xpath the xpath
      * @param nodelet the nodelet
      */
@@ -125,12 +132,7 @@ public class NodeletParser {
      * @throws NodeletException the nodelet exception
      */
     public void parse(Reader reader) throws NodeletException {
-        try {
-            Document doc = createDocument(reader);
-            parse(doc.getLastChild());
-        } catch (Exception e) {
-            throw new NodeletException("Error parsing XML", e);
-        }
+        parse(new InputSource(reader));
     }
 
     /**
@@ -140,9 +142,21 @@ public class NodeletParser {
      * @throws NodeletException the nodelet exception
      */
     public void parse(InputStream inputStream) throws NodeletException {
+        parse(new InputSource(inputStream));
+    }
+
+    /**
+     * Begins parsing from the provided InputSource.
+     *
+     * @param inputSource the input source
+     * @throws NodeletException the nodelet exception
+     */
+    public void parse(InputSource inputSource) throws NodeletException {
         try {
-            Document doc = createDocument(inputStream);
+            Document doc = createDocument(inputSource);
             parse(doc.getLastChild());
+        } catch (SAXParseException e) {
+            throw new NodeletException("Error parsing XML; " + e);
         } catch (Exception e) {
             throw new NodeletException("Error parsing XML", e);
         }
@@ -171,7 +185,7 @@ public class NodeletParser {
             String elementName = node.getNodeName();
             path.add(elementName);
             processNodelet(node, path.toString());
-            processNodelet(node, "//" + elementName);
+            //processNodelet(node, "//" + elementName);
             /*
             // Attribute
             NamedNodeMap attributes = node.getAttributes();
@@ -194,15 +208,13 @@ public class NodeletParser {
             processNodelet(node, path.toString());
             path.remove();
             path.remove();
-        } else if (node instanceof Text) {
+        }/* else if (node instanceof Text) {
             // Text
             path.add("text()");
             processNodelet(node, path.toString());
-            /*
             processNodelet(node, "//text()");
-            */
             path.remove();
-        }
+        }*/
     }
 
     private void processNodelet(Node node, String pathString) {
@@ -210,17 +222,17 @@ public class NodeletParser {
 
         if (nodelet != null) {
             try {
-                Map<String, String> attributes;
+                Map<String, String> attrs;
                 String text;
 
                 if (!pathString.endsWith("end()")) {
-                    attributes = parseAttributes(node);
+                    attrs = parseAttributes(node);
                     text = getNodeValue(node);
 
                     if (log.isTraceEnabled()) {
                         StringBuilder sb = new StringBuilder(pathString);
-                        if (attributes != null && attributes.size() > 0) {
-                            sb.append(" ").append(attributes);
+                        if (attrs != null && attrs.size() > 0) {
+                            sb.append(" ").append(attrs);
                         }
                         if (text != null && text.length() > 0) {
                             sb.append(" ").append(text);
@@ -228,11 +240,11 @@ public class NodeletParser {
                         log.trace(sb.toString());
                     }
                 } else {
-                    attributes = null;
+                    attrs = null;
                     text = null;
                 }
 
-                nodelet.process(node, attributes, text);
+                nodelet.process(node, attrs, text);
             } catch (Exception e) {
                 throw new RuntimeException("Error parsing XPath '" + pathString + "'. Cause: " + e, e);
             }
@@ -240,18 +252,16 @@ public class NodeletParser {
     }
 
     private Map<String, String> parseAttributes(Node node) {
-        NamedNodeMap attributeNodes = node.getAttributes();
-
-        if (attributeNodes == null) {
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs == null) {
             return EMPTY_ATTRIBUTES;
         }
 
         Map<String, String> attributes = new HashMap<>();
 
-        for (int i = 0; i < attributeNodes.getLength(); i++) {
-            Node attribute = attributeNodes.item(i);
+        for (int i = 0; i < attrs.getLength(); i++) {
+            Node attribute = attrs.item(i);
             String value = attribute.getNodeValue();
-
             attributes.put(attribute.getNodeName(), value);
         }
 
@@ -260,22 +270,21 @@ public class NodeletParser {
 
     private String getNodeValue(Node node) {
         NodeList children = node.getChildNodes();
-        int childrenLength = children.getLength();
+        int childrenLen = children.getLength();
 
-        if (childrenLength == 0) {
+        if (childrenLen == 0) {
             String value = node.getNodeValue();
             return (value != null ? value.trim() : null);
         }
 
         StringBuilder sb = null;
 
-        for (int i = 0; i < childrenLength; i++) {
+        for (int i = 0; i < childrenLen; i++) {
             Node child = children.item(i);
 
             if (child.getNodeType() == Node.CDATA_SECTION_NODE
                     || child.getNodeType() == Node.TEXT_NODE) {
                 String data = ((CharacterData)child).getData();
-
                 if (data.length() > 0) {
                     if (sb == null) {
                         sb = new StringBuilder(data);
@@ -289,88 +298,6 @@ public class NodeletParser {
         return (sb != null ? sb.toString() : null);
     }
 
-    /**
-     * Creates a JAXP Document from a reader.
-     *
-     * @param reader the reader
-     * @return the document
-     * @throws ParserConfigurationException the parser configuration exception
-     * @throws FactoryConfigurationError the factory configuration error
-     * @throws SAXException the sax exception
-     * @throws IOException if an I/O error has occurred
-     */
-    private Document createDocument(Reader reader) throws ParserConfigurationException, FactoryConfigurationError,
-            SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(validating);
-        factory.setNamespaceAware(false);
-        factory.setIgnoringComments(true);
-        factory.setIgnoringElementContentWhitespace(false);
-        factory.setCoalescing(false);
-        factory.setExpandEntityReferences(true);
-
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(entityResolver);
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException exception) throws SAXException {
-                throw exception;
-            }
-
-            @Override
-            public void fatalError(SAXParseException exception) throws SAXException {
-                throw exception;
-            }
-
-            @Override
-            public void warning(SAXParseException exception) throws SAXException {
-            }
-        });
-
-        return builder.parse(new InputSource(reader));
-    }
-
-    /**
-     * Creates a JAXP Document from an InputStream.
-     *
-     * @param inputStream the input stream
-     * @return the document
-     * @throws ParserConfigurationException the parser configuration exception
-     * @throws FactoryConfigurationError the factory configuration error
-     * @throws SAXException the sax exception
-     * @throws IOException if an I/O error has occurred
-     */
-    private Document createDocument(InputStream inputStream) throws ParserConfigurationException,
-            FactoryConfigurationError, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(validating);
-        factory.setNamespaceAware(false);
-        factory.setIgnoringComments(true);
-        factory.setIgnoringElementContentWhitespace(false);
-        factory.setCoalescing(false);
-        factory.setExpandEntityReferences(true);
-
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(entityResolver);
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException exception) throws SAXException {
-                throw exception;
-            }
-
-            @Override
-            public void fatalError(SAXParseException exception) throws SAXException {
-                throw exception;
-            }
-
-            @Override
-            public void warning(SAXParseException exception) throws SAXException {
-            }
-        });
-
-        return builder.parse(new InputSource(inputStream));
-    }
-
     public void setValidating(boolean validating) {
         this.validating = validating;
     }
@@ -380,13 +307,55 @@ public class NodeletParser {
     }
 
     /**
+     * Creates a JAXP Document from an InputSource.
+     *
+     * @param inputSource the input source
+     * @return the document
+     * @throws ParserConfigurationException the parser configuration exception
+     * @throws FactoryConfigurationError if a problem with configuration with the Parser Factories exists
+     * @throws SAXException the sax exception
+     * @throws IOException if an I/O error has occurred
+     */
+    private Document createDocument(InputSource inputSource)
+            throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(validating);
+        factory.setNamespaceAware(false);
+        factory.setIgnoringComments(true);
+        factory.setIgnoringElementContentWhitespace(false);
+        factory.setCoalescing(false);
+        factory.setExpandEntityReferences(true);
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(entityResolver);
+        builder.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            @Override
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            @Override
+            public void warning(SAXParseException e) throws SAXException {
+            }
+        });
+
+        return builder.parse(inputSource);
+    }
+
+    /**
      * Inner helper class that assists with building XPath paths.
-     * <p/>
+     * <p>
      * Note:  Currently this is a bit slow and could be optimized.
+     * </p>
      */
     private static class Path {
 
-        private List<String> nodeList = new ArrayList<String>();
+        private List<String> nodeList = new ArrayList<>();
 
         private Path() {
         }

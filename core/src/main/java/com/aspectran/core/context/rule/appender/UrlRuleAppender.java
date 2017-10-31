@@ -40,6 +40,10 @@ public class UrlRuleAppender extends AbstractRuleAppender {
         determineAppenderFileFormatType(ruleUrl);
     }
 
+    public String getQualifiedName() {
+        return null;
+    }
+
     @Override
     public InputStream getInputStream() throws IOException {
         URL url = new URL(ruleUrl);

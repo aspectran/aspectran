@@ -20,12 +20,14 @@ import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.xml.NodeletParser;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +87,12 @@ public class AspectranNodeParser {
      */
     public void parse(InputStream inputStream) throws Exception {
         try {
-            parser.parse(inputStream);
+            RuleAppender ruleAppender = assistant.getRuleAppendHandler().getCurrentRuleAppender();
+            String systemId = (ruleAppender != null ? ruleAppender.getQualifiedName() : null);
+
+            InputSource inputSource = new InputSource(inputStream);
+            inputSource.setSystemId(systemId);
+            parser.parse(inputSource);
         } catch (Exception e) {
             throw new Exception("Error parsing aspectran configuration", e);
         } finally {

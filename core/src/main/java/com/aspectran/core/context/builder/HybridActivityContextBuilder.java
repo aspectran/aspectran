@@ -85,7 +85,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             AspectranParameters aspectranParameters = getAspectranParameters();
 
             if (rootConfigLocation == null && aspectranParameters == null) {
-                throw new IllegalArgumentException("Either context.root or context.parameters must be specified in AspectranContextConfig: " + getContextConfig());
+                throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " + getContextConfig());
             }
 
             newAspectranClassLoader();
@@ -128,7 +128,11 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             return activityContext;
         } catch (Exception e) {
-            throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + getContextConfig(), e);
+            if (getContextConfig() != null) {
+                throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + getContextConfig(), e);
+            } else {
+                throw new ActivityContextBuilderException("Failed to build an ActivityContext", e);
+            }
         }
     }
 

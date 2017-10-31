@@ -44,6 +44,8 @@ public interface RuleAppender {
 
     void setProfiles(String[] profiles);
 
+    String getQualifiedName();
+
     long getLastModified();
 
     void setLastModified(long lastModified);

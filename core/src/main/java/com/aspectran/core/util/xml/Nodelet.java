@@ -39,6 +39,7 @@ public interface Nodelet {
      * useful where a single XPath registration cannot describe the complex
      * structure for a given XML stanza.
      * </ul>
+     *
      * @param attributes the attributes
      * @param text the text
      * @throws Exception the exception

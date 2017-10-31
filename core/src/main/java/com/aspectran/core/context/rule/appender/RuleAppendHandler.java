@@ -33,4 +33,8 @@ public interface RuleAppendHandler {
 
     List<RuleAppender> getPendingList();
 
+    RuleAppender getCurrentRuleAppender();
+
+    void setCurrentRuleAppender(RuleAppender currentRuleAppender);
+
 }

@@ -63,6 +63,14 @@ public class FileRuleAppender extends AbstractRuleAppender {
         }
     }
 
+    public String getQualifiedName() {
+        try {
+            return getFile().getCanonicalPath();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     @Override
     public long getLastModified() {
         File file = getFile();
