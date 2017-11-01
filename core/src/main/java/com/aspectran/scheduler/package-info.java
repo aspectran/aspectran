@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Built-in scheduler package that integrates with Aspectran infrastructure.
+ * Aspectran Scheduler provides low-level job scheduling capabilities.
+ * It is enables  the automated execution of tasks that applications can perform in the background.
  */
 package com.aspectran.scheduler;
