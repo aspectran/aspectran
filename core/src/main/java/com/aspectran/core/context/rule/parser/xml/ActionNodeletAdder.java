@@ -54,12 +54,6 @@ class ActionNodeletAdder implements NodeletAdder {
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-
-            // AspectAdviceRule may not have a bean id.
-            if (beanIdOrClass != null) {
-                assistant.resolveActionBeanClass(beanIdOrClass, beanActionRule);
-            }
-
             assistant.pushObject(beanActionRule);
         });
         parser.addNodelet(xpath, "/action/arguments", (node, attributes, text) -> {
@@ -91,6 +85,7 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodelet(xpath, "/action/end()", (node, attributes, text) -> {
             BeanActionRule beanActionRule = assistant.popObject();
             ActionRuleApplicable applicable = assistant.peekObject();
+            assistant.resolveActionBeanClass(beanActionRule);
             applicable.applyActionRule(beanActionRule);
         });
         parser.addNodelet(xpath, "/include", (node, attributes, text) -> {

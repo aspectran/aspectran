@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppenderFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
+import com.aspectran.core.util.xml.NodeletParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,5 +56,9 @@ public interface RuleAppender {
     Reader getReader() throws IOException;
 
     Reader getReader(String encoding) throws IOException;
+
+    NodeletParser.LocationTracker getLocationTracker();
+
+    void setLocationTracker(NodeletParser.LocationTracker locationTracker);
 
 }

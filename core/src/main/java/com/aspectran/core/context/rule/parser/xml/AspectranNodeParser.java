@@ -67,6 +67,8 @@ public class AspectranNodeParser {
         this.parser.setValidating(validating);
         this.parser.setEntityResolver(new AspectranDtdResolver(validating));
 
+        assistant.setLocationTracker(this.parser.createLocationTracker());
+
         addDescriptionNodelets();
         addSettingsNodelets();
         addEnvironmentNodelets();

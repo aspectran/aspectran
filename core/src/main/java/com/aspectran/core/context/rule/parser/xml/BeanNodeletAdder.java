@@ -61,10 +61,8 @@ class BeanNodeletAdder implements NodeletAdder {
             Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
             BeanRule beanRule;
-
             if (className == null && scan == null && factoryBean != null) {
                 beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
-                assistant.resolveFactoryBeanClass(factoryBean, beanRule);
             } else {
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
             }
@@ -135,6 +133,7 @@ class BeanNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(xpath, "/bean/end()", (node, attributes, text) -> {
             BeanRule beanRule = assistant.popObject();
+            assistant.resolveFactoryBeanClass(beanRule);
             assistant.addBeanRule(beanRule);
         });
     }

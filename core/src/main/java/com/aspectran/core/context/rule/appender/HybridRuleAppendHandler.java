@@ -88,6 +88,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 if (!hybridon) {
                     if (aspectranNodeParser == null) {
                         aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
+                        appender.setLocationTracker(getContextRuleAssistant().getLocationTracker());
                     }
                     aspectranNodeParser.parse(appender.getInputStream());
                 }

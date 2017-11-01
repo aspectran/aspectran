@@ -30,7 +30,7 @@ import java.util.Map;
  * 
  * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
-class AspectranDtdResolver implements EntityResolver {
+public class AspectranDtdResolver implements EntityResolver {
 
     private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-5.dtd";
 
@@ -43,11 +43,11 @@ class AspectranDtdResolver implements EntityResolver {
         doctypeMap.put("aspectran-5.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 
-    AspectranDtdResolver() {
+    public AspectranDtdResolver() {
         this(true);
     }
 
-    AspectranDtdResolver(boolean validating) {
+    public AspectranDtdResolver(boolean validating) {
         this.validating = validating;
     }
 

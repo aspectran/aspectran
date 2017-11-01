@@ -65,8 +65,8 @@ public class ActivityContextBuilderTest {
 
         System.out.println("=============== reload ==============");
 
-        activityContextBuilder.build();
-        activityContextBuilder.destroy();
+        //activityContextBuilder.build();
+        //activityContextBuilder.destroy();
     }
 
     @After

@@ -154,7 +154,8 @@ public class BeanRuleAnalyzer {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
                     throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
-                            " in " + ruleAppender.getQualifiedName(), beanRule);
+                            " in " + ruleAppender.getQualifiedName()
+                            , beanRule);
                 }
                 beanActionRule.setMethod(m2);
                 beanActionRule.setRequiresTranslet(false);

@@ -244,7 +244,6 @@ public class ParamsToRuleConverter {
             String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
             if (!StringUtils.isEmpty(adviceBeanId)) {
                 aspectRule.setAdviceBeanId(adviceBeanId);
-                assistant.resolveAdviceBeanClass(adviceBeanId, aspectRule);
             }
 
             AdviceActionParameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
@@ -294,6 +293,7 @@ public class ParamsToRuleConverter {
             aspectRule.setExceptionRule(exceptionRule);
         }
 
+        assistant.resolveAdviceBeanClass(aspectRule);
         assistant.addAspectRule(aspectRule);
     }
 
@@ -316,10 +316,8 @@ public class ParamsToRuleConverter {
         FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 
         BeanRule beanRule;
-
         if (className == null && scan == null && factoryBean != null) {
             beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
-            assistant.resolveFactoryBeanClass(factoryBean, beanRule);
         } else {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
         }
@@ -345,6 +343,7 @@ public class ParamsToRuleConverter {
             beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
         }
 
+        assistant.resolveFactoryBeanClass(beanRule);
         assistant.addBeanRule(beanRule);
     }
 
@@ -399,9 +398,9 @@ public class ParamsToRuleConverter {
             transletRule.setDescription(description);
         }
 
-        RequestParameters requestParamters = transletParameters.getParameters(TransletParameters.request);
-        if (requestParamters != null) {
-            RequestRule requestRule = convertAsRequestRule(requestParamters);
+        RequestParameters requestParameters = transletParameters.getParameters(TransletParameters.request);
+        if (requestParameters != null) {
+            RequestRule requestRule = convertAsRequestRule(requestParameters);
             transletRule.setRequestRule(requestRule);
         }
 
@@ -436,16 +435,16 @@ public class ParamsToRuleConverter {
         List<ContentParameters> contentParametersList = transletParameters.getParametersList(TransletParameters.content);
         if (contentParametersList != null && !contentParametersList.isEmpty()) {
             ContentList contentList = transletRule.touchContentList();
-            for (ContentParameters contentParamters : contentParametersList) {
-                ActionList actionList = convertAsActionList(contentParamters);
+            for (ContentParameters contentParameters : contentParametersList) {
+                ActionList actionList = convertAsActionList(contentParameters);
                 contentList.addActionList(actionList);
             }
         }
 
         List<ResponseParameters> responseParametersList = transletParameters.getParametersList(TransletParameters.response);
         if (responseParametersList != null) {
-            for (ResponseParameters responseParamters : responseParametersList) {
-                ResponseRule responseRule = convertAsResponseRule(responseParamters);
+            for (ResponseParameters responseParameters : responseParametersList) {
+                ResponseRule responseRule = convertAsResponseRule(responseParameters);
                 transletRule.addResponseRule(responseRule);
             }
         }
@@ -603,9 +602,7 @@ public class ParamsToRuleConverter {
                 ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
                 beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
             }
-            if (beanIdOrClass != null) {
-                assistant.resolveActionBeanClass(beanIdOrClass, beanActionRule);
-            }
+            assistant.resolveActionBeanClass(beanActionRule);
             actionRuleApplicable.applyActionRule(beanActionRule);
         } else if (include != null) {
             include = assistant.applyTransletNamePattern(include);

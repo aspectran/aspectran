@@ -42,6 +42,7 @@ import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
+import com.aspectran.core.util.xml.NodeletParser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,6 +91,8 @@ public class ContextRuleAssistant {
     private AssistantLocal assistantLocal;
 
     private RuleAppendHandler ruleAppendHandler;
+
+    private NodeletParser.LocationTracker locationTracker;
 
     protected ContextRuleAssistant() {
         this(null);
@@ -218,7 +221,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the setting vlaue.
+     * Gets the setting value.
      *
      * @param settingType the setting type
      * @return the setting
@@ -228,7 +231,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Puts the setting vlaue.
+     * Puts the setting value.
      *
      * @param name the name
      * @param value the value
@@ -399,48 +402,54 @@ public class ContextRuleAssistant {
     /**
      * Resolve bean class for the aspect rule.
      *
-     * @param beanIdOrClass the bean's id or class name
      * @param aspectRule the aspect rule
      */
-    public void resolveAdviceBeanClass(String beanIdOrClass, AspectRule aspectRule) {
-        Class<?> beanClass = resolveBeanClass(beanIdOrClass);
-        if (beanClass != null) {
-            aspectRule.setAdviceBeanClass(beanClass);
-            reserveBeanReference(beanClass, aspectRule);
-        } else {
-            reserveBeanReference(beanIdOrClass, aspectRule);
+    public void resolveAdviceBeanClass(AspectRule aspectRule) {
+        String beanIdOrClass = aspectRule.getAdviceBeanId();
+        if (beanIdOrClass != null) {
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, aspectRule);
+            if (beanClass != null) {
+                aspectRule.setAdviceBeanClass(beanClass);
+                reserveBeanReference(beanClass, aspectRule);
+            } else {
+                reserveBeanReference(beanIdOrClass, aspectRule);
+            }
         }
     }
 
     /**
      * Resolve bean class for bean action rule.
      *
-     * @param beanIdOrClass the bean's id or class name
      * @param beanActionRule the bean action rule
      */
-    public void resolveActionBeanClass(String beanIdOrClass, BeanActionRule beanActionRule) {
-        Class<?> beanClass = resolveBeanClass(beanIdOrClass);
-        if (beanClass != null) {
-            beanActionRule.setBeanClass(beanClass);
-            reserveBeanReference(beanClass, beanActionRule);
-        } else {
-            reserveBeanReference(beanIdOrClass, beanActionRule);
+    public void resolveActionBeanClass(BeanActionRule beanActionRule) {
+        String beanIdOrClass = beanActionRule.getBeanId();
+        if (beanIdOrClass != null) {
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanActionRule);
+            if (beanClass != null) {
+                beanActionRule.setBeanClass(beanClass);
+                reserveBeanReference(beanClass, beanActionRule);
+            } else {
+                reserveBeanReference(beanIdOrClass, beanActionRule);
+            }
         }
     }
 
     /**
      * Resolve bean class for factory bean rule.
      *
-     * @param beanId the bean id
      * @param beanRule the bean rule
      */
-    public void resolveFactoryBeanClass(String beanId, BeanRule beanRule) {
-        Class<?> beanClass = resolveBeanClass(beanId);
-        if (beanClass != null) {
-            beanRule.setFactoryBeanClass(beanClass);
-            reserveBeanReference(beanClass, beanRule);
-        } else {
-            reserveBeanReference(beanId, beanRule);
+    public void resolveFactoryBeanClass(BeanRule beanRule) {
+        String beanIdOrClass = beanRule.getFactoryBeanId();
+        if (beanRule.isFactoryOffered() && beanIdOrClass != null) {
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanRule);
+            if (beanClass != null) {
+                beanRule.setFactoryBeanClass(beanClass);
+                reserveBeanReference(beanClass, beanRule);
+            } else {
+                reserveBeanReference(beanIdOrClass, beanRule);
+            }
         }
     }
 
@@ -484,7 +493,7 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(Token token) {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                Class<?> beanClass = loadClass(token.getValue());
+                Class<?> beanClass = loadClass(token.getValue(), token);
                 token.setAlternativeValue(beanClass);
                 reserveBeanReference(beanClass, token);
             } else {
@@ -501,7 +510,7 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(ScheduleRule scheduleRule) {
         String beanId = scheduleRule.getSchedulerBeanId();
         if (beanId != null) {
-            Class<?> beanClass = resolveBeanClass(beanId);
+            Class<?> beanClass = resolveBeanClass(beanId, scheduleRule);
             if (beanClass != null) {
                 scheduleRule.setSchedulerBeanClass(beanClass);
                 reserveBeanReference(beanClass, scheduleRule);
@@ -519,7 +528,7 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(TemplateRule templateRule) {
         String beanId = templateRule.getEngineBeanId();
         if (beanId != null) {
-            Class<?> beanClass = resolveBeanClass(beanId);
+            Class<?> beanClass = resolveBeanClass(beanId, templateRule);
             if (beanClass != null) {
                 templateRule.setEngineBeanClass(beanClass);
                     reserveBeanReference(beanClass, templateRule);
@@ -531,29 +540,32 @@ public class ContextRuleAssistant {
         }
     }
 
-    private Class<?> resolveBeanClass(String beanIdOrClass) {
+    private Class<?> resolveBeanClass(String beanIdOrClass, Object referer) {
         if (beanIdOrClass != null && beanIdOrClass.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = beanIdOrClass.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-            return loadClass(className);
+            return loadClass(className, referer);
         } else {
             return null;
         }
     }
 
-    private Class<?> loadClass(String className) {
+    private Class<?> loadClass(String className, Object referer) {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Unable to load class: " + className, e);
+            throw new IllegalArgumentException("Unable to load class: " + className +
+                    " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + referer, e);
         }
     }
 
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender());
+        NodeletParser.LocationTracker locationTracker = this.locationTracker.clone();
+        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
     }
 
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
+        NodeletParser.LocationTracker locationTracker = this.locationTracker.clone();
+        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
     }
 
     public BeanReferenceInspector getBeanReferenceInspector() {
@@ -718,6 +730,14 @@ public class ContextRuleAssistant {
      */
     public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {
         this.ruleAppendHandler = ruleAppendHandler;
+    }
+
+    public NodeletParser.LocationTracker getLocationTracker() {
+        return locationTracker;
+    }
+
+    public void setLocationTracker(NodeletParser.LocationTracker locationTracker) {
+        this.locationTracker = locationTracker;
     }
 
 }

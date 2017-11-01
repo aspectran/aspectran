@@ -134,9 +134,8 @@ class ItemNodeletAdder implements NodeletAdder {
             ItemRule itemRule = assistant.popObject();
             ItemRuleMap itemRuleMap = assistant.peekObject();
 
-            itemRuleMap.putItemRule(itemRule);
-
             assistant.resolveBeanClass(itemRule);
+            itemRuleMap.putItemRule(itemRule);
         });
     }
 

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
+import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.BeanActionRule;
@@ -24,9 +25,12 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.xml.NodeletParser;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -54,14 +58,15 @@ public class BeanReferenceInspector {
      * @param inspectable the object to be inspected
      * @param ruleAppender the rule appender
      */
-    public void reserve(Object beanIdOrClass, BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
+    public void reserve(Object beanIdOrClass, BeanReferenceInspectable inspectable, RuleAppender ruleAppender,
+                        NodeletParser.LocationTracker locationTracker) {
         Set<RefererInfo> refererInfoSet = referenceMap.get(beanIdOrClass);
         if (refererInfoSet == null) {
             refererInfoSet = new LinkedHashSet<>();
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
+            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender, locationTracker));
             referenceMap.put(beanIdOrClass, refererInfoSet);
         } else {
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
+            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender, locationTracker));
         }
     }
 
@@ -94,13 +99,13 @@ public class BeanReferenceInspector {
             }
 
             if (beanRule == null) {
-                boolean excepted = true;
+                boolean excepted = false;
                 for (RefererInfo refererInfo : refererInfoSet) {
                     if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
                         Token t = (Token)refererInfo.getInspectable();
                         if (t.getAlternativeValue() != null && t.getGetterName() != null) {
-                            if (!BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
-                                excepted = false;
+                            if (BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
+                                excepted = true;
                                 break;
                             }
                         }
@@ -111,6 +116,7 @@ public class BeanReferenceInspector {
                     for (RefererInfo refererInfo : refererInfoSet) {
                         log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
                                 "' on " + refererInfo.getRuleAppender().getQualifiedName() +
+                                " " + refererInfo.getLocationTracker() +
                                 " " + refererInfo.getBeanRefererType() + " " + refererInfo.getInspectable());
                     }
                 }
@@ -146,9 +152,13 @@ public class BeanReferenceInspector {
 
         private final RuleAppender ruleAppender;
 
-        RefererInfo(BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
+        private final NodeletParser.LocationTracker locationTracker;
+
+        RefererInfo(BeanReferenceInspectable inspectable, RuleAppender ruleAppender,
+                    NodeletParser.LocationTracker locationTracker) {
             this.inspectable = inspectable;
             this.ruleAppender = ruleAppender;
+            this.locationTracker = locationTracker;
         }
 
         BeanReferenceInspectable getInspectable() {
@@ -161,6 +171,10 @@ public class BeanReferenceInspector {
 
         BeanRefererType getBeanRefererType() {
             return inspectable.getBeanRefererType();
+        }
+
+        public NodeletParser.LocationTracker getLocationTracker() {
+            return locationTracker;
         }
 
     }
