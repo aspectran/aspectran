@@ -69,11 +69,11 @@
             </parameters>
         </request>
         <transform type="transform/text" contentType="text/plain">
-            <template engine="token">
-                Using Builtin Token Template Engine
-                -------------------------------------
-                input-1: ${input-1}
-                input-2: ${input-2}
+            <template engine="token" style="apon">
+                |Using Builtin Token Template Engine
+                |-------------------------------------
+                |input-1: ${input-1}
+                |input-2: ${input-2}
             </template>
         </transform>
     </translet>
@@ -89,11 +89,11 @@
             </parameters>
         </request>
         <transform type="transform/text">
-            <template engine="freemarker">
-                Using Freemarker Template Engine
-                -------------------------------------
-                input_1: ${input_1}
-                input_2: ${input_2}
+            <template engine="freemarker" style="apon">
+                |Using Freemarker Template Engine
+                |-------------------------------------
+                |input_1: ${input_1}
+                |input_2: ${input_2}
             </template>
         </transform>
     </translet>
@@ -109,46 +109,46 @@
             </attributes>
         </request>
         <transform type="transform/text">
-            <template engine="pebble">
-                Using Pebble Template Engine
-                -------------------------------------
-                input_1: {{ input_1 }}
-                input_2: {{ input_2 }}
+            <template engine="pebble" style="apon">
+                |Using Pebble Template Engine
+                |-------------------------------------
+                |input_1: {{ input_1 }}
+                |input_2: {{ input_2 }}
             </template>
         </transform>
     </translet>
 
-    <template id="sampleSql" engine="freemarker">
+    <template id="sampleSql" engine="freemarker" style="apon">
         <![CDATA[
-        SELECT
-            '${name}' as name,
-            '${email}' as email
-        FROM table1
-        <@directive.where>
-            <#if id?has_content>
-            id = :id
-            </#if>
-            <#if name?has_content>
-            AND name = :name
-            </#if>
-            <#if email?has_content>
-            AND email = :email
-            </#if>
-        </@directive.where>
-        ORDER BY name
-        ---------------------------------------------
-        UPDATE table1
-        <@directive.set>
-            <#if name??>
-            name = :name,
-            </#if>
-            <#if email??>
-            email = :email,
-            </#if>
-            <#if id??>
-            id = :id
-            </#if>
-        </@directive.set>
+        |SELECT
+        |    '${name}' as name,
+        |    '${email}' as email
+        |FROM table1
+        |<@directive.where>
+        |    <#if id?has_content>
+        |    id = :id
+        |    </#if>
+        |    <#if name?has_content>
+        |    AND name = :name
+        |    </#if>
+        |    <#if email?has_content>
+        |    AND email = :email
+        |    </#if>
+        |</@directive.where>
+        |ORDER BY name
+        |---------------------------------------------
+        |UPDATE table1
+        |<@directive.set>
+        |    <#if name??>
+        |    name = :name,
+        |    </#if>
+        |    <#if email??>
+        |    email = :email,
+        |    </#if>
+        |    <#if id??>
+        |    id = :id
+        |    </#if>
+        |</@directive.set>
         ]]>
     </template>
 

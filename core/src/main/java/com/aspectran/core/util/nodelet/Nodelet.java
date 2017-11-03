@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.xml;
+package com.aspectran.core.util.nodelet;
+
+import java.util.Map;
 
 /**
  * A nodelet is a sort of callback or event handler that can be registered 
- * to handle an XPath event registered with the NodeParser.   
+ * to handle an XPath event registered with the NodeParser.
+ *
+ *
  */
-public interface NodeletAdder {
+public interface Nodelet {
     
     /**
-     * For a registered XPath, the NodeletParser will call the Nodelet's
-     * process method for processing.
+     * For a registered XPath, the NodeletParser will call the Nodelet's 
+     * process method for processing. 
      *
-     * @param xpath the xpath
-     * @param parser the nodelet parser
+     * @param attrs the attributes of the start element
+     * @throws Exception if an error occurs while processing the nodelet
      */
-    void process(String xpath, NodeletParser parser);
-    
+    void process(Map<String, String> attrs) throws Exception;
+
 }

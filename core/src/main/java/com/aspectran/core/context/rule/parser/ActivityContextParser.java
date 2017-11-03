@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 
@@ -36,8 +35,8 @@ public interface ActivityContextParser {
 
     void setHybridLoad(boolean hybridLoad);
 
-    ActivityContext parse(String rootConfigLocation) throws ActivityContextParserException;
+    ContextRuleAssistant parse(String rootConfigLocation) throws ActivityContextParserException;
 
-    ActivityContext parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
+    ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 
 }

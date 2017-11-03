@@ -24,8 +24,8 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ActionNodeletAdder.
@@ -47,133 +47,138 @@ class ActionNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/action", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
-            String methodName = StringUtils.emptyToNull(attributes.get("method"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+        parser.setXpath(xpath + "/action");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
+            String methodName = StringUtils.emptyToNull(attrs.get("method"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-            assistant.pushObject(beanActionRule);
+            parser.pushObject(beanActionRule);
         });
-        parser.addNodelet(xpath, "/action/arguments", (node, attributes, text) -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet(xpath, "/action/arguments", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/action/arguments/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = assistant.peekObject();
-                beanActionRule.setArgumentItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/action/properties", (node, attributes, text) -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet(xpath, "/action/properties", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/action/properties/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = assistant.peekObject();
-                beanActionRule.setPropertyItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/action/end()", (node, attributes, text) -> {
-            BeanActionRule beanActionRule = assistant.popObject();
-            ActionRuleApplicable applicable = assistant.peekObject();
+        parser.addNodeEndlet(text -> {
+            BeanActionRule beanActionRule = parser.popObject();
+            ActionRuleApplicable applicable = parser.peekObject();
             assistant.resolveActionBeanClass(beanActionRule);
             applicable.applyActionRule(beanActionRule);
         });
-        parser.addNodelet(xpath, "/include", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            String transletName = StringUtils.emptyToNull(attributes.get("translet"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+        parser.setXpath(xpath + "/action/arguments");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            if (!irm.isEmpty()) {
+                BeanActionRule beanActionRule = parser.peekObject();
+                beanActionRule.setArgumentItemRuleMap(irm);
+            }
+        });
+        parser.setXpath(xpath + "/action/properties");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            if (!irm.isEmpty()) {
+                BeanActionRule beanActionRule = parser.peekObject();
+                beanActionRule.setPropertyItemRuleMap(irm);
+            }
+        });
+        parser.setXpath(xpath + "/include");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            String transletName = StringUtils.emptyToNull(attrs.get("translet"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             transletName = assistant.applyTransletNamePattern(transletName);
 
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
-            assistant.pushObject(includeActionRule);
+            parser.pushObject(includeActionRule);
         });
-        parser.addNodelet(xpath, "/include/parameters", (node, attributes, text) -> {
+        parser.addNodeEndlet(text -> {
+            IncludeActionRule includeActionRule = parser.popObject();
+            ActionRuleApplicable applicable = parser.peekObject();
+            applicable.applyActionRule(includeActionRule);
+        });
+        parser.setXpath(xpath + "/include/parameters");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/include/parameters", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/include/parameters/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                IncludeActionRule includeActionRule = assistant.peekObject();
+                IncludeActionRule includeActionRule = parser.peekObject();
                 includeActionRule.setParameterItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/include/attributes", (node, attributes, text) -> {
+        parser.setXpath(xpath + "/include/attributes");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/include/attributes", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/include/attributes/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                IncludeActionRule includeActionRule = assistant.peekObject();
+                IncludeActionRule includeActionRule = parser.peekObject();
                 includeActionRule.setAttributeItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/include/end()", (node, attributes, text) -> {
-            IncludeActionRule includeActionRule = assistant.popObject();
-            ActionRuleApplicable applicable = assistant.peekObject();
-            applicable.applyActionRule(includeActionRule);
-        });
-        parser.addNodelet(xpath, "/echo", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+        parser.setXpath(xpath + "/echo");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-            assistant.pushObject(echoActionRule);
+            parser.pushObject(echoActionRule);
 
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/echo/attributes", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/echo", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/echo/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-            EchoActionRule echoActionRule = assistant.popObject();
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            EchoActionRule echoActionRule = parser.popObject();
 
             if (!irm.isEmpty()) {
                 echoActionRule.setAttributeItemRuleMap(irm);
             }
 
-            ActionRuleApplicable applicable = assistant.peekObject();
+            ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(echoActionRule);
         });
-        parser.addNodelet(xpath, "/headers", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.setXpath(xpath + "/echo/attributes");
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.setXpath(xpath + "/headers");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             HeadingActionRule headersActionRule = HeadingActionRule.newInstance(id, hidden);
-            assistant.pushObject(headersActionRule);
+            parser.pushObject(headersActionRule);
 
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/headers", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/headers/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-            HeadingActionRule headersActionRule = assistant.popObject();
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            HeadingActionRule headersActionRule = parser.popObject();
 
             if (!irm.isEmpty()) {
                 headersActionRule.setHeaderItemRuleMap(irm);
             }
 
-            ActionRuleApplicable applicable = assistant.peekObject();
+            ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(headersActionRule);
         });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
     }
 
 }

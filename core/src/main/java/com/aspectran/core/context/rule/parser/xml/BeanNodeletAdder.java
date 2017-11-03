@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class BeanInnerNodeletAdder.
@@ -46,19 +46,20 @@ class BeanNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/bean", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            String className = StringUtils.emptyToNull(assistant.resolveAliasType(attributes.get("class")));
-            String factoryBean = StringUtils.emptyToNull(attributes.get("factoryBean"));
-            String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
-            String scan = attributes.get("scan");
-            String mask = attributes.get("mask");
-            String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
-            String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
-            String scope = attributes.get("scope");
-            Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
-            Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
-            Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
+        parser.setXpath(xpath + "/bean");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            String className = StringUtils.emptyToNull(assistant.resolveAliasType(attrs.get("class")));
+            String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
+            String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
+            String scan = attrs.get("scan");
+            String mask = attrs.get("mask");
+            String initMethod = StringUtils.emptyToNull(attrs.get("initMethod"));
+            String destroyMethod = StringUtils.emptyToNull(attrs.get("destroyMethod"));
+            String scope = attrs.get("scope");
+            Boolean singleton = BooleanUtils.toNullableBooleanObject(attrs.get("singleton"));
+            Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attrs.get("lazyInit"));
+            Boolean important = BooleanUtils.toNullableBooleanObject(attrs.get("important"));
 
             BeanRule beanRule;
             if (className == null && scan == null && factoryBean != null) {
@@ -67,74 +68,79 @@ class BeanNodeletAdder implements NodeletAdder {
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
             }
 
-            assistant.pushObject(beanRule);
+            parser.pushObject(beanRule);
         });
-        parser.addNodelet(xpath, "/bean/description", (node, attributes, text) -> {
+        parser.addNodeEndlet(text -> {
+            BeanRule beanRule = parser.popObject();
+            assistant.resolveFactoryBeanClass(beanRule);
+            assistant.addBeanRule(beanRule);
+        });
+        parser.setXpath(xpath + "/bean/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
             if (text != null) {
-                String style = attributes.get("style");
                 text = ContentStyleType.apply(text, style);
-
-                BeanRule beanRule = assistant.peekObject();
+            }
+            if (StringUtils.hasText(text)) {
+                BeanRule beanRule = parser.peekObject();
                 beanRule.setDescription(text);
             }
         });
-        parser.addNodelet(xpath, "/bean/filter", (node, attributes, text) -> {
-            String classScanFilterClassName = attributes.get("class");
-            Parameters filterParameters = null;
-
+        parser.setXpath(xpath + "/bean/filter");
+        parser.addNodelet(attrs -> {
+            String classScanFilterClassName = attrs.get("class");
+            Parameters filterParameters = new FilterParameters();
+            if (StringUtils.hasText(classScanFilterClassName)) {
+                filterParameters.putValue(FilterParameters.filterClass, classScanFilterClassName);
+            }
+            parser.pushObject(filterParameters);
+        });
+        parser.addNodeEndlet(text -> {
+            Parameters filterParameters = parser.popObject();
             if (StringUtils.hasText(text)) {
                 filterParameters = new FilterParameters(text);
             }
-            if (StringUtils.hasText(classScanFilterClassName)) {
-                if (filterParameters == null)
-                    filterParameters = new FilterParameters();
-                filterParameters.putValue(FilterParameters.filterClass, classScanFilterClassName);
-            }
-            if (filterParameters != null) {
-                BeanRule beanRule = assistant.peekObject();
+            if (filterParameters.isValueAssigned(FilterParameters.filterClass) &&
+                    filterParameters.isValueAssigned(FilterParameters.exclude)) {
+                BeanRule beanRule = parser.peekObject();
                 beanRule.setFilterParameters(filterParameters);
             }
         });
-        parser.addNodelet(xpath, "/bean/constructor/arguments", (node, attributes, text) -> {
-            if (StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
+        parser.setXpath(xpath + "/bean/constructor/arguments");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            if (!irm.isEmpty()) {
+                BeanRule beanRule = parser.peekObject();
+                beanRule.setConstructorArgumentItemRuleMap(irm);
+            } else if (StringUtils.hasText(text)) {
+                BeanRule beanRule = parser.peekObject();
                 BeanRule.updateConstructorArgument(beanRule, text);
             }
-
+        });
+        parser.setXpath(xpath + "/bean/properties");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/bean/constructor/arguments", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/bean/constructor/arguments/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setConstructorArgumentItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/bean/properties", (node, attributes, text) -> {
-            if (StringUtils.hasText(text)) {
-                BeanRule beanRule = assistant.peekObject();
+                BeanRule beanRule = parser.peekObject();
+                beanRule.setPropertyItemRuleMap(irm);
+            } else if (StringUtils.hasText(text)) {
+                BeanRule beanRule = parser.peekObject();
                 BeanRule.updateProperty(beanRule, text);
             }
-
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet(xpath, "/bean/properties", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/bean/properties/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (!irm.isEmpty()) {
-                BeanRule beanRule = assistant.peekObject();
-                beanRule.setPropertyItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/bean/end()", (node, attributes, text) -> {
-            BeanRule beanRule = assistant.popObject();
-            assistant.resolveFactoryBeanClass(beanRule);
-            assistant.addBeanRule(beanRule);
         });
     }
 

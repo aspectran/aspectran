@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ExceptionInnerNodeletAdder.
@@ -43,18 +43,26 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/description", (node, attributes, text) -> {
-            if (text != null) {
-                String style = attributes.get("style");
+        parser.setXpath(xpath + "/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
+            if (style != null) {
                 text = ContentStyleType.apply(text, style);
-
-                ExceptionRule exceptionRule = assistant.peekObject();
+            }
+            if (StringUtils.hasText(text)) {
+                ExceptionRule exceptionRule = parser.peekObject();
                 exceptionRule.setDescription(text);
             }
         });
-        parser.addNodelet(xpath, new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/thrown", (node, attributes, text) -> {
-            String exceptionType = attributes.get("type");
+        parser.setXpath(xpath);
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.setXpath(xpath + "/thrown");
+        parser.addNodelet(attrs -> {
+            String exceptionType = attrs.get("type");
 
             ExceptionThrownRule etr = new ExceptionThrownRule();
             if (exceptionType != null) {
@@ -62,13 +70,13 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
                 etr.setExceptionTypes(exceptionTypes);
             }
 
-            assistant.pushObject(etr);
+            parser.pushObject(etr);
         });
-        parser.addNodelet(xpath, "/thrown", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/thrown", new ResponseInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/thrown/end()", (node, attributes, text) -> {
-            ExceptionThrownRule etr = assistant.popObject();
-            ExceptionRule exceptionRule = assistant.peekObject();
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(new ResponseInnerNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ExceptionThrownRule etr = parser.popObject();
+            ExceptionRule exceptionRule = parser.peekObject();
             exceptionRule.putExceptionThrownRule(etr);
         });
     }

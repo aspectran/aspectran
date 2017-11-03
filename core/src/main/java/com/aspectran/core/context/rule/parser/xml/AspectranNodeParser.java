@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletParser;
 import org.xml.sax.InputSource;
 
 import java.io.IOException;
@@ -61,13 +61,12 @@ public class AspectranNodeParser {
      */
     public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating) {
         this.assistant = assistant;
-        assistant.clearObjectStack();
 
         this.parser = new NodeletParser();
         this.parser.setValidating(validating);
         this.parser.setEntityResolver(new AspectranDtdResolver(validating));
 
-        assistant.setLocationTracker(this.parser.createLocationTracker());
+        assistant.setLocationTracker(this.parser.trackingLocation());
 
         addDescriptionNodelets();
         addSettingsNodelets();
@@ -84,16 +83,15 @@ public class AspectranNodeParser {
     /**
      * Parses the aspectran configuration.
      *
-     * @param inputStream the input stream
+     * @param ruleAppender the rule appender
      * @throws Exception the exception
      */
-    public void parse(InputStream inputStream) throws Exception {
+    public void parse(RuleAppender ruleAppender) throws Exception {
+        InputStream inputStream = null;
         try {
-            RuleAppender ruleAppender = assistant.getRuleAppendHandler().getCurrentRuleAppender();
-            String systemId = (ruleAppender != null ? ruleAppender.getQualifiedName() : null);
-
+            inputStream = ruleAppender.getInputStream();
             InputSource inputSource = new InputSource(inputStream);
-            inputSource.setSystemId(systemId);
+            inputSource.setSystemId(ruleAppender.getQualifiedName());
             parser.parse(inputSource);
         } catch (Exception e) {
             throw new Exception("Error parsing aspectran configuration", e);
@@ -112,11 +110,17 @@ public class AspectranNodeParser {
      * Adds the description nodelets.
      */
     private void addDescriptionNodelets() {
-        parser.addNodelet("/aspectran/description", (node, attributes, text) -> {
-            if (text != null) {
-                String style = attributes.get("style");
+        parser.setXpath("/aspectran/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
+            if (style != null) {
                 text = ContentStyleType.apply(text, style);
-
+            }
+            if (StringUtils.hasText(text)) {
                 assistant.getAssistantLocal().setDescription(text);
             }
         });
@@ -126,21 +130,30 @@ public class AspectranNodeParser {
      * Adds the settings nodelets.
      */
     private void addSettingsNodelets() {
-        parser.addNodelet("/aspectran/settings", (node, attributes, text) -> {
+        parser.setXpath("/aspectran/settings");
+        parser.addNodeEndlet(text -> {
             if (StringUtils.hasText(text)) {
                 Parameters parameters = new VariableParameters(text);
                 for (String name : parameters.getParameterNameSet()) {
                     assistant.putSetting(name, parameters.getString(name));
                 }
             }
-        });
-        parser.addNodelet("/aspectran/settings/setting", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            String value = attributes.get("value");
-            assistant.putSetting(name, (text == null) ? value : text);
-        });
-        parser.addNodelet("/aspectran/settings/end()", (node, attributes, text) -> {
             assistant.applySettings();
+        });
+        parser.setXpath("/aspectran/settings/setting");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            String value = attrs.get("value");
+
+            assistant.putSetting(name, value);
+            parser.pushObject(name);
+
+        });
+        parser.addNodeEndlet(text -> {
+            String name = parser.popObject();
+            if (text != null) {
+                assistant.putSetting(name, text);
+            }
         });
     }
 
@@ -148,35 +161,32 @@ public class AspectranNodeParser {
      * Adds the environment nodelets.
      */
     private void addEnvironmentNodelets() {
-        parser.addNodelet("/aspectran/environment", (node, attributes, text) -> {
-            String profile = attributes.get("profile");
+        parser.setXpath("/aspectran/environment");
+        parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
 
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
-            assistant.pushObject(environmentRule);
+            parser.pushObject(environmentRule);
         });
-        parser.addNodelet("/aspectran/environment/properties", (node, attributes, text) -> {
-            EnvironmentRule environmentRule = assistant.peekObject();
-
-            if (StringUtils.hasLength(text)) {
+        parser.addNodeEndlet(text -> {
+            EnvironmentRule environmentRule = parser.popObject();
+            assistant.addEnvironmentRule(environmentRule);
+        });
+        parser.setXpath("/aspectran/environment/properties");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            EnvironmentRule environmentRule = parser.peekObject();
+            if (!irm.isEmpty()) {
+                environmentRule.setPropertyItemRuleMap(irm);
+            } else if (StringUtils.hasLength(text)) {
                 ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
                 environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
             }
-
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet("/aspectran/environment/properties", new ItemNodeletAdder(assistant));
-        parser.addNodelet("/aspectran/environment/properties/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (!irm.isEmpty()) {
-                EnvironmentRule environmentRule = assistant.peekObject();
-                environmentRule.setPropertyItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet("/aspectran/environment/end()", (node, attributes, text) -> {
-            EnvironmentRule environmentRule = assistant.popObject();
-            assistant.addEnvironmentRule(environmentRule);
         });
     }
 
@@ -184,7 +194,8 @@ public class AspectranNodeParser {
      * Adds the type alias nodelets.
      */
     private void addTypeAliasNodelets() {
-        parser.addNodelet("/aspectran/typeAliases", (node, attributes, text) -> {
+        parser.setXpath("/aspectran/typeAliases");
+        parser.addNodeEndlet(text -> {
             if (StringUtils.hasLength(text)) {
                 Parameters parameters = new VariableParameters(text);
                 for (String alias : parameters.getParameterNameSet()) {
@@ -192,9 +203,10 @@ public class AspectranNodeParser {
                 }
             }
         });
-        parser.addNodelet("/aspectran/typeAliases/typeAlias", (node, attributes, text) -> {
-            String alias = attributes.get("alias");
-            String type = attributes.get("type");
+        parser.setXpath("/aspectran/typeAliases/typeAlias");
+        parser.addNodelet(attrs -> {
+            String alias = attrs.get("alias");
+            String type = attrs.get("type");
 
             assistant.addTypeAlias(alias, type);
         });
@@ -239,12 +251,13 @@ public class AspectranNodeParser {
      * Adds the append nodelets.
      */
     private void addAppendNodelets() {
-        parser.addNodelet("/aspectran/append", (node, attributes, text) -> {
-            String file = attributes.get("file");
-            String resource = attributes.get("resource");
-            String url = attributes.get("url");
-            String format = attributes.get("format");
-            String profile = attributes.get("profile");
+        parser.setXpath("/aspectran/append");
+        parser.addNodelet(attrs -> {
+            String file = attrs.get("file");
+            String resource = attrs.get("resource");
+            String url = attrs.get("url");
+            String format = attrs.get("format");
+            String profile = attrs.get("profile");
 
             RuleAppendHandler appendHandler = assistant.getRuleAppendHandler();
             if (appendHandler != null) {

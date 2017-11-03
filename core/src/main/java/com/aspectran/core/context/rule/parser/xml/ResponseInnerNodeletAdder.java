@@ -26,8 +26,8 @@ import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ResponseRuleNodeletAdder.
@@ -49,114 +49,111 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/transform", (node, attributes, text) -> {
-            String type = attributes.get("type");
-            String contentType = attributes.get("contentType");
-            String characterEncoding = attributes.get("characterEncoding");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
-            Boolean pretty = BooleanUtils.toNullableBooleanObject(attributes.get("pretty"));
+        parser.setXpath(xpath + "/transform");
+        parser.addNodelet(attrs -> {
+            String type = attrs.get("type");
+            String contentType = attrs.get("contentType");
+            String characterEncoding = attrs.get("characterEncoding");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
+            Boolean pretty = BooleanUtils.toNullableBooleanObject(attrs.get("pretty"));
 
             TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse, pretty);
-            assistant.pushObject(tr);
+            parser.pushObject(tr);
 
             ActionList actionList = new ActionList();
-            assistant.pushObject(actionList);
+            parser.pushObject(actionList);
         });
-        parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/transform/template", (node, attributes, text) -> {
-            String engine = attributes.get("engine");
-            String name = attributes.get("name");
-            String file = attributes.get("file");
-            String resource = attributes.get("resource");
-            String url = attributes.get("url");
-            String style = attributes.get("style");
-            String encoding = attributes.get("encoding");
-            Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
-
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, style, encoding, noCache);
-
-            TransformRule transformRule = assistant.peekObject(1);
-            transformRule.setTemplateRule(templateRule);
-
-            assistant.resolveBeanClass(templateRule);
-        });
-        parser.addNodelet(xpath, "/transform/call", (node, attributes, text) -> {
-            String template = StringUtils.emptyToNull(attributes.get("template"));
-
-            if (template == null) {
-                throw new IllegalArgumentException("The <call> element inside <transform> must have the attribute 'template'");
-            }
-
-            TransformRule transformRule = assistant.peekObject(1);
-            transformRule.setTemplateId(template);
-        });
-        parser.addNodelet(xpath, "/transform/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
-            TransformRule tr = assistant.popObject();
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
+            TransformRule tr = parser.popObject();
 
             if (!actionList.isEmpty()) {
                 tr.setActionList(actionList);
             }
 
-            ResponseRuleApplicable applicable = assistant.peekObject();
+            ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(tr);
         });
-        parser.addNodelet(xpath, "/dispatch", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            String dispatcher = attributes.get("dispatcher");
-            String contentType = attributes.get("contentType");
-            String characterEncoding = attributes.get("characterEncoding");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
+        parser.setXpath(xpath + "/transform/template");
+        parser.addNodelet(attrs -> {
+            String engine = attrs.get("engine");
+            String name = attrs.get("name");
+            String file = attrs.get("file");
+            String resource = attrs.get("resource");
+            String url = attrs.get("url");
+            String style = attrs.get("style");
+            String encoding = attrs.get("encoding");
+            Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
+
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, null, style, encoding, noCache);
+            parser.pushObject(templateRule);
+        });
+        parser.addNodeEndlet(text -> {
+            TemplateRule templateRule = parser.popObject();
+            TransformRule transformRule = parser.peekObject(1);
+
+            TemplateRule.updateTemplateSource(templateRule, text);
+            transformRule.setTemplateRule(templateRule);
+
+            assistant.resolveBeanClass(templateRule);
+        });
+        parser.setXpath(xpath + "/transform/call");
+        parser.addNodelet(attrs -> {
+            String template = StringUtils.emptyToNull(attrs.get("template"));
+
+            if (template == null) {
+                throw new IllegalArgumentException("The <call> element in <transform> must have a 'template' attribute");
+            }
+
+            TransformRule transformRule = parser.peekObject(1);
+            transformRule.setTemplateId(template);
+        });
+        parser.setXpath(xpath + "/dispatch");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            String dispatcher = attrs.get("dispatcher");
+            String contentType = attrs.get("contentType");
+            String characterEncoding = attrs.get("characterEncoding");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
 
             DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding, defaultResponse);
-            assistant.pushObject(drr);
+            parser.pushObject(drr);
 
             ActionList actionList = new ActionList();
-            assistant.pushObject(actionList);
+            parser.pushObject(actionList);
         });
-        parser.addNodelet(xpath, "/dispatch", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/dispatch/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
-            DispatchResponseRule drr = assistant.popObject();
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
+            DispatchResponseRule drr = parser.popObject();
 
             if (!actionList.isEmpty()) {
                 drr.setActionList(actionList);
             }
 
-            ResponseRuleApplicable applicable = assistant.peekObject();
+            ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(drr);
         });
-        parser.addNodelet(xpath, "/redirect", (node, attributes, text) -> {
-            String contentType = attributes.get("contentType");
-            String target = attributes.get("target");
-            String characterEncoding = attributes.get("characterEncoding");
-            Boolean excludeNullParameter = BooleanUtils.toNullableBooleanObject(attributes.get("excludeNullParameter"));
-            Boolean excludeEmptyParameter = BooleanUtils.toNullableBooleanObject(attributes.get("excludeEmptyParameter"));
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
+        parser.setXpath(xpath + "/redirect");
+        parser.addNodelet(attrs -> {
+            String contentType = attrs.get("contentType");
+            String target = attrs.get("target");
+            String characterEncoding = attrs.get("characterEncoding");
+            Boolean excludeNullParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeNullParameter"));
+            Boolean excludeEmptyParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeEmptyParameter"));
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
 
             RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, characterEncoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
-            assistant.pushObject(rrr);
+            parser.pushObject(rrr);
 
             ActionList actionList = new ActionList();
-            assistant.pushObject(actionList);
+            parser.pushObject(actionList);
         });
-        parser.addNodelet(xpath, "/redirect", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/redirect/parameters", (node, attributes, text) -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet(xpath, "/redirect/parameters", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/redirect/parameters/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (!irm.isEmpty()) {
-                RedirectResponseRule rrr = assistant.peekObject(1);
-                rrr.setParameterItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/redirect/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
-            RedirectResponseRule rrr = assistant.popObject();
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
+            RedirectResponseRule rrr = parser.popObject();
 
             if (rrr.getTarget() == null) {
                 throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute");
@@ -166,48 +163,62 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                 rrr.setActionList(actionList);
             }
 
-            ResponseRuleApplicable applicable = assistant.peekObject();
+            ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(rrr);
 
             assistant.resolveBeanClass(rrr.getTargetTokens());
         });
-        parser.addNodelet(xpath, "/forward", (node, attributes, text) -> {
-            String contentType = attributes.get("contentType");
-            String transletName = attributes.get("translet");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
+        parser.setXpath(xpath + "/redirect/parameters");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            if (!irm.isEmpty()) {
+                RedirectResponseRule rrr = parser.peekObject(1);
+                rrr.setParameterItemRuleMap(irm);
+            }
+        });
+        parser.setXpath(xpath + "/forward");
+        parser.addNodelet(attrs -> {
+            String contentType = attrs.get("contentType");
+            String transletName = attrs.get("translet");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
 
             transletName = assistant.applyTransletNamePattern(transletName);
 
             ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);
-            assistant.pushObject(frr);
+            parser.pushObject(frr);
 
             ActionList actionList = new ActionList();
-            assistant.pushObject(actionList);
+            parser.pushObject(actionList);
         });
-        parser.addNodelet(xpath, "/forward", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/forward/parameters", (node, attributes, text) -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
-        });
-        parser.addNodelet(xpath, "/forward/parameters", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/forward/parameters/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
-
-            if (irm.size() > 0) {
-                ForwardResponseRule frr = assistant.peekObject(1);
-                frr.setAttributeItemRuleMap(irm);
-            }
-        });
-        parser.addNodelet(xpath, "/forward/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
-            ForwardResponseRule frr = assistant.popObject();
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
+            ForwardResponseRule frr = parser.popObject();
 
             if (!actionList.isEmpty()) {
                 frr.setActionList(actionList);
             }
 
-            ResponseRuleApplicable applicable = assistant.peekObject();
+            ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(frr);
+        });
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.setXpath(xpath + "/forward/parameters");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            if (irm.size() > 0) {
+                ForwardResponseRule frr = parser.peekObject(1);
+                frr.setAttributeItemRuleMap(irm);
+            }
         });
     }
 

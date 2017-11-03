@@ -349,7 +349,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
                 sb.append(getterName);
             }
         } else {
-            throw new InvalidTokenException("Unknown token type", this);
+            throw new InvalidTokenException("Unknown token type: " + type, this);
         }
         if (defaultValue != null) {
             sb.append(VALUE_SEPARATOR);
@@ -476,7 +476,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
         } else if (symbol == Token.PROPERTY_SYMBOL) {
             type = TokenType.PROPERTY;
         } else {
-            throw new IllegalArgumentException("Unknown token symbol");
+            throw new IllegalArgumentException("Unknown token symbol: " + symbol);
         }
         return type;
     }

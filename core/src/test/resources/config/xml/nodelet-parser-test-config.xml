@@ -1,0 +1,71 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description style="compact">
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <settings>
+        <setting name="defaultTemplateEngineBean" value="freemarker"/>
+    </settings>
+
+    <bean id="freemarker" class="com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine">
+        <constructor>
+            <arguments>
+                <item><call bean="freemarkerConfigurationFactory"/></item>
+            </arguments>
+        </constructor>
+    </bean>
+
+    <translet name="echo">
+        <description style="apon">
+            |translet-description-line1
+            |translet-description-line2
+            |translet-description-line3
+        </description>
+        <request>
+            <parameters>
+                <item name="input-1">${input-1:12345}</item>
+                <item name="input-2">${input-2:67890}</item>
+            </parameters>
+        </request>
+        <transform type="transform/text" contentType="text/plain">
+            <template engine="token" style="apon">
+                |-------------------------------------
+                |input-1: ${input-1}
+                |input-2: ${input-2}
+                |-------------------------------------
+            </template>
+        </transform>
+    </translet>
+
+    <template id="template" style="apon">
+        |TEMPLATE
+    </template>
+
+    <aspect id="simplestAdviceAspect" order="1">
+        <description style="apon">
+            |aspect-description-line1
+            |aspect-description-line2
+            |aspect-description-line3
+        </description>
+        <joinpoint type="translet">
+            pointcut: {
+                +: hello@TestAction^helloWorld
+            }
+        </joinpoint>
+        <advice bean="testAdvice">
+            <before>
+                <action method="welcome"/>
+            </before>
+            <after>
+                <action method="goodbye"/>
+            </after>
+        </advice>
+    </aspect>
+
+    <append file="/config/another-config.xml"/>
+
+</aspectran>

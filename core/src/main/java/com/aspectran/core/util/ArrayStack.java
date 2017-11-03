@@ -33,9 +33,9 @@ import java.util.EmptyStackException;
  * <p>
  * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.
  * <p>
- * <strong>Note:</strong> this class should be bytecode-identical to the 
- * version in commons collections. This is required to allow backwards 
- * compability with both previous versions of BeanUtils and also allow 
+ * <strong>Note:</strong> this class should be bytecode-identical to the
+ * version in commons collections. This is required to allow backwards
+ * compability with both previous versions of BeanUtils and also allow
  * coexistance with both collections 2.1 and 3.0.
  *
  * @author Craig R. McClanahan

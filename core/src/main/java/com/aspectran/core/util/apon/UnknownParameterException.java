@@ -37,7 +37,7 @@ public class UnknownParameterException extends InvalidParameterException {
      * @param parameters the parameters
      */
     public UnknownParameterException(String parameterName, Parameters parameters) {
-        super("Unknown parameter \"" + parameterName + "\" from " + parameters);
+        super("No such parameter '" + parameterName + "' in " + parameters);
     }
 
     /**

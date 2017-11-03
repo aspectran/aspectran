@@ -896,28 +896,24 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     public static void updateConstructorArgument(BeanRule beanRule, String text) {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> argumentParametersList = ItemRule.toItemParametersList(text);
-            if (argumentParametersList == null) {
-                return;
+            if (argumentParametersList != null) {
+                ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
+                if (constructorArgumentItemRuleMap != null) {
+                    beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+                }
             }
-            ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-            if (constructorArgumentItemRuleMap == null) {
-                return;
-            }
-            beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
         }
     }
 
     public static void updateProperty(BeanRule beanRule, String text) {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> propertyParametersList = ItemRule.toItemParametersList(text);
-            if (propertyParametersList == null) {
-                return;
+            if (propertyParametersList != null) {
+                ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
+                if (propertyItemRuleMap != null) {
+                    beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+                }
             }
-            ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-            if (propertyItemRuleMap == null) {
-                return;
-            }
-            beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
         }
     }
 

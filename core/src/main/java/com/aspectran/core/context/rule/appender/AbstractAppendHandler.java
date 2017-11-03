@@ -58,7 +58,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         } else if (StringUtils.hasText(appendRule.getFile())) {
             appender = new FileRuleAppender(assistant.getBasePath(), appendRule.getFile());
         } else if (StringUtils.hasText(appendRule.getResource())) {
-            appender = new ResourceRuleAppender(assistant.getClassLoader(), appendRule.getResource());
+            appender = new ResourceRuleAppender(appendRule.getResource(), assistant.getClassLoader());
         } else if (StringUtils.hasText(appendRule.getUrl())) {
             appender = new UrlRuleAppender(appendRule.getUrl());
         }

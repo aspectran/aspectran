@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class AspectNodeletAdder.
@@ -45,72 +45,86 @@ class AspectNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/aspect", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
-            String order = StringUtils.emptyToNull(attributes.get("order"));
-            Boolean isolated = BooleanUtils.toNullableBooleanObject(attributes.get("isolated"));
+        parser.setXpath(xpath + "/aspect");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
+            String order = StringUtils.emptyToNull(attrs.get("order"));
+            Boolean isolated = BooleanUtils.toNullableBooleanObject(attrs.get("isolated"));
 
             AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
-            assistant.pushObject(aspectRule);
+            parser.pushObject(aspectRule);
         });
-        parser.addNodelet(xpath, "/aspect/description", (node, attributes, text) -> {
-            if (text != null) {
-                String style = attributes.get("style");
+        parser.addNodeEndlet(text -> {
+            AspectRule aspectRule = parser.popObject();
+            assistant.resolveAdviceBeanClass(aspectRule);
+            assistant.addAspectRule(aspectRule);
+        });
+        parser.setXpath(xpath + "/aspect/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
+            if (style != null) {
                 text = ContentStyleType.apply(text, style);
-
-                AspectRule aspectRule = assistant.peekObject();
+            }
+            if (StringUtils.hasText(text)) {
+                AspectRule aspectRule = parser.peekObject();
                 aspectRule.setDescription(text);
             }
         });
-        parser.addNodelet(xpath, "/aspect/joinpoint", (node, attributes, text) -> {
-            String type = StringUtils.emptyToNull(attributes.get("type"));
-
-            AspectRule aspectRule = assistant.peekObject();
+        parser.setXpath(xpath + "/aspect/joinpoint");
+        parser.addNodelet(attrs -> {
+            String type = StringUtils.emptyToNull(attrs.get("type"));
+            parser.pushObject(type);
+        });
+        parser.addNodeEndlet(text -> {
+            String type = parser.popObject();
+            AspectRule aspectRule = parser.peekObject();
             AspectRule.updateJoinpoint(aspectRule, type, text);
         });
-        parser.addNodelet(xpath, "/aspect/settings", (node, attributes, text) -> {
-            AspectRule aspectRule = assistant.peekObject();
-
-            SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule, text);
-            assistant.pushObject(sar);
+        parser.setXpath(xpath + "/aspect/settings");
+        parser.addNodelet(text -> {
+            AspectRule aspectRule = parser.peekObject();
+            SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule);
+            parser.pushObject(sar);
         });
-        parser.addNodelet(xpath, "/aspect/settings/setting", (node, attributes, text) -> {
-            String name = StringUtils.emptyToNull(attributes.get("name"));
-            String value = attributes.get("value");
+        parser.addNodeEndlet(text -> {
+            SettingsAdviceRule sar = parser.popObject();
+            AspectRule aspectRule = parser.peekObject();
+            SettingsAdviceRule.updateSettingsAdviceRule(sar, text);
+            aspectRule.setSettingsAdviceRule(sar);
+        });
+        parser.setXpath(xpath + "/aspect/settings/setting");
+        parser.addNodelet(attrs -> {
+            String name = StringUtils.emptyToNull(attrs.get("name"));
+            String value = attrs.get("value");
 
             if (name != null) {
-                SettingsAdviceRule sar = assistant.peekObject();
+                SettingsAdviceRule sar = parser.peekObject();
                 sar.putSetting(name, value);
             }
         });
-        parser.addNodelet(xpath, "/aspect/settings/end()", (node, attributes, text) -> {
-            SettingsAdviceRule sar = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
-            aspectRule.setSettingsAdviceRule(sar);
-        });
-        parser.addNodelet(xpath, "/aspect/advice", (node, attributes, text) -> {
-            String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
-
+        parser.setXpath(xpath + "/aspect/advice");
+        parser.addNodelet(attrs -> {
+            String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
             if (beanIdOrClass != null) {
-                AspectRule aspectRule = assistant.peekObject();
+                AspectRule aspectRule = parser.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
             }
         });
-        parser.addNodelet(xpath, "/aspect/advice", new AspectAdviceInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/aspect/exception", (node, attributes, text) -> {
+        parser.addNodelet(new AspectAdviceInnerNodeletAdder(assistant));
+        parser.setXpath(xpath + "/aspect/exception");
+        parser.addNodelet(attrs -> {
             ExceptionRule exceptionRule = new ExceptionRule();
-            assistant.pushObject(exceptionRule);
+            parser.pushObject(exceptionRule);
         });
-        parser.addNodelet(xpath, "/aspect/exception", new ExceptionInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/aspect/exception/end()", (node, attributes, text) -> {
-            ExceptionRule exceptionRule = assistant.popObject();
-            AspectRule aspectRule = assistant.peekObject();
+        parser.addNodelet(new ExceptionInnerNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ExceptionRule exceptionRule = parser.popObject();
+            AspectRule aspectRule = parser.peekObject();
             aspectRule.setExceptionRule(exceptionRule);
-        });
-        parser.addNodelet(xpath, "/aspect/end()", (node, attributes, text) -> {
-            AspectRule aspectRule = assistant.popObject();
-            assistant.resolveAdviceBeanClass(aspectRule);
-            assistant.addAspectRule(aspectRule);
         });
     }
 

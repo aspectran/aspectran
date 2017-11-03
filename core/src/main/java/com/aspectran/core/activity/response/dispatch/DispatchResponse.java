@@ -38,7 +38,7 @@ public class DispatchResponse implements Response {
 
     private final boolean debugEnabled = log.isDebugEnabled();
 
-    private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<>(5);
+    private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<>();
 
     private final DispatchResponseRule dispatchResponseRule;
 

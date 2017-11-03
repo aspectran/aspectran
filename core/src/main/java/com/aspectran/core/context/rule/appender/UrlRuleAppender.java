@@ -46,10 +46,14 @@ public class UrlRuleAppender extends AbstractRuleAppender {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        URL url = new URL(ruleUrl);
-        URLConnection conn = url.openConnection();
-        setLastModified(conn.getLastModified());
-        return conn.getInputStream();
+        try {
+            URL url = new URL(ruleUrl);
+            URLConnection conn = url.openConnection();
+            setLastModified(conn.getLastModified());
+            return conn.getInputStream();
+        } catch (IOException e) {
+            throw new IOException("Failed to create input stream from rule url: " + ruleUrl, e);
+        }
     }
 
     @Override

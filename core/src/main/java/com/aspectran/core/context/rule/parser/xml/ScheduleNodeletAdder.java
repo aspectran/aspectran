@@ -21,8 +21,8 @@ import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ScheduleNodeletAdder.
@@ -44,56 +44,67 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/schedule", (node, attributes, text) -> {
-            String id = StringUtils.emptyToNull(attributes.get("id"));
+        parser.setXpath(xpath + "/schedule");
+        parser.addNodelet(attrs -> {
+            String id = StringUtils.emptyToNull(attrs.get("id"));
 
             ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
 
-            assistant.pushObject(scheduleRule);
+            parser.pushObject(scheduleRule);
         });
-        parser.addNodelet(xpath, "/schedule/description", (node, attributes, text) -> {
-            if (text != null) {
-                String style = attributes.get("style");
+        parser.addNodeEndlet(text -> {
+            ScheduleRule scheduleRule = parser.popObject();
+            assistant.addScheduleRule(scheduleRule);
+        });
+        parser.setXpath(xpath + "/schedule/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
+            if (style != null) {
                 text = ContentStyleType.apply(text, style);
-
-                ScheduleRule scheduleRule = assistant.peekObject();
+            }
+            if (StringUtils.hasText(text)) {
+                ScheduleRule scheduleRule = parser.peekObject();
                 scheduleRule.setDescription(text);
             }
         });
-        parser.addNodelet(xpath, "/schedule/scheduler", (node, attributes, text) -> {
-            String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
-
+        parser.setXpath(xpath + "/schedule/scheduler");
+        parser.addNodelet(attrs -> {
+            String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
             if (beanIdOrClass != null) {
-                ScheduleRule scheduleRule = assistant.peekObject();
+                ScheduleRule scheduleRule = parser.peekObject();
                 scheduleRule.setSchedulerBeanId(beanIdOrClass);
             }
         });
-        parser.addNodelet(xpath, "/schedule/scheduler/trigger", (node, attributes, text) -> {
-            String type = StringUtils.emptyToNull(attributes.get("type"));
-
-            ScheduleRule scheduleRule = assistant.peekObject();
+        parser.setXpath(xpath + "/schedule/scheduler/trigger");
+        parser.addNodelet(attrs -> {
+            String type = StringUtils.emptyToNull(attrs.get("type"));
+            parser.pushObject(type);
+        });
+        parser.addNodeEndlet(text -> {
+            String type = parser.popObject();
+            ScheduleRule scheduleRule = parser.peekObject();
             ScheduleRule.updateTrigger(scheduleRule, type, text);
         });
-        parser.addNodelet(xpath, "/schedule/job", (node, attributes, text) -> {
-            String transletName = StringUtils.emptyToNull(attributes.get("translet"));
-            String method = StringUtils.emptyToNull(attributes.get("method"));
-            Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
+        parser.setXpath(xpath + "/schedule/job");
+        parser.addNodelet(attrs -> {
+            String transletName = StringUtils.emptyToNull(attrs.get("translet"));
+            String method = StringUtils.emptyToNull(attrs.get("method"));
+            Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
             if (transletName == null) {
-                throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute");
+                throw new IllegalArgumentException("The <job> element requires a <translet> attribute");
             }
 
             transletName = assistant.applyTransletNamePattern(transletName);
 
-            ScheduleRule scheduleRule = assistant.peekObject();
+            ScheduleRule scheduleRule = parser.peekObject();
 
             ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, transletName, method, disabled);
             scheduleRule.addScheduleJobRule(scheduleJobRule);
-        });
-        parser.addNodelet(xpath, "/schedule/end()", (node, attributes, text) -> {
-            ScheduleRule scheduleRule = assistant.popObject();
-
-            assistant.addScheduleRule(scheduleRule);
         });
     }
 

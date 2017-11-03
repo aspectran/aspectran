@@ -69,7 +69,7 @@ public enum MethodType {
 
     private static final int MAX_COUNT = 9;
 
-    private static final Map<String, MethodType> mappings = new HashMap<>(MAX_COUNT);
+    private static final Map<String, MethodType> mappings = new HashMap<>();
 
     static {
         for (MethodType type : values()) {
@@ -156,7 +156,7 @@ public enum MethodType {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder(types.length * 7);
+        StringBuilder sb = new StringBuilder(types.length * 7 + 1);
         for (int i = 0; i < types.length; i++) {
             if (i > 0) {
                 sb.append(",");

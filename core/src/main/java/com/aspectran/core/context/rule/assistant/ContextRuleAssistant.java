@@ -38,11 +38,10 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public class ContextRuleAssistant {
 
     private final ClassLoader classLoader;
 
-    private ArrayStack objectStack;
+//    private ArrayStack objectStack;
 
     private Map<DefaultSettingType, String> settings;
 
@@ -113,7 +112,7 @@ public class ContextRuleAssistant {
     }
 
     public void ready() {
-        objectStack = new ArrayStack();
+        //objectStack = new ArrayStack();
         settings = new HashMap<>();
         environmentRules = new LinkedList<>();
         typeAliases = new HashMap<>();
@@ -144,7 +143,7 @@ public class ContextRuleAssistant {
     }
 
     public void release() {
-        objectStack = null;
+        //objectStack = null;
         settings = null;
         environmentRules = null;
         typeAliases = null;
@@ -185,31 +184,31 @@ public class ContextRuleAssistant {
         return classLoader;
     }
 
-    public void pushObject(Object object) {
-        objectStack.push(object);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T popObject() {
-        return (T)objectStack.pop();
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject() {
-        return (T)objectStack.peek();
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject(int n) {
-        return (T)objectStack.peek(n);
-    }
-
-    /**
-     * Clear object stack.
-     */
-    public void clearObjectStack() {
-        objectStack.clear();
-    }
+//    public void pushObject(Object object) {
+//        objectStack.push(object);
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    public <T> T popObject() {
+//        return (T)objectStack.pop();
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    public <T> T peekObject() {
+//        return (T)objectStack.peek();
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    public <T> T peekObject(int n) {
+//        return (T)objectStack.peek(n);
+//    }
+//
+//    /**
+//     * Clear object stack.
+//     */
+//    public void clearObjectStack() {
+//        objectStack.clear();
+//    }
 
     /**
      * Gets the settings.
@@ -239,7 +238,7 @@ public class ContextRuleAssistant {
     public void putSetting(String name, String value) {
         DefaultSettingType settingType = DefaultSettingType.resolve(name);
         if (settingType == null) {
-            throw new IllegalArgumentException("Unknown default setting name '" + name + "'");
+            throw new IllegalArgumentException("No such default setting name as '" + name + "'");
         }
         settings.put(settingType, value);
     }
@@ -559,12 +558,10 @@ public class ContextRuleAssistant {
     }
 
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        NodeletParser.LocationTracker locationTracker = this.locationTracker.clone();
         beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
     }
 
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        NodeletParser.LocationTracker locationTracker = this.locationTracker.clone();
         beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
     }
 

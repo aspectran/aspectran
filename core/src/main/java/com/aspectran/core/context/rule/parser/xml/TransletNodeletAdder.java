@@ -25,8 +25,9 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class TransletNodeletAdder.
@@ -48,33 +49,47 @@ class TransletNodeletAdder implements NodeletAdder {
 
     @Override
     public void process(String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/translet", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            String scan = attributes.get("scan");
-            String mask = attributes.get("mask");
-            String method = attributes.get("method");
+        parser.setXpath(xpath + "/translet");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            String scan = attrs.get("scan");
+            String mask = attrs.get("mask");
+            String method = attrs.get("method");
 
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
-            assistant.pushObject(transletRule);
+            parser.pushObject(transletRule);
         });
-        parser.addNodelet(xpath, "/translet/description", (node, attributes, text) -> {
-            if (text != null) {
-                String style = attributes.get("style");
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(new ResponseInnerNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            TransletRule transletRule = parser.popObject();
+            assistant.addTransletRule(transletRule);
+        });
+        parser.setXpath(xpath + "/translet/description");
+        parser.addNodelet(attrs -> {
+            String style = attrs.get("style");
+            parser.pushObject(style);
+        });
+        parser.addNodeEndlet(text -> {
+            String style = parser.popObject();
+            if (style != null) {
                 text = ContentStyleType.apply(text, style);
-
-                TransletRule transletRule = assistant.peekObject();
+            }
+            if (StringUtils.hasText(text)) {
+                TransletRule transletRule = parser.peekObject();
                 transletRule.setDescription(text);
             }
         });
-        parser.addNodelet(xpath, "/translet/parameters", (node, attributes, text) -> {
+        parser.setXpath(xpath + "/translet/parameters");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/translet/parameters", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/parameters/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                TransletRule transletRule = assistant.peekObject();
+                TransletRule transletRule = parser.peekObject();
                 RequestRule requestRule = transletRule.getRequestRule();
                 if (requestRule == null) {
                     requestRule = RequestRule.newInstance(true);
@@ -83,15 +98,16 @@ class TransletNodeletAdder implements NodeletAdder {
                 requestRule.setParameterItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/translet/attributes", (node, attributes, text) -> {
+        parser.setXpath(xpath + "/translet/attributes");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/translet/attributes", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/attributes/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                TransletRule transletRule = assistant.peekObject();
+                TransletRule transletRule = parser.peekObject();
                 RequestRule requestRule = transletRule.getRequestRule();
                 if (requestRule == null) {
                     requestRule = RequestRule.newInstance(true);
@@ -100,117 +116,119 @@ class TransletNodeletAdder implements NodeletAdder {
                 requestRule.setAttributeItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/translet", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/request", (node, attributes, text) -> {
-            String method = attributes.get("method");
-            String characterEncoding = attributes.get("characterEncoding");
+        parser.setXpath(xpath + "/translet/request");
+        parser.addNodelet(attrs -> {
+            String method = attrs.get("method");
+            String characterEncoding = attrs.get("characterEncoding");
 
             RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
-            assistant.pushObject(requestRule);
+            parser.pushObject(requestRule);
         });
-        parser.addNodelet(xpath, "/translet/request/parameters", (node, attributes, text) -> {
+        parser.addNodeEndlet(text -> {
+            RequestRule requestRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject();
+            transletRule.setRequestRule(requestRule);
+        });
+        parser.setXpath(xpath + "/translet/request/parameters");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/translet/request/parameters", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/request/parameters/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                RequestRule requestRule = assistant.peekObject();
+                RequestRule requestRule = parser.peekObject();
                 requestRule.setParameterItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/translet/request/attributes", (node, attributes, text) -> {
+        parser.setXpath(xpath + "/translet/request/attributes");
+        parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
-            assistant.pushObject(irm);
+            parser.pushObject(irm);
         });
-        parser.addNodelet(xpath, "/translet/request/attributes", new ItemNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/request/attributes/end()", (node, attributes, text) -> {
-            ItemRuleMap irm = assistant.popObject();
+        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                RequestRule requestRule = assistant.peekObject();
+                RequestRule requestRule = parser.peekObject();
                 requestRule.setAttributeItemRuleMap(irm);
             }
         });
-        parser.addNodelet(xpath, "/translet/request/end()", (node, attributes, text) -> {
-            RequestRule requestRule = assistant.popObject();
-            TransletRule transletRule = assistant.peekObject();
-            transletRule.setRequestRule(requestRule);
-        });
-        parser.addNodelet(xpath, "/translet/contents", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
+        parser.setXpath(xpath + "/translet/contents");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
 
             ContentList contentList = ContentList.newInstance(name, omittable);
-            assistant.pushObject(contentList);
+            parser.pushObject(contentList);
         });
-        parser.addNodelet(xpath, "/translet/contents/content", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
-
-            ActionList actionList = ActionList.newInstance(name, omittable, hidden);
-            assistant.pushObject(actionList);
-        });
-        parser.addNodelet(xpath, "/translet/contents/content", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/contents/content/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
-            if (!actionList.isEmpty()) {
-                ContentList contentList = assistant.peekObject();
-                contentList.addActionList(actionList);
-            }
-        });
-        parser.addNodelet(xpath, "/translet/contents/end()", (node, attributes, text) -> {
-            ContentList contentList = assistant.popObject();
+        parser.addNodeEndlet(text -> {
+            ContentList contentList = parser.popObject();
             if (!contentList.isEmpty()) {
-                TransletRule transletRule = assistant.peekObject();
+                TransletRule transletRule = parser.peekObject();
                 transletRule.setContentList(contentList);
             }
         });
-        parser.addNodelet(xpath, "/translet/content", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+        parser.setXpath(xpath + "/translet/contents/content");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
-            assistant.pushObject(actionList);
+            parser.pushObject(actionList);
         });
-        parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/content/end()", (node, attributes, text) -> {
-            ActionList actionList = assistant.popObject();
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
-                TransletRule transletRule = assistant.peekObject();
+                ContentList contentList = parser.peekObject();
+                contentList.addActionList(actionList);
+            }
+        });
+        parser.setXpath(xpath + "/translet/content");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
+            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
+
+            ActionList actionList = ActionList.newInstance(name, omittable, hidden);
+            parser.pushObject(actionList);
+        });
+        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ActionList actionList = parser.popObject();
+            if (!actionList.isEmpty()) {
+                TransletRule transletRule = parser.peekObject();
                 ContentList contentList = transletRule.touchContentList(true, true);
                 contentList.addActionList(actionList);
             }
         });
-        parser.addNodelet(xpath, "/translet/response", (node, attributes, text) -> {
-            String name = attributes.get("name");
-            String characterEncoding = attributes.get("characterEncoding");
+        parser.setXpath(xpath + "/translet/response");
+        parser.addNodelet(attrs -> {
+            String name = attrs.get("name");
+            String characterEncoding = attrs.get("characterEncoding");
 
             ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
-            assistant.pushObject(responseRule);
+            parser.pushObject(responseRule);
         });
-        parser.addNodelet(xpath, "/translet/response", new ResponseInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/response/end()", (node, attributes, text) -> {
-            ResponseRule responseRule = assistant.popObject();
-            TransletRule transletRule = assistant.peekObject();
+        parser.addNodelet(new ResponseInnerNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ResponseRule responseRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject();
             transletRule.addResponseRule(responseRule);
         });
-        parser.addNodelet(xpath, "/translet/exception", (node, attributes, text) -> {
+        parser.setXpath(xpath + "/translet/exception");
+        parser.addNodelet(attrs -> {
             ExceptionRule exceptionRule = new ExceptionRule();
-            assistant.pushObject(exceptionRule);
+            parser.pushObject(exceptionRule);
         });
-        parser.addNodelet(xpath, "/translet/exception", new ExceptionInnerNodeletAdder(assistant));
-        parser.addNodelet(xpath, "/translet/exception/end()", (node, attributes, text) -> {
-            ExceptionRule exceptionRule = assistant.popObject();
-            TransletRule transletRule = assistant.peekObject();
+        parser.addNodelet(new ExceptionInnerNodeletAdder(assistant));
+        parser.addNodeEndlet(text -> {
+            ExceptionRule exceptionRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject();
             transletRule.setExceptionRule(exceptionRule);
-        });
-        parser.addNodelet(xpath, "/translet/end()", (node, attributes, text) -> {
-            TransletRule transletRule = assistant.popObject();
-            assistant.addTransletRule(transletRule);
         });
     }
 

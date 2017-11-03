@@ -16,9 +16,9 @@
 package com.aspectran.core.context.rule.parser;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParamsToRuleConverter;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 
@@ -34,7 +34,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ActivityContext parse(String rootConfigLocation) throws ActivityContextParserException {
+    public ContextRuleAssistant parse(String rootConfigLocation) throws ActivityContextParserException {
         try {
             if (rootConfigLocation == null) {
                 throw new IllegalArgumentException("Argument 'rootConfigLocation' must not be null");
@@ -43,14 +43,14 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
             RuleAppendHandler appendHandler = createRuleAppendHandler();
             appendHandler.handle(resolveAppender(rootConfigLocation));
 
-            return createActivityContext();
+            return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse an ActivityContext with " + rootConfigLocation, e);
+            throw new ActivityContextParserException("Failed to parse configuration: " + rootConfigLocation, e);
         }
     }
 
     @Override
-    public ActivityContext parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
+    public ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
         try {
             if (aspectranParameters == null) {
                 throw new IllegalArgumentException("Argument 'aspectranParameters' must not be null");
@@ -63,9 +63,9 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
 
             appendHandler.handle(null);
 
-            return createActivityContext();
+            return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse an ActivityContext with " + aspectranParameters, e);
+            throw new ActivityContextParserException("Failed to parse configuration: " + aspectranParameters, e);
         }
     }
 

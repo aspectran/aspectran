@@ -90,7 +90,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                         aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
                         appender.setLocationTracker(getContextRuleAssistant().getLocationTracker());
                     }
-                    aspectranNodeParser.parse(appender.getInputStream());
+                    aspectranNodeParser.parse(appender);
                 }
             }
         }
@@ -141,7 +141,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 assistant.ready();
 
                 AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
-                parser.parse(fileRuleAppender.getInputStream());
+                parser.parse(fileRuleAppender);
 
                 RuleToParamsConverter paramsConverter = new RuleToParamsConverter(assistant);
                 RootParameters rootParameters = paramsConverter.toRootParameters();

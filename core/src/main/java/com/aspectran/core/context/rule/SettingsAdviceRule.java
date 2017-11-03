@@ -60,9 +60,13 @@ public class SettingsAdviceRule {
 
     public void putSetting(String name, Object value) {
         if (settings == null) {
-            settings = new HashMap<String, Object>(5);
+            settings = new HashMap<>();
         }
         settings.put(name, value);
+    }
+
+    public static SettingsAdviceRule newInstance(AspectRule aspectRule) {
+        return new SettingsAdviceRule(aspectRule);
     }
 
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
@@ -76,6 +80,18 @@ public class SettingsAdviceRule {
 
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
         SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+        updateSettingsAdviceRule(sar, settingsParameters);
+        return sar;
+    }
+
+    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String text) {
+        if (StringUtils.hasText(text)) {
+            Parameters settingsParameters = new VariableParameters(text);
+            updateSettingsAdviceRule(sar, settingsParameters);
+        }
+    }
+
+    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, Parameters settingsParameters) {
         if (settingsParameters != null) {
             Set<String> parametersNames = settingsParameters.getParameterNameSet();
             if (parametersNames != null) {
@@ -84,8 +100,6 @@ public class SettingsAdviceRule {
                 }
             }
         }
-
-        return sar;
     }
 
     @Override

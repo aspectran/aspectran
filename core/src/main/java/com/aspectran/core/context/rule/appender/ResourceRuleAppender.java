@@ -28,15 +28,19 @@ import java.io.InputStream;
  */
 public class ResourceRuleAppender extends AbstractRuleAppender {
 
-    private final ClassLoader classLoader;
-
     private final String resource;
 
-    public ResourceRuleAppender(ClassLoader classLoader, String resource) {
+    private final ClassLoader classLoader;
+
+    public ResourceRuleAppender(String resource) {
+        this(resource, null);
+    }
+
+    public ResourceRuleAppender(String resource, ClassLoader classLoader) {
         super(AppenderType.RESOURCE);
 
-        this.classLoader = classLoader;
         this.resource = resource;
+        this.classLoader = classLoader;
 
         setLastModified(System.currentTimeMillis());
     }
@@ -47,11 +51,21 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        InputStream inputStream = classLoader.getResourceAsStream(resource);
-        if (inputStream == null) {
-            throw new IOException("Failed to append rule resource: " + resource);
+        try {
+            InputStream inputStream;
+            if (classLoader != null) {
+                inputStream = classLoader.getResourceAsStream(resource);
+            } else {
+                inputStream = getClass().getResourceAsStream(resource);
+            }
+
+            if (inputStream == null) {
+                throw new IOException("No resource found");
+            }
+            return inputStream;
+        } catch (IOException e) {
+            throw new IOException("Failed to create input stream from rule resource: " + resource, e);
         }
-        return inputStream;
     }
 
     @Override

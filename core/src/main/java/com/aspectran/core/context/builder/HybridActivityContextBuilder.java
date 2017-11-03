@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
@@ -107,15 +108,15 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             parser.setDefaultProfiles(getDefaultProfiles());
             parser.setEncoding(getEncoding());
             parser.setHybridLoad(isHybridLoad());
-
-            ActivityContext activityContext;
             if (rootConfigLocation != null) {
-                activityContext = parser.parse(rootConfigLocation);
+                parser.parse(rootConfigLocation);
             } else {
-                activityContext = parser.parse(aspectranParameters);
+                parser.parse(aspectranParameters);
             }
 
-            this.activityContext = activityContext;
+            ContextRuleAssistant assistant = parser.getContextRuleAssistant();
+            activityContext = createActivityContext(assistant);
+            assistant.release();
 
             if (coreService != null) {
                 coreService.setActivityContext(activityContext);
@@ -137,9 +138,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             return activityContext;
         } catch (Exception e) {
             if (getContextConfig() != null) {
-                throw new ActivityContextBuilderException("Failed to build an ActivityContext with " + getContextConfig(), e);
+                throw new ActivityContextBuilderException("Failed to build ActivityContext with " + getContextConfig(), e);
             } else {
-                throw new ActivityContextBuilderException("Failed to build an ActivityContext", e);
+                throw new ActivityContextBuilderException("Failed to build ActivityContext", e);
             }
         }
     }

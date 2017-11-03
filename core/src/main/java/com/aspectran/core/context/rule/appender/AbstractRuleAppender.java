@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppenderFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

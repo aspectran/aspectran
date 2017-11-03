@@ -393,7 +393,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         tr.setEncoding(encoding);
         tr.setNoCache(noCache);
 
-        updateTemplateSourceByStyle(tr);
+        updateTemplateSource(tr);
 
         return tr;
     }
@@ -418,7 +418,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         tr.setNoCache(noCache);
         tr.setBuiltin(true);
 
-        updateTemplateSourceByStyle(tr);
+        updateTemplateSource(tr);
 
         return tr;
     }
@@ -441,10 +441,17 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         return tr;
     }
 
-    private static void updateTemplateSourceByStyle(TemplateRule templateRule) {
+    public static void updateTemplateSource(TemplateRule templateRule, String content) {
+        templateRule.setContent(content);
+        updateTemplateSource(templateRule);
+    }
+
+    private static void updateTemplateSource(TemplateRule templateRule) {
         String content = templateRule.getContent();
-        content = ContentStyleType.apply(content, templateRule.getContentStyle());
-        templateRule.setTemplateSource(content);
+        if (content != null) {
+            content = ContentStyleType.apply(content, templateRule.getContentStyle());
+            templateRule.setTemplateSource(content);
+        }
     }
 
 }

@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.NodeletAdder;
-import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeletAdder;
+import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ItemNodeletAdder.
@@ -45,20 +45,17 @@ class ItemNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(final String xpath, NodeletParser parser) {
-        parser.addNodelet(xpath, "/item", (node, attributes, text) -> {
-            String type = attributes.get("type");
-            String name = attributes.get("name");
-            String value = attributes.get("value");
-            String valueType = attributes.get("valueType");
-            String defaultValue = attributes.get("defaultValue");
-            Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
-            Boolean mandatory = BooleanUtils.toNullableBooleanObject(attributes.get("mandatory"));
-            Boolean security = BooleanUtils.toNullableBooleanObject(attributes.get("security"));
-
-            if (StringUtils.hasText(text)) {
-                value = text;
-            }
+    public void process(String xpath, NodeletParser parser) {
+        parser.setXpath(xpath + "/item");
+        parser.addNodelet(attrs -> {
+            String type = attrs.get("type");
+            String name = attrs.get("name");
+            String value = attrs.get("value");
+            String valueType = attrs.get("valueType");
+            String defaultValue = attrs.get("defaultValue");
+            Boolean tokenize = BooleanUtils.toNullableBooleanObject(attrs.get("tokenize"));
+            Boolean mandatory = BooleanUtils.toNullableBooleanObject(attrs.get("mandatory"));
+            Boolean security = BooleanUtils.toNullableBooleanObject(attrs.get("security"));
 
             ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, security);
 
@@ -66,42 +63,61 @@ class ItemNodeletAdder implements NodeletAdder {
                 itemRule.setValue(value);
             }
 
-            assistant.pushObject(itemRule);
+            parser.pushObject(itemRule);
         });
-        parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
-            ItemRule itemRule = assistant.peekObject();
+        parser.addNodeEndlet(text -> {
+            ItemRule itemRule = parser.popObject();
+            ItemRuleMap itemRuleMap = parser.peekObject();
 
-            String name = attributes.get("name");
-            boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attributes.get("tokenize")), itemRule.isTokenize());
+            if (itemRule.getType() == ItemType.SINGLE && StringUtils.hasText(text)) {
+                itemRule.setValue(text);
+            }
 
-            Token[] tokens = TokenParser.makeTokens(text, tokenize);
-
-            assistant.pushObject(name);
-            assistant.pushObject(tokens);
+            assistant.resolveBeanClass(itemRule);
+            itemRuleMap.putItemRule(itemRule);
         });
-        parser.addNodelet(xpath, "/item/value/call", (node, attributes, text) -> {
-            String bean= attributes.get("bean");
-            String template= attributes.get("template");
-            String parameter = attributes.get("parameter");
-            String attribute = attributes.get("attribute");
-            String property = attributes.get("property");
+        parser.setXpath(xpath + "/item/value");
+        parser.addNodelet(attrs -> {
+            ItemRule itemRule = parser.peekObject();
+
+            String name = attrs.get("name");
+            boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attrs.get("tokenize")), itemRule.isTokenize());
+
+            parser.pushObject(name);
+            parser.pushObject(tokenize);
+            parser.pushObject(null); // tokens
+        });
+        parser.setXpath(xpath + "/item/value/call");
+        parser.addNodelet(attrs -> {
+            String bean= attrs.get("bean");
+            String template= attrs.get("template");
+            String parameter = attrs.get("parameter");
+            String attribute = attrs.get("attribute");
+            String property = attrs.get("property");
 
             Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
             if (t != null) {
-                Token[] tokens = new Token[] {t};
+                Token[] tokens = new Token[] { t };
 
-                assistant.popObject();
-                assistant.pushObject(tokens);
+                parser.popObject();
+                parser.pushObject(tokens);
             }
         });
-        parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
-            assistant.popObject();
-            assistant.pushObject(null);
+        parser.setXpath(xpath + "/item/value/null");
+        parser.addNodelet(attrs -> {
+            parser.popObject();
+            parser.pushObject(null);
         });
-        parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
-            Token[] tokens = assistant.popObject();
-            String name = assistant.popObject();
-            ItemRule itemRule = assistant.peekObject();
+        parser.setXpath(xpath + "/item/value");
+        parser.addNodeEndlet(text -> {
+            Token[] tokens = parser.popObject();
+            boolean tokenize = parser.popObject();
+            String name = parser.popObject();
+            ItemRule itemRule = parser.peekObject();
+
+            if (tokens == null && StringUtils.hasText(text)) {
+                tokens = TokenParser.makeTokens(text, tokenize);
+            }
 
             if (itemRule.isListableType()) {
                 itemRule.addValue(tokens);
@@ -111,14 +127,15 @@ class ItemNodeletAdder implements NodeletAdder {
                 itemRule.setValue(tokens);
             }
         });
-        parser.addNodelet(xpath, "/item/call", (node, attributes, text) -> {
-            String bean = StringUtils.emptyToNull(attributes.get("bean"));
-            String template = StringUtils.emptyToNull(attributes.get("template"));
-            String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
-            String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
-            String property = StringUtils.emptyToNull(attributes.get("property"));
+        parser.setXpath(xpath + "/item/call");
+        parser.addNodelet(attrs -> {
+            String bean = StringUtils.emptyToNull(attrs.get("bean"));
+            String template = StringUtils.emptyToNull(attrs.get("template"));
+            String parameter = StringUtils.emptyToNull(attrs.get("parameter"));
+            String attribute = StringUtils.emptyToNull(attrs.get("attribute"));
+            String property = StringUtils.emptyToNull(attrs.get("property"));
 
-            ItemRule itemRule = assistant.peekObject();
+            ItemRule itemRule = parser.peekObject();
 
             Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
             if (t != null) {
@@ -130,13 +147,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 }
             }
         });
-        parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
-            ItemRule itemRule = assistant.popObject();
-            ItemRuleMap itemRuleMap = assistant.peekObject();
-
-            assistant.resolveBeanClass(itemRule);
-            itemRuleMap.putItemRule(itemRule);
-        });
+        parser.setXpath(xpath);
     }
 
 }
