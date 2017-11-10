@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.nodelet;
+package com.aspectran.core.component.session;
 
-import java.util.Map;
+import com.aspectran.core.context.AspectranCheckedException;
 
 /**
- * A nodelet is a sort of callback or event handler that can be registered 
- * to handle an XPath event registered with the NodeParser.
+ * Exception raised when session data can not be written.
+ *
+ * <p>Created: 2017. 9. 27.</p>
  */
-public interface Nodelet {
+public class UnwritableSessionDataException extends AspectranCheckedException {
+
+    private String id;
+
+    public UnwritableSessionDataException(String id, Throwable t) {
+        super("Unwritable session " + id, t);
+        this.id = id;
+    }
     
-    /**
-     * For a registered XPath, the NodeletParser will call the Nodelet's 
-     * process method for processing. 
-     *
-     * @param attrs the attributes of the start element
-     * @throws Exception if an error occurs while processing the nodelet
-     */
-    void process(Map<String, String> attrs) throws Exception;
+    public String getId() {
+        return id;
+    }
 
 }

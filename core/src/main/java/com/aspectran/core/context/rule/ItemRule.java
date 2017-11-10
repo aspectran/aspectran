@@ -634,13 +634,15 @@ public class ItemRule {
      * @param mandatory whether or not this item is mandatory
      * @param security whether or not this item requires security input
      * @return the item rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize, Boolean mandatory, Boolean security) {
+    public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize,
+                                       Boolean mandatory, Boolean security) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
 
         ItemType itemType = ItemType.resolve(type);
         if (type != null && itemType == null) {
-            throw new IllegalArgumentException("No item type for '" + type + "'");
+            throw new IllegalRuleException("No item type for '" + type + "'");
         }
         if (itemType != null) {
             itemRule.setType(itemType);
@@ -660,7 +662,7 @@ public class ItemRule {
 
         ItemValueType itemValueType = ItemValueType.resolve(valueType);
         if (valueType != null && itemValueType == null) {
-            throw new IllegalArgumentException("No item value type for '" + valueType + "'");
+            throw new IllegalRuleException("No item value type for '" + valueType + "'");
         }
         itemRule.setValueType(itemValueType);
 
@@ -752,8 +754,9 @@ public class ItemRule {
      *
      * @param itemParametersList the item parameters list to convert
      * @return the item rule map
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) {
+    public static ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) throws IllegalRuleException {
         if (itemParametersList == null || itemParametersList.isEmpty()) {
             return null;
         }
@@ -794,9 +797,10 @@ public class ItemRule {
      * </pre>
      *
      * @param itemParameters the item parameters
-     * @return an {@code ItemRule}
+     * @return an instance of {@code ItemRule}
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRule toItemRule(ItemParameters itemParameters) {
+    public static ItemRule toItemRule(ItemParameters itemParameters) throws IllegalRuleException {
         String type = itemParameters.getString(ItemParameters.type);
         String name = itemParameters.getString(ItemParameters.name);
         String valueType = itemParameters.getString(ItemParameters.valueType);
@@ -868,8 +872,9 @@ public class ItemRule {
      *
      * @param text the {@code String} to convert
      * @return an {@code ItemRuleMap}
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRuleMap toItemRuleMap(String text) {
+    public static ItemRuleMap toItemRuleMap(String text) throws IllegalRuleException {
         Parameters holder = new ItemHolderParameters(text);
         List<ItemParameters> itemParametersList = holder.getParametersList(ItemHolderParameters.item);
         return toItemRuleMap(itemParametersList);

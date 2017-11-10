@@ -37,6 +37,7 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
         setAppenderFileFormatType(AppenderFileFormatType.APON);
     }
 
+    @Override
     public String getQualifiedName() {
         return null;
     }

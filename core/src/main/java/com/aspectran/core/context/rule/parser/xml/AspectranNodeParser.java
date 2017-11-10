@@ -49,7 +49,7 @@ public class AspectranNodeParser {
      * @param assistant the assistant for Context Builder
      */
     public AspectranNodeParser(ContextRuleAssistant assistant) {
-        this(assistant, true);
+        this(assistant, true, true);
     }
 
     /**
@@ -57,16 +57,19 @@ public class AspectranNodeParser {
      *
      * @param assistant the context builder assistant
      * @param validating true if the parser produced will validate documents
-     *                   as they are parsed; false otherwise.
+     *      as they are parsed; false otherwise
+     * @param trackingLocation true if tracing the location of the node being
+     *      parsed, false otherwise
      */
-    public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating) {
+    public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
 
         this.parser = new NodeletParser();
         this.parser.setValidating(validating);
         this.parser.setEntityResolver(new AspectranDtdResolver(validating));
-
-        assistant.setLocationTracker(this.parser.trackingLocation());
+        if (trackingLocation) {
+            this.parser.trackingLocation();
+        }
 
         addDescriptionNodelets();
         addSettingsNodelets();
@@ -89,6 +92,8 @@ public class AspectranNodeParser {
     public void parse(RuleAppender ruleAppender) throws Exception {
         InputStream inputStream = null;
         try {
+            ruleAppender.setNodeTracker(parser.getNodeTracker());
+
             inputStream = ruleAppender.getInputStream();
             InputSource inputSource = new InputSource(inputStream);
             inputSource.setSystemId(ruleAppender.getQualifiedName());

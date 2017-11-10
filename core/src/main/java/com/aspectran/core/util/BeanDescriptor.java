@@ -45,7 +45,7 @@ public class BeanDescriptor {
 
     private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
 
-    private String[] writeablePropertyNames = EMPTY_STRING_ARRAY;
+    private String[] writablePropertyNames = EMPTY_STRING_ARRAY;
 
     private String[] distinctMethodNames = EMPTY_STRING_ARRAY;
 
@@ -65,7 +65,7 @@ public class BeanDescriptor {
         addWriteMethods(methods);
 
         readablePropertyNames = readMethods.keySet().toArray(new String[readMethods.keySet().size()]);
-        writeablePropertyNames = writeMethods.keySet().toArray(new String[writeMethods.keySet().size()]);
+        writablePropertyNames = writeMethods.keySet().toArray(new String[writeMethods.keySet().size()]);
 
         Set<String> nameSet = new HashSet<>();
         for (Method method : methods) {
@@ -309,8 +309,8 @@ public class BeanDescriptor {
      *
      * @return the array
      */
-    public String[] getWriteablePropertyNames() {
-        return writeablePropertyNames;
+    public String[] getWritablePropertyNames() {
+        return writablePropertyNames;
     }
 
     /**

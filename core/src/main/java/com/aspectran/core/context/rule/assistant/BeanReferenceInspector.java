@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
+import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.BeanActionRule;
@@ -24,10 +25,12 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeTracker;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -55,15 +58,14 @@ public class BeanReferenceInspector {
      * @param inspectable the object to be inspected
      * @param ruleAppender the rule appender
      */
-    public void reserve(Object beanIdOrClass, BeanReferenceInspectable inspectable, RuleAppender ruleAppender,
-                        NodeletParser.LocationTracker locationTracker) {
+    public void reserve(Object beanIdOrClass, BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
         Set<RefererInfo> refererInfoSet = referenceMap.get(beanIdOrClass);
         if (refererInfoSet == null) {
             refererInfoSet = new LinkedHashSet<>();
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender, locationTracker));
+            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
             referenceMap.put(beanIdOrClass, refererInfoSet);
         } else {
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender, locationTracker));
+            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
         }
     }
 
@@ -112,16 +114,14 @@ public class BeanReferenceInspector {
                     brokenReferences.add(beanIdOrClass);
                     for (RefererInfo refererInfo : refererInfoSet) {
                         log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() +
-                                "' on " + refererInfo.getRuleAppender().getQualifiedName() +
-                                " " + refererInfo.getLocationTracker() +
-                                " " + refererInfo.getBeanRefererType() + " " + refererInfo.getInspectable());
+                                "' on " + refererInfo);
                     }
                 }
             } else {
                 for (RefererInfo refererInfo : refererInfoSet) {
                     if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_ACTION_RULE) {
-                        BeanRuleAnalyzer.checkTransletActionParameter((BeanActionRule)refererInfo.getInspectable(),
-                                beanRule, refererInfo.getRuleAppender());
+                        checkTransletActionParameter((BeanActionRule)refererInfo.getInspectable(),
+                                beanRule, refererInfo);
                     }
                 }
             }
@@ -139,6 +139,28 @@ public class BeanReferenceInspector {
         }
     }
 
+    private void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule, RefererInfo refererInfo) {
+        if (beanActionRule.getArgumentItemRuleMap() == null) {
+            Class<?> beanClass = beanRule.getTargetBeanClass();
+            String methodName = beanActionRule.getMethodName();
+
+            Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, BeanRuleAnalyzer.TRANSLET_ACTION_PARAMETER_TYPES);
+            if (m1 != null) {
+                beanActionRule.setMethod(m1);
+                beanActionRule.setRequiresTranslet(true);
+            } else {
+                Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
+                if (m2 == null) {
+                    throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
+                            " in " + refererInfo
+                            , beanRule);
+                }
+                beanActionRule.setMethod(m2);
+                beanActionRule.setRequiresTranslet(false);
+            }
+        }
+    }
+
     public Map<Object, Set<RefererInfo>> getReferenceMap() {
         return referenceMap;
     }
@@ -149,13 +171,22 @@ public class BeanReferenceInspector {
 
         private final RuleAppender ruleAppender;
 
-        private final NodeletParser.LocationTracker locationTracker;
+        private final NodeTracker nodeTracker;
 
-        RefererInfo(BeanReferenceInspectable inspectable, RuleAppender ruleAppender,
-                    NodeletParser.LocationTracker locationTracker) {
+        RefererInfo(BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
             this.inspectable = inspectable;
             this.ruleAppender = ruleAppender;
-            this.locationTracker = locationTracker;
+
+            if (ruleAppender != null) {
+                NodeTracker nodeTracker = ruleAppender.getNodeTracker();
+                if (nodeTracker != null) {
+                    this.nodeTracker = nodeTracker.getClonedNodeTracker();
+                } else {
+                    this.nodeTracker = null;
+                }
+            } else {
+                this.nodeTracker = null;
+            }
         }
 
         BeanReferenceInspectable getInspectable() {
@@ -170,8 +201,25 @@ public class BeanReferenceInspector {
             return inspectable.getBeanRefererType();
         }
 
-        public NodeletParser.LocationTracker getLocationTracker() {
-            return locationTracker;
+        public NodeTracker getNodeTracker() {
+            return nodeTracker;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            if (ruleAppender != null) {
+                sb.append(ruleAppender.getQualifiedName());
+                if (nodeTracker != null) {
+                    sb.append(" ");
+                    sb.append(nodeTracker.toString());
+                }
+                sb.append(" ");
+            }
+            sb.append(inspectable.getBeanRefererType());
+            sb.append(" ");
+            sb.append(inspectable);
+            return sb.toString();
         }
 
     }

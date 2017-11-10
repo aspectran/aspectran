@@ -40,6 +40,7 @@ public class UrlRuleAppender extends AbstractRuleAppender {
         determineAppenderFileFormatType(ruleUrl);
     }
 
+    @Override
     public String getQualifiedName() {
         return null;
     }

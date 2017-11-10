@@ -251,7 +251,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      * @param name a {@code String} specifying the name of the parameter
      * @param defaultValue the default value
      * @return a {@code String} representing the
-     *            single value of the parameter
+     *      single value of the parameter
      */
     private String getParameter(String name, String defaultValue) {
         String value = getParameter(name);
@@ -264,7 +264,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param name a {@code String} specifying the name of the parameter
      * @return a {@code String} representing the
-     *            single value of the parameter
+     *      single value of the parameter
      */
     protected String getParameter(String name) {
         if (activity.getRequestAdapter() != null) {
@@ -281,7 +281,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param name a {@code String} specifying the name of the parameter
      * @return an array of {@code String} objects
-     *            containing the parameter's values
+     *      containing the parameter's values
      */
     protected String[] getParameterValues(String name) {
         if (activity.getRequestAdapter() != null) {
@@ -297,7 +297,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param name a {@code String} specifying the name of the parameter
      * @return a {@code FileParameter} representing the
-     *            single value of the parameter
+     *      single value of the parameter
      */
     protected FileParameter getFileParameter(String name) {
         if (activity.getRequestAdapter() != null) {
@@ -314,7 +314,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param name a {@code String} specifying the name of the parameter
      * @return an array of {@code FileParameter} objects
-     *            containing the parameter's values
+     *      containing the parameter's values
      */
     protected FileParameter[] getFileParameterValues(String name) {
         if (activity.getRequestAdapter() != null) {
@@ -330,7 +330,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param token the token
      * @return an {@code Object} containing the value of the attribute,
-     *             or {@code null} if the attribute does not exist
+     *       or {@code null} if the attribute does not exist
      */
     protected Object getAttribute(Token token) {
         Object object = null;
@@ -430,7 +430,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
         } else {
-            Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+            Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName(), activity);
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }

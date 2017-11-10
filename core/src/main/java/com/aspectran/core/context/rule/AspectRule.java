@@ -103,7 +103,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
     private ExceptionRule exceptionRule;
 
-    private boolean beanRelevanted;
+    private boolean beanRelevant;
 
     private String description;
 
@@ -230,12 +230,12 @@ public class AspectRule implements BeanReferenceInspectable {
         this.exceptionRule = exceptionRule;
     }
 
-    public boolean isBeanRelevanted() {
-        return beanRelevanted;
+    public boolean isBeanRelevant() {
+        return beanRelevant;
     }
 
-    public void setBeanRelevanted(boolean beanRelevanted) {
-        this.beanRelevanted = beanRelevanted;
+    public void setBeanRelevant(boolean beanRelevant) {
+        this.beanRelevant = beanRelevant;
     }
 
     /**
@@ -274,13 +274,13 @@ public class AspectRule implements BeanReferenceInspectable {
         tsb.append("settingsAdviceRule", settingsAdviceRule);
         tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
         tsb.append("exceptionRule", exceptionRule);
-        tsb.append("beanRelevanted", beanRelevanted);
+        tsb.append("beanRelevant", beanRelevant);
         return tsb.toString();
     }
 
-    public static AspectRule newInstance(String id, String order, Boolean isolated) {
+    public static AspectRule newInstance(String id, String order, Boolean isolated) throws IllegalRuleException {
         if (id == null) {
-            throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute");
+            throw new IllegalRuleException("The 'aspect' element requires an 'id' attribute");
         }
 
         AspectRule aspectRule = new AspectRule();
@@ -291,21 +291,21 @@ public class AspectRule implements BeanReferenceInspectable {
             try {
                 aspectRule.setOrder(Integer.parseInt(order));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("The 'order' attribute on an 'aspect' element must be a valid integer");
+                throw new IllegalRuleException("The 'order' attribute on an 'aspect' element must be a valid integer");
             }
         }
 
         return aspectRule;
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, String type, String text) {
+    public static void updateJoinpoint(AspectRule aspectRule, String type, String text) throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpointType(joinpointRule, type);
         JoinpointRule.updateJoinpoint(joinpointRule, text);
         aspectRule.setJoinpointRule(joinpointRule);
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters) {
+    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters) throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
         aspectRule.setJoinpointRule(joinpointRule);

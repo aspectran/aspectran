@@ -200,7 +200,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             } catch (Exception e) {
                 e.printStackTrace();
                 file.delete(); //  No point keeping the file if we didn't save the whole session
-                throw new UnwriteableSessionDataException(id, e);
+                throw new UnwritableSessionDataException(id, e);
             }
         }
     }

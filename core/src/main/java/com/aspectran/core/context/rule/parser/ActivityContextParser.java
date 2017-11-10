@@ -27,10 +27,6 @@ public interface ActivityContextParser {
 
     ContextRuleAssistant getContextRuleAssistant();
 
-    void setActiveProfiles(String... activeProfiles);
-
-    void setDefaultProfiles(String... defaultProfiles);
-
     void setEncoding(String encoding);
 
     void setHybridLoad(boolean hybridLoad);

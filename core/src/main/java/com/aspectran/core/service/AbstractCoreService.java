@@ -117,10 +117,10 @@ public abstract class AbstractCoreService extends AbstractServiceContoller imple
             this.aspectranConfig = aspectranConfig;
             this.schedulerConfig = aspectranConfig.getSchedulerConfig();
 
-            ContextConfig aspectranContextConfig = aspectranConfig.getContextConfig();
+            ContextConfig contextConfig = aspectranConfig.getContextConfig();
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
-            activityContextBuilder.initialize(aspectranContextConfig);
+            activityContextBuilder.setContextConfig(contextConfig);
             activityContextBuilder.setServiceController(this);
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
@@ -137,7 +137,7 @@ public abstract class AbstractCoreService extends AbstractServiceContoller imple
 
     protected void loadActivityContext() throws ActivityContextBuilderException {
         if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the initialize() method");
+            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the prepare() method");
         }
         if (activityContext != null) {
             throw new IllegalStateException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading");
@@ -148,7 +148,7 @@ public abstract class AbstractCoreService extends AbstractServiceContoller imple
 
     protected void destroyActivityContext() {
         if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state; First, call the initialize() method");
+            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state; First, call the prepare() method");
         }
 
         activityContextBuilder.destroy();

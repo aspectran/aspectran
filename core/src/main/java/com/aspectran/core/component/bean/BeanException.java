@@ -18,7 +18,7 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * This class is the basic exception that gets thrown from the bean pacakge.
+ * This class is the basic exception that gets thrown from the bean package.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

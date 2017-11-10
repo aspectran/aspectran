@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.support.pebble;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -40,11 +40,11 @@ import java.util.Locale;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class PebbleEngineFactory implements ApplicationAdapterAware {
+public class PebbleEngineFactory implements EnvironmentAware {
 
     private final Log log = LogFactory.getLog(PebbleEngineFactory.class);
 
-    private ApplicationAdapter applicationAdapter;
+    private Environment environment;
 
     private Locale defaultLocale;
 
@@ -55,8 +55,8 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     private Loader<?>[] templateLoaders;
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     public void setDefaultLocale(String defaultLocale) {
@@ -167,7 +167,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
             }
-            ClasspathLoader loader = new ClasspathLoader(applicationAdapter.getClassLoader());
+            ClasspathLoader loader = new ClasspathLoader(environment.getClassLoader());
             loader.setPrefix(basePackagePath);
             return loader;
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
@@ -180,7 +180,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             loader.setPrefix(prefix);
             return loader;
         } else {
-            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
+            File file = new File(environment.getBasePath(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");

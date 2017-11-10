@@ -405,7 +405,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     /**
      * Returns whether the initialization method requires the Translet argument.
      *
-     * @return true if the initialization method requires the Translet argument, otherwise false
+     * @return true if the initialization method requires the Translet argument, false otherwise
      */
     public boolean isInitMethodRequiresTranslet() {
         return initMethodRequiresTranslet;
@@ -636,7 +636,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     /**
      * Returns whether this bean has been replicated.
      *
-     * @return true if this bean has been replicated, otherwise false
+     * @return true if this bean has been replicated, false otherwise
      */
     public boolean isReplicated() {
         return replicated;
@@ -654,7 +654,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     /**
      * Returns whether this bean is proxied.
      *
-     * @return true if this bean is proxied, otherwise false
+     * @return true if this bean is proxied, false otherwise
      */
     public boolean isProxied() {
         return proxied;
@@ -672,7 +672,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
     /**
      * Returns whether this bean can be proxied.
      *
-     * @return true if this bean can be proxied, otherwise false
+     * @return true if this bean can be proxied, false otherwise
      */
     public boolean isProxiable() {
         return (!factoryOffered && !factoryBean && factoryMethod == null);
@@ -893,7 +893,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         return br;
     }
 
-    public static void updateConstructorArgument(BeanRule beanRule, String text) {
+    public static void updateConstructorArgument(BeanRule beanRule, String text) throws IllegalRuleException {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> argumentParametersList = ItemRule.toItemParametersList(text);
             if (argumentParametersList != null) {
@@ -905,7 +905,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         }
     }
 
-    public static void updateProperty(BeanRule beanRule, String text) {
+    public static void updateProperty(BeanRule beanRule, String text) throws IllegalRuleException {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> propertyParametersList = ItemRule.toItemParametersList(text);
             if (propertyParametersList != null) {

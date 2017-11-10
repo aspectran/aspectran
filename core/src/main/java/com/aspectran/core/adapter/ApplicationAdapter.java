@@ -17,8 +17,6 @@ package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.ApplicationScope;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Enumeration;
 
 /**
@@ -75,42 +73,10 @@ public interface ApplicationAdapter {
     void removeAttribute(String name);
 
     /**
-     * Gets the class loader.
-     *
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
-
-    /**
-     * Sets the class loader.
-     *
-     * @param classLoader the class loader
-     */
-    void setClassLoader(ClassLoader classLoader);
-
-    /**
      * Return the base path that the current application is mapped to.
      *
      * @return the application base path
      */
     String getBasePath();
-
-    /**
-     * Returns to convert the given file path with the real file path.
-     *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
-     */
-    String toRealPath(String filePath) throws IOException;
-
-    /**
-     * Returns to convert the given file path with the real file path.
-     *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
-     */
-    File toRealPathAsFile(String filePath) throws IOException;
 
 }

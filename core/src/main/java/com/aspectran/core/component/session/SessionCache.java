@@ -148,7 +148,7 @@ public interface SessionCache {
      *
      * @param candidates the session ids to check
      * @return the set of session ids that have actually expired: this can
-     * be a superset of the original candidate list.
+     *      be a superset of the original candidate list.
      */
     Set<String> checkExpiration(Set<String> candidates);
 

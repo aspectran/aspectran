@@ -88,7 +88,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 if (!hybridon) {
                     if (aspectranNodeParser == null) {
                         aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
-                        appender.setLocationTracker(getContextRuleAssistant().getLocationTracker());
                     }
                     aspectranNodeParser.parse(appender);
                 }
@@ -140,7 +139,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 ContextRuleAssistant assistant = new ShallowContextRuleAssistant();
                 assistant.ready();
 
-                AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
+                AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
                 parser.parse(fileRuleAppender);
 
                 RuleToParamsConverter paramsConverter = new RuleToParamsConverter(assistant);

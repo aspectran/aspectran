@@ -109,7 +109,7 @@ public class WildcardMatcher {
         return separatorIndex <= separatorCount;
     }
 
-    public boolean hasPrev() {
+    public boolean hasPrevious() {
         return separatorIndex >= 0;
     }
 
@@ -120,7 +120,7 @@ public class WildcardMatcher {
         return find(separatorIndex++);
     }
 
-    public String prev() {
+    public String previous() {
         if (separatorIndex < 0) {
             return null;
         }

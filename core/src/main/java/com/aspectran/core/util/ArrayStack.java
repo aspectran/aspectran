@@ -46,7 +46,7 @@ import java.util.EmptyStackException;
  */
 public class ArrayStack extends ArrayList<Object> {
 
-    /**  Ensure serialization compatibility. */
+    /** Ensure serialization compatibility. */
     private static final long serialVersionUID = 4952513157310856314L;
 
     /**

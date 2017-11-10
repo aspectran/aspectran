@@ -95,7 +95,7 @@ public class ActionResult {
     /**
      * Returns whether or not to expose this action's result.
      *
-     * @return true if hide this action result, otherwise false
+     * @return true if hide this action result, false otherwise
      */
     public boolean isHidden() {
         return hidden;

@@ -31,7 +31,7 @@ public class PebbleEngineFactoryBean extends PebbleEngineFactory
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
-     * if not overridden by a preconfigured FreeMarker Configuation.
+     * if not overridden by a preconfigured FreeMarker Configuration.
      *
      * @throws Exception if an exception occurs during initialization.
      */

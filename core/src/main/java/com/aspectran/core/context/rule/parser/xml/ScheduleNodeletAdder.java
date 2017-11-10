@@ -95,12 +95,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             String method = StringUtils.emptyToNull(attrs.get("method"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
-            if (transletName == null) {
-                throw new IllegalArgumentException("The <job> element requires a <translet> attribute");
-            }
-
             transletName = assistant.applyTransletNamePattern(transletName);
-
             ScheduleRule scheduleRule = parser.peekObject();
 
             ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, transletName, method, disabled);

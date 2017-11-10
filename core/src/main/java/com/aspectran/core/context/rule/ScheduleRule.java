@@ -146,9 +146,9 @@ public class ScheduleRule implements BeanReferenceInspectable {
         return tsb.toString();
     }
 
-    public static ScheduleRule newInstance(String id) {
+    public static ScheduleRule newInstance(String id) throws IllegalRuleException {
         if (id == null) {
-            throw new IllegalArgumentException("The 'schedule' element requires an 'id' attribute");
+            throw new IllegalRuleException("The 'schedule' element requires an 'id' attribute");
         }
 
         ScheduleRule scheduleRule = new ScheduleRule();

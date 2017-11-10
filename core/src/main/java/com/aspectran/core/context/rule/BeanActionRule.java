@@ -240,6 +240,7 @@ public class BeanActionRule implements BeanReferenceInspectable {
         propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
+    @Override
     public BeanRefererType getBeanRefererType() {
         return BEAN_REFERRER_TYPE;
     }
@@ -266,12 +267,14 @@ public class BeanActionRule implements BeanReferenceInspectable {
      * @param id the action id
      * @param beanId the bean id
      * @param methodName the method name
-     * @param hidden whether to hide result of the action
+     * @param hidden true if hiding the result of the action; false otherwise
      * @return the bean action rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
+    public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
+            throws IllegalRuleException {
         if (methodName == null) {
-            throw new IllegalArgumentException("The 'action' element requires an 'method' attribute");
+            throw new IllegalRuleException("The 'action' element requires an 'method' attribute");
         }
 
         BeanActionRule beanActionRule = new BeanActionRule();

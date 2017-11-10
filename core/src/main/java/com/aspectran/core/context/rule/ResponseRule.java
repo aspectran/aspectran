@@ -119,6 +119,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return response;
     }
 
+    @Override
     public ResponseRule replicate() {
         return replicate(this);
     }
@@ -132,12 +133,12 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return tsb.toString();
     }
 
-    public static ResponseRule newInstance(String name, String characterEncoding) {
+    public static ResponseRule newInstance(String name, String characterEncoding) throws IllegalRuleException {
         if (characterEncoding != null) {
             try {
                 Charset.forName(characterEncoding);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Unsupported character encoding name: " + characterEncoding, e);
+                throw new IllegalRuleException("Unsupported character encoding name: " + characterEncoding, e);
             }
         }
 

@@ -63,10 +63,10 @@ public class ActivityContextBuilderTest {
         activityContextBuilder.build("/config/test-config.xml");
         activityContextBuilder.destroy();
 
-        System.out.println("=============== reload ==============");
+        //System.out.println("=============== reload ==============");
 
-        activityContextBuilder.build();
-        activityContextBuilder.destroy();
+        //activityContextBuilder.build();
+        //activityContextBuilder.destroy();
     }
 
     @After

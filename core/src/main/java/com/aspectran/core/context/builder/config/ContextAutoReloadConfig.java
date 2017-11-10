@@ -27,7 +27,7 @@ public class ContextAutoReloadConfig extends AbstractParameters {
     public static final ParameterDefinition reloadMode;
 
     /**
-     * The interval in seconds between scanning the specified resouces for file changes.
+     * The interval in seconds between scanning the specified resources for file changes.
      * If file changes are detected, the activity context is reloaded.
      */
     public static final ParameterDefinition scanIntervalSeconds;

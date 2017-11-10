@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session;
+package com.aspectran.core.component.bean.aware;
 
-import com.aspectran.core.context.AspectranCheckedException;
+import com.aspectran.core.context.env.Environment;
 
 /**
- * <p>Created: 2017. 9. 27.</p>
+ * Interface to be implemented by any object that wishes to be notified of the
+ * {@link Environment}.
+ *
+ * <p>Created: 2017. 11. 9.</p>
+ *
+ * @since 5.0.0
  */
-public class UnwriteableSessionDataException extends AspectranCheckedException {
-    private String id;
+public interface EnvironmentAware extends Aware {
 
-    public UnwriteableSessionDataException(String id, Throwable t) {
-        super("Unwriteable session " + id, t);
-        this.id = id;
-    }
-    
-    public String getId() {
-        return id;
-    }
+    void setEnvironment(Environment environment);
 
 }

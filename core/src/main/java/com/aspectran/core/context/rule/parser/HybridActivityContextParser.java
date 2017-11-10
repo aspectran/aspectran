@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -29,8 +29,8 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {
 
-    public HybridActivityContextParser(ApplicationAdapter applicationAdapter) {
-        super(applicationAdapter);
+    public HybridActivityContextParser(ContextEnvironment environment) {
+        super(environment);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
 
             return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configuration: " + aspectranParameters, e);
+            throw new ActivityContextParserException("Failed to parse configuration with given AspectranParameters", e);
         }
     }
 

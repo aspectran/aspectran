@@ -18,6 +18,8 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.context.AspectranCheckedException;
 
 /**
+ * Exception raised when session data can not be read.
+ *
  * <p>Created: 2017. 9. 7.</p>
  */
 public class UnreadableSessionDataException extends AspectranCheckedException {

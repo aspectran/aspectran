@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -222,12 +222,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         return templateSource;
     }
 
-    public String getTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+    public String getTemplateSource(Environment environment) throws IOException {
         if (this.file != null || this.resource != null || this.url != null) {
             if (this.noCache) {
-                return loadTemplateSource(applicationAdapter);
+                return loadTemplateSource(environment);
             } else {
-                loadCachedTemplateSource(applicationAdapter);
+                loadCachedTemplateSource(environment);
                 return this.templateSource;
             }
         } else {
@@ -251,16 +251,16 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         return this.templateTokens;
     }
 
-    public Token[] getTemplateTokens(ApplicationAdapter applicationAdapter) throws IOException {
+    public Token[] getTemplateTokens(Environment environment) throws IOException {
         if (isExternalEngine()) {
             throw new UnsupportedOperationException();
         }
         if (this.file != null || this.resource != null || this.url != null) {
             if (this.noCache) {
-                String source = loadTemplateSource(applicationAdapter);
+                String source = loadTemplateSource(environment);
                 return parseContentTokens(source);
             } else {
-                loadCachedTemplateSource(applicationAdapter);
+                loadCachedTemplateSource(environment);
                 return this.templateTokens;
             }
         } else {
@@ -280,13 +280,13 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         }
     }
 
-    private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+    private String loadTemplateSource(Environment environment) throws IOException {
         String templateSource = null;
         if (this.file != null) {
-            File file = applicationAdapter.toRealPathAsFile(this.file);
+            File file = environment.toRealPathAsFile(this.file);
             templateSource = ResourceUtils.read(file, this.encoding);
         } else if (this.resource != null) {
-            ClassLoader classLoader = applicationAdapter.getClassLoader();
+            ClassLoader classLoader = environment.getClassLoader();
             URL url = classLoader.getResource(this.resource);
             templateSource = ResourceUtils.read(url, this.encoding);
         } else if (this.url != null) {
@@ -296,9 +296,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         return templateSource;
     }
 
-    private void loadCachedTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
+    private void loadCachedTemplateSource(Environment environment) throws IOException {
         if (this.file != null) {
-            File file = applicationAdapter.toRealPathAsFile(this.file);
+            File file = environment.toRealPathAsFile(this.file);
             long lastModifiedTime = file.lastModified();
             if (lastModifiedTime > this.lastModifiedTime) {
                 synchronized (this) {
@@ -314,7 +314,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
             if (!this.loaded) {
                 synchronized (this) {
                     if (!this.loaded) {
-                        ClassLoader classLoader = applicationAdapter.getClassLoader();
+                        ClassLoader classLoader = environment.getClassLoader();
                         URL url = classLoader.getResource(this.resource);
                         String template = ResourceUtils.read(url, this.encoding);
                         setTemplateSource(template);
@@ -370,15 +370,16 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     }
 
     public static TemplateRule newInstance(String id, String engine, String name, String file,
-            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache)
+            throws IllegalRuleException {
 
         if (id == null) {
-            throw new IllegalArgumentException("The 'template' element requires an 'id' attribute");
+            throw new IllegalRuleException("The 'template' element requires an 'id' attribute");
         }
 
         ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
         if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'");
+            throw new IllegalRuleException("No content style type for '" + contentStyle + "'");
         }
 
         TemplateRule tr = new TemplateRule();
@@ -399,11 +400,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     }
 
     public static TemplateRule newInstanceForBuiltin(String engine, String name, String file,
-            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache) {
+            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache)
+            throws IllegalRuleException {
 
         ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
         if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalArgumentException("No content style type for '" + contentStyle + "'");
+            throw new IllegalRuleException("No content style type for '" + contentStyle + "'");
         }
 
         TemplateRule tr = new TemplateRule();

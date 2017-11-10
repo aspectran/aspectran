@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http:// www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -153,7 +153,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             session = doGet(id);
 
             if (sessionDataStore == null) {
-                break; //can't load any session data so just return null or the session object
+                break; // can't load any session data so just return null or the session object
             }
 
             if (session == null) {
@@ -161,33 +161,33 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("Session " + id + " not found locally, attempting to load");
                 }
 
-                //didn't get a session, try and create one and put in a placeholder for it
+                // didn't get a session, try and create one and put in a placeholder for it
                 PlaceHolderSession phs = new PlaceHolderSession (new SessionData(id, 0, 0, 0, 0));
                 Lock phsLock = phs.lock();
                 Session s = doPutIfAbsent(id, phs);
                 if (s == null) {
-                    //My placeholder won, go ahead and load the full session data
+                    // My placeholder won, go ahead and load the full session data
                     try {
                         session = loadSession(id);
                         if (session == null) {
-                            //session does not exist, remove the placeholder
+                            // session does not exist, remove the placeholder
                             doDelete(id);
                             phsLock.close();
                             break;
                         }
 
                         try (Lock ignored = session.lock()) {
-                            //swap it in instead of the placeholder
+                            // swap it in instead of the placeholder
                             boolean success = doReplace(id, phs, session);
                             if (!success) {
-                                //something has gone wrong, it should have been our placeholder
+                                // something has gone wrong, it should have been our placeholder
                                 doDelete(id);
                                 session = null;
                                 log.warn("Replacement of placeholder for session " + id + " failed");
                                 phsLock.close();
                                 break;
                             } else {
-                                //successfully swapped in the session
+                                // successfully swapped in the session
                                 session.setResident(true);
                                 session.updateInactivityTimer();
                                 phsLock.close();
@@ -195,17 +195,17 @@ public abstract class AbstractSessionCache implements SessionCache {
                             }
                         }
                     } catch (Exception e) {
-                        ex = e; //remember a problem happened loading the session
-                        doDelete(id); //remove the placeholder
+                        ex = e; // remember a problem happened loading the session
+                        doDelete(id); // remove the placeholder
                         phsLock.close();
                         session = null;
                         break;
                     }
                 } else {
-                    //my placeholder didn't win, check the session returned
+                    // my placeholder didn't win, check the session returned
                     phsLock.close();
                     try (Lock ignored = s.lock()) {
-                        //is it a placeholder? or is a non-resident session? In both cases, chuck it away and start again
+                        // is it a placeholder? or is a non-resident session? In both cases, chuck it away and start again
                         if (!s.isResident() || s instanceof PlaceHolderSession) {
                             continue;
                         }
@@ -214,14 +214,14 @@ public abstract class AbstractSessionCache implements SessionCache {
                     }
                 }
             } else {
-                //check the session returned
+                // check the session returned
                 try (Lock ignored = session.lock()) {
-                    //is it a placeholder? or is it passivated? In both cases, chuck it away and start again
+                    // is it a placeholder? or is it passivated? In both cases, chuck it away and start again
                     if (!session.isResident() || session instanceof PlaceHolderSession) {
                         continue;
                     }
 
-                    //got the session
+                    // got the session
                     break;
                 }
             }
@@ -237,22 +237,22 @@ public abstract class AbstractSessionCache implements SessionCache {
     /**
      * Load the info for the session from the session data store.
      *
-     * @param id the id
+     * @param id the session id
      * @return a Session object filled with data or null if the session doesn't exist
      * @throws Exception
      */
     private Session loadSession(String id) throws Exception {
         if (sessionDataStore == null) {
-            return null; //can't load it
+            return null; // can't load it
         }
         try {
             SessionData data = sessionDataStore.load(id);
-            if (data == null) { //session doesn't exist
+            if (data == null) { // session doesn't exist
                 return null;
             }
             return newSession(data);
         } catch (UnreadableSessionDataException e) {
-            //can't load the session, delete it
+            // can't load the session, delete it
             if (isRemoveUnloadableSessions()) {
                 sessionDataStore.delete(id);
             }
@@ -263,15 +263,15 @@ public abstract class AbstractSessionCache implements SessionCache {
     /**
      * Put the Session object back into the session store.
      *
-     * This should be called when a request exists the session. Only when the last
-     * simultaneous request exists the session will any action be taken.
+     * <p>This should be called when a request exists the session. Only when the last
+     * simultaneous request exists the session will any action be taken.</p>
      *
-     * If there is a SessionDataStore write the session data through to it.
+     * <p>If there is a SessionDataStore write the session data through to it.</p>
      *
-     * If the SessionDataStore supports passivation, call the passivate/active listeners.
+     * <p>If the SessionDataStore supports passivation, call the passivate/active listeners.</p>
      *
-     * If the evictionPolicy == SessionCache.EVICT_ON_SESSION_EXIT then after we have saved
-     * the session, we evict it from the cache.
+     * <p>If the evictionPolicy == SessionCache.EVICT_ON_SESSION_EXIT then after we have saved
+     * the session, we evict it from the cache.</p>
      */
     @Override
     public void put(String id, Session session) throws Exception {
@@ -289,19 +289,19 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("No SessionDataStore, putting into SessionCache only id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) { //ensure it is in our map
+                if (doPutIfAbsent(id, session) == null) { // ensure it is in our map
                     session.updateInactivityTimer();
                 }
                 return;
             }
 
-            //don't do anything with the session until the last request for it has finished
+            // don't do anything with the session until the last request for it has finished
             if ((session.getRequests() <= 0)) {
-                //save the session
+                // save the session
                 if (!sessionDataStore.isPassivating()) {
-                    //if our backing datastore isn't the passivating kind, just save the session
+                    // if our backing datastore isn't the passivating kind, just save the session
                     sessionDataStore.store(id, session.getSessionData());
-                    //if we evict on session exit, boot it from the cache
+                    // if we evict on session exit, boot it from the cache
                     if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
                         if (log.isDebugEnabled()) {
                             log.debug("Eviction on request exit id=" + id);
@@ -310,7 +310,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         session.setResident(false);
                     } else {
                         session.setResident(true);
-                        if (doPutIfAbsent(id,session) == null) { //ensure it is in our map
+                        if (doPutIfAbsent(id,session) == null) { // ensure it is in our map
                             session.updateInactivityTimer();
                         }
                         if (log.isDebugEnabled()) {
@@ -318,7 +318,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         }
                     }
                 } else {
-                    //backing store supports passivation, call the listeners
+                    // backing store supports passivation, call the listeners
                     sessionHandler.willPassivate(session);
                     if (log.isDebugEnabled()) {
                         log.debug("Session passivating id=" + id);
@@ -326,17 +326,17 @@ public abstract class AbstractSessionCache implements SessionCache {
                     sessionDataStore.store(id, session.getSessionData());
 
                     if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
-                        //throw out the passivated session object from the map
+                        // throw out the passivated session object from the map
                         doDelete(id);
                         session.setResident(false);
                         if (log.isDebugEnabled()) {
                             log.debug("Evicted on request exit id=" + id);
                         }
                     } else {
-                        //reactivate the session
+                        // reactivate the session
                         sessionHandler.didActivate(session);
                         session.setResident(true);
-                        if (doPutIfAbsent(id,session) == null) //ensure it is in our map
+                        if (doPutIfAbsent(id,session) == null) // ensure it is in our map
                             session.updateInactivityTimer();
                         if (log.isDebugEnabled()) {
                             log.debug("Session reactivated id=" + id);
@@ -348,7 +348,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("Req count=" + session.getRequests() + " for id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) { //ensure it is the map, but don't save it to the backing store until the last request exists
+                if (doPutIfAbsent(id, session) == null) { // ensure it is the map, but don't save it to the backing store until the last request exists
                     session.updateInactivityTimer();
                 }
             }
@@ -361,19 +361,20 @@ public abstract class AbstractSessionCache implements SessionCache {
      * This method will first check with the object store. If it
      * doesn't exist in the object store (might be passivated etc),
      * it will check with the data store.
+     *
      * @throws Exception the Exception
      */
     @Override
     public boolean exists(String id) throws Exception {
-        //try the object store first
+        // try the object store first
         Session s = doGet(id);
         if (s != null) {
-            try (Lock lock = s.lock()) {
-                //wait for the lock and check the validity of the session
+            try (Lock ignored = s.lock()) {
+                // wait for the lock and check the validity of the session
                 return s.isValid();
             }
         }
-        //not there, so find out if session data exists for it
+        // not there, so find out if session data exists for it
         return (sessionDataStore != null && sessionDataStore.exists(id));
     }
 
@@ -383,7 +384,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     @Override
     public boolean contains(String id) throws Exception {
-        //just ask our object cache, not the store
+        // just ask our object cache, not the store
         return (doGet(id) != null);
     }
 
@@ -392,10 +393,10 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     @Override
     public Session delete(String id) throws Exception {
-        //get the session, if its not in memory, this will load it
+        // get the session, if its not in memory, this will load it
         Session session = get(id);
 
-        //Always delete it from the backing data store
+        // Always delete it from the backing data store
         if (sessionDataStore != null) {
             boolean deleted = sessionDataStore.delete(id);
             if (log.isDebugEnabled()) {
@@ -403,7 +404,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             }
         }
 
-        //delete it from the session object store
+        // delete it from the session object store
         if (session != null) {
             session.stopInactivityTimer();
             session.setResident(false);
@@ -425,7 +426,7 @@ public abstract class AbstractSessionCache implements SessionCache {
         if (allCandidates != null) {
             for (String c : allCandidates) {
                 Session s = doGet(c);
-                if (s != null && s.getRequests() > 0) { //if the session is in my cache, check its not in use first
+                if (s != null && s.getRequests() > 0) { // if the session is in my cache, check its not in use first
                     sessionsInUse.add(c);
                 }
             }
@@ -457,14 +458,14 @@ public abstract class AbstractSessionCache implements SessionCache {
         try (Lock ignored = session.lock()) {
             if (getEvictionPolicy() > 0 && session.isIdleLongerThan(getEvictionPolicy()) &&
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
-                //Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
-                //being managed on another node and has expired.
+                // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
+                // being managed on another node and has expired.
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("Evicting idle session " + session.getId());
                     }
 
-                    //save before evicting
+                    // save before evicting
                     if (isSaveOnInactiveEviction() && sessionDataStore != null) {
                         if (sessionDataStore.isPassivating()) {
                             sessionHandler.willPassivate(session);
@@ -472,7 +473,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         sessionDataStore.store(session.getId(), session.getSessionData());
                     }
 
-                    doDelete(session.getId()); //detach from this cache
+                    doDelete(session.getId()); // detach from this cache
                     session.setResident(false);
                 } catch (Exception e) {
                     log.warn("Passivation of idle session" + session.getId() + " failed", e);

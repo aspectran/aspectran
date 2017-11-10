@@ -55,7 +55,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         URL url;
 
         try {
-            //"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
+            // "jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
             url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
         } catch (MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);

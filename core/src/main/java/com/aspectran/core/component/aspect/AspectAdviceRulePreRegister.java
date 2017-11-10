@@ -47,14 +47,14 @@ public class AspectAdviceRulePreRegister {
             JoinpointType joinpointType = aspectRule.getJoinpointType();
 
             if (joinpointType == JoinpointType.BEAN) {
-                aspectRule.setBeanRelevanted(true);
+                aspectRule.setBeanRelevant(true);
             } else if (joinpointType == JoinpointType.SESSION) {
-                aspectRule.setBeanRelevanted(false);
+                aspectRule.setBeanRelevant(false);
             } else {
                 Pointcut pointcut = aspectRule.getPointcut();
 
                 if (pointcut == null) {
-                    aspectRule.setBeanRelevanted(false);
+                    aspectRule.setBeanRelevant(false);
                 } else {
                     List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
                     boolean beanRelevanted = false;
@@ -66,7 +66,7 @@ public class AspectAdviceRulePreRegister {
                         }
                     }
 
-                    aspectRule.setBeanRelevanted(beanRelevanted);
+                    aspectRule.setBeanRelevant(beanRelevanted);
                 }
             }
 
@@ -98,7 +98,7 @@ public class AspectAdviceRulePreRegister {
 
     private void determineProxyBean(BeanRule beanRule) {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            if (aspectRule.isBeanRelevanted()) {
+            if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
 
                 if (pointcut != null && pointcut.isExistsBeanMethodNamePattern()) {
@@ -139,7 +139,7 @@ public class AspectAdviceRulePreRegister {
             JoinpointType joinpointType = aspectRule.getJoinpointType();
             Pointcut pointcut = aspectRule.getPointcut();
 
-            if (!aspectRule.isBeanRelevanted() && joinpointType != JoinpointType.SESSION) {
+            if (!aspectRule.isBeanRelevant() && joinpointType != JoinpointType.SESSION) {
                 if (pointcut == null || pointcut.matches(transletRule.getName())) {
                     // register to the translet scope
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);

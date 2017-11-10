@@ -15,6 +15,11 @@
  */
 package com.aspectran.core.context.env;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 
@@ -30,6 +35,8 @@ public abstract class AbstractEnvironment implements Environment {
     private final Set<String> activeProfiles = new LinkedHashSet<>();
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>();
+
+    private ItemRuleMap propertyItemRuleMap;
 
     @Override
     public String[] getActiveProfiles() {
@@ -55,11 +62,11 @@ public abstract class AbstractEnvironment implements Environment {
                 activeProfiles.clear();
             }
             if (profiles != null) {
-                for (String profile : profiles) {
-                    if (profile.contains(",")) {
-                        addActiveProfile(profile);
+                for (String p : profiles) {
+                    if (p.contains(",")) {
+                        addActiveProfile(p);
                     } else {
-                        addProfile(activeProfiles, profile);
+                        addProfile(activeProfiles, p);
                     }
                 }
             }
@@ -102,8 +109,8 @@ public abstract class AbstractEnvironment implements Environment {
                 defaultProfiles.clear();
             }
             if (profiles != null) {
-                for (String profile : profiles) {
-                    addProfile(defaultProfiles, profile);
+                for (String p : profiles) {
+                    addProfile(defaultProfiles, p);
                 }
             }
         }
@@ -137,7 +144,6 @@ public abstract class AbstractEnvironment implements Environment {
         if (profiles == null || profiles.length == 0) {
             return true;
         }
-
         for (String profile : profiles) {
             if (StringUtils.hasLength(profile) && profile.charAt(0) == '!') {
                 if (!isActiveProfile(profile)) {
@@ -149,7 +155,6 @@ public abstract class AbstractEnvironment implements Environment {
                 }
             }
         }
-
         return false;
     }
 
@@ -168,6 +173,37 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         return null;
+    }
+
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
+
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        if (this.propertyItemRuleMap == null) {
+            this.propertyItemRuleMap = propertyItemRuleMap;
+        } else {
+            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+        }
+    }
+
+    @Override
+    public <T> T getProperty(String name, Activity activity) {
+        if (propertyItemRuleMap == null) {
+            return null;
+        }
+
+        ItemRule itemRule = propertyItemRuleMap.get(name);
+        if (itemRule == null) {
+            return null;
+        }
+
+        ItemEvaluator evaluator = new ItemExpressionParser(activity);
+        return evaluator.evaluate(itemRule);
     }
 
 }

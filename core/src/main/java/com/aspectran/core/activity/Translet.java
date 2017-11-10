@@ -295,7 +295,7 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @param targetParameters the target parameter map to be filled
      * @since 2.0.0
      */
-    void fillAllPrameters(Map<String, Object> targetParameters);
+    void fillAllParameters(Map<String, Object> targetParameters);
 
     /**
      * Returns a {@code FileParameter} object as a given activity's request parameter name,

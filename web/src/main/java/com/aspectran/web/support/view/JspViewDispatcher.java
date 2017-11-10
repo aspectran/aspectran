@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
+import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -67,7 +67,7 @@ public class JspViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatcherException {
         String dispatchName = null;
 
         try {
@@ -120,7 +120,7 @@ public class JspViewDispatcher implements ViewDispatcher {
                 log.debug("Dispatch to JSP [" + dispatchName + "]");
             }
         } catch (Exception e) {
-            throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
+            throw new ViewDispatcherException("Failed to dispatch for JSP " + dispatchResponseRule.toString(this, dispatchName), e);
         }
     }
 

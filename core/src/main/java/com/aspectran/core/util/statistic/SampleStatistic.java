@@ -40,18 +40,18 @@ import java.util.concurrent.atomic.LongAdder;
 
 /**
  * SampledStatistics
- * <p>
- * Provides max, total, mean, count, variance, and standard deviation of continuous sequence of samples.
- * <p>
- * Calculates estimates of mean, variance, and standard deviation characteristics of a sample using a non synchronized
+ *
+ * <p>Provides max, total, mean, count, variance, and standard deviation of continuous sequence of samples.</p>
+ *
+ * <p>Calculates estimates of mean, variance, and standard deviation characteristics of a sample using a non synchronized
  * approximation of the on-line algorithm presented in <cite>Donald Knuth's Art of Computer Programming, Volume 2,
  * Semi numerical Algorithms, 3rd edition, page 232, Boston: Addison-Wesley</cite>. that cites a 1962 paper by B.P. Welford that
  * can be found by following <a href="http://www.jstor.org/pss/1266577">Note on a Method for Calculating Corrected Sums
- * of Squares and Products</a>
- * <p>
- * This algorithm is also described in Wikipedia at <a href=
+ * of Squares and Products</a></p>
+ *
+ * <p>This algorithm is also described in Wikipedia at <a href=
  * "http://en.wikipedia.org/w/index.php?title=Algorithms_for_calculating_variance&amp;section=4#On-line_algorithm">
- * Algorithms for calculating variance </a>
+ * Algorithms for calculating variance </a></p>
  */
 public class SampleStatistic {
 

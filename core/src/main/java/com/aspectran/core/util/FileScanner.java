@@ -132,7 +132,9 @@ public class FileScanner {
     }
 
     public interface SaveHandler {
+
         void save(String filePath, File scannedFile);
+
     }
 
 }

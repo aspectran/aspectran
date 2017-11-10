@@ -64,16 +64,20 @@ public class Locker {
     }
 
     public static class Lock implements AutoCloseable {
+
         @Override
         public void close() {
         }
+
     }
 
     public class UnLock extends Lock {
+
         @Override
         public void close() {
             lock.unlock();
         }
+
     }
 
 }

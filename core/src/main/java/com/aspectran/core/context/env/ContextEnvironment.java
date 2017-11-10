@@ -15,59 +15,88 @@
  */
 package com.aspectran.core.context.env;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.util.ResourceUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 public class ContextEnvironment extends AbstractEnvironment {
 
-    private final ActivityContext context;
+    private final ApplicationAdapter applicationAdapter;
 
-    private ItemRuleMap propertyItemRuleMap;
+    private String basePath;
 
-    public ContextEnvironment(ActivityContext context) {
-        this.context = context;
+    private ClassLoader classLoader;
+
+    public ContextEnvironment(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+        this.basePath = applicationAdapter.getBasePath();
+    }
+
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
     }
 
     @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return context.getApplicationAdapter();
-    }
-
-    public ItemRuleMap getPropertyItemRuleMap() {
-        return propertyItemRuleMap;
-    }
-
-    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        this.propertyItemRuleMap = propertyItemRuleMap;
-    }
-
-    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        if (this.propertyItemRuleMap == null) {
-            this.propertyItemRuleMap = propertyItemRuleMap;
+    public ClassLoader getClassLoader() {
+        if (classLoader != null) {
+            return classLoader;
         } else {
-            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+            return AspectranClassLoader.getDefaultClassLoader();
         }
     }
 
-    public <T> T getProperty(String name) {
-        if (propertyItemRuleMap == null) {
-            return null;
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    /**
+     * Sets the application base path.
+     *
+     * @param basePath the new application base path
+     */
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
+    @Override
+    public String toRealPath(String filePath) throws IOException {
+        File file = toRealPathAsFile(filePath);
+        return file.getCanonicalPath();
+    }
+
+    @Override
+    public File toRealPathAsFile(String filePath) throws IOException {
+        File file;
+        if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            // Using url fully qualified paths
+            URI uri = URI.create(filePath);
+            file = new File(uri);
+        } else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            // Using classpath relative resources
+            URL url = getClassLoader().getResource(filePath);
+            if (url == null) {
+                throw new IOException("Could not find the resource with the given name: " + filePath);
+            }
+            file = new File(url.getFile());
+        } else {
+            if (basePath != null) {
+                file = new File(basePath, filePath);
+            } else {
+                file = new File(filePath);
+            }
         }
-
-        ItemRule itemRule = propertyItemRuleMap.get(name);
-        if (itemRule == null) {
-            return null;
-        }
-
-        Activity activity = context.getCurrentActivity();
-
-        ItemEvaluator evaluator = new ItemExpressionParser(activity);
-        return evaluator.evaluate(itemRule);
+        return file;
     }
 
 }

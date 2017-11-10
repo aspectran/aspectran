@@ -29,6 +29,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -41,7 +42,6 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,15 +59,13 @@ import java.util.Set;
  */
 public class ContextRuleAssistant {
 
-    private final ContextEnvironment environment;
+    private final ContextEnvironment contextEnvironment;
 
     private final ApplicationAdapter applicationAdapter;
 
     private final String basePath;
 
     private final ClassLoader classLoader;
-
-//    private ArrayStack objectStack;
 
     private Map<DefaultSettingType, String> settings;
 
@@ -91,20 +89,18 @@ public class ContextRuleAssistant {
 
     private RuleAppendHandler ruleAppendHandler;
 
-    private NodeletParser.LocationTracker locationTracker;
-
     protected ContextRuleAssistant() {
         this(null);
     }
 
-    public ContextRuleAssistant(ContextEnvironment environment) {
-        if (environment != null) {
-            this.environment = environment;
-            this.applicationAdapter = environment.getApplicationAdapter();
-            this.basePath = applicationAdapter.getBasePath();
-            this.classLoader = applicationAdapter.getClassLoader();
+    public ContextRuleAssistant(ContextEnvironment contextEnvironment) {
+        if (contextEnvironment != null) {
+            this.contextEnvironment = contextEnvironment;
+            this.applicationAdapter = contextEnvironment.getApplicationAdapter();
+            this.basePath = contextEnvironment.getBasePath();
+            this.classLoader = contextEnvironment.getClassLoader();
         } else {
-            this.environment = null;
+            this.contextEnvironment = null;
             this.applicationAdapter = null;
             this.basePath = null;
             this.classLoader = null;
@@ -112,18 +108,17 @@ public class ContextRuleAssistant {
     }
 
     public void ready() {
-        //objectStack = new ArrayStack();
         settings = new HashMap<>();
         environmentRules = new LinkedList<>();
         typeAliases = new HashMap<>();
         assistantLocal = new AssistantLocal(this);
 
-        if (environment != null) {
+        if (contextEnvironment != null) {
             aspectRuleRegistry = new AspectRuleRegistry();
 
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
 
-            transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
+            transletRuleRegistry = new TransletRuleRegistry(contextEnvironment);
             transletRuleRegistry.setAssistantLocal(assistantLocal);
 
             beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
@@ -143,13 +138,12 @@ public class ContextRuleAssistant {
     }
 
     public void release() {
-        //objectStack = null;
         settings = null;
         environmentRules = null;
         typeAliases = null;
         assistantLocal = null;
 
-        if (environment != null) {
+        if (contextEnvironment != null) {
             scheduleRuleRegistry.setAssistantLocal(null);
             transletRuleRegistry.setAssistantLocal(null);
             templateRuleRegistry.setAssistantLocal(null);
@@ -169,7 +163,7 @@ public class ContextRuleAssistant {
     }
 
     public ContextEnvironment getContextEnvironment() {
-        return environment;
+        return contextEnvironment;
     }
 
     public ApplicationAdapter getApplicationAdapter() {
@@ -183,32 +177,6 @@ public class ContextRuleAssistant {
     public ClassLoader getClassLoader() {
         return classLoader;
     }
-
-//    public void pushObject(Object object) {
-//        objectStack.push(object);
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public <T> T popObject() {
-//        return (T)objectStack.pop();
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public <T> T peekObject() {
-//        return (T)objectStack.peek();
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public <T> T peekObject(int n) {
-//        return (T)objectStack.peek(n);
-//    }
-//
-//    /**
-//     * Clear object stack.
-//     */
-//    public void clearObjectStack() {
-//        objectStack.clear();
-//    }
 
     /**
      * Gets the settings.
@@ -558,11 +526,11 @@ public class ContextRuleAssistant {
     }
 
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
+        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender(), locationTracker);
+        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     public BeanReferenceInspector getBeanReferenceInspector() {
@@ -572,7 +540,7 @@ public class ContextRuleAssistant {
     /**
      * Adds the aspect rule.
      *
-     * @param aspectRule the aspect rule
+     * @param aspectRule the aspect rule to add
      */
     public void addAspectRule(AspectRule aspectRule) {
         aspectRuleRegistry.addAspectRule(aspectRule);
@@ -581,17 +549,17 @@ public class ContextRuleAssistant {
     /**
      * Adds the bean rule.
      *
-     * @param beanRule the bean rule
-     * @throws ClassNotFoundException the class not found exception
+     * @param beanRule the bean rule to add
+     * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
-    public void addBeanRule(BeanRule beanRule) throws ClassNotFoundException {
+    public void addBeanRule(BeanRule beanRule) throws IllegalRuleException {
         beanRuleRegistry.addBeanRule(beanRule);
     }
 
     /**
      * Adds the schedule rule.
      *
-     * @param scheduleRule the schedule rule
+     * @param scheduleRule the schedule rule to add
      */
     public void addScheduleRule(ScheduleRule scheduleRule) {
         scheduleRuleRegistry.addScheduleRule(scheduleRule);
@@ -600,7 +568,7 @@ public class ContextRuleAssistant {
     /**
      * Add the translet rule.
      *
-     * @param transletRule the translet rule
+     * @param transletRule the translet rule to add
      */
     public void addTransletRule(TransletRule transletRule) {
         transletRuleRegistry.addTransletRule(transletRule);
@@ -609,7 +577,7 @@ public class ContextRuleAssistant {
     /**
      * Add the template rule.
      *
-     * @param templateRule the template rule
+     * @param templateRule the template rule to add
      */
     public void addTemplateRule(TemplateRule templateRule) {
         templateRuleRegistry.addTemplateRule(templateRule);
@@ -727,14 +695,6 @@ public class ContextRuleAssistant {
      */
     public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {
         this.ruleAppendHandler = ruleAppendHandler;
-    }
-
-    public NodeletParser.LocationTracker getLocationTracker() {
-        return locationTracker;
-    }
-
-    public void setLocationTracker(NodeletParser.LocationTracker locationTracker) {
-        this.locationTracker = locationTracker;
     }
 
 }

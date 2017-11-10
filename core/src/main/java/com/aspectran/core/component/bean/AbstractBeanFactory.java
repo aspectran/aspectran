@@ -28,6 +28,7 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JdkDynamicBeanProxy;
@@ -311,6 +312,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
             if (bean instanceof ClassLoaderAware) {
                 ((ClassLoaderAware)bean).setClassLoader(context.getClassLoader());
+            }
+            if (bean instanceof EnvironmentAware) {
+                ((EnvironmentAware)bean).setEnvironment(context.getContextEnvironment());
             }
         }
     }

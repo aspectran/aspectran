@@ -38,11 +38,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
-/** Statistics on a counter value.
- * <p>
- * Keep total, current and maximum values of a counter that
+/**
+ * Statistics on a counter value.
+ *
+ * <p>Keep total, current and maximum values of a counter that
  * can be incremented and decremented. The total refers only
- * to increments.
+ * to increments.</p>
  */
 public class CounterStatistic {
 

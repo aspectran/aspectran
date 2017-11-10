@@ -77,9 +77,10 @@ public class ScheduleJobRule {
         return tsb.toString();
     }
 
-    public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName, String method, Boolean disabled) {
+    public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName,
+                                              String method, Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {
-            throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute");
+            throw new IllegalRuleException("The 'job' element requires a 'translet' attribute");
         }
 
         ScheduleJobRule scheduleJobRule = new ScheduleJobRule(scheduleRule);
@@ -89,7 +90,7 @@ public class ScheduleJobRule {
         if (method != null) {
             MethodType methodType = MethodType.resolve(method);
             if (methodType == null) {
-                throw new IllegalArgumentException("No request method type for '" + method + "'");
+                throw new IllegalRuleException("No request method type for '" + method + "'");
             }
             scheduleJobRule.setRequestMethod(methodType);
         }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http:// www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     private static final Log log = LogFactory.getLog(DefaultSessionCache.class);
 
-    /** the cache of sessions in a hashmap */
+    /** the cache of sessions in a HashMap */
     private final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
 
     private final CounterStatistic statistic = new CounterStatistic();
@@ -104,7 +104,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         int loop = 100;
         while (!sessions.isEmpty() && loop-- >= 0) {
             for (Session session : sessions.values()) {
-                //if we have a backing store so give the session to it to write out if necessary
+                // if we have a backing store so give the session to it to write out if necessary
                 if (sessionDataStore != null) {
                     sessionHandler.willPassivate(session);
                     try {
@@ -112,9 +112,9 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     } catch (Exception e) {
                         log.warn("Failed to save session data", e);
                     }
-                    doDelete(session.getId()); //remove from memory
+                    doDelete(session.getId()); // remove from memory
                 } else {
-                    //not preserving sessions on exit
+                    // not preserving sessions on exit
                     try {
                         session.invalidate();
                     } catch (Exception e) {

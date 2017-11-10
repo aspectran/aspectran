@@ -145,14 +145,16 @@ public class JoinpointRule {
         return new JoinpointRule();
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, String text) {
+    public static void updateJoinpoint(JoinpointRule joinpointRule, String text)
+            throws IllegalRuleException {
         if (StringUtils.hasText(text)) {
             JoinpointParameters joinpointParameters = new JoinpointParameters(text);
             updateJoinpoint(joinpointRule, joinpointParameters);
         }
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, JoinpointParameters joinpointParameters) {
+    public static void updateJoinpoint(JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
+            throws IllegalRuleException {
         if (joinpointRule.getJoinpointType() == null) {
             String type = joinpointParameters.getString(JoinpointParameters.type);
             updateJoinpointType(joinpointRule, type);
@@ -206,7 +208,8 @@ public class JoinpointRule {
         joinpointRule.setTargetHeaders(targetHeaders);
     }
 
-    public static void updatePointcutRule(JoinpointRule joinpointRule, PointcutParameters pointcutParameters) {
+    public static void updatePointcutRule(JoinpointRule joinpointRule, PointcutParameters pointcutParameters)
+            throws IllegalRuleException {
         PointcutRule pointcutRule = null;
 
         if (pointcutParameters != null) {
@@ -225,7 +228,7 @@ public class JoinpointRule {
                 if (patternStringCount > 0) {
                     List<PointcutPatternRule> minusPointcutPatternRuleList = null;
                     if (minusPatternStringList != null && !minusPatternStringList.isEmpty()) {
-                        minusPointcutPatternRuleList = new ArrayList<PointcutPatternRule>(minusPatternStringList.size());
+                        minusPointcutPatternRuleList = new ArrayList<>(minusPatternStringList.size());
                         for (String patternString : minusPatternStringList) {
                             PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
                             minusPointcutPatternRuleList.add(pointcutPatternRule);
@@ -257,7 +260,7 @@ public class JoinpointRule {
                     }
 
                     pointcutRule.setIncludeTargetParametersList(includeTargetParametersList);
-                    pointcutRule.setExecludeTargetParametersList(execludeTargetParametersList);
+                    pointcutRule.setExcludeTargetParametersList(execludeTargetParametersList);
                 }
             }
         }

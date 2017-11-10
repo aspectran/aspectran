@@ -48,8 +48,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private final ContextEnvironment contextEnvironment;
 
-    private final ApplicationAdapter applicationAdapter;
-
     private String description;
 
     private CoreService rootService;
@@ -69,11 +67,10 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     /**
      * Instantiates a new AspectranActivityContext.
      *
-     * @param applicationAdapter the application adapter
+     * @param contextEnvironment the context environment
      */
-    public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
-        this.contextEnvironment = new ContextEnvironment(this);
+    public AspectranActivityContext(ContextEnvironment contextEnvironment) {
+        this.contextEnvironment = contextEnvironment;
     }
 
     @Override
@@ -91,13 +88,18 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     }
 
     @Override
+    public String getProperty(String name) {
+        return contextEnvironment.getProperty(name, getCurrentActivity());
+    }
+
+    @Override
     public ClassLoader getClassLoader() {
-        return applicationAdapter.getClassLoader();
+        return contextEnvironment.getClassLoader();
     }
 
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return applicationAdapter;
+        return contextEnvironment.getApplicationAdapter();
     }
 
     @Override

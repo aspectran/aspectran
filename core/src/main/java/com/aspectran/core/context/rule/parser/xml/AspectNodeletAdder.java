@@ -56,7 +56,6 @@ class AspectNodeletAdder implements NodeletAdder {
         });
         parser.addNodeEndlet(text -> {
             AspectRule aspectRule = parser.popObject();
-            assistant.resolveAdviceBeanClass(aspectRule);
             assistant.addAspectRule(aspectRule);
         });
         parser.setXpath(xpath + "/aspect/description");
@@ -112,6 +111,7 @@ class AspectNodeletAdder implements NodeletAdder {
             if (beanIdOrClass != null) {
                 AspectRule aspectRule = parser.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
+                assistant.resolveAdviceBeanClass(aspectRule);
             }
         });
         parser.addNodelet(new AspectAdviceInnerNodeletAdder(assistant));

@@ -205,10 +205,12 @@ public class IncludeActionRule {
      * @param transletName the translet name
      * @param hidden whether to hide result of the action
      * @return the include action rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
+    public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden)
+            throws IllegalRuleException {
         if (transletName == null) {
-            throw new IllegalArgumentException("The 'include' element requires a 'translet' attribute");
+            throw new IllegalRuleException("The 'include' element requires a 'translet' attribute");
         }
 
         IncludeActionRule includeActionRule = new IncludeActionRule();

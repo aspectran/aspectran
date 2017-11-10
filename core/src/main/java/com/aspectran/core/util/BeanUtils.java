@@ -629,7 +629,7 @@ public class BeanUtils {
      * @return the properties
      */
     public static String[] getWriteablePropertyNames(Object bean) {
-        return getBeanDescriptor(bean.getClass()).getWriteablePropertyNames();
+        return getBeanDescriptor(bean.getClass()).getWritablePropertyNames();
     }
 
     /**

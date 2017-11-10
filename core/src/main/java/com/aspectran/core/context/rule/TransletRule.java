@@ -528,16 +528,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return tsb.toString();
     }
 
-    public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
+    public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method)
+            throws IllegalRuleException {
         if (name == null && scanPath == null) {
-            throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute");
+            throw new IllegalRuleException("The 'translet' element requires a 'name' attribute");
         }
 
         MethodType[] allowedMethods = null;
         if (method != null) {
             allowedMethods = MethodType.parse(method);
             if (allowedMethods == null) {
-                throw new IllegalArgumentException("No request method type for '" + method + "'");
+                throw new IllegalRuleException("No request method type for '" + method + "'");
             }
         }
 
@@ -556,7 +557,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return transletRule;
     }
 
-    public static TransletRule newInstance(String name, String method) {
+    public static TransletRule newInstance(String name, String method) throws IllegalRuleException {
         return newInstance(name, null, null, method);
     }
 
@@ -609,7 +610,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
         ResponseRule rr = responseRule.replicate();
         if (rr.getResponse() != null) {
-            // assign dispatch name if the dispatch respone exists
+            // assign dispatch name if the dispatch response exists
             if (rr.getResponse() instanceof DispatchResponse) {
                 DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
                 DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();

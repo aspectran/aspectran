@@ -18,11 +18,11 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.context.AspectranCheckedException;
 
 /**
- * The Class ViewDispatchException.
+ * Base class for exceptions thrown during view dispatching.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ViewDispatchException extends AspectranCheckedException {
+public class ViewDispatcherException extends AspectranCheckedException {
 
     /** @serial */
     private static final long serialVersionUID = 5341799597740412582L;
@@ -30,7 +30,7 @@ public class ViewDispatchException extends AspectranCheckedException {
     /**
      * Simple constructor.
      */
-    public ViewDispatchException() {
+    public ViewDispatcherException() {
         super();
     }
 
@@ -39,7 +39,7 @@ public class ViewDispatchException extends AspectranCheckedException {
      *
      * @param msg the detail message
      */
-    public ViewDispatchException(String msg) {
+    public ViewDispatcherException(String msg) {
         super(msg);
     }
 
@@ -48,7 +48,7 @@ public class ViewDispatchException extends AspectranCheckedException {
      *
      * @param cause the real cause of the exception
      */
-    public ViewDispatchException(Throwable cause) {
+    public ViewDispatcherException(Throwable cause) {
         super(cause);
     }
 
@@ -58,7 +58,7 @@ public class ViewDispatchException extends AspectranCheckedException {
      * @param msg the detail message
      * @param cause the real cause of the exception
      */
-    public ViewDispatchException(String msg, Throwable cause) {
+    public ViewDispatcherException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

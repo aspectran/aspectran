@@ -54,10 +54,10 @@ public interface CoreService extends ServiceController {
     AspectranConfig getAspectranConfig();
 
     /**
-     * Returns whether or not the java classes to be reload when the activity context is reloading.
-     * you reload Java classes and activitiesyou reload Java classes and activitiesreload only the activity context.
+     * Returns whether to reload both the Java class and the activity context.
      *
-     * @return true, if the java classes and activity context is to be reload both
+     * @return true if the Java classes and the activity context are reloaded both;
+     *      false if only the activity context is reloaded
      */
     boolean isHardReload();
 

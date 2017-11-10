@@ -59,6 +59,8 @@ public interface ActivityContext {
      */
     ContextEnvironment getContextEnvironment();
 
+    String getProperty(String name);
+
     /**
      * Gets the class loader.
      *

@@ -32,9 +32,9 @@ public interface ViewDispatcher {
      *
      * @param activity the current activity
      * @param dispatchResponseRule the dispatch response rule
-     * @throws ViewDispatchException the view dispatch exception
+     * @throws ViewDispatcherException the view dispatch exception
      */
-    void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
+    void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatcherException;
 
     /**
      * Return whether this view dispatcher corresponds to a singleton instance.

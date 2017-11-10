@@ -34,24 +34,24 @@ public class TransformResponseFactory {
      * @return the transform response
      */
     public static Response createTransformResponse(TransformRule transformRule) {
-        TransformType tranformType = transformRule.getTransformType();
+        TransformType transformType = transformRule.getTransformType();
         Response transformResponse;
 
-        if (tranformType == TransformType.XSL) {
+        if (transformType == TransformType.XSL) {
             transformResponse = new XslTransformResponse(transformRule);
-        } else if (tranformType == TransformType.XML) {
+        } else if (transformType == TransformType.XML) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_XML.toString());
             }
             transformResponse = new XmlTransformResponse(transformRule);
-        } else if (tranformType == TransformType.TEXT) {
+        } else if (transformType == TransformType.TEXT) {
             transformResponse = new TextTransformResponse(transformRule);
-        } else if (tranformType == TransformType.JSON) {
+        } else if (transformType == TransformType.JSON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }
             transformResponse = new JsonTransformResponse(transformRule);
-        } else if (tranformType == TransformType.APON) {
+        } else if (transformType == TransformType.APON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }

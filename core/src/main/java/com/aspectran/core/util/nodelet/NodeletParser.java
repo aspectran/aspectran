@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * The NodeletParser is a callback based parser similar to SAX.  The big
@@ -50,7 +49,7 @@ public class NodeletParser {
 
     private final Log log = LogFactory.getLog(NodeletParser.class);
 
-    protected final static Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>());
+    private final static Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>());
 
     private final Map<String, Nodelet> nodeletMap = new HashMap<>();
 
@@ -60,7 +59,7 @@ public class NodeletParser {
 
     private EntityResolver entityResolver;
 
-    private LocationTracker locationTracker;
+    private NodeTracker nodeTracker;
 
     private String xpath;
 
@@ -74,13 +73,13 @@ public class NodeletParser {
         this.entityResolver = entityResolver;
     }
 
-    public LocationTracker trackingLocation() {
-        this.locationTracker = new LocationTracker();
-        return locationTracker;
+    public NodeTracker trackingLocation() {
+        this.nodeTracker = new NodeTracker();
+        return nodeTracker;
     }
 
-    public LocationTracker getLocationTracker() {
-        return locationTracker;
+    public NodeTracker getNodeTracker() {
+        return nodeTracker;
     }
 
     public String getXpath() {
@@ -198,7 +197,7 @@ public class NodeletParser {
             reader.setContentHandler(new DefaultHandler() {
                 private Locator locator;
 
-                private Path path = new Path();
+                private Path path = new Path(getNodeTracker());
 
                 private StringBuilder textBuffer = new StringBuilder();
 
@@ -234,9 +233,9 @@ public class NodeletParser {
                 @Override
                 public void startElement(String uri, String localName, String qName, Attributes attributes)
                         throws SAXException {
-                    if (locationTracker != null) {
-                        locationTracker.setLineNumber(this.locator.getLineNumber());
-                        locationTracker.setColumnNumber(this.locator.getColumnNumber());
+                    if (nodeTracker != null) {
+                        nodeTracker.setName(qName);
+                        nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
                     }
 
                     path.add(qName);
@@ -248,8 +247,8 @@ public class NodeletParser {
                         try {
                             nodelet.process(attrs);
                         } catch (Exception e) {
-                            if (locationTracker != null) {
-                                throw new SAXException("Error processing nodelet at start element <" + qName + "> " + locationTracker, e);
+                            if (nodeTracker != null) {
+                                throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
                             } else {
                                 throw new SAXException("Error processing nodelet at start element <" + qName + ">", e);
                             }
@@ -263,7 +262,13 @@ public class NodeletParser {
 
                 @Override
                 public void endElement(String uri, String localName, String qName) throws SAXException {
+                    if (nodeTracker != null) {
+                        nodeTracker.setClonedNodeTracker(path.getNodeTracker());
+                        nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
+                    }
+
                     String pathString = path.toString();
+                    path.remove();
 
                     String text = null;
                     if (textBuffer.length() > 0) {
@@ -276,15 +281,13 @@ public class NodeletParser {
                         try {
                             endlet.process(text);
                         } catch (Exception e) {
-                            if (locationTracker != null) {
-                                throw new SAXException("Error processing nodelet at end element <" + qName + "> " + locationTracker, e);
+                            if (nodeTracker != null) {
+                                throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);
                             } else {
                                 throw new SAXException("Error processing nodelet at end element <" + qName + ">", e);
                             }
                         }
                     }
-
-                    path.remove();
                 }
 
                 @Override
@@ -330,85 +333,57 @@ public class NodeletParser {
     }
 
     /**
-     * Inner helper class for tracking the line number and column number of
-     * the element's start tag while reading an XML document.
-     */
-    public class LocationTracker implements Cloneable {
-
-        private int lineNumber;
-
-        private int columnNumber;
-
-        private LocationTracker() {
-        }
-
-        private LocationTracker(int lineNumber, int columnNumber) {
-            this.lineNumber = lineNumber;
-            this.columnNumber = columnNumber;
-        }
-
-        public int getLineNumber() {
-            return lineNumber;
-        }
-
-        protected void setLineNumber(int lineNumber) {
-            this.lineNumber = lineNumber;
-        }
-
-        public int getColumnNumber() {
-            return columnNumber;
-        }
-
-        protected void setColumnNumber(int columnNumber) {
-            this.columnNumber = columnNumber;
-        }
-
-        @Override
-        public LocationTracker clone() {
-            return new LocationTracker(lineNumber, columnNumber);
-        }
-
-        @Override
-        public String toString() {
-            return "[lineNumber: " + lineNumber + ", columnNumber: " + columnNumber + "]";
-        }
-
-    }
-
-    /**
      * Inner helper class that assists with building XPath paths.
      */
     private static class Path {
 
-        private List<String> nodeList = new ArrayList<>();
+        private final List<String> nodeList = new ArrayList<>();
 
-        public Path() {
-        }
+        private final List<NodeTracker> trackerList = new ArrayList<>();
 
-        public Path(String path) {
-            StringTokenizer parser = new StringTokenizer(path, "/", false);
-            while (parser.hasMoreTokens()) {
-                nodeList.add(parser.nextToken());
-            }
+        private String path;
+
+        private NodeTracker nodeTracker;
+
+        private Path(NodeTracker NodeTracker) {
+            this.nodeTracker = NodeTracker;
         }
 
         public void add(String node) {
             nodeList.add(node);
+            path = null;
+            if (nodeTracker != null) {
+                trackerList.add(nodeTracker.clone());
+            }
         }
 
         public void remove() {
-            nodeList.remove(nodeList.size() - 1);
+            int index = nodeList.size() - 1;
+            nodeList.remove(index);
+            path = null;
+            if (nodeTracker != null) {
+                trackerList.remove(index);
+            }
+        }
+
+        public NodeTracker getNodeTracker() {
+            return trackerList.get(trackerList.size() - 1);
         }
 
         @Override
         public String toString() {
+            if (path != null) {
+                return path;
+            }
             StringBuilder sb = new StringBuilder(128);
             for (String name : nodeList) {
                 sb.append("/");
                 sb.append(name);
             }
-            return sb.toString();
+            path = sb.toString();
+            return path;
         }
+
     }
 
 }

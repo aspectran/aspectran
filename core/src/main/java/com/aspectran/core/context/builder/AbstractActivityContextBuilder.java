@@ -16,8 +16,6 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.BasicApplicationAdapter;
-import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
@@ -65,11 +63,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private final ApplicationAdapter applicationAdapter;
 
+    private String basePath;
+
     private ContextConfig contextConfig;
 
     private AspectranParameters aspectranParameters;
-
-    private String basePath;
 
     private String rootConfigLocation;
 
@@ -100,7 +98,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
         this.applicationAdapter = applicationAdapter;
-        this.basePath = applicationAdapter.getBasePath();
+        setBasePath(applicationAdapter.getBasePath());
     }
 
     @Override
@@ -120,12 +118,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @Override
     public void setBasePath(String basePath) {
-        if (applicationAdapter instanceof BasicApplicationAdapter) {
-            this.basePath = basePath;
-            ((BasicApplicationAdapter)applicationAdapter).setBasePath(basePath);
-        } else {
-            throw new UnsupportedOperationException("Does not allow the base path change of ApplicationAdapter " + applicationAdapter);
-        }
+        this.basePath = basePath;
     }
 
     @Override
@@ -166,10 +159,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-        if (resourceLocations != null) {
-            aspectranClassLoader.setResourceLocations(resourceLocations);
-        }
+    public void setResourceLocations(String... resourceLocations) {
+        this.resourceLocations = resourceLocations;
     }
 
     @Override
@@ -227,32 +218,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return aspectranClassLoader;
     }
 
-    protected void newAspectranClassLoader() throws InvalidResourceException {
-        if (aspectranClassLoader == null || hardReload) {
-            // The major packages in Aspectran are excluded because they
-            // are already loaded by the parent class loader running Aspectran.
-            String[] excludePackageNames = new String[] {
-                    "com.aspectran.core",
-                    "com.aspectran.scheduler",
-                    "com.aspectran.embed",
-                    "com.aspectran.shell",
-                    "com.aspectran.shell-jline",
-                    "com.aspectran.web",
-                    "com.aspectran.with.jetty"
-            };
-
-            AspectranClassLoader acl = new AspectranClassLoader();
-            acl.excludePackage(excludePackageNames);
-            if (resourceLocations != null && resourceLocations.length > 0) {
-                acl.setResourceLocations(resourceLocations);
-            }
-            aspectranClassLoader = acl;
-            applicationAdapter.setClassLoader(acl);
-        }
-    }
-
     @Override
-    public void initialize(ContextConfig contextConfig) throws InvalidResourceException {
+    public void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException {
         this.contextConfig = contextConfig;
 
         String basePath = contextConfig.getString(ContextConfig.base);
@@ -270,12 +237,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.encoding = contextConfig.getString(ContextConfig.encoding);
 
         String[] resourceLocations = contextConfig.getStringArray(ContextConfig.resources);
-        this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getBasePath());
+        this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, getBasePath());
 
         ContextProfilesConfig contextProfilesConfig = contextConfig.getParameters(ContextConfig.profiles);
         if (contextProfilesConfig != null) {
-            this.activeProfiles = contextProfilesConfig.getStringArray(ContextProfilesConfig.activeProfiles);
-            this.defaultProfiles = contextProfilesConfig.getStringArray(ContextProfilesConfig.defaultProfiles);
+            setActiveProfiles(contextProfilesConfig.getStringArray(ContextProfilesConfig.activeProfiles));
+            setDefaultProfiles(contextProfilesConfig.getStringArray(ContextProfilesConfig.defaultProfiles));
         }
 
         this.hybridLoad = contextConfig.getBoolean(ContextConfig.hybridLoad, false);
@@ -301,31 +268,27 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    public void startReloadingTimer() {
-        if (autoReloadStartup && aspectranClassLoader != null) {
-            reloadingTimer = new ActivityContextReloadingTimer(serviceController, aspectranClassLoader.extractResources());
-            reloadingTimer.start(scanIntervalSeconds);
+    protected ContextEnvironment createContextEnvironment() throws InvalidResourceException {
+        AspectranClassLoader acl = newAspectranClassLoader();
+        ContextEnvironment contextEnvironment = new ContextEnvironment(getApplicationAdapter());
+        contextEnvironment.setClassLoader(acl);
+        if (basePath != null) {
+            contextEnvironment.setBasePath(basePath);
         }
-    }
-
-    public void stopReloadingTimer() {
-        if (reloadingTimer != null) {
-            reloadingTimer.cancel();
-            reloadingTimer = null;
-        }
+        return contextEnvironment;
     }
 
     /**
      * Returns a new instance of ActivityContext.
      *
+     * @param assistant the context rule assistant
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      */
-    protected ActivityContext createActivityContext(ContextRuleAssistant assistant) throws Exception {
-        AspectranActivityContext activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
+    protected ActivityContext createActivityContext(ContextRuleAssistant assistant) throws BeanReferenceException {
+        initContextEnvironment(assistant);
 
-        ContextEnvironment environment = activityContext.getContextEnvironment();
-        initContextEnvironment(assistant, environment);
+        AspectranActivityContext activityContext = new AspectranActivityContext(assistant.getContextEnvironment());
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
@@ -356,7 +319,46 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return activityContext;
     }
 
-    private void initContextEnvironment(ContextRuleAssistant assistant, ContextEnvironment environment) {
+    protected void startReloadingTimer() {
+        if (autoReloadStartup && aspectranClassLoader != null) {
+            reloadingTimer = new ActivityContextReloadingTimer(serviceController, aspectranClassLoader.extractResources());
+            reloadingTimer.start(scanIntervalSeconds);
+        }
+    }
+
+    protected void stopReloadingTimer() {
+        if (reloadingTimer != null) {
+            reloadingTimer.cancel();
+            reloadingTimer = null;
+        }
+    }
+
+    private AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException {
+        if (aspectranClassLoader == null || hardReload) {
+            // The major packages in Aspectran are excluded because they
+            // are already loaded by the parent class loader running Aspectran.
+            String[] excludePackageNames = new String[] {
+                    "com.aspectran.core",
+                    "com.aspectran.scheduler",
+                    "com.aspectran.embed",
+                    "com.aspectran.shell",
+                    "com.aspectran.shell-jline",
+                    "com.aspectran.web",
+                    "com.aspectran.with.jetty"
+            };
+
+            AspectranClassLoader acl = new AspectranClassLoader();
+            acl.excludePackage(excludePackageNames);
+            if (resourceLocations != null && resourceLocations.length > 0) {
+                acl.setResourceLocations(resourceLocations);
+            }
+            aspectranClassLoader = acl;
+        }
+        return aspectranClassLoader;
+    }
+
+    private void initContextEnvironment(ContextRuleAssistant assistant) {
+        ContextEnvironment environment = assistant.getContextEnvironment();
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             if (environmentRule.getPropertyItemRuleMap() != null) {
                 String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());

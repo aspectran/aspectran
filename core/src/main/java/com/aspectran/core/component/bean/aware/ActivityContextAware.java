@@ -19,7 +19,7 @@ import com.aspectran.core.context.ActivityContext;
 
 /**
  * Interface to be implemented by any object that wishes to be notified of the
- * {@link ActivityContext} that it runs in.
+ * {@link ActivityContext}.
  *
  * <p>Created: 2016. 1. 25.</p>
  *

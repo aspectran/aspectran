@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http:// www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,11 +30,11 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
 
     private static final Log log = LogFactory.getLog(AbstractSessionDataStore.class);
 
-    protected int gracePeriodSec = 60 * 60; //default of 1hr
+    protected int gracePeriodSec = 60 * 60; // default of 1hr
 
-    protected long lastExpiryCheckTime = 0; //last time in ms that getExpired was called
+    protected long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
 
-    protected int savePeriodSec = 0; //time in sec between saves
+    protected int savePeriodSec = 0; // time in sec between saves
 
     /**
      * Store the session data persistently.
@@ -68,22 +68,22 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
             ToStringBuilder tsb = new ToStringBuilder("Store");
             tsb.append("id", id);
             tsb.append("dirty", data.isDirty());
-            tsb.append("lsave", data.getLastSaved());
+            tsb.append("lastSaved", data.getLastSaved());
             tsb.append("period", savePeriodMs);
             tsb.append("elapsed", System.currentTimeMillis() - lastSave);
             log.debug(tsb.toString());
         }
 
-        //save session if attribute changed or never been saved or time between saves exceeds threshold
+        // save session if attribute changed or never been saved or time between saves exceeds threshold
         if (data.isDirty() || (lastSave <= 0) || ((System.currentTimeMillis() - lastSave) > savePeriodMs)) {
-            //set the last saved time to now
+            // set the last saved time to now
             data.setLastSaved(System.currentTimeMillis());
             try {
-                //call the specific store method, passing in previous save time
+                // call the specific store method, passing in previous save time
                 doStore(id, data, lastSave);
-                data.setDirty(false); //only undo the dirty setting if we saved it
+                data.setDirty(false); // only undo the dirty setting if we saved it
             } catch (Exception e) {
-                //reset last save time if save failed
+                // reset last save time if save failed
                 data.setLastSaved(lastSave);
                 throw e;
             }

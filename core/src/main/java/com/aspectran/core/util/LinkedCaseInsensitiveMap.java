@@ -236,6 +236,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * Return the locale used by this {@code LinkedCaseInsensitiveMap}.
      * Used for case-insensitive key conversion.
      *
+     * @return the locale to use when changing to lowercase
      * @see #LinkedCaseInsensitiveMap(Locale)
      * @see #convertKey(String)
      */

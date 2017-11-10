@@ -49,8 +49,8 @@ public class MethodUtils {
 
     /**
      * Stores a cache of MethodDescriptor -> Method in a WeakHashMap.
-     * <p>
-     * The keys into this map only ever exist as temporary variables within
+     *
+     * <p>The keys into this map only ever exist as temporary variables within
      * methods of this class, and are never exposed to users of this class.
      * This means that the WeakHashMap is used only as a mechanism for
      * limiting the size of the cache, ie a way to tell the garbage collector
@@ -58,14 +58,14 @@ public class MethodUtils {
      * whenever it needs the memory. Whether this is a good approach to
      * this problem is doubtful; something like the commons-collections
      * LRUMap may be more appropriate (though of course selecting an
-     * appropriate size is an issue).
-     * <p>
-     * This static variable is safe even when this code is deployed via a
+     * appropriate size is an issue).</p>
+     *
+     * <p>This static variable is safe even when this code is deployed via a
      * shared classloader because it is keyed via a MethodDescriptor object
      * which has a Class as one of its members and that member is used in
      * the MethodDescriptor.equals method. So two components that parse the same
      * class via different classloaders will generate non-equal MethodDescriptor
-     * objects and hence end up with different entries in the map.
+     * objects and hence end up with different entries in the map.</p>
      */
     private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<>());
 
@@ -73,7 +73,7 @@ public class MethodUtils {
      * Sets the value of a bean property to an Object.
      *
      * @param object the bean to change
-     * @param setterName The property name or setter method name
+     * @param setterName the property name or setter method name
      * @param arg use this argument
      * @throws NoSuchMethodException the no such method exception
      * @throws IllegalAccessException the illegal access exception
@@ -89,7 +89,7 @@ public class MethodUtils {
      * Sets the value of a bean property to an Object.
      *
      * @param object the bean to change
-     * @param setterName The property name or setter method name
+     * @param setterName the property name or setter method name
      * @param args use this arguments
      * @throws NoSuchMethodException the no such method exception
      * @throws IllegalAccessException the illegal access exception
@@ -114,7 +114,7 @@ public class MethodUtils {
      * Gets an Object property from a bean.
      *
      * @param object the bean
-     * @param getterName The property name or getter method name
+     * @param getterName the property name or getter method name
      * @return the property value (as an Object)
      * @throws NoSuchMethodException the no such method exception
      * @throws IllegalAccessException the illegal access exception
@@ -129,7 +129,7 @@ public class MethodUtils {
      * Gets an Object property from a bean.
      *
      * @param object the bean
-     * @param getterName The property name or getter method name
+     * @param getterName the property name or getter method name
      * @param arg use this argument
      * @return the property value (as an Object)
      * @throws NoSuchMethodException the no such method exception
@@ -146,7 +146,7 @@ public class MethodUtils {
      * Gets an Object property from a bean.
      *
      * @param object the bean
-     * @param getterName The property name or getter method name
+     * @param getterName the property name or getter method name
      * @param args use this arguments
      * @return the property value (as an Object)
      * @throws NoSuchMethodException the no such method exception
@@ -189,7 +189,7 @@ public class MethodUtils {
      * <p>The behaviour of this method is less deterministic
      * than {@code invokeExactMethod()}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -219,7 +219,7 @@ public class MethodUtils {
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -268,7 +268,7 @@ public class MethodUtils {
      * than {@link
      * #invokeExactMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -437,7 +437,7 @@ public class MethodUtils {
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object, String, Object[], Class[])}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -467,7 +467,7 @@ public class MethodUtils {
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -504,7 +504,7 @@ public class MethodUtils {
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
-     * and then executes the first it finds with compatable parameters.</p>
+     * and then executes the first it finds with compatible parameters.</p>
      *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
@@ -550,11 +550,10 @@ public class MethodUtils {
     }
 
     /**
-     * <p>Invoke a static method whose parameter type matches exactly the object type.</p>
+     * Invoke a static method whose parameter type matches exactly the object type.
      *
-     * <p> This is a convenient wrapper for
-     * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args)}.
-     * </p>
+     * <p>This is a convenient wrapper for
+     * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args)}.</p>
      *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
@@ -744,7 +743,7 @@ public class MethodUtils {
         String methodName = method.getName();
         Class<?>[] paramTypes = method.getParameterTypes();
 
-        // Check the implemented interfaces and subinterfaces
+        // Check the implemented interfaces and sub interfaces
         method = getAccessibleMethodFromInterfaceNest(clazz, methodName, paramTypes);
 
         // Check the superclass chain
@@ -1065,6 +1064,7 @@ public class MethodUtils {
             }
             return result;
         }
+
     }
 
 }

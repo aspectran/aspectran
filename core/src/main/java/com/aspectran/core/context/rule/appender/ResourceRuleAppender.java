@@ -45,6 +45,7 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
         setLastModified(System.currentTimeMillis());
     }
 
+    @Override
     public String getQualifiedName() {
         return resource;
     }

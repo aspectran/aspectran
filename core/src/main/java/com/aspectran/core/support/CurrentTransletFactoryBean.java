@@ -23,7 +23,7 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
      * in the request scope.
      *
      * @return true if the current {@code Translet} is registered as an attribute
-     *      in the request scope; otherwise false
+     *      in the request scope; false otherwise
      */
     public boolean isAttributable() {
         return (attributeName != null);

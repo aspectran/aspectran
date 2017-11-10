@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppenderFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.NodeTracker;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,7 +42,7 @@ abstract class AbstractRuleAppender implements RuleAppender {
 
     private long lastModified;
 
-    private NodeletParser.LocationTracker locationTracker;
+    private NodeTracker nodeTracker;
 
     AbstractRuleAppender(AppenderType appenderType) {
         this.appenderType = appenderType;
@@ -131,13 +131,13 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     @Override
-    public NodeletParser.LocationTracker getLocationTracker() {
-        return locationTracker;
+    public NodeTracker getNodeTracker() {
+        return nodeTracker;
     }
 
     @Override
-    public void setLocationTracker(NodeletParser.LocationTracker locationTracker) {
-        this.locationTracker = locationTracker;
+    public void setNodeTracker(NodeTracker nodeTracker) {
+        this.nodeTracker = nodeTracker;
     }
 
 }

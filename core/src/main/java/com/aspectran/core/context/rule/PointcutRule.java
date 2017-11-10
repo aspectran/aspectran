@@ -37,7 +37,7 @@ public class PointcutRule {
 
     private List<PointcutTargetParameters> includeTargetParametersList;
 
-    private List<PointcutTargetParameters> execludeTargetParametersList;
+    private List<PointcutTargetParameters> excludeTargetParametersList;
 
 
     public PointcutRule(PointcutType pointcutType) {
@@ -68,11 +68,11 @@ public class PointcutRule {
     }
 
     public List<PointcutPatternRule> newPointcutPatternRuleList() {
-        return new ArrayList<PointcutPatternRule>();
+        return new ArrayList<>();
     }
 
     public List<PointcutPatternRule> newPointcutPatternRuleList(int initialCapacity) {
-        return new ArrayList<PointcutPatternRule>(initialCapacity);
+        return new ArrayList<>(initialCapacity);
     }
 
     public List<String> getPlusPatternStringList() {
@@ -99,12 +99,12 @@ public class PointcutRule {
         this.includeTargetParametersList = includeTargetParametersList;
     }
 
-    public List<PointcutTargetParameters> getExecludeTargetParametersList() {
-        return execludeTargetParametersList;
+    public List<PointcutTargetParameters> getExcludeTargetParametersList() {
+        return excludeTargetParametersList;
     }
 
-    public void setExecludeTargetParametersList(List<PointcutTargetParameters> execludeTargetParametersList) {
-        this.execludeTargetParametersList = execludeTargetParametersList;
+    public void setExcludeTargetParametersList(List<PointcutTargetParameters> excludeTargetParametersList) {
+        this.excludeTargetParametersList = excludeTargetParametersList;
     }
 
     @Override
@@ -115,16 +115,14 @@ public class PointcutRule {
         return tsb.toString();
     }
 
-    public static PointcutRule newInstance(String type) {
+    public static PointcutRule newInstance(String type) throws IllegalRuleException {
         PointcutType pointcutType = null;
-
         if (type != null) {
             pointcutType = PointcutType.resolve(type);
             if (pointcutType == null) {
-                throw new IllegalArgumentException("Unknown pointcut type '" + type + "'; Pointcut type for Translet must be 'wildcard' or 'regexp'");
+                throw new IllegalRuleException("Unknown pointcut type '" + type + "'; Pointcut type for Translet must be 'wildcard' or 'regexp'");
             }
         }
-
         return new PointcutRule(pointcutType);
     }
 

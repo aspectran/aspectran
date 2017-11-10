@@ -49,7 +49,7 @@ public class RequestRule {
     /**
      * Gets whether the request rule is implicitly generated.
      *
-     * @return true if this request rule is implicit; otherwise false
+     * @return true if this request rule is implicit; false otherwise
      */
     public boolean isImplicit() {
         return implicit;
@@ -202,12 +202,12 @@ public class RequestRule {
         return requestRule;
     }
 
-    public static RequestRule newInstance(String allowedMethod, String characterEncoding) {
-        MethodType allowedethodType = null;
+    public static RequestRule newInstance(String allowedMethod, String characterEncoding) throws IllegalRuleException {
+        MethodType allowedMethodType = null;
         if (allowedMethod != null) {
-            allowedethodType = MethodType.resolve(allowedMethod);
-            if (allowedethodType == null) {
-                throw new IllegalArgumentException("No request method type for '" + allowedMethod + "'");
+            allowedMethodType = MethodType.resolve(allowedMethod);
+            if (allowedMethodType == null) {
+                throw new IllegalRuleException("No request method type for '" + allowedMethod + "'");
             }
         }
 
@@ -215,12 +215,12 @@ public class RequestRule {
             try {
                 Charset.forName(characterEncoding);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Unsupported character encoding name: " + characterEncoding, e);
+                throw new IllegalRuleException("Unsupported character encoding name: " + characterEncoding, e);
             }
         }
 
         RequestRule requestRule = new RequestRule();
-        requestRule.setAllowedMethod(allowedethodType);
+        requestRule.setAllowedMethod(allowedMethodType);
         requestRule.setCharacterEncoding(characterEncoding);
         return requestRule;
     }

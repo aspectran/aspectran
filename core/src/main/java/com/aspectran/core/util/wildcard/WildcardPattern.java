@@ -120,7 +120,7 @@ public class WildcardPattern {
                     types[i] = SKIP_TYPE;
                 }
             } else if (tokens[i] == separator) {
-                //separator character does not escape.
+                // Separator character not escaped.
                 esc = false;
                 types[i] = SEPARATOR_TYPE; // type 9: separator
                 /*

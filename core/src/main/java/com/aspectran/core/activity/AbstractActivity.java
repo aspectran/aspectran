@@ -454,7 +454,7 @@ public abstract class AbstractActivity implements Activity {
             AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
                 JoinpointType joinpointType = aspectRule.getJoinpointType();
-                if (!aspectRule.isBeanRelevanted() && joinpointType == JoinpointType.TRANSLET) {
+                if (!aspectRule.isBeanRelevant() && joinpointType == JoinpointType.TRANSLET) {
                     if (isAcceptable(aspectRule)) {
                         Pointcut pointcut = aspectRule.getPointcut();
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {

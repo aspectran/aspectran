@@ -29,6 +29,7 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -196,7 +197,7 @@ public class ParamsToRuleConverter {
         assistant.applySettings();
     }
 
-    private void convertAsEnvironmentRule(EnvironmentParameters environmentParameters) {
+    private void convertAsEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
         if (environmentParameters != null) {
             String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
             ItemHolderParameters propertyItemHolderParameters = environmentParameters.getParameters(EnvironmentParameters.properties);
@@ -217,7 +218,7 @@ public class ParamsToRuleConverter {
         }
     }
 
-    private void convertAsAspectRule(AspectParameters aspectParameters) {
+    private void convertAsAspectRule(AspectParameters aspectParameters) throws IllegalRuleException {
         String description = aspectParameters.getString(AspectParameters.description);
         String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
         String order = aspectParameters.getString(AspectParameters.order);
@@ -297,7 +298,7 @@ public class ParamsToRuleConverter {
         assistant.addAspectRule(aspectRule);
     }
 
-    private void convertAsBeanRule(BeanParameters beanParameters) throws ClassNotFoundException {
+    private void convertAsBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
         String description = beanParameters.getString(BeanParameters.description);
         String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
         String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
@@ -347,7 +348,7 @@ public class ParamsToRuleConverter {
         assistant.addBeanRule(beanRule);
     }
 
-    private void convertAsScheduleRule(ScheduleParameters scheduleParameters) {
+    private void convertAsScheduleRule(ScheduleParameters scheduleParameters) throws IllegalRuleException {
         String description = scheduleParameters.getString(AspectParameters.description);
         String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
 
@@ -385,7 +386,7 @@ public class ParamsToRuleConverter {
         assistant.addScheduleRule(scheduleRule);
     }
 
-    private void convertAsTransletRule(TransletParameters transletParameters) {
+    private void convertAsTransletRule(TransletParameters transletParameters) throws IllegalRuleException {
         String description = transletParameters.getString(TransletParameters.description);
         String name = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.name));
         String scan = transletParameters.getString(TransletParameters.scan);
@@ -497,7 +498,7 @@ public class ParamsToRuleConverter {
         assistant.addTransletRule(transletRule);
     }
 
-    private RequestRule convertAsRequestRule(RequestParameters requestParameters) {
+    private RequestRule convertAsRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
         String allowedMethod = requestParameters.getString(RequestParameters.method);
         String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
         ItemHolderParameters parametersItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
@@ -518,7 +519,7 @@ public class ParamsToRuleConverter {
         return requestRule;
     }
 
-    private ResponseRule convertAsResponseRule(ResponseParameters responseParameters) {
+    private ResponseRule convertAsResponseRule(ResponseParameters responseParameters) throws IllegalRuleException {
         String name = responseParameters.getString(ResponseParameters.name);
         String characterEncoding = responseParameters.getString(ResponseParameters.characterEncoding);
 
@@ -547,7 +548,7 @@ public class ParamsToRuleConverter {
         return responseRule;
     }
 
-    private ContentList convertAsContentList(ContentsParameters contentsParameters) {
+    private ContentList convertAsContentList(ContentsParameters contentsParameters) throws IllegalRuleException {
         String name = contentsParameters.getString(ContentsParameters.name);
         Boolean omittable = contentsParameters.getBoolean(ContentsParameters.omittable);
         List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
@@ -555,8 +556,8 @@ public class ParamsToRuleConverter {
         ContentList contentList = ContentList.newInstance(name, omittable);
 
         if (contentParametersList != null) {
-            for (ContentParameters contentParamters : contentParametersList) {
-                ActionList actionList = convertAsActionList(contentParamters);
+            for (ContentParameters contentParameters : contentParametersList) {
+                ActionList actionList = convertAsActionList(contentParameters);
                 contentList.addActionList(actionList);
             }
         }
@@ -564,7 +565,7 @@ public class ParamsToRuleConverter {
         return contentList;
     }
 
-    private ActionList convertAsActionList(ContentParameters contentParameters) {
+    private ActionList convertAsActionList(ContentParameters contentParameters) throws IllegalRuleException {
         String name = contentParameters.getString(ContentParameters.name);
         Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
         Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
@@ -581,7 +582,7 @@ public class ParamsToRuleConverter {
         return actionList;
     }
 
-    private void convertAsActionRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
+    private void convertAsActionRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
         String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
         String include = actionParameters.getString(ActionParameters.include);
@@ -631,7 +632,8 @@ public class ParamsToRuleConverter {
         }
     }
 
-    private ExceptionThrownRule convertAsExceptionThrownRule(ExceptionThrownParameters exceptionThrownParameters, AspectAdviceRule aspectAdviceRule) {
+    private ExceptionThrownRule convertAsExceptionThrownRule(ExceptionThrownParameters exceptionThrownParameters, AspectAdviceRule aspectAdviceRule)
+            throws IllegalRuleException {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule(aspectAdviceRule);
 
         String[] exceptionTypes = exceptionThrownParameters.getStringArray(ExceptionThrownParameters.type);
@@ -665,14 +667,15 @@ public class ParamsToRuleConverter {
         return exceptionThrownRule;
     }
 
-    private void convertAsTransformRule(List<TransformParameters> transformParametersList, ResponseRuleApplicable responseRuleApplicable) {
+    private void convertAsTransformRule(List<TransformParameters> transformParametersList, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         for (TransformParameters transformParameters : transformParametersList) {
             TransformRule tr = convertAsTransformRule(transformParameters);
             responseRuleApplicable.applyResponseRule(tr);
         }
     }
 
-    private TransformRule convertAsTransformRule(TransformParameters transformParameters) {
+    private TransformRule convertAsTransformRule(TransformParameters transformParameters) throws IllegalRuleException {
         String transformType = transformParameters.getString(TransformParameters.type);
         String contentType = transformParameters.getString(TransformParameters.contentType);
         String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
@@ -718,14 +721,15 @@ public class ParamsToRuleConverter {
         return tr;
     }
 
-    private void convertAsDispatchResponseRule(List<DispatchParameters> dispatchParametersList, ResponseRuleApplicable responseRuleApplicable) {
+    private void convertAsDispatchResponseRule(List<DispatchParameters> dispatchParametersList, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         for (DispatchParameters dispatchParameters : dispatchParametersList) {
             DispatchResponseRule drr = convertAsDispatchResponseRule(dispatchParameters);
             responseRuleApplicable.applyResponseRule(drr);
         }
     }
 
-    private DispatchResponseRule convertAsDispatchResponseRule(DispatchParameters dispatchParameters) {
+    private DispatchResponseRule convertAsDispatchResponseRule(DispatchParameters dispatchParameters) throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
         String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
@@ -746,14 +750,15 @@ public class ParamsToRuleConverter {
         return drr;
     }
 
-    private void convertAsRedirectResponseRule(List<RedirectParameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable) {
+    private void convertAsRedirectResponseRule(List<RedirectParameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         for (RedirectParameters redirectParameters : redirectParametersList) {
             RedirectResponseRule rrr = convertAsRedirectResponseRule(redirectParameters);
             responseRuleApplicable.applyResponseRule(rrr);
         }
     }
 
-    private RedirectResponseRule convertAsRedirectResponseRule(RedirectParameters redirectParameters) {
+    private RedirectResponseRule convertAsRedirectResponseRule(RedirectParameters redirectParameters) throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String target = redirectParameters.getString(RedirectParameters.target);
         ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
@@ -781,14 +786,15 @@ public class ParamsToRuleConverter {
         return rrr;
     }
 
-    private void convertAsForwardResponseRule(List<ForwardParameters> forwardParametersList, ResponseRuleApplicable responseRuleApplicable) {
+    private void convertAsForwardResponseRule(List<ForwardParameters> forwardParametersList, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         for (ForwardParameters forwardParameters : forwardParametersList) {
             ForwardResponseRule frr = convertAsForwardResponseRule(forwardParameters);
             responseRuleApplicable.applyResponseRule(frr);
         }
     }
 
-    private ForwardResponseRule convertAsForwardResponseRule(ForwardParameters forwardParameters) {
+    private ForwardResponseRule convertAsForwardResponseRule(ForwardParameters forwardParameters) throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
         ItemHolderParameters attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
@@ -815,7 +821,7 @@ public class ParamsToRuleConverter {
         return frr;
     }
 
-    private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) {
+    private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
         List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList(ItemHolderParameters.item);
         ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
 
@@ -828,7 +834,7 @@ public class ParamsToRuleConverter {
         return itemRuleMap;
     }
 
-    private void convertAsTemplateRule(TemplateParameters templateParameters) {
+    private void convertAsTemplateRule(TemplateParameters templateParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
         String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
         String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));

@@ -16,8 +16,8 @@
 package com.aspectran.core.support.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateDataMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -67,7 +67,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatcherException {
         String dispatchName = null;
 
         try {
@@ -111,7 +111,8 @@ public class PebbleViewDispatcher implements ViewDispatcher {
                 log.debug("Dispatch to Pebble template [" + dispatchName + "]");
             }
         } catch (Exception e) {
-            throw new ViewDispatchException("Failed to dispatch to Pebble template " + dispatchResponseRule.toString(this, dispatchName), e);
+            throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
+                    dispatchResponseRule.toString(this, dispatchName), e);
         }
     }
 

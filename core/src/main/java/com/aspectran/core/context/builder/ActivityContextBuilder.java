@@ -50,7 +50,7 @@ public interface ActivityContextBuilder {
 
     String[] getResourceLocations();
 
-    void setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
+    void setResourceLocations(String... resourceLocations);
 
     String[] getActiveProfiles();
 
@@ -74,11 +74,7 @@ public interface ActivityContextBuilder {
 
     AspectranClassLoader getAspectranClassLoader();
 
-    void initialize(ContextConfig aspectranContextConfig) throws InvalidResourceException;
-
-    void startReloadingTimer();
-
-    void stopReloadingTimer();
+    void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException;
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 

@@ -54,9 +54,9 @@ public interface SessionDataStore extends Component {
     /**
      * Test if data exists for a given session id.
      *
-     * @param id Identity of session whose existance should be checked
+     * @param id Identity of session whose existence should be checked
      * @return true if valid, non-expired session exists
-     * @throws Exception if problem checking existance with persistence layer
+     * @throws Exception if there is a problem checking the existence with persistence layer
      */
     boolean exists(String id) throws Exception;
 

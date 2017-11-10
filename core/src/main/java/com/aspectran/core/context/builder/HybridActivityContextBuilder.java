@@ -18,11 +18,13 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -93,19 +95,25 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 }
             }
 
-            newAspectranClassLoader();
-
             if (rootConfigLocation != null) {
                 log.info("Building an ActivityContext with " + rootConfigLocation);
             } else {
                 log.info("Building an ActivityContext with AspectranParameters");
             }
 
+            if (getActiveProfiles() != null) {
+                log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
+            }
+
+            if (getDefaultProfiles() != null) {
+                log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
+            }
+
             long startTime = System.currentTimeMillis();
 
-            ActivityContextParser parser = new HybridActivityContextParser(getApplicationAdapter());
-            parser.setActiveProfiles(getActiveProfiles());
-            parser.setDefaultProfiles(getDefaultProfiles());
+            ContextEnvironment contextEnvironment = createContextEnvironment();
+
+            ActivityContextParser parser = new HybridActivityContextParser(contextEnvironment);
             parser.setEncoding(getEncoding());
             parser.setHybridLoad(isHybridLoad());
             if (rootConfigLocation != null) {
@@ -137,11 +145,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             return activityContext;
         } catch (Exception e) {
-            if (getContextConfig() != null) {
-                throw new ActivityContextBuilderException("Failed to build ActivityContext with " + getContextConfig(), e);
-            } else {
-                throw new ActivityContextBuilderException("Failed to build ActivityContext", e);
-            }
+            throw new ActivityContextBuilderException("Failed to build ActivityContext", e);
         }
     }
 

@@ -99,48 +99,52 @@ public class DispatchResponse implements Response {
      * Determine the view dispatcher.
      *
      * @param activity the current Activity
+     * @throws ViewDispatcherException if ViewDispatcher can not be determined
      */
-    private ViewDispatcher getViewDispatcher(Activity activity) throws ClassNotFoundException {
-        String viewDispatcherName;
+    private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
+        try {
+            String viewDispatcherName;
 
-        if (dispatchResponseRule.getDispatcher() != null) {
-            viewDispatcherName = dispatchResponseRule.getDispatcher();
-        } else {
-            viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-            if (viewDispatcherName == null) {
-                throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
-                        "' has not been specified in the default response rule");
+            if (dispatchResponseRule.getDispatcher() != null) {
+                viewDispatcherName = dispatchResponseRule.getDispatcher();
+            } else {
+                viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
+                if (viewDispatcherName == null) {
+                    throw new IllegalArgumentException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule");
+                }
             }
-        }
 
-        ViewDispatcher viewDispatcher;
+            ViewDispatcher viewDispatcher;
 
-        synchronized (viewDispatcherCache) {
-            viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
-            if (viewDispatcher == null) {
-                if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                    String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                    Class<?> viewDispatcherClass = activity.getClassLoader().loadClass(viewDispatcherClassName);
-                    viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
-                } else {
-                    viewDispatcher = activity.getBean(viewDispatcherName);
-                }
-
+            synchronized (viewDispatcherCache) {
+                viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
                 if (viewDispatcher == null) {
-                    throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined");
-                }
+                    if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+                        String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                        Class<?> viewDispatcherClass = activity.getClassLoader().loadClass(viewDispatcherClassName);
+                        viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
+                    } else {
+                        viewDispatcher = activity.getBean(viewDispatcherName);
+                    }
 
-                if (viewDispatcher.isSingleton()) {
-                    viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
+                    if (viewDispatcher == null) {
+                        throw new IllegalArgumentException("No bean named '" + viewDispatcherName + "' is defined");
+                    }
 
-                    if (log.isDebugEnabled()) {
-                        log.debug("Cached View Dispatcher: " + viewDispatcher);
+                    if (viewDispatcher.isSingleton()) {
+                        viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
+
+                        if (log.isDebugEnabled()) {
+                            log.debug("Cached View Dispatcher: " + viewDispatcher);
+                        }
                     }
                 }
             }
-        }
 
-        return viewDispatcher;
+            return viewDispatcher;
+        } catch(Exception e) {
+            throw new ViewDispatcherException("Unable to determine ViewDispatcher", e);
+        }
     }
 
     @Override

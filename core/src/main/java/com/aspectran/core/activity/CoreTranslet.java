@@ -20,6 +20,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -28,6 +29,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -41,7 +43,7 @@ import java.util.Map;
 /**
  * The Class CoreTranslet.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.</p>
  */
 public class CoreTranslet implements Translet {
 
@@ -223,7 +225,7 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public void fillAllPrameters(Map<String, Object> targetParameters) {
+    public void fillAllParameters(Map<String, Object> targetParameters) {
         getRequestAdapter().fillAllPrameters(targetParameters);
     }
 
@@ -326,8 +328,12 @@ public class CoreTranslet implements Translet {
                 return;
             }
         }
-        DispatchResponseRule drr = DispatchResponseRule.newInstance(name);
-        dispatch(drr);
+        try {
+            DispatchResponseRule drr = DispatchResponseRule.newInstance(name);
+            dispatch(drr);
+        } catch (IllegalRuleException e) {
+            throw new ResponseException("Failed to dispatch for [" + name + "]", e);
+        }
     }
 
     @Override
@@ -353,8 +359,12 @@ public class CoreTranslet implements Translet {
                 return;
             }
         }
-        RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
-        redirect(rrr);
+        try {
+            RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
+            redirect(rrr);
+        } catch (IllegalRuleException e) {
+            throw new ResponseException("Failed to redirect to [" + target + "]", e);
+        }
     }
 
     @Override
@@ -388,8 +398,12 @@ public class CoreTranslet implements Translet {
                 return;
             }
         }
-        ForwardResponseRule frr = ForwardResponseRule.newInstance(transletName);
-        forward(frr);
+        try {
+            ForwardResponseRule frr = ForwardResponseRule.newInstance(transletName);
+            forward(frr);
+        } catch (IllegalRuleException e) {
+            throw new ResponseException("Failed to forward to [" + transletName + "]", e);
+        }
     }
 
     @Override

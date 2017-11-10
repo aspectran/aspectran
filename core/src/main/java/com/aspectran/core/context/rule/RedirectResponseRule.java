@@ -315,7 +315,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         return tsb.toString();
     }
 
-    public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding, Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
+    public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding,
+                                                   Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setContentType(contentType);
         if (target != null && target.length() > 0) {
@@ -328,9 +329,9 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         return rrr;
     }
 
-    public static RedirectResponseRule newInstance(String target) {
+    public static RedirectResponseRule newInstance(String target) throws IllegalRuleException {
         if (target == null) {
-            throw new IllegalArgumentException("Argument 'target' must not be null");
+            throw new IllegalRuleException("Argument 'target' must not be null");
         }
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setTarget(target);

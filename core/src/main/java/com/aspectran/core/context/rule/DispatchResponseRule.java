@@ -213,11 +213,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Returns a string representation of <code>DispatchResponseRule</code> with used <code>Dispatcher</code>.
+     * Returns a string representation of {@code DispatchResponseRule} with used {@code Dispatcher}.
      *
      * @param viewDispatcher the view dispatcher
      * @param dispatchName the new dispatch name
-     * @return a string representation of <code>DispatchResponseRule</code>.
+     * @return a string representation of {@code DispatchResponseRule}.
      */
     public String toString(ViewDispatcher viewDispatcher, String dispatchName) {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -269,10 +269,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
      *
      * @param name the dispatch name
      * @return the dispatch response rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static DispatchResponseRule newInstance(String name) {
+    public static DispatchResponseRule newInstance(String name) throws IllegalRuleException {
         if (name == null) {
-            throw new IllegalArgumentException("Argument 'name' must not be null");
+            throw new IllegalRuleException("Argument 'name' must not be null");
         }
         DispatchResponseRule drr = new DispatchResponseRule();
         drr.setName(name);
@@ -282,7 +283,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     /**
      * Returns a new derived instance of DispatchResponseRule.
      *
-     * @param dispatchResponseRule an instance of DispatchResponseRulethe
+     * @param dispatchResponseRule an instance of DispatchResponseRule
      * @return the dispatch response rule
      */
     public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {

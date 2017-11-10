@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 
 /**
  * Interface to be implemented by any object that wishes to be notified of the
- * {@link ApplicationAdapter} that it runs in.
+ * {@link ApplicationAdapter}.
  * 
  * <p>Created: 2016. 1. 25.</p>
  *

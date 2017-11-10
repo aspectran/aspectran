@@ -55,12 +55,12 @@ class ActionNodeletAdder implements NodeletAdder {
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
+            assistant.resolveActionBeanClass(beanActionRule);
             parser.pushObject(beanActionRule);
         });
         parser.addNodeEndlet(text -> {
             BeanActionRule beanActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
-            assistant.resolveActionBeanClass(beanActionRule);
             applicable.applyActionRule(beanActionRule);
         });
         parser.setXpath(xpath + "/action/arguments");

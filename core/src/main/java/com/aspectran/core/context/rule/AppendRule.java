@@ -108,8 +108,10 @@ public class AppendRule {
      * @param format the rule file type ('xml' or 'apon')
      * @param profile the environment profile name
      * @return an {@code AppendRule} object
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static AppendRule newInstance(String file, String resource, String url, String format, String profile) {
+    public static AppendRule newInstance(String file, String resource, String url, String format, String profile)
+            throws IllegalRuleException {
         AppendRule appendRule = new AppendRule();
 
         if (StringUtils.hasText(file)) {
@@ -119,12 +121,12 @@ public class AppendRule {
         } else if (StringUtils.hasText(url)) {
             appendRule.setUrl(url);
         } else {
-            throw new IllegalArgumentException("The 'append' element requires either a 'file' or a 'resource' or a 'url' attribute");
+            throw new IllegalRuleException("The 'append' element requires either a 'file' or a 'resource' or a 'url' attribute");
         }
 
         AppenderFileFormatType appenderFileFormatType = AppenderFileFormatType.resolve(format);
         if (format != null && appenderFileFormatType == null) {
-            throw new IllegalArgumentException("No appender file format type for '" + format + "'");
+            throw new IllegalRuleException("No appender file format type for '" + format + "'");
         }
 
         if (profile != null && !profile.isEmpty()) {

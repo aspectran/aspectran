@@ -93,7 +93,7 @@ public abstract class AbstractDynamicBeanProxy {
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
 
         for (AspectRule aspectRule : aspectRuleMap.values()) {
-            if (aspectRule.isBeanRelevanted()) {
+            if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
                     if (aspectRule.getJoinpointType() == JoinpointType.BEAN) {

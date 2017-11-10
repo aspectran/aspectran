@@ -28,22 +28,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context;
+package com.aspectran.core.context.rule;
+
+import com.aspectran.core.context.AspectranCheckedException;
 
 /**
- * The Class ActivityContextException.
+ * This exception will be thrown if an illegal rule is found.
  * 
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * <p>Created: 2017. 11. 10.</p>
  */
-public class ActivityContextException extends AspectranCheckedException {
+public class IllegalRuleException extends AspectranCheckedException {
 
     /** @serial */
-    private static final long serialVersionUID = 5842257746374237516L;
+    private static final long serialVersionUID = 4725758105730046172L;
 
     /**
      * Simple constructor
      */
-    public ActivityContextException() {
+    public IllegalRuleException() {
         super();
     }
 
@@ -52,7 +54,7 @@ public class ActivityContextException extends AspectranCheckedException {
      *
      * @param msg a message to associate with the exception
      */
-    public ActivityContextException(String msg) {
+    public IllegalRuleException(String msg) {
         super(msg);
     }
 
@@ -61,7 +63,7 @@ public class ActivityContextException extends AspectranCheckedException {
      *
      * @param cause the real cause of the exception
      */
-    public ActivityContextException(Throwable cause) {
+    public IllegalRuleException(Throwable cause) {
         super(cause);
     }
 
@@ -71,7 +73,7 @@ public class ActivityContextException extends AspectranCheckedException {
      * @param msg a message to associate with the exception
      * @param cause the real cause of the exception
      */
-    public ActivityContextException(String msg, Throwable cause) {
+    public IllegalRuleException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

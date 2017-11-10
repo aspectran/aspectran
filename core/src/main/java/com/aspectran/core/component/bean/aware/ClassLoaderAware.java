@@ -16,8 +16,8 @@
 package com.aspectran.core.component.bean.aware;
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link ClassLoader} that it runs in.
+ * The ClassLoaderAware interface provides the ability to configure a {@code ClassLoader}
+ * to be used by the implementing object when loading classes or resources.
  * 
  * <p>Created: 2016. 1. 25.</p>
  *
@@ -25,6 +25,13 @@ package com.aspectran.core.component.bean.aware;
  */
 public interface ClassLoaderAware extends Aware {
 
+    /**
+     * Specify the {@code ClassLoader} to provide. The {@code ClassLoader} can be set
+     * when the object is created, and allows the creator to provide the appropriate class
+     * loader to be used by the object when when loading classes and resources.
+     *
+     * @param classLoader the {@code ClassLoader} to provide
+     */
     void setClassLoader(ClassLoader classLoader);
 
 }

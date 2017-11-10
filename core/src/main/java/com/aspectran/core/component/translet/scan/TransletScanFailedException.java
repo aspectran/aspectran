@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.component.translet.scan;
 
-import com.aspectran.core.component.bean.BeanException;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
  * The Class TransletScanFailedException.
  * 
  * @since 2.0.0
  */
-public class TransletScanFailedException extends BeanException {
+public class TransletScanFailedException extends AspectranRuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -7694783910759443211L;
