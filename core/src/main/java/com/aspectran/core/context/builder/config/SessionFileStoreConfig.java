@@ -31,8 +31,8 @@ public class SessionFileStoreConfig extends AbstractParameters {
         deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-            path,
-            deleteUnrestorableFiles
+                path,
+                deleteUnrestorableFiles
         };
     }
 

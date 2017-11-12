@@ -275,6 +275,13 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         return tr;
     }
 
+    public static void updateTemplateId(TransformRule transformRule, String templateId) throws IllegalRuleException {
+        if (templateId == null) {
+            throw new IllegalRuleException("The 'call' element of 'transform' must have a 'template' attribute");
+        }
+        transformRule.setTemplateId(templateId);
+    }
+
     public static TransformRule replicate(TransformRule transformRule) {
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformRule.getTransformType());

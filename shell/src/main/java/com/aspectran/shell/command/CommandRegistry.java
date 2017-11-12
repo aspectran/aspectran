@@ -17,7 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.shell.command.option.OptionParser;
-import com.aspectran.shell.command.option.SimpleOptionParser;
+import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.service.ShellService;
 
 import java.util.LinkedHashMap;
@@ -30,7 +30,7 @@ public class CommandRegistry {
 
     private Map<String, Command> commands = new LinkedHashMap<>();
 
-    private OptionParser parser = new SimpleOptionParser();
+    private OptionParser parser = new DefaultOptionParser();
 
     private ShellService service;
 

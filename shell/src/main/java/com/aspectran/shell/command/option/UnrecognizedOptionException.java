@@ -20,16 +20,16 @@ package com.aspectran.shell.command.option;
  * Exception thrown during parsing signalling an unrecognized
  * option was seen.
  */
-public class UnrecognizedOptionException extends OptionParseException {
+public class UnrecognizedOptionException extends OptionParserException {
 
     /** @serial */
     private static final long serialVersionUID = 4662457863100554595L;
 
-    /** The  unrecognized option */
+    /** The unrecognized option */
     private String option;
 
     /**
-     * Construct a new <code>UnrecognizedArgumentException</code>
+     * Construct a new {@code UnrecognizedArgumentException}
      * with the specified detail message.
      *
      * @param message the detail message
@@ -39,7 +39,7 @@ public class UnrecognizedOptionException extends OptionParseException {
     }
 
     /**
-     * Construct a new <code>UnrecognizedArgumentException</code>
+     * Construct a new {@code UnrecognizedArgumentException}
      * with the specified option and detail message.
      *
      * @param message the detail message

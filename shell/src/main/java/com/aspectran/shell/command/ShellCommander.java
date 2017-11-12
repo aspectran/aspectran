@@ -21,6 +21,8 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
+import java.util.Arrays;
+
 /**
  * The Console Command Handler.
  *
@@ -55,11 +57,12 @@ public class ShellCommander {
                 }
 
                 CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(commandLine);
-                String[] args = CommandLineParser.splitCommandLine(commandLineParser.getCommand());
+                String[] arr = CommandLineParser.splitCommandLine(commandLineParser.getCommand());
 
-                String commandName = (args.length > 0 ? args[0] : null);
+                String commandName = arr[0];
+                String[] args = Arrays.copyOfRange(arr, 1, arr.length);
+
                 Command command = commandRegistry.getCommand(commandName);
-
                 if (command != null) {
                     command.execute(args);
                 } else {

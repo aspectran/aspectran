@@ -27,13 +27,13 @@ import java.util.Map;
 
 /**
  * Main entry-point into the library.
- * <p>
- * Options represents a collection of {@link Option} objects, which
- * describe the possible options for a command-line.
- * <p>
- * It may flexibly parse long and short options, with or without
+ *
+ * <p>Options represents a collection of {@link Option} objects, which
+ * describe the possible options for a command-line.</p>
+ *
+ * <p>It may flexibly parse long and short options, with or without
  * values.  Additionally, it may parse only a portion of a commandline,
- * allowing for flexible multi-stage parsing.
+ * allowing for flexible multi-stage parsing.</p>
  *
  * @see ParsedOptions
  */
@@ -106,9 +106,7 @@ public class Options implements Serializable {
     /**
      * Add an option that only contains a short-name.
      *
-     * <p>
-     * It may be specified as requiring an argument.
-     * </p>
+     * <p>It may be specified as requiring an argument.</p>
      *
      * @param opt Short single-character name of the option.
      * @param hasArg flag signalling if an argument is required after this option
@@ -123,9 +121,7 @@ public class Options implements Serializable {
     /**
      * Add an option that contains a short-name and a long-name.
      *
-     * <p>
-     * It may be specified as requiring an argument.
-     * </p>
+     * <p>It may be specified as requiring an argument.</p>
      *
      * @param opt Short single-character name of the option.
      * @param longOpt Long multi-character name of the option.
@@ -141,20 +137,19 @@ public class Options implements Serializable {
     /**
      * Add an option that contains a short-name and a long-name.
      * 
-     * <p>
-     * The added option is set as required. It may be specified as requiring an argument. This method is a shortcut for:
-     * </p>
+     * <p>The added option is set as required. It may be specified as requiring an argument.
+     * This method is a shortcut for:</p>
      *
      * <pre>
-     * <code>
+     * {@code
      * Options option = new Option(opt, longOpt, hasArg, description);
      * option.setRequired(true);
      * options.add(option);
-     * </code>
+     * }
      * </pre>
      *
-     * @param opt Short single-character name of the option.
-     * @param longOpt Long multi-character name of the option.
+     * @param opt short single-character name of the option
+     * @param longOpt long multi-character name of the option
      * @param hasArg flag signalling if an argument is required after this option
      * @param description Self-documenting description
      * @return the resulting Options instance
@@ -223,15 +218,13 @@ public class Options implements Serializable {
     /**
      * Retrieve the {@link Option} matching the long or short name specified.
      *
-     * <p>
-     * The leading hyphens in the name are ignored (up to 2).
-     * </p>
+     * <p>The leading hyphens in the name are ignored (up to 2).</p>
      *
      * @param opt short or long name of the {@link Option}
      * @return the option represented by opt
      */
     public Option getOption(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
 
         if (shortOpts.containsKey(opt)) {
             return shortOpts.get(opt);
@@ -247,7 +240,7 @@ public class Options implements Serializable {
      * @return the options matching the partial name specified, or an empty list if none matches
      */
     public List<String> getMatchingOptions(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
         
         List<String> matchingOpts = new ArrayList<>();
 
@@ -272,7 +265,7 @@ public class Options implements Serializable {
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
     public boolean hasOption(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
         return (shortOpts.containsKey(opt) || longOpts.containsKey(opt));
     }
 
@@ -283,7 +276,7 @@ public class Options implements Serializable {
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
     public boolean hasLongOption(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
         return longOpts.containsKey(opt);
     }
 
@@ -294,7 +287,7 @@ public class Options implements Serializable {
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
     public boolean hasShortOption(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
         return shortOpts.containsKey(opt);
     }
 
@@ -315,13 +308,13 @@ public class Options implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("[ Options: [ short ");
-        buf.append(shortOpts.toString());
-        buf.append(" ] [ long ");
-        buf.append(longOpts);
-        buf.append(" ]");
-        return buf.toString();
+        StringBuilder buff = new StringBuilder();
+        buff.append("[ Options: [ short ");
+        buff.append(shortOpts.toString());
+        buff.append(" ] [ long ");
+        buff.append(longOpts);
+        buff.append(" ]");
+        return buff.toString();
     }
 
 }

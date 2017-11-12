@@ -17,9 +17,9 @@
 
 package com.aspectran.shell.command.option;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,25 +27,24 @@ import java.util.Properties;
 
 /**
  * Represents list of arguments parsed against a {@link Options} descriptor.
- * <p>
- * It allows querying of a boolean {@link #hasOption(String opt)},
- * in addition to retrieving the {@link #getOptionValue(String opt)}
- * for options requiring arguments.
- * </p><p>
- * Additionally, any left-over or unrecognized arguments,
- * are available for further processing.
- * </p>
+ *
+ * <p>It allows querying of a boolean {@link #hasOption(String opt)},
+ * in addition to retrieving the {@link #getValue(String opt)}
+ * for options requiring arguments.</p>
+ *
+ * <p>Additionally, any left-over or unrecognized arguments,
+ * are available for further processing.</p>
  */
 public class ParsedOptions implements Serializable {
 
     /** @serial */
     private static final long serialVersionUID = -875791688751934582L;
 
-    /** The unrecognized options/arguments */
-    private final List<String> args = new LinkedList<>();
-
     /** The processed options */
     private final List<Option> options = new ArrayList<>();
+
+    /** The unrecognized options/arguments */
+    private final List<String> unparsedArgs = new LinkedList<>();
 
     /**
      * Creates a command line.
@@ -67,7 +66,7 @@ public class ParsedOptions implements Serializable {
     /**
      * Query to see if an option has been set.
      *
-     * @param opt Short name of the option
+     * @param opt short name of the option
      * @return true if set, false if not
      */
     public boolean hasOption(String opt) {
@@ -87,58 +86,96 @@ public class ParsedOptions implements Serializable {
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
+     * @param <T> the generic type
      * @param option the option
      * @return the value parsed into a particular object
-     * @throws OptionParseException if there are problems turning the option value into the desired type
-     * @see PatternOptionBuilder
+     * @throws OptionParserException if there are problems turning the option value into the desired type
      */
-    public Object getParsedOptionValue(Option option) throws OptionParseException {
+    @SuppressWarnings("unchecked")
+    public <T> T getParsedValue(Option option) throws OptionParserException {
         if (option == null) {
             return null;
         }
-        String res = getOptionValue(option);
-        if (res == null) {
+        String value = getValue(option);
+        if (value == null) {
             return null;
         }
-        return TypeHandler.createValue(res, option.getType());
+        OptionValueType valueType = option.getValueType();
+        if (valueType == OptionValueType.STRING) {
+            return (T)value;
+        } else if (valueType == OptionValueType.INT) {
+            try {
+                return (T)Integer.valueOf(value);
+            } catch(NumberFormatException e) {
+                throw new OptionParserException(e.getMessage());
+            }
+        } else if (valueType == OptionValueType.LONG) {
+            try {
+                return (T)Long.valueOf(value);
+            } catch(NumberFormatException e) {
+                throw new OptionParserException(e.getMessage());
+            }
+        } else if (valueType == OptionValueType.FLOAT) {
+            try {
+                return (T)Float.valueOf(value);
+            } catch(NumberFormatException e) {
+                throw new OptionParserException(e.getMessage());
+            }
+        } else if (valueType == OptionValueType.DOUBLE) {
+            try {
+                return (T)Double.valueOf(value);
+            } catch(NumberFormatException e) {
+                throw new OptionParserException(e.getMessage());
+            }
+        } else if (valueType == OptionValueType.BOOLEAN) {
+            try {
+                return (T)Boolean.valueOf(value);
+            } catch(NumberFormatException e) {
+                throw new OptionParserException(e.getMessage());
+            }
+        } else if (valueType == OptionValueType.FILE) {
+            return (T)new File(value);
+        } else {
+            return null;
+        }
     }
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
+     * @param <T> the generic type
      * @param opt the name of the option
      * @return the value parsed into a particular object
-     * @throws OptionParseException if there are problems turning the option value into the desired type
-     * @see PatternOptionBuilder
+     * @throws OptionParserException if there are problems turning the option value into the desired type
      */
-    public Object getParsedOptionValue(String opt) throws OptionParseException {
-        return getParsedOptionValue(resolveOption(opt));
+    public <T> T getParsedValue(String opt) throws OptionParserException {
+        return getParsedValue(resolveOption(opt));
     }
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
+     * @param <T> the generic type
      * @param opt the name of the option
      * @return the value parsed into a particular object
-     * @throws OptionParseException if there are problems turning the option value into the desired type
-     * @see PatternOptionBuilder
+     * @throws OptionParserException if there are problems turning the option value into the desired type
      */
-    public Object getParsedOptionValue(char opt) throws OptionParseException {
-        return getParsedOptionValue(String.valueOf(opt));
+    public <T> T getParsedValue(char opt) throws OptionParserException {
+        return getParsedValue(String.valueOf(opt));
     }
 
     /**
      * Retrieve the first argument, if any, of this option.
      *
-     * @param option the name of the option.
+     * @param option the name of the option
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String getOptionValue(Option option) {
+    public String getValue(Option option) {
         if (option == null) {
             return null;
         }
-        String[] values = getOptionValues(option);
+        String[] values = getValues(option);
         return (values == null ? null : values[0]);
     }
 
@@ -147,10 +184,10 @@ public class ParsedOptions implements Serializable {
      *
      * @param opt the name of the option
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String getOptionValue(String opt) {
-        return getOptionValue(resolveOption(opt));
+    public String getValue(String opt) {
+        return getValue(resolveOption(opt));
     }
 
     /**
@@ -158,10 +195,10 @@ public class ParsedOptions implements Serializable {
      *
      * @param opt the character name of the option
      * @return the value of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String getOptionValue(char opt) {
-        return getOptionValue(String.valueOf(opt));
+    public String getValue(char opt) {
+        return getValue(String.valueOf(opt));
     }
 
     /**
@@ -169,9 +206,9 @@ public class ParsedOptions implements Serializable {
      *
      * @param option string name of the option
      * @return the values of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String[] getOptionValues(Option option) {
+    public String[] getValues(Option option) {
         List<String> values = new ArrayList<>();
         for (Option processedOption : options) {
             if (processedOption.equals(option)) {
@@ -186,10 +223,10 @@ public class ParsedOptions implements Serializable {
      *
      * @param opt string name of the option
      * @return the values of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String[] getOptionValues(String opt) {
-        return getOptionValues(resolveOption(opt));
+    public String[] getValues(String opt) {
+        return getValues(resolveOption(opt));
     }
 
     /**
@@ -199,7 +236,7 @@ public class ParsedOptions implements Serializable {
      * @return the canonicalized option
      */
     private Option resolveOption(String opt) {
-        opt = Util.stripLeadingHyphens(opt);
+        opt = OptionUtils.stripLeadingHyphens(opt);
         for (Option option : options) {
             if (opt.equals(option.getOpt())) {
                 return option;
@@ -216,10 +253,10 @@ public class ParsedOptions implements Serializable {
      *
      * @param opt character name of the option
      * @return Values of the argument if option is set, and has an argument,
-     *      otherwise null
+     *      otherwise {@code null}
      */
-    public String[] getOptionValues(char opt) {
-        return getOptionValues(String.valueOf(opt));
+    public String[] getValues(char opt) {
+        return getValues(String.valueOf(opt));
     }
 
     /**
@@ -231,8 +268,8 @@ public class ParsedOptions implements Serializable {
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(Option option, String defaultValue) {
-        String answer = getOptionValue(option);
+    public String getValue(Option option, String defaultValue) {
+        String answer = getValue(option);
         return (answer != null ? answer : defaultValue);
     }
 
@@ -245,8 +282,8 @@ public class ParsedOptions implements Serializable {
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(String opt, String defaultValue) {
-        return getOptionValue(resolveOption(opt), defaultValue);
+    public String getValue(String opt, String defaultValue) {
+        return getValue(resolveOption(opt), defaultValue);
     }
 
     /**
@@ -258,8 +295,8 @@ public class ParsedOptions implements Serializable {
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code defaultValue}
      */
-    public String getOptionValue(char opt, String defaultValue) {
-        return getOptionValue(String.valueOf(opt), defaultValue);
+    public String getValue(char opt, String defaultValue) {
+        return getValue(String.valueOf(opt), defaultValue);
     }
 
     /**
@@ -271,12 +308,11 @@ public class ParsedOptions implements Serializable {
      * <tt>"true"</tt>.
      *
      * @param option the option to be processed
-     * @return the Properties mapped by the option, never <tt>null</tt>
+     * @return the Properties mapped by the option, never {@code null}
      *         even if the option doesn't exists
      */
-    public Properties getOptionProperties(Option option) {
+    public Properties getProperties(Option option) {
         Properties props = new Properties();
-
         for (Option processedOption : options) {
             if (processedOption.equals(option)) {
                 List<String> values = processedOption.getValuesList();
@@ -289,7 +325,6 @@ public class ParsedOptions implements Serializable {
                 }
             }
         }
-
         return props;
     }
 
@@ -301,13 +336,12 @@ public class ParsedOptions implements Serializable {
      * (<tt>-Dfoo</tt>) it is considered as a boolean flag and the value is
      * <tt>"true"</tt>.
      *
-     * @param opt the name of the option.
-     * @return the Properties mapped by the option, never <tt>null</tt>
-     *         even if the option doesn't exists.
+     * @param opt the name of the option
+     * @return the Properties mapped by the option, never {@code null}
+     *         even if the option doesn't exists
      */
-    public Properties getOptionProperties(String opt) {
+    public Properties getProperties(String opt) {
         Properties props = new Properties();
-
         for (Option option : options) {
             if (opt.equals(option.getOpt()) || opt.equals(option.getLongOpt())) {
                 List<String> values = option.getValuesList();
@@ -320,37 +354,7 @@ public class ParsedOptions implements Serializable {
                 }
             }
         }
-
         return props;
-    }
-
-    /**
-     * Retrieve any left-over non-recognized options and arguments.
-     *
-     * @return remaining items passed in but not parsed as an array
-     */
-    public String[] getArgs() {
-        String[] answer = new String[args.size()];
-        args.toArray(answer);
-        return answer;
-    }
-
-    /**
-     * Retrieve any left-over non-recognized options and arguments.
-     *
-     * @return remaining items passed in but not parsed as a {@link List}
-     */
-    public List<String> getArgList() {
-        return args;
-    }
-
-    /**
-     * Add left-over unrecognized option/argument.
-     *
-     * @param arg the unrecognized option/argument
-     */
-    protected void addArg(String arg) {
-        args.add(arg);
     }
 
     /**
@@ -379,52 +383,34 @@ public class ParsedOptions implements Serializable {
      * @return an array of the processed {@link Option}s
      */
     public Option[] getOptions() {
-        final Collection<Option> processed = options;
-
-        // reinitialise array
-        Option[] optionsArray = new Option[processed.size()];
-
-        // return the array
-        return processed.toArray(optionsArray);
+        return options.toArray(new Option[options.size()]);
     }
 
     /**
-     * A nested builder class to create {@code ParsedOptions} instance
-     * using descriptive methods.
+     * Retrieve any left-over non-recognized options and arguments.
+     *
+     * @return remaining items passed in but not parsed as an array
      */
-    public static final class Builder {
+    public String[] getUnparsedArgs() {
+        return unparsedArgs.toArray(new String[unparsedArgs.size()]);
+    }
 
-        /**
-         * ParsedOptions that is being build by this Builder.
-         */
-        private final ParsedOptions parsedOptions = new ParsedOptions();
+    /**
+     * Retrieve any left-over non-recognized options and arguments.
+     *
+     * @return remaining items passed in but not parsed as a {@link List}
+     */
+    public List<String> getUnparsedArgList() {
+        return unparsedArgs;
+    }
 
-        /**
-         * Add an option to the command line.
-         * The values of the option are stored.
-         *
-         * @param opt the processed option
-         * @return this Builder instance for method chaining
-         */
-        public Builder addOption(Option opt) {
-            parsedOptions.addOption(opt);
-            return this;
-        }
-
-        /**
-         * Add left-over unrecognized option/argument.
-         *
-         * @param arg the unrecognized option/argument
-         * @return this Builder instance for method chaining
-         */
-        public Builder addArg(String arg) {
-            parsedOptions.addArg(arg);
-            return this;
-        }
-
-        public ParsedOptions build() {
-            return parsedOptions;
-        }
+    /**
+     * Add left-over unrecognized option/argument.
+     *
+     * @param arg the unrecognized option/argument
+     */
+    protected void addUnparsedArg(String arg) {
+        unparsedArgs.add(arg);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 
@@ -12,6 +11,8 @@ public class RestartCommand extends AbstractCommand {
     private static final String NAMESPACE = "builtin";
 
     private static final String COMMAND_NAME = "restart";
+
+    private RestartCommandDescriptor descriptor = new RestartCommandDescriptor();
 
     public RestartCommand(CommandRegistry registry) {
         super(registry);
@@ -26,34 +27,36 @@ public class RestartCommand extends AbstractCommand {
 
     @Override
     public Descriptor getDescriptor() {
-        return new Command.Descriptor() {
+        return descriptor;
+    }
 
-            @Override
-            public String getNamespace() {
-                return NAMESPACE;
-            }
+    private class RestartCommandDescriptor implements Descriptor {
 
-            @Override
-            public String getName() {
-                return COMMAND_NAME;
-            }
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
 
-            @Override
-            public String getDescription() {
-                return "Restart Aspectran Shell to reload all resources";
-            }
+        @Override
+        public String getName() {
+            return COMMAND_NAME;
+        }
 
-            @Override
-            public String getUsage() {
-                return "Type 'restart'";
-            }
+        @Override
+        public String getDescription() {
+            return "Restart Aspectran Shell to reload all resources";
+        }
 
-            @Override
-            public Collection<Option> getOptions() {
-                return null;
-            }
+        @Override
+        public String getUsage() {
+            return "Type 'restart'";
+        }
 
-        };
+        @Override
+        public Collection<Option> getOptions() {
+            return null;
+        }
+
     }
 
 }

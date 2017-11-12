@@ -31,8 +31,8 @@ public class ContextProfilesConfig extends AbstractParameters {
         defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            activeProfiles,
-            defaultProfiles
+                activeProfiles,
+                defaultProfiles
         };
     }
 

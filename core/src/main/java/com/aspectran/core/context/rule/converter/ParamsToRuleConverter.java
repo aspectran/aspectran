@@ -697,9 +697,7 @@ public class ParamsToRuleConverter {
 
         if (callParameters != null) {
             String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
-            if (templateId != null) {
-                tr.setTemplateId(templateId);
-            }
+            TransformRule.updateTemplateId(tr, templateId);
         }
         if (templateParameters != null) {
             String engine = templateParameters.getString(TemplateParameters.engine);

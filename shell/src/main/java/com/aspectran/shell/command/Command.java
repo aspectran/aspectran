@@ -29,7 +29,7 @@ public interface Command {
      * for the action mapped to this command.
      *
      * @param args the command line arguments
-     * @return
+     * @return the message output to the console as a result of an executed command
      * @throws Exception if an error occurs during command execution
      */
     String execute(String[] args) throws Exception;
@@ -38,7 +38,7 @@ public interface Command {
      * This method returns an instance of Command.Descriptor.
      * The descriptor is meta information about the command.
      *
-     * @return
+     * @return a Descriptor that is meta information about the command
      */
     Command.Descriptor getDescriptor();
 
@@ -70,7 +70,7 @@ public interface Command {
          * This method should return a descriptive text about the command
          * it is attached to.
          *
-         * @return
+         * @return a descriptive text about the command
          */
         String getDescription();
 
@@ -79,14 +79,14 @@ public interface Command {
          * to use the associated command and further description of options that
          * are supported by the command.
          *
-         * @return
+         * @return Usage of command
          */
         String getUsage();
 
         /**
          * Use this method is to provide a map of the command arguments.
          *
-         * @return
+         * @return a map of the command arguments
          */
         Collection<Option> getOptions();
 

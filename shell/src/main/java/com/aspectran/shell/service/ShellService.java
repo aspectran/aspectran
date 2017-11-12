@@ -43,14 +43,14 @@ public interface ShellService extends CoreService {
      */
     void setVerbose(boolean verbose);
 
-    String getWelcomeMessage();
+    String getGreetings();
 
-    void setWelcomeMessage(String welcomeMessage);
+    void setGreetings(String greetings);
 
     /**
      * Prints welcome message.
      */
-    void printWelcomeMessage();
+    void printGreetings();
 
     /**
      * Prints help information.

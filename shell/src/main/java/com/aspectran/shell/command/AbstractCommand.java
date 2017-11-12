@@ -17,7 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
-import com.aspectran.shell.command.option.OptionParseException;
+import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
@@ -45,13 +45,13 @@ public abstract class AbstractCommand implements Command {
         options.addOption(option);
     }
 
-    protected ParsedOptions parse(String[] args) throws OptionParseException {
+    protected ParsedOptions parse(String[] args) throws OptionParserException {
         return registry.getParser().parse(options, args);
     }
 
     protected void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp( getDescriptor().getName(), options);
+        formatter.printHelp(getDescriptor().getName(), options);
     }
 
 }

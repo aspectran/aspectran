@@ -19,7 +19,7 @@ package com.aspectran.shell.command.option;
 import java.util.Properties;
 
 /**
- * A class that implements the <code>CommandLineParser</code> interface
+ * A class that implements this {@code OptionParser} interface
  * can parse a String array according to the {@link Options} specified
  * and return a {@link ParsedOptions}.
  */
@@ -31,10 +31,10 @@ public interface OptionParser {
      * @param options the specified Options
      * @param arguments the command line arguments
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
-     *      while parsing the command line tokens.
+     * @throws OptionParserException if there are any problems encountered
+     *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments) throws OptionParseException;
+    ParsedOptions parse(Options options, String[] arguments) throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options and
@@ -44,25 +44,25 @@ public interface OptionParser {
      * @param arguments the command line arguments
      * @param properties command line option name-value pairs
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
-     *      while parsing the command line tokens.
+     * @throws OptionParserException if there are any problems encountered
+     *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, Properties properties) throws OptionParseException;
+    ParsedOptions parse(Options options, String[] arguments, Properties properties) throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options.
      *
      * @param options the specified Options
      * @param arguments the command line arguments
-     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     * @param stopAtNonOption if {@code true} an unrecognized argument stops
      *      the parsing and the remaining arguments are added to the
-     *      {@link ParsedOptions}s args list. If <tt>false</tt> an unrecognized
+     *      {@link ParsedOptions}s args list. If {@code false} an unrecognized
      *      argument triggers a ParseException.
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
-     *      while parsing the command line tokens.
+     * @throws OptionParserException if there are any problems encountered
+     *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption) throws OptionParseException;
+    ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption) throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options and
@@ -71,15 +71,15 @@ public interface OptionParser {
      * @param options the specified Options
      * @param arguments the command line arguments
      * @param properties command line option name-value pairs
-     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     * @param stopAtNonOption if {@code true} an unrecognized argument stops
      *      the parsing and the remaining arguments are added to the
-     *      {@link ParsedOptions}s args list. If <tt>false</tt> an unrecognized
+     *      {@link ParsedOptions}s args list. If {@code false} an unrecognized
      *      argument triggers a ParseException.
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
-     *      while parsing the command line tokens.
+     * @throws OptionParserException if there are any problems encountered
+     *      while parsing the command line tokens
      */
     ParsedOptions parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
-            throws OptionParseException;
+            throws OptionParserException;
 
 }

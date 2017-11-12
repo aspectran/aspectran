@@ -19,7 +19,7 @@ package com.aspectran.shell.command.option;
 /**
  * Base for Exceptions thrown during parsing of a command-line.
  */
-public class OptionParseException extends Exception {
+public class OptionParserException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = -8387597753242192122L;
@@ -30,7 +30,7 @@ public class OptionParseException extends Exception {
      *
      * @param message the detail message
      */
-    public OptionParseException(String message) {
+    public OptionParserException(String message) {
         super(message);
     }
 

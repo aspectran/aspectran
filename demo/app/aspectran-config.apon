@@ -26,7 +26,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     verbose: true
-    welcome: (
+    greetings: (
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |

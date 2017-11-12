@@ -44,14 +44,14 @@ public class ContextConfig extends AbstractParameters {
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            base,
-            root,
-            encoding,
-            resources,
-            profiles,
-            hybridLoad,
-            autoReload,
-            parameters
+                base,
+                root,
+                encoding,
+                resources,
+                profiles,
+                hybridLoad,
+                autoReload,
+                parameters
         };
     }
 

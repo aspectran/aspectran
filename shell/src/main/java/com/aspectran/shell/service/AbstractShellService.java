@@ -41,9 +41,9 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     /** If verbose mode is on, a detailed description is printed each time the command is executed. */
     private boolean verbose;
 
-    private String welcomeMessage;
+    private String greetings;
 
-    private Token[] welcomeMessageTokens;
+    private Token[] greetingsTokens;
 
     protected AbstractShellService() throws IOException {
         super(new ShellApplicationAdapter());
@@ -65,8 +65,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             setCommandRegistry(commandRegistry);
         }
 
-        parseWelcomeMessage();
-
+        parseGreetings();
     }
 
     @Override
@@ -133,34 +132,34 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public String getWelcomeMessage() {
-        return welcomeMessage;
+    public String getGreetings() {
+        return greetings;
     }
 
     @Override
-    public void setWelcomeMessage(String welcomeMessage) {
-        this.welcomeMessage = welcomeMessage;
+    public void setGreetings(String greetings) {
+        this.greetings = greetings;
     }
 
     @Override
-    public void printWelcomeMessage() {
-        if (welcomeMessageTokens != null) {
+    public void printGreetings() {
+        if (greetingsTokens != null) {
             TokenEvaluator evaluator = new TokenExpressionParser(getActivityContext().getDefaultActivity());
-            String message = evaluator.evaluateAsString(welcomeMessageTokens);
+            String message = evaluator.evaluateAsString(greetingsTokens);
             console.writeLine(message);
             console.flush();
-        } else if (welcomeMessage != null) {
-            console.writeLine(welcomeMessage);
+        } else if (greetings != null) {
+            console.writeLine(greetings);
             console.flush();
         }
     }
 
-    private void parseWelcomeMessage() {
-        if (StringUtils.hasText(welcomeMessage)) {
-            welcomeMessageTokens = TokenParser.makeTokens(welcomeMessage, true);
-            if (welcomeMessageTokens != null) {
+    private void parseGreetings() {
+        if (StringUtils.hasText(greetings)) {
+            greetingsTokens = TokenParser.makeTokens(greetings, true);
+            if (greetingsTokens != null) {
                 try {
-                    for (Token token : welcomeMessageTokens) {
+                    for (Token token : greetingsTokens) {
                         if (token.getType() == TokenType.BEAN) {
                             if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
                                 Class<?> beanClass = getAspectranClassLoader().loadClass(token.getValue());
@@ -169,8 +168,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
                         }
                     }
                 } catch (ClassNotFoundException e) {
-                    welcomeMessageTokens = null;
-                    log.error("Failed to parsing welcome message", e);
+                    greetingsTokens = null;
+                    log.error("Failed to parse greetings", e);
                 }
             }
         }

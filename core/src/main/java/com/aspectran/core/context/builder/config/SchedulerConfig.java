@@ -35,10 +35,10 @@ public class SchedulerConfig extends AbstractParameters {
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            startDelaySeconds,
-            waitOnShutdown,
-            startup,
-            exposals
+                startDelaySeconds,
+                waitOnShutdown,
+                startup,
+                exposals
         };
     }
 

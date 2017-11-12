@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * The simple command option parser.
+ * The default command option parser.
  */
-public class SimpleOptionParser implements OptionParser
-{
+public class DefaultOptionParser implements OptionParser {
     /** The parsed options instance. */
     protected ParsedOptions parsedOptions;
     
@@ -33,25 +32,25 @@ public class SimpleOptionParser implements OptionParser
     protected Options options;
 
     /**
-     * Flag indicating how unrecognized tokens are handled. <tt>true</tt> to stop
+     * Flag indicating how unrecognized tokens are handled. {@code true} to stop
      * the parsing and add the remaining tokens to the args list.
-     * <tt>false</tt> to throw an exception. 
+     * {@code false} to throw an exception. 
      */
     protected boolean stopAtNonOption;
 
-    /** The token currently processed */
+    /** The token currently processed. */
     protected String currentToken;
  
-    /** The last option parsed */
+    /** The last option parsed. */
     protected Option currentOption;
  
-    /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line */
+    /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line. */
     protected boolean skipParsing;
  
-    /** The required options and groups expected to be found when parsing the command line */
+    /** The required options and groups expected to be found when parsing the command line. */
     protected List<Object> expectedOpts;
 
-    /** Flag indicating if partial matching of long options is supported */
+    /** Flag indicating if partial matching of long options is supported. */
     private boolean allowPartialMatching;
 
     /**
@@ -71,7 +70,7 @@ public class SimpleOptionParser implements OptionParser
      * {@code -de} would enable both {@code debug} as well as
      * {@code extract} options.
      */
-    public SimpleOptionParser() {
+    public DefaultOptionParser() {
         this.allowPartialMatching = true;
     }
 
@@ -94,11 +93,11 @@ public class SimpleOptionParser implements OptionParser
      *
      * @param allowPartialMatching if partial matching of long options shall be enabled
      */
-    public SimpleOptionParser(boolean allowPartialMatching) {
+    public DefaultOptionParser(boolean allowPartialMatching) {
         this.allowPartialMatching = allowPartialMatching;
     }
 
-    public ParsedOptions parse(Options options, String[] arguments) throws OptionParseException {
+    public ParsedOptions parse(Options options, String[] arguments) throws OptionParserException {
         return parse(options, arguments, null);
     }
 
@@ -109,14 +108,14 @@ public class SimpleOptionParser implements OptionParser
      * @param arguments  the command line arguments
      * @param properties command line option name-value pairs
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
+     * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    public ParsedOptions parse(Options options, String[] arguments, Properties properties) throws OptionParseException {
+    public ParsedOptions parse(Options options, String[] arguments, Properties properties) throws OptionParserException {
         return parse(options, arguments, properties, false);
     }
 
-    public ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption) throws OptionParseException {
+    public ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption) throws OptionParserException {
         return parse(options, arguments, null, stopAtNonOption);
     }
 
@@ -126,16 +125,16 @@ public class SimpleOptionParser implements OptionParser
      * @param options         the specified Options
      * @param arguments       the command line arguments
      * @param properties      command line option name-value pairs
-     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     * @param stopAtNonOption if {@code true} an unrecognized argument stops
      *     the parsing and the remaining arguments are added to the 
-     *     {@link ParsedOptions}s args list. If <tt>false</tt> an unrecognized
+     *     {@link ParsedOptions}s args list. If {@code false} an unrecognized
      *     argument triggers a ParseException.
      * @return the list of atomic option and value tokens
-     * @throws OptionParseException if there are any problems encountered
-     *      while parsing the command line tokens.
+     * @throws OptionParserException if there are any problems encountered
+     *      while parsing the command line tokens
      */
     public ParsedOptions parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
-            throws OptionParseException {
+            throws OptionParserException {
         this.options = options;
         this.stopAtNonOption = stopAtNonOption;
         skipParsing = false;
@@ -170,9 +169,9 @@ public class SimpleOptionParser implements OptionParser
      * Sets the values of Options using the values in {@code properties}.
      *
      * @param properties the value properties to be processed
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleProperties(Properties properties) throws OptionParseException {
+    private void handleProperties(Properties properties) throws OptionParserException {
         if (properties == null) {
             return;
         }
@@ -227,7 +226,7 @@ public class SimpleOptionParser implements OptionParser
      * Throw a {@link MissingArgumentException} if the current option
      * didn't receive the number of arguments expected.
      */
-    private void checkRequiredArgs() throws OptionParseException {
+    private void checkRequiredArgs() throws OptionParserException {
         if (currentOption != null && currentOption.requiresArg()) {
             throw new MissingArgumentException(currentOption);
         }
@@ -237,20 +236,20 @@ public class SimpleOptionParser implements OptionParser
      * Handle any command line token.
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleToken(String token) throws OptionParseException {
+    private void handleToken(String token) throws OptionParserException {
         currentToken = token;
 
         if (skipParsing) {
-            parsedOptions.addArg(token);
+            parsedOptions.addUnparsedArg(token);
         } else if ("--".equals(token)) {
             skipParsing = true;
         } else if (currentOption != null && currentOption.acceptsArg() && isArgument(token)) {
-            currentOption.addValueForProcessing(Util.stripLeadingAndTrailingQuotes(token));
+            currentOption.addValueForProcessing(OptionUtils.stripLeadingAndTrailingQuotes(token));
         } else if (token.startsWith("--")) {
             handleLongOption(token);
-        } else if (token.startsWith("-") && !"-".equals(token)) {
+        } else if (token.startsWith("-") && token.length() > 1) {
             handleShortAndLongOption(token);
         } else {
             handleUnknownToken(token);
@@ -352,14 +351,14 @@ public class SimpleOptionParser implements OptionParser
      * as-is in the arguments of the command line.
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleUnknownToken(String token) throws OptionParseException {
+    private void handleUnknownToken(String token) throws OptionParserException {
         if (token.startsWith("-") && token.length() > 1 && !stopAtNonOption) {
             throw new UnrecognizedOptionException("Unrecognized option: " + token, token);
         }
 
-        parsedOptions.addArg(token);
+        parsedOptions.addUnparsedArg(token);
         if (stopAtNonOption) {
             skipParsing = true;
         }
@@ -375,9 +374,9 @@ public class SimpleOptionParser implements OptionParser
      * </pre>
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleLongOption(String token) throws OptionParseException {
+    private void handleLongOption(String token) throws OptionParserException {
         if (token.indexOf('=') == -1) {
             handleLongOptionWithoutEqual(token);
         } else {
@@ -395,9 +394,9 @@ public class SimpleOptionParser implements OptionParser
      * </pre>
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleLongOptionWithoutEqual(String token) throws OptionParseException {
+    private void handleLongOptionWithoutEqual(String token) throws OptionParserException {
         List<String> matchingOpts = getMatchingLongOptions(token);
         if (matchingOpts.isEmpty()) {
             handleUnknownToken(currentToken);
@@ -419,9 +418,9 @@ public class SimpleOptionParser implements OptionParser
      * </pre>
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleLongOptionWithEqual(String token) throws OptionParseException {
+    private void handleLongOptionWithEqual(String token) throws OptionParserException {
         int pos = token.indexOf('=');
         String value = token.substring(pos + 1);
         String opt = token.substring(0, pos);
@@ -464,10 +463,10 @@ public class SimpleOptionParser implements OptionParser
      * </pre>
      *
      * @param token the command line token to handle
-     * @throws OptionParseException if option parsing fails
+     * @throws OptionParserException if option parsing fails
      */
-    private void handleShortAndLongOption(String token) throws OptionParseException {
-        String t = Util.stripLeadingHyphens(token);
+    private void handleShortAndLongOption(String token) throws OptionParserException {
+        String t = OptionUtils.stripLeadingHyphens(token);
         int pos = t.indexOf('=');
 
         if (t.length() == 1) {
@@ -536,7 +535,7 @@ public class SimpleOptionParser implements OptionParser
      * @param token the command line token to handle
      */
     private String getLongPrefix(String token) {
-        String t = Util.stripLeadingHyphens(token);
+        String t = OptionUtils.stripLeadingHyphens(token);
         String opt = null;
 
         for (int i = t.length() - 2; i > 1; i--) {
@@ -563,11 +562,11 @@ public class SimpleOptionParser implements OptionParser
         return (option != null && (option.getArgs() >= 2 || option.getArgs() == Option.UNLIMITED_VALUES));
     }
 
-    private void handleOption(Option option) throws OptionParseException {
+    private void handleOption(Option option) throws OptionParserException {
         // check the previous option before handling the next one
         checkRequiredArgs();
 
-        option = (Option) option.clone();
+        option = option.clone();
 
         updateRequiredOptions(option);
 
@@ -640,12 +639,12 @@ public class SimpleOptionParser implements OptionParser
      *  character prepended with "<b>-</b>".</li>
      * </ul>
      *
-     * @param token The current token to be <b>burst</b>
+     * @param token the current token to be <b>burst</b>
      *      at the first non-Option encountered
-     * @throws OptionParseException if there are any problems encountered
+     * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line token
      */
-    protected void handleConcatenatedOptions(String token) throws OptionParseException {
+    protected void handleConcatenatedOptions(String token) throws OptionParserException {
         for (int i = 1; i < token.length(); i++) {
             String ch = String.valueOf(token.charAt(i));
 

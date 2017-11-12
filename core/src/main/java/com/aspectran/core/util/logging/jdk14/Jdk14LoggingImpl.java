@@ -81,5 +81,4 @@ public class Jdk14LoggingImpl implements Log {
         log.log(Level.WARNING, s, e);
     }
 
-
 }

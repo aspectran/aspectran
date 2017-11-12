@@ -17,6 +17,8 @@ public class VerboseCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "verbose";
 
+    private VerboseCommandDescriptor descriptor = new VerboseCommandDescriptor();
+
     public VerboseCommand(CommandRegistry registry) {
         super(registry);
 
@@ -46,34 +48,36 @@ public class VerboseCommand extends AbstractCommand {
 
     @Override
     public Descriptor getDescriptor() {
-        return new Descriptor() {
+        return descriptor;
+    }
 
-            @Override
-            public String getNamespace() {
-                return NAMESPACE;
-            }
+    private class VerboseCommandDescriptor implements Descriptor {
 
-            @Override
-            public String getName() {
-                return COMMAND_NAME;
-            }
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
 
-            @Override
-            public String getDescription() {
-                return "Turns verbose mode on or off";
-            }
+        @Override
+        public String getName() {
+            return COMMAND_NAME;
+        }
 
-            @Override
-            public String getUsage() {
-                return "Type 'verbose [-h|--help] [-on] [-off]'";
-            }
+        @Override
+        public String getDescription() {
+            return "Turns verbose mode on or off";
+        }
 
-            @Override
-            public Collection<Option> getOptions() {
-                return options.getOptions();
-            }
+        @Override
+        public String getUsage() {
+            return "Type 'verbose [-h|--help] [-on] [-off]'";
+        }
 
-        };
+        @Override
+        public Collection<Option> getOptions() {
+            return options.getOptions();
+        }
+
     }
 
 }

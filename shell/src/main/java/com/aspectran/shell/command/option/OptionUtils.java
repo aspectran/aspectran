@@ -17,9 +17,9 @@
 package com.aspectran.shell.command.option;
 
 /**
- * Validates an Option string.
+ * Contains useful helper methods for classes within this package.
  */
-class OptionValidator {
+final class OptionUtils {
 
     /**
      * Validates whether {@code opt} is a permissible Option
@@ -44,7 +44,7 @@ class OptionValidator {
         if (opt == null) {
             return;
         }
-        
+
         // handle the single character opt
         if (opt.length() == 1) {
             char ch = opt.charAt(0);
@@ -57,7 +57,7 @@ class OptionValidator {
             for (char ch : opt.toCharArray()) {
                 if (!isValidChar(ch)) {
                     throw new IllegalArgumentException("The option '" + opt + "' contains an illegal "
-                                                       + "character : '" + ch + "'");
+                            + "character : '" + ch + "'");
                 }
             }
         }
@@ -81,6 +81,42 @@ class OptionValidator {
      */
     private static boolean isValidChar(final char c) {
         return Character.isJavaIdentifierPart(c);
+    }
+
+    /**
+     * Remove the hyphens from the beginning of <code>str</code> and
+     * return the new String.
+     *
+     * @param str the string from which the hyphens should be removed
+     * @return the new String
+     */
+    static String stripLeadingHyphens(String str) {
+        if (str == null) {
+            return null;
+        }
+        if (str.startsWith("--")) {
+            return str.substring(2, str.length());
+        } else if (str.startsWith("-")) {
+            return str.substring(1, str.length());
+        }
+        return str;
+    }
+
+    /**
+     * Remove the leading and trailing quotes from <code>str</code>.
+     * E.g. if str is '"one two"', then 'one two' is returned.
+     *
+     * @param str the string from which the leading and trailing quotes
+     *      should be removed
+     * @return the string without the leading and trailing quotes
+     */
+    static String stripLeadingAndTrailingQuotes(String str) {
+        int length = str.length();
+        if (length > 1 && str.startsWith("\"") && str.endsWith("\"") &&
+                str.substring(1, length - 1).indexOf('"') == -1) {
+            str = str.substring(1, length - 1);
+        }
+        return str;
     }
 
 }

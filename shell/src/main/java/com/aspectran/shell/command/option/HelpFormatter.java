@@ -628,7 +628,7 @@ public class HelpFormatter {
      * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
-     * @return the StringBuffer with the rendered Options contents.
+     * @return the StringBuffer with the rendered Options contents
      */
     protected StringBuffer renderOptions(StringBuffer sb, int width, Options options, int leftPad, int descPad) {
         String lpad = createPadding(leftPad);
@@ -710,7 +710,7 @@ public class HelpFormatter {
      * @param width the number of characters to display per line
      * @param nextLineTabStop the position on the next line for the first tab.
      * @param text the text to be rendered.
-     * @return the StringBuffer with the rendered Options contents.
+     * @return the StringBuffer with the rendered Options contents
      */
     protected StringBuffer renderWrappedText(StringBuffer sb, int width, int nextLineTabStop, String text) {
         int pos = findWrapPos(text, width, 0);
@@ -752,8 +752,8 @@ public class HelpFormatter {
      *
      * @param sb the StringBuffer to place the rendered text into
      * @param width the number of characters to display per line
-     * @param nextLineTabStop the position on the next line for the first tab.
-     * @param text the text to be rendered.
+     * @param nextLineTabStop the position on the next line for the first tab
+     * @param text the text to be rendered
      */
     private Appendable renderWrappedTextBlock(StringBuffer sb, int width, int nextLineTabStop, String text) {
         try {
@@ -866,12 +866,13 @@ public class HelpFormatter {
          * integer, zero, or a positive integer as the first argument
          * is less than, equal to, or greater than the second.
          *
-         * @param opt1 the first Option to be compared.
-         * @param opt2 the second Option to be compared.
+         * @param opt1 the first Option to be compared
+         * @param opt2 the second Option to be compared
          * @return a negative integer, zero, or a positive integer as
          *         the first argument is less than, equal to, or greater than the
-         *         second.
+         *         second
          */
+        @Override
         public int compare(Option opt1, Option opt2) {
             return opt1.getKey().compareToIgnoreCase(opt2.getKey());
         }

@@ -218,7 +218,7 @@ class AspectranShellService extends AbstractShellService {
                 service.setCommands(commands);
             }
             service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
-            service.setWelcomeMessage(shellConfig.getString(ShellConfig.welcome));
+            service.setGreetings(shellConfig.getString(ShellConfig.greetings));
             service.setExposals(shellConfig.getStringArray(ShellConfig.exposals));
         } else {
             service.setConsole(new DefaultConsole());
@@ -234,7 +234,7 @@ class AspectranShellService extends AbstractShellService {
             @Override
             public void started() {
                 service.pauseTimeout = 0;
-                service.printWelcomeMessage();
+                service.printGreetings();
             }
 
             @Override

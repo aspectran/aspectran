@@ -53,8 +53,7 @@ public class OptionGroup implements Serializable {
     }
 
     /**
-     * @return the names of the options in this group as a 
-     * {@code Collection}
+     * @return the names of the options in this group as a {@code Collection}
      */
     public Collection<String> getNames() {
         // the key set is the collection of names
@@ -126,13 +125,11 @@ public class OptionGroup implements Serializable {
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();
-        Iterator<Option> iter = getOptions().iterator();
-
         buff.append("[");
 
+        Iterator<Option> iter = getOptions().iterator();
         while (iter.hasNext()) {
             Option option = iter.next();
-
             if (option.getOpt() != null) {
                 buff.append("-");
                 buff.append(option.getOpt());
@@ -140,19 +137,16 @@ public class OptionGroup implements Serializable {
                 buff.append("--");
                 buff.append(option.getLongOpt());
             }
-            
             if (option.getDescription() != null) {
                 buff.append(" ");
                 buff.append(option.getDescription());
             }
-            
             if (iter.hasNext()) {
                 buff.append(", ");
             }
         }
 
         buff.append("]");
-
         return buff.toString();
     }
 

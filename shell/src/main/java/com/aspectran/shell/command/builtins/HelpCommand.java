@@ -15,7 +15,9 @@ public class HelpCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "verbose";
+    private static final String COMMAND_NAME = "help";
+
+    private HelpCommandDescriptor descriptor = new HelpCommandDescriptor();
 
     public HelpCommand(CommandRegistry registry) {
         super(registry);
@@ -29,16 +31,13 @@ public class HelpCommand extends AbstractCommand {
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
 
-        if (options.hasOption("on")) {
-            log.info("Enabled verbose mode");
-            getService().setVerbose(true);
-        } else if (options.hasOption("off")) {
-            log.info("Disabled verbose mode");
-            getService().setVerbose(false);
-        } else if (options.hasOption("help")) {
-            printUsage();
-        } else {
-            printUsage();
+        getConsole().writeLine("Available Commands");
+        getConsole().writeLine("------------------");
+
+        if (options.getUnparsedArgList().size() > 0) {
+            for (String cmd : options.getUnparsedArgList()) {
+                getConsole().writeLine(cmd);
+            }
         }
 
         return null;
@@ -46,34 +45,36 @@ public class HelpCommand extends AbstractCommand {
 
     @Override
     public Descriptor getDescriptor() {
-        return new Descriptor() {
+        return descriptor;
+    }
 
-            @Override
-            public String getNamespace() {
-                return NAMESPACE;
-            }
+    private class HelpCommandDescriptor implements Descriptor {
 
-            @Override
-            public String getName() {
-                return COMMAND_NAME;
-            }
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
 
-            @Override
-            public String getDescription() {
-                return "Display help information about Aspectran Shell";
-            }
+        @Override
+        public String getName() {
+            return COMMAND_NAME;
+        }
 
-            @Override
-            public String getUsage() {
-                return "Type 'help [-h|--help] [-a|--all]'";
-            }
+        @Override
+        public String getDescription() {
+            return "Displays help information for available commands.";
+        }
 
-            @Override
-            public Collection<Option> getOptions() {
-                return options.getOptions();
-            }
+        @Override
+        public String getUsage() {
+            return "Type 'help [-h|--help] [-a|--all]'";
+        }
 
-        };
+        @Override
+        public Collection<Option> getOptions() {
+            return options.getOptions();
+        }
+
     }
 
 }

@@ -37,11 +37,11 @@ public class AspectranConfig extends AbstractParameters {
         web = new ParameterDefinition("web", WebConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            context,
-            session,
-            scheduler,
-            shell,
-            web
+                context,
+                session,
+                scheduler,
+                shell,
+                web
         };
     }
 

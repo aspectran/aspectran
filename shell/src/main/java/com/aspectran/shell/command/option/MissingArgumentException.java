@@ -21,7 +21,7 @@ package com.aspectran.shell.command.option;
  * Thrown when an option requiring an argument
  * is not provided with an argument.
  */
-public class MissingArgumentException extends OptionParseException {
+public class MissingArgumentException extends OptionParserException {
 
     /** @serial */
     private static final long serialVersionUID = 3097819241980741135L;

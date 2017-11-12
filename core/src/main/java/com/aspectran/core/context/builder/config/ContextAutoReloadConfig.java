@@ -45,9 +45,9 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-            reloadMode,
-            scanIntervalSeconds,
-            startup
+                reloadMode,
+                scanIntervalSeconds,
+                startup
         };
     }
 

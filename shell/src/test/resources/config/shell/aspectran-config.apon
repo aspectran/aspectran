@@ -18,8 +18,14 @@ scheduler: {
 }
 shell: {
     prompt: "test-console-app> "
+    commands: [
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+    ]
     verbose: true
-    welcome: (
+    greetings: (
         |
         |   {{BLUE}}--- Aspectran Demo Application ---{{off}}
         |

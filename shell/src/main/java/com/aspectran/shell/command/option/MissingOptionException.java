@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Thrown when a required option has not been provided.
  */
-public class MissingOptionException extends OptionParseException {
+public class MissingOptionException extends OptionParserException {
 
     /** @serial */
     private static final long serialVersionUID = -3648528884089184961L;

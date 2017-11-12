@@ -33,9 +33,9 @@ public class WebConfig extends AbstractParameters {
         exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            uriDecoding,
-            defaultServletName,
-            exposals
+                uriDecoding,
+                defaultServletName,
+                exposals
         };
     }
 

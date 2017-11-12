@@ -102,12 +102,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String template = StringUtils.emptyToNull(attrs.get("template"));
 
-            if (template == null) {
-                throw new IllegalArgumentException("The <call> element in <transform> must have a 'template' attribute");
-            }
-
             TransformRule transformRule = parser.peekObject(1);
-            transformRule.setTemplateId(template);
+            TransformRule.updateTemplateId(transformRule, template);
         });
         parser.setXpath(xpath + "/dispatch");
         parser.addNodelet(attrs -> {

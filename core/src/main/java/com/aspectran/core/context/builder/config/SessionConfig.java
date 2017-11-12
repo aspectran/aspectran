@@ -41,13 +41,13 @@ public class SessionConfig extends AbstractParameters {
         fileStore = new ParameterDefinition("fileStore", SessionFileStoreConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            timeout,
-            evictionPolicy,
-            saveOnCreate,
-            saveOnInactiveEviction,
-            removeUnloadableSessions,
-            storeType,
-            fileStore
+                timeout,
+                evictionPolicy,
+                saveOnCreate,
+                saveOnInactiveEviction,
+                removeUnloadableSessions,
+                storeType,
+                fileStore
         };
     }
 

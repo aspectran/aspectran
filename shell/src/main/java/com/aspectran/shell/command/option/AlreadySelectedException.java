@@ -20,7 +20,7 @@ package com.aspectran.shell.command.option;
  * Thrown when more than one option in an option group
  * has been provided.
  */
-public class AlreadySelectedException extends OptionParseException {
+public class AlreadySelectedException extends OptionParserException {
 
     /** @serial */
     private static final long serialVersionUID = -1818262614499753083L;
