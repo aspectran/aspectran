@@ -1,4 +1,4 @@
-package com.aspectran.shell.command.builtins;
+package com.aspectran.shell.command.builtin;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
@@ -6,22 +6,21 @@ import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
-public class PauseCommand extends AbstractCommand {
+public class ResumeCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "pause";
+    private static final String COMMAND_NAME = "resume";
 
-    private PauseCommandDescriptor descriptor = new PauseCommandDescriptor();
+    private ResumeCommandDescriptor descriptor = new ResumeCommandDescriptor();
 
-    public PauseCommand(CommandRegistry registry) {
+    public ResumeCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().getConsole().clearScreen();
-        getService().restart();
+        getService().resume();
         return null;
     }
 
@@ -30,7 +29,7 @@ public class PauseCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class PauseCommandDescriptor implements Descriptor {
+    private class ResumeCommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -44,12 +43,12 @@ public class PauseCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart Aspectran Shell to reload all resources";
+            return "Resume the Aspectran Shell Service";
         }
 
         @Override
         public String getUsage() {
-            return "Type 'pause'";
+            return "Type 'resume'";
         }
 
         @Override

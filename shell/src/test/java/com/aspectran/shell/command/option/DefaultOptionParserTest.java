@@ -1,5 +1,6 @@
 package com.aspectran.shell.command.option;
 
+import com.aspectran.shell.console.DefaultConsole;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -70,7 +71,7 @@ public class DefaultOptionParserTest {
             }
             System.out.println("------------------");
 
-            HelpFormatter formatter = new HelpFormatter();
+            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
             formatter.printHelp("ls [OPTION]... [FILE]...", options);
         } catch(OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );

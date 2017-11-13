@@ -1,4 +1,4 @@
-package com.aspectran.shell.command.builtins;
+package com.aspectran.shell.command.builtin;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -9,20 +9,20 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
-public class HelpCommand extends AbstractCommand {
+public class VerboseCommand extends AbstractCommand {
 
-    private static final Log log = LogFactory.getLog(HelpCommand.class);
+    private static final Log log = LogFactory.getLog(VerboseCommand.class);
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "help";
+    private static final String COMMAND_NAME = "verbose";
 
-    private HelpCommandDescriptor descriptor = new HelpCommandDescriptor();
+    private VerboseCommandDescriptor descriptor = new VerboseCommandDescriptor();
 
-    public HelpCommand(CommandRegistry registry) {
+    public VerboseCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("a").longOpt("all").desc("Prints all the available commands").build());
+        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
         addOption(new Option("on", "Enable verbose output"));
         addOption(new Option("off", "Disable verbose output"));
     }
@@ -31,13 +31,16 @@ public class HelpCommand extends AbstractCommand {
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
 
-        getConsole().writeLine("Available Commands");
-        getConsole().writeLine("------------------");
-
-        if (options.getUnparsedArgList().size() > 0) {
-            for (String cmd : options.getUnparsedArgList()) {
-                getConsole().writeLine(cmd);
-            }
+        if (options.hasOption("on")) {
+            getService().setVerbose(true);
+            getConsole().writeLine("Enabled verbose mode");
+        } else if (options.hasOption("off")) {
+            getService().setVerbose(false);
+            getConsole().writeLine("Disabled verbose mode");
+        } else if (options.hasOption("help")) {
+            printUsage();
+        } else {
+            printUsage();
         }
 
         return null;
@@ -48,7 +51,7 @@ public class HelpCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class HelpCommandDescriptor implements Descriptor {
+    private class VerboseCommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -62,12 +65,12 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Displays help information for available commands.";
+            return "Turns verbose mode on or off";
         }
 
         @Override
         public String getUsage() {
-            return "Type 'help [-h|--help] [-a|--all]'";
+            return "Type 'verbose [-h|--help] [-on] [-off]'";
         }
 
         @Override

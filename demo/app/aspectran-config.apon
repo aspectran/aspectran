@@ -21,9 +21,9 @@ scheduler: {
 shell: {
     prompt: "{{CYAN}}aspectran-demo{{YELLOW}}>{{off}} "
     commands: [
-        com.aspectran.shell.command.builtins.VerboseCommand
-        com.aspectran.shell.command.builtins.RestartCommand
-        com.aspectran.shell.command.builtins.QuitCommand
+        com.aspectran.shell.command.builtin.VerboseCommand
+        com.aspectran.shell.command.builtin.RestartCommand
+        com.aspectran.shell.command.builtin.QuitCommand
     ]
     verbose: true
     greetings: (

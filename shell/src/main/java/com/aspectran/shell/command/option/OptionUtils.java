@@ -16,10 +16,12 @@
  */
 package com.aspectran.shell.command.option;
 
+import java.util.Arrays;
+
 /**
  * Contains useful helper methods for classes within this package.
  */
-final class OptionUtils {
+public final class OptionUtils {
 
     /**
      * Validates whether {@code opt} is a permissible Option
@@ -117,6 +119,83 @@ final class OptionUtils {
             str = str.substring(1, length - 1);
         }
         return str;
+    }
+
+    /**
+     * Return a String of padding of length {@code len}.
+     *
+     * @param len the length of the String of padding to create
+     * @return the String of padding
+     */
+    public static String createPadding(int len) {
+        char[] padding = new char[len];
+        Arrays.fill(padding, ' ');
+        return new String(padding);
+    }
+
+    /**
+     * Remove the trailing whitespace from the specified String.
+     *
+     * @param s the String to remove the trailing padding from
+     * @return the String of without the trailing padding
+     */
+    public static String rtrim(String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        int pos = s.length();
+        while (pos > 0 && Character.isWhitespace(s.charAt(pos - 1))) {
+            --pos;
+        }
+        return s.substring(0, pos);
+    }
+
+    /**
+     * Finds the next text wrap position after {@code startPos} for the
+     * text in {@code text} with the column width {@code width}.
+     * The wrap point is the last position before startPos+width having a
+     * whitespace character (space, \n, \r). If there is no whitespace character
+     * before startPos+width, it will return startPos+width.
+     *
+     * @param text the text being searched for the wrap position
+     * @param width width of the wrapped text
+     * @param startPos position from which to start the lookup whitespace character
+     * @return position on which the text must be wrapped or -1 if the wrap
+     *      position is at the end of the text
+     */
+    public static int findWrapPos(String text, int width, int startPos) {
+        // the line ends before the max wrap pos or a new line char found
+        int pos = text.indexOf('\n', startPos);
+        if (pos != -1 && pos <= width) {
+            return pos + 1;
+        }
+
+        pos = text.indexOf('\t', startPos);
+        if (pos != -1 && pos <= width) {
+            return pos + 1;
+        }
+
+        if (startPos + width >= text.length()) {
+            return -1;
+        }
+
+        // look for the last whitespace character before startPos+width
+        for (pos = startPos + width; pos >= startPos; --pos) {
+            char c = text.charAt(pos);
+            if (c == ' ' || c == '\n' || c == '\r') {
+                break;
+            }
+        }
+
+        // if we found it - just return
+        if (pos > startPos) {
+            return pos;
+        }
+
+        // if we didn't find one, simply chop at startPos+width
+        pos = startPos + width;
+
+        return (pos == text.length() ? -1 : pos);
     }
 
 }

@@ -34,6 +34,8 @@ public interface Command {
      */
     String execute(String[] args) throws Exception;
 
+    void printUsage();
+
     /**
      * This method returns an instance of Command.Descriptor.
      * The descriptor is meta information about the command.

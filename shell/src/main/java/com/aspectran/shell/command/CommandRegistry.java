@@ -16,10 +16,11 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.DefaultOptionParser;
+import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.service.ShellService;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,6 +66,10 @@ public class CommandRegistry {
                 }
             }
         }
+    }
+
+    public Collection<Command> getAllCommands() {
+        return commands.values();
     }
 
 }

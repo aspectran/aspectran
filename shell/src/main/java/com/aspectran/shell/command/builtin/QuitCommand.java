@@ -1,28 +1,27 @@
-package com.aspectran.shell.command.builtins;
+package com.aspectran.shell.command.builtin;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
-public class RestartCommand extends AbstractCommand {
+public class QuitCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "restart";
+    private static final String COMMAND_NAME = "quit";
 
-    private RestartCommandDescriptor descriptor = new RestartCommandDescriptor();
+    private QuitCommandDescriptor descriptor = new QuitCommandDescriptor();
 
-    public RestartCommand(CommandRegistry registry) {
+    public QuitCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().getConsole().clearScreen();
-        getService().restart();
-        return null;
+        throw new ConsoleTerminatedException();
     }
 
     @Override
@@ -30,7 +29,7 @@ public class RestartCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class RestartCommandDescriptor implements Descriptor {
+    private class QuitCommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -44,12 +43,12 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart Aspectran Shell to reload all resources";
+            return "Releases all resources and Exits";
         }
 
         @Override
         public String getUsage() {
-            return "Type 'restart'";
+            return "Type 'quit'";
         }
 
         @Override

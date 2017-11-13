@@ -16,13 +16,13 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.shell.console.Console;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -72,25 +72,25 @@ public class HelpFormatter {
     public static final int DEFAULT_WIDTH = 74;
 
     /** Default padding to the left of each line */
-    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_LEFT_PAD = 3;
 
     /** number of space characters to be prefixed to each description line */
     public static final int DEFAULT_DESC_PAD = 3;
 
     /** the string to display at the beginning of the usage statement */
-    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    private static final String DEFAULT_SYNTAX_PREFIX = "Usage: ";
 
     /** Default prefix for shortOpts */
-    public static final String DEFAULT_OPT_PREFIX = "-";
+    private static final String DEFAULT_OPT_PREFIX = "-";
 
     /** Default prefix for long Option */
-    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    private static final String DEFAULT_LONG_OPT_PREFIX = "--";
 
     /** Default separator displayed between a long Option and its value */
-    public static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
+    private static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
 
     /** Default name for an argument */
-    public static final String DEFAULT_ARG_NAME = "arg";
+    private static final String DEFAULT_ARG_NAME = "arg";
 
     private int defaultWidth = DEFAULT_WIDTH;
 
@@ -116,6 +116,17 @@ public class HelpFormatter {
 
     /** The separator displayed between the long option and its value. */
     private String longOptSeparator = DEFAULT_LONG_OPT_SEPARATOR;
+
+    private final Console console;
+
+    /**
+     * Creates a help formatter.
+     *
+     * @param console the console to which the help will be written
+     */
+    public HelpFormatter(Console console) {
+        this.console = console;
+    }
 
     /**
      * Sets the 'width'.
@@ -315,7 +326,7 @@ public class HelpFormatter {
 
     /**
      * Print the help for {@code options} with the specified
-     * command line syntax.  This method prints help information to 
+     * command line syntax.  This method prints help information to
      * System.out.
      *
      * @param cmdLineSyntax the syntax for this application
@@ -342,7 +353,7 @@ public class HelpFormatter {
 
     /**
      * Print the help for {@code options} with the specified
-     * command line syntax.  This method prints help information to 
+     * command line syntax.  This method prints help information to
      * System.out.
      *
      * @param cmdLineSyntax the syntax for this application
@@ -384,16 +395,13 @@ public class HelpFormatter {
      */
     public void printHelp(int width, String cmdLineSyntax, String header,
                           Options options, String footer, boolean autoUsage) {
-        PrintWriter pw = new PrintWriter(System.out);
-        printHelp(pw, width, cmdLineSyntax, header, options, getLeftPadding(), getDescPadding(), footer, autoUsage);
-        pw.flush();
+        printHelp(width, cmdLineSyntax, header, options, getLeftPadding(), getDescPadding(), footer, autoUsage);
     }
 
     /**
      * Print the help for {@code options} with the specified
      * command line syntax.
      *
-     * @param pw the writer to which the help will be written
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
@@ -403,10 +411,10 @@ public class HelpFormatter {
      * @param footer the banner to display at the end of the help
      * @throws IllegalStateException if there is no room to print a line
      */
-    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax,
+    public void printHelp(int width, String cmdLineSyntax,
                           String header, Options options, int leftPad,
                           int descPad, String footer) {
-        printHelp(pw, width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
+        printHelp(width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
     }
 
 
@@ -414,7 +422,6 @@ public class HelpFormatter {
      * Print the help for {@code options} with the specified
      * command line syntax.
      *
-     * @param pw the writer to which the help will be written
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
@@ -425,37 +432,36 @@ public class HelpFormatter {
      * @param autoUsage whether to print an automatically generated usage statement
      * @throws IllegalStateException if there is no room to print a line
      */
-    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax,
+    public void printHelp(int width, String cmdLineSyntax,
                           String header, Options options, int leftPad,
                           int descPad, String footer, boolean autoUsage) {
         if (cmdLineSyntax == null || cmdLineSyntax.length() == 0) {
             throw new IllegalArgumentException("cmdLineSyntax not provided");
         }
         if (autoUsage) {
-            printUsage(pw, width, cmdLineSyntax, options);
+            printUsage(width, cmdLineSyntax, options);
         } else {
-            printUsage(pw, width, cmdLineSyntax);
+            printUsage(width, cmdLineSyntax);
         }
         if (header != null && header.trim().length() > 0) {
-            printWrapped(pw, width, header);
+            printWrapped(width, header);
         }
-        printOptions(pw, width, options, leftPad, descPad);
+        printOptions(width, options, leftPad, descPad);
         if (footer != null && footer.trim().length() > 0) {
-            printWrapped(pw, width, footer);
+            printWrapped(width, footer);
         }
     }
 
     /**
      * Prints the usage statement for the specified application.
      *
-     * @param pw The PrintWriter to print the usage statement 
-     * @param width The number of characters to display per line
-     * @param app The application name
-     * @param options The command line Options
+     * @param width the number of characters to display per line
+     * @param app the application name
+     * @param options the command line Options
      */
-    public void printUsage(PrintWriter pw, int width, String app, Options options) {
-        // initialise the string buffer
-        StringBuffer buff = new StringBuffer(getSyntaxPrefix()).append(app).append(" ");
+    public void printUsage(int width, String app, Options options) {
+        // initialise the string builder
+        StringBuilder sb = new StringBuilder(getSyntaxPrefix()).append(app).append(" ");
 
         // create a list for processed option groups
         Collection<OptionGroup> processedGroups = new ArrayList<>();
@@ -481,7 +487,7 @@ public class HelpFormatter {
                     processedGroups.add(group);
 
                     // add the usage clause
-                    appendOptionGroup(buff, group);
+                    appendOptionGroup(sb, group);
                 }
 
                 // otherwise the option was displayed in the group
@@ -489,30 +495,30 @@ public class HelpFormatter {
             }
             // if the Option is not part of an OptionGroup
             else {
-                appendOption(buff, option, option.isRequired());
+                appendOption(sb, option, option.isRequired());
             }
 
             if (it.hasNext()) {
-                buff.append(" ");
+                sb.append(" ");
             }
         }
 
         // call printWrapped
-        printWrapped(pw, width, buff.toString().indexOf(' ') + 1, buff.toString());
+        printWrapped(width, sb.toString().indexOf(' ') + 1, sb.toString());
     }
 
     /**
-     * Appends the usage clause for an OptionGroup to a StringBuffer.  
+     * Appends the usage clause for an OptionGroup to a StringBuilder.  
      * The clause is wrapped in square brackets if the group is required.
      * The display of the options is handled by appendOption.
      *
-     * @param buff the StringBuffer to append to
+     * @param sb the StringBuilder to append to
      * @param group the group to append
-     * @see #appendOption(StringBuffer, Option, boolean)
+     * @see #appendOption(StringBuilder, Option, boolean)
      */
-    private void appendOptionGroup(StringBuffer buff, OptionGroup group) {
+    private void appendOptionGroup(StringBuilder sb, OptionGroup group) {
         if (!group.isRequired()) {
-            buff.append("[");
+            sb.append("[");
         }
 
         List<Option> optList = new ArrayList<>(group.getOptions());
@@ -523,45 +529,45 @@ public class HelpFormatter {
         // for each option in the OptionGroup
         for (Iterator<Option> it = optList.iterator(); it.hasNext();) {
             // whether the option is required or not is handled at group level
-            appendOption(buff, it.next(), true);
+            appendOption(sb, it.next(), true);
 
             if (it.hasNext()) {
-                buff.append(" | ");
+                sb.append(" | ");
             }
         }
 
         if (!group.isRequired()) {
-            buff.append("]");
+            sb.append("]");
         }
     }
 
     /**
-     * Appends the usage clause for an Option to a StringBuffer.  
+     * Appends the usage clause for an Option to a StringBuilder.  
      *
-     * @param buff the StringBuffer to append to
+     * @param sb the StringBuilder to append to
      * @param option the Option to append
      * @param required whether the Option is required or not
      */
-    private void appendOption(StringBuffer buff, Option option, boolean required) {
+    private void appendOption(StringBuilder sb, Option option, boolean required) {
         if (!required) {
-            buff.append("[");
+            sb.append("[");
         }
 
         if (option.getOpt() != null) {
-            buff.append("-").append(option.getOpt());
+            sb.append("-").append(option.getOpt());
         } else {
-            buff.append("--").append(option.getLongOpt());
+            sb.append("--").append(option.getLongOpt());
         }
         
         // if the Option has a value and a non blank argname
         if (option.hasArg() && (option.getArgName() == null || option.getArgName().length() != 0)) {
-            buff.append(option.getOpt() == null ? longOptSeparator : " ");
-            buff.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
+            sb.append(option.getOpt() == null ? longOptSeparator : " ");
+            sb.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
         }
         
         // if the Option is not a required option
         if (!required) {
-            buff.append("]");
+            sb.append("]");
         }
     }
 
@@ -569,77 +575,73 @@ public class HelpFormatter {
      * Print the cmdLineSyntax to the specified writer, using the
      * specified width.
      *
-     * @param pw the printWriter to write the help to
      * @param width the number of characters per line for the usage statement
      * @param cmdLineSyntax the usage statement
      */
-    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax) {
+    public void printUsage(int width, String cmdLineSyntax) {
         int argPos = cmdLineSyntax.indexOf(' ') + 1;
-        printWrapped(pw, width, getSyntaxPrefix().length() + argPos, getSyntaxPrefix() + cmdLineSyntax);
+        printWrapped(width, getSyntaxPrefix().length() + argPos, getSyntaxPrefix() + cmdLineSyntax);
     }
 
     /**
      * Print the help for the specified Options to the specified writer, 
      * using the specified width, left padding and description padding.
      *
-     * @param pw the printWriter to write the help to
      * @param width the number of characters to display per line
      * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
      */
-    public void printOptions(PrintWriter pw, int width, Options options, int leftPad, int descPad) {
-        StringBuffer sb = new StringBuffer();
+    public void printOptions(int width, Options options, int leftPad, int descPad) {
+        StringBuilder sb = new StringBuilder();
         renderOptions(sb, width, options, leftPad, descPad);
-        pw.println(sb.toString());
+        console.writeLine(sb.toString());
     }
 
     /**
      * Print the specified text to the specified PrintWriter.
      *
-     * @param pw the printWriter to write the help to
      * @param width the number of characters to display per line
      * @param text the text to be written to the PrintWriter
      */
-    public void printWrapped(PrintWriter pw, int width, String text) {
-        printWrapped(pw, width, 0, text);
+    public void printWrapped(int width, String text) {
+        printWrapped(width, 0, text);
     }
 
     /**
      * Print the specified text to the specified PrintWriter.
      *
-     * @param pw the printWriter to write the help to
      * @param width the number of characters to display per line
      * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be written to the PrintWriter
      */
-    public void printWrapped(PrintWriter pw, int width, int nextLineTabStop, String text) {
-        StringBuffer sb = new StringBuffer(text.length());
+    public void printWrapped(int width, int nextLineTabStop, String text) {
+        StringBuilder sb = new StringBuilder(text.length());
         renderWrappedTextBlock(sb, width, nextLineTabStop, text);
-        pw.println(sb.toString());
+        console.writeLine(sb.toString());
     }
 
     /**
      * Render the specified Options and return the rendered Options
-     * in a StringBuffer.
+     * in a StringBuilder.
      *
-     * @param sb the StringBuffer to place the rendered Options into.
+     * @param sb the StringBuilder to place the rendered Options into.
      * @param width the number of characters to display per line
      * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
-     * @return the StringBuffer with the rendered Options contents
+     * @return the StringBuilder with the rendered Options contents
      */
-    protected StringBuffer renderOptions(StringBuffer sb, int width, Options options, int leftPad, int descPad) {
-        String lpad = createPadding(leftPad);
-        String dpad = createPadding(descPad);
+    protected StringBuilder renderOptions(StringBuilder sb, int width, Options options, int leftPad, int descPad) {
+        String lpad = OptionUtils.createPadding(leftPad);
+        String dpad = OptionUtils.createPadding(descPad);
 
         // first create list containing only <lpad>-a,--aaa where 
         // -a is opt and --aaa is long opt; in parallel look for 
         // the longest opt string this list will be then used to 
         // sort options ascending
         int max = 0;
-        List<StringBuffer> prefixList = new ArrayList<>();
+        List<StringBuilder> prefixList = new ArrayList<>();
         List<Option> optList = options.helpOptions();
 
         if (getOptionComparator() != null) {
@@ -647,7 +649,7 @@ public class HelpFormatter {
         }
 
         for (Option option : optList) {
-            StringBuffer optBuf = new StringBuffer();
+            StringBuilder optBuf = new StringBuilder();
 
             if (option.getOpt() == null) {
                 optBuf.append(lpad).append("   ").append(getLongOptPrefix()).append(option.getLongOpt());
@@ -681,7 +683,7 @@ public class HelpFormatter {
             StringBuilder optBuf = new StringBuilder(prefixList.get(x++).toString());
 
             if (optBuf.length() < max) {
-                optBuf.append(createPadding(max - optBuf.length()));
+                optBuf.append(OptionUtils.createPadding(max - optBuf.length()));
             }
 
             optBuf.append(dpad);
@@ -704,22 +706,22 @@ public class HelpFormatter {
 
     /**
      * Render the specified text and return the rendered Options
-     * in a StringBuffer.
+     * in a StringBuilder.
      *
-     * @param sb the StringBuffer to place the rendered text into.
+     * @param sb the StringBuilder to place the rendered text into.
      * @param width the number of characters to display per line
-     * @param nextLineTabStop the position on the next line for the first tab.
+     * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be rendered.
-     * @return the StringBuffer with the rendered Options contents
+     * @return the StringBuilder with the rendered Options contents
      */
-    protected StringBuffer renderWrappedText(StringBuffer sb, int width, int nextLineTabStop, String text) {
-        int pos = findWrapPos(text, width, 0);
+    protected StringBuilder renderWrappedText(StringBuilder sb, int width, int nextLineTabStop, String text) {
+        int pos = OptionUtils.findWrapPos(text, width, 0);
         if (pos == -1) {
-            sb.append(rtrim(text));
+            sb.append(OptionUtils.rtrim(text));
             return sb;
         }
 
-        sb.append(rtrim(text.substring(0, pos))).append(getNewLine());
+        sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(getNewLine());
 
         if (nextLineTabStop >= width) {
             // stops infinite loop happening
@@ -727,11 +729,11 @@ public class HelpFormatter {
         }
 
         // all following lines must be padded with nextLineTabStop space characters
-        String padding = createPadding(nextLineTabStop);
+        String padding = OptionUtils.createPadding(nextLineTabStop);
 
         while (true) {
             text = padding + text.substring(pos).trim();
-            pos = findWrapPos(text, width, 0);
+            pos = OptionUtils.findWrapPos(text, width, 0);
 
             if (pos == -1) {
                 sb.append(text);
@@ -742,7 +744,7 @@ public class HelpFormatter {
                 pos = width;
             }
 
-            sb.append(rtrim(text.substring(0, pos))).append(getNewLine());
+            sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(getNewLine());
         }
     }
 
@@ -750,12 +752,12 @@ public class HelpFormatter {
      * Render the specified text width a maximum width. This method differs
      * from renderWrappedText by not removing leading spaces after a new line.
      *
-     * @param sb the StringBuffer to place the rendered text into
+     * @param sb the StringBuilder to place the rendered text into
      * @param width the number of characters to display per line
      * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be rendered
      */
-    private Appendable renderWrappedTextBlock(StringBuffer sb, int width, int nextLineTabStop, String text) {
+    private Appendable renderWrappedTextBlock(StringBuilder sb, int width, int nextLineTabStop, String text) {
         try {
             BufferedReader in = new BufferedReader(new StringReader(text));
             String line;
@@ -772,85 +774,6 @@ public class HelpFormatter {
             // ignore
         }
         return sb;
-    }
-
-    /**
-     * Finds the next text wrap position after {@code startPos} for the
-     * text in {@code text} with the column width {@code width}.
-     * The wrap point is the last position before startPos+width having a 
-     * whitespace character (space, \n, \r). If there is no whitespace character
-     * before startPos+width, it will return startPos+width.
-     *
-     * @param text The text being searched for the wrap position
-     * @param width width of the wrapped text
-     * @param startPos position from which to start the lookup whitespace character
-     * @return position on which the text must be wrapped or -1 if the wrap
-     *      position is at the end of the text
-     */
-    protected int findWrapPos(String text, int width, int startPos) {
-        // the line ends before the max wrap pos or a new line char found
-        int pos = text.indexOf('\n', startPos);
-        if (pos != -1 && pos <= width) {
-            return pos + 1;
-        }
-
-        pos = text.indexOf('\t', startPos);
-        if (pos != -1 && pos <= width) {
-            return pos + 1;
-        }
-
-        if (startPos + width >= text.length()) {
-            return -1;
-        }
-
-        // look for the last whitespace character before startPos+width
-        for (pos = startPos + width; pos >= startPos; --pos) {
-            char c = text.charAt(pos);
-            if (c == ' ' || c == '\n' || c == '\r') {
-                break;
-            }
-        }
-
-        // if we found it - just return
-        if (pos > startPos) {
-            return pos;
-        }
-
-        // if we didn't find one, simply chop at startPos+width
-        pos = startPos + width;
-
-        return (pos == text.length() ? -1 : pos);
-    }
-
-    /**
-     * Return a String of padding of length {@code len}.
-     *
-     * @param len The length of the String of padding to create.
-     * @return The String of padding
-     */
-    protected String createPadding(int len) {
-        char[] padding = new char[len];
-        Arrays.fill(padding, ' ');
-        return new String(padding);
-    }
-
-    /**
-     * Remove the trailing whitespace from the specified String.
-     *
-     * @param s the String to remove the trailing padding from
-     * @return the String of without the trailing padding
-     */
-    protected String rtrim(String s) {
-        if (s == null || s.length() == 0) {
-            return s;
-        }
-
-        int pos = s.length();
-        while (pos > 0 && Character.isWhitespace(s.charAt(pos - 1))) {
-            --pos;
-        }
-
-        return s.substring(0, pos);
     }
 
     /**

@@ -41,6 +41,10 @@ public abstract class AbstractCommand implements Command {
         return registry.getService().getConsole();
     }
 
+    public CommandRegistry getCommandRegistry() {
+        return registry;
+    }
+
     protected void addOption(Option option) {
         options.addOption(option);
     }
@@ -49,8 +53,9 @@ public abstract class AbstractCommand implements Command {
         return registry.getParser().parse(options, args);
     }
 
-    protected void printUsage() {
-        HelpFormatter formatter = new HelpFormatter();
+    @Override
+    public void printUsage() {
+        HelpFormatter formatter = new HelpFormatter(getConsole());
         formatter.printHelp(getDescriptor().getName(), options);
     }
 

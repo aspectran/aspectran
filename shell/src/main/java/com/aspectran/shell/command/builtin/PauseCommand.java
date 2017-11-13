@@ -1,27 +1,27 @@
-package com.aspectran.shell.command.builtins;
+package com.aspectran.shell.command.builtin;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
-public class QuitCommand extends AbstractCommand {
+public class PauseCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "quit";
+    private static final String COMMAND_NAME = "pause";
 
-    private QuitCommandDescriptor descriptor = new QuitCommandDescriptor();
+    private PauseCommandDescriptor descriptor = new PauseCommandDescriptor();
 
-    public QuitCommand(CommandRegistry registry) {
+    public PauseCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        throw new ConsoleTerminatedException();
+        getService().pause();
+        return null;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class QuitCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class QuitCommandDescriptor implements Descriptor {
+    private class PauseCommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -43,12 +43,12 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and Exits";
+            return "Pause the Aspectran Shell Service";
         }
 
         @Override
         public String getUsage() {
-            return "Type 'quit'";
+            return "Type 'pause'";
         }
 
         @Override
