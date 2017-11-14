@@ -24,12 +24,18 @@ shell: {
         com.aspectran.shell.command.builtin.RestartCommand
         com.aspectran.shell.command.builtin.PauseCommand
         com.aspectran.shell.command.builtin.ResumeCommand
+        com.aspectran.shell.command.builtin.ClearCommand
         com.aspectran.shell.command.builtin.QuitCommand
+        com.aspectran.shell.command.builtin.SysInfoCommand
     ]
     verbose: true
     greetings: (
         |
-        |   {{BLUE}}--- Aspectran Demo Application ---{{off}}
+        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
+        |
+        |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
+        |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
+        |If you want a list of all supported built-in commands type {{GREEN}}`help`{{off}}.
         |
         |Built-in commands for this console application:
         |   desc on   Prints a description of the command each time the command is executed
