@@ -35,16 +35,7 @@ shell: {
         |
         |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
         |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
-        |If you want a list of all supported built-in commands type {{GREEN}}`help`{{off}}.
-        |
-        |Built-in commands for this console application:
-        |   desc on   Prints a description of the command each time the command is executed
-        |   desc off  Turns off print a description of the command each time the command is executed
-        |   help      Prints help for the available commands that was displayed at startup
-        |   restart   Restarts this console application
-        |   mem       Shows memory usage
-        |   gc        Performs a garbage collection
-        |   quit      Exits from this console application
+        |If you want a list of all supported built-in commands, type {{GREEN}}`help`{{off}}.
         |
     )
 }

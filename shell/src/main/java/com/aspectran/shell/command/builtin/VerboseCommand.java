@@ -70,7 +70,7 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'verbose [-h|--help] [-on] [-off]'";
+            return "verbose [-h|--help] [-on] [-off]";
         }
 
         @Override

@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
-import com.aspectran.core.service.AbstractServiceContoller;
+import com.aspectran.core.service.AbstractServiceController;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -48,7 +48,7 @@ import java.util.Set;
 /**
  * The Class QuartzSchedulerService.
  */
-public class QuartzSchedulerService extends AbstractServiceContoller implements SchedulerService {
+public class QuartzSchedulerService extends AbstractServiceController implements SchedulerService {
 
     public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 

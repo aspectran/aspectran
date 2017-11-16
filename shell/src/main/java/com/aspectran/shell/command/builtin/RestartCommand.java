@@ -49,7 +49,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'restart'";
+            return null;
         }
 
         @Override

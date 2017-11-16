@@ -26,17 +26,13 @@ public class HelpCommand extends AbstractCommand {
 
     public HelpCommand(CommandRegistry registry) {
         super(registry);
-
-        addOption(Option.builder("a").longOpt("all").desc("Prints all the available commands").build());
-        addOption(new Option("on", "Enable verbose output"));
-        addOption(new Option("off", "Disable verbose output"));
     }
 
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
 
-        getConsole().writeLine("Built-in Commands:");
+        getConsole().writeLine("These are built-in commands used in this application:");
 
         String[] filteredCommands = null;
         if (options.getUnparsedArgList().size() > 0) {
@@ -162,7 +158,7 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'help [command [command2 [command3] ...]]'";
+            return "help [command [command2 [command3] ...]]";
         }
 
         @Override

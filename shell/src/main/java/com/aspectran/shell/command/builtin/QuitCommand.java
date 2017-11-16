@@ -48,7 +48,7 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'quit'";
+            return null;
         }
 
         @Override

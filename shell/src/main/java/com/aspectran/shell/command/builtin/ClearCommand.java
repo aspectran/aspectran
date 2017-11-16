@@ -48,7 +48,7 @@ public class ClearCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'clear'";
+            return null;
         }
 
         @Override

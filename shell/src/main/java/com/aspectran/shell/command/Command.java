@@ -34,6 +34,9 @@ public interface Command {
      */
     String execute(String[] args) throws Exception;
 
+    /**
+     * Prints the usage statement for the specified command.
+     */
     void printUsage();
 
     /**

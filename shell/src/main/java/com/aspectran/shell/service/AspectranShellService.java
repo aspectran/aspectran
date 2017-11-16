@@ -74,20 +74,20 @@ class AspectranShellService extends AbstractShellService {
     @Override
     public void serve(CommandLineParser commandLineParser) {
         if (!isExposable(commandLineParser.getCommand())) {
-            log.info("Unexposable Translet: " + commandLineParser.getCommand());
+            getConsole().writeLine("Unexposable Translet: " + commandLineParser.getCommand());
             return;
         }
 
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
-                    log.info("ShellService has been paused");
+                    getConsole().writeLine(getServiceName() + " has been paused");
                 } else {
                     long remains = pauseTimeout - System.currentTimeMillis();
                     if (remains > 0L) {
-                        log.info("ShellService has been paused and will resume after " + remains + " ms");
+                        getConsole().writeLine(getServiceName() + " has been paused and will resume after " + remains + " ms");
                     } else {
-                        log.info("ShellService has been paused and will soon resume");
+                        getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
                     }
                 }
                 return;
@@ -101,7 +101,7 @@ class AspectranShellService extends AbstractShellService {
             try {
                 redirectionWriters = commandLineParser.getRedirectionWriters(getConsole());
             } catch (Exception e) {
-                log.warn("Invalid Redirection: " + CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
+                getConsole().writeLine("Invalid Redirection: " + CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
                 return;
             }
         }

@@ -48,7 +48,7 @@ public class ResumeCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'resume'";
+            return null;
         }
 
         @Override

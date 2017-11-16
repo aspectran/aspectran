@@ -33,7 +33,7 @@ import com.aspectran.scheduler.service.SchedulerService;
 /**
  * The Class AbstractCoreService.
  */
-public abstract class AbstractCoreService extends AbstractServiceContoller implements CoreService {
+public abstract class AbstractCoreService extends AbstractServiceController implements CoreService {
 
     protected final Log log = LogFactory.getLog(getClass());
 

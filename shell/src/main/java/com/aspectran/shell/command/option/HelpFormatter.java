@@ -78,7 +78,7 @@ public class HelpFormatter {
     public static final int DEFAULT_DESC_PAD = 3;
 
     /** the string to display at the beginning of the usage statement */
-    private static final String DEFAULT_SYNTAX_PREFIX = "Usage: ";
+    private static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
 
     /** Default prefix for shortOpts */
     private static final String DEFAULT_OPT_PREFIX = "-";
@@ -453,15 +453,15 @@ public class HelpFormatter {
     }
 
     /**
-     * Prints the usage statement for the specified application.
+     * Prints the usage statement for the specified command.
      *
      * @param width the number of characters to display per line
-     * @param app the application name
+     * @param commandName the command name
      * @param options the command line Options
      */
-    public void printUsage(int width, String app, Options options) {
+    public void printUsage(int width, String commandName, Options options) {
         // initialise the string builder
-        StringBuilder sb = new StringBuilder(getSyntaxPrefix()).append(app).append(" ");
+        StringBuilder sb = new StringBuilder(getSyntaxPrefix()).append(commandName).append(" ");
 
         // create a list for processed option groups
         Collection<OptionGroup> processedGroups = new ArrayList<>();

@@ -48,7 +48,7 @@ public class PauseCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'pause'";
+            return null;
         }
 
         @Override

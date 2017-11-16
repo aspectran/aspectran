@@ -139,7 +139,7 @@ public class SysInfoCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "Type 'sysinfo [options]'";
+            return null;
         }
 
         @Override

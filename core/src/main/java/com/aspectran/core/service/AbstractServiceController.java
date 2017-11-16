@@ -19,11 +19,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class AbstractServiceContoller.
+ * The Class AbstractServiceController.
  */
-public abstract class AbstractServiceContoller implements ServiceController {
+public abstract class AbstractServiceController implements ServiceController {
 
-    private static Log log = LogFactory.getLog(AbstractServiceContoller.class);
+    private static Log log = LogFactory.getLog(AbstractServiceController.class);
 
     private final Object lock = new Object();
 

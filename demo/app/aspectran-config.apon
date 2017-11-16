@@ -21,9 +21,14 @@ scheduler: {
 shell: {
     prompt: "{{CYAN}}aspectran-demo{{YELLOW}}>{{off}} "
     commands: [
+        com.aspectran.shell.command.builtin.HelpCommand
         com.aspectran.shell.command.builtin.VerboseCommand
         com.aspectran.shell.command.builtin.RestartCommand
+        com.aspectran.shell.command.builtin.PauseCommand
+        com.aspectran.shell.command.builtin.ResumeCommand
+        com.aspectran.shell.command.builtin.ClearCommand
         com.aspectran.shell.command.builtin.QuitCommand
+        com.aspectran.shell.command.builtin.SysInfoCommand
     ]
     verbose: true
     greetings: (
@@ -32,7 +37,7 @@ shell: {
         |
         |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
         |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
-        |If you want a list of all supported commands type {{GREEN}}`help`{{off}}.
+        |If you want a list of all supported commands, type {{GREEN}}`help`{{off}}.
         |
     )
 }
