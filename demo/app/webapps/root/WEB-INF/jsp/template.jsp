@@ -206,7 +206,7 @@
     <div id="subfooter">
         <nav class="row b30">
             <section id="subfooter-left" class="medium-6 columns credits">
-                <p>© 2008–2017 Juho Jeong. All rights reserved.</p>
+                <p>© 2008–2017 The Aspectran Project. All rights reserved.</p>
             </section>
             <section id="subfooter-right" class="medium-6 columns social-icons">
                 <ul>

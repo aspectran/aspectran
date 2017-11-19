@@ -203,4 +203,12 @@
 
     <append file="/config/scheduler-config.xml"/>
 
+    <template id="echo1" style="apon">
+        |ECHO-1
+    </template>
+
+    <template id="echo2" style="apon">
+        |ECHO-2
+    </template>
+
 </aspectran>

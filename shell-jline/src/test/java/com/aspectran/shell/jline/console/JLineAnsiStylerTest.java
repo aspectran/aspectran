@@ -15,24 +15,19 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.shell.console.Console;
+import org.junit.Test;
 
 import java.io.IOException;
 
 /**
- * <p>Created: 2017. 3. 5.</p>
+ * <p>Created: 2017. 11. 19.</p>
  */
-public class Jline3ConsoleInoutReadPasswordTest {
+public class JLineAnsiStylerTest {
 
-    public static void main(String argv[]) throws IOException {
-        Console console = new JlineConsole();
-        String prompt = "JLine3> ";
-        while (true) {
-            String line = console.readPassword(prompt);
-            if ("quit".equals(line)) {
-                break;
-            }
-        }
+    @Test
+    public void testAnsiColor() throws IOException {
+        String s1 = "Ansi 8 colors {{white,bg:black}} Black {{black,bg:red}} Red {{white,bg:green}} Green {{black,bg:yellow}} Yellow {{bg:blue}} Blue {{bg:magenta}} Magenta {{bg:cyan}} Cyan {{black,bg:white}} White {{off}}";
+        System.out.println(JLineAnsiStyler.parse(s1));
     }
 
 }

@@ -48,7 +48,7 @@ public class JlineAnsiStringWriter extends StringWriter {
         flushPos = getBuffer().length();
 
         try {
-            writer.write(JlineAnsiStringUtils.toAnsi(source , terminal));
+            writer.write(JLineAnsiStyler.parse(source , terminal));
         } catch (IOException e) {
             throw new IOError(e);
         }

@@ -25,7 +25,6 @@ import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
-import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
 import java.io.IOError;
@@ -36,11 +35,11 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
- * Console I/O implementation that supports Jline.
+ * Console I/O implementation that supports JLine.
  *
  * <p>Created: 2017. 3. 4.</p>
  */
-public class JlineConsole extends AbstractConsole {
+public class JLineConsole extends AbstractConsole {
 
     private static final String APP_NAME = "Aspectran Shell";
 
@@ -56,7 +55,7 @@ public class JlineConsole extends AbstractConsole {
     
     private AttributedStyle style;
 
-    public JlineConsole() throws IOException {
+    public JLineConsole() throws IOException {
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
         this.reader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
         this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
@@ -126,8 +125,7 @@ public class JlineConsole extends AbstractConsole {
             AttributedString as = new AttributedString(string, style);
             writeRawText(as.toAnsi(terminal));
         } else {
-            AttributedStringBuilder asb = JlineAnsiStringUtils.parse(string);
-            writeRawText(asb.toAnsi(terminal));
+            writeRawText(toAnsi(string));
         }
     }
 
@@ -199,7 +197,7 @@ public class JlineConsole extends AbstractConsole {
 
     @Override
     public void setStyle(String... styles) {
-        this.style = JlineAnsiStringUtils.makeStyle(styles);
+        this.style = JLineAnsiStyler.makeStyle(styles);
     }
 
     @Override
@@ -208,7 +206,7 @@ public class JlineConsole extends AbstractConsole {
     }
 
     private String toAnsi(String string) {
-        return JlineAnsiStringUtils.toAnsi(string, terminal);
+        return JLineAnsiStyler.parse(string, terminal);
     }
 
 }

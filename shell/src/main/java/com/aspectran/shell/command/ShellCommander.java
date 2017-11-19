@@ -45,7 +45,7 @@ public class ShellCommander {
 
     public void perform() {
         try {
-            while (true) {
+            for (;;) {
                 String commandLine = console.readCommandLine();
                 if (commandLine == null) {
                     continue;
@@ -63,7 +63,10 @@ public class ShellCommander {
 
                 Command command = commandRegistry.getCommand(commandName);
                 if (command != null) {
-                    command.execute(args);
+                    String result = command.execute(args);
+                    if (result != null) {
+                        console.writeLine(result);
+                    }
                 } else {
                     service.serve(commandLine);
                     console.writeLine();
@@ -75,7 +78,7 @@ public class ShellCommander {
             log.error("An error occurred while executing the command", e);
         } finally {
             if (service.isActive()) {
-                log.info("Do not terminate this application while destroying all scoped beans");
+                log.info("Do not terminate this application while releasing all resources");
             }
         }
     }

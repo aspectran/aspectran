@@ -29,16 +29,18 @@ shell: {
         com.aspectran.shell.command.builtin.ClearCommand
         com.aspectran.shell.command.builtin.QuitCommand
         com.aspectran.shell.command.builtin.SysInfoCommand
+        com.aspectran.shell.command.builtin.TransletCommand
     ]
     verbose: true
     greetings: (
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
-        |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
-        |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
-        |If you want a list of all supported commands, type {{GREEN}}`help`{{off}}.
-        |
+        |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
+        |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name --help{{off}}'.
+        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
+        |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.
     )
 }
 web: {

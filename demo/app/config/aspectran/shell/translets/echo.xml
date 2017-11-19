@@ -9,9 +9,9 @@
 
     <translet name="echo">
         <description style="apon">
-            |----------------------------------------------------------
+            |
             |   It accepts parameters and print them to the console.
-            |----------------------------------------------------------
+            |
         </description>
         <parameters>
             <item name="input-1" mandatory="false">${prefix} - 1</item>
@@ -37,9 +37,9 @@
 
     <translet name="echo2">
         <description style="apon">
-            |----------------------------------------------------------
+            |
             |   It accepts parameters and print them to the console.
-            |----------------------------------------------------------
+            |
         </description>
         <parameters>
             <item name="input-1">PARA ${input-1:12345}</item>
@@ -64,9 +64,9 @@
 
     <translet name="login">
         <description style="apon">
-            |-------------------------------------------------------------------------
+            |
             |   It accepts parameters used for login and print them to the console.
-            |-------------------------------------------------------------------------
+            |
         </description>
         <parameters>
             <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
@@ -85,9 +85,9 @@
 
     <translet name="chpw">
         <description style="apon">
-            |------------------------------------------------------------------------------------
+            |
             |   It accepts parameters for changing the password and print them to the console.
-            |------------------------------------------------------------------------------------
+            |
         </description>
         <parameters>
             <item name="email">${emailId}@${emailDomain}</item>

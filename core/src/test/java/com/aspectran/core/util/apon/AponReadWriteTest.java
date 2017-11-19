@@ -15,9 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
-import org.junit.FixMethodOrder;
+import com.aspectran.core.util.ResourceUtils;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,21 +24,20 @@ import java.io.IOException;
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AponReadWriteTest {
 
     @Test
     public void writeTest() throws IOException {
-        File file = new File("./target/test-classes/config/apon/apon-test.apon");
+        File file = ResourceUtils.getResourceAsFile("config/apon/apon-test.apon");
         Parameters parameters = AponReader.parse(file);
 
-        File outputFile = new File("./target/test-classes/config/apon/apon-test-output.apon");
+        File outputFile = new File(ResourceUtils.getResourceAsFile("config/apon"), "apon-test-output.apon");
 
         AponWriter aponWriter = new AponWriter(outputFile);
         aponWriter.setPrettyPrint(true);
         aponWriter.setNoQuotes(true);
         aponWriter.setNullWrite(true);
-        aponWriter.setTypeHintWrite(true);
+        //aponWriter.setTypeHintWrite(true);
         aponWriter.setIndentString("  ");
         aponWriter.write(parameters);
         aponWriter.close();

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.ResourceUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -23,6 +25,8 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for building ActivityContext.
@@ -34,20 +38,21 @@ public class ActivityContextBuilderTest {
 
     private File baseDir;
 
-    private ActivityContextBuilder activityContextBuilder;
+    private ActivityContextBuilder builder;
 
     @Before
     public void ready() throws IOException {
-        baseDir = new File("./target/test-classes");
+        //baseDir = new File("./target/test-classes");
+        baseDir = ResourceUtils.getResourceAsFile("");
 
         System.out.println("----------------------------------------");
         System.out.println(" Test case for building ActivityContext");
         System.out.println("----------------------------------------");
 
-        activityContextBuilder = new HybridActivityContextBuilder();
-        activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
-        activityContextBuilder.setHybridLoad(true);
-        activityContextBuilder.setActiveProfiles("dev", "local");
+        builder = new HybridActivityContextBuilder();
+        builder.setBasePath(baseDir.getCanonicalPath());
+        builder.setHybridLoad(true);
+        builder.setActiveProfiles("dev", "local");
     }
 
     @Test
@@ -60,13 +65,19 @@ public class ActivityContextBuilderTest {
 
         System.out.println("================ load ===============");
 
-        activityContextBuilder.build("/config/test-config.xml");
-        activityContextBuilder.destroy();
+        ActivityContext context = builder.build("/config/test-config.xml");
+        String result = context.getTemplateProcessor().process("echo1");
+        System.out.println(result);
+        assertEquals(result, "ECHO-1");
+        builder.destroy();
 
-        //System.out.println("=============== reload ==============");
+        System.out.println("=============== reload ==============");
 
-        //activityContextBuilder.build();
-        //activityContextBuilder.destroy();
+        ActivityContext context2 = builder.build();
+        String result2 = context2.getTemplateProcessor().process("echo2");
+        System.out.println(result2);
+        assertEquals(result2, "ECHO-2");
+        builder.destroy();
     }
 
     @After

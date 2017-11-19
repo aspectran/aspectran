@@ -235,6 +235,7 @@ class AspectranShellService extends AbstractShellService {
             public void started() {
                 service.pauseTimeout = 0;
                 service.printGreetings();
+                service.printHelp();
             }
 
             @Override

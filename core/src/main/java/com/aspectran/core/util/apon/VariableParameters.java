@@ -50,7 +50,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
     private Parameter touchParameterValue(String name, Object value) {
         Parameter p = getParameterValueMap().get(name);
         if (p == null && isAddable()) {
-            p = newParameterValue(name, ParameterValueType.determineType(value));
+            p = newParameterValue(name, ParameterValueType.determineValueType(value));
         }
         if (p == null) {
             throw new UnknownParameterException(name, this);

@@ -45,12 +45,12 @@ public class InvalidParameterException extends AponException {
      * Constructor to create exception with a message.
      *
      * @param lineNumber the line number
-     * @param line the line
-     * @param trim the trim
+     * @param line the character line
+     * @param tline the trimmed character line
      * @param msg a message to associate with the exception
      */
-    public InvalidParameterException(int lineNumber, String line, String trim, String msg) {
-        super(createMessage(lineNumber, line, trim, msg));
+    public InvalidParameterException(int lineNumber, String line, String tline, String msg) {
+        super(createMessage(lineNumber, line, tline, msg));
     }
 
     /**
@@ -73,16 +73,16 @@ public class InvalidParameterException extends AponException {
     }
 
     /**
-     * Create a message.
+     * Create a detail message.
      *
      * @param lineNumber the line number
-     * @param line the line
-     * @param trim the trim
+     * @param line the character line
+     * @param tline the trimmed character line
      * @param msg the message
-     * @return the string
+     * @return the detail message
      */
-    protected static String createMessage(int lineNumber, String line, String trim, String msg) {
-        int columnNumber = (trim != null ? line.indexOf(trim) : 0);
+    protected static String createMessage(int lineNumber, String line, String tline, String msg) {
+        int columnNumber = (tline != null ? line.indexOf(tline) : 0);
         StringBuilder sb = new StringBuilder();
         if (msg != null) {
             sb.append(msg);
@@ -91,17 +91,17 @@ public class InvalidParameterException extends AponException {
         if (columnNumber != -1) {
             String lspace = line.substring(0, columnNumber);
             int tabCnt = StringUtils.search(lspace, "\t");
-            if (trim != null && trim.length() > 33) {
-                trim = trim.substring(0, 30) + "...";
+            if (tline != null && tline.length() > 33) {
+                tline = tline.substring(0, 30) + "...";
             }
             sb.append(", columnNumber: ").append(columnNumber + 1);
             if (tabCnt != 0) {
                 sb.append(" (");
-                sb.append("Tab ").append(tabCnt);
-                sb.append(", Space ").append(columnNumber - tabCnt);
+                sb.append("Tabs ").append(tabCnt);
+                sb.append(", Spaces ").append(columnNumber - tabCnt);
                 sb.append(")");
             }
-            sb.append("] ").append(trim);
+            sb.append("] ").append(tline);
         }
         return sb.toString();
     }

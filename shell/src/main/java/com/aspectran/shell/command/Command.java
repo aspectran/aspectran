@@ -16,6 +16,7 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.Option;
+import com.aspectran.shell.console.Console;
 
 import java.util.Collection;
 
@@ -38,6 +39,13 @@ public interface Command {
      * Prints the usage statement for the specified command.
      */
     void printUsage();
+
+    /**
+     * Prints the usage statement for the specified command.
+     *
+     * @param console the Console instance
+     */
+    void printUsage(Console console);
 
     /**
      * This method returns an instance of Command.Descriptor.

@@ -43,7 +43,7 @@ public class AponFormat {
 
     protected static final char ESCAPE_CHAR = '\\';
 
-    public static final char NEXT_LINE_CHAR = '\n';
+    public static final char NEW_LINE_CHAR = '\n';
 
     protected static final String INDENT_STRING = "\t";
 

@@ -12,7 +12,7 @@ public class PauseCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "pause";
 
-    private PauseCommandDescriptor descriptor = new PauseCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public PauseCommand(CommandRegistry registry) {
         super(registry);
@@ -29,7 +29,7 @@ public class PauseCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class PauseCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

@@ -16,16 +16,23 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.Console;
+import org.junit.Test;
 
 import java.io.IOException;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class Jline3ConsoleInoutTest {
+public class JLine3ConsoleTest {
+
+    @Test
+    public void testAnsiColor() throws IOException {
+        JLineConsole console = new JLineConsole();
+        console.writeLine("--- JLineConsoleTest ---");
+    }
 
     public static void main(String argv[]) throws IOException {
-        Console console = new JlineConsole();
+        Console console = new JLineConsole();
         String prompt = "JLine3> ";
         while (true) {
             String line = console.readLine(prompt);

@@ -12,7 +12,7 @@ public class ResumeCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "resume";
 
-    private ResumeCommandDescriptor descriptor = new ResumeCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public ResumeCommand(CommandRegistry registry) {
         super(registry);
@@ -29,7 +29,7 @@ public class ResumeCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class ResumeCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

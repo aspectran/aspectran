@@ -58,6 +58,14 @@ public interface ShellService extends CoreService {
     void printHelp();
 
     /**
+     * Checks whether the Translet can be exposed.
+     *
+     * @param transletName the name of the Translet to check
+     * @return true if the Translet can be exposed, false otherwise
+     */
+    boolean isExposable(String transletName);
+
+    /**
      * Process the actual dispatching to the activity.
      *
      * @param command the translet name mapped to the command

@@ -29,6 +29,8 @@ public class ParameterValue implements Parameter {
 
     private ParameterValueType parameterValueType;
 
+    private boolean valueTypeHinted;
+
     private Class<? extends AbstractParameters> parametersClass;
 
     private boolean array;
@@ -125,6 +127,16 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
+    public boolean isValueTypeHinted() {
+        return valueTypeHinted;
+    }
+
+    @Override
+    public void setValueTypeHinted(boolean valueTypeHinted) {
+        this.valueTypeHinted = valueTypeHinted;
+    }
+
+    @Override
     public boolean isArray() {
         return array;
     }
@@ -157,11 +169,11 @@ public class ParameterValue implements Parameter {
     public void putValue(Object value) {
         if (!predefined && value != null) {
             if (parameterValueType == ParameterValueType.STRING) {
-                if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
                     parameterValueType = ParameterValueType.TEXT;
                 }
             } else if (parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
-                if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
                     parameterValueType = ParameterValueType.TEXT;
                 } else {
                     parameterValueType = ParameterValueType.STRING;

@@ -47,6 +47,9 @@ public class DefaultServletHttpRequestHandler {
     /** Default Servlet name used by Google App Engine */
     private static final String GAE_DEFAULT_SERVLET_NAME = "_ah_default";
 
+    /** Default Servlet name used by Jeus */
+    private static final String JEUS_DEFAULT_SERVLET_NAME = "WorkerServlet";
+
     private final ServletContext servletContext;
 
     private String defaultServletName;
@@ -91,8 +94,12 @@ public class DefaultServletHttpRequestHandler {
             defaultServletName = WEBSPHERE_DEFAULT_SERVLET_NAME;
         } else if (servletContext.getNamedDispatcher(GAE_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = GAE_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(JEUS_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = JEUS_DEFAULT_SERVLET_NAME;
         } else {
-            log.warn("Unable to locate the default servlet for serving static content. Please set the 'web.defaultServletName'.");
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to locate the default servlet for serving static content. Please set the 'web.defaultServletName'.");
+            }
         }
     }
 

@@ -13,47 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline;
+package com.aspectran.demo;
 
-import com.aspectran.shell.AspectranShell;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.jline.console.JlineConsole;
+import com.aspectran.shell.jline.console.JLineConsole;
 import com.aspectran.shell.service.ShellService;
 
+import java.io.File;
+
 /**
- * Main entry point for the Aspectran Shell using JLine.
+ * Test for Aspectran Demo.
  *
- * <p>Created: 2017. 10. 21.</p>
+ * <p>Note: To avoid resource duplication, run "mvn clean" before testing.</p>
  *
- * @since 4.1.0
+ * <p>Created: 2017. 11. 19.</p>
  */
-public class JlineAspectranShell {
+public class AspectranDemoTest {
 
     public static void main(String[] args) {
-        String aspectranConfigFile;
-        if (args.length > 0) {
-            aspectranConfigFile = args[0];
-        } else {
-            aspectranConfigFile = AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
-        }
-
-        ShellService service = null;
         int exitStatus = 0;
 
         try {
-            service = ShellService.create(aspectranConfigFile, new JlineConsole());
-            service.start();
+            File current = ResourceUtils.getResourceAsFile("");
+            File root = new File(current, "../../app");
+            File aspectranConfigFile = new File(root, "aspectran-config.apon");
+            System.setProperty("user.dir", root.getAbsolutePath());
 
+            ShellService service = ShellService.create(aspectranConfigFile, new JLineConsole());
+            service.start();
             ShellCommander commander = new ShellCommander(service);
             commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
-        } finally {
-            if (service != null) {
-                service.stop();
-            }
-
         }
 
         System.exit(exitStatus);

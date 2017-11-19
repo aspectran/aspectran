@@ -1,23 +1,9 @@
-/*
- * Copyright (c) 2008-2017 The Aspectran Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.console.AnsiStyleHandler;
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
@@ -31,82 +17,35 @@ import java.util.Arrays;
  *
  * @since 4.1.0
  */
-public class JlineAnsiStringUtils {
+public class JLineAnsiStyler {
 
-    private static final Log log = LogFactory.getLog(JlineAnsiStringUtils.class);
+    private static final Log log = LogFactory.getLog(JLineAnsiStyler.class);
 
-    public static String toAnsi(String input, Terminal terminal) {
-        if (input != null && input.contains("{{")) {
-            AttributedStringBuilder asb = parse(input);
-            return asb.toAnsi(terminal);
-        } else {
-            return input;
-        }
+    public static String parse(String input) {
+        return parse(input, null);
     }
 
-    public static AttributedStringBuilder parse(CharSequence input) {
-        if (input == null) {
-            throw new IllegalArgumentException("Argument 'input' must not be null");
+    public static String parse(String input, Terminal terminal) {
+        if (input == null || !input.contains("{{") || !input.contains("}}")) {
+            return input;
         }
 
-        int inputLen = input.length();
-        AttributedStringBuilder asb = new AttributedStringBuilder(inputLen);
+        final AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
 
-        char c;
-        int p1 = 0;
-        int p2 = 0;
-        int p3 = 0;
-
-        for (int i = 0; i < inputLen; i++) {
-            c = input.charAt(i);
-
-            switch (c) {
-                case '{':
-                    if (p1 < 2) {
-                        p1++;
-                    } else if (p1 == 2) {
-                        asb.append(c);
-                    }
-                    break;
-                case '}':
-                    if (p1 >= 2) {
-                        if (p2 == 0) {
-                            p2++;
-                        } else if (p2 == 1) {
-                            p2 = i - 1;
-                        }
-                    } else if (p1 == 1) {
-                        asb.append('{');
-                        p1 = 0;
-                    }
-                    break;
-                default:
-                    if (p1 == 1) {
-                        p1 = 0;
-                        asb.append('{');
-                    } else if (p1 == 2 && p3 == 0) {
-                        p1 = p3 = i;
-                    }
-            }
-
-            if (p1 == 0) {
+        AnsiStyleHandler handler = new AnsiStyleHandler() {
+            @Override
+            public void character(char c) {
                 asb.append(c);
-            } else if (p1 >= 2 && p1 < p2) {
-                String[] styles = StringUtils.splitCommaDelimitedString(input.subSequence(p1, p2).toString());
-                asb.style(makeStyle(asb.style(), styles));
-                p1 = p2 = p3 = 0;
             }
-        }
 
-        if (p1 > 0) {
-            for (int i = 0; i < p1; i++) {
-                asb.append('{');
+            @Override
+            public void attribute(String... attrs) {
+                asb.style(makeStyle(asb.style(), attrs));
             }
-            String styles = input.subSequence(p1, inputLen).toString();
-            asb.style(makeStyle(asb.style(), styles));
-        }
+        };
+        handler.handle(input);
 
-        return asb;
+        return asb.toAnsi(terminal);
     }
 
     public static AttributedStyle makeStyle(String... styles) {
@@ -115,7 +54,7 @@ public class JlineAnsiStringUtils {
     }
 
     public static AttributedStyle makeStyle(AttributedStyle as, String... styles) {
-        for(String style : styles) {
+        for (String style : styles) {
             switch (style) {
                 case "off":
                     as = AttributedStyle.DEFAULT;

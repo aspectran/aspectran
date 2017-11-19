@@ -446,7 +446,9 @@ public class HelpFormatter {
         if (header != null && header.trim().length() > 0) {
             printWrapped(width, header);
         }
-        printOptions(width, options, leftPad, descPad);
+        if (!options.isEmpty()) {
+            printOptions(width, options, leftPad, descPad);
+        }
         if (footer != null && footer.trim().length() > 0) {
             printWrapped(width, footer);
         }
@@ -467,7 +469,7 @@ public class HelpFormatter {
         Collection<OptionGroup> processedGroups = new ArrayList<>();
 
         List<Option> optList = new ArrayList<>(options.getOptions());
-        if (getOptionComparator() != null) {
+        if (optList.size() > 1 && getOptionComparator() != null) {
             optList.sort(getOptionComparator());
         }
 
@@ -522,7 +524,7 @@ public class HelpFormatter {
         }
 
         List<Option> optList = new ArrayList<>(group.getOptions());
-        if (getOptionComparator() != null) {
+        if (optList.size() > 1 && getOptionComparator() != null) {
             optList.sort(getOptionComparator());
         }
 
@@ -559,7 +561,7 @@ public class HelpFormatter {
             sb.append("--").append(option.getLongOpt());
         }
         
-        // if the Option has a value and a non blank argname
+        // if the Option has a value and a non blank arg name
         if (option.hasArg() && (option.getArgName() == null || option.getArgName().length() != 0)) {
             sb.append(option.getOpt() == null ? longOptSeparator : " ");
             sb.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
@@ -625,7 +627,7 @@ public class HelpFormatter {
      * Render the specified Options and return the rendered Options
      * in a StringBuilder.
      *
-     * @param sb the StringBuilder to place the rendered Options into.
+     * @param sb the StringBuilder to place the rendered Options into
      * @param width the number of characters to display per line
      * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
@@ -644,7 +646,7 @@ public class HelpFormatter {
         List<StringBuilder> prefixList = new ArrayList<>();
         List<Option> optList = options.helpOptions();
 
-        if (getOptionComparator() != null) {
+        if (optList.size() > 1 && getOptionComparator() != null) {
             optList.sort(getOptionComparator());
         }
 
@@ -664,7 +666,7 @@ public class HelpFormatter {
             if (option.hasArg()) {
                 final String argName = option.getArgName();
                 if (argName != null && argName.length() == 0) {
-                    // if the option has a blank argname
+                    // if the option has a blank arg name
                     optBuf.append(' ');
                 } else {
                     optBuf.append(option.hasLongOpt() ? longOptSeparator : " ");
@@ -673,7 +675,7 @@ public class HelpFormatter {
             }
 
             prefixList.add(optBuf);
-            max = optBuf.length() > max ? optBuf.length() : max;
+            max = (optBuf.length() > max ? optBuf.length() : max);
         }
 
         int x = 0;
@@ -708,10 +710,10 @@ public class HelpFormatter {
      * Render the specified text and return the rendered Options
      * in a StringBuilder.
      *
-     * @param sb the StringBuilder to place the rendered text into.
+     * @param sb the StringBuilder to place the rendered text into
      * @param width the number of characters to display per line
      * @param nextLineTabStop the position on the next line for the first tab
-     * @param text the text to be rendered.
+     * @param text the text to be rendered
      * @return the StringBuilder with the rendered Options contents
      */
     protected StringBuilder renderWrappedText(StringBuilder sb, int width, int nextLineTabStop, String text) {

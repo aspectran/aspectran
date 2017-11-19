@@ -44,13 +44,13 @@ public class ParsedOptions implements Serializable {
     private final List<Option> options = new ArrayList<>();
 
     /** The unrecognized options/arguments */
-    private final List<String> unparsedArgs = new LinkedList<>();
+    private final List<String> args = new LinkedList<>();
 
     /**
      * Creates a command line.
      */
     protected ParsedOptions() {
-        // nothing to do
+        // Nothing to do
     }
 
     /**
@@ -81,6 +81,15 @@ public class ParsedOptions implements Serializable {
      */
     public boolean hasOption(char opt) {
         return hasOption(String.valueOf(opt));
+    }
+
+    /**
+     * Checks if options exists.
+     *
+     * @return true if options exists, false otherwise
+     */
+    public boolean hasOptions() {
+        return !options.isEmpty();
     }
 
     /**
@@ -358,7 +367,7 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Add an option to the command line.
+     * Add an option.
      * The values of the option are stored.
      *
      * @param opt the option to be processed
@@ -387,12 +396,21 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
+     * Checks if non-recognized options or arguments exists.
+     *
+     * @return true if non-recognized options or arguments exists, false otherwise
+     */
+    public boolean hasArgs() {
+        return !args.isEmpty();
+    }
+
+    /**
      * Retrieve any left-over non-recognized options and arguments.
      *
      * @return remaining items passed in but not parsed as an array
      */
-    public String[] getUnparsedArgs() {
-        return unparsedArgs.toArray(new String[unparsedArgs.size()]);
+    public String[] getArgs() {
+        return args.toArray(new String[args.size()]);
     }
 
     /**
@@ -400,8 +418,8 @@ public class ParsedOptions implements Serializable {
      *
      * @return remaining items passed in but not parsed as a {@link List}
      */
-    public List<String> getUnparsedArgList() {
-        return unparsedArgs;
+    public List<String> getArgList() {
+        return args;
     }
 
     /**
@@ -409,8 +427,8 @@ public class ParsedOptions implements Serializable {
      *
      * @param arg the unrecognized option/argument
      */
-    protected void addUnparsedArg(String arg) {
-        unparsedArgs.add(arg);
+    protected void addArg(String arg) {
+        args.add(arg);
     }
 
 }

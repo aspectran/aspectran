@@ -146,4 +146,8 @@ public class DefaultConsole extends AbstractConsole {
         // Nothing to do
     }
 
+    private String stripStyle() {
+        return null;
+    }
+
 }

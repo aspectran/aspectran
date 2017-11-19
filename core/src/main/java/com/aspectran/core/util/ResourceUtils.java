@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -206,12 +208,25 @@ public class ResourceUtils {
     /**
      * Returns the URL of the resource on the classpath.
      *
-     * @param classLoader the class loader used to load the resource
      * @param resource the resource to find
-     * @return the resource
+     * @return {@code URL} object for reading the resource;
+     *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
-    public static URL getResourceURL(String resource, ClassLoader classLoader) throws IOException {
+    public static URL getResource(String resource) throws IOException {
+        return getResource(resource, AspectranClassLoader.getDefaultClassLoader());
+    }
+
+    /**
+     * Returns the URL of the resource on the classpath.
+     *
+     * @param classLoader the class loader used to load the resource
+     * @param resource the resource to find
+     * @return {@code URL} object for reading the resource;
+     *      {@code null} if the resource could not be found
+     * @throws IOException if the resource cannot be found or read
+     */
+    public static URL getResource(String resource, ClassLoader classLoader) throws IOException {
         URL url = null;
         if (classLoader != null) {
             url = classLoader.getResource(resource);
@@ -220,9 +235,29 @@ public class ResourceUtils {
             url = ClassLoader.getSystemResource(resource);
         }
         if (url == null) {
-            throw new IOException("Could not find resource " + resource);
+            throw new IOException("Could not find resource '" + resource + "'");
         }
         return url;
+    }
+
+    public static File getResourceAsFile(String resource) throws IOException {
+        return getFile(getResource(resource));
+    }
+
+    public static File getResourceAsFile(String resource, ClassLoader classLoader) throws IOException {
+        return getFile(getResource(resource, classLoader));
+    }
+
+    /**
+     * Returns a resource on the classpath as a Stream object.
+     *
+     * @param resource the resource to find
+     * @return an input stream for reading the resource;
+     *      {@code null} if the resource could not be found
+     * @throws IOException if the resource cannot be found or read
+     */
+    public static InputStream getResourceAsStream(String resource) throws IOException {
+        return getResourceAsStream(resource, AspectranClassLoader.getDefaultClassLoader());
     }
 
     /**
@@ -230,7 +265,8 @@ public class ResourceUtils {
      *
      * @param resource the resource to find
      * @param classLoader the class loader
-     * @return the resource
+     * @return an input stream for reading the resource;
+     *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
     public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
@@ -260,6 +296,7 @@ public class ResourceUtils {
         try {
             stream = AccessController.doPrivileged(
                     new PrivilegedExceptionAction<InputStream>() {
+                        @Override
                         public InputStream run() throws IOException {
                             return new FileInputStream(file);
                         }
@@ -291,6 +328,7 @@ public class ResourceUtils {
         try {
             stream = AccessController.doPrivileged(
                     new PrivilegedExceptionAction<InputStream>() {
+                        @Override
                         public InputStream run() throws IOException {
                             InputStream is = null;
                             if (url != null) {

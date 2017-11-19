@@ -38,7 +38,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     public Console getConsole() {
-        return registry.getService().getConsole();
+        return getService().getConsole();
     }
 
     public CommandRegistry getCommandRegistry() {
@@ -55,7 +55,12 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void printUsage() {
-        HelpFormatter formatter = new HelpFormatter(getConsole());
+        printUsage(getConsole());
+    }
+
+    @Override
+    public void printUsage(Console console) {
+        HelpFormatter formatter = new HelpFormatter(console);
         if (getDescriptor().getUsage() != null && getDescriptor().getUsage().length() > 0) {
             formatter.printHelp(getDescriptor().getUsage(), options, false);
         } else {

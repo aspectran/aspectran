@@ -51,7 +51,7 @@ public class AponException extends RuntimeException {
     /**
      * Constructor to create exception to wrap another exception and pass a message.
      *
-     * @param msg the message
+     * @param msg a message to associate with the exception
      * @param cause the real cause of the exception
      */
     public AponException(String msg, Throwable cause) {

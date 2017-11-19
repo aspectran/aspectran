@@ -77,7 +77,7 @@ public abstract class AbstractRequest {
      * Returns the value of the response header with the given name.
      *
      * <p>If a response header with the given name exists and contains
-     * multiple values, the value that was added first will be returned.
+     * multiple values, the value that was added first will be returned.</p>
      *
      * @param name the name of the response header whose value to return
      * @return the value of the response header with the given name,
@@ -174,7 +174,7 @@ public abstract class AbstractRequest {
      */
     protected MultiValueMap<String, String> touchHeaders() {
         if (headers == null) {
-            headers = new LinkedCaseInsensitiveMultiValueMap<String>(12);
+            headers = new LinkedCaseInsensitiveMultiValueMap<>(12);
         }
         return headers;
     }
@@ -219,11 +219,11 @@ public abstract class AbstractRequest {
 
     public Map<String, Object> copyAllParameters() {
         Map<String, Object> params = new LinkedHashMap<>(parameterMap.size());
-        fillAllPrameters(params);
+        fillAllParameters(params);
         return params;
     }
 
-    public void fillAllPrameters(Map<String, Object> targetParameters) {
+    public void fillAllParameters(Map<String, Object> targetParameters) {
         try (Lock ignored = locker.lockIfNotHeld()) {
             if (this.parameterMap != null) {
                 for (Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {

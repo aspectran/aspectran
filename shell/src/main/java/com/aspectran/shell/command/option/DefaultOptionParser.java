@@ -242,7 +242,7 @@ public class DefaultOptionParser implements OptionParser {
         currentToken = token;
 
         if (skipParsing) {
-            parsedOptions.addUnparsedArg(token);
+            parsedOptions.addArg(token);
         } else if ("--".equals(token)) {
             skipParsing = true;
         } else if (currentOption != null && currentOption.acceptsArg() && isArgument(token)) {
@@ -358,7 +358,7 @@ public class DefaultOptionParser implements OptionParser {
             throw new UnrecognizedOptionException("Unrecognized option: " + token, token);
         }
 
-        parsedOptions.addUnparsedArg(token);
+        parsedOptions.addArg(token);
         if (stopAtNonOption) {
             skipParsing = true;
         }

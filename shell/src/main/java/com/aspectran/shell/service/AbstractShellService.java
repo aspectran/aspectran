@@ -107,6 +107,11 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
         this.commandRegistry = commandRegistry;
     }
 
+    @Override
+    public boolean isExposable(String transletName) {
+        return super.isExposable(transletName);
+    }
+
     /**
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.

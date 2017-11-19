@@ -140,7 +140,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the prepare() method");
         }
         if (activityContext != null) {
-            throw new IllegalStateException("ActivityContext has already been loaded. Must destroy the current ActivityContext before reloading");
+            throw new IllegalStateException("ActivityContext has already been loaded; Must destroy the current ActivityContext before reloading");
         }
 
         activityContextBuilder.build();

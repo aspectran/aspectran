@@ -70,7 +70,7 @@ public enum ParameterValueType {
         return null;
     }
 
-    public static String stripHintedValueType(String name) {
+    public static String stripValueTypeHint(String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
         if (hintStartIndex > 0) {
             return name.substring(0, hintStartIndex);
@@ -78,10 +78,10 @@ public enum ParameterValueType {
         return name;
     }
 
-    public static ParameterValueType determineType(Object value) {
+    public static ParameterValueType determineValueType(Object value) {
         ParameterValueType type;
         if (value instanceof String) {
-            if (value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1) {
+            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) == -1) {
                 type = ParameterValueType.STRING;
             } else {
                 type = ParameterValueType.TEXT;

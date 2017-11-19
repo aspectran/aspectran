@@ -92,12 +92,12 @@ public class FileParameter {
      * Returns an {@code InputStream} object of the file.
      *
      * @return an {@link java.io.OutputStream OutputStream} that can be used
-     *         for storing the contensts of the file.
+     *         for storing the contents of the file.
      * @throws IOException if an I/O error has occurred
      */
     public InputStream getInputStream() throws IOException {
         if (file == null) {
-            throw new IOException("No file specified for the file parameter: " + this);
+            throw new IOException("No file specified for this file parameter " + this);
         }
         return new FileInputStream(file);
     }
@@ -139,7 +139,7 @@ public class FileParameter {
     /**
      * Checks if the file is refused.
      *
-     * @return true, if the file is refused
+     * @return true if the file is refused, false otherwise
      */
     public boolean isRefused() {
         return refused;
@@ -148,7 +148,7 @@ public class FileParameter {
     /**
      * Sets whether the refused file.
      *
-     * @param refused whether the refused file
+     * @param refused whether the file is refused or not
      */
     public void setRefused(boolean refused) {
         this.refused = refused;
@@ -219,6 +219,11 @@ public class FileParameter {
         return destFile;
     }
 
+    /**
+     * Returns the saved file.
+     *
+     * @return the saved file
+     */
     public File getSavedFile() {
         return savedFile;
     }
@@ -233,7 +238,7 @@ public class FileParameter {
     }
 
     /**
-     * Delete a saved file.
+     * If the saved file exists, delete it.
      */
     public void rollback() {
         if (savedFile != null) {
@@ -241,6 +246,9 @@ public class FileParameter {
         }
     }
 
+    /**
+     * Sets the access permission that allow write operations on the file associated with this FileParameter.
+     */
     public void release() {
         if (file != null) {
             file.setWritable(true);

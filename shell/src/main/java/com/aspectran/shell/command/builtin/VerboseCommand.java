@@ -17,14 +17,14 @@ public class VerboseCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "verbose";
 
-    private VerboseCommandDescriptor descriptor = new VerboseCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public VerboseCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
         addOption(new Option("on", "Enable verbose output"));
         addOption(new Option("off", "Disable verbose output"));
+        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
     }
 
     @Override
@@ -37,8 +37,6 @@ public class VerboseCommand extends AbstractCommand {
         } else if (options.hasOption("off")) {
             getService().setVerbose(false);
             getConsole().writeLine("Disabled verbose mode");
-        } else if (options.hasOption("help")) {
-            printUsage();
         } else {
             printUsage();
         }
@@ -51,7 +49,7 @@ public class VerboseCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class VerboseCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

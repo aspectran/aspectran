@@ -12,7 +12,7 @@ public class ClearCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "clear";
 
-    private PauseCommandDescriptor descriptor = new PauseCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public ClearCommand(CommandRegistry registry) {
         super(registry);
@@ -29,7 +29,7 @@ public class ClearCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class PauseCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

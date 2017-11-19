@@ -3,6 +3,7 @@
 <aspectran>
 
     <description style="apon">
+        |---------------------------------------------------------------------------------------------------------------
         |{{underline}}Commands that can run examples:{{underline:off}}
         |   {{CYAN}}hello{{fg:off}}        Runs the helloWorld() method of the sampleAction bean and prints the returned value
         |   {{CYAN}}hello2{{fg:off}}       Runs the helloWorld() method of the sampleAction bean and prints the returned value with margins
@@ -18,7 +19,7 @@
         |
         |{{underline}}Once a Jetty server is running, point your web browser to:{{underline:off}}
         |   {{YELLOW}}http://localhost:8080/{{fg:off}}
-        |
+        |---------------------------------------------------------------------------------------------------------------
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>

@@ -226,7 +226,7 @@ public class CoreTranslet implements Translet {
 
     @Override
     public void fillAllParameters(Map<String, Object> targetParameters) {
-        getRequestAdapter().fillAllPrameters(targetParameters);
+        getRequestAdapter().fillAllParameters(targetParameters);
     }
 
     @Override

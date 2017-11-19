@@ -189,6 +189,15 @@ public class Options implements Serializable {
     }
 
     /**
+     * Returns {@code true} if no options have been added.
+     *
+     * @return {@code true} if no options have been added
+     */
+    public boolean isEmpty() {
+        return shortOpts.isEmpty();
+    }
+
+    /**
      * Retrieve a read-only list of options in this set.
      *
      * @return read-only Collection of {@link Option} objects in this descriptor

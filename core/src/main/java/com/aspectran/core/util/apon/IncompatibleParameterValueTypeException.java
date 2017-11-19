@@ -39,15 +39,18 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
         super(msg);
     }
 
-    public IncompatibleParameterValueTypeException(ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
-        super("Incompatible value type with expected value type \"" + expectedParameterValueType + "\" for the specified parameter " + parameterValue);
+    public IncompatibleParameterValueTypeException(ParameterValue parameterValue,
+                                                   ParameterValueType expectedParameterValueType) {
+        super("Incompatible value type with expected value type '" + expectedParameterValueType +
+                "' for the specified parameter " + parameterValue);
     }
 
     public IncompatibleParameterValueTypeException(int lineNumber, String line, String trim, String msg) {
         super(lineNumber, line, trim, msg);
     }
 
-    public IncompatibleParameterValueTypeException(int lineNumber, String line, String trim, ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
+    public IncompatibleParameterValueTypeException(int lineNumber, String line, String trim, ParameterValue parameterValue,
+                                                   ParameterValueType expectedParameterValueType) {
         super(makeMessage(lineNumber, line, trim, parameterValue, expectedParameterValueType));
     }
 
@@ -70,10 +73,11 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
         super(msg, cause);
     }
 
-    protected static String makeMessage(int lineNumber, String line, String trim, ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
+    protected static String makeMessage(int lineNumber, String line, String trim, ParameterValue parameterValue,
+                                        ParameterValueType expectedParameterValueType) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Incompatible value type with expected value type \"");
-        sb.append(expectedParameterValueType).append("\"");
+        sb.append("Incompatible value type with expected value type '");
+        sb.append(expectedParameterValueType).append("'");
         if (parameterValue != null) {
             sb.append(" for the specified parameter ").append(parameterValue);
         }

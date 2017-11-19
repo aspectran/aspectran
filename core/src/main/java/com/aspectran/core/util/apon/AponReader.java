@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Converts an APON formatted string into a Parameters object.
@@ -53,13 +54,20 @@ public class AponReader extends AponFormat {
      * @param reader the character stream whose contents can be parsed as APON
      */
     public AponReader(Reader reader) {
-        this.reader = new BufferedReader(reader);
+        if (reader == null) {
+            throw new IllegalArgumentException("Argument 'reader' must not be null");
+        }
+        if (reader instanceof BufferedReader) {
+            this.reader = (BufferedReader)reader;
+        } else {
+            this.reader = new BufferedReader(reader);
+        }
     }
 
     /**
      * Converts an APON formatted string into a {@link VariableParameters} object.
      *
-     * @return the parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public Parameters read() throws IOException {
@@ -71,72 +79,78 @@ public class AponReader extends AponFormat {
      * Converts an APON formatted string into a given Parameters object.
      *
      * @param <T> the generic type
-     * @param parameters the parameters object
-     * @return the parameters object
+     * @param parameters the Parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public <T extends Parameters> T read(T parameters) throws IOException {
+        if (parameters == null) {
+            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+        }
         addable = parameters.isAddable();
-        valuelize(parameters, NO_CONTROL_CHAR, null, null, null);
+        valuelize(parameters, NO_CONTROL_CHAR, null, null, null, false);
         return parameters;
     }
 
     /**
      * Creates a {@link Parameters} object by parsing the content of the specified character stream as APON.
      *
-     * @param parameters the parameters
+     * @param parameters the Parameters object
      * @param openBracket the left bracket character
      * @param name the parameter name
      * @param parameterValue the parameter value
      * @param parameterValueType the value type of the parameter
+     * @param valueTypeHinted whether a value type hinted
      * @throws IOException if an I/O error occurs
      */
     private void valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
-            ParameterValueType parameterValueType) throws IOException {
+            ParameterValueType parameterValueType, boolean valueTypeHinted) throws IOException {
         Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 
         String line;
         String value;
-        String trim;
+        String tline;
         int tlen;
         int vlen;
         char cchar;
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
-            trim = line.trim();
-            tlen = trim.length();
+            tline = line.trim();
+            tlen = tline.length();
 
-            if (tlen == 0 || (trim.charAt(0) == COMMENT_LINE_START && openBracket != SQUARE_BRACKET_OPEN)) {
+            if (tlen == 0 || (tline.charAt(0) == COMMENT_LINE_START && openBracket != SQUARE_BRACKET_OPEN)) {
                 continue;
             }
 
             if (openBracket == SQUARE_BRACKET_OPEN) {
-                value = trim;
+                value = tline;
                 vlen = value.length();
-                cchar = (vlen == 1) ? value.charAt(0) : NO_CONTROL_CHAR;
+                cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
                 if (SQUARE_BRACKET_CLOSE == cchar) {
                     return;
                 }
             } else {
                 if (tlen == 1) {
-                    if (openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0)) {
+                    if (openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == tline.charAt(0)) {
                         return;
                     }
                 }
 
-                int index = trim.indexOf(NAME_VALUE_SEPARATOR);
+                int index = tline.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw new InvalidParameterException(lineNumber, line, trim, "Failed to break up string of name/value pairs");
+                    throw new InvalidParameterException(lineNumber, line, tline,
+                            "Failed to break up string of name/value pairs");
                 }
                 if (index == 0) {
-                    throw new InvalidParameterException(lineNumber, line, trim, "Unrecognized parameter name");
+                    throw new InvalidParameterException(lineNumber, line, tline,
+                            "Unrecognized parameter name");
                 }
 
-                name = trim.substring(0, index).trim();
-                value = trim.substring(index + 1).trim();
+                name = tline.substring(0, index).trim();
+                value = tline.substring(index + 1).trim();
                 vlen = value.length();
-                cchar = (vlen == 1) ? value.charAt(0) : NO_CONTROL_CHAR;
+                cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
 
                 parameterValue = parameterValueMap.get(name);
 
@@ -144,16 +158,19 @@ public class AponReader extends AponFormat {
                     parameterValueType = parameterValue.getParameterValueType();
                 } else {
                     if (!addable) {
-                        throw new InvalidParameterException(lineNumber, line, trim,
-                                "Only predefined parameters are allowed. Disallowed parameter name: " + name);
+                        throw new InvalidParameterException(lineNumber, line, tline,
+                                "Parameter '" + name + "' is not predefined; Note that only predefined parameters are allowed");
                     }
                     parameterValueType = ParameterValueType.resolveByHint(name);
                     if (parameterValueType != null) {
-                        name = ParameterValueType.stripHintedValueType(name);
+                        valueTypeHinted = true;
+                        name = ParameterValueType.stripValueTypeHint(name);
                         parameterValue = parameterValueMap.get(name);
                         if (parameterValue != null) {
                             parameterValueType = parameterValue.getParameterValueType();
                         }
+                    } else {
+                        valueTypeHinted = false;
                     }
                 }
 
@@ -162,29 +179,30 @@ public class AponReader extends AponFormat {
                 }
                 if (parameterValueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "Parameter value is not an array type");
+                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline,
+                                "Parameter value is not an array type");
                     }
                     if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
                     }
                     if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
                 if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
-                    throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+                    throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
                 if (parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar) {
-                    throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+                    throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
             }
 
             if (parameterValue == null || parameterValue.isArray() || parameterValueType == null) {
                 if (SQUARE_BRACKET_OPEN == cchar) {
-                    valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
+                    valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType, valueTypeHinted);
                     continue;
                 }
             }
@@ -199,13 +217,15 @@ public class AponReader extends AponFormat {
             if (parameterValueType == ParameterValueType.PARAMETERS) {
                 if (parameterValue == null) {
                     parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 Parameters parameters2 = parameters.newParameters(parameterValue.getName());
                 addable = parameters2.isAddable();
-                valuelize(parameters2, CURLY_BRACKET_OPEN, null, null, null);
+                valuelize(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
             } else if (parameterValueType == ParameterValueType.TEXT) {
                 if (parameterValue == null) {
                     parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (ROUND_BRACKET_OPEN == cchar) {
                     parameterValue.putValue(valuelizeText());
@@ -228,13 +248,13 @@ public class AponReader extends AponFormat {
                         parameterValueType = ParameterValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
-                            throw new InvalidParameterException(lineNumber, line, trim,
+                            throw new InvalidParameterException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         parameterValueType = ParameterValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
-                            throw new InvalidParameterException(lineNumber, line, trim,
+                            throw new InvalidParameterException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         parameterValueType = ParameterValueType.STRING;
@@ -267,12 +287,13 @@ public class AponReader extends AponFormat {
 
                 if (parameterValue == null) {
                     parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
                     if (parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
                         parameterValue.setParameterValueType(parameterValueType);
                     } else if (parameterValue.getParameterValueType() != parameterValueType) {
                         throw new IncompatibleParameterValueTypeException(
-                                lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());
+                                lineNumber, line, tline, parameterValue, parameterValue.getParameterValueType());
                     }
                 }
 
@@ -281,7 +302,7 @@ public class AponReader extends AponFormat {
                 } else {
                     if (parameterValueType == ParameterValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
-                            value = unescape(value.substring(1, vlen - 1), lineNumber, line, trim);
+                            value = unescape(value.substring(1, vlen - 1), lineNumber, line, tline);
                         }
                         parameterValue.putValue(value);
                     } else if (parameterValueType == ParameterValueType.BOOLEAN) {
@@ -305,6 +326,7 @@ public class AponReader extends AponFormat {
             }
         }
 
+
         if (openBracket == CURLY_BRACKET_OPEN) {
             throw new MissingClosingBracketException("curly", name, parameterValue);
         } else if (openBracket == SQUARE_BRACKET_OPEN) {
@@ -314,17 +336,18 @@ public class AponReader extends AponFormat {
 
     private String valuelizeText() throws IOException {
         String line;
-        String trim = null;
-        String str = null;
+        String tline = null;
+        String str;
         int tlen;
         char tchar;
         StringBuilder sb = null;
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
-            trim = line.trim();
-            tlen = trim.length();
-            tchar = (tlen > 0 ? trim.charAt(0) : NO_CONTROL_CHAR);
+
+            tline = line.trim();
+            tlen = tline.length();
+            tchar = (tlen > 0 ? tline.charAt(0) : NO_CONTROL_CHAR);
 
             if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar) {
                 return (sb != null ? sb.toString() : StringUtils.EMPTY);
@@ -334,29 +357,29 @@ public class AponReader extends AponFormat {
                 if (sb == null) {
                     sb = new StringBuilder();
                 } else {
-                    sb.append(NEXT_LINE_CHAR);
+                    sb.append(NEW_LINE_CHAR);
                 }
                 str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
                 if (str.length() > 0) {
                     sb.append(str);
                 }
             } else if (tlen > 0) {
-                throw new InvalidParameterException(lineNumber, line, trim,
-                        "The closing round bracket was missing or Each text line is must start with a ';' character");
+                throw new InvalidParameterException(lineNumber, line, tline,
+                        "The closing round bracket was missing or Each text line is must start with a '|'");
             }
         }
 
-        throw new InvalidParameterException(lineNumber, "", trim,
+        throw new InvalidParameterException(lineNumber, "", tline,
                 "The end of the text line was reached with no closing round bracket found");
     }
 
-    private String unescape(String value, int lineNumber, String line, String trim) {
+    private String unescape(String value, int lineNumber, String line, String ltrim) {
         String s = unescape(value);
-        if (value == s) {
+        if (Objects.equals(value, s)) {
             return value;
         }
         if (s == null) {
-            throw new InvalidParameterException(lineNumber, line, trim,
+            throw new InvalidParameterException(lineNumber, line, ltrim,
                     "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
         }
         return s;
@@ -378,7 +401,7 @@ public class AponReader extends AponFormat {
      * Converts an APON formatted string into a Parameters object.
      *
      * @param text the APON formatted string
-     * @return the parameters object
+     * @return the Parameters object
      */
     public static Parameters parse(String text) {
         Parameters parameters = new VariableParameters();
@@ -390,10 +413,16 @@ public class AponReader extends AponFormat {
      *
      * @param <T> the generic type
      * @param text the APON formatted string
-     * @param parameters the parameters object
-     * @return the parameters object
+     * @param parameters the Parameters object
+     * @return the Parameters object
      */
     public static <T extends Parameters> T parse(String text, T parameters) {
+        if (text == null) {
+            throw new IllegalArgumentException("Argument 'text' must not be null");
+        }
+        if (parameters == null) {
+            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+        }
         try {
             AponReader aponReader = new AponReader(new StringReader(text));
             aponReader.read(parameters);
@@ -408,7 +437,7 @@ public class AponReader extends AponFormat {
      * Converts to a Parameters object from a file.
      *
      * @param file the file to parse
-     * @return the parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(File file) throws IOException {
@@ -420,10 +449,13 @@ public class AponReader extends AponFormat {
      *
      * @param file the file to parse
      * @param encoding the character encoding
-     * @return the parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(File file, String encoding) throws IOException {
+        if (file == null) {
+            throw new IllegalArgumentException("Argument 'file' must not be null");
+        }
         Parameters parameters = new VariableParameters();
         return parse(file, encoding, parameters);
     }
@@ -433,8 +465,8 @@ public class AponReader extends AponFormat {
      *
      * @param <T> the generic type
      * @param file the file to parse
-     * @param parameters the parameters object
-     * @return the parameters object
+     * @param parameters the Parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(File file, T parameters) throws IOException {
@@ -447,11 +479,17 @@ public class AponReader extends AponFormat {
      * @param <T> the generic type
      * @param file the file to parse
      * @param encoding the character encoding
-     * @param parameters the parameters object
-     * @return the parameters object
+     * @param parameters the Parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(File file, String encoding, T parameters) throws IOException {
+        if (file == null) {
+            throw new IllegalArgumentException("Argument 'file' must not be null");
+        }
+        if (parameters == null) {
+            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+        }
         AponReader aponReader = null;
         try {
             if (encoding == null) {
@@ -471,10 +509,13 @@ public class AponReader extends AponFormat {
      * Converts to a Parameters object from a character-input stream.
      *
      * @param reader the character-input stream
-     * @return the parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static Parameters parse(Reader reader) throws IOException {
+        if (reader == null) {
+            throw new IllegalArgumentException("Argument 'reader' must not be null");
+        }
         AponReader aponReader = new AponReader(reader);
         return aponReader.read();
     }
@@ -484,8 +525,8 @@ public class AponReader extends AponFormat {
      *
      * @param <T> the generic type
      * @param reader the character-input stream
-     * @param parameters the parameters object
-     * @return the parameters object
+     * @param parameters the Parameters object
+     * @return the Parameters object
      * @throws IOException if an I/O error occurs
      */
     public static <T extends Parameters> T parse(Reader reader, T parameters) throws IOException {

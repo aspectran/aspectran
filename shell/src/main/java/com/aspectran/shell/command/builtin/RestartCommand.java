@@ -12,7 +12,7 @@ public class RestartCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "restart";
 
-    private RestartCommandDescriptor descriptor = new RestartCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public RestartCommand(CommandRegistry registry) {
         super(registry);
@@ -30,7 +30,7 @@ public class RestartCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class RestartCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -44,7 +44,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart Aspectran Shell to reload all resources";
+            return "Restart this application to reload all resources";
         }
 
         @Override

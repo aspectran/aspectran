@@ -21,7 +21,7 @@ public class SysInfoCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "sysinfo";
 
-    private VerboseCommandDescriptor descriptor = new VerboseCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public SysInfoCommand(CommandRegistry registry) {
         super(registry);
@@ -29,7 +29,7 @@ public class SysInfoCommand extends AbstractCommand {
         addOption(new Option("props", "Displays the JVM's system properties"));
         addOption(Option.builder("cp").longOpt("classpath").desc("Displays JVM classpath information").build());
         addOption(Option.builder("mem").longOpt("memory").desc("Displays memory information about current JVM").build());
-        addOption(new Option("gc", "Performs a garbage collection"));
+        addOption(new Option("gc", "Performs garbage collection"));
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SysInfoCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class VerboseCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

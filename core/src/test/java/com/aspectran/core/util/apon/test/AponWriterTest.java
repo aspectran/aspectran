@@ -16,22 +16,24 @@
 package com.aspectran.core.util.apon.test;
 
 import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 public class AponWriterTest {
 
     public static void main(String argv[]) {
         try {
             // 먼저 AponWriter를 사용해서 파일로 저장된 APON 문서를 읽어서 Parameters 객체로 변환합니다.
-            Reader reader = new FileReader(new File(argv[0]));
+            //Reader reader = new FileReader(new File(argv[0]));
+            File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
+            Reader reader = new FileReader(file);
 
             Parameters aspectranConfig = new AspectranConfig();
 
@@ -39,15 +41,13 @@ public class AponWriterTest {
             aponReader.read(aspectranConfig);
             aponReader.close();
 
-            System.out.println(aspectranConfig);
+            //System.out.println(aspectranConfig);
 
-            Writer writer = new StringWriter();
-
-            AponWriter aponWriter = new AponWriter(writer);
+            AponWriter aponWriter = new AponWriter(new PrintWriter(System.out));
+            aponWriter.comment("\ncomment line-1\ncomment line-2\ncomment line-3\n");
+            aponWriter.setTypeHintWrite(false);
             aponWriter.write(aspectranConfig);
             aponWriter.close();
-
-            System.out.println(writer.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -31,14 +31,14 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     private static final long serialVersionUID = 1709146569240133920L;
 
     /**
-     * Instantiates a new Parameter map.
+     * Instantiates a new ParameterMap.
      */
     public ParameterMap() {
         super();
     }
 
     /**
-     * Instantiates a new Parameter map.
+     * Instantiates a new ParameterMap.
      *
      * @param initialCapacity the initial capacity
      */
@@ -47,7 +47,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     /**
-     * Instantiates a new Parameter map.
+     * Instantiates a new ParameterMap.
      *
      * @param params the other parameter map
      */
@@ -120,7 +120,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     /**
      * Set the given parameters under.
      *
-     * @param params the values
+     * @param params the other parameter map
      */
     public void setAll(Map<String, String> params) {
         for (Map.Entry<String, String> entry : params.entrySet()) {

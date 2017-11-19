@@ -127,13 +127,13 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
      * exits as session. If nothing changes on the session
      * except for the access time and the persistence technology
      * is slow, this can cause delays.
-     * <p>
-     * By default the value is 0, which means we save
+     *
+     * <p>By default the value is 0, which means we save
      * after the last request exists. A non zero value
      * means that we will skip doing the save if the
      * session isn't dirty if the elapsed time since
      * the session was last saved does not exceed this
-     * value.
+     * value.</p>
      *
      * @param savePeriodSec the savePeriodSec to set
      */

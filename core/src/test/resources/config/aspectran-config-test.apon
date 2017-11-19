@@ -1,3 +1,8 @@
+#
+# comment line-1
+# comment line-2
+# comment line-3
+#
 context: {
     base: ./target/test-classes
     root: /WEB-INF/aspectran/config/test-root.xml
@@ -25,10 +30,11 @@ shell: {
     verbose: true
     greetings: (
         |
+        |
         |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}
 
-        |
         |   ======================================================
+        |
         |
 
     )

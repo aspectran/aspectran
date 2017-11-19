@@ -17,6 +17,9 @@ package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.ToStringBuilder;
 
+/**
+ * A class for defining a parameter.
+ */
 public class ParameterDefinition {
 
     private final String name;

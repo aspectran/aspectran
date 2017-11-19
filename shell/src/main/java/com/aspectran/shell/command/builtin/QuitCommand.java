@@ -13,7 +13,7 @@ public class QuitCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "quit";
 
-    private QuitCommandDescriptor descriptor = new QuitCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public QuitCommand(CommandRegistry registry) {
         super(registry);
@@ -29,7 +29,7 @@ public class QuitCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class QuitCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {
@@ -43,7 +43,7 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and Exits";
+            return "Releases all resources and exits this application";
         }
 
         @Override

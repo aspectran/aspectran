@@ -37,7 +37,7 @@ public class StringStyler {
             char c = content.charAt(end);
             if (start == 0 && c == AponFormat.TEXT_LINE_START) {
                 if (line > 0) {
-                    sb.append(AponFormat.NEXT_LINE_CHAR);
+                    sb.append(AponFormat.NEW_LINE_CHAR);
                 }
                 start = end + 1;
                 line++;

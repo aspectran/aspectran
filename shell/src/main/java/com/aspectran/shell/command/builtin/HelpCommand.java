@@ -1,7 +1,5 @@
 package com.aspectran.shell.command.builtin;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
@@ -14,15 +12,13 @@ import java.util.Collection;
 
 public class HelpCommand extends AbstractCommand {
 
-    private static final Log log = LogFactory.getLog(HelpCommand.class);
-
     private static final String NAMESPACE = "builtin";
 
     private static final String COMMAND_NAME = "help";
 
     private String newLine = System.getProperty("line.separator");
 
-    private HelpCommandDescriptor descriptor = new HelpCommandDescriptor();
+    private CommandDescriptor descriptor = new CommandDescriptor();
 
     public HelpCommand(CommandRegistry registry) {
         super(registry);
@@ -31,15 +27,23 @@ public class HelpCommand extends AbstractCommand {
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
-
-        getConsole().writeLine("These are built-in commands used in this application:");
-
         String[] filteredCommands = null;
-        if (options.getUnparsedArgList().size() > 0) {
-            filteredCommands = options.getUnparsedArgList().toArray(new String[options.getUnparsedArgList().size()]);
+        if (options.hasArgs()) {
+            filteredCommands = options.getArgs();
         }
 
-        printHelp(filteredCommands);
+        if (filteredCommands == null) {
+            getService().printHelp();
+        }
+
+        if (filteredCommands != null && filteredCommands.length == 1) {
+            Command command = getCommandRegistry().getCommand(filteredCommands[0]);
+            getConsole().writeLine(command.getDescriptor().getDescription());
+            command.printUsage();
+        } else {
+            getConsole().writeLine("Built-in commands used in this application:");
+            printHelp(filteredCommands);
+        }
 
         return null;
     }
@@ -139,7 +143,7 @@ public class HelpCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class HelpCommandDescriptor implements Descriptor {
+    private class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

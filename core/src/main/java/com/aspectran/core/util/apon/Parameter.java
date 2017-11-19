@@ -55,6 +55,20 @@ public interface Parameter {
     void setParameterValueType(ParameterValueType parameterValueType);
 
     /**
+     * Returns whether the value type is hinted.
+     *
+     * @return true if the value type is hinted, false otherwise
+     */
+    boolean isValueTypeHinted();
+
+    /**
+     * Sets whether the value type is hinted.
+     *
+     * @param valueTypeHinted true if the value type is hinted, false otherwise
+     */
+    void setValueTypeHinted(boolean valueTypeHinted);
+
+    /**
      * Returns whether the parameter value is an array.
      *
      * @return {@code true} if the parameter value is an array, otherwise {@code false}

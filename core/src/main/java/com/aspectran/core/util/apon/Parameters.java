@@ -31,8 +31,18 @@ public interface Parameters {
 
     Parameter getParent();
 
+    /**
+     * Returns all the parameter names associated with this Parameters.
+     *
+     * @return an array of all parameter names associated with this Parameters
+     */
     String[] getParameterNames();
 
+    /**
+     * Returns all the parameter names associated with this Parameters.
+     *
+     * @return the Set with all parameter names associated with this Parameters
+     */
     Set<String> getParameterNameSet();
 
     /**

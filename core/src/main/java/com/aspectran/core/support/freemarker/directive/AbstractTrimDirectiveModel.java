@@ -40,7 +40,8 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
     @SuppressWarnings("rawtypes")
     @Override
-    public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
+    public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
+            throws TemplateException, IOException {
         if (body == null) {
             return;
         }
@@ -123,8 +124,9 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the list
      * @throws TemplateModelException the template model exception
      */
-    private List<String> transformSimpleSequenceAsStringList(SimpleSequence sequence, String paramName) throws TemplateModelException {
-        List<String> list = new ArrayList<String>();
+    private List<String> transformSimpleSequenceAsStringList(SimpleSequence sequence, String paramName)
+            throws TemplateModelException {
+        List<String> list = new ArrayList<>();
         int size = sequence.size();
 
         for (int i = 0; i < size; i++) {
