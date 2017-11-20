@@ -30,6 +30,6 @@ public interface SchedulerService extends ServiceController {
 
     void setWaitOnShutdown(boolean waitOnShutdown);
 
-    void setExposals(String[] exposals);
+    void setExposals(String[] includePatterns, String[] excludePatterns);
 
 }

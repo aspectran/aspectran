@@ -22,6 +22,8 @@ import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.ExposalsConfig;
+import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.config.WebConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
@@ -146,17 +148,12 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
     }
 
-    /**
-     * Sets the default servlet http request handler.
-     *
-     * @param servletContext the servlet context
-     * @param defaultServletName the default servlet name
-     */
-    private void setDefaultServletHttpRequestHandler(ServletContext servletContext, String defaultServletName) {
+    private DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {
+        return defaultServletHttpRequestHandler;
+    }
+
+    private void setDefaultServletHttpRequestHandler(ServletContext servletContext) {
         defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
-        if (defaultServletName != null) {
-            defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);
-        }
     }
 
     /**
@@ -177,7 +174,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, service);
 
         if (log.isDebugEnabled()) {
-            log.debug("The Root WebService attribute in ServletContext has been created; " + ROOT_WEB_SERVICE_ATTRIBUTE + ": " + service);
+            log.debug("The Root WebService attribute in ServletContext has been created; " +
+                    ROOT_WEB_SERVICE_ATTRIBUTE + ": " + service);
         }
 
         return service;
@@ -194,16 +192,13 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     public static WebService create(ServletContext servletContext, CoreService rootService)
             throws AspectranServiceException {
         AspectranWebService service = new AspectranWebService(rootService);
+        service.setDefaultServletHttpRequestHandler(servletContext);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
-            String defaultServletName = null;
             if (webConfig != null) {
-                service.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
-                defaultServletName = webConfig.getString(WebConfig.defaultServletName);
-                service.setExposals(webConfig.getStringArray(WebConfig.exposals));
+                applyWebConfig(service, webConfig);
             }
-            service.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
         }
         setServiceStateListener(service);
         return service;
@@ -284,20 +279,32 @@ class AspectranWebService extends AspectranCoreService implements WebService {
 
         AspectranWebService service = new AspectranWebService(servletContext);
         service.prepare(aspectranConfig);
+        service.setDefaultServletHttpRequestHandler(servletContext);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
-        String defaultServletName = null;
         if (webConfig != null) {
-            service.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
-            defaultServletName = webConfig.getString(WebConfig.defaultServletName);
-            service.setExposals(webConfig.getStringArray(WebConfig.exposals));
+            applyWebConfig(service, webConfig);
         }
-
-        service.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 
         setServiceStateListener(service);
 
         return service;
+    }
+
+    private static void applyWebConfig(AspectranWebService service, WebConfig webConfig) {
+        service.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
+
+        String defaultServletName = webConfig.getString(WebConfig.defaultServletName);
+        if (defaultServletName != null) {
+            service.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
+        }
+
+        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            service.setExposals(includePatterns, excludePatterns);
+        }
     }
 
     private static void setServiceStateListener(final AspectranWebService AspectranWebService) {
@@ -346,7 +353,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     public static ActivityContext getActivityContext(ServletContext servletContext) {
         ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTRIBUTE);
         if (activityContext == null) {
-            throw new IllegalStateException("No Root AspectranWebService found: No AspectranServiceListener registered?");
+            throw new IllegalStateException("No Root AspectranWebService found; No AspectranServiceListener registered?");
         }
         return activityContext;
     }
@@ -380,7 +387,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             return null;
         }
         if (!(attr instanceof AspectranWebService)) {
-            throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" + AspectranWebService.class.getName() + "]");
+            throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
+                    AspectranWebService.class.getName() + "]");
         }
         return ((CoreService)attr).getActivityContext();
     }

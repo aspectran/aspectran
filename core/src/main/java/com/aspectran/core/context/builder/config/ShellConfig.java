@@ -34,7 +34,7 @@ public class ShellConfig extends AbstractParameters {
         commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
         verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
         greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
-        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 prompt,
@@ -51,6 +51,22 @@ public class ShellConfig extends AbstractParameters {
 
     public ShellConfig(String text) {
         super(parameterDefinitions, text);
+    }
+
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
+    }
+
+    public ExposalsConfig getExposalsConfig() {
+        return getParameters(exposals);
+    }
+
+    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
+        putValue(exposals, exposalsConfig);
     }
 
 }

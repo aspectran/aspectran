@@ -27,29 +27,46 @@ import java.util.List;
  */
 public class PluralWildcardPattern {
 
-    private final WildcardPattern[] patterns;
+    private final WildcardPattern[] includePatterns;
 
-    public PluralWildcardPattern(WildcardPattern[] patterns) {
-        this.patterns = patterns;
+    private final WildcardPattern[] excludePatterns;
+
+    public PluralWildcardPattern(WildcardPattern[] includePatterns, WildcardPattern[] excludePatterns) {
+        this.includePatterns = includePatterns;
+        this.excludePatterns = excludePatterns;
     }
 
-    public PluralWildcardPattern(String[] patterns) {
-        this.patterns = compile(patterns);
+    public PluralWildcardPattern(String[] includePatterns, String[] excludePatterns) {
+        this.includePatterns = compile(includePatterns);
+        this.excludePatterns = compile(excludePatterns);
     }
 
-    public PluralWildcardPattern(String[] patterns, char separator) {
-        this.patterns = compile(patterns, separator);
+    public PluralWildcardPattern(String[] includePatterns, String[] excludePatterns, char separator) {
+        this.includePatterns = compile(includePatterns, separator);
+        this.excludePatterns = compile(excludePatterns, separator);
     }
 
     public boolean matches(String compareString) {
-        if (patterns != null) {
-            for (WildcardPattern pattern : patterns) {
+        boolean result = false;
+        if (includePatterns != null) {
+            for (WildcardPattern pattern : includePatterns) {
                 if (pattern.matches(compareString)) {
-                    return true;
+                    result = true;
+                    break;
+                }
+            }
+        } else {
+            result = true;
+        }
+        if (result && excludePatterns != null) {
+            for (WildcardPattern pattern : excludePatterns) {
+                if (pattern.matches(compareString)) {
+                    result = false;
+                    break;
                 }
             }
         }
-        return false;
+        return result;
     }
 
     public static WildcardPattern[] compile(String[] patterns) {
@@ -87,29 +104,35 @@ public class PluralWildcardPattern {
             return null;
         }
     }
-
-    public static PluralWildcardPattern newInstance(String[] patterns) {
-        if (patterns == null || patterns.length == 0) {
-            return null;
-        }
-        WildcardPattern[] wildcardPatterns = compile(patterns);
-        if (wildcardPatterns != null) {
-            return new PluralWildcardPattern(wildcardPatterns);
-        } else {
-            return null;
-        }
-    }
-
-    public static PluralWildcardPattern newInstance(String[] patterns, char separator) {
-        if (patterns == null || patterns.length == 0) {
-            return null;
-        }
-        WildcardPattern[] wildcardPatterns = compile(patterns, separator);
-        if (wildcardPatterns != null) {
-            return new PluralWildcardPattern(wildcardPatterns);
-        } else {
-            return null;
-        }
-    }
+//
+//    public static PluralWildcardPattern newInstance(String[] includePatterns, String[] excludePatterns) {
+//        WildcardPattern[] includeWildcardPatterns = compile(includePatterns);
+//        WildcardPattern[] excludeWildcardPatterns = compile(excludePatterns);
+//        return new PluralWildcardPattern(includePatterns, );
+//
+//
+//        WildcardPattern[] wildcardPatterns = compile(includePatterns);
+//        if (wildcardPatterns != null) {
+//            return new PluralWildcardPattern(wildcardPatterns);
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//    public static PluralWildcardPattern newInstance(String[] includePatterns, String[] excludePatterns, char separator) {
+//        if (patterns == null || patterns.length == 0) {
+//            return null;
+//        }
+//        String[] includeWildcardPatterns = null;
+//        String[] excludeWildcardPatterns = null;
+//
+//
+//        WildcardPattern[] wildcardPatterns = compile(patterns, separator);
+//        if (wildcardPatterns != null) {
+//            return new PluralWildcardPattern(wildcardPatterns);
+//        } else {
+//            return null;
+//        }
+//    }
 
 }

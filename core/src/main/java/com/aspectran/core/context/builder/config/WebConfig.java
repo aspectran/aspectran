@@ -30,7 +30,7 @@ public class WebConfig extends AbstractParameters {
     static {
         uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
         defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
-        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 uriDecoding,
@@ -45,6 +45,22 @@ public class WebConfig extends AbstractParameters {
 
     public WebConfig(String text) {
         super(parameterDefinitions, text);
+    }
+
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
+    }
+
+    public ExposalsConfig getExposalsConfig() {
+        return getParameters(exposals);
+    }
+
+    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
+        putValue(exposals, exposalsConfig);
     }
 
 }

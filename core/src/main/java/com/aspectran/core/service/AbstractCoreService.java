@@ -22,7 +22,9 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.ExposalsConfig;
 import com.aspectran.core.context.builder.config.SchedulerConfig;
+import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -127,8 +129,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
     }
 
-    protected void setExposals(String[] exposals) {
-        exposableTransletNamesPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
+        if ((includePatterns != null && includePatterns.length > 0) ||
+                excludePatterns != null && excludePatterns.length > 0) {
+            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
+                    ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+        }
     }
 
     protected boolean isExposable(String transletName) {
@@ -162,7 +168,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         boolean schedulerStartup = this.schedulerConfig.getBoolean(SchedulerConfig.startup);
         int startDelaySeconds = this.schedulerConfig.getInt(SchedulerConfig.startDelaySeconds.getName(), -1);
         boolean waitOnShutdown = this.schedulerConfig.getBoolean(SchedulerConfig.waitOnShutdown);
-        String[] exposals = this.schedulerConfig.getStringArray(SchedulerConfig.exposals);
+        ExposalsConfig exposalsConfig = this.schedulerConfig.getExposalsConfig();
 
         if (schedulerStartup) {
             if (startDelaySeconds == -1) {
@@ -175,7 +181,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 newSchedulerService.setWaitOnShutdown(true);
             }
             newSchedulerService.setStartDelaySeconds(startDelaySeconds);
-            newSchedulerService.setExposals(exposals);
+            if (exposalsConfig != null) {
+                String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+                String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+                newSchedulerService.setExposals(includePatterns, excludePatterns);
+            }
             newSchedulerService.start();
 
             this.schedulerService = newSchedulerService;

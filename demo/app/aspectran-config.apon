@@ -42,11 +42,14 @@ shell: {
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.
     )
+    exposals: {
+        -: /**
+    }
 }
 web: {
     uriDecoding: utf-8
     defaultServletName: default
-    exposals: [
-        /**
-    ]
+    exposals: {
+        +: /**
+    }
 }

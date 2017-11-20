@@ -66,7 +66,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private boolean waitOnShutdown = false;
 
-    private PluralWildcardPattern pluralWildcardPattern;
+    private PluralWildcardPattern exposableTransletNamesPattern;
 
     public QuartzSchedulerService(ActivityContext context) {
         this.context = context;
@@ -93,12 +93,16 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     @Override
-    public void setExposals(String[] exposals) {
-        pluralWildcardPattern = PluralWildcardPattern.newInstance(exposals, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+    public void setExposals(String[] includePatterns, String[] excludePatterns) {
+        if ((includePatterns != null && includePatterns.length > 0) ||
+                excludePatterns != null && excludePatterns.length > 0) {
+            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
+                    ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+        }
     }
 
     private boolean isExposable(String transletName) {
-        return (pluralWildcardPattern == null || pluralWildcardPattern.matches(transletName));
+        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
     }
 
     @Override

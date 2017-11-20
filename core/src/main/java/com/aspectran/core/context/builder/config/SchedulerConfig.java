@@ -32,7 +32,7 @@ public class SchedulerConfig extends AbstractParameters {
         startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
         waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
         startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
-        exposals = new ParameterDefinition("exposals", ParameterValueType.STRING, true);
+        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 startDelaySeconds,
@@ -48,6 +48,22 @@ public class SchedulerConfig extends AbstractParameters {
 
     public SchedulerConfig(String plaintext) {
         super(parameterDefinitions, plaintext);
+    }
+
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
+    }
+
+    public ExposalsConfig getExposalsConfig() {
+        return getParameters(exposals);
+    }
+
+    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
+        putValue(exposals, exposalsConfig);
     }
 
 }

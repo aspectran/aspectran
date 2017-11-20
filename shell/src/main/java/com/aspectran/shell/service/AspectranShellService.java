@@ -20,6 +20,7 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
+import com.aspectran.core.context.builder.config.ExposalsConfig;
 import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.service.AspectranServiceException;
@@ -219,7 +220,13 @@ class AspectranShellService extends AbstractShellService {
             }
             service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
             service.setGreetings(shellConfig.getString(ShellConfig.greetings));
-            service.setExposals(shellConfig.getStringArray(ShellConfig.exposals));
+
+            ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
+            if (exposalsConfig != null) {
+                String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+                String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+                service.setExposals(includePatterns, excludePatterns);
+            }
         } else {
             service.setConsole(new DefaultConsole());
         }
