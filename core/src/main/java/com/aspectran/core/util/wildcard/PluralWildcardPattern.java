@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class PluralWildcardPattern.
+ * Class for Wildcard Matching with multiple Include and Exclude patterns.
+ *
+ * <p>The comparison string must match one of the Include patterns and must
+ * not match the Exclude pattern.</p>
  *
  * <p>Created: 2017. 2. 11.</p>
  *
@@ -104,35 +107,5 @@ public class PluralWildcardPattern {
             return null;
         }
     }
-//
-//    public static PluralWildcardPattern newInstance(String[] includePatterns, String[] excludePatterns) {
-//        WildcardPattern[] includeWildcardPatterns = compile(includePatterns);
-//        WildcardPattern[] excludeWildcardPatterns = compile(excludePatterns);
-//        return new PluralWildcardPattern(includePatterns, );
-//
-//
-//        WildcardPattern[] wildcardPatterns = compile(includePatterns);
-//        if (wildcardPatterns != null) {
-//            return new PluralWildcardPattern(wildcardPatterns);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public static PluralWildcardPattern newInstance(String[] includePatterns, String[] excludePatterns, char separator) {
-//        if (patterns == null || patterns.length == 0) {
-//            return null;
-//        }
-//        String[] includeWildcardPatterns = null;
-//        String[] excludeWildcardPatterns = null;
-//
-//
-//        WildcardPattern[] wildcardPatterns = compile(patterns, separator);
-//        if (wildcardPatterns != null) {
-//            return new PluralWildcardPattern(wildcardPatterns);
-//        } else {
-//            return null;
-//        }
-//    }
 
 }
