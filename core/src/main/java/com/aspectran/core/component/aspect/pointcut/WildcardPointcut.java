@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 import java.util.WeakHashMap;
 
 /**
- * The Class WildcardPointcut.
+ * Pointcut using Wildcard Matching to identify joinpoints.
  */
 public class WildcardPointcut extends AbstractPointcut {
 

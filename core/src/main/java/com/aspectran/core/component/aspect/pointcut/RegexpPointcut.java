@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The Class RegexpPointcut.
+ * Pointcut using Regular Expression Matching to identify joinpoints.
  */
 public class RegexpPointcut extends AbstractPointcut {
 

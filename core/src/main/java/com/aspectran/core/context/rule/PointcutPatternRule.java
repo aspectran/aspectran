@@ -21,7 +21,7 @@ import com.aspectran.core.util.ToStringBuilder;
 import java.util.List;
 
 /**
- * The Class PointcutPatternRule.
+ * The pattern rule for identifying pointcut targets
  */
 public class PointcutPatternRule {
 
@@ -139,6 +139,7 @@ public class PointcutPatternRule {
         tsb.append("bean", beanIdPattern);
         tsb.append("class", classNamePattern);
         tsb.append("method", methodNamePattern);
+        tsb.append("exclude", excludePointcutPatternRuleList);
         return tsb.toString();
     }
 
