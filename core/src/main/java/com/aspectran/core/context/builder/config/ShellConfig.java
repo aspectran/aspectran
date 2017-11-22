@@ -32,15 +32,15 @@ public class ShellConfig extends AbstractParameters {
     static {
         prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
         commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
-        verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
         greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
+        verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 prompt,
                 commands,
-                verbose,
                 greetings,
+                verbose,
                 exposals
         };
     }

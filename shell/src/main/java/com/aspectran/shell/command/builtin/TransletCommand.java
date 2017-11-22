@@ -21,8 +21,7 @@ public class TransletCommand extends AbstractCommand {
     public TransletCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("l").longOpt("list").desc("Lists all translets").build());
-        addOption(Option.builder("s").longOpt("search").desc("Searches all translets with the given name").build());
+        addOption(Option.builder("l").longOpt("list").desc("Prints all Translets or those retrieved with the given name").build());
         addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
     }
 
@@ -33,12 +32,11 @@ public class TransletCommand extends AbstractCommand {
         if (!options.hasOptions() && options.hasArgs()) {
             String commandLine = String.join(" ", options.getArgs());
             CommandLineParser parser = CommandLineParser.parseCommandLine(commandLine);
-            getService().serve(parser);
+            getService().execute(parser);
             getConsole().writeLine();
         } else if (options.hasOption("l")) {
-            listTranslets();
-        } else if (options.hasOption("s")) {
-
+            String[] keywords = options.getArgs();
+            listTranslets(keywords.length > 0 ? keywords : null);
         } else {
             printUsage();
         }
@@ -46,24 +44,35 @@ public class TransletCommand extends AbstractCommand {
         return null;
     }
 
-    public void listTranslets() {
+    public void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
 
         for (TransletRule transletRule : transletRules) {
-            if (getService().isExposable(transletRule.getName())) {
+            String name = transletRule.getName();
+            if (getService().isExposable(name)) {
+                if (keywords != null) {
+                    boolean exists = false;
+                    for (String keyw : keywords) {
+                        if (name.contains(keyw)) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        continue;
+                    }
+                }
                 if (transletRule.getAllowedMethods() != null) {
-                    getConsole().write(transletRule.getName() + " [");
+                    getConsole().write("[");
                     for (int i = 0; i < transletRule.getAllowedMethods().length; i++) {
                         if (i > 0) {
                             getConsole().write(", ");
                         }
                         getConsole().write(transletRule.getAllowedMethods()[i].toString());
                     }
-                    getConsole().writeLine("]");
-                } else {
-                    getConsole().writeLine(transletRule.getName());
+                    getConsole().writeLine("] ");
                 }
+                getConsole().writeLine(name);
             }
         }
     }

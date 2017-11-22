@@ -26,7 +26,14 @@ public interface WebService extends CoreService {
      */
     String STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX = WebService.class.getName() + ".STANDALONE:";
 
-    void serve(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    /**
+     * Executes a Web Activity.
+     *
+     * @param request current HTTP servlet request
+     * @param response current HTTP servlet response
+     * @throws IOException If an error occurs during Activity execution
+     */
+    void execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
      * Returns a new instance of WebService.

@@ -30,7 +30,7 @@ public class AspectranCoreService extends AbstractCoreService {
     private ShutdownHooks.Task shutdownTask;
 
     /**
-     * Instantiates a new Basic aspectran service.
+     * Instantiates a new AspectranCoreService.
      *
      * @param applicationAdapter the application adapter
      */

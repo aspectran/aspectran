@@ -17,6 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
@@ -63,19 +64,35 @@ public class ShellCommander {
 
                 Command command = commandRegistry.getCommand(commandName);
                 if (command != null) {
-                    String result = command.execute(args);
-                    if (result != null) {
-                        console.writeLine(result);
+                    String result;
+                    try {
+                        result = command.execute(args);
+                        if (result != null) {
+                            console.writeLine(result);
+                        }
+                    } catch (ConsoleTerminatedException e) {
+                        throw e;
+                    } catch (OptionParserException e) {
+                        console.writeLine(e.getMessage());
+                        command.printUsage();
+                    } catch (Exception e) {
+                        log.error("Command execution failed", e);
                     }
                 } else {
-                    service.serve(commandLine);
-                    console.writeLine();
+                    try {
+                        service.execute(commandLine);
+                        console.writeLine();
+                    } catch (ConsoleTerminatedException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        log.error("Command execution failed", e);
+                    }
                 }
             }
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
         } catch (Exception e) {
-            log.error("An error occurred while executing the command", e);
+            log.error("Error occurred while processing shell command", e);
         } finally {
             if (service.isActive()) {
                 log.info("Do not terminate this application while releasing all resources");

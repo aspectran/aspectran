@@ -1,8 +1,6 @@
 package com.aspectran.shell.command.builtin;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -15,9 +13,7 @@ import java.util.Map;
 
 public class SysInfoCommand extends AbstractCommand {
 
-    private static final Log log = LogFactory.getLog(SysInfoCommand.class);
-
-    private static final String NAMESPACE = "syscmd";
+    private static final String NAMESPACE = "builtin";
 
     private static final String COMMAND_NAME = "sysinfo";
 

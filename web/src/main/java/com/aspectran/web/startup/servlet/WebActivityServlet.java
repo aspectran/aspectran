@@ -79,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        webService.serve(req, res);
+        webService.execute(req, res);
     }
 
     @Override

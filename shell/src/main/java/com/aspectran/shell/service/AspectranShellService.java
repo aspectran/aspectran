@@ -56,24 +56,14 @@ class AspectranShellService extends AbstractShellService {
         super();
     }
 
-    /**
-     * Process the actual dispatching to the activity.
-     *
-     * @param command the translet name mapped to the command
-     */
     @Override
-    public void serve(String command) {
+    public void execute(String command) {
         CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(command);
-        serve(commandLineParser);
+        execute(commandLineParser);
     }
 
-    /**
-     * Process the actual dispatching to the activity.
-     *
-     * @param commandLineParser the command line parser
-     */
     @Override
-    public void serve(CommandLineParser commandLineParser) {
+    public void execute(CommandLineParser commandLineParser) {
         if (!isExposable(commandLineParser.getCommand())) {
             getConsole().writeLine("Unexposable Translet: " + commandLineParser.getCommand());
             return;

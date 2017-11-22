@@ -522,7 +522,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("exceptionRule", exceptionRule);
         tsb.append("transletInterfaceClass", transletInterfaceClass);
         tsb.append("transletImplementationClass", transletImplementationClass);
-        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
         tsb.append("explicitContent", explicitContent);
         tsb.append("implicitResponse", implicitResponse);
         return tsb.toString();

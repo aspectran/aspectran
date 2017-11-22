@@ -31,7 +31,6 @@ shell: {
         com.aspectran.shell.command.builtin.SysInfoCommand
         com.aspectran.shell.command.builtin.TransletCommand
     ]
-    verbose: true
     greetings: (
         |
         |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
@@ -42,6 +41,7 @@ shell: {
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.
     )
+    verbose: true
     exposals: {
         -: /**
     }

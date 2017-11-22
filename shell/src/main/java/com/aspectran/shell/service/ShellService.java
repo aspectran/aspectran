@@ -66,18 +66,18 @@ public interface ShellService extends CoreService {
     boolean isExposable(String transletName);
 
     /**
-     * Process the actual dispatching to the activity.
+     * Executes a Shell Activity.
      *
-     * @param command the translet name mapped to the command
+     * @param command the command
      */
-    void serve(String command);
+    void execute(String command);
 
     /**
-     * Process the actual dispatching to the activity.
+     * Executes a Shell Activity.
      *
      * @param commandLineParser the command line parser
      */
-    void serve(CommandLineParser commandLineParser);
+    void execute(CommandLineParser commandLineParser);
 
     /**
      * Returns a new instance of ShellService.

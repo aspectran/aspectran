@@ -23,7 +23,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.config.ExposalsConfig;
-import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.config.WebConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
@@ -72,15 +71,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         this.uriDecoding = uriDecoding;
     }
 
-    /**
-     * Processes the actual dispatching to the activity.
-     *
-     * @param request current HTTP servlet request
-     * @param response current HTTP servlet response
-     * @throws IOException if an input or output error occurs while the activity is handling the HTTP request
-     */
     @Override
-    public void serve(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUri = request.getRequestURI();
 
         if (uriDecoding != null) {
