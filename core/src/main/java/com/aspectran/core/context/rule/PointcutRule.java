@@ -52,7 +52,8 @@ public class PointcutRule {
         return pointcutPatternRuleList;
     }
 
-    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule, List<PointcutPatternRule> excludePointcutPatternRuleList) {
+    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule,
+                                       List<PointcutPatternRule> excludePointcutPatternRuleList) {
         pointcutPatternRule.setPointcutType(pointcutType);
         if (excludePointcutPatternRuleList != null) {
             pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
@@ -120,7 +121,8 @@ public class PointcutRule {
         if (type != null) {
             pointcutType = PointcutType.resolve(type);
             if (pointcutType == null) {
-                throw new IllegalRuleException("Unknown pointcut type '" + type + "'; Pointcut type for Translet must be 'wildcard' or 'regexp'");
+                throw new IllegalRuleException("Unrecognized pointcut type '" + type +
+                        "'; Pointcut type for Translet must be 'wildcard' or 'regexp'");
             }
         }
         return new PointcutRule(pointcutType);

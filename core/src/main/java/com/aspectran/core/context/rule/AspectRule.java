@@ -84,6 +84,7 @@ public class AspectRule implements BeanReferenceInspectable {
     /**
      * The lowest value has highest priority.
      * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
+     * If it is the same value, the Aspect declared first takes precedence.
      */
     private int order = Integer.MAX_VALUE;
 
@@ -291,7 +292,7 @@ public class AspectRule implements BeanReferenceInspectable {
             try {
                 aspectRule.setOrder(Integer.parseInt(order));
             } catch (NumberFormatException e) {
-                throw new IllegalRuleException("The 'order' attribute on an 'aspect' element must be a valid integer");
+                throw new IllegalRuleException("The 'order' attribute of the 'aspect' element is not a valid integer");
             }
         }
 

@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class AspectRule.
+ * The Class JoinpointRule.
  * 
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
- *   &lt;joinpoint scope="translet"&gt;
+ *   &lt;joinpoint type="translet"&gt;
  *     methods: [
  *       "GET"
  *       "POST"
@@ -40,24 +40,24 @@ import java.util.List;
  *       "DELETE"
  *     ]
  *     headers: [
- *          "Origin"
+ *       "Origin"
  *     ]
  *     pointcut: {
- *          type: "wildcard"
- *          +: "/a/b@sample.bean1^method1"
- *          +: "/x/y@sample.bean2^method1"
- *          -: "/a/b/c@sample.bean3^method1"
- *          -: "/x/y/z@sample.bean4^method1"
+ *       type: "wildcard"
+ *       +: "/a/b@sample.bean1^method1"
+ *       +: "/x/y@sample.bean2^method1"
+ *       -: "/a/b/c@sample.bean3^method1"
+ *       -: "/x/y/z@sample.bean4^method1"
  *     }
  *     pointcut: {
- *          type: "regexp"
- *          include: {
+ *       type: "regexp"
+ *       include: {
  *         translet: "/a/b"
  *         bean: "sample.bean1"
  *         method: "method1"
  *       }
  *       execlude: {
- *            translet: "/a/b/c"
+ *         translet: "/a/b/c"
  *         bean: "sample.bean3"
  *         method: "method1"
  *       }
