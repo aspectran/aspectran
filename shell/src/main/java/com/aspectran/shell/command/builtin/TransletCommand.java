@@ -21,7 +21,7 @@ public class TransletCommand extends AbstractCommand {
     public TransletCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("l").longOpt("list").desc("Prints all Translets or those retrieved with the given name").build());
+        addOption(Option.builder("l").longOpt("list").desc("Prints all Translets or those filtered by the given name").build());
         addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
     }
 
@@ -101,7 +101,7 @@ public class TransletCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "translet [-l] [-s] [translet_name]";
+            return "translet [-l] [translet_name]";
         }
 
         @Override
