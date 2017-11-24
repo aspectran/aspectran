@@ -15,21 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.component.bean.annotation.Action;
-import com.aspectran.core.component.bean.annotation.Autowired;
-import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Configuration;
-import com.aspectran.core.component.bean.annotation.Destroy;
-import com.aspectran.core.component.bean.annotation.Dispatch;
-import com.aspectran.core.component.bean.annotation.Forward;
-import com.aspectran.core.component.bean.annotation.Initialize;
-import com.aspectran.core.component.bean.annotation.Profile;
-import com.aspectran.core.component.bean.annotation.Qualifier;
-import com.aspectran.core.component.bean.annotation.Redirect;
-import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.core.component.bean.annotation.Transform;
-import com.aspectran.core.component.bean.annotation.Value;
+import com.aspectran.core.component.bean.annotation.*;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
@@ -172,6 +158,10 @@ public class AnnotatedConfigParser {
                 } else if (method.isAnnotationPresent(Request.class)) {
                     parseTransletRule(beanClass, method, nameArray);
                 }
+            }
+
+            if (beanClass.isAnnotationPresent(Aspect.class)) {
+                parseAspectRule(beanClass);
             }
         }
     }
@@ -395,6 +385,10 @@ public class AnnotatedConfigParser {
         } catch (Throwable ex) {
             throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
         }
+    }
+
+    private void parseAspectRule(Class<?> beanClass) {
+
     }
 
     private String[] splitNamespace(String namespace) {

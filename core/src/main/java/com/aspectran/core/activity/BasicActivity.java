@@ -111,7 +111,8 @@ public abstract class BasicActivity extends AbstractActivity {
                     if (noThrow) {
                         log.error("Failed to execute advice action " + aspectAdviceRule, e);
                     } else {
-                        throw new AspectAdviceException("Failed to execute advice action " + aspectAdviceRule, aspectAdviceRule, e);
+                        throw new AspectAdviceException("Failed to execute advice action " + aspectAdviceRule,
+                                aspectAdviceRule, e);
                     }
                 }
             }
@@ -157,7 +158,8 @@ public abstract class BasicActivity extends AbstractActivity {
                     if (noThrow) {
                             log.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     } else {
-                        throw new AspectAdviceException("Failed to execute an advice action " + aspectAdviceRule, aspectAdviceRule, e);
+                        throw new AspectAdviceException("Failed to execute an advice action " + aspectAdviceRule,
+                                aspectAdviceRule, e);
                     }
                 }
             }

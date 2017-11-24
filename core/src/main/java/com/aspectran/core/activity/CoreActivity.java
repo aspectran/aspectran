@@ -342,7 +342,7 @@ public class CoreActivity extends BasicActivity {
                 response();
             }
         } catch (Exception e) {
-            throw new ActivityException("Activity failed to perform", e);
+            throw new ActivityException("An error occurred while performing the activity", e);
         } finally {
             Scope requestScope = getRequestAdapter().getRequestScope(false);
             if (requestScope != null) {
