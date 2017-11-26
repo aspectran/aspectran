@@ -39,12 +39,12 @@ public class ExceptionThrownParameters extends AbstractParameters {
         redirect = new ParameterDefinition("redirect", RedirectParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            type,
-            action,
-            transform,
-            dispatch,
-            forward,
-            redirect
+                type,
+                action,
+                transform,
+                dispatch,
+                forward,
+                redirect
         };
     }
 

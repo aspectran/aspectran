@@ -30,8 +30,6 @@ public class AponWriterTest {
 
     public static void main(String argv[]) {
         try {
-            // 먼저 AponWriter를 사용해서 파일로 저장된 APON 문서를 읽어서 Parameters 객체로 변환합니다.
-            //Reader reader = new FileReader(new File(argv[0]));
             File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
             Reader reader = new FileReader(file);
 

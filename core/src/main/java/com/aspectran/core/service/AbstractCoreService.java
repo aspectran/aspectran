@@ -24,7 +24,6 @@ import com.aspectran.core.context.builder.config.AspectranConfig;
 import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.config.ExposalsConfig;
 import com.aspectran.core.context.builder.config.SchedulerConfig;
-import com.aspectran.core.context.builder.config.ShellConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

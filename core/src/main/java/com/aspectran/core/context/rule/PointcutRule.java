@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.params.PointcutTargetParameters;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -31,15 +30,6 @@ public class PointcutRule {
 
     private List<PointcutPatternRule> pointcutPatternRuleList;
 
-    private List<String> plusPatternStringList;
-
-    private List<String> minusPatternStringList;
-
-    private List<PointcutTargetParameters> includeTargetParametersList;
-
-    private List<PointcutTargetParameters> excludeTargetParametersList;
-
-
     public PointcutRule(PointcutType pointcutType) {
         this.pointcutType = pointcutType;
     }
@@ -50,6 +40,10 @@ public class PointcutRule {
 
     public List<PointcutPatternRule> getPointcutPatternRuleList() {
         return pointcutPatternRuleList;
+    }
+
+    public void setPointcutPatternRuleList(List<PointcutPatternRule> pointcutPatternRuleList) {
+        this.pointcutPatternRuleList = pointcutPatternRuleList;
     }
 
     public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule,
@@ -76,43 +70,11 @@ public class PointcutRule {
         return new ArrayList<>(initialCapacity);
     }
 
-    public List<String> getPlusPatternStringList() {
-        return plusPatternStringList;
-    }
-
-    public void setPlusPatternStringList(List<String> plusPatternStringList) {
-        this.plusPatternStringList = plusPatternStringList;
-    }
-
-    public List<String> getMinusPatternStringList() {
-        return minusPatternStringList;
-    }
-
-    public void setMinusPatternStringList(List<String> minusPatternStringList) {
-        this.minusPatternStringList = minusPatternStringList;
-    }
-
-    public List<PointcutTargetParameters> getIncludeTargetParametersList() {
-        return includeTargetParametersList;
-    }
-
-    public void setIncludeTargetParametersList(List<PointcutTargetParameters> includeTargetParametersList) {
-        this.includeTargetParametersList = includeTargetParametersList;
-    }
-
-    public List<PointcutTargetParameters> getExcludeTargetParametersList() {
-        return excludeTargetParametersList;
-    }
-
-    public void setExcludeTargetParametersList(List<PointcutTargetParameters> excludeTargetParametersList) {
-        this.excludeTargetParametersList = excludeTargetParametersList;
-    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("pointcutType", pointcutType);
-        tsb.append("pointcutPatternRule", pointcutPatternRuleList);
+        tsb.append("type", pointcutType);
+        tsb.append("patterns", pointcutPatternRuleList);
         return tsb.toString();
     }
 
@@ -126,6 +88,34 @@ public class PointcutRule {
             }
         }
         return new PointcutRule(pointcutType);
+    }
+
+    public static PointcutRule newInstance(String[] patterns) {
+        PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
+        List<PointcutPatternRule> pointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
+        List<PointcutPatternRule> excludePointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
+        for (String pattern : patterns) {
+            if (pattern != null){
+                if (pattern.startsWith("-")) {
+                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
+                    excludePointcutPatternRuleList.add(pointcutPatternRule);
+                } else {
+                    if (pattern.startsWith("+")) {
+                        pattern = pattern.substring(1);
+                    }
+                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
+                    pointcutPatternRuleList.add(pointcutPatternRule);
+                }
+            }
+        }
+        for (PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
+            pointcutPatternRule.setPointcutType(pointcutRule.getPointcutType());
+            if (!excludePointcutPatternRuleList.isEmpty()) {
+                pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+            }
+        }
+        pointcutRule.setPointcutPatternRuleList(pointcutPatternRuleList);
+        return pointcutRule;
     }
 
 }

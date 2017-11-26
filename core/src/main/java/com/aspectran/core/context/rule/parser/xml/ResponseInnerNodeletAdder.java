@@ -53,11 +53,11 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String type = attrs.get("type");
             String contentType = attrs.get("contentType");
-            String characterEncoding = attrs.get("characterEncoding");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
+            String encoding = attrs.get("encoding");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
             Boolean pretty = BooleanUtils.toNullableBooleanObject(attrs.get("pretty"));
 
-            TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse, pretty);
+            TransformRule tr = TransformRule.newInstance(type, contentType, encoding, defaultResponse, pretty);
             parser.pushObject(tr);
 
             ActionList actionList = new ActionList();
@@ -110,10 +110,10 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String name = attrs.get("name");
             String dispatcher = attrs.get("dispatcher");
             String contentType = attrs.get("contentType");
-            String characterEncoding = attrs.get("characterEncoding");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
+            String encoding = attrs.get("encoding");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
-            DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding, defaultResponse);
+            DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
             parser.pushObject(drr);
 
             ActionList actionList = new ActionList();
@@ -135,12 +135,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
             String target = attrs.get("target");
-            String characterEncoding = attrs.get("characterEncoding");
+            String encoding = attrs.get("encoding");
             Boolean excludeNullParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeNullParameter"));
             Boolean excludeEmptyParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeEmptyParameter"));
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
-            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, characterEncoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
+            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
             parser.pushObject(rrr);
 
             ActionList actionList = new ActionList();
@@ -181,7 +181,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
             String transletName = attrs.get("translet");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("defaultResponse"));
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
             transletName = assistant.applyTransletNamePattern(transletName);
 

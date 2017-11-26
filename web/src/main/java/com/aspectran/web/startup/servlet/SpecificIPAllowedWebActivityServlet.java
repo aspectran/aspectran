@@ -71,7 +71,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String remoteAddr = req.getRemoteAddr();
 
-        if (!isAllowedAdress(remoteAddr)) {
+        if (!isAllowedAddress(remoteAddr)) {
             if (debugEnabled) {
                 log.debug("Access Denied: " + remoteAddr);
             }
@@ -90,7 +90,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
      *
      * @return true if IP address is a valid, false otherwise
      */
-    private boolean isAllowedAdress(String ipAddress) {
+    private boolean isAllowedAddress(String ipAddress) {
         if (allowedAddresses == null) {
             return false;
         }

@@ -47,16 +47,16 @@ public class TemplateParameters extends AbstractParameters {
         noCache = new ParameterDefinition("noCache", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-            id,
-            engine,
-            name,
-            file,
-            resource,
-            url,
-            content,
-            style,
-            encoding,
-            noCache
+                id,
+                engine,
+                name,
+                file,
+                resource,
+                url,
+                content,
+                style,
+                encoding,
+                noCache
         };
     }
 

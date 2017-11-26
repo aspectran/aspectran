@@ -54,17 +54,17 @@ public class ActionParameters extends AbstractParameters {
         headers = new ParameterDefinition("headers", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            id,
-            bean,
-            methodName,
-            hidden,
-            arguments,
-            properties,
-            include,
-            parameters,
-            attributes,
-            echo,
-            headers
+                id,
+                bean,
+                methodName,
+                hidden,
+                arguments,
+                properties,
+                include,
+                parameters,
+                attributes,
+                echo,
+                headers
         };
     }
 

@@ -123,18 +123,18 @@ public interface Translet extends BeanRegistry, MessageSource {
     <T> T getApplicationAdaptee();
 
     /**
-     * Returns the request character encoding.
+     * Returns the request encoding.
      *
-     * @return the request character encoding
+     * @return the request encoding
      */
-    String getRequestCharacterEncoding();
+    String getRequestEncoding();
 
     /**
-     * Returns the response character encoding.
+     * Returns the response encoding.
      *
-     * @return the response character encoding
+     * @return the response encoding
      */
-    String getResponseCharacterEncoding();
+    String getResponseEncoding();
 
     /**
      * Returns the process result.
@@ -272,12 +272,12 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setParameter(String name, String[] values);
 
     /**
-     * Return an unmutable Map of the request parameters,
+     * Return an immutable Map of the request parameters,
      * with parameter names as map keys and parameter values as map values.
      * If the parameter value type is the String then map value will be of type String.
      * If the parameter value type is the String array then map value will be of type String array.
      *
-     * @return the unmutable parameter map
+     * @return the immutable parameter map
      * @since 1.4.0
      */
     Map<String, Object> getAllParameters();
@@ -470,7 +470,7 @@ public interface Translet extends BeanRegistry, MessageSource {
     /**
      * Redirect a client to a new target resource.
      * If {@code immediately} is true, create a new redirect response rule
-     * and overrided the intended redirect resoponse rule.
+     * and override the intended redirect response rule.
      *
      * @param target the target resource
      * @param immediately whether to override the intended redirect response rule
@@ -478,7 +478,7 @@ public interface Translet extends BeanRegistry, MessageSource {
     void redirect(String target, boolean immediately);
 
     /**
-     * Redirect to the other target resouce.
+     * Redirect to the other target resource.
      *
      * @param target the redirect target
      * @param parameters the parameters
@@ -577,6 +577,15 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @return the after advice result
      */
     <T> T getAfterAdviceResult(String aspectId);
+
+    /**
+     * Gets the around advice result.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the around advice result
+     */
+    <T> T getAroundAdviceResult(String aspectId);
 
     /**
      * Gets the finally advice result.

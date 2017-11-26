@@ -31,8 +31,8 @@ public class ExceptionParameters extends AbstractParameters {
         thrown = new ParameterDefinition("thrown", ExceptionThrownParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            thrown
+                description,
+                thrown
         };
     }
 

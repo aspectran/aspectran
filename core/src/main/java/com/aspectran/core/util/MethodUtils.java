@@ -1021,7 +1021,7 @@ public class MethodUtils {
          *
          * @param cls the class to reflect, must not be null
          * @param methodName the method name to obtain
-         * @param paramTypes the array of classes representing the paramater types
+         * @param paramTypes the array of classes representing the parameter types
          * @param exact whether the match has to be exact
          */
         private MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {

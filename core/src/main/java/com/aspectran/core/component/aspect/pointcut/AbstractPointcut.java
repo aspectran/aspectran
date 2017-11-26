@@ -94,7 +94,7 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param transletName the translet name
      * @param beanId the bean id
      * @param className the bean class name
-     * @param methodName the name of the method that is executed in the bean.
+     * @param methodName the name of the method that is executed in the bean
      * @return true, if exists matched
      */
     protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
@@ -138,8 +138,8 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param transletName the translet name
      * @param beanId the bean id
      * @param className the bean class name
-     * @param methodName the name of the method that is executed in the bean.
-     * @return true, if exists matched
+     * @param methodName the name of the method that is executed in the bean
+     * @return true if exists matched, false otherwise
      */
     protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
         boolean matched = true;

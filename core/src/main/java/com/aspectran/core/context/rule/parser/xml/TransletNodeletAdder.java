@@ -119,9 +119,9 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/translet/request");
         parser.addNodelet(attrs -> {
             String method = attrs.get("method");
-            String characterEncoding = attrs.get("characterEncoding");
+            String encoding = attrs.get("encoding");
 
-            RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
+            RequestRule requestRule = RequestRule.newInstance(method, encoding);
             parser.pushObject(requestRule);
         });
         parser.addNodeEndlet(text -> {
@@ -208,9 +208,9 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
-            String characterEncoding = attrs.get("characterEncoding");
+            String encoding = attrs.get("encoding");
 
-            ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
+            ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
             parser.pushObject(responseRule);
         });
         parser.addNodelet(new ResponseInnerNodeletAdder(assistant));

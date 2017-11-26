@@ -22,7 +22,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class RequestParameters extends AbstractParameters {
 
     public static final ParameterDefinition method;
-    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition encoding;
     public static final ParameterDefinition parameters;
     public static final ParameterDefinition attributes;
 
@@ -30,15 +30,15 @@ public class RequestParameters extends AbstractParameters {
 
     static {
         method = new ParameterDefinition("method", ParameterValueType.STRING);
-        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            method,
-            characterEncoding,
-            parameters,
-            attributes
+                method,
+                encoding,
+                parameters,
+                attributes
         };
     }
 

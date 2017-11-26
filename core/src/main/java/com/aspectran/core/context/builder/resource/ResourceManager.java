@@ -104,7 +104,7 @@ public class ResourceManager {
         return new Enumeration<URL>() {
             private URL next;
             private URL current;
-            private boolean nomore; //for parent
+            private boolean noMore; //for parent
 
             private boolean hasNext() {
                 do {
@@ -120,11 +120,11 @@ public class ResourceManager {
 
             @Override
             public synchronized boolean hasMoreElements() {
-                if (!nomore) {
+                if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return true;
                     } else {
-                        nomore = true;
+                        noMore = true;
                     }
                 }
 
@@ -133,7 +133,7 @@ public class ResourceManager {
 
             @Override
             public synchronized URL nextElement() {
-                if (!nomore) {
+                if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return inherited.nextElement();
                     }
@@ -167,7 +167,7 @@ public class ResourceManager {
         return new Enumeration<URL>() {
             private Iterator<Map.Entry<String, URL>> current;
             private Map.Entry<String, URL> entry;
-            private boolean nomore; //for parent
+            private boolean noMore; //for parent
 
             private boolean hasNext() {
                 while (true) {
@@ -198,11 +198,11 @@ public class ResourceManager {
                     return true;
                 }
 
-                if (!nomore) {
+                if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return true;
                     } else {
-                        nomore = true;
+                        noMore = true;
                     }
                 }
 
@@ -212,7 +212,7 @@ public class ResourceManager {
             @Override
             public synchronized URL nextElement() {
                 if (entry == null) {
-                    if (!nomore) {
+                    if (!noMore) {
                         if (inherited != null && inherited.hasMoreElements()) {
                             return inherited.nextElement();
                         }

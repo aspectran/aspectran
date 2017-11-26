@@ -33,9 +33,9 @@ public class ScheduleJobParameters extends AbstractParameters {
         disabled = new ParameterDefinition("disabled", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-            translet,
-            method,
-            disabled
+                translet,
+                method,
+                disabled
         };
     }
 

@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class FreemakerTemplateEngine.
+ * The Class FreeMarkerTemplateEngine.
  *
  * <p>Created: 2016. 1. 9.</p>
  */

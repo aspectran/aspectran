@@ -28,7 +28,7 @@ public class ConstructorParameters extends AbstractParameters {
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            arguments
+                arguments
         };
     }
 

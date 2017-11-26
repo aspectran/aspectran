@@ -87,7 +87,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
 
     @Override
     public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-        // shallow
+        // Do Nothing
     }
 
     @Override
@@ -142,52 +142,52 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
 
     @Override
     public void resolveAdviceBeanClass(AspectRule aspectRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveActionBeanClass(BeanActionRule beanActionRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveFactoryBeanClass(BeanRule beanRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveBeanClass(ItemRule itemRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveBeanClass(Token[] tokens) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveBeanClass(Token token) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveBeanClass(ScheduleRule scheduleRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void resolveBeanClass(TemplateRule templateRule) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        // shallow
+        // Do Nothing
     }
 
     @Override
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        // shallow
+        // Do Nothing
     }
 
 }

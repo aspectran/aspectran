@@ -39,12 +39,12 @@ public class AppendParameters extends AbstractParameters {
         aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            file,
-            resource,
-            url,
-            format,
-            profile,
-            aspectran
+                file,
+                resource,
+                url,
+                format,
+                profile,
+                aspectran
         };
     }
 

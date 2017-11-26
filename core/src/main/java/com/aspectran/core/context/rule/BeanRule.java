@@ -684,7 +684,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     public void addAutowireTargetRule(AutowireTargetRule autowireTargetRule) {
         if (autowireTargetRuleList == null) {
-            autowireTargetRuleList = new ArrayList<AutowireTargetRule>();
+            autowireTargetRuleList = new ArrayList<>();
         }
         autowireTargetRuleList.add(autowireTargetRule);
     }

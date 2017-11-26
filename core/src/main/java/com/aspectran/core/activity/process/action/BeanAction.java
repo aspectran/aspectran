@@ -122,7 +122,7 @@ public class BeanAction extends AbstractAction {
                 if (argumentItemRuleMap == null) {
                     return MethodAction.invokeMethod(activity, bean, method, beanActionRule.isRequiresTranslet());
                 } else {
-                    Object[] args = createArugments(activity, argumentItemRuleMap, evaluator, beanActionRule.isRequiresTranslet());
+                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanActionRule.isRequiresTranslet());
                     return method.invoke(bean, args);
                 }
             } else {
@@ -145,12 +145,12 @@ public class BeanAction extends AbstractAction {
                 return result;
             }
         } catch (Exception e) {
-            log.error("Failed to execute an action that invokes the bean's method. beanActionRule " + beanActionRule);
+            log.error("Failed to execute an action that invokes the bean's method " + beanActionRule);
             throw e;
         }
     }
 
-    private static Object[] createArugments(Activity activity, ItemRuleMap argumentItemRuleMap,
+    private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
         Object[] args = null;
 

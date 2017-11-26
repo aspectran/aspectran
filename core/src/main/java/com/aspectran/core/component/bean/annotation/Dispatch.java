@@ -32,6 +32,6 @@ public @interface Dispatch {
 
     String contentType() default "";
 
-    String characterEncoding() default "";
+    String encoding() default "";
 
 }

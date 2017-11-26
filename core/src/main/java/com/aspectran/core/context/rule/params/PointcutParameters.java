@@ -25,7 +25,7 @@ public class PointcutParameters extends AbstractParameters {
     public static final ParameterDefinition plus;
     public static final ParameterDefinition minus;
     public static final ParameterDefinition include;
-    public static final ParameterDefinition execlude;
+    public static final ParameterDefinition exclude;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -33,15 +33,15 @@ public class PointcutParameters extends AbstractParameters {
         type = new ParameterDefinition("type", ParameterValueType.STRING);
         plus = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
         minus = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
-        include = new ParameterDefinition("include", PointcutTargetParameters.class, true, true);
-        execlude = new ParameterDefinition("execlude", PointcutTargetParameters.class, true, true);
+        include = new ParameterDefinition("include", PointcutQualifierParameters.class, true, true);
+        exclude = new ParameterDefinition("exclude", PointcutQualifierParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            type,
-            plus,
-            minus,
-            include,
-            execlude
+                type,
+                plus,
+                minus,
+                include,
+                exclude
         };
     }
 
@@ -57,7 +57,7 @@ public class PointcutParameters extends AbstractParameters {
         putValue(plus, pattern);
     }
 
-    public void addExecludePattern(String pattern) {
+    public void addExcludePattern(String pattern) {
         putValue(minus, pattern);
     }
 

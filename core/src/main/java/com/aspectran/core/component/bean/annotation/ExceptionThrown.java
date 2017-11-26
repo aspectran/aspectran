@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.option;
+package com.aspectran.core.component.bean.annotation;
 
-/**
- * Base for Exceptions thrown during parsing of a command-line.
- */
-public class OptionParserException extends Exception {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    /** @serial */
-    private static final long serialVersionUID = -8387597753242192122L;
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ExceptionThrown {
 
-    /**
-     * Construct a new {@code OptionParseException}
-     * with the specified detail message.
-     *
-     * @param message the detail message
-     */
-    public OptionParserException(String message) {
-        super(message);
-    }
+    Class<? extends Throwable>[] type() default {};
 
 }

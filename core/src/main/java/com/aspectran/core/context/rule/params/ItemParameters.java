@@ -45,15 +45,15 @@ public class ItemParameters extends AbstractParameters {
         call = new ParameterDefinition("call", CallParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            type,
-            name,
-            value,
-            valueType,
-            defaultValue,
-            tokenize,
-            mandatory,
-            security,
-            call
+                type,
+                name,
+                value,
+                valueType,
+                defaultValue,
+                tokenize,
+                mandatory,
+                security,
+                call
         };
     }
 

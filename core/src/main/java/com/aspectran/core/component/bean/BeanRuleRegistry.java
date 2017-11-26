@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
-import com.aspectran.core.component.translet.TransletRuleRegistry;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
@@ -58,8 +58,6 @@ public class BeanRuleRegistry {
 
     private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
 
-    private TransletRuleRegistry transletRuleRegistry;
-
     private Set<String> importantBeanIdSet = new HashSet<>();
 
     private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
@@ -71,10 +69,6 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(FactoryBean.class);
         ignoreDependencyInterface(InitializableBean.class);
         ignoreDependencyInterface(InitializableTransletBean.class);
-    }
-
-    public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
-        this.transletRuleRegistry = transletRuleRegistry;
     }
 
     public BeanRule getBeanRule(Object idOrRequiredType) {
@@ -256,7 +250,7 @@ public class BeanRuleRegistry {
         configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
-    public void postProcess(ContextRuleAssistant assistant) {
+    public void postProcess(ContextRuleAssistant assistant) throws IllegalRuleException {
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
                 if (beanRule.getId() != null) {
@@ -294,7 +288,7 @@ public class BeanRuleRegistry {
         parseAnnotatedConfig(assistant);
     }
 
-    private void parseAnnotatedConfig(ContextRuleAssistant assistant) {
+    private void parseAnnotatedConfig(ContextRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
@@ -310,10 +304,13 @@ public class BeanRuleRegistry {
             }
 
             @Override
+            public void relay(AspectRule aspectRule) {
+                assistant.addAspectRule(aspectRule);
+            }
+
+            @Override
             public void relay(TransletRule transletRule) {
-                if (transletRuleRegistry != null) {
-                    transletRuleRegistry.addTransletRule(transletRule);
-                }
+                assistant.addTransletRule(transletRule);
             }
         };
 

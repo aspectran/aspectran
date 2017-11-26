@@ -121,7 +121,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             }
 
             FileUpload upload = new ServletFileUpload(factory);
-            upload.setHeaderEncoding(requestAdapter.getCharacterEncoding());
+            upload.setHeaderEncoding(requestAdapter.getEncoding());
             if (maxRequestSize > -1) {
                 upload.setSizeMax(maxRequestSize);
             }
@@ -153,7 +153,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
      * @param requestAdapter the request adapter
      */
     private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) {
-        String characterEncoding = requestAdapter.getCharacterEncoding();
+        String encoding = requestAdapter.getEncoding();
         MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
         MultiValueMap<String, FileParameter> fileParameterMap = new LinkedMultiValueMap<>();
 
@@ -164,7 +164,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             if (fileItemList != null && !fileItemList.isEmpty()) {
                 for (FileItem fileItem : fileItemList) {
                     if (fileItem.isFormField()) {
-                        String value = getString(fileItem, characterEncoding);
+                        String value = getString(fileItem, encoding);
                         parameterMap.add(fieldName, value);
                     } else {
                         String fileName = fileItem.getName();
@@ -212,14 +212,14 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
         }
     }
 
-    private String getString(FileItem fileItem, String characterEncoding) {
+    private String getString(FileItem fileItem, String encoding) {
         String value;
-        if (characterEncoding != null) {
+        if (encoding != null) {
             try {
-                value = fileItem.getString(characterEncoding);
+                value = fileItem.getString(encoding);
             } catch (UnsupportedEncodingException ex) {
                 log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
-                        "' with encoding '" + characterEncoding + "': using platform default");
+                        "' with encoding '" + encoding + "': using platform default");
                 value = fileItem.getString();
             }
         } else {

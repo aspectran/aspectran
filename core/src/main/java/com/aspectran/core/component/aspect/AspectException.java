@@ -18,7 +18,7 @@ package com.aspectran.core.component.aspect;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * This class is the basic exception that gets thrown from the aspect pacakge.
+ * This class is the basic exception that gets thrown from the aspect package.
  */
 public class AspectException extends AspectranRuntimeException {
 

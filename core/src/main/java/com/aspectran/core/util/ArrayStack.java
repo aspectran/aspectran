@@ -35,8 +35,8 @@ import java.util.EmptyStackException;
  * <p>
  * <strong>Note:</strong> this class should be bytecode-identical to the
  * version in commons collections. This is required to allow backwards
- * compability with both previous versions of BeanUtils and also allow
- * coexistance with both collections 2.1 and 3.0.
+ * compatibility with both previous versions of BeanUtils and also allow
+ * coexistence with both collections 2.1 and 3.0.
  *
  * @author Craig R. McClanahan
  * @author Paul Jack

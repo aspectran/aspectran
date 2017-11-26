@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -88,7 +88,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchResponseRule.getContentType();
-            String characterEncoding = dispatchResponseRule.getCharacterEncoding();
+            String encoding = dispatchResponseRule.getEncoding();
 
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
@@ -96,12 +96,12 @@ public class JspViewDispatcher implements ViewDispatcher {
                 responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
             }
 
-            if (characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(characterEncoding);
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
             } else {
-                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-                if (characterEncoding != null) {
-                    responseAdapter.setCharacterEncoding(characterEncoding);
+                encoding = activity.getTranslet().getResponseEncoding();
+                if (encoding != null) {
+                    responseAdapter.setEncoding(encoding);
                 }
             }
 

@@ -79,7 +79,7 @@ public class ShellActivity extends CoreActivity {
             setSessionAdapter(service.newSessionAdapter());
 
             RequestAdapter requestAdapter = new ShellRequestAdapter();
-            requestAdapter.setCharacterEncoding(console.getEncoding());
+            requestAdapter.setEncoding(console.getEncoding());
             setRequestAdapter(requestAdapter);
 
             Writer outputWriter;
@@ -93,7 +93,7 @@ public class ShellActivity extends CoreActivity {
             }
 
             ResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
-            responseAdapter.setCharacterEncoding(console.getEncoding());
+            responseAdapter.setEncoding(console.getEncoding());
             setResponseAdapter(responseAdapter);
 
             super.adapt();

@@ -143,7 +143,7 @@ public class PointcutPatternRule {
         return tsb.toString();
     }
 
-    public static String combinePatternString(String transletName, String beanId, String className, String methodName) {
+    public static String combinePattern(String transletName, String beanId, String className, String methodName) {
         int len = 0;
         if (transletName != null) {
             len += transletName.length();
@@ -176,7 +176,7 @@ public class PointcutPatternRule {
         return sb.toString();
     }
 
-    public static PointcutPatternRule parsePatternString(String patternString) {
+    public static PointcutPatternRule parsePattern(String patternString) {
         PointcutPatternRule ppr = new PointcutPatternRule();
         ppr.setPatternString(patternString);
 

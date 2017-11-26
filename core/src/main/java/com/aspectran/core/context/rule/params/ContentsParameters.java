@@ -33,9 +33,9 @@ public class ContentsParameters extends AbstractParameters {
         content = new ParameterDefinition("content", ContentParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            name,
-            omittable,
-            content
+                name,
+                omittable,
+                content
         };
     }
 

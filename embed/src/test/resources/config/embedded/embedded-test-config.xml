@@ -60,7 +60,7 @@
         <description>
             Specifies the environment variables used during request and response processing.
         </description>
-        <joinpoint type="translet"/>
+        <joinpoint target="translet"/>
         <advice>
             <before>
                 <echo>

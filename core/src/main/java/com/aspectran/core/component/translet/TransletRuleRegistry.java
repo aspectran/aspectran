@@ -146,7 +146,7 @@ public class TransletRuleRegistry extends AbstractComponent {
             scanner.scan(scanPath, (filePath, scannedFile) -> {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
 
-                if (prefixSuffixPattern.isSplited()) {
+                if (prefixSuffixPattern.isSplitted()) {
                     newTransletRule.setName(prefixSuffixPattern.join(filePath));
                 } else {
                     if (transletRule.getName() != null) {

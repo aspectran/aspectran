@@ -25,7 +25,7 @@
             executes the welcome() method of the sampleAdvice bean before executing the translet,
             and executes the goodbye() method of the sampleAdvice bean after executing the translet.
         </description>
-        <joinpoint type="translet">
+        <joinpoint target="translet">
             pointcut: {
                 +: hello*@helloAction^helloWorld
             }

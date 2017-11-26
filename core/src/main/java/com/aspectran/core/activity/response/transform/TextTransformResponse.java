@@ -43,7 +43,7 @@ public class TextTransformResponse extends TransformResponse {
 
     private final TemplateRule templateRule;
 
-    private final String characterEncoding;
+    private final String encoding;
 
     private final String contentType;
 
@@ -57,7 +57,7 @@ public class TextTransformResponse extends TransformResponse {
 
         this.templateId = transformRule.getTemplateId();
         this.templateRule = transformRule.getTemplateRule();
-        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
     }
 
@@ -73,12 +73,12 @@ public class TextTransformResponse extends TransformResponse {
         }
 
         try {
-            if (this.characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            if (this.encoding != null) {
+                responseAdapter.setEncoding(this.encoding);
             } else {
-                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-                if (characterEncoding != null) {
-                    responseAdapter.setCharacterEncoding(characterEncoding);
+                String encoding = activity.getTranslet().getResponseEncoding();
+                if (encoding != null) {
+                    responseAdapter.setEncoding(encoding);
                 }
             }
 

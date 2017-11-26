@@ -37,11 +37,11 @@ public class CallParameters extends AbstractParameters {
         property = new ParameterDefinition("property", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-            bean,
-            template,
-            parameter,
-            attribute,
-            property
+                bean,
+                template,
+                parameter,
+                attribute,
+                property
         };
     }
 

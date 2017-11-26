@@ -19,7 +19,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class PointcutTargetParameters extends AbstractParameters {
+public class PointcutQualifierParameters extends AbstractParameters {
 
     public static final ParameterDefinition translet;
     public static final ParameterDefinition bean;
@@ -33,17 +33,17 @@ public class PointcutTargetParameters extends AbstractParameters {
         method = new ParameterDefinition("method", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-            translet,
-            bean,
-            method
+                translet,
+                bean,
+                method
         };
     }
 
-    public PointcutTargetParameters() {
+    public PointcutQualifierParameters() {
         super(parameterDefinitions);
     }
 
-    public PointcutTargetParameters(String text) {
+    public PointcutQualifierParameters(String text) {
         super(parameterDefinitions, text);
     }
 

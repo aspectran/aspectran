@@ -36,7 +36,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 
     private String contentType;
 
-    private String characterEncoding;
+    private String encoding;
 
     private Boolean defaultResponse;
 
@@ -101,19 +101,19 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     /**
      * Gets the character encoding.
      *
-     * @return the characterEncoding
+     * @return the character encoding
      */
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
      * Sets the character encoding.
      *
-     * @param characterEncoding the characterEncoding to set
+     * @param encoding the character encoding to set
      */
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**
@@ -211,8 +211,8 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     public void setTemplateRule(TemplateRule templateRule) {
         this.templateRule = templateRule;
         if (templateRule != null) {
-            if (templateRule.getEncoding() != null && this.characterEncoding == null) {
-                this.characterEncoding = templateRule.getEncoding();
+            if (templateRule.getEncoding() != null && this.encoding == null) {
+                this.encoding = templateRule.getEncoding();
             }
         }
     }
@@ -228,7 +228,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("transformType", transformType);
         tsb.append("contentType", contentType);
-        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("encoding", encoding);
         tsb.append("defaultResponse", defaultResponse);
         tsb.append("pretty", pretty);
         tsb.append("template", templateId);
@@ -237,7 +237,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     }
 
     public static TransformRule newInstance(String type, String contentType,
-            String characterEncoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
+            String encoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
         TransformType transformType = TransformType.resolve(type);
         if (transformType == null && contentType != null) {
             transformType = TransformType.resolve(ContentType.resolve(contentType));
@@ -250,14 +250,14 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         if (contentType != null) {
             tr.setContentType(contentType);
         }
-        tr.setCharacterEncoding(characterEncoding);
+        tr.setEncoding(encoding);
         tr.setDefaultResponse(defaultResponse);
         tr.setPretty(pretty);
         return tr;
     }
 
     public static TransformRule newInstance(TransformType transformType, String contentType,
-            String characterEncoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
+            String encoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
         if (transformType == null && contentType != null) {
             transformType = TransformType.resolve(ContentType.resolve(contentType));
         }
@@ -269,7 +269,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         if (contentType != null) {
             tr.setContentType(contentType);
         }
-        tr.setCharacterEncoding(characterEncoding);
+        tr.setEncoding(encoding);
         tr.setDefaultResponse(defaultResponse);
         tr.setPretty(pretty);
         return tr;
@@ -286,7 +286,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformRule.getTransformType());
         tr.setContentType(transformRule.getContentType());
-        tr.setCharacterEncoding(transformRule.getCharacterEncoding());
+        tr.setEncoding(transformRule.getEncoding());
         tr.setDefaultResponse(transformRule.getDefaultResponse());
         tr.setPretty(transformRule.getPretty());
         tr.setActionList(transformRule.getActionList());

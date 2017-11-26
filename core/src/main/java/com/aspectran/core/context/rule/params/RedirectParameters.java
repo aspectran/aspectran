@@ -24,7 +24,7 @@ public class RedirectParameters extends AbstractParameters {
     public static final ParameterDefinition action;
     public static final ParameterDefinition contentType;
     public static final ParameterDefinition target;
-    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition encoding;
     public static final ParameterDefinition excludeNullParameter;
     public static final ParameterDefinition excludeEmptyParameter;
     public static final ParameterDefinition defaultResponse;
@@ -36,21 +36,21 @@ public class RedirectParameters extends AbstractParameters {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
         contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
         target = new ParameterDefinition("target", ParameterValueType.STRING);
-        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         excludeNullParameter = new ParameterDefinition("excludeNullParameter", ParameterValueType.BOOLEAN);
         excludeEmptyParameter = new ParameterDefinition("excludeEmptyParameter", ParameterValueType.BOOLEAN);
-        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            action,
-            contentType,
-            target,
-            characterEncoding,
-            excludeNullParameter,
-            excludeEmptyParameter,
-            defaultResponse,
-            parameters
+                action,
+                contentType,
+                target,
+                encoding,
+                excludeNullParameter,
+                excludeEmptyParameter,
+                defaultResponse,
+                parameters
         };
     }
 

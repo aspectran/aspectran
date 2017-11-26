@@ -29,8 +29,8 @@ import java.io.Writer;
  */
 public class UnclosablePrintWriter extends PrintWriter {
 
-    public UnclosablePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
-        this(new BufferedWriter(new OutputStreamWriter(out, characterEncoding)));
+    public UnclosablePrintWriter(OutputStream out, String encoding) throws UnsupportedEncodingException {
+        this(new BufferedWriter(new OutputStreamWriter(out, encoding)));
     }
 
     public UnclosablePrintWriter(Writer writer) {

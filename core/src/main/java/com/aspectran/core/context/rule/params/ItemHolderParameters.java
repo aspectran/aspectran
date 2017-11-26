@@ -28,7 +28,7 @@ public class ItemHolderParameters extends AbstractParameters {
         item = new ParameterDefinition("item", ItemParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            item
+                item
         };
     }
 

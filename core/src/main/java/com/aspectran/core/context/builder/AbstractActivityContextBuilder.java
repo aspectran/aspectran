@@ -41,6 +41,7 @@ import com.aspectran.core.context.builder.resource.InvalidResourceException;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.assistant.BeanReferenceException;
@@ -49,7 +50,7 @@ import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -284,8 +285,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      * @param assistant the context rule assistant
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(ContextRuleAssistant assistant) throws BeanReferenceException {
+    protected ActivityContext createActivityContext(ContextRuleAssistant assistant)
+            throws BeanReferenceException, IllegalRuleException {
         initContextEnvironment(assistant);
 
         AspectranActivityContext activityContext = new AspectranActivityContext(assistant.getContextEnvironment());
@@ -387,7 +390,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
                 aspectRule.setPointcut(pointcut);
             }
-            if (aspectRule.getJoinpointType() == JoinpointType.SESSION) {
+            if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.SESSION) {
                 sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
             }
         }
@@ -408,19 +411,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
                 if (pointcutPatternRuleList != null) {
                     for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                        /*
-                        if (ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
-                            offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
-                            if (pointcutPatternVerifiable)
-                                log.error(msg);
-                            else
-                                log.warn(msg);
-                        }
-                        */
                         if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
+                            String msg = "Incorrect pointcut pattern for bean id '" + ppr.getBeanIdPattern() +
+                                    "' : aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {
@@ -429,7 +423,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                         }
                         if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
+                            String msg = "Incorrect pointcut pattern for class name '" + ppr.getClassNamePattern() +
+                                    "' : aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {
@@ -438,7 +433,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                         }
                         if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
+                            String msg = "Incorrect pointcut pattern for bean's method name '" + ppr.getMethodNamePattern() +
+                                    "' : aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {

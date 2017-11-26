@@ -35,7 +35,7 @@ public interface ResponseRuleApplicable {
     Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
 
     /**
-     * Apply the tranform response rule to the response rule.
+     * Apply the transform response rule to the response rule.
      *
      * @param transformRule the transform rule
      * @return the response

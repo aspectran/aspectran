@@ -34,7 +34,7 @@ public @interface Transform {
 
     String templateId() default "";
 
-    String characterEncoding() default "";
+    String encoding() default "";
 
     boolean pretty() default false;
 

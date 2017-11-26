@@ -222,13 +222,13 @@ public class CoreActivity extends BasicActivity {
 
     @Override
     public void perform() {
-        performTranslet();
+        performActivity();
     }
 
     @Override
     public void performWithoutResponse() {
         withoutResponse = true;
-        performTranslet();
+        performActivity();
     }
 
     @Override
@@ -299,9 +299,9 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Performs an activity.
+     * Performs core activity.
      */
-    private void performTranslet() {
+    private void performActivity() {
         try {
             try {
                 // execute the Before Advice Action for Translet Joinpoint
@@ -342,7 +342,7 @@ public class CoreActivity extends BasicActivity {
                 response();
             }
         } catch (Exception e) {
-            throw new ActivityException("Activity failed to perform", e);
+            throw new ActivityException("An error occurred while performing the activity", e);
         } finally {
             Scope requestScope = getRequestAdapter().getRequestScope(false);
             if (requestScope != null) {
@@ -441,7 +441,7 @@ public class CoreActivity extends BasicActivity {
     @Override
     public void handleException(ExceptionRule exceptionRule) {
         if (log.isDebugEnabled()) {
-            log.debug("Handling for raised exception: " + getRootCauseOfRaisedException());
+            log.debug("Handling the Exception Raised: " + getRootCauseOfRaisedException());
         }
 
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
@@ -470,7 +470,7 @@ public class CoreActivity extends BasicActivity {
             ResponseRule newResponseRule = new ResponseRule();
             newResponseRule.setResponse(targetResponse);
             if (this.responseRule != null) {
-                newResponseRule.setCharacterEncoding(this.responseRule.getCharacterEncoding());
+                newResponseRule.setEncoding(this.responseRule.getEncoding());
             }
 
             setResponseRule(newResponseRule);
@@ -654,29 +654,29 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Determine the request character encoding.
+     * Determine the request encoding.
      *
-     * @return the request character encoding
+     * @return the request encoding
      */
-    protected String resolveRequestCharacterEncoding() {
-        String characterEncoding = requestRule.getCharacterEncoding();
-        if (characterEncoding == null) {
-            characterEncoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+    protected String resolveRequestEncoding() {
+        String encoding = requestRule.getEncoding();
+        if (encoding == null) {
+            encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
         }
-        return characterEncoding;
+        return encoding;
     }
 
     /**
-     * Determine the response character encoding.
+     * Determine the response encoding.
      *
-     * @return the response character encoding
+     * @return the response encoding
      */
-    protected String resolveResponseCharacterEncoding() {
-        String characterEncoding = requestRule.getCharacterEncoding();
-        if (characterEncoding == null) {
-            characterEncoding = resolveRequestCharacterEncoding();
+    protected String resolveResponseEncoding() {
+        String encoding = requestRule.getEncoding();
+        if (encoding == null) {
+            encoding = resolveRequestEncoding();
         }
-        return characterEncoding;
+        return encoding;
     }
 
     @Override

@@ -106,7 +106,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 if (appender.getAppenderType() == AppenderType.FILE
                         && appender.getAppenderFileFormatType() == AppenderFileFormatType.XML) {
                     //appender.setProfiles(null);
-                    saveAsAponFormat((FileRuleAppender)appender);
+                    saveAsAponFormatted((FileRuleAppender)appender);
                 }
             }
         }
@@ -119,8 +119,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return ruleConverter;
     }
 
-    private void saveAsAponFormat(FileRuleAppender fileRuleAppender) throws Exception {
-        log.info("Save as APON format " + fileRuleAppender);
+    private void saveAsAponFormatted(FileRuleAppender fileRuleAppender) throws Exception {
+        log.info("Save as APON formatted " + fileRuleAppender);
 
         File aponFile = null;
 

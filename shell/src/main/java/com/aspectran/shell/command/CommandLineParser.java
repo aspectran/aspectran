@@ -112,7 +112,7 @@ public class CommandLineParser {
     }
 
     /**
-     * Parse translet name and find all CommandRedirections
+     * Parse translet name and find all {@code CommandRedirection}s.
      *
      * @param buffer the translet name to parse
      */

@@ -37,11 +37,11 @@ public class AdviceParameters extends AbstractParameters {
         finallyAdvice = new ParameterDefinition("finally", AdviceActionParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            bean,
-            beforeAdvice,
-            afterAdvice,
-            aroundAdvice,
-            finallyAdvice
+                bean,
+                beforeAdvice,
+                afterAdvice,
+                aroundAdvice,
+                finallyAdvice
         };
     }
 

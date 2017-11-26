@@ -49,10 +49,12 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         this.autoStart = autoStart;
     }
 
+    public void setSystemProperty(String key, String value) {
+        System.setProperty(key, value);
+    }
+
     @Override
     public void initialize() throws Exception {
-        System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-
         if (autoStart) {
             start();
         }

@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -44,11 +44,11 @@ public class AspectAdviceRulePreRegister {
         this.aspectRuleRegistry = aspectRuleRegistry;
 
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            JoinpointType joinpointType = aspectRule.getJoinpointType();
+            JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
 
-            if (joinpointType == JoinpointType.BEAN) {
+            if (joinpointTargetType == JoinpointTargetType.METHOD) {
                 aspectRule.setBeanRelevant(true);
-            } else if (joinpointType == JoinpointType.SESSION) {
+            } else if (joinpointTargetType == JoinpointTargetType.SESSION) {
                 aspectRule.setBeanRelevant(false);
             } else {
                 Pointcut pointcut = aspectRule.getPointcut();
@@ -57,16 +57,16 @@ public class AspectAdviceRulePreRegister {
                     aspectRule.setBeanRelevant(false);
                 } else {
                     List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-                    boolean beanRelevanted = false;
+                    boolean beanRelevant = false;
 
                     for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                         if (ppr.getBeanIdPattern() != null || ppr.getClassNamePattern() != null || ppr.getMethodNamePattern() != null) {
-                            beanRelevanted = true;
+                            beanRelevant = true;
                             break;
                         }
                     }
 
-                    aspectRule.setBeanRelevant(beanRelevanted);
+                    aspectRule.setBeanRelevant(beanRelevant);
                 }
             }
 
@@ -136,10 +136,10 @@ public class AspectAdviceRulePreRegister {
 
     private void register(TransletRule transletRule) {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            JoinpointType joinpointType = aspectRule.getJoinpointType();
+            JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
             Pointcut pointcut = aspectRule.getPointcut();
 
-            if (!aspectRule.isBeanRelevant() && joinpointType != JoinpointType.SESSION) {
+            if (!aspectRule.isBeanRelevant() && joinpointTargetType != JoinpointTargetType.SESSION) {
                 if (pointcut == null || pointcut.matches(transletRule.getName())) {
                     // register to the translet scope
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);

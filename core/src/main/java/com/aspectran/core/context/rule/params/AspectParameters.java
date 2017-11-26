@@ -26,7 +26,7 @@ public class AspectParameters extends AbstractParameters {
     public static final ParameterDefinition id;
     public static final ParameterDefinition order;
     public static final ParameterDefinition isolated;
-    public static final ParameterDefinition jointpoint;
+    public static final ParameterDefinition joinpoint;
     public static final ParameterDefinition settings;
     public static final ParameterDefinition advice;
     public static final ParameterDefinition exception;
@@ -38,20 +38,20 @@ public class AspectParameters extends AbstractParameters {
         id = new ParameterDefinition("id", ParameterValueType.STRING);
         order = new ParameterDefinition("order", ParameterValueType.INT);
         isolated = new ParameterDefinition("isolated", ParameterValueType.BOOLEAN);
-        jointpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
+        joinpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
         settings = new ParameterDefinition("settings", VariableParameters.class);
         advice = new ParameterDefinition("advice", AdviceParameters.class);
         exception = new ParameterDefinition("exception", ExceptionParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            id,
-            order,
-            isolated,
-            jointpoint,
-            settings,
-            advice,
-            exception
+                description,
+                id,
+                order,
+                isolated,
+                joinpoint,
+                settings,
+                advice,
+                exception
         };
     }
 

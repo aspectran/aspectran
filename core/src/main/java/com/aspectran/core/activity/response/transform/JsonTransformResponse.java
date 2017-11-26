@@ -43,7 +43,7 @@ public class JsonTransformResponse extends TransformResponse {
 
     private static final String ROUND_BRACKET_CLOSE = ")";
 
-    private final String characterEncoding;
+    private final String encoding;
 
     private final String contentType;
 
@@ -57,7 +57,7 @@ public class JsonTransformResponse extends TransformResponse {
     public JsonTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
         this.pretty = transformRule.isPretty();
     }
@@ -74,12 +74,12 @@ public class JsonTransformResponse extends TransformResponse {
         }
 
         try {
-            if (this.characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            if (this.encoding != null) {
+                responseAdapter.setEncoding(this.encoding);
             } else {
-                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-                if (characterEncoding != null) {
-                    responseAdapter.setCharacterEncoding(characterEncoding);
+                String encoding = activity.getTranslet().getResponseEncoding();
+                if (encoding != null) {
+                    responseAdapter.setEncoding(encoding);
                 }
             }
 

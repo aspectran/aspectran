@@ -89,7 +89,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (rootConfigLocation == null && aspectranParameters == null) {
                 if (getContextConfig() != null) {
-                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " + getContextConfig());
+                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " +
+                            getContextConfig());
                 } else {
                     throw new IllegalArgumentException("Either context.root or context.parameters must be specified");
                 }

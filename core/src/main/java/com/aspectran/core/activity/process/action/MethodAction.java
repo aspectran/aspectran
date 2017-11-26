@@ -61,7 +61,7 @@ public class MethodAction extends AbstractAction {
             Object bean = activity.getConfigBean(configBeanClass);
             return invokeMethod(activity, bean, methodActionRule.getMethod(), methodActionRule.isRequiresTranslet());
         } catch (Exception e) {
-            log.error("Failed to execute an action that invokes the bean's method. methodActionRule " + methodActionRule);
+            log.error("Failed to execute an action that invokes the bean's method " + methodActionRule);
             throw e;
         }
     }
@@ -69,13 +69,11 @@ public class MethodAction extends AbstractAction {
     public static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object[] args;
-
         if (requiresTranslet) {
             args = new Object[] { activity.getTranslet() };
         } else {
             args = MethodUtils.EMPTY_OBJECT_ARRAY;
         }
-
         return method.invoke(bean, args);
     }
 

@@ -51,7 +51,7 @@
             |aspect-description-line2
             |aspect-description-line3
         </description>
-        <joinpoint type="translet">
+        <joinpoint target="translet">
             pointcut: {
                 +: hello@TestAction^helloWorld
             }

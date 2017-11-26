@@ -190,7 +190,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
         } catch (Exception e) {
             throw new BeanCreationException(
-                    "An exception occurred during the execution of a factory method from the offered factory bean",
+                    "An exception occurred while invoking a factory method from the offered factory bean",
                     beanRule, e);
         }
 
@@ -241,12 +241,12 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         if (beanProxifierType == BeanProxifierType.JAVASSIST) {
             if (log.isTraceEnabled()) {
-                log.trace("create a javassist proxy bean " + beanRule);
+                log.trace("Create a dynamic proxy bean " + beanRule + " using Javassist");
             }
             bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
         } else if (beanProxifierType == BeanProxifierType.CGLIB) {
             if (log.isTraceEnabled()) {
-                log.trace("create a cglib proxy bean " + beanRule);
+                log.trace("Create a dynamic proxy bean " + beanRule + " using CGLIB");
             }
             bean = CglibDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
         } else {
@@ -256,7 +256,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 bean = newInstance(beanRule.getBeanClass());
             }
             if (log.isTraceEnabled()) {
-                log.trace("create a jdk proxy bean " + beanRule);
+                log.trace("Create a dynamic proxy bean " + beanRule + " using JDK");
             }
             bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
         }

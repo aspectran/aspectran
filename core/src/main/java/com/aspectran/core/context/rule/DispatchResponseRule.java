@@ -47,7 +47,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 
     private String contentType;
 
-    private String characterEncoding;
+    private String encoding;
 
     private Boolean defaultResponse;
 
@@ -160,19 +160,19 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     /**
      * Gets the character encoding.
      *
-     * @return the characterEncoding
+     * @return the character encoding
      */
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
      * Sets the character encoding.
      *
-     * @param characterEncoding the characterEncoding to set
+     * @param encoding the character encoding to set
      */
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**
@@ -225,8 +225,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
         tsb.appendForce("name", name);
         tsb.append("dispatchName", dispatchName);
         tsb.append("contentType", contentType);
-        tsb.append("characterEncoding", characterEncoding);
-        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("encoding", encoding);
+        tsb.append("default", defaultResponse);
         tsb.append("viewDispatcher", viewDispatcher);
         return tsb.toString();
     }
@@ -237,16 +237,16 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
      * @param name the dispatch name
      * @param dispatcher the id or class name of the view dispatcher bean
      * @param contentType the content type
-     * @param characterEncoding the character encoding
-     * @param defaultResponse the default response
+     * @param encoding the character encoding
+     * @param defaultResponse whether it is the default response
      * @return an instance of DispatchResponseRule
      */
-    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding, Boolean defaultResponse) {
+    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String encoding, Boolean defaultResponse) {
         DispatchResponseRule drr = new DispatchResponseRule();
         drr.setName(name);
         drr.setDispatcher(dispatcher);
         drr.setContentType(contentType);
-        drr.setCharacterEncoding(characterEncoding);
+        drr.setEncoding(encoding);
         drr.setDefaultResponse(defaultResponse);
         return drr;
     }
@@ -257,11 +257,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
      * @param name the dispatch name
      * @param dispatcher the id or class name of the view dispatcher bean
      * @param contentType the content type
-     * @param characterEncoding the character encoding
+     * @param encoding the character encoding
      * @return the dispatch response rule
      */
-    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String characterEncoding) {
-        return newInstance(name, dispatcher, contentType, characterEncoding, null);
+    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String encoding) {
+        return newInstance(name, dispatcher, contentType, encoding, null);
     }
 
     /**
@@ -290,7 +290,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
         DispatchResponseRule drr = new DispatchResponseRule();
         drr.setName(dispatchResponseRule.getName(), dispatchResponseRule.getNameTokens());
         drr.setContentType(dispatchResponseRule.getContentType());
-        drr.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
+        drr.setEncoding(dispatchResponseRule.getEncoding());
         drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
         drr.setActionList(dispatchResponseRule.getActionList());
         return drr;
