@@ -430,7 +430,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
         } else {
-            Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName(), activity);
+            Object value = activity.getActivityContext().getEnvironment().getProperty(token.getName(), activity);
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }

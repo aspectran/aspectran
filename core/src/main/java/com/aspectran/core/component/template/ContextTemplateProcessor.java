@@ -147,7 +147,7 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
                     Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
                     engine.process(templateName, model, writer, locale);
                 } else {
-                    String templateSource = templateRule.getTemplateSource(context.getContextEnvironment());
+                    String templateSource = templateRule.getTemplateSource(context.getEnvironment());
                     if (templateSource != null) {
                         String templateName = templateRule.getId();
                         if (templateName == null) {
@@ -157,12 +157,12 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
                     }
                 }
             } else {
-                Token[] templateTokens = templateRule.getTemplateTokens(context.getContextEnvironment());
+                Token[] templateTokens = templateRule.getTemplateTokens(context.getEnvironment());
                 if (templateTokens != null) {
                     TokenEvaluator evaluator = new TokenExpressionParser(activity);
                     evaluator.evaluate(templateTokens, writer);
                 } else {
-                    writer.write(templateRule.getTemplateSource(context.getContextEnvironment()));
+                    writer.write(templateRule.getTemplateSource(context.getEnvironment()));
                 }
             }
         } catch (Exception e) {

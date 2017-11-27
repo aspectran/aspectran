@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.MessageSource;
 
@@ -57,7 +57,7 @@ public interface ActivityContext {
      *
      * @return the context environment
      */
-    ContextEnvironment getContextEnvironment();
+    Environment getEnvironment();
 
     String getProperty(String name);
 

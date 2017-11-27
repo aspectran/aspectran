@@ -314,7 +314,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 ((ClassLoaderAware)bean).setClassLoader(context.getClassLoader());
             }
             if (bean instanceof EnvironmentAware) {
-                ((EnvironmentAware)bean).setEnvironment(context.getContextEnvironment());
+                ((EnvironmentAware)bean).setEnvironment(context.getEnvironment());
             }
         }
     }

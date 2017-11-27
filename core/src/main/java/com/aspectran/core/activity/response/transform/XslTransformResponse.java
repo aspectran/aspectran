@@ -94,7 +94,7 @@ public class XslTransformResponse extends TransformResponse {
         }
 
         try {
-            loadTemplate(activity.getActivityContext().getContextEnvironment());
+            loadTemplate(activity.getActivityContext().getEnvironment());
 
             if (outputEncoding != null) {
                 responseAdapter.setEncoding(outputEncoding);

@@ -27,6 +27,7 @@ import com.aspectran.core.component.template.ContextTemplateProcessor;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
@@ -83,7 +84,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     }
 
     @Override
-    public ContextEnvironment getContextEnvironment() {
+    public Environment getEnvironment() {
         return contextEnvironment;
     }
 
