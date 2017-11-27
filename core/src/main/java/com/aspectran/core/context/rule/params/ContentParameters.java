@@ -35,10 +35,10 @@ public class ContentParameters extends AbstractParameters {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            name,
-            hidden,
-            omittable,
-            action
+                name,
+                hidden,
+                omittable,
+                action
         };
     }
 

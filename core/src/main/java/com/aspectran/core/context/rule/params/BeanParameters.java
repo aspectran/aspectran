@@ -59,22 +59,22 @@ public class BeanParameters extends AbstractParameters {
         filter = new ParameterDefinition("filter", FilterParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            id,
-            className,
-            scan,
-            mask,
-            scope,
-            singleton,
-            factoryBean,
-            factoryMethod,
-            initMethod,
-            destroyMethod,
-            lazyInit,
-            important,
-            constructor,
-            properties,
-            filter
+                description,
+                id,
+                className,
+                scan,
+                mask,
+                scope,
+                singleton,
+                factoryBean,
+                factoryMethod,
+                initMethod,
+                destroyMethod,
+                lazyInit,
+                important,
+                constructor,
+                properties,
+                filter
         };
     }
 

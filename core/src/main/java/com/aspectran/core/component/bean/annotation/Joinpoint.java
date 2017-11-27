@@ -15,24 +15,26 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.context.rule.type.MethodType;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.aspectran.core.context.rule.type.JoinpointType;
-import com.aspectran.core.context.rule.type.MethodType;
-
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Joinpoint {
 
-    JoinpointType type() default JoinpointType.TRANSLET;
+    JoinpointTargetType target() default JoinpointTargetType.TRANSLET;
 
-    MethodType[] targetMethods() default {};
+    MethodType[] methods() default {};
 
-    String[] targetHeaders() default {};
+    String[] headers() default {};
+
+    String[] pointcut();
 
 }

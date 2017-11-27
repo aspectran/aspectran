@@ -59,16 +59,16 @@ public class AspectranParameters extends AbstractParameters {
         append = new ParameterDefinition("append", AppendParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            settings,
-            typeAlias,
-            environment,
-            aspect,
-            bean,
-            schedule,
-            translet,
-            template,
-            append
+                description,
+                settings,
+                typeAlias,
+                environment,
+                aspect,
+                bean,
+                schedule,
+                translet,
+                template,
+                append
         };
     }
 

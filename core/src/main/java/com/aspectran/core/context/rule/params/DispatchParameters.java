@@ -25,7 +25,7 @@ public class DispatchParameters extends AbstractParameters {
     public static final ParameterDefinition name;
     public static final ParameterDefinition dispatcher;
     public static final ParameterDefinition contentType;
-    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition encoding;
     public static final ParameterDefinition defaultResponse;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -35,16 +35,16 @@ public class DispatchParameters extends AbstractParameters {
         name = new ParameterDefinition("name", ParameterValueType.STRING);
         dispatcher = new ParameterDefinition("dispatcher", ParameterValueType.STRING);
         contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
-        defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
+        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-            action,
-            name,
-            dispatcher,
-            contentType,
-            characterEncoding,
-            defaultResponse
+                action,
+                name,
+                dispatcher,
+                contentType,
+                encoding,
+                defaultResponse
         };
     }
 

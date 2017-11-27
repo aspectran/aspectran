@@ -37,7 +37,7 @@ public abstract class ClassUtils {
      * @param <T> the generic type
      * @param cls the class to check
      * @return an instantiated object
-     * @throws IllegalArgumentException If instantiation fails for any reason;
+     * @throws IllegalArgumentException if instantiation fails for any reason;
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
@@ -46,12 +46,14 @@ public abstract class ClassUtils {
         try {
             ctor = findConstructor(cls);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Class " + cls.getName() + " has no default (no arg) constructor");
+            throw new IllegalArgumentException("Class " + cls.getName() +
+                    " has no default (no arg) constructor");
         }
         try {
             return ctor.newInstance();
         } catch (Exception e) {
-            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName() + ", problem: " + e.getMessage());
+            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
+                    cls.getName() + ", problem: " + e.getMessage());
             return null;
         }
     }
@@ -64,7 +66,7 @@ public abstract class ClassUtils {
      * @param cls the class to check
      * @param args the arguments
      * @return an instantiated object
-     * @throws IllegalArgumentException If instantiation fails for any reason;
+     * @throws IllegalArgumentException if instantiation fails for any reason;
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
@@ -77,12 +79,14 @@ public abstract class ClassUtils {
         try {
             ctor = findConstructor(cls, argTypes);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Class " + cls.getName() + " has no constructor which can accept the given arguments");
+            throw new IllegalArgumentException("Class " + cls.getName() +
+                    " has no constructor which can accept the given arguments");
         }
         try {
             return ctor.newInstance(args);
         } catch (Exception e) {
-            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName() + ", problem: " + e.getMessage());
+            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName()
+                    + ", problem: " + e.getMessage());
             return null;
         }
     }
@@ -96,19 +100,20 @@ public abstract class ClassUtils {
      * @return the constructor reference
      * @throws NoSuchMethodException if no such constructor exists
      */
-    public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... parameterTypes) throws NoSuchMethodException {
+    public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... parameterTypes)
+            throws NoSuchMethodException {
         Constructor<T> ctor;
         try {
             ctor = cls.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException e) {
             throw e;
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to find default constructor of class " + cls.getName() +
+            throw new IllegalArgumentException("Unable to find constructor of class " + cls.getName() +
                     ", problem: " + e.getMessage(), ExceptionUtils.getRootCause(e));
         }
         // must be public
         if (!Modifier.isPublic(ctor.getModifiers())) {
-            throw new IllegalArgumentException("Default constructor for " + cls.getName() +
+            throw new IllegalArgumentException("Constructor for " + cls.getName() +
                     " is not accessible (non-public?): not allowed to try modify access via Reflection: can not instantiate type");
         }
         return ctor;

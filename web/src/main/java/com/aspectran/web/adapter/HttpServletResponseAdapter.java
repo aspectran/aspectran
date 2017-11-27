@@ -58,13 +58,13 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String getCharacterEncoding() {
+    public String getEncoding() {
         return ((HttpServletResponse)adaptee).getCharacterEncoding();
     }
 
     @Override
-    public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
-        ((HttpServletResponse)adaptee).setCharacterEncoding(characterEncoding);
+    public void setEncoding(String encoding) throws UnsupportedEncodingException {
+        ((HttpServletResponse)adaptee).setCharacterEncoding(encoding);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
-        String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
+        String encoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
         String target = redirectResponseRule.getTarget(activity);
         int questionPos = -1;
 
@@ -135,7 +135,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                         sb.append(name).append(EQUAL_CHAR);
                     }
                     if (string != null) {
-                        string = URLEncoder.encode(string, characterEncoding);
+                        string = URLEncoder.encode(string, encoding);
                         sb.append(string);
                     }
                 }

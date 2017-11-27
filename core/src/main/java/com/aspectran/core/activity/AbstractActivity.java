@@ -33,7 +33,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -325,6 +325,18 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
+     * Gets the around advice result.
+     *
+     * @param <T> the generic type
+     * @param aspectId the aspect id
+     * @return the around advice result
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getAroundAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAroundAdviceResult(aspectId) : null);
+    }
+
+    /**
      * Gets the finally advice result.
      *
      * @param <T> the generic type
@@ -453,8 +465,8 @@ public abstract class AbstractActivity implements Activity {
         } else {
             AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
-                JoinpointType joinpointType = aspectRule.getJoinpointType();
-                if (!aspectRule.isBeanRelevant() && joinpointType == JoinpointType.TRANSLET) {
+                JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
+                if (!aspectRule.isBeanRelevant() && joinpointTargetType == JoinpointTargetType.TRANSLET) {
                     if (isAcceptable(aspectRule)) {
                         Pointcut pointcut = aspectRule.getPointcut();
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {
@@ -471,14 +483,14 @@ public abstract class AbstractActivity implements Activity {
     }
 
     private boolean isAcceptable(AspectRule aspectRule) {
-        if (aspectRule.getTargetMethods() != null) {
-            if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getTargetMethods())) {
+        if (aspectRule.getMethods() != null) {
+            if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getMethods())) {
                 return false;
             }
         }
-        if (aspectRule.getTargetHeaders() != null) {
+        if (aspectRule.getHeaders() != null) {
             boolean contained = false;
-            for (String header : aspectRule.getTargetHeaders()) {
+            for (String header : aspectRule.getHeaders()) {
                 if (getRequestAdapter().containsHeader(header)) {
                     contained = true;
                     break;

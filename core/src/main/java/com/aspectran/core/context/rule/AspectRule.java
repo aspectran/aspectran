@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.core.context.rule.type.JoinpointType;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
@@ -34,7 +34,7 @@ import java.util.List;
  * 
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
- *   &lt;joinpoint type="translet"&gt;
+ *   &lt;joinpoint target="translet"&gt;
  *     methods: [
  *       "GET"
  *       "POST"
@@ -59,7 +59,7 @@ import java.util.List;
  *         bean: "sample.bean1"
  *         method: "method1"
  *       }
- *       execlude: {
+ *       exclude: {
  *         translet: "/a/b/c"
  *         bean: "sample.bean3"
  *         method: "method1"
@@ -120,7 +120,7 @@ public class AspectRule implements BeanReferenceInspectable {
         return order;
     }
 
-    private void setOrder(int order) {
+    public void setOrder(int order) {
         this.order = order;
     }
 
@@ -132,7 +132,7 @@ public class AspectRule implements BeanReferenceInspectable {
         return BooleanUtils.toBoolean(isolated, false);
     }
 
-    private void setIsolated(Boolean isolated) {
+    public void setIsolated(Boolean isolated) {
         this.isolated = isolated;
     }
 
@@ -140,20 +140,20 @@ public class AspectRule implements BeanReferenceInspectable {
         return joinpointRule;
     }
 
-    private void setJoinpointRule(JoinpointRule joinpointRule) {
+    public void setJoinpointRule(JoinpointRule joinpointRule) {
         this.joinpointRule = joinpointRule;
     }
 
-    public JoinpointType getJoinpointType() {
-        return (joinpointRule != null ? joinpointRule.getJoinpointType() : null);
+    public JoinpointTargetType getJoinpointTargetType() {
+        return (joinpointRule != null ? joinpointRule.getJoinpointTargetType() : null);
     }
 
-    public MethodType[] getTargetMethods() {
-        return (joinpointRule != null ? joinpointRule.getTargetMethods() : null);
+    public MethodType[] getMethods() {
+        return (joinpointRule != null ? joinpointRule.getMethods() : null);
     }
 
-    public String[] getTargetHeaders() {
-        return (joinpointRule != null ? joinpointRule.getTargetHeaders() : null);
+    public String[] getHeaders() {
+        return (joinpointRule != null ? joinpointRule.getHeaders() : null);
     }
 
     public PointcutRule getPointcutRule() {
@@ -207,7 +207,7 @@ public class AspectRule implements BeanReferenceInspectable {
         this.aspectAdviceRuleList = aspectAdviceRuleList;
     }
 
-    public AspectAdviceRule newAspectAdviceRule(AspectAdviceType aspectAdviceType) {
+    public AspectAdviceRule touchAspectAdviceRule(AspectAdviceType aspectAdviceType) {
         if (aspectAdviceType == null) {
             throw new IllegalArgumentException("Argument 'aspectAdviceType' must not be null");
         }
@@ -229,6 +229,13 @@ public class AspectRule implements BeanReferenceInspectable {
 
     public void setExceptionRule(ExceptionRule exceptionRule) {
         this.exceptionRule = exceptionRule;
+    }
+
+    public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+        if (exceptionRule == null) {
+            exceptionRule = new ExceptionRule();
+        }
+        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
     }
 
     public boolean isBeanRelevant() {
@@ -270,11 +277,11 @@ public class AspectRule implements BeanReferenceInspectable {
             tsb.append("order", order);
         }
         tsb.append("isolated", isolated);
-        tsb.append("joinpointRule", joinpointRule);
+        tsb.append("joinpoint", joinpointRule);
         tsb.append("adviceBean", adviceBeanId);
-        tsb.append("settingsAdviceRule", settingsAdviceRule);
-        tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
-        tsb.append("exceptionRule", exceptionRule);
+        tsb.append("settingsAdvice", settingsAdviceRule);
+        tsb.append("aspectAdvices", aspectAdviceRuleList);
+        tsb.append("exception", exceptionRule);
         tsb.append("beanRelevant", beanRelevant);
         return tsb.toString();
     }
@@ -301,12 +308,13 @@ public class AspectRule implements BeanReferenceInspectable {
 
     public static void updateJoinpoint(AspectRule aspectRule, String type, String text) throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
-        JoinpointRule.updateJoinpointType(joinpointRule, type);
+        JoinpointRule.updateJoinpointTargetType(joinpointRule, type);
         JoinpointRule.updateJoinpoint(joinpointRule, text);
         aspectRule.setJoinpointRule(joinpointRule);
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters) throws IllegalRuleException {
+    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters)
+            throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpoint(joinpointRule, joinpointParameters);
         aspectRule.setJoinpointRule(joinpointRule);

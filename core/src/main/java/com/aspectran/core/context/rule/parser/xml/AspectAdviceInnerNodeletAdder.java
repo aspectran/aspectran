@@ -47,7 +47,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/before");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
+            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
             parser.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(new ActionNodeletAdder(assistant));
@@ -55,7 +55,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/after");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
+            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
             parser.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(new ActionNodeletAdder(assistant));
@@ -63,7 +63,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/around");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
+            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
             parser.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(new ActionNodeletAdder(assistant));
@@ -71,7 +71,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/finally");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
+            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
             parser.pushObject(aspectAdviceRule);
         });
         parser.addNodelet(new ActionNodeletAdder(assistant));

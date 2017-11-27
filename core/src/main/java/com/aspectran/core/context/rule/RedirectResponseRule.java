@@ -45,7 +45,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 
     private Token[] targetTokens;
 
-    private String characterEncoding;
+    private String encoding;
 
     private Boolean excludeNullParameter;
 
@@ -140,17 +140,17 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
      *
      * @return the character encoding
      */
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
      * Sets the character encoding.
      *
-     * @param characterEncoding the new character encoding
+     * @param encoding the new character encoding
      */
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**
@@ -292,7 +292,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
     /**
      * Sets whether the default response.
      *
-     * @param defaultResponse whether the default response
+     * @param defaultResponse whether it is the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
@@ -309,20 +309,21 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("contentType", contentType);
         tsb.appendForce("target", target);
-        tsb.appendForce("characterEncoding", characterEncoding);
+        tsb.appendForce("encoding", encoding);
         tsb.append("excludeNullParameter", excludeNullParameter);
-        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("excludeEmptyParameter", excludeEmptyParameter);
+        tsb.append("default", defaultResponse);
         return tsb.toString();
     }
 
-    public static RedirectResponseRule newInstance(String contentType, String target, String characterEncoding,
+    public static RedirectResponseRule newInstance(String contentType, String target, String encoding,
                                                    Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setContentType(contentType);
         if (target != null && target.length() > 0) {
             rrr.setTarget(target);
         }
-        rrr.setCharacterEncoding(characterEncoding);
+        rrr.setEncoding(encoding);
         rrr.setExcludeNullParameter(excludeNullParameter);
         rrr.setExcludeEmptyParameter(excludeEmptyParameter);
         rrr.setDefaultResponse(defaultResponse);
@@ -342,7 +343,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setContentType(redirectResponseRule.getContentType());
         rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
-        rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
+        rrr.setEncoding(redirectResponseRule.getEncoding());
         rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
         rrr.setExcludeEmptyParameter(redirectResponseRule.getExcludeEmptyParameter());
         rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());

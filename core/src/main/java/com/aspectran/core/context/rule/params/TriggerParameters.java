@@ -45,15 +45,15 @@ public class TriggerParameters extends AbstractParameters {
         repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-            type,
-            expression,
-            startDelaySeconds,
-            intervalInMilliseconds,
-            intervalInMinutes,
-            intervalInSeconds,
-            intervalInHours,
-            repeatCount,
-            repeatForever
+                type,
+                expression,
+                startDelaySeconds,
+                intervalInMilliseconds,
+                intervalInMinutes,
+                intervalInSeconds,
+                intervalInHours,
+                repeatCount,
+                repeatForever
         };
     }
 

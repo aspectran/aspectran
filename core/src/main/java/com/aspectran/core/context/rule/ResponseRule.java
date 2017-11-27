@@ -38,7 +38,10 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
     private String name;
 
-    private String characterEncoding;
+    /**
+     * The response encoding is the character encoding of the textual response.
+     */
+    private String encoding;
 
     private Response response;
 
@@ -57,21 +60,21 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     }
 
     /**
-     * Gets the character encoding.
+     * Gets the response encoding.
      *
-     * @return the character encoding
+     * @return the response encoding
      */
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
-     * Sets the character encoding.
+     * Sets the response encoding.
      *
-     * @param characterEncoding the new character encoding
+     * @param encoding the new response encoding
      */
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public Response getResponse() {
@@ -128,23 +131,23 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("encoding", encoding);
         tsb.append("response", response);
         return tsb.toString();
     }
 
-    public static ResponseRule newInstance(String name, String characterEncoding) throws IllegalRuleException {
-        if (characterEncoding != null) {
+    public static ResponseRule newInstance(String name, String encoding) throws IllegalRuleException {
+        if (encoding != null) {
             try {
-                Charset.forName(characterEncoding);
+                Charset.forName(encoding);
             } catch (Exception e) {
-                throw new IllegalRuleException("Unsupported character encoding name: " + characterEncoding, e);
+                throw new IllegalRuleException("Unsupported character encoding name: " + encoding, e);
             }
         }
 
         ResponseRule responseRule = new ResponseRule();
         responseRule.setName(name);
-        responseRule.setCharacterEncoding(characterEncoding);
+        responseRule.setEncoding(encoding);
         return responseRule;
     }
 
@@ -175,7 +178,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     public static ResponseRule replicate(ResponseRule responseRule) {
         ResponseRule newResponseRule = new ResponseRule();
         newResponseRule.setName(responseRule.getName());
-        newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
+        newResponseRule.setEncoding(responseRule.getEncoding());
         Response response = responseRule.getResponse();
         if (response != null) {
             Response newResponse = response.replicate();

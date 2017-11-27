@@ -49,7 +49,7 @@ public class HttpPutFormContentParser {
     public static void parse(RequestAdapter requestAdapter) {
         try {
             HttpServletRequest request = requestAdapter.getAdaptee();
-            String requestEncoding = requestAdapter.getCharacterEncoding();
+            String requestEncoding = requestAdapter.getEncoding();
             Charset charset = (requestEncoding != null) ? Charset.forName(requestEncoding) : DEFAULT_CHARSET;
             String body = copyToString(request.getInputStream(), charset);
 

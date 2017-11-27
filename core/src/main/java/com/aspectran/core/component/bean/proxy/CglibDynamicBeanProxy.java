@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import net.sf.cglib.proxy.Enhancer;
@@ -61,23 +62,35 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
         try {
             try {
                 if (aarr.getBeforeAdviceRuleList() != null) {
-                    activity.executeAdvice(aarr.getBeforeAdviceRuleList());
+                    for (AspectAdviceRule aspectAdviceRule : aarr.getBeforeAdviceRuleList()) {
+                        if (!isSameBean(beanRule, aspectAdviceRule)) {
+                            activity.executeAdvice(aspectAdviceRule);
+                        }
+                    }
                 }
 
                 if (log.isDebugEnabled()) {
-                    log.debug("invoke a proxied method [" + method + "] within the bean " + beanRule);
+                    log.debug("Invoke a proxy method " + methodName + "() on the bean " + beanRule);
                 }
 
                 Object result = methodProxy.invokeSuper(proxy, args);
 
                 if (aarr.getAfterAdviceRuleList() != null) {
-                    activity.executeAdvice(aarr.getAfterAdviceRuleList());
+                    for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
+                        if (!isSameBean(beanRule, aspectAdviceRule)) {
+                            activity.executeAdvice(aspectAdviceRule);
+                        }
+                    }
                 }
 
                 return result;
             } finally {
                 if (aarr.getFinallyAdviceRuleList() != null) {
-                    activity.executeAdviceWithoutThrow(aarr.getFinallyAdviceRuleList());
+                    for (AspectAdviceRule aspectAdviceRule : aarr.getFinallyAdviceRuleList()) {
+                        if (!isSameBean(beanRule, aspectAdviceRule)) {
+                            activity.executeAdviceWithoutThrow(aspectAdviceRule);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

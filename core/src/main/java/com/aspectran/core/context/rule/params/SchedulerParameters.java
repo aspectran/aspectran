@@ -31,8 +31,8 @@ public class SchedulerParameters extends AbstractParameters {
         trigger = new ParameterDefinition("trigger", TriggerParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            bean,
-            trigger
+                bean,
+                trigger
         };
     }
 

@@ -52,7 +52,7 @@ public interface RequestAdapter {
     /**
      * Gets the request scope.
      *
-     * @param create {@code true} to create a new reqeust scope for this
+     * @param create {@code true} to create a new request scope for this
      *         request if necessary; {@code false} to return {@code null}
      * @return the request scope
      */
@@ -64,17 +64,17 @@ public interface RequestAdapter {
      * @return a {@code String} containing the name of the character encoding,
      *         or {@code null} if the request does not specify a character encoding
      */
-    String getCharacterEncoding();
+    String getEncoding();
 
     /**
      * Overrides the name of the character encoding used in the body of this request.
      * This method must be called prior to reading request parameters
      * or reading input using getReader(). Otherwise, it has no effect.
      *
-     * @param characterEncoding a {@code String} containing the name of the character encoding.
+     * @param encoding a {@code String} containing the name of the character encoding.
      * @throws UnsupportedEncodingException if the specified encoding is invalid
      */
-    void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
+    void setEncoding(String encoding) throws UnsupportedEncodingException;
 
     /**
      * Returns the method used for the request.
@@ -202,12 +202,12 @@ public interface RequestAdapter {
     void setParameter(String name, String[] values);
 
     /**
-     * Return an unmutable Map of the request parameters,
+     * Return an immutable Map of the request parameters,
      * with parameter names as map keys and parameter values as map values.
      * If the parameter value type is the String then map value will be of type String.
      * If the parameter value type is the String array then map value will be of type String array.
      *
-     * @return the unmutable parameter map
+     * @return the immutable parameter map
      * @since 1.4.0
      */
     Map<String, Object> getAllParameters();
@@ -325,7 +325,7 @@ public interface RequestAdapter {
     void removeAttribute(String name);
 
     /**
-     * Returns an unmutable map of the attributes,
+     * Returns an immutable map of the attributes,
      * with attribute names as map keys and attribute value as map value.
      *
      * @return an unmodifiable map of the attributes

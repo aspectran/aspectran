@@ -35,10 +35,10 @@ public class ScheduleParameters extends AbstractParameters {
         job = new ParameterDefinition("job", ScheduleJobParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            id,
-            scheduler,
-            job
+                description,
+                id,
+                scheduler,
+                job
         };
     }
 

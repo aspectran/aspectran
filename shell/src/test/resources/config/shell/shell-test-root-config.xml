@@ -34,7 +34,7 @@
             해당 Translet의 실행 전에는 sampleAdvice Bean의 welcome 메쏘드를 실행하고,
             해당 Translet의 실행 후에는 sampleAdvice Bean의 goodbye 메쏘드를 실행합니다.
         </description>
-        <joinpoint type="translet">
+        <joinpoint target="translet">
             pointcut: {
                 +: hello@sampleAction^helloWorld
             }

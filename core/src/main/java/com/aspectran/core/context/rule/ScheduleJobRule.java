@@ -71,7 +71,7 @@ public class ScheduleJobRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("transletName", transletName);
+        tsb.append("translet", transletName);
         tsb.append("method", requestMethod);
         tsb.append("disabled", disabled);
         return tsb.toString();

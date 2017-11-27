@@ -79,7 +79,7 @@ public class AspectranClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(this);
 
         if (log.isDebugEnabled()) {
-            log.debug("Create a root AspectranClassLoader " + this);
+            log.debug("Root AspectranClassLoader " + this);
         }
     }
 
@@ -97,7 +97,7 @@ public class AspectranClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(resourceLocation, this);
 
         if (log.isDebugEnabled()) {
-            log.debug("Create a root AspectranClassLoader " + this);
+            log.debug("Root AspectranClassLoader " + this);
         }
     }
 
@@ -161,7 +161,7 @@ public class AspectranClassLoader extends ClassLoader {
         AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 
         if (log.isTraceEnabled()) {
-            log.trace("Create a new child AspectranClassLoader " + child);
+            log.trace("Child AspectranClassLoader " + child);
         }
 
         return child;
@@ -285,18 +285,18 @@ public class AspectranClassLoader extends ClassLoader {
         }
 
         AspectranClassLoader firstborn = null;
-        List<AspectranClassLoader> kickoutList = new ArrayList<>();
+        List<AspectranClassLoader> removeList = new ArrayList<>();
 
         for (AspectranClassLoader child : self.getChildren()) {
             if (child.isFirstborn()) {
                 firstborn = child;
             } else {
-                kickoutList.add(child);
+                removeList.add(child);
             }
         }
 
-        if (!kickoutList.isEmpty()) {
-            self.kickout(kickoutList);
+        if (!removeList.isEmpty()) {
+            self.remove(removeList);
         }
 
         if (firstborn != null) {
@@ -308,9 +308,9 @@ public class AspectranClassLoader extends ClassLoader {
         reloadedCount++;
     }
 
-    private void kickout(AspectranClassLoader child) {
+    private void remove(AspectranClassLoader child) {
         if (log.isDebugEnabled()) {
-            log.debug("Kick an " + child + " out of " + this);
+            log.debug("Remove child AspectranClassLoader " + child);
         }
 
         ResourceManager rm = child.getResourceManager();
@@ -320,9 +320,9 @@ public class AspectranClassLoader extends ClassLoader {
         children.remove(child);
     }
 
-    private void kickout(List<AspectranClassLoader> childList) {
+    private void remove(List<AspectranClassLoader> childList) {
         for (AspectranClassLoader child : childList) {
-            kickout(child);
+            remove(child);
         }
     }
 
@@ -446,7 +446,7 @@ public class AspectranClassLoader extends ClassLoader {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", id);
         if (getParent() instanceof AspectranClassLoader) {
-            tsb.append("parent", ((AspectranClassLoader) getParent()).getId());
+            tsb.append("parent", ((AspectranClassLoader)getParent()).getId());
         } else {
             tsb.append("parent", getParent().getClass().getName());
         }
@@ -563,7 +563,8 @@ public class AspectranClassLoader extends ClassLoader {
         return resourceName;
     }
 
-    public static String[] checkResourceLocations(String[] resourceLocations, String basePath) throws InvalidResourceException {
+    public static String[] checkResourceLocations(String[] resourceLocations, String basePath)
+            throws InvalidResourceException {
         if (resourceLocations == null) {
             return null;
         }
@@ -573,7 +574,8 @@ public class AspectranClassLoader extends ClassLoader {
                 String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
                 URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
                 if (url == null) {
-                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
+                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] +
+                            "] cannot be resolved to URL because it does not exist");
                 }
                 resourceLocations[i] = url.getFile();
             } else if (resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
@@ -581,7 +583,8 @@ public class AspectranClassLoader extends ClassLoader {
                     URL url = new URL(resourceLocations[i]);
                     resourceLocations[i] = url.getFile();
                 } catch (MalformedURLException e) {
-                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path");
+                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] +
+                            "] is neither a URL not a well-formed file path");
                 }
             } else {
                 if (basePath != null) {

@@ -88,18 +88,18 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchResponseRule.getContentType();
-            String characterEncoding = dispatchResponseRule.getCharacterEncoding();
+            String encoding = dispatchResponseRule.getEncoding();
 
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
 
-            if (characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(characterEncoding);
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
             } else {
-                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-                if (characterEncoding != null) {
-                    responseAdapter.setCharacterEncoding(characterEncoding);
+                encoding = activity.getTranslet().getResponseEncoding();
+                if (encoding != null) {
+                    responseAdapter.setEncoding(encoding);
                 }
             }
 

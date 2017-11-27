@@ -229,7 +229,7 @@ public class ParamsToRuleConverter {
             aspectRule.setDescription(description);
         }
 
-        JoinpointParameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
+        JoinpointParameters joinpointParameters = aspectParameters.getParameters(AspectParameters.joinpoint);
         if (joinpointParameters != null) {
             AspectRule.updateJoinpoint(aspectRule, joinpointParameters);
         }
@@ -250,28 +250,28 @@ public class ParamsToRuleConverter {
             AdviceActionParameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
             if (beforeAdviceParameters != null) {
                 ActionParameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
                 convertAsActionRule(actionParameters, aspectAdviceRule);
             }
 
             AdviceActionParameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
             if (afterAdviceParameters != null) {
                 ActionParameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
                 convertAsActionRule(actionParameters, aspectAdviceRule);
             }
 
             AdviceActionParameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
             if (aroundAdviceParameters != null) {
                 ActionParameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
                 convertAsActionRule(actionParameters, aspectAdviceRule);
             }
 
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
             if (finallyAdviceParameters != null) {
                 ActionParameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
                 convertAsActionRule(actionParameters, aspectAdviceRule);
                 // for thrown
                 ExceptionThrownParameters etParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
@@ -500,11 +500,11 @@ public class ParamsToRuleConverter {
 
     private RequestRule convertAsRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
         String allowedMethod = requestParameters.getString(RequestParameters.method);
-        String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
+        String encoding = requestParameters.getString(RequestParameters.encoding);
         ItemHolderParameters parametersItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
         ItemHolderParameters attributesItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 
-        RequestRule requestRule = RequestRule.newInstance(allowedMethod, characterEncoding);
+        RequestRule requestRule = RequestRule.newInstance(allowedMethod, encoding);
 
         if (parametersItemHolderParameters != null) {
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
@@ -521,9 +521,9 @@ public class ParamsToRuleConverter {
 
     private ResponseRule convertAsResponseRule(ResponseParameters responseParameters) throws IllegalRuleException {
         String name = responseParameters.getString(ResponseParameters.name);
-        String characterEncoding = responseParameters.getString(ResponseParameters.characterEncoding);
+        String encoding = responseParameters.getString(ResponseParameters.encoding);
 
-        ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
+        ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
 
         TransformParameters transformParameters = responseParameters.getParameters(ResponseParameters.transform);
         if (transformParameters != null) {
@@ -678,14 +678,14 @@ public class ParamsToRuleConverter {
     private TransformRule convertAsTransformRule(TransformParameters transformParameters) throws IllegalRuleException {
         String transformType = transformParameters.getString(TransformParameters.type);
         String contentType = transformParameters.getString(TransformParameters.contentType);
-        String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
+        String encoding = transformParameters.getString(TransformParameters.encoding);
         List<ActionParameters> actionParametersList = transformParameters.getParametersList(TransformParameters.action);
         Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
         Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         CallParameters callParameters = transformParameters.getParameters(TransformParameters.call);
 
-        TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
+        TransformRule tr = TransformRule.newInstance(transformType, contentType, encoding, defaultResponse, pretty);
 
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
@@ -707,10 +707,10 @@ public class ParamsToRuleConverter {
             String url = templateParameters.getString(TemplateParameters.url);
             String content = templateParameters.getString(TemplateParameters.content);
             String style = templateParameters.getString(TemplateParameters.style);
-            String encoding = templateParameters.getString(TemplateParameters.encoding);
+            String encoding2 = templateParameters.getString(TemplateParameters.encoding);
             Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, style, encoding, noCache);
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, style, encoding2, noCache);
             tr.setTemplateRule(templateRule);
 
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
@@ -731,11 +731,11 @@ public class ParamsToRuleConverter {
         String name = dispatchParameters.getString(DispatchParameters.name);
         String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
-        String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
+        String encoding = dispatchParameters.getString(DispatchParameters.encoding);
         List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
-        DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, characterEncoding, defaultResponse);
+        DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
 
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
@@ -760,13 +760,13 @@ public class ParamsToRuleConverter {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String target = redirectParameters.getString(RedirectParameters.target);
         ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
-        String characterEncoding = redirectParameters.getString(RedirectParameters.characterEncoding);
+        String encoding = redirectParameters.getString(RedirectParameters.encoding);
         Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
         Boolean excludeEmptyParameter = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameter);
         Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
         List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
 
-        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, characterEncoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
+        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
 
         if (parameterItemHolderParametersList != null) {
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParametersList);

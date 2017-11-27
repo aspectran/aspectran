@@ -16,17 +16,17 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Joinpoint types.
+ * Supported Joinpoint target types.
  */
-public enum JoinpointType {
+public enum JoinpointTargetType {
 
     SESSION("session"),
     TRANSLET("translet"),
-    BEAN("bean");
+    METHOD("method");
 
     private final String alias;
 
-    JoinpointType(String alias) {
+    JoinpointTargetType(String alias) {
         this.alias = alias;
     }
 
@@ -36,14 +36,14 @@ public enum JoinpointType {
     }
 
     /**
-     * Returns a {@code JoinpointType} with a value represented
+     * Returns a {@code JoinpointTargetType} with a value represented
      * by the specified {@code String}.
      *
-     * @param alias the join-point type as a {@code String}
-     * @return a {@code JoinpointType}, may be {@code null}
+     * @param alias the join-point target type as a {@code String}
+     * @return a {@code JoinpointTargetType}, may be {@code null}
      */
-    public static JoinpointType resolve(String alias) {
-        for (JoinpointType type : values()) {
+    public static JoinpointTargetType resolve(String alias) {
+        for (JoinpointTargetType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }

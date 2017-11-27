@@ -59,6 +59,13 @@ public class ToStringBuilder {
         }
     }
 
+    public void append(String name, Class<?> clazz) {
+        if (clazz != null) {
+            appendName(name);
+            append(clazz.getName());
+        }
+    }
+
     public void appendForce(String name, Object value) {
         appendName(name);
         append(value);
@@ -127,7 +134,7 @@ public class ToStringBuilder {
             int len = this.sb.length();
             for (Object o : list) {
                 if (this.sb.length() > len) {
-                    addpendComma();
+                    appendComma();
                 }
                 append(o);
             }
@@ -140,7 +147,7 @@ public class ToStringBuilder {
             while (en.hasMoreElements()) {
                 append(en.nextElement());
                 if (en.hasMoreElements()) {
-                    addpendComma();
+                    appendComma();
                 }
             }
         }
@@ -168,7 +175,7 @@ public class ToStringBuilder {
                 Object value = Array.get(object, i);
                 checkCircularReference(object, value);
                 if (i > 0) {
-                    addpendComma();
+                    appendComma();
                 }
                 append(value);
             }
@@ -180,19 +187,19 @@ public class ToStringBuilder {
 
     public void appendName(Object name) {
         if (this.sb.length() > 1) {
-            addpendComma();
+            appendComma();
         }
         this.sb.append(name).append("=");
     }
 
     private void appendName(Object name, int len) {
         if (this.sb.length() > len) {
-            addpendComma();
+            appendComma();
         }
         this.sb.append(name).append("=");
     }
 
-    private void addpendComma() {
+    private void appendComma() {
         this.sb.append(", ");
     }
 

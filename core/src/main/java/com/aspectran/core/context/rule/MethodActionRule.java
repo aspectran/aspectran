@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Method;
@@ -37,7 +38,7 @@ public class MethodActionRule {
 
     private boolean requiresTranslet;
 
-    private AspectAdviceRule aspectAdviceRule;
+//    private AspectAdviceRule aspectAdviceRule;
 
     public String getActionId() {
         return actionId;
@@ -72,23 +73,23 @@ public class MethodActionRule {
         return requiresTranslet;
     }
 
-    /**
-     * Gets the aspect advice rule.
-     *
-     * @return the aspect advice rule
-     */
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
-    }
-
-    /**
-     * Sets the aspect advice rule.
-     *
-     * @param aspectAdviceRule the new aspect advice rule
-     */
-    public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-        this.aspectAdviceRule = aspectAdviceRule;
-    }
+//    /**
+//     * Gets the aspect advice rule.
+//     *
+//     * @return the aspect advice rule
+//     */
+//    public AspectAdviceRule getAspectAdviceRule() {
+//        return aspectAdviceRule;
+//    }
+//
+//    /**
+//     * Sets the aspect advice rule.
+//     *
+//     * @param aspectAdviceRule the new aspect advice rule
+//     */
+//    public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+//        this.aspectAdviceRule = aspectAdviceRule;
+//    }
 
     @Override
     public String toString() {
@@ -97,7 +98,7 @@ public class MethodActionRule {
             tsb.append("class", configBeanClass.getName());
         }
         tsb.append("method", method);
-        tsb.append("aspectAdviceRule", aspectAdviceRule);
+        //tsb.append("aspectAdviceRule", aspectAdviceRule);
         return tsb.toString();
     }
 
@@ -118,6 +119,13 @@ public class MethodActionRule {
     public static boolean isRequiresTranslet(Method method) {
         Class<?>[] paramTypes = method.getParameterTypes();
         return (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
+    }
+
+    public static MethodAction newMethodAction(Class<?> configBeanClass, Method method) {
+        MethodActionRule methodActionRule = new MethodActionRule();
+        methodActionRule.setConfigBeanClass(configBeanClass);
+        methodActionRule.setMethod(method);
+        return new MethodAction(methodActionRule, null);
     }
 
 }

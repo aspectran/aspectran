@@ -214,7 +214,7 @@ public class FilenameUtils {
      * @param filename a full filename
      * @return the path
      */
-    public static String getFullPathWithEndSeprator(String filename) {
+    public static String getFullPathWithEndSeparator(String filename) {
         if (filename == null) {
             return null;
         }
@@ -229,10 +229,10 @@ public class FilenameUtils {
      * Checks whether the extension of the filename is valid.
      * The extension check is case-sensitive on all platforms.
      *
-     * @param filename he filename to query, null returns false
+     * @param filename the filename to query, null returns false
      * @param allowedFileExtensions the allowed file extensions
      * @param deniedFileExtensions the denied file extensions
-     * @return true, if is valid file extention
+     * @return true if is valid file extension, false otherwise
      */
     public static boolean isValidFileExtension(String filename, String allowedFileExtensions, String deniedFileExtensions) {
         if (filename == null) {

@@ -35,7 +35,11 @@ public class RequestRule {
 
     private boolean implicit;
 
-    private String characterEncoding;
+    /**
+     * The request encoding is the character encoding in which parameters
+     * in an incoming request are interpreted.
+     */
+    private String encoding;
 
     private MethodType allowedMethod;
 
@@ -65,21 +69,21 @@ public class RequestRule {
     }
 
     /**
-     * Gets the character encoding.
+     * Gets the request encoding.
      *
-     * @return the character encoding
+     * @return the request encoding
      */
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
-     * Sets the character encoding.
+     * Sets the request encoding.
      *
-     * @param characterEncoding the new character encoding
+     * @param encoding the new request encoding
      */
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**
@@ -190,7 +194,7 @@ public class RequestRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("method", allowedMethod);
-        tsb.append("characterEncoding", characterEncoding);
+        tsb.append("encoding", encoding);
         tsb.append("parameters", parameterItemRuleMap);
         tsb.append("attributes", attributeItemRuleMap);
         return tsb.toString();
@@ -202,7 +206,7 @@ public class RequestRule {
         return requestRule;
     }
 
-    public static RequestRule newInstance(String allowedMethod, String characterEncoding) throws IllegalRuleException {
+    public static RequestRule newInstance(String allowedMethod, String encoding) throws IllegalRuleException {
         MethodType allowedMethodType = null;
         if (allowedMethod != null) {
             allowedMethodType = MethodType.resolve(allowedMethod);
@@ -211,17 +215,17 @@ public class RequestRule {
             }
         }
 
-        if (characterEncoding != null) {
+        if (encoding != null) {
             try {
-                Charset.forName(characterEncoding);
+                Charset.forName(encoding);
             } catch (Exception e) {
-                throw new IllegalRuleException("Unsupported character encoding name: " + characterEncoding, e);
+                throw new IllegalRuleException("Unsupported character encoding name: " + encoding, e);
             }
         }
 
         RequestRule requestRule = new RequestRule();
         requestRule.setAllowedMethod(allowedMethodType);
-        requestRule.setCharacterEncoding(characterEncoding);
+        requestRule.setEncoding(encoding);
         return requestRule;
     }
 

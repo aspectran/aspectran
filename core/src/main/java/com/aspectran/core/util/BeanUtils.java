@@ -623,12 +623,12 @@ public class BeanUtils {
     }
 
     /**
-     * Returns an array of the writeable properties exposed by a bean.
+     * Returns an array of the writable properties exposed by a bean.
      *
      * @param bean the bean
      * @return the properties
      */
-    public static String[] getWriteablePropertyNames(Object bean) {
+    public static String[] getWritablePropertyNames(Object bean) {
         return getBeanDescriptor(bean.getClass()).getWritablePropertyNames();
     }
 

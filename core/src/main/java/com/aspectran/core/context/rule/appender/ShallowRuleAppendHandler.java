@@ -30,7 +30,7 @@ public class ShallowRuleAppendHandler extends AbstractAppendHandler {
 
     @Override
     public void handle(RuleAppender appender) throws Exception {
-        // shallow
+        // Do Nothing
     }
 
 }

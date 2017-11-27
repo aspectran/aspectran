@@ -212,8 +212,8 @@ public class RuleToParamsConverter {
         EnvironmentParameters environmentParameters = new EnvironmentParameters();
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
         if (environmentRule.getPropertyItemRuleMap() != null) {
-            ItemHolderParameters itemHoderParameters = toItemHolderParameters(environmentRule.getPropertyItemRuleMap());
-            environmentParameters.putValue(EnvironmentParameters.properties, itemHoderParameters);
+            ItemHolderParameters itemHolderParameters = toItemHolderParameters(environmentRule.getPropertyItemRuleMap());
+            environmentParameters.putValue(EnvironmentParameters.properties, itemHolderParameters);
         }
         return environmentParameters;
     }
@@ -230,8 +230,8 @@ public class RuleToParamsConverter {
         if (aspectRule.getJoinpointRule() != null) {
             JoinpointParameters joinpointParameters = aspectRule.getJoinpointRule().getJoinpointParameters();
             if (joinpointParameters != null) {
-                joinpointParameters.putValueNonNull(JoinpointParameters.type, aspectRule.getJoinpointType());
-                aspectParameters.putValue(AspectParameters.jointpoint, joinpointParameters);
+                joinpointParameters.putValueNonNull(JoinpointParameters.target, aspectRule.getJoinpointTargetType());
+                aspectParameters.putValue(AspectParameters.joinpoint, joinpointParameters);
             }
         }
 
@@ -339,14 +339,14 @@ public class RuleToParamsConverter {
         ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
         if (constructorArgumentItemRuleMap != null) {
             ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
-            ItemHolderParameters itemHoderParameters = toItemHolderParameters(constructorArgumentItemRuleMap);
-            constructorParameters.putValue(ConstructorParameters.arguments, itemHoderParameters);
+            ItemHolderParameters itemHolderParameters = toItemHolderParameters(constructorArgumentItemRuleMap);
+            constructorParameters.putValue(ConstructorParameters.arguments, itemHolderParameters);
         }
 
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
-            ItemHolderParameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
-            beanParameters.putValue(BeanParameters.properties, itemHoderParameters);
+            ItemHolderParameters itemHolderParameters = toItemHolderParameters(propertyItemRuleMap);
+            beanParameters.putValue(BeanParameters.properties, itemHolderParameters);
         }
 
         return beanParameters;
@@ -406,7 +406,7 @@ public class RuleToParamsConverter {
             } else {
                 RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
                 requestParameters.putValueNonNull(RequestParameters.method, requestRule.getAllowedMethod());
-                requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
+                requestParameters.putValueNonNull(RequestParameters.encoding, requestRule.getEncoding());
 
                 ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
                 if (parameterItemRuleMap != null) {
@@ -534,7 +534,7 @@ public class RuleToParamsConverter {
     public static ResponseParameters toResponseParameters(ResponseRule responseRule) {
         ResponseParameters responseParameters = new ResponseParameters();
         responseParameters.putValueNonNull(ResponseParameters.name, responseRule.getName());
-        responseParameters.putValueNonNull(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
+        responseParameters.putValueNonNull(ResponseParameters.encoding, responseRule.getEncoding());
 
         if (responseRule.getResponseType() == ResponseType.TRANSFORM) {
             TransformResponse transformResponse = responseRule.getRespondent();
@@ -561,7 +561,7 @@ public class RuleToParamsConverter {
         }
 
         transformParameters.putValueNonNull(TransformParameters.contentType, transformRule.getContentType());
-        transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
+        transformParameters.putValueNonNull(TransformParameters.encoding, transformRule.getEncoding());
         transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
         transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
 
@@ -587,7 +587,7 @@ public class RuleToParamsConverter {
         dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchResponseRule.getName());
         dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchResponseRule.getDispatcher());
         dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchResponseRule.getContentType());
-        dispatchParameters.putValueNonNull(DispatchParameters.characterEncoding, dispatchResponseRule.getCharacterEncoding());
+        dispatchParameters.putValueNonNull(DispatchParameters.encoding, dispatchResponseRule.getEncoding());
         dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
 
         ActionList actionList = dispatchResponseRule.getActionList();
@@ -621,7 +621,7 @@ public class RuleToParamsConverter {
         RedirectParameters redirectParameters = new RedirectParameters();
         redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
         redirectParameters.putValueNonNull(RedirectParameters.target, redirectResponseRule.getTarget());
-        redirectParameters.putValueNonNull(RedirectParameters.characterEncoding, redirectResponseRule.getCharacterEncoding());
+        redirectParameters.putValueNonNull(RedirectParameters.encoding, redirectResponseRule.getEncoding());
         redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
         redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameter, redirectResponseRule.getExcludeEmptyParameter());
         redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
@@ -686,14 +686,14 @@ public class RuleToParamsConverter {
 
         ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
-            ItemHolderParameters itemHoderParameters = toItemHolderParameters(propertyItemRuleMap);
-            actionParameters.putValue(ActionParameters.properties, itemHoderParameters);
+            ItemHolderParameters itemHolderParameters = toItemHolderParameters(propertyItemRuleMap);
+            actionParameters.putValue(ActionParameters.properties, itemHolderParameters);
         }
 
         ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
         if (argumentItemRuleMap != null) {
-            ItemHolderParameters itemHoderParameters = toItemHolderParameters(argumentItemRuleMap);
-            actionParameters.putValue(ActionParameters.arguments, itemHoderParameters);
+            ItemHolderParameters itemHolderParameters = toItemHolderParameters(argumentItemRuleMap);
+            actionParameters.putValue(ActionParameters.arguments, itemHolderParameters);
         }
 
         return actionParameters;

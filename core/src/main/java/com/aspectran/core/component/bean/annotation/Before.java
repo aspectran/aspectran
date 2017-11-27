@@ -26,6 +26,4 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Before {
 
-    String pointcut();
-
 }

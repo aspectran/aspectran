@@ -50,7 +50,7 @@ public class XmlTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
 
-    private final String characterEncoding;
+    private final String encoding;
 
     private final String contentType;
 
@@ -64,7 +64,7 @@ public class XmlTransformResponse extends TransformResponse {
     public XmlTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
         this.pretty = transformRule.isPretty();
     }
@@ -81,15 +81,15 @@ public class XmlTransformResponse extends TransformResponse {
         }
 
         try {
-            String characterEncoding;
-            if (this.characterEncoding != null) {
-                characterEncoding = this.characterEncoding;
+            String encoding;
+            if (this.encoding != null) {
+                encoding = this.encoding;
             } else {
-                characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
+                encoding = activity.getTranslet().getResponseEncoding();
             }
 
-            if (characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(characterEncoding);
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
             }
 
             if (contentType != null) {
@@ -108,8 +108,8 @@ public class XmlTransformResponse extends TransformResponse {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 
-            if (characterEncoding != null) {
-                transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+            if (encoding != null) {
+                transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             }
 
             if (pretty) {

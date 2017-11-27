@@ -32,8 +32,8 @@ public class EnvironmentParameters extends AbstractParameters {
         properties = new ParameterDefinition("properties", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            profile,
-            properties
+                profile,
+                properties
         };
     }
 

@@ -46,15 +46,15 @@ public class DefaultSettingsParameters extends AbstractParameters {
         defaultSchedulerBean = new ParameterDefinition(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-            transletNamePattern,
-            transletNamePrefix,
-            transletNameSuffix,
-            transletInterfaceClass,
-            transletImplementationClass,
-            beanProxifier,
-            pointcutPatternVerifiable,
-            defaultTemplateEngineBean,
-            defaultSchedulerBean
+                transletNamePattern,
+                transletNamePrefix,
+                transletNameSuffix,
+                transletInterfaceClass,
+                transletImplementationClass,
+                beanProxifier,
+                pointcutPatternVerifiable,
+                defaultTemplateEngineBean,
+                defaultSchedulerBean
         };
     }
 

@@ -58,7 +58,7 @@ public class CoreTranslet implements Translet {
      *
      * @param activity the current Activity
      */
-    protected CoreTranslet(CoreActivity activity) {
+    public CoreTranslet(CoreActivity activity) {
         this.activity = activity;
     }
 
@@ -119,13 +119,13 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public String getRequestCharacterEncoding() {
-        return activity.resolveRequestCharacterEncoding();
+    public String getRequestEncoding() {
+        return activity.resolveRequestEncoding();
     }
 
     @Override
-    public String getResponseCharacterEncoding() {
-        return activity.resolveResponseCharacterEncoding();
+    public String getResponseEncoding() {
+        return activity.resolveResponseEncoding();
     }
 
     @Override
@@ -439,6 +439,11 @@ public class CoreTranslet implements Translet {
     @Override
     public <T> T getAfterAdviceResult(String aspectId) {
         return activity.getAfterAdviceResult(aspectId);
+    }
+
+    @Override
+    public <T> T getAroundAdviceResult(String aspectId) {
+        return activity.getAroundAdviceResult(aspectId);
     }
 
     @Override

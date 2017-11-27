@@ -31,8 +31,8 @@ public class FilterParameters extends AbstractParameters {
         exclude = new ParameterDefinition("exclude", ParameterValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            filterClass,
-            exclude
+                filterClass,
+                exclude
         };
     }
 

@@ -64,7 +64,7 @@
 
 <!ELEMENT joinpoint (#PCDATA)>
 <!ATTLIST joinpoint
-  type    (session | translet | bean) #IMPLIED
+  target  (session | translet | method) #IMPLIED
 >
 
 <!ELEMENT advice (before?, after?, around?, finally?)>
@@ -158,8 +158,8 @@
 
 <!ELEMENT request (parameters?, attributes?)>
 <!ATTLIST request
-  method            CDATA #IMPLIED
-  characterEncoding CDATA #IMPLIED
+  method   CDATA #IMPLIED
+  encoding CDATA #IMPLIED
 >
 
 <!ELEMENT contents (content*)>
@@ -204,42 +204,43 @@
 
 <!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
 <!ATTLIST response
-  name              CDATA #IMPLIED
-  characterEncoding CDATA #IMPLIED
+  name     CDATA #IMPLIED
+  encoding CDATA #IMPLIED
 >
 
 <!ELEMENT transform ((action? | include? | echo? | headers?)*, (template? | call?))>
 <!ATTLIST transform
-  type              CDATA #IMPLIED
-  contentType       CDATA #IMPLIED
-  characterEncoding CDATA #IMPLIED
-  defaultResponse   (true | false) #IMPLIED
-  pretty            (true | false) #IMPLIED
+  type        CDATA #IMPLIED
+  contentType CDATA #IMPLIED
+  encoding    CDATA #IMPLIED
+  default     (true | false) #IMPLIED
+  pretty      (true | false) #IMPLIED
 >
 
 <!ELEMENT dispatch (action? | include? | echo? | headers?)*>
 <!ATTLIST dispatch
-  name              CDATA #REQUIRED
-  dispatcher        CDATA #IMPLIED
-  contentType       CDATA #IMPLIED
-  characterEncoding CDATA #IMPLIED
-  defaultResponse   (true | false) #IMPLIED
+  name        CDATA #REQUIRED
+  dispatcher  CDATA #IMPLIED
+  contentType CDATA #IMPLIED
+  encoding    CDATA #IMPLIED
+  default     (true | false) #IMPLIED
 >
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType           CDATA #IMPLIED
   target                CDATA #REQUIRED
-  characterEncoding     CDATA #IMPLIED
+  encoding              CDATA #IMPLIED
   excludeNullParameter  (true | false) #IMPLIED
   excludeEmptyParameter (true | false) #IMPLIED
-  defaultResponse       (true | false) #IMPLIED
+  default               (true | false) #IMPLIED
 >
 
 <!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
-  translet    CDATA #IMPLIED
+  translet    CDATA #REQUIRED
+  default     (true | false) #IMPLIED
 >
 
 <!ELEMENT parameters (#PCDATA | item)*>

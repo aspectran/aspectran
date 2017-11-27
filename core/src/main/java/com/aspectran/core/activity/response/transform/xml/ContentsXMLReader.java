@@ -306,9 +306,9 @@ public class ContentsXMLReader implements XMLReader {
 
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
         } else {
-            String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
-            if (readableProperyNames != null && readableProperyNames.length > 0) {
-                for (String name : readableProperyNames) {
+            String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
+            if (readablePropertyNames != null && readablePropertyNames.length > 0) {
+                for (String name : readablePropertyNames) {
                     Object value = BeanUtils.getProperty(object, name);
                     checkCircularReference(object, value);
 
@@ -322,7 +322,8 @@ public class ContentsXMLReader implements XMLReader {
 
     private void checkCircularReference(Object wrapper, Object member) {
         if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+            throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected" +
+                    " while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }
 

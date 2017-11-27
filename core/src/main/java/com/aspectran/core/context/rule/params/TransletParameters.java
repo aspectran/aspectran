@@ -61,23 +61,23 @@ public class TransletParameters extends AbstractParameters {
         exception = new ParameterDefinition("exception", ExceptionParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-            description,
-            name,
-            scan,
-            mask,
-            method,
-            request,
-            parameters,
-            attributes,
-            contents,
-            content,
-            action,
-            response,
-            transform,
-            dispatch,
-            redirect,
-            forward,
-            exception
+                description,
+                name,
+                scan,
+                mask,
+                method,
+                request,
+                parameters,
+                attributes,
+                contents,
+                content,
+                action,
+                response,
+                transform,
+                dispatch,
+                redirect,
+                forward,
+                exception
         };
     }
 

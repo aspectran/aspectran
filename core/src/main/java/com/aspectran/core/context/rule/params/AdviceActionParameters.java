@@ -31,8 +31,8 @@ public class AdviceActionParameters extends AbstractParameters {
         action = new ParameterDefinition("action", ActionParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            thrown,
-            action
+                thrown,
+                action
         };
     }
 

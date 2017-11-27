@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeadingAction;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -32,6 +33,8 @@ import com.aspectran.core.util.ToStringBuilder;
 public class AspectAdviceRule implements ActionRuleApplicable {
 
     private final AspectRule aspectRule;
+
+    private final String aspectId;
 
     private final String adviceBeanId;
 
@@ -47,13 +50,14 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
         this.aspectRule = aspectRule;
+        this.aspectId = aspectRule.getId();
         this.adviceBeanId = aspectRule.getAdviceBeanId();
         this.adviceBeanClass = aspectRule.getAdviceBeanClass();
         this.aspectAdviceType = aspectAdviceType;
     }
 
     public String getAspectId() {
-        return aspectRule.getId();
+        return aspectId;
     }
 
     public AspectRule getAspectRule() {
@@ -84,15 +88,14 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     @Override
     public void applyActionRule(MethodActionRule methodActionRule) {
         throw new UnsupportedOperationException(
-                "Unable to apply MethodActionRule to AspectAdviceRule " +
-                        "(AspectAdvice does not support IncludeAction and MethodAction)");
+                "Cannot apply the Method Action Rule to the Aspect Advice Rule");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
-                "Unable to apply IncludeActionRule to AspectAdviceRule " +
-                        "(AspectAdvice does not support IncludeAction and MethodAction)");
+                "Cannot apply the Include Action Rule to the Aspect Advice Rule; " +
+                "AspectAdvice is not support IncludeAction");
     }
 
     @Override
@@ -107,6 +110,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     public Executable getExecutableAction() {
         return action;
+    }
+
+    public void setExecutableAction(MethodAction action) {
+        this.action = action;
     }
 
     public ActionType getActionType() {
@@ -136,9 +143,9 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     public String toString(boolean preventRecursive) {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (aspectRule != null) {
-            tsb.append("aspectId", aspectRule.getId());
-        }
+        tsb.append("aspectId", aspectId);
+        tsb.append("adviceBeanId", adviceBeanId);
+        tsb.append("adviceBeanClass", adviceBeanClass);
         tsb.append("aspectAdviceType", aspectAdviceType);
         if (!preventRecursive) {
             tsb.append("action", action);

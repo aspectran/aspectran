@@ -363,7 +363,7 @@ public class Session {
     }
 
     /**
-     * Chech that the session data can be read.
+     * Check that the session data can be read.
      *
      * @throws IllegalStateException if the session is invalid
      */

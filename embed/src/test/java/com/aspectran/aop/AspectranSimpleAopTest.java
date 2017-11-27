@@ -15,11 +15,14 @@
  */
 package com.aspectran.aop;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
@@ -37,12 +40,14 @@ public class AspectranSimpleAopTest {
 
     @Test
     public void test1() throws AspectranServiceException {
-        service.translet("aop/test/target1");
+        Translet translet = service.translet("aop/test/action1");
+        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
+        assertEquals(sampleAnnotatedAspect.foo(), "foo");
     }
 
     @Test
     public void test2() throws AspectranServiceException {
-        service.translet("aop/test/target2");
+        service.translet("aop/test/action2");
     }
 
     @After

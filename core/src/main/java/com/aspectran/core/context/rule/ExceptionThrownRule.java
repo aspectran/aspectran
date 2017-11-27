@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeadingAction;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -138,7 +139,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         if (redirectResponseRule.getContentType() != null) {
             responseMap.put(redirectResponseRule.getContentType(), response);
         }
-        if (redirectResponseRule.getDefaultResponse() == Boolean.TRUE) {
+        if (redirectResponseRule.isDefaultResponse()) {
             defaultResponse = response;
         }
         if (defaultResponse == null && redirectResponseRule.getContentType() == null) {
@@ -202,6 +203,10 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         return action;
     }
 
+    public void setExecutableAction(MethodAction action) {
+        this.action = action;
+    }
+
     /**
      * Returns the action type of the executable action.
      *
@@ -209,6 +214,19 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
      */
     public ActionType getActionType() {
         return (action != null ? action.getActionType() : null);
+    }
+
+    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, MethodAction action) {
+        ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
+        if (types != null && types.length > 0) {
+            String[] exceptionTypes = new String[types.length];
+            for (int i = 0; i < types.length; i++) {
+                exceptionTypes[i] = types[0].getName();
+            }
+            exceptionThrownRule.setExceptionTypes(exceptionTypes);
+        }
+        exceptionThrownRule.setExecutableAction(action);
+        return exceptionThrownRule;
     }
 
 }

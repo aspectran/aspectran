@@ -38,7 +38,7 @@ public class AponTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(AponTransformResponse.class);
 
-    private final String characterEncoding;
+    private final String encoding;
 
     private final String contentType;
 
@@ -52,7 +52,7 @@ public class AponTransformResponse extends TransformResponse {
     public AponTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.characterEncoding = transformRule.getCharacterEncoding();
+        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
         this.pretty = transformRule.isPretty();
     }
@@ -69,12 +69,12 @@ public class AponTransformResponse extends TransformResponse {
         }
 
         try {
-            if (this.characterEncoding != null) {
-                responseAdapter.setCharacterEncoding(this.characterEncoding);
+            if (this.encoding != null) {
+                responseAdapter.setEncoding(this.encoding);
             } else {
-                String characterEncoding = activity.getTranslet().getResponseCharacterEncoding();
-                if (characterEncoding != null) {
-                    responseAdapter.setCharacterEncoding(characterEncoding);
+                String encoding = activity.getTranslet().getResponseEncoding();
+                if (encoding != null) {
+                    responseAdapter.setEncoding(encoding);
                 }
             }
 

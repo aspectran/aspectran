@@ -18,7 +18,7 @@
         |   {{MAGENTA}}jetty stop{{fg:off}}   Stops the currently running Jetty server
         |
         |{{underline}}Once a Jetty server is running, point your web browser to:{{underline:off}}
-        |   {{YELLOW}}http://localhost:8080/{{fg:off}}
+        |   {{YELLOW}}http://localhost:8088/{{fg:off}}
         |---------------------------------------------------------------------------------------------------------------
     </description>
 
@@ -30,7 +30,7 @@
         <description>
             The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
         </description>
-        <joinpoint type="translet"/>
+        <joinpoint target="translet"/>
         <advice>
             <before>
                 <echo>
@@ -48,7 +48,7 @@
         <description>
             Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
         </description>
-        <joinpoint type="translet"/>
+        <joinpoint target="translet"/>
         <exception>
             <thrown>
                 <transform type="transform/text">

@@ -28,7 +28,7 @@ import java.io.Writer;
  */
 public class BasicResponseAdapter extends AbstractResponseAdapter {
 
-    private String characterEncoding;
+    private String encoding;
 
     private String contentType;
 
@@ -57,13 +57,13 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     @Override
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     @Override

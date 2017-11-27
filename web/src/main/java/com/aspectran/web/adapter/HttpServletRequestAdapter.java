@@ -44,14 +44,14 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
-    public String getCharacterEncoding() {
+    public String getEncoding() {
         return ((HttpServletRequest)adaptee).getCharacterEncoding();
     }
 
     @Override
-    public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
-        if (characterEncoding != null) {
-            ((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
+    public void setEncoding(String encoding) throws UnsupportedEncodingException {
+        if (encoding != null) {
+            ((HttpServletRequest)adaptee).setCharacterEncoding(encoding);
         }
     }
 

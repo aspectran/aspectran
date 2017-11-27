@@ -617,7 +617,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
                 PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
 
-                if (prefixSuffixPattern.isSplited()) {
+                if (prefixSuffixPattern.isSplitted()) {
                     dispatchResponseRule.setName(prefixSuffixPattern.join(newDispatchName));
                 } else {
                     if (dispatchName != null) {

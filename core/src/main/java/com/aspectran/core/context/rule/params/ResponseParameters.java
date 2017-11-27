@@ -22,7 +22,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class ResponseParameters extends AbstractParameters {
 
     public static final ParameterDefinition name;
-    public static final ParameterDefinition characterEncoding;
+    public static final ParameterDefinition encoding;
     public static final ParameterDefinition transform;
     public static final ParameterDefinition dispatch;
     public static final ParameterDefinition forward;
@@ -32,19 +32,19 @@ public class ResponseParameters extends AbstractParameters {
 
     static {
         name = new ParameterDefinition("name", ParameterValueType.STRING);
-        characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         transform = new ParameterDefinition("transform", TransformParameters.class);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
         forward = new ParameterDefinition("forward", ForwardParameters.class);
         redirect = new ParameterDefinition("redirect", RedirectParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-            name,
-            characterEncoding,
-            transform,
-            dispatch,
-            forward,
-            redirect
+                name,
+                encoding,
+                transform,
+                dispatch,
+                forward,
+                redirect
         };
     }
 

@@ -121,8 +121,6 @@ public class ContextRuleAssistant {
             transletRuleRegistry = new TransletRuleRegistry(contextEnvironment);
             transletRuleRegistry.setAssistantLocal(assistantLocal);
 
-            beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
-
             scheduleRuleRegistry = new ScheduleRuleRegistry();
             scheduleRuleRegistry.setAssistantLocal(assistantLocal);
 

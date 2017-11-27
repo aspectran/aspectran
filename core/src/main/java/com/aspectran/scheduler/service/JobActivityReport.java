@@ -70,7 +70,7 @@ public class JobActivityReport {
             sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Refire Count        : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
+            sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
 
             if (jobException != null) {
                 sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);

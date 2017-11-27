@@ -29,7 +29,7 @@ import java.util.Map;
 */
 public class BasicRequestAdapter extends AbstractRequestAdapter {
 
-    private String characterEncoding;
+    private String encoding;
 
     private Map<String, Object> attributes = new HashMap<>();
 
@@ -53,13 +53,13 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
-    public String getCharacterEncoding() {
-        return characterEncoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     @Override
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     @Override

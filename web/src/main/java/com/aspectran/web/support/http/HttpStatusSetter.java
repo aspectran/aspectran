@@ -96,7 +96,7 @@ public class HttpStatusSetter {
      * {@code 202 Accepted}.
      * The request has been received but not yet acted upon.
      * It is non-committal, meaning that there is no way in HTTP to later send
-     * an asynchronous responseindicating the outcome of processing the request.
+     * an asynchronous response indicating the outcome of processing the request.
      * It is intended for cases where another process or server handles the request,
      * or for batch processing.
      *
@@ -159,7 +159,7 @@ public class HttpStatusSetter {
     /**
      * {@code 307 Temporary Redirect}.
      * The target resource resides temporarily under a different URI and the user agent
-     * MUST NOT changethe request method if it performs an automatic redirection to that URI.
+     * MUST NOT change the request method if it performs an automatic redirection to that URI.
      *
      * @param translet the Translet
      */

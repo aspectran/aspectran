@@ -111,8 +111,8 @@ public abstract class BasicActivity extends AbstractActivity {
                     if (noThrow) {
                         log.error("Failed to execute advice action " + aspectAdviceRule, e);
                     } else {
-                        throw new AspectAdviceException("Failed to execute advice action " + aspectAdviceRule,
-                                aspectAdviceRule, e);
+                        throw new AspectAdviceException("Failed to execute advice action " +
+                                aspectAdviceRule, aspectAdviceRule, e);
                     }
                 }
             }
@@ -121,14 +121,24 @@ public abstract class BasicActivity extends AbstractActivity {
         Executable action = aspectAdviceRule.getExecutableAction();
         if (action != null) {
             try {
-                if (action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+                if (action.getActionType() == ActionType.BEAN) {
+                    // If Aspect Advice Bean ID is specified
+                    if (aspectAdviceRule.getAdviceBeanId() != null) {
+                        Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
+                        if (adviceBean == null) {
+                            if (aspectAdviceRule.getAdviceBeanClass() != null) {
+                                adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
+                            } else {
+                                adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+                            }
+                            putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+                        }
+                    }
+                } else if (action.getActionType() == ActionType.METHOD) {
+                    // If Annotated Aspect
                     Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
                     if (adviceBean == null) {
-                        if (aspectAdviceRule.getAdviceBeanClass() != null) {
-                            adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
-                        } else {
-                            adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
-                        }
+                        adviceBean = getConfigBean(aspectAdviceRule.getAdviceBeanClass());
                         putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                     }
                 }
@@ -156,10 +166,10 @@ public abstract class BasicActivity extends AbstractActivity {
                 } else {
                     setRaisedException(e);
                     if (noThrow) {
-                            log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+                        log.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     } else {
-                        throw new AspectAdviceException("Failed to execute an advice action " + aspectAdviceRule,
-                                aspectAdviceRule, e);
+                        throw new AspectAdviceException("Failed to execute an advice action " +
+                                aspectAdviceRule, aspectAdviceRule, e);
                     }
                 }
             }
@@ -175,7 +185,7 @@ public abstract class BasicActivity extends AbstractActivity {
 
     protected void handleException(ExceptionRule exceptionRule) {
         if (log.isDebugEnabled()) {
-            log.debug("Handling for raised exception: " + getRootCauseOfRaisedException());
+            log.debug("Handling the Exception Raised: " + getRootCauseOfRaisedException());
         }
 
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());

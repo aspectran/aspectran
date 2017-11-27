@@ -25,14 +25,14 @@ import com.aspectran.core.component.bean.annotation.Request;
 @Configuration
 public class SimpleAopTestAction {
 
-    @Request (translet = "aop/test/target1")
-    public void target1(Translet translet) {
-        System.out.println("===[SimpleAopTest]=== Action Result (Target-1)");
+    @Request (translet = "aop/test/action1")
+    public void action1(Translet translet) {
+        System.out.println("===[SimpleAopTest]=== Action Result (Action-1)");
     }
 
-    @Request (translet = "aop/test/target2")
-    public void target2(Translet translet) {
-        System.out.println("===[SimpleAopTest]=== Action Result (Target-2)");
+    @Request (translet = "aop/test/action2")
+    public void action2(Translet translet) {
+        System.out.println("===[SimpleAopTest]=== Action Result (Action-2)");
         System.out.println("===[SimpleAopTest]=== Force Exception ==============");
         throw new SimpleAopTestException();
     }
