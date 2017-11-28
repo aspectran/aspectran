@@ -43,7 +43,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AutowireTargetRule;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
@@ -88,8 +88,6 @@ public class AnnotatedConfigParser {
 
     private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
-    private final ContextRuleAssistant assistant;
-
     private final BeanRuleRegistry beanRuleRegistry;
 
     private final AnnotatedConfigRelater relater;
@@ -103,7 +101,6 @@ public class AnnotatedConfigParser {
     private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
     public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater relater) {
-        this.assistant = assistant;
         this.beanRuleRegistry = assistant.getBeanRuleRegistry();
         this.relater = relater;
         this.environment = assistant.getContextEnvironment();
@@ -204,54 +201,47 @@ public class AnnotatedConfigParser {
 
         Class<?> beanClass = beanRule.getBeanClass();
 
-        try {
-            while (beanClass != null) {
-                for (Field field : beanClass.getDeclaredFields()) {
-                    if (field.isAnnotationPresent(Autowired.class)) {
-                        Autowired autowiredAnno = field.getAnnotation(Autowired.class);
-                        boolean required = autowiredAnno.required();
-                        Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
-                        String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+        while (beanClass != null) {
+            for (Field field : beanClass.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Autowired.class)) {
+                    Autowired autowiredAnno = field.getAnnotation(Autowired.class);
+                    boolean required = autowiredAnno.required();
+                    Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
+                    String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
 
-                        Class<?> type = field.getType();
-                        String name = (qualifier != null) ? qualifier : field.getName();
-                        checkExistence(type, name, required);
+                    Class<?> type = field.getType();
+                    String name = (qualifier != null ? qualifier : field.getName());
+                    checkExistence(type, name, required);
 
-                        AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
-                        autowireTargetRule.setTargetType(AutowireTargetType.FIELD);
-                        autowireTargetRule.setTarget(field);
-                        autowireTargetRule.setTypes(type);
-                        autowireTargetRule.setQualifiers(qualifier);
-                        autowireTargetRule.setRequired(required);
+                    AutowireRule autowireRule = new AutowireRule();
+                    autowireRule.setTargetType(AutowireTargetType.FIELD);
+                    autowireRule.setTarget(field);
+                    autowireRule.setTypes(type);
+                    autowireRule.setQualifiers(qualifier);
+                    autowireRule.setRequired(required);
 
-                        beanRule.addAutowireTargetRule(autowireTargetRule);
-                    } else if (field.isAnnotationPresent(Value.class)) {
-                        Value valueAnno = field.getAnnotation(Value.class);
-                        String value = (valueAnno != null) ? StringUtils.emptyToNull(valueAnno.value()) : null;
+                    beanRule.addAutowireRule(autowireRule);
+                    relater.relay(autowireRule);
+                } else if (field.isAnnotationPresent(Value.class)) {
+                    Value valueAnno = field.getAnnotation(Value.class);
+                    String value = StringUtils.emptyToNull(valueAnno.value());
 
-                        if (value != null) {
-                            Token[] tokens = TokenParser.parse(value);
+                    if (value != null) {
+                        Token[] tokens = TokenParser.parse(value);
+                        if (tokens != null && tokens.length > 0) {
+                            AutowireRule autowireRule = new AutowireRule();
+                            autowireRule.setTargetType(AutowireTargetType.FIELD_VALUE);
+                            autowireRule.setTarget(field);
+                            autowireRule.setToken(tokens[0]);
 
-                            assistant.resolveBeanClass(tokens);
-
-                            if (tokens != null && tokens.length > 0) {
-                                Token token = tokens[0];
-
-                                AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
-                                autowireTargetRule.setTargetType(AutowireTargetType.VALUE);
-                                autowireTargetRule.setTarget(field);
-                                autowireTargetRule.setToken(token);
-
-                                beanRule.addAutowireTargetRule(autowireTargetRule);
-                            }
+                            beanRule.addAutowireRule(autowireRule);
+                            relater.relay(autowireRule);
                         }
                     }
                 }
-
-                beanClass = beanClass.getSuperclass();
             }
-        } catch (Throwable ex) {
-            throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
+
+            beanClass = beanClass.getSuperclass();
         }
     }
 
@@ -270,7 +260,7 @@ public class AnnotatedConfigParser {
                     Autowired autowiredAnno = method.getAnnotation(Autowired.class);
                     boolean required = autowiredAnno.required();
                     Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
-                    String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+                    String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
 
                     Parameter[] params = method.getParameters();
                     Class<?>[] paramTypes = new Class<?>[params.length];
@@ -285,21 +275,24 @@ public class AnnotatedConfigParser {
                         }
 
                         paramTypes[i] = params[i].getType();
-                        paramQualifiers[i] = (paramQualifier != null) ? paramQualifier : params[i].getName();
+                        paramQualifiers[i] = (paramQualifier != null ? paramQualifier : params[i].getName());
                         checkExistence(paramTypes[i], paramQualifiers[i], required);
                     }
 
-                    AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
-                    autowireTargetRule.setTargetType(AutowireTargetType.METHOD);
-                    autowireTargetRule.setTarget(method);
-                    autowireTargetRule.setTypes(paramTypes);
-                    autowireTargetRule.setQualifiers(paramQualifiers);
-                    autowireTargetRule.setRequired(required);
-                    beanRule.addAutowireTargetRule(autowireTargetRule);
+                    AutowireRule autowireRule = new AutowireRule();
+                    autowireRule.setTargetType(AutowireTargetType.METHOD);
+                    autowireRule.setTarget(method);
+                    autowireRule.setTypes(paramTypes);
+                    autowireRule.setQualifiers(paramQualifiers);
+                    autowireRule.setRequired(required);
+
+                    beanRule.addAutowireRule(autowireRule);
+                    relater.relay(autowireRule);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
                 } else if (method.isAnnotationPresent(Initialize.class)) {
-                    if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() == null) {
+                    if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() &&
+                            beanRule.getInitMethod() == null) {
                         beanRule.setInitMethod(method);
                         beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
                     }

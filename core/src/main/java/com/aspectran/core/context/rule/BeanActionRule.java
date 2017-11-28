@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  */
 public class BeanActionRule implements BeanReferenceInspectable {
 
-    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.BEAN_ACTION_RULE;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_ACTION_RULE;
 
     private String actionId;
 
@@ -242,7 +242,7 @@ public class BeanActionRule implements BeanReferenceInspectable {
 
     @Override
     public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERRER_TYPE;
+        return BEAN_REFERER_TYPE;
     }
 
     @Override

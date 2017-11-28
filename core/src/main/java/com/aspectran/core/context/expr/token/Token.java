@@ -80,7 +80,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class Token implements BeanReferenceInspectable, Replicable {
 
-    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.TOKEN;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.TOKEN;
 
     static final char BEAN_SYMBOL = '#';
 
@@ -285,7 +285,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
 
     @Override
     public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERRER_TYPE;
+        return BEAN_REFERER_TYPE;
     }
 
     /**

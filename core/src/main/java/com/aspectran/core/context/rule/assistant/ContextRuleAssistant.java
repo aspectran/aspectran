@@ -26,6 +26,7 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -36,6 +37,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -467,6 +469,29 @@ public class ContextRuleAssistant {
         }
     }
 
+    public void resolveBeanClass(AutowireRule autowireRule) {
+        if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
+            Class<?>[] types = autowireRule.getTypes();
+            reserveBeanReference(types[0], autowireRule);
+        } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
+            Token token = autowireRule.getToken();
+            if (token.getType() == TokenType.BEAN) {
+                if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
+                    Class<?> beanClass = loadClass(token.getValue(), token);
+                    token.setAlternativeValue(beanClass);
+                    reserveBeanReference(beanClass, autowireRule);
+                } else {
+                    reserveBeanReference(token.getName(), autowireRule);
+                }
+            }
+        } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
+            Class<?>[] types = autowireRule.getTypes();
+            for (Class<?> type : types) {
+                reserveBeanReference(type, autowireRule);
+            }
+        }
+    }
+
     /**
      * Resolve bean class for the schedule rule.
      *
@@ -693,6 +718,12 @@ public class ContextRuleAssistant {
      */
     public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {
         this.ruleAppendHandler = ruleAppendHandler;
+    }
+
+    public void clearCurrentRuleAppender() {
+        if (ruleAppendHandler != null) {
+            ruleAppendHandler.setCurrentRuleAppender(null);
+        }
     }
 
 }

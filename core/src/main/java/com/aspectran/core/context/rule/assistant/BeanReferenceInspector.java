@@ -85,7 +85,7 @@ public class BeanReferenceInspector {
             BeanRule beanRule;
             if (beanIdOrClass instanceof Class<?>) {
                 BeanRule[] beanRules = beanRuleRegistry.getBeanRules((Class<?>)beanIdOrClass);
-                if (beanRules != null && beanRules.length == 1) {
+                if (beanRules != null && beanRules.length > 0) {
                     beanRule = beanRules[0];
                 } else {
                     beanRule = null;

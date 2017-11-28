@@ -42,7 +42,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     private static final String NONE_TEMPLATE_ENGINE_NAME = "none";
 
-    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.TEMPLATE_RULE;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.TEMPLATE_RULE;
 
     private String id;
 
@@ -343,7 +343,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     @Override
     public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERRER_TYPE;
+        return BEAN_REFERER_TYPE;
     }
 
     @Override

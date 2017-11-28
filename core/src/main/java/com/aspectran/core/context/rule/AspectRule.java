@@ -77,7 +77,7 @@ import java.util.List;
  */
 public class AspectRule implements BeanReferenceInspectable {
 
-    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.ASPECT_RULE;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.ASPECT_RULE;
 
     private String id;
 
@@ -266,7 +266,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
     @Override
     public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERRER_TYPE;
+        return BEAN_REFERER_TYPE;
     }
 
     @Override

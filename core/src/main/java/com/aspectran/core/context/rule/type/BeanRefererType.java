@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Bean referrer types.
+ * Supported Bean referer types.
  * 
  * <p>Created: 2016. 2. 20.</p>
  */
@@ -26,6 +26,7 @@ public enum BeanRefererType {
     SCHEDULE_RULE("scheduleRule"),
     BEAN_ACTION_RULE("beanActionRule"),
     BEAN_RULE("beanRule"),
+    AUTOWIRE_RULE("autowireRule"),
     TOKEN("token"),
     TEMPLATE_RULE("templateRule");
 

@@ -124,6 +124,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             }
 
             ContextRuleAssistant assistant = parser.getContextRuleAssistant();
+            assistant.clearCurrentRuleAppender();
+
             activityContext = createActivityContext(assistant);
             assistant.release();
 

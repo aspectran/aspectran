@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 
@@ -31,5 +32,7 @@ interface AnnotatedConfigRelater {
     void relay(AspectRule aspectRule);
 
     void relay(TransletRule transletRule);
+
+    void relay(AutowireRule autowireRule);
 
 }

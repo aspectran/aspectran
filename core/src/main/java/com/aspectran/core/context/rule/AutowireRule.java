@@ -16,7 +16,10 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
+import com.aspectran.core.context.rule.type.BeanRefererType;
+import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,7 +31,9 @@ import java.lang.reflect.Method;
  * 
  * @since 2.0.0
  */
-public class AutowireTargetRule {
+public class AutowireRule implements BeanReferenceInspectable {
+
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.AUTOWIRE_RULE;
 
     private AutowireTargetType targetType;
 
@@ -93,6 +98,23 @@ public class AutowireTargetRule {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    @Override
+    public BeanRefererType getBeanRefererType() {
+        return BEAN_REFERER_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("targetType", targetType);
+        tsb.append("target", target);
+        tsb.append("types", types);
+        tsb.append("qualifiers", qualifiers);
+        tsb.append("token", token);
+        tsb.append("required", required);
+        return tsb.toString();
     }
 
 }

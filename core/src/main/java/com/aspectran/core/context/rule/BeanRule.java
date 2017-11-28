@@ -42,7 +42,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
-    private static final BeanRefererType BEAN_REFERRER_TYPE = BeanRefererType.BEAN_RULE;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_RULE;
 
     private String id;
 
@@ -106,7 +106,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private boolean proxied;
 
-    private List<AutowireTargetRule> autowireTargetRuleList;
+    private List<AutowireRule> autowireRuleList;
 
     private boolean fieldAutowireParsed;
 
@@ -678,15 +678,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         return (!factoryOffered && !factoryBean && factoryMethod == null);
     }
 
-    public List<AutowireTargetRule> getAutowireTargetRuleList() {
-        return autowireTargetRuleList;
+    public List<AutowireRule> getAutowireRuleList() {
+        return autowireRuleList;
     }
 
-    public void addAutowireTargetRule(AutowireTargetRule autowireTargetRule) {
-        if (autowireTargetRuleList == null) {
-            autowireTargetRuleList = new ArrayList<>();
+    public void addAutowireRule(AutowireRule autowireRule) {
+        if (autowireRuleList == null) {
+            autowireRuleList = new ArrayList<>();
         }
-        autowireTargetRuleList.add(autowireTargetRule);
+        autowireRuleList.add(autowireRule);
     }
 
     public boolean isFieldAutowireParsed() {
@@ -748,7 +748,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     @Override
     public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERRER_TYPE;
+        return BEAN_REFERER_TYPE;
     }
 
     @Override

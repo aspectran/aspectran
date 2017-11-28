@@ -23,6 +23,7 @@ import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
@@ -311,6 +312,11 @@ public class BeanRuleRegistry {
             @Override
             public void relay(TransletRule transletRule) {
                 assistant.addTransletRule(transletRule);
+            }
+
+            @Override
+            public void relay(AutowireRule autowireRule) {
+                assistant.resolveBeanClass(autowireRule);
             }
         };
 
