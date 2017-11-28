@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder.config;
 
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class AspectranConfigTest {
 
     @Test
     public void aspectranConfigTest() throws IOException {
-        File file = new File("./target/test-classes/config/aspectran-config-test.apon");
+        File file = new File(ResourceUtils.getResourceAsFile(""), "config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
         AponReader.parse(file, aspectranConfig);
 

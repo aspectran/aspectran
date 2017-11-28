@@ -276,6 +276,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (basePath != null) {
             contextEnvironment.setBasePath(basePath);
         }
+        if (activeProfiles != null) {
+            contextEnvironment.setActiveProfiles(activeProfiles);
+        }
+        if (defaultProfiles != null) {
+            contextEnvironment.setDefaultProfiles(defaultProfiles);
+        }
         return contextEnvironment;
     }
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <bean id="properties" class="java.util.HashMap">
+        <constructor>
+            <arguments>
+                <item type="map">
+                    <value name="property1">This is a Property-1</value>
+                    <value name="property2">This is a Property-2</value>
+                    <value name="property3">This is a Property-3</value>
+                </item>
+            </arguments>
+        </constructor>
+    </bean>
+
+	<environment profile="dev">
+        <properties>
+            <item name="env.property1">DEV-#{properties^property1}</item>
+            <item name="env.property2">DEV-#{properties^property2}</item>
+            <item name="env.property3">DEV-#{properties^property3}</item>
+            <item name="env.property4">DEV-#{properties^property1} / #{properties^property2} / #{properties^property3}</item>
+        </properties>
+	</environment>
+
+	<environment profile="prod">
+        <properties>
+            <item name="env.property1">PROD-#{properties^property1}</item>
+            <item name="env.property2">PROD-#{properties^property2}</item>
+            <item name="env.property3">PROD-#{properties^property3}</item>
+            <item name="env.property4">PROD-#{properties^property1} / #{properties^property2} / #{properties^property3}</item>
+        </properties>
+	</environment>
+
+    <template id="property-1" style="apon">
+        |%{env.property1}
+    </template>
+
+    <template id="property-2" style="apon">
+        |%{env.property2}
+    </template>
+
+    <template id="property-3" style="apon">
+        |%{env.property3}
+    </template>
+
+    <template id="property-4" style="apon">
+        |%{env.property4}
+    </template>
+
+</aspectran>

@@ -45,9 +45,7 @@ public class ActivityContextBuilderTest {
         //baseDir = new File("./target/test-classes");
         baseDir = ResourceUtils.getResourceAsFile("");
 
-        System.out.println("----------------------------------------");
-        System.out.println(" Test case for building ActivityContext");
-        System.out.println("----------------------------------------");
+        System.out.println(" --- Test case for building ActivityContext --- ");
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
@@ -77,6 +75,21 @@ public class ActivityContextBuilderTest {
         String result2 = context2.getTemplateProcessor().process("echo2");
         System.out.println(result2);
         assertEquals(result2, "ECHO-2");
+        builder.destroy();
+    }
+
+    @Test
+    public void testProperties() throws ActivityContextBuilderException {
+        ActivityContext context = builder.build("/config/test-properties.xml");
+        context.getBeanRegistry().getBean("properties");
+        String property1 = context.getTemplateProcessor().process("property-1");
+        String property2 = context.getTemplateProcessor().process("property-2");
+        String property3 = context.getTemplateProcessor().process("property-3");
+        String property4 = context.getTemplateProcessor().process("property-4");
+        assertEquals(property1, "DEV-This is a Property-1");
+        assertEquals(property2, "DEV-This is a Property-2");
+        assertEquals(property3, "DEV-This is a Property-3");
+        assertEquals(property4, "DEV-This is a Property-1 / This is a Property-2 / This is a Property-3");
         builder.destroy();
     }
 
