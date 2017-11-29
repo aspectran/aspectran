@@ -29,8 +29,6 @@ public class BeanReferenceException extends ActivityContextParserException {
     /** @serial */
     private static final long serialVersionUID = -244633940486989865L;
 
-    private BeanReferenceInspector beanReferenceInspector;
-
     /**
      * Simple constructor.
      */
@@ -48,25 +46,7 @@ public class BeanReferenceException extends ActivityContextParserException {
     }
 
     /**
-     * Returns a bean reference inspector.
-     *
-     * @return the bean reference inspector
-     */
-    public BeanReferenceInspector getBeanReferenceInspector() {
-        return beanReferenceInspector;
-    }
-
-    /**
-     * Sets the bean reference inspector.
-     *
-     * @param beanReferenceInspector the bean reference inspector
-     */
-    public void setBeanReferenceInspector(BeanReferenceInspector beanReferenceInspector) {
-        this.beanReferenceInspector = beanReferenceInspector;
-    }
-
-    /**
-     * Gets the message.
+     * Gets the detail message.
      *
      * @param brokenReferences the list of beans that can not find
      * @return the message

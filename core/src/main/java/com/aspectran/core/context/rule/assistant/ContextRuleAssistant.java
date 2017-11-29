@@ -471,9 +471,11 @@ public class ContextRuleAssistant {
 
     public void resolveBeanClass(AutowireRule autowireRule) {
         if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-            Class<?>[] types = autowireRule.getTypes();
-            String[] qualifiers = autowireRule.getQualifiers();
-            reserveBeanReference(qualifiers[0], types[0], autowireRule);
+            if (autowireRule.isRequired()) {
+                Class<?>[] types = autowireRule.getTypes();
+                String[] qualifiers = autowireRule.getQualifiers();
+                reserveBeanReference(qualifiers[0], types[0], autowireRule);
+            }
         } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
             Token token = autowireRule.getToken();
             if (token.getType() == TokenType.BEAN) {
@@ -486,10 +488,12 @@ public class ContextRuleAssistant {
                 }
             }
         } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-            Class<?>[] types = autowireRule.getTypes();
-            String[] qualifiers = autowireRule.getQualifiers();
-            for (int i = 0; i < types.length; i++) {
-                reserveBeanReference(qualifiers[i], types[i], autowireRule);
+            if (autowireRule.isRequired()) {
+                Class<?>[] types = autowireRule.getTypes();
+                String[] qualifiers = autowireRule.getQualifiers();
+                for (int i = 0; i < types.length; i++) {
+                    reserveBeanReference(qualifiers[i], types[i], autowireRule);
+                }
             }
         }
     }
@@ -562,6 +566,11 @@ public class ContextRuleAssistant {
         beanReferenceInspector.reserve(beanId, beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
+    /**
+     * Returns the bean reference inspector.
+     *
+     * @return the bean reference inspector
+     */
     public BeanReferenceInspector getBeanReferenceInspector() {
         return beanReferenceInspector;
     }
@@ -622,7 +631,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the bean rule registry.
+     * Returns the bean rule registry.
      *
      * @return the bean rule registry
      */
@@ -631,7 +640,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the schedule rule registry.
+     * Returns the schedule rule registry.
      *
      * @return the template rule registry
      */
@@ -640,7 +649,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the translet rule registry.
+     * Returns the translet rule registry.
      *
      * @return the translet rule registry
      */
@@ -649,7 +658,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the template rule registry.
+     * Returns the template rule registry.
      *
      * @return the template rule registry
      */
@@ -658,7 +667,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets all aspect rules.
+     * Returns all Aspect rules.
      *
      * @return the aspect rules
      */
@@ -667,7 +676,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets all bean rules.
+     * Returns all bean rules.
      *
      * @return the bean rules
      */
@@ -682,7 +691,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets all schedule rules.
+     * Returns all schedule rules.
      *
      * @return the schedule rules
      */
@@ -691,7 +700,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets all translet rules.
+     * Returns all translet rules.
      *
      * @return the translet rules
      */
@@ -700,7 +709,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets all template rules.
+     * Returns all template rules.
      *
      * @return the template rules
      */
@@ -709,7 +718,7 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Gets the rule append handler.
+     * Returns the rule append handler.
      *
      * @return the rule append handler
      */
@@ -726,6 +735,9 @@ public class ContextRuleAssistant {
         this.ruleAppendHandler = ruleAppendHandler;
     }
 
+    /**
+     * Removes the last rule appender after rule parsing is complete.
+     */
     public void clearCurrentRuleAppender() {
         if (ruleAppendHandler != null) {
             ruleAppendHandler.setCurrentRuleAppender(null);

@@ -33,7 +33,13 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.nodelet.NodeTracker;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The Class BeanReferenceInspector.
@@ -71,8 +77,6 @@ public class BeanReferenceInspector {
      * @throws BeanReferenceException the bean reference exception
      */
     public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
-        refererInfoMap.clear();
-
         List<Object> brokenReferences = new ArrayList<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
@@ -118,15 +122,15 @@ public class BeanReferenceInspector {
                     String referer = refererKey.getBeanClass().getName();
                     brokenReferences.add(referer);
                     log.error("No unique bean of type [" + referer + "] is defined: " +
-                            "expected single matching bean but found " +
-                            beanRules.length + ": " + NoUniqueBeanException.getBeanDescriptions(beanRules));
+                            "expected single matching bean but found " + beanRules.length + ": [" +
+                            NoUniqueBeanException.getBeanDescriptions(beanRules) + "]");
                 } else {
                     for (RefererInfo refererInfo : refererInfoSet) {
                         if (!isStaticMethodReference(refererInfo)) {
                             String referer = refererKey.toString();
                             brokenReferences.add(referer);
-                            log.error("Cannot resolve reference to bean '" + referer +
-                                    "' on " + refererInfo);
+                            log.error("Cannot resolve reference to bean " + referer +
+                                    " on " + refererInfo);
                         }
                     }
                 }
@@ -141,10 +145,7 @@ public class BeanReferenceInspector {
         }
 
         if (!brokenReferences.isEmpty()) {
-            BeanReferenceException bre = new BeanReferenceException(brokenReferences);
-            bre.setBeanReferenceInspector(this);
-
-            throw bre;
+            throw new BeanReferenceException(brokenReferences);
         }
     }
 
@@ -173,8 +174,7 @@ public class BeanReferenceInspector {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
                     throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
-                            " in " + refererInfo
-                            , beanRule);
+                            " in " + refererInfo, beanRule);
                 }
                 beanActionRule.setMethod(m2);
                 beanActionRule.setRequiresTranslet(false);
@@ -195,11 +195,11 @@ public class BeanReferenceInspector {
             this.beanClass = beanClass;
         }
 
-        public String getBeanId() {
+        String getBeanId() {
             return beanId;
         }
 
-        public Class<?> getBeanClass() {
+        Class<?> getBeanClass() {
             return beanClass;
         }
 
@@ -281,7 +281,7 @@ public class BeanReferenceInspector {
             return inspectable.getBeanRefererType();
         }
 
-        public NodeTracker getNodeTracker() {
+        NodeTracker getNodeTracker() {
             return nodeTracker;
         }
 

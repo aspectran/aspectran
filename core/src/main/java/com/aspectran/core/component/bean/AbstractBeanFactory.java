@@ -274,7 +274,16 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
                     Class<?>[] types = autowireRule.getTypes();
                     String[] qualifiers = autowireRule.getQualifiers();
-                    Object value = activity.getBean(types[0], qualifiers[0]);
+                    Object value;
+                    if (autowireRule.isRequired()) {
+                        value = activity.getBean(types[0], qualifiers[0]);
+                    } else {
+                        try {
+                            value = activity.getBean(types[0], qualifiers[0]);
+                        } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                            value = null;
+                        }
+                    }
 
                     ReflectionUtils.setField(field, bean, value);
                 } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
@@ -290,12 +299,20 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                     Class<?>[] types = autowireRule.getTypes();
                     String[] qualifiers = autowireRule.getQualifiers();
 
-                    Object[] values = new Object[types.length];
+                    Object[] args = new Object[types.length];
                     for (int i = 0; i < types.length; i++) {
-                        values[i] = activity.getBean(types[i], qualifiers[i]);
+                        if (autowireRule.isRequired()) {
+                            args[i] = activity.getBean(types[i], qualifiers[i]);
+                        } else {
+                            try {
+                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                                args[i] = null;
+                            }
+                        }
                     }
 
-                    ReflectionUtils.invokeMethod(method, bean, values);
+                    ReflectionUtils.invokeMethod(method, bean, args);
                 }
             }
         }

@@ -38,7 +38,7 @@ public class NoUniqueBeanException extends BeanException {
      */
     public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
         super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " +
-                beanRules.length + ": " + getBeanDescriptions(beanRules));
+                beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
         this.requiredType = requiredType;
         this.beanRules = beanRules;
     }

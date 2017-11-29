@@ -208,10 +208,7 @@ public class AnnotatedConfigParser {
                     boolean required = autowiredAnno.required();
                     Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
                     String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
-
                     Class<?> type = field.getType();
-                    String name = (qualifier != null ? qualifier : field.getName());
-                    checkExistence(type, name, required);
 
                     AutowireRule autowireRule = new AutowireRule();
                     autowireRule.setTargetType(AutowireTargetType.FIELD);
@@ -275,8 +272,7 @@ public class AnnotatedConfigParser {
                         }
 
                         paramTypes[i] = params[i].getType();
-                        paramQualifiers[i] = (paramQualifier != null ? paramQualifier : params[i].getName());
-                        checkExistence(paramTypes[i], paramQualifiers[i], required);
+                        paramQualifiers[i] = paramQualifier;
                     }
 
                     AutowireRule autowireRule = new AutowireRule();
@@ -560,36 +556,6 @@ public class AnnotatedConfigParser {
             sb.append(nameArray[i]);
         }
         return sb.toString();
-    }
-
-    private boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
-        BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
-
-        if (beanRules == null || beanRules.length == 0) {
-            if (required) {
-                throw new RequiredTypeBeanNotFoundException(requiredType);
-            } else {
-                return false;
-            }
-        }
-
-        if (beanRules.length == 1) {
-            return true;
-        }
-
-        if (beanId != null) {
-            for (BeanRule beanRule : beanRules) {
-                if (beanId.equals(beanRule.getId())) {
-                    return true;
-                }
-            }
-        }
-
-        if (required) {
-            throw new NoUniqueBeanException(requiredType, beanRules);
-        } else {
-            return false;
-        }
     }
 
 }

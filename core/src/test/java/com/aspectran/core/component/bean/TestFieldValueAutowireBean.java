@@ -2,7 +2,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.bean.annotation.Value;
 
-public class TestValueAnnotationBean {
+public class TestFieldValueAutowireBean {
 
     @Value("#{properties^property1}")
     private String property1;

@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Test case for beans.
@@ -73,12 +74,33 @@ public class BeanTest {
     }
 
     @Test
-    public void testAutowire() {
-        TestValueAnnotationBean bean1 = beanRegistry.getBean("bean.TestValueAnnotationBean");
-        assertEquals(bean1.getProperty1(), "This is a Property-1");
-        assertEquals(bean1.getProperty2(), "This is a Property-2");
-        assertEquals(bean1.getProperty3(), "This is a Property-3");
-        assertEquals(bean1.getProperty4(), "property-4");
+    public void testFieldValueAutowire() {
+        TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
+        assertEquals(bean.getProperty1(), "This is a Property-1");
+        assertEquals(bean.getProperty2(), "This is a Property-2");
+        assertEquals(bean.getProperty3(), "This is a Property-3");
+        assertEquals(bean.getProperty4(), "property-4");
+        assertEquals(bean.getProperty4(), "property-4");
+    }
+
+    @Test
+    public void testFieldAutowire() {
+        TestFieldAutowireBean bean = beanRegistry.getBean("bean.TestFieldAutowireBean");
+        assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
+        assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
+        assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
+        assertEquals(bean.getBean1().getProperty4(), "property-4");
+        assertNull(bean.getBean2());
+    }
+
+    @Test
+    public void testMethodAutowire() {
+        TestMethodAutowireBean bean = beanRegistry.getBean("bean.TestMethodAutowireBean");
+        assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
+        assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
+        assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
+        assertEquals(bean.getBean1().getProperty4(), "property-4");
+        assertNull(bean.getBean2());
     }
 
     @After
