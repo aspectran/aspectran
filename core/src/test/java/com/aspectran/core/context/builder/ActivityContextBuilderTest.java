@@ -49,47 +49,32 @@ public class ActivityContextBuilderTest {
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setHybridLoad(false);
+        builder.setHybridLoad(true);
         builder.setActiveProfiles("dev", "local");
     }
 
     @Test
     public void test1HybridLoading() throws ActivityContextBuilderException {
-        File apon1 = new File(baseDir, "config/test-config.xml.apon");
-        File apon2 = new File(baseDir, "config/scheduler-config.xml.apon");
+        File apon1 = new File(baseDir, "config/sample/test-config.xml.apon");
+        File apon2 = new File(baseDir, "config/sample/scheduler-config.xml.apon");
 
         apon1.delete();
         apon2.delete();
 
         System.out.println("================ load ===============");
 
-        ActivityContext context = builder.build("/config/test-config.xml");
+        ActivityContext context = builder.build("/config/sample/test-config.xml");
         String result = context.getTemplateProcessor().process("echo1");
-        System.out.println(result);
+        //System.out.println(result);
         assertEquals(result, "ECHO-1");
         builder.destroy();
 
-//        System.out.println("=============== reload ==============");
-//
-//        ActivityContext context2 = builder.build();
-//        String result2 = context2.getTemplateProcessor().process("echo2");
-//        System.out.println(result2);
-//        assertEquals(result2, "ECHO-2");
-//        builder.destroy();
-    }
+        System.out.println("=============== reload ==============");
 
-    @Test
-    public void testProperties() throws ActivityContextBuilderException {
-        ActivityContext context = builder.build("/config/test-properties.xml");
-        context.getBeanRegistry().getBean("properties");
-        String property1 = context.getTemplateProcessor().process("property-1");
-        String property2 = context.getTemplateProcessor().process("property-2");
-        String property3 = context.getTemplateProcessor().process("property-3");
-        String property4 = context.getTemplateProcessor().process("property-4");
-        assertEquals(property1, "DEV-This is a Property-1");
-        assertEquals(property2, "DEV-This is a Property-2");
-        assertEquals(property3, "DEV-This is a Property-3");
-        assertEquals(property4, "DEV-This is a Property-1 / This is a Property-2 / This is a Property-3");
+        ActivityContext context2 = builder.build();
+        String result2 = context2.getTemplateProcessor().process("echo2");
+        //System.out.println(result2);
+        assertEquals(result2, "ECHO-2");
         builder.destroy();
     }
 
