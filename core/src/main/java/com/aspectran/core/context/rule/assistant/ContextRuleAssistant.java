@@ -472,7 +472,8 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(AutowireRule autowireRule) {
         if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
             Class<?>[] types = autowireRule.getTypes();
-            reserveBeanReference(types[0], autowireRule);
+            String[] qualifiers = autowireRule.getQualifiers();
+            reserveBeanReference(qualifiers[0], types[0], autowireRule);
         } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
             Token token = autowireRule.getToken();
             if (token.getType() == TokenType.BEAN) {
@@ -486,8 +487,9 @@ public class ContextRuleAssistant {
             }
         } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
             Class<?>[] types = autowireRule.getTypes();
-            for (Class<?> type : types) {
-                reserveBeanReference(type, autowireRule);
+            String[] qualifiers = autowireRule.getQualifiers();
+            for (int i = 0; i < types.length; i++) {
+                reserveBeanReference(qualifiers[i], types[i], autowireRule);
             }
         }
     }
@@ -549,11 +551,15 @@ public class ContextRuleAssistant {
     }
 
     public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanId, inspectable, ruleAppendHandler.getCurrentRuleAppender());
+        reserveBeanReference(beanId, null, inspectable);
     }
 
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
+        reserveBeanReference(null, beanClass, inspectable);
+    }
+
+    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceInspectable inspectable) {
+        beanReferenceInspector.reserve(beanId, beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     public BeanReferenceInspector getBeanReferenceInspector() {

@@ -187,12 +187,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        // Do Nothing
-    }
-
-    @Override
-    public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
+    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceInspectable inspectable) {
         // Do Nothing
     }
 

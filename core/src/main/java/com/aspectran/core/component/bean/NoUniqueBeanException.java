@@ -61,7 +61,7 @@ public class NoUniqueBeanException extends BeanException {
         return beanRules;
     }
 
-    private static String getBeanDescriptions(BeanRule[] beanRules) {
+    public static String getBeanDescriptions(BeanRule[] beanRules) {
         String[] describes = new String[beanRules.length];
         for (int i = 0; i < describes.length; i++) {
             describes[i] = beanRules[i].toString();
