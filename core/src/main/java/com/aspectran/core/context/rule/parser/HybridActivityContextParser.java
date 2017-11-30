@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -29,8 +28,8 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {
 
-    public HybridActivityContextParser(ContextEnvironment environment) {
-        super(environment);
+    public HybridActivityContextParser(ContextRuleAssistant assistant) {
+        super(assistant);
     }
 
     @Override

@@ -87,19 +87,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             String rootConfigLocation = getRootConfigLocation();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (rootConfigLocation == null && aspectranParameters == null) {
-                if (getContextConfig() != null) {
-                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified in ContextConfig " +
-                            getContextConfig());
-                } else {
-                    throw new IllegalArgumentException("Either context.root or context.parameters must be specified");
-                }
-            }
-
             if (rootConfigLocation != null) {
                 log.info("Building an ActivityContext with " + rootConfigLocation);
-            } else {
+            } else if (aspectranParameters != null) {
                 log.info("Building an ActivityContext with AspectranParameters");
+            } else {
+                log.info("No rootConfigLocation or aspectranParameters have been specified");
             }
 
             if (getActiveProfiles() != null) {
@@ -113,18 +106,21 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             long startTime = System.currentTimeMillis();
 
             ContextEnvironment contextEnvironment = createContextEnvironment();
+            ContextRuleAssistant assistant = new ContextRuleAssistant(contextEnvironment);
+            assistant.ready();
 
-            ActivityContextParser parser = new HybridActivityContextParser(contextEnvironment);
-            parser.setEncoding(getEncoding());
-            parser.setHybridLoad(isHybridLoad());
-            if (rootConfigLocation != null) {
-                parser.parse(rootConfigLocation);
-            } else {
-                parser.parse(aspectranParameters);
+            if (rootConfigLocation != null || aspectranParameters != null) {
+                ActivityContextParser parser = new HybridActivityContextParser(assistant);
+                parser.setEncoding(getEncoding());
+                parser.setHybridLoad(isHybridLoad());
+                if (rootConfigLocation != null) {
+                    parser.parse(rootConfigLocation);
+                } else {
+                    parser.parse(aspectranParameters);
+                }
+                assistant = parser.getContextRuleAssistant();
+                assistant.clearCurrentRuleAppender();
             }
-
-            ContextRuleAssistant assistant = parser.getContextRuleAssistant();
-            assistant.clearCurrentRuleAppender();
 
             activityContext = createActivityContext(assistant);
             assistant.release();

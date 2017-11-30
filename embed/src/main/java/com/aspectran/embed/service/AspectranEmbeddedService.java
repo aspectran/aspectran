@@ -263,14 +263,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
     @Override
     public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         try {
-            InstantActivity activity = new InstantActivity(getActivityContext(), newSessionAdapter());
-            if (parameterMap != null) {
-                activity.setParameterMap(parameterMap);
-            }
-            if (attributeMap != null) {
-                activity.setAttributeMap(attributeMap);
-            }
-            activity.adapt();
+            InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
+            activity.setSessionAdapter(newSessionAdapter());
 
             getActivityContext().getTemplateProcessor().process(templateId, activity);
 

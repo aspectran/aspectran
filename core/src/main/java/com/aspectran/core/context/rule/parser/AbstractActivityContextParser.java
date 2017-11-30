@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.appender.FileRuleAppender;
 import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
@@ -30,7 +29,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-abstract class AbstractActivityContextParser implements ActivityContextParser {
+public abstract class AbstractActivityContextParser implements ActivityContextParser {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -40,9 +39,8 @@ abstract class AbstractActivityContextParser implements ActivityContextParser {
 
     private boolean hybridLoad;
 
-    protected AbstractActivityContextParser(ContextEnvironment contextEnvironment) {
-        assistant = new ContextRuleAssistant(contextEnvironment);
-        assistant.ready();
+    public AbstractActivityContextParser(ContextRuleAssistant assistant) {
+        this.assistant = assistant;
     }
 
     @Override

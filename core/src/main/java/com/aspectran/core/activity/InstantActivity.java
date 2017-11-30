@@ -36,65 +36,38 @@ import java.util.Map;
  */
 public class InstantActivity extends BasicActivity {
 
-    private ParameterMap parameterMap;
-
-    private Map<String, Object> attributeMap;
-
     /**
      * Instantiates a new instant activity.
      *
      * @param context the activity context
      */
     public InstantActivity(ActivityContext context) {
+        this(context, null, null);
+    }
+
+    public InstantActivity(ActivityContext context, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         super(context);
+        adapt(parameterMap, attributeMap);
     }
 
-    /**
-     * Instantiates a new instant activity.
-     *
-     * @param context the activity context
-     * @param sessionAdapter the session adapter
-     */
-    public InstantActivity(ActivityContext context, SessionAdapter sessionAdapter) {
-        super(context);
-        setSessionAdapter(sessionAdapter);
-    }
+    private void adapt(ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
+        setRequestAdapter(requestAdapter);
 
-    /**
-     * Sets the parameter map.
-     *
-     * @param parameterMap the parameter map
-     */
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
-    }
+        Writer writer = new StringOutputWriter();
+        ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+        setResponseAdapter(responseAdapter);
 
-    /**
-     * Sets the attribute map.
-     *
-     * @param attributeMap the attribute map
-     */
-    public void setAttributeMap(Map<String, Object> attributeMap) {
-        this.attributeMap = attributeMap;
-    }
-
-    public void adapt() throws AdapterException {
-        try {
-            RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
-            setRequestAdapter(requestAdapter);
-
-            Writer writer = new StringOutputWriter();
-            ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
-            setResponseAdapter(responseAdapter);
-
-            if (attributeMap != null) {
-                for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-                    requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-                }
+        if (attributeMap != null) {
+            for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+                requestAdapter.setAttribute(entry.getKey(), entry.getValue());
             }
-        } catch (Exception e) {
-            throw new AdapterException("Could not adapt to InstantActivity", e);
         }
+    }
+
+    @Override
+    public void setSessionAdapter(SessionAdapter sessionAdapter) {
+        super.setSessionAdapter(sessionAdapter);
     }
 
     @Override

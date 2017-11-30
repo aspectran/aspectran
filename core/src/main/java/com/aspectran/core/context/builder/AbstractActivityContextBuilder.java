@@ -221,6 +221,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @Override
     public void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException {
+        if (contextConfig == null) {
+            throw new IllegalArgumentException("Argument 'contextConfig' must not be null");
+        }
+
         this.contextConfig = contextConfig;
 
         String basePath = contextConfig.getString(ContextConfig.base);
@@ -271,18 +275,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected ContextEnvironment createContextEnvironment() throws InvalidResourceException {
         AspectranClassLoader acl = newAspectranClassLoader();
-        ContextEnvironment contextEnvironment = new ContextEnvironment(getApplicationAdapter());
-        contextEnvironment.setClassLoader(acl);
+        ContextEnvironment environment = new ContextEnvironment(getApplicationAdapter());
+        environment.setClassLoader(acl);
         if (basePath != null) {
-            contextEnvironment.setBasePath(basePath);
+            environment.setBasePath(basePath);
         }
         if (activeProfiles != null) {
-            contextEnvironment.setActiveProfiles(activeProfiles);
+            environment.setActiveProfiles(activeProfiles);
         }
         if (defaultProfiles != null) {
-            contextEnvironment.setDefaultProfiles(defaultProfiles);
+            environment.setDefaultProfiles(defaultProfiles);
         }
-        return contextEnvironment;
+        return environment;
     }
 
     /**
