@@ -271,9 +271,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             for (AutowireRule autowireRule : autowireRuleList) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                     Field field = autowireRule.getTarget();
-
                     Class<?>[] types = autowireRule.getTypes();
                     String[] qualifiers = autowireRule.getQualifiers();
+
                     Object value;
                     if (autowireRule.isRequired()) {
                         value = activity.getBean(types[0], qualifiers[0]);
@@ -282,6 +282,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                             value = activity.getBean(types[0], qualifiers[0]);
                         } catch (BeanNotFoundException | NoUniqueBeanException e) {
                             value = null;
+                            log.warn(e.getMessage());
                         }
                     }
 
@@ -308,6 +309,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                                 args[i] = activity.getBean(types[i], qualifiers[i]);
                             } catch (BeanNotFoundException | NoUniqueBeanException e) {
                                 args[i] = null;
+                                log.warn(e.getMessage());
                             }
                         }
                     }

@@ -22,7 +22,7 @@ public class TestMethodAutowireBean {
         return bean1;
     }
     @Autowired(required = false)
-    @Qualifier("bean.TestFieldValueAutowireBean22")
+    @Qualifier("bean.TestFieldValueAutowireBean3")
     public void setBean2(TestFieldValueAutowireBean bean) {
         this.bean2 = bean;
     }

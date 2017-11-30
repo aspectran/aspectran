@@ -469,6 +469,11 @@ public class ContextRuleAssistant {
         }
     }
 
+    /**
+     * Resolve bean class for the autowire rule.
+     *
+     * @param autowireRule the autowire rule
+     */
     public void resolveBeanClass(AutowireRule autowireRule) {
         if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
             if (autowireRule.isRequired()) {

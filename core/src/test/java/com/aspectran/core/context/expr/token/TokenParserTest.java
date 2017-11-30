@@ -15,9 +15,7 @@
  */
 package com.aspectran.core.context.expr.token;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -27,7 +25,6 @@ import static junit.framework.TestCase.assertTrue;
  *
  * <p>Created: 2017. 3. 23.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TokenParserTest {
 
     @Test
@@ -64,7 +61,6 @@ public class TokenParserTest {
                 "#{class:beanClassName^getterName:defaultStr}" +
                 "~{templateId}" +
                 "~{templateId:defaultStr}";
-
 
         Token[] tokens = TokenParser.parse(text);
 

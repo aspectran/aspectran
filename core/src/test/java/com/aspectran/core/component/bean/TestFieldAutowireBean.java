@@ -13,7 +13,7 @@ public class TestFieldAutowireBean {
     private TestFieldValueAutowireBean bean1;
 
     @Autowired(required = false)
-    @Qualifier("bean.TestFieldValueAutowireBean22")
+    @Qualifier("bean.TestFieldValueAutowireBean3")
     private TestFieldValueAutowireBean bean2;
 
     public TestFieldValueAutowireBean getBean1() {
