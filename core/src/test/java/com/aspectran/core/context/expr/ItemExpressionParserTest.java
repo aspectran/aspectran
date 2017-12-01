@@ -23,12 +23,19 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.util.MultiValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
-public class TokenExpressionParserTest {
+public class ItemExpressionParserTest {
 
     private ActivityContext context;
 
@@ -39,17 +46,37 @@ public class TokenExpressionParserTest {
     }
 
     @Test
-    public void testEvaluateAsString() {
+    public void testEvaluateAsMultiValueMap() {
         Activity activity = new InstantActivity(context);
         activity.getRequestAdapter().setParameter("param1", "Apple");
         activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
 
-        Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
+        ItemRule itemRule1 = new ItemRule();
+        itemRule1.setName("item1");
+        itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-        TokenEvaluator tokenEvaluator = new TokenExpressionParser(activity);
-        String result = tokenEvaluator.evaluateAsString(tokens);
+        ItemRule itemRule2 = new ItemRule();
+        itemRule2.setType(ItemType.ARRAY);
+        itemRule2.setName("item2");
+        itemRule2.addValue("${param1}");
+        itemRule2.addValue("${param2:Tomato}");
+        itemRule2.addValue("@{attr1}");
+        itemRule2.addValue("@{attr2:Melon}");
 
-        assertEquals("Apple, Tomato, Strawberry, Melon", result);
+        ItemRuleMap itemRuleMap = new ItemRuleMap();
+        itemRuleMap.putItemRule(itemRule1);
+        itemRuleMap.putItemRule(itemRule2);
+
+        ItemEvaluator itemEvaluator = new ItemExpressionParser(activity);
+        MultiValueMap<String, String> result = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
+
+        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+            if ("item1".equals(entry.getKey())) {
+                assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
+            } else if ("item2".equals(entry.getKey())) {
+                assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
+            }
+        }
     }
 
 }

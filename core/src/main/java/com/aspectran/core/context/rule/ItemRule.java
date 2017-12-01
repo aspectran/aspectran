@@ -223,7 +223,7 @@ public class ItemRule {
             type = ItemType.SINGLE;
         }
         if (type != ItemType.SINGLE) {
-            throw new IllegalArgumentException("The item type must be 'single' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'single'");
         }
         this.tokens = tokens;
     }
@@ -251,7 +251,7 @@ public class ItemRule {
             type = ItemType.MAP;
         }
         if (!isMappableType()) {
-            throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'map' or 'properties'");
         }
         if (tokensMap == null) {
             tokensMap = new LinkedHashMap<>();
@@ -269,7 +269,7 @@ public class ItemRule {
             type = ItemType.MAP;
         }
         if (!isMappableType()) {
-            throw new IllegalArgumentException("The item type must be 'map' or 'properties' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'map' or 'properties'");
         }
         this.tokensMap = tokensMap;
     }
@@ -287,7 +287,7 @@ public class ItemRule {
             type = ItemType.PROPERTIES;
         }
         if (!isMappableType()) {
-            throw new IllegalArgumentException("The item type must be 'properties' or 'map' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'properties' or 'map'");
         }
         tokensMap = new LinkedHashMap<>();
         for (String key : properties.stringPropertyNames()) {
@@ -325,7 +325,7 @@ public class ItemRule {
             type = ItemType.LIST;
         }
         if (!isListableType()) {
-            throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'array', 'list' or 'set'");
         }
         if (tokensList == null) {
             tokensList = new ArrayList<>();
@@ -361,7 +361,7 @@ public class ItemRule {
             type = ItemType.SET;
         }
         if (!isListableType()) {
-            throw new IllegalArgumentException("The item type must be 'set', 'array' or 'list' for this item " + this);
+            throw new IllegalArgumentException("The type of this item must be 'set', 'array' or 'list'");
         }
         tokensList = new ArrayList<>(tokensSet);
     }
@@ -691,7 +691,8 @@ public class ItemRule {
      * @param property the property name
      * @return the token
      */
-    public static Token makeReferenceToken(String bean, String template, String parameter, String attribute, String property) {
+    public static Token makeReferenceToken(String bean, String template, String parameter,
+                                           String attribute, String property) {
         Token token;
         if (bean != null) {
             token = new Token(TokenType.BEAN, bean);
