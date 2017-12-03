@@ -95,7 +95,9 @@ public class ShellCommander {
             log.error("Error occurred while processing shell command", e);
         } finally {
             if (service.isActive()) {
-                log.info("Do not terminate this application while releasing all resources");
+                if (log.isDebugEnabled()) {
+                    log.debug("Do not terminate this application while releasing all resources");
+                }
             }
         }
     }

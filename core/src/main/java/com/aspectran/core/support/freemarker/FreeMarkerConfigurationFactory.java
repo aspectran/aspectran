@@ -270,13 +270,11 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
      * Return a new Configuration object. Subclasses can override this for custom
      * initialization (e.g. specifying a FreeMarker compatibility level which is a
      * new feature in FreeMarker 2.3.21), or for using a mock object for testing.
-     * <p>Called by {@code createConfiguration()}.
+     * <p>Called by {@code createConfiguration()}.</p>
      *
      * @return the Configuration object
-     * @throws IOException if a config file wasn't found
-     * @throws TemplateException on FreeMarker initialization failure
      */
-    protected Configuration newConfiguration() throws IOException, TemplateException {
+    protected Configuration newConfiguration() {
         return new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
     }
 

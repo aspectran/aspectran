@@ -32,6 +32,7 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embed.activity.EmbeddedActivity;
@@ -49,6 +50,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
 
     private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
 
+    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embed.workingDir";
+
     private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
 
     private SessionManager sessionManager;
@@ -57,6 +60,11 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
 
     public AspectranEmbeddedService() {
         super(new EmbeddedApplicationAdapter());
+
+        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+        if (basePath != null) {
+            setBasePath(basePath);
+        }
     }
 
     @Override

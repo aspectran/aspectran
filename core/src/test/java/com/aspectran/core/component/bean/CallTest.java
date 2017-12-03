@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component;
+package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.builder.resource.InvalidResourceException;
-import com.aspectran.core.context.rule.parser.ActivityContextParserException;
 import com.aspectran.core.sample.call.NumericBean;
 import com.aspectran.core.sample.call.TotalBean;
 import org.junit.After;
@@ -58,7 +56,7 @@ public class CallTest {
     }
 
     @Test
-    public void testBeanCall() throws InvalidResourceException, ActivityContextParserException {
+    public void testBeanCall() {
         TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
         int count = 1;
         for (NumericBean o : totalBean.getNumerics()) {
@@ -68,37 +66,37 @@ public class CallTest {
     }
 
     @Test
-    public void testTemplateCall() throws InvalidResourceException, ActivityContextParserException {
+    public void testTemplateCall() {
         TemplateProcessor templateProcessor = context.getTemplateProcessor();
         String result1 = templateProcessor.process("template-2");
 
-        System.out.println("-------------------------------");
-        System.out.println(" Test cases for template calls");
-        System.out.println("-------------------------------");
+        //System.out.println("-------------------------------");
+        //System.out.println(" Test cases for template calls");
+        //System.out.println("-------------------------------");
 
         assertEquals("TEMPLATE-1", result1);
-        System.out.println(result1);
+        //System.out.println(result1);
 
         String result2 = templateProcessor.process("template-4");
 
         assertEquals("TEMPLATE-3", result2);
-        System.out.println(result2);
+        //System.out.println(result2);
 
         String result4 = templateProcessor.process("aponStyle");
-        System.out.println("=== aponStyle ===");
-        System.out.println(result4);
+        //System.out.println("=== aponStyle ===");
+        //System.out.println(result4);
 
         String result5 = templateProcessor.process("compactStyle");
-        System.out.println("=== compactStyle ===");
-        System.out.println(result5);
+        //System.out.println("=== compactStyle ===");
+        //System.out.println(result5);
 
         String result6 = templateProcessor.process("compressedStyle");
-        System.out.println("=== compressedStyle ===");
-        System.out.println(result6);
+        //System.out.println("=== compressedStyle ===");
+        //System.out.println(result6);
 
         String result7 = templateProcessor.process("aspectranVersion");
-        System.out.println("=== static method call ===");
-        System.out.println(result7);
+        //System.out.println("=== static method call ===");
+        //System.out.println(result7);
     }
 
     @After

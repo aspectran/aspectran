@@ -238,9 +238,6 @@ public class JoinpointRule {
                         PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(patternString);
                         pointcutRule.addPointcutPatternRule(pointcutPatternRule, minusPointcutPatternRuleList);
                     }
-
-//                    pointcutRule.setPlusPatternStringList(plusPatternStringList);
-//                    pointcutRule.setMinusPatternStringList(minusPatternStringList);
                 }
 
                 if (qualifierParametersSize > 0) {
@@ -258,9 +255,6 @@ public class JoinpointRule {
                         PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeTargetParameters);
                         pointcutRule.addPointcutPatternRule(pointcutPatternRule, excludePointcutPatternRuleList);
                     }
-
-//                    pointcutRule.setIncludeTargetParametersList(includeTargetParametersList);
-//                    pointcutRule.setExcludeTargetParametersList(excludeTargetParametersList);
                 }
             }
         }

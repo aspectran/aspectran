@@ -20,32 +20,62 @@ import com.aspectran.core.activity.Activity;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Interface representing the environment in which the current application is running.
+ * Models two key aspects of the application environment: <em>profiles</em> and <em>properties</em>.
+ */
 public interface Environment {
 
+    /**
+     * Returns the set of profiles explicitly made active for this environment.
+     *
+     * @return the set of profiles explicitly made active
+     */
     String[] getActiveProfiles();
 
+    /**
+     * Returns the set of profiles to be active by default when no active profiles have
+     * been set explicitly.
+     *
+     * @return the set of profiles to be active by default
+     */
     String[] getDefaultProfiles();
 
+    /**
+     * Return whether one or more of the given profiles is active or, in the case of no
+     * explicit active profiles, whether one or more of the given profiles is included in
+     * the set of default profiles. If a profile begins with '!' the logic is inverted,
+     * i.e. the method will return true if the given profile is <em>not</em> active.
+     * For example, <pre class="code">env.acceptsProfiles("p1", "!p2")</pre> will
+     * return {@code true} if profile 'p1' is active or 'p2' is not active.
+     *
+     * @param profiles the given profiles
+     * @return true if the given profile is active; false otherwise
+     * @throws IllegalArgumentException if called with zero arguments
+     * or if any profile is {@code null}, empty or whitespace-only
+     * @see #getActiveProfiles
+     * @see #getDefaultProfiles
+     */
     boolean acceptsProfiles(String... profiles);
 
     <T> T getProperty(String name, Activity activity);
 
     /**
-     * Gets the class loader.
+     * Returns the class loader used by the current application.
      *
      * @return the class loader
      */
     ClassLoader getClassLoader();
 
     /**
-     * Sets the class loader.
+     * Specifies the class loader used by the current application.
      *
      * @param classLoader the class loader
      */
     void setClassLoader(ClassLoader classLoader);
 
     /**
-     * Return the base path that the current application is mapped to.
+     * Returns the base path that the current application is mapped to.
      *
      * @return the application base path
      */

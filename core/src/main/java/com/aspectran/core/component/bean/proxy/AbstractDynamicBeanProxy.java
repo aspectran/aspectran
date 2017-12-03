@@ -51,7 +51,7 @@ public abstract class AbstractDynamicBeanProxy {
     }
 
     protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity,
-            String transletName, String beanId, String className, String methodName) throws Throwable {
+            String transletName, String beanId, String className, String methodName) {
         RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
         if (holder.getDynamicAspectRuleList() != null) {
             for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {

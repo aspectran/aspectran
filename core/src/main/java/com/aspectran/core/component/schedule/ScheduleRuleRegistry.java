@@ -79,12 +79,12 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     }
 
     @Override
-    protected void doInitialize() throws Exception {
+    protected void doInitialize() {
         // Nothing to do
     }
 
     @Override
-    protected void doDestroy() throws Exception {
+    protected void doDestroy() {
         scheduleRuleMap.clear();
     }
     

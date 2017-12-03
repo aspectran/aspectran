@@ -61,6 +61,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
 
     private AspectranWebService(ServletContext servletContext) {
         super(new WebApplicationAdapter(servletContext));
+        setBasePath(servletContext.getRealPath("/"));
     }
 
     private AspectranWebService(CoreService rootService) {

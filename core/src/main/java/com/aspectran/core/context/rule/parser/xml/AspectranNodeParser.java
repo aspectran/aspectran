@@ -59,7 +59,7 @@ public class AspectranNodeParser {
      * @param validating true if the parser produced will validate documents
      *      as they are parsed; false otherwise
      * @param trackingLocation true if tracing the location of the node being
-     *      parsed, false otherwise
+     *      parsed; false otherwise
      */
     public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;

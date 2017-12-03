@@ -176,7 +176,7 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
     }
 
     @Override
-    protected void doDestroy() throws Exception {
+    protected void doDestroy() {
         templateRuleRegistry.destroy();
     }
 

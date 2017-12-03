@@ -43,9 +43,9 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
-    private final ThreadLocal<Activity> defaultActivityHolder = new ThreadLocal<>();
-
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
+
+    private final Activity defaultActivity;
 
     private final ContextEnvironment contextEnvironment;
 
@@ -71,6 +71,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
      * @param contextEnvironment the context environment
      */
     public AspectranActivityContext(ContextEnvironment contextEnvironment) {
+        this.defaultActivity = new DefaultActivity(this);
         this.contextEnvironment = contextEnvironment;
     }
 
@@ -186,21 +187,13 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public Activity getDefaultActivity() {
-        return defaultActivityHolder.get();
-    }
-
-    private void setDefaultActivity(Activity activity) {
-        defaultActivityHolder.set(activity);
-    }
-
-    private void removeDefaultActivity() {
-        defaultActivityHolder.remove();
+        return defaultActivity;
     }
 
     @Override
     public Activity getCurrentActivity() {
         Activity activity = currentActivityHolder.get();
-        return (activity != null ? activity : getDefaultActivity());
+        return (activity != null ? activity : defaultActivity);
     }
 
     @Override
@@ -235,9 +228,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     protected void doInitialize() throws Exception {
-        Activity activity = new DefaultActivity(this);
-        setDefaultActivity(activity);
-
         if (aspectRuleRegistry != null) {
             aspectRuleRegistry.initialize();
         }
@@ -259,7 +249,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     }
 
     @Override
-    protected void doDestroy() throws Exception {
+    protected void doDestroy() {
         if (transletRuleRegistry != null) {
             transletRuleRegistry.destroy();
             transletRuleRegistry = null;
@@ -280,8 +270,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
             aspectRuleRegistry.destroy();
             aspectRuleRegistry = null;
         }
-
-        removeDefaultActivity();
     }
 
 }

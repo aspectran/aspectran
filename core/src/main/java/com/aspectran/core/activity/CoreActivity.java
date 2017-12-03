@@ -49,13 +49,12 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 
 /**
  * The Class CoreActivity.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
@@ -381,9 +380,8 @@ public class CoreActivity extends BasicActivity {
         return (responseRule != null ? responseRule.getResponse() : null);
     }
 
-    private void response() throws IOException {
-        Response res = (this.reservedResponse != null) ? this.reservedResponse : getDeclaredResponse();
-
+    private void response() {
+        Response res = (this.reservedResponse != null ? this.reservedResponse : getDeclaredResponse());
         if (res != null) {
             if (res.getResponseType() != ResponseType.FORWARD) {
                 getResponseAdapter().flush();

@@ -29,7 +29,6 @@ import com.mitchellbosecke.pebble.loader.Loader;
 import com.mitchellbosecke.pebble.loader.StringLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +66,7 @@ public class PebbleEngineFactory implements EnvironmentAware {
         this.strictVariables = strictVariables;
     }
 
-    public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
+    public void setTemplateLoaderPath(String templateLoaderPath) {
         this.templateLoaderPaths = new String[] { templateLoaderPath };
     }
 
@@ -95,9 +94,8 @@ public class PebbleEngineFactory implements EnvironmentAware {
      * Creates a PebbleEngine instance.
      *
      * @return a PebbleEngine object that can be used to create PebbleTemplate objects
-     * @throws IOException if an I/O error has occurred
      */
-    public PebbleEngine createPebbleEngine() throws IOException {
+    public PebbleEngine createPebbleEngine() {
         PebbleEngine.Builder builder = new PebbleEngine.Builder();
         builder.strictVariables(strictVariables);
 
@@ -144,7 +142,7 @@ public class PebbleEngineFactory implements EnvironmentAware {
                 }
                 return templateLoaders[0];
             default:
-                List<Loader<?>> defaultLoadingStrategies = new ArrayList<Loader<?>>();
+                List<Loader<?>> defaultLoadingStrategies = new ArrayList<>();
                 Collections.addAll(defaultLoadingStrategies, templateLoaders);
                 Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
                 if (log.isDebugEnabled()) {
@@ -159,9 +157,8 @@ public class PebbleEngineFactory implements EnvironmentAware {
      *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate Template Loader
-     * @throws IOException if an I/O error has occurred
      */
-    protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
+    protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (log.isDebugEnabled()) {

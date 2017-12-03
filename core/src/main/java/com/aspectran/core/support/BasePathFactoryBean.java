@@ -31,11 +31,11 @@ public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<St
 
     @Override
     public void setActivityContext(ActivityContext context) {
-        this.basePath = context.getApplicationAdapter().getBasePath();
+        this.basePath = context.getEnvironment().getBasePath();
     }
 
     @Override
-    public String getObject() throws Exception {
+    public String getObject() {
         return basePath;
     }
 

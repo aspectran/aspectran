@@ -40,6 +40,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private final ApplicationAdapter applicationAdapter;
 
+    private String basePath;
+
     private AspectranConfig aspectranConfig;
 
     private SchedulerConfig schedulerConfig;
@@ -64,14 +66,17 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         if (rootService == null) {
             throw new IllegalArgumentException("Argument 'rootService' must not be null");
         }
+        if (rootService.getActivityContext() == null) {
+            throw new IllegalStateException("Oops! rootService's ActivityContext is not yet created");
+        }
 
         this.applicationAdapter = rootService.getApplicationAdapter();
         this.activityContext = rootService.getActivityContext();
         this.aspectranConfig = rootService.getAspectranConfig();
+    }
 
-        if (this.activityContext == null) {
-            throw new IllegalStateException("Oops! ActivityContext is not yet created");
-        }
+    protected void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 
     @Override
@@ -121,6 +126,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
+            activityContextBuilder.setBasePath(basePath);
             activityContextBuilder.setContextConfig(contextConfig);
             activityContextBuilder.setServiceController(this);
         } catch (Exception e) {
@@ -204,7 +210,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
     }
 
-    protected void pauseSchedulerService(long timeout) throws Exception {
+    protected void pauseSchedulerService(long timeout) {
         log.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time");
     }
 

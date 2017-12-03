@@ -623,7 +623,7 @@ public class StringUtils {
             return new String[0];
         }
         StringTokenizer st = new StringTokenizer(str, delimiters);
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         while (st.hasMoreTokens()) {
             tokens.add(trim ? st.nextToken().trim() : st.nextToken());
         }

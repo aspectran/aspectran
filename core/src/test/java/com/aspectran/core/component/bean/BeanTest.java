@@ -40,8 +40,6 @@ import static org.junit.Assert.assertNull;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BeanTest {
 
-    private File baseDir;
-
     private ActivityContextBuilder builder;
 
     private ActivityContext context;
@@ -50,7 +48,7 @@ public class BeanTest {
 
     @Before
     public void ready() throws IOException, ActivityContextBuilderException {
-        baseDir = ResourceUtils.getResourceAsFile("");
+        File baseDir = ResourceUtils.getResourceAsFile("");
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());

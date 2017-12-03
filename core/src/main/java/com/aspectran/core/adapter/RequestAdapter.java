@@ -148,7 +148,7 @@ public interface RequestAdapter {
     void addHeader(String name, String value);
 
     /**
-     * Returns the value of an activity's request parameter as a {@code String},
+     * Returns the value of a request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
      *
      * @param name a {@code String} specifying the name of the parameter
@@ -228,8 +228,8 @@ public interface RequestAdapter {
     void fillAllParameters(Map<String, Object> targetParameters);
 
     /**
-     * Returns a {@code FileParameter} object as a given activity's request parameter name,
-     * or {@code null} if the parameter does not exist.
+     * Returns a {@code FileParameter} object as a given request parameter name,
+     * or {@code null} if the file parameter does not exist.
      *
      * @param name a {@code String} specifying the name of the file parameter
      * @return a {@code FileParameter} representing the
@@ -240,7 +240,7 @@ public interface RequestAdapter {
 
     /**
      * Returns an array of {@code FileParameter} objects containing all
-     * of the values the given activity's request parameter has,
+     * of the values the given request parameter has,
      * or {@code null} if the parameter does not exist.
      *
      * @param name a {@code String} specifying the name of the file parameter

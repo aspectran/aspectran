@@ -59,7 +59,7 @@ public class JobActivityReport {
             String jobName = key.getName();
             String jobGroup = key.getGroup();
 
-            StringBuilder sb = new StringBuilder(698);
+            StringBuilder sb = new StringBuilder(720);
             sb.append("Result of the job [").append(jobName).append("]").append(ActivityContext.LINE_SEPARATOR);
             sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);

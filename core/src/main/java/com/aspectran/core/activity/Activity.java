@@ -38,14 +38,14 @@ import java.util.List;
 public interface Activity extends BeanRegistry {
 
     /**
-     * Preparation for the activity.
+     * Prepare for the activity.
      *
      * @param transletName the translet name
      */
     void prepare(String transletName);
 
     /**
-     * Preparation for the activity.
+     * Prepare for the activity.
      *
      * @param transletName the translet name
      * @param requestMethod the request method
@@ -53,7 +53,7 @@ public interface Activity extends BeanRegistry {
     void prepare(String transletName, String requestMethod);
 
     /**
-     * Preparation for the activity.
+     * Prepare for the activity.
      *
      * @param transletName the translet name
      * @param requestMethod the request method
@@ -61,25 +61,25 @@ public interface Activity extends BeanRegistry {
     void prepare(String transletName, MethodType requestMethod);
 
     /**
-     * Performs prepared activity.
+     * Performs the prepared activity.
      */
     void perform();
 
     /**
-     * Performs prepared activity but does not respond to the client.
+     * Performs the prepared activity but does not respond to the client.
      */
     void performWithoutResponse();
 
     /**
-     * Finish current activity.
-     * It must be called before exiting activity.
+     * Finish the current activity.
+     * It must be called to finish the activity.
      */
     void finish();
 
     /**
-     * Throws an Activity Terminated Exception to terminate current activity.
+     * Throws an ActivityTerminatedException to terminate the current activity.
      *
-     * @throws ActivityTerminatedException if an Activity terminated without completion
+     * @throws ActivityTerminatedException if an activity terminated without completion
      */
     void terminate();
 
@@ -87,19 +87,19 @@ public interface Activity extends BeanRegistry {
      * Throws an ActivityTerminatedException with the reason for terminating the current activity.
      *
      * @param cause the termination cause
-     * @throws ActivityTerminatedException the exception to terminate activity
+         * @throws ActivityTerminatedException the exception to terminate activity
      */
     void terminate(String cause);
 
     /**
-     * Gets the request http method.
+     * Returns the request method.
      *
      * @return the request method
      */
     MethodType getRequestMethod();
 
     /**
-     * Gets the name of the current translet.
+     * Returns the name of the current translet.
      *
      * @return the translet name
      */
@@ -129,28 +129,28 @@ public interface Activity extends BeanRegistry {
     Object getProcessResult(String actionId);
 
     /**
-     * Execute aspect advices with a given rules.
+     * Execute aspect advices with given rules.
      *
      * @param aspectAdviceRuleList the aspect advice rules
      */
     void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
 
     /**
-     * Execute aspect advices with a given rules, and does not raise exceptions.
+     * Execute aspect advices with given rules, and does not raise exceptions.
      *
      * @param aspectAdviceRuleList the aspect advice rules
      */
     void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 
     /**
-     * Executes an aspect advice with the given rule.
+     * Executes an aspect advice with a given rule.
      *
      * @param aspectAdviceRule the aspect advice rule
      */
     void executeAdvice(AspectAdviceRule aspectAdviceRule);
 
     /**
-     * Executes an aspect advice with a given rule, and does not raise an exception.
+     * Executes an aspect advice with a given rule and does not raise an exception.
      *
      * @param aspectAdviceRule the aspect advice rule
      */

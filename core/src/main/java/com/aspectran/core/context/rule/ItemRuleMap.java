@@ -27,6 +27,14 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
     /** @serial */
     private static final long serialVersionUID = 192817512158305803L;
 
+    public ItemRuleMap() {
+        super();
+    }
+
+    public ItemRuleMap(ItemRuleMap itemRuleMap) {
+        super(itemRuleMap);
+    }
+
     /**
      * Adds a item rule.
      *

@@ -139,7 +139,7 @@ public class FileParameter {
     /**
      * Checks if the file is refused.
      *
-     * @return true if the file is refused, false otherwise
+     * @return true if the file is refused; false otherwise
      */
     public boolean isRefused() {
         return refused;

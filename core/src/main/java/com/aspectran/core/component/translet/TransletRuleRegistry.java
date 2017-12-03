@@ -182,7 +182,8 @@ public class TransletRuleRegistry extends AbstractComponent {
 
                 if (responseName == null || responseName.isEmpty()) {
                     if (defaultResponseRule != null) {
-                        log.warn("Ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
+                        log.warn("Ignore duplicated default response rule " + defaultResponseRule +
+                                " of transletRule " + transletRule);
                     }
                     defaultResponseRule = responseRule;
                 } else {
@@ -293,12 +294,12 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     @Override
-    protected void doInitialize() throws Exception {
+    protected void doInitialize() {
         // Nothing to do
     }
 
     @Override
-    protected void doDestroy() throws Exception {
+    protected void doDestroy() {
         transletRuleMap.clear();
         restfulTransletRuleSet.clear();
     }

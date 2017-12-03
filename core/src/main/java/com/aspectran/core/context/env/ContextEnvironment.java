@@ -24,17 +24,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * The Environment for ActivityContext
+ */
 public class ContextEnvironment extends AbstractEnvironment {
 
     private final ApplicationAdapter applicationAdapter;
 
-    private String basePath;
-
     private ClassLoader classLoader;
+
+    private String basePath;
 
     public ContextEnvironment(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
-        this.basePath = applicationAdapter.getBasePath();
     }
 
     public ApplicationAdapter getApplicationAdapter() {

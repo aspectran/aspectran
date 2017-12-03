@@ -57,14 +57,14 @@ public interface Parameter {
     /**
      * Returns whether the value type is hinted.
      *
-     * @return true if the value type is hinted, false otherwise
+     * @return true if the value type is hinted; false otherwise
      */
     boolean isValueTypeHinted();
 
     /**
      * Sets whether the value type is hinted.
      *
-     * @param valueTypeHinted true if the value type is hinted, false otherwise
+     * @param valueTypeHinted true if the value type is hinted; false otherwise
      */
     void setValueTypeHinted(boolean valueTypeHinted);
 

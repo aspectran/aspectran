@@ -17,6 +17,7 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
@@ -25,7 +26,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 public class DefaultActivity extends BasicActivity {
 
     /**
-     * Instantiates a new default activity.
+     * Instantiates a new DefaultActivity.
      *
      * @param context the activity context
      */
@@ -96,6 +97,11 @@ public class DefaultActivity extends BasicActivity {
     @Override
     public boolean isResponseReserved() {
         return false;
+    }
+
+    @Override
+    public void registerAspectRule(AspectRule aspectRule) {
+        throw new UnsupportedOperationException();
     }
 
 }

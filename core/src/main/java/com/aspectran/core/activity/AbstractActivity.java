@@ -288,7 +288,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Put aspect advice bean.
+     * Puts the aspect advice bean.
      *
      * @param aspectId the aspect id
      * @param adviceBean the advice bean

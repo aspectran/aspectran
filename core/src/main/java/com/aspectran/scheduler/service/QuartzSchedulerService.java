@@ -197,7 +197,8 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         try {
             for (Scheduler scheduler : schedulerSet) {
                 if (!scheduler.isShutdown()) {
-                    log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+                    log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() +
+                            "' with waitForJobsToComplete=" + waitOnShutdown);
                     scheduler.shutdown(waitOnShutdown);
                 }
             }

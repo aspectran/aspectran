@@ -20,6 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.config.ContextConfig;
 import com.aspectran.core.context.builder.resource.AspectranClassLoader;
 import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.ServiceController;
 
@@ -59,6 +60,12 @@ public interface ActivityContextBuilder {
     String[] getDefaultProfiles();
 
     void setDefaultProfiles(String... defaultProfiles);
+
+    ItemRuleMap getPropertyItemRuleMap();
+
+    void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
+
+    void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
 
     boolean isHybridLoad();
 

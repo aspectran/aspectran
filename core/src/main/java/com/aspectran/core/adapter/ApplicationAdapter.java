@@ -72,11 +72,4 @@ public interface ApplicationAdapter {
      */
     void removeAttribute(String name);
 
-    /**
-     * Return the base path that the current application is mapped to.
-     *
-     * @return the application base path
-     */
-    String getBasePath();
-
 }

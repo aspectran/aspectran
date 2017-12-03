@@ -114,7 +114,7 @@ public interface SessionCache {
      * SessionDataStore.
      *
      * @param id the session id
-     * @return true if the session exists, false otherwise
+     * @return true if the session exists; false otherwise
      * @throws Exception if an error occurs
      */
     boolean exists(String id) throws Exception;
@@ -125,7 +125,7 @@ public interface SessionCache {
      *
      * @param id the session id
      * @return true if a Session object matching the id is present
-     *      in the cache, false otherwise
+     *      in the cache; false otherwise
      * @throws Exception if an error occurs
      */
     boolean contains(String id) throws Exception;

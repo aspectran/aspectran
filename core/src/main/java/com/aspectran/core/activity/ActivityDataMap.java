@@ -22,7 +22,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import java.util.HashMap;
 
 /**
- * The Class ActivityDataMap.
+ * A map of data for saving activity results.
  *
  * <p>This class is generally not thread-safe.
  * It is primarily designed for use in a single thread only.</p>
@@ -37,7 +37,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     protected RequestAdapter requestAdapter;
 
     /**
-     * Instantiates a new activity data map.
+     * Instantiates a new ActivityDataMap.
      *
      * @param activity the activity
      */
@@ -46,7 +46,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     /**
-     * Instantiates a new activity data map.
+     * Instantiates a new ActivityDataMap.
      *
      * @param activity the activity
      * @param prefill whether or not to pre-fill the data
@@ -106,6 +106,16 @@ public class ActivityDataMap extends HashMap<String, Object> {
         return null;
     }
 
+    /**
+     * Returns the value of the request parameter from the request adapter
+     * without storing it in the cache.
+     * If the parameter does not exist, returns null.
+     *
+     * @param name a {@code String} specifying the name of the parameter
+     * @return an {@code Object} containing the value of the parameter,
+     *         or {@code null} if the parameter does not exist
+     * @see RequestAdapter#setParameter
+     */
     public Object getParameterWithoutCache(String name) {
         if (requestAdapter != null) {
             String[] values = requestAdapter.getParameterValues(name);
@@ -120,6 +130,16 @@ public class ActivityDataMap extends HashMap<String, Object> {
         return null;
     }
 
+    /**
+     * Returns the value of the named attribute from the request adapter
+     * without storing it in the cache.
+     * If no attribute of the given name exists, returns null.
+     *
+     * @param name a {@code String} specifying the name of the attribute
+     * @return an {@code Object} containing the value of the attribute,
+     *         or {@code null} if the attribute does not exist
+     * @see RequestAdapter#getAttribute
+     */
     public Object getAttributeWithoutCache(String name) {
         if (requestAdapter != null) {
             return requestAdapter.getAttribute(name);
@@ -128,6 +148,16 @@ public class ActivityDataMap extends HashMap<String, Object> {
         }
     }
 
+    /**
+     * Returns the value of the named action's process result
+     * without storing it in the cache.
+     * If no process result of the given name exists, returns null.
+     *
+     * @param name a {@code String} specifying the name of the action
+     * @return an {@code Object} containing the value of the action result,
+     *         or {@code null} if the action result does not exist
+     * @see RequestAdapter#getAttribute
+     */
     public Object getActionResultWithoutCache(String name) {
         if (activity.getProcessResult() != null) {
             return activity.getProcessResult().getResultValue(name);

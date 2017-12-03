@@ -146,7 +146,7 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
     }
 
     @Override
-    protected void doDestroy() throws Exception {
+    protected void doDestroy() {
     }
 
     protected void checkInitialized() throws IllegalStateException {

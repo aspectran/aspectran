@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util;
+package com.aspectran.core.context;
 
-public class Aspectran {
+public class AspectranVersion {
 
     public static final String VERSION;
 
@@ -26,7 +26,7 @@ public class Aspectran {
     public static final boolean STABLE;
 
     static {
-        Package pkg = Aspectran.class.getPackage();
+        Package pkg = AspectranVersion.class.getPackage();
         if (pkg != null && "The Aspectran Project".equals(pkg.getImplementationVendor()) &&
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
@@ -44,7 +44,7 @@ public class Aspectran {
     /**
      * No public constructor to prevent instances from being created.
      */
-    private Aspectran() {
+    private AspectranVersion() {
     }
 
     public static String getVersion() {

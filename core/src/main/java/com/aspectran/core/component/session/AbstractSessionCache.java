@@ -539,7 +539,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * Remove the session with this identity from the store.
      *
      * @param id the session id
-     * @return true if removed false otherwise
+     * @return true if removed; false otherwise
      */
     public abstract Session doDelete(String id);
 

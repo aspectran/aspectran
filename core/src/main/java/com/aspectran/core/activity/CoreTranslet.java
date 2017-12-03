@@ -150,7 +150,7 @@ public class CoreTranslet implements Translet {
 
     @Override
     public ProcessResult touchProcessResult(String contentsName) {
-        return touchProcessResult(contentsName, 3);
+        return touchProcessResult(contentsName, 5);
     }
 
     @Override

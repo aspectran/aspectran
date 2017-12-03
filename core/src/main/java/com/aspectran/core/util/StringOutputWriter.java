@@ -15,14 +15,13 @@
  */
 package com.aspectran.core.util;
 
-import java.io.IOException;
 import java.io.Writer;
 
 /**
  * A character stream that collects its output in a string builder,
  * which can then be used to construct a string.
  * <p>Closing a StringWriter has no effect. The methods in this class can be called
- * after the stream has been closed without generating an IOException.
+ * after the stream has been closed without generating an IOException.</p>
  */
 public class StringOutputWriter extends Writer {
 
@@ -101,12 +100,12 @@ public class StringOutputWriter extends Writer {
 
     @Override
     public void flush() {
-        // nothing to do
+        // Nothing to do
     }
 
     @Override
-    public void close() throws IOException {
-        // nothing to do
+    public void close() {
+        // Nothing to do
     }
 
 }

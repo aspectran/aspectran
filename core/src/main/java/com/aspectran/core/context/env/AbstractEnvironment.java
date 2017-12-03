@@ -26,10 +26,21 @@ import com.aspectran.core.util.SystemUtils;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Abstract base class for {@link Environment} implementations.
+ */
 public abstract class AbstractEnvironment implements Environment {
 
+    /**
+     * Name of property to set to specify active profiles: {@value}. Value may be comma
+     * delimited.
+     */
     private static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 
+    /**
+     * Name of property to set to specify profiles active by default: {@value}. Value may
+     * be comma delimited.
+     */
     private static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
 
     private final Set<String> activeProfiles = new LinkedHashSet<>();
@@ -43,44 +54,47 @@ public abstract class AbstractEnvironment implements Environment {
         return activeProfiles.toArray(new String[activeProfiles.size()]);
     }
 
+    /**
+     * Returns the set of active profiles as explicitly set through
+     * {@link #setActiveProfiles} or if the current set of active profiles
+     * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY_NAME}
+     * property and assign its value to the set of active profiles.
+     *
+     * @see #getActiveProfiles()
+     * @see #ACTIVE_PROFILES_PROPERTY_NAME
+     */
     private Set<String> doGetActiveProfiles() {
         synchronized (activeProfiles) {
             if (activeProfiles.isEmpty()) {
-                setActiveProfiles(getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME));
+                String[] profiles = getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
+                if (profiles != null) {
+                    setActiveProfiles(profiles);
+                }
             }
             return activeProfiles;
         }
     }
 
-    public void setActiveProfiles(String profiles) {
-        setActiveProfiles(StringUtils.splitCommaDelimitedString(profiles));
-    }
-
-    public void setActiveProfiles(String[] profiles) {
-        synchronized (activeProfiles) {
-            if (!activeProfiles.isEmpty()) {
-                activeProfiles.clear();
-            }
-            if (profiles != null) {
-                for (String p : profiles) {
-                    if (p.contains(",")) {
-                        addActiveProfile(p);
-                    } else {
-                        addProfile(activeProfiles, p);
-                    }
-                }
-            }
+    /**
+     * Specify the set of profiles active for this {@code Environment}.
+     * Profiles are evaluated during the ActivityContext configuration to determine
+     * whether configuration settings or rules should be registered.
+     * <p>Any existing active profiles will be replaced with the given arguments; call
+     * with zero arguments to clear the current set of active profiles.</p>
+     *
+     * @param profiles the set of profiles active
+     * @see #setDefaultProfiles
+     * @throws IllegalArgumentException if any profile is null, empty or whitespace-only
+     */
+    public void setActiveProfiles(String... profiles) {
+        if (profiles == null) {
+            throw new IllegalArgumentException("Argument 'profiles' must not be null");
         }
-    }
-
-    public void addActiveProfile(String profile) {
-        String[] profiles = StringUtils.splitCommaDelimitedString(profile);
-        doGetActiveProfiles();
-        if (profiles.length > 0) {
-            synchronized (activeProfiles) {
-                for (String p : profiles) {
-                    addProfile(activeProfiles, p);
-                }
+        synchronized (activeProfiles) {
+            activeProfiles.clear();
+            for (String profile : profiles) {
+                validateProfile(profile);
+                activeProfiles.add(profile);
             }
         }
     }
@@ -90,53 +104,43 @@ public abstract class AbstractEnvironment implements Environment {
         return defaultProfiles.toArray(new String[defaultProfiles.size()]);
     }
 
+    /**
+     * Returns the set of default profiles explicitly set via
+     * {@link #setDefaultProfiles(String...)}, then check for the presence of the
+     * {@value #DEFAULT_PROFILES_PROPERTY_NAME} property and assign its value (if any)
+     * to the set of default profiles.
+     */
     private Set<String> doGetDefaultProfiles() {
         synchronized (defaultProfiles) {
             if (defaultProfiles.isEmpty()) {
-                setActiveProfiles(getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME));
+                String[] profiles = getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
+                if (profiles != null) {
+                    setDefaultProfiles(profiles);
+                }
             }
             return defaultProfiles;
         }
     }
 
-    public void setDefaultProfiles(String profiles) {
-        setDefaultProfiles(StringUtils.splitCommaDelimitedString(profiles));
-    }
-
-    public void setDefaultProfiles(String[] profiles) {
+    /**
+     * Specify the set of profiles to be made active by default if no other profiles
+     * are explicitly made active through {@link #setActiveProfiles}.
+     * <p>Calling this method removes overrides any reserved default profiles
+     * that may have been added during construction of the environment.</p>
+     *
+     * @param profiles the set of profiles to be made active by default
+     */
+    public void setDefaultProfiles(String... profiles) {
+        if (profiles == null) {
+            throw new IllegalArgumentException("Argument 'profiles' must not be null");
+        }
         synchronized (defaultProfiles) {
-            if (!defaultProfiles.isEmpty()) {
-                defaultProfiles.clear();
-            }
-            if (profiles != null) {
-                for (String p : profiles) {
-                    addProfile(defaultProfiles, p);
-                }
+            defaultProfiles.clear();
+            for (String profile : profiles) {
+                validateProfile(profile);
+                defaultProfiles.add(profile);
             }
         }
-    }
-
-    public void addDefaultProfile(String profile) {
-        String[] profiles = StringUtils.splitCommaDelimitedString(profile);
-        doGetDefaultProfiles();
-        if (profiles.length > 0) {
-            synchronized (defaultProfiles) {
-                for (String p : profiles) {
-                    addProfile(defaultProfiles, p);
-                }
-            }
-        }
-    }
-
-    private void addProfile(Set<String> profiles, String profile) {
-        profile = StringUtils.trimWhitespace(profile);
-        if (profile.isEmpty()) {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]; must contain text");
-        }
-        if (profile.charAt(0) == '!') {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]; must not begin with ! operator");
-        }
-        profiles.add(profile);
     }
 
     @Override
@@ -146,11 +150,11 @@ public abstract class AbstractEnvironment implements Environment {
         }
         for (String profile : profiles) {
             if (StringUtils.hasLength(profile) && profile.charAt(0) == '!') {
-                if (!isActiveProfile(profile)) {
+                if (!isProfileActive(profile.substring(1))) {
                     return true;
                 }
             } else {
-                if (isActiveProfile(profile)) {
+                if (isProfileActive(profile)) {
                     return true;
                 }
             }
@@ -158,10 +162,37 @@ public abstract class AbstractEnvironment implements Environment {
         return false;
     }
 
-    private boolean isActiveProfile(String profile) {
+    /**
+     * Returns whether the given profile is active, or if active profiles are empty
+     * whether the profile should be active by default.
+     *
+     * @throws IllegalArgumentException per {@link #validateProfile(String)}
+     */
+    private boolean isProfileActive(String profile) {
+        validateProfile(profile);
         Set<String> currentActiveProfiles = doGetActiveProfiles();
-        return (currentActiveProfiles.contains(profile)
-                || (currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
+        return (currentActiveProfiles.contains(profile) ||
+                (currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
+    }
+
+    /**
+     * Validate the given profile, called internally prior to adding to the set of
+     * active or default profiles.
+     * <p>Subclasses may override to impose further restrictions on profile syntax.</p>
+     *
+     * @param profile the given profile
+     * @throws IllegalArgumentException if the profile is null, empty, whitespace-only or
+     *      begins with the profile NOT operator (!)
+     * @see #acceptsProfiles
+     * @see #setDefaultProfiles
+     */
+    protected void validateProfile(String profile) {
+        if (!StringUtils.hasText(profile)) {
+            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
+        }
+        if (profile.charAt(0) == '!') {
+            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must not begin with ! operator");
+        }
     }
 
     private String[] getProfilesFromSystemProperty(String propName) {
@@ -185,7 +216,7 @@ public abstract class AbstractEnvironment implements Environment {
 
     public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
         if (this.propertyItemRuleMap == null) {
-            this.propertyItemRuleMap = propertyItemRuleMap;
+            this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
         } else {
             this.propertyItemRuleMap.putAll(propertyItemRuleMap);
         }

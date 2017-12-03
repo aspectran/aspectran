@@ -16,10 +16,6 @@
 package com.aspectran.shell.adapter;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
-import com.aspectran.core.util.SystemUtils;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * The Class ShellApplicationAdapter.
@@ -28,22 +24,11 @@ import java.io.IOException;
  */
 public class ShellApplicationAdapter extends BasicApplicationAdapter {
 
-    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.shell.workingDir";
-
     /**
      * Instantiates a new ShellApplicationAdapter.
-     *
-     * @throws IOException if an I/O error has occurred
      */
-    public ShellApplicationAdapter() throws IOException {
+    public ShellApplicationAdapter() {
         super(null);
-
-        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
-        if (basePath == null) {
-            basePath = new File("").getCanonicalPath();
-        }
-
-        super.setBasePath(basePath);
     }
 
 }

@@ -29,8 +29,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     protected final ApplicationScope scope;
 
-    protected String basePath;
-
     /**
      * Instantiates a new AbstractApplicationAdapter.
      *
@@ -53,23 +51,8 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
     }
 
     @Override
-    public String getBasePath() {
-        return basePath;
-    }
-
-    /**
-     * Sets the application base path.
-     *
-     * @param basePath the new application base path
-     */
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("basePath", basePath);
         tsb.append("adaptee", adaptee);
         return tsb.toString();
     }

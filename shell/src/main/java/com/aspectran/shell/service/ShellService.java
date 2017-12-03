@@ -76,7 +76,7 @@ public interface ShellService extends CoreService {
      * Checks whether the Translet can be exposed.
      *
      * @param transletName the name of the Translet to check
-     * @return true if the Translet can be exposed, false otherwise
+     * @return true if the Translet can be exposed; false otherwise
      */
     boolean isExposable(String transletName);
 

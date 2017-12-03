@@ -42,6 +42,7 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.assistant.BeanReferenceException;
@@ -64,11 +65,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private final ApplicationAdapter applicationAdapter;
 
-    private String basePath;
-
     private ContextConfig contextConfig;
 
     private AspectranParameters aspectranParameters;
+
+    private String basePath;
 
     private String rootConfigLocation;
 
@@ -79,6 +80,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private String[] activeProfiles;
 
     private String[] defaultProfiles;
+
+    private ItemRuleMap propertyItemRuleMap;
 
     private boolean hybridLoad;
 
@@ -99,7 +102,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
         this.applicationAdapter = applicationAdapter;
-        setBasePath(applicationAdapter.getBasePath());
     }
 
     @Override
@@ -113,16 +115,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public String getBasePath() {
-        return basePath;
-    }
-
-    @Override
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    @Override
     public AspectranParameters getAspectranParameters() {
         return aspectranParameters;
     }
@@ -131,6 +123,16 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
         this.rootConfigLocation = null;
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    @Override
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 
     @Override
@@ -182,6 +184,25 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setDefaultProfiles(String... defaultProfiles) {
         this.defaultProfiles = defaultProfiles;
+    }
+
+    @Override
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
+
+    @Override
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    @Override
+    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        if (this.propertyItemRuleMap == null) {
+            this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
+        } else {
+            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+        }
     }
 
     @Override
@@ -285,6 +306,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
         if (defaultProfiles != null) {
             environment.setDefaultProfiles(defaultProfiles);
+        }
+        if (propertyItemRuleMap != null) {
+            environment.setPropertyItemRuleMap(propertyItemRuleMap);
         }
         return environment;
     }

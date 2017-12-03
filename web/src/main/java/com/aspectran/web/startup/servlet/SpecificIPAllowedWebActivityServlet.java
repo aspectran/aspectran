@@ -88,7 +88,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
      *
      * @param ipAddress the IP address
      *
-     * @return true if IP address is a valid, false otherwise
+     * @return true if IP address is a valid; false otherwise
      */
     private boolean isAllowedAddress(String ipAddress) {
         if (allowedAddresses == null) {

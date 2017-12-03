@@ -84,7 +84,7 @@ public class ParsedOptions implements Serializable {
     /**
      * Checks if options exists.
      *
-     * @return true if options exists, false otherwise
+     * @return true if options exists; false otherwise
      */
     public boolean hasOptions() {
         return !options.isEmpty();
@@ -396,7 +396,7 @@ public class ParsedOptions implements Serializable {
     /**
      * Checks if non-recognized options or arguments exists.
      *
-     * @return true if non-recognized options or arguments exists, false otherwise
+     * @return true if non-recognized options or arguments exists; false otherwise
      */
     public boolean hasArgs() {
         return !args.isEmpty();

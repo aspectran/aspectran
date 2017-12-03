@@ -232,7 +232,7 @@ public class FilenameUtils {
      * @param filename the filename to query, null returns false
      * @param allowedFileExtensions the allowed file extensions
      * @param deniedFileExtensions the denied file extensions
-     * @return true if is valid file extension, false otherwise
+     * @return true if is valid file extension; false otherwise
      */
     public static boolean isValidFileExtension(String filename, String allowedFileExtensions, String deniedFileExtensions) {
         if (filename == null) {

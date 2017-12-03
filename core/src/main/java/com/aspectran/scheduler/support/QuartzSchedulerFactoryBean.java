@@ -26,7 +26,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.Properties;
 
 /**
- * The type Quartz scheduler factory bean.
+ * {@link FactoryBean} implementation that builds a QuartzScheduler.
  *
  * @since 3.0.0
  */
@@ -42,7 +42,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
 
     /**
      * Set the name of the Scheduler to create via the SchedulerFactory.
-     * <p>If not specified, the bean name will be used as default scheduler name.
+     * <p>If not specified, the bean name will be used as default scheduler name.</p>
      *
      * @param schedulerName the scheduler name
      * @see org.quartz.SchedulerFactory#getScheduler()
@@ -53,7 +53,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
     }
 
     /**
-     * Sets quartz properties.
+     * Set quartz properties.
      *
      * @param quartzProperties the quartz properties
      */
@@ -67,7 +67,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
      * Scheduler is usually exclusively intended for access within the Aspectran context.
      * <p>Switch this flag to "true" in order to expose the Scheduler globally.
      * This is not recommended unless you have an existing Aspectran application that
-     * relies on this behavior.
+     * relies on this behavior.</p>
      *
      * @param exposeSchedulerInRepository whether to expose scheduler in the quartz scheduler repository
      */
@@ -78,7 +78,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
     /**
      * Create the Scheduler instance.
      * <p>The default implementation invokes SchedulerFactory's {@code getScheduler}
-     * method. Can be overridden for custom Scheduler creation.
+     * method. Can be overridden for custom Scheduler creation.</p>
      *
      * @return the Scheduler instance
      * @throws SchedulerException if thrown by Quartz methods
@@ -123,7 +123,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
     }
 
     @Override
-    public Scheduler getObject() throws SchedulerException {
+    public Scheduler getObject() {
         return this.scheduler;
     }
 

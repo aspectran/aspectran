@@ -63,8 +63,8 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
      * @param directiveName the directive name
      * @param prefix the prefix
      * @param suffix the suffix
-     * @param deprefixes the prefixes to be removed from the leading of body string.
-     * @param desuffixes the suffixes to be removed from the tailing of body string.
+     * @param deprefixes the prefixes to be removed from the leading of body string
+     * @param desuffixes the suffixes to be removed from the tailing of body string
      * @param caseSensitive true to case sensitive; false to ignore case sensitive
      */
     public CustomTrimDirective(String groupName, String directiveName, String prefix, String suffix,
