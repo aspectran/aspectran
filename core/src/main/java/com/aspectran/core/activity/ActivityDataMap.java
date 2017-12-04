@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 /**
  * A map of data for saving activity results.
+ * It is often used as a model for providing data used in views.
  *
  * <p>This class is generally not thread-safe.
  * It is primarily designed for use in a single thread only.</p>
