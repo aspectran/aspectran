@@ -1,7 +1,7 @@
 # Aspectran - a light-weight Java application framework
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
-[<img src="https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master" alt="Coverage Status"/>](https://coveralls.io/github/aspectran/aspectran?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -9,7 +9,7 @@
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
-[![asciicast](https://asciinema.org/a/143840.png)](https://asciinema.org/a/143840)
+[![asciicast](https://asciinema.org/a/150971.png)](https://asciinema.org/a/150971)
 
 Aspectran is a Java framework for building Web and command-line applications.  
 Aspectran will grow into a next-generation Java application framework that supports most of the functionality required in an enterprise environment.
