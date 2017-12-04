@@ -153,11 +153,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
             <version>${project.version}</version>
         </dependency>
