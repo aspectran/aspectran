@@ -27,44 +27,38 @@
     <dependencies>
         <!-- All release modules -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-core</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-shell</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-shell-jline</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-embed</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-shell</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-shell-jline</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-web</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

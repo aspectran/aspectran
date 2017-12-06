@@ -104,7 +104,10 @@ class AspectranShellService extends AbstractShellService {
             activity.prepare(commandLineParser.getCommand(), commandLineParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            getConsole().writeLine("No translet mapped to the command [" + commandLineParser.getCommand() + "]");
+            if (log.isDebugEnabled()) {
+                log.debug("Unknown translet: " + commandLineParser.getCommand());
+            }
+            throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated without completion: " + e.getMessage());

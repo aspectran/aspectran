@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command.builtin;
 
+import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.shell.command.AbstractCommand;
@@ -36,7 +37,7 @@ public class TransletCommand extends AbstractCommand {
     public TransletCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("l").longOpt("list").desc("Prints all Translets or those filtered by the given name").build());
+        addOption(Option.builder("l").longOpt("list").desc("Prints all translets or those filtered by the given name").build());
         addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
     }
 
@@ -47,7 +48,11 @@ public class TransletCommand extends AbstractCommand {
         if (!options.hasOptions() && options.hasArgs()) {
             String commandLine = String.join(" ", options.getArgs());
             CommandLineParser parser = CommandLineParser.parseCommandLine(commandLine);
-            getService().execute(parser);
+            try {
+                getService().execute(parser);
+            } catch (TransletNotFoundException e) {
+                getConsole().writeLine("No translet mapped to '" + parser.getCommand() + "'");
+            }
             getConsole().writeLine();
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
@@ -59,7 +64,7 @@ public class TransletCommand extends AbstractCommand {
         return null;
     }
 
-    public void listTranslets(String[] keywords) {
+    private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
 

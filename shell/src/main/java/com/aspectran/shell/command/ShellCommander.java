@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.option.OptionParserException;
@@ -82,6 +83,9 @@ public class ShellCommander {
                     try {
                         service.execute(commandLine);
                         console.writeLine();
+                    } catch (TransletNotFoundException e) {
+                        console.writeLine("No command or excutable tranlset mapped to '"
+                                + e.getTransletName() +  "'");
                     } catch (ConsoleTerminatedException e) {
                         throw e;
                     } catch (Exception e) {

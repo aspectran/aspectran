@@ -103,24 +103,39 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-all</artifactId>
+                <version>5.0.0.RC1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-core</artifactId>
-                <version>${project.version}</version>
+                <version>5.0.0.RC1</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>aspectran-shell</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-embed</artifactId>
-                <version>${project.version}</version>
+                <version>5.0.0.RC1</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-shell</artifactId>
+                <version>5.0.0.RC1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-shell-jline</artifactId>
+                <version>5.0.0.RC1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-web</artifactId>
-                <version>${project.version}</version>
+                <version>5.0.0.RC1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-jetty</artifactId>
+                <version>5.0.0.RC1</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>

@@ -27,9 +27,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-shell</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>

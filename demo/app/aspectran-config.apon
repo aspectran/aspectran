@@ -33,7 +33,7 @@ shell: {
     ]
     greetings: (
         |
-        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.context.AspectranVersion^version}{{off}}
+        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
         |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.

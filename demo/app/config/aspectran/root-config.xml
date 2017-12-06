@@ -3,14 +3,14 @@
 <aspectran>
 
     <description style="apon">
-        |---------------------------------------------------------------------------------------------------------------
+        |----------------------------------------------------------------------------------------
         |{{underline}}Commands that can run examples:{{underline:off}}
-        |   {{CYAN}}hello{{fg:off}}        Runs the helloWorld() method of the sampleAction bean and prints the returned value
-        |   {{CYAN}}hello2{{fg:off}}       Runs the helloWorld() method of the sampleAction bean and prints the returned value with margins
-        |   {{CYAN}}echo{{fg:off}}         It accepts parameters and print as is
-        |   {{CYAN}}echo2{{fg:off}}        It accepts parameters and attributes, and print them as is
-        |   {{CYAN}}login{{fg:off}}        It accepts parameters used for login and print them
-        |   {{CYAN}}chpw{{fg:off}}         It accepts parameters for changing the password and print them
+        |   {{CYAN}}hello{{fg:off}}      Prints "Hello, World!" in your console
+        |   {{CYAN}}hello2{{fg:off}}     Prints "Hello, World!" in your console using ANSI escape sequences
+        |   {{CYAN}}echo{{fg:off}}       It accepts parameters and print as is
+        |   {{CYAN}}echo2{{fg:off}}      It accepts parameters and attributes, and print them as is
+        |   {{CYAN}}login{{fg:off}}      It accepts parameters required for login and print them
+        |   {{CYAN}}chpw{{fg:off}}       It accepts parameters for changing the password and print them
         |
         |{{underline}}To control Jetty, try one of the following commands:{{underline:off}}
         |   {{MAGENTA}}jetty{{fg:off}}        Displays commands required to control Jetty server
@@ -19,7 +19,7 @@
         |
         |{{underline}}Once a Jetty server is running, point your web browser to:{{underline:off}}
         |   {{YELLOW}}http://localhost:8088/{{fg:off}}
-        |---------------------------------------------------------------------------------------------------------------
+        |----------------------------------------------------------------------------------------
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>

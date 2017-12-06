@@ -11,17 +11,9 @@
         <setting name="transletNamePattern" value="/examples/gs-rest-service/*"/>
     </settings>
 
-    <bean scan="com.aspectran.demo.customer.*Dao">
-        <description>
-            customer 패키지 하위에 있는 DAO Bean을 찾아서 등록합니다.
-        </description>
-    </bean>
+    <bean class="com.aspectran.demo.customer.CustomerDao"/>
 
-    <bean scan="com.aspectran.demo.customer.*Action">
-        <description>
-            customer 패키지 하위에 있는 Action Bean을 찾아서 등록합니다.
-        </description>
-    </bean>
+    <bean class="com.aspectran.demo.customer.CustomerAction"/>
 
     <translet name="/">
         <dispatch name="template">

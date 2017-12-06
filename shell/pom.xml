@@ -27,9 +27,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
