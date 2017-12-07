@@ -27,7 +27,7 @@
         <description style="apon">
             |
             |   {{WHITE}}Starting the Jetty Server...{{off}}
-            |-----------------------------------------------------------------------------------------
+            |-----------------------------------------
         </description>
         <action bean="jetty.server" method="start"/>
         <transform type="transform/text">
@@ -55,7 +55,7 @@
         <description style="apon">
             |
             |   {{WHITE}}Stopping the Jetty Server...{{off}}
-            |-----------------------------------------------------------------------------------------
+            |-----------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
         <transform type="transform/text">

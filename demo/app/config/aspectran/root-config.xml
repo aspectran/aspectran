@@ -3,7 +3,7 @@
 <aspectran>
 
     <description style="apon">
-        |----------------------------------------------------------------------------------------
+        |
         |{{underline}}Commands that can run examples:{{underline:off}}
         |   {{CYAN}}hello{{fg:off}}      Prints "Hello, World!" in your console
         |   {{CYAN}}hello2{{fg:off}}     Prints "Hello, World!" in your console using ANSI escape sequences
@@ -19,7 +19,7 @@
         |
         |{{underline}}Once a Jetty server is running, point your web browser to:{{underline:off}}
         |   {{YELLOW}}http://localhost:8088/{{fg:off}}
-        |----------------------------------------------------------------------------------------
+        |
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>

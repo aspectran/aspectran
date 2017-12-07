@@ -19,7 +19,7 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "{{CYAN}}aspectran-demo{{YELLOW}}>{{off}} "
+    prompt: "{{BLUE}}aspectran-demo{{YELLOW}}>{{off}} "
     commands: [
         com.aspectran.shell.command.builtin.HelpCommand
         com.aspectran.shell.command.builtin.VerboseCommand
@@ -33,7 +33,15 @@ shell: {
     ]
     greetings: (
         |
-        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
+        |     ___                         __                      _____ __         ____
+        |    /   |  _________  ___  _____/ /__________ _____     / ___// /_  ___  / / /
+        |   / /| | / ___/ __ \/ _ \/ ___/ __/ ___/ __ `/ __ \    \__ \/ __ \/ _ \/ / /
+        |  / ___ |(__  ) /_/ /  __/ /__/ /_/ /  / /_/ / / / /   ___/ / / / /  __/ / /
+        | /_/  |_/____/ .___/\___/\___/\__/_/   \__,_/_/ /_/   /____/_/ /_/\___/_/_/
+        |            /_/                                       {{BLUE}}#{class:com.aspectran.core.util.Aspectran^version}{{off}}
+        |
+        |
+        | {{bold}}Welcome To Aspectran Demo{{bold:off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
         |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
