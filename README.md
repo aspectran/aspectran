@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
+[![Dependency Status](https://www.versioneye.com/user/projects/5a273ccf0fb24f56b3c8a45c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5a273ccf0fb24f56b3c8a45c)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
@@ -47,7 +47,7 @@ Use the following definition to use Aspectran in your maven project:
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-all</artifactId>
-      <version>5.0.0.RC1</version>
+      <version>5.0.0.RC2</version>
     </dependency>
 
 Aspectran can also be used with more low-level jars:
@@ -56,25 +56,25 @@ Aspectran can also be used with more low-level jars:
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-shell</artifactId>
-      <version>5.0.0.RC1</version>
+      <version>5.0.0.RC2</version>
     </dependency>
     <!-- You can use this as a library for building other applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-embed</artifactId>
-      <version>5.0.0.RC1</version>
+      <version>5.0.0.RC2</version>
     </dependency>
     <!-- You can use it to build a web application. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-web</artifactId>
-      <version>5.0.0.RC1</version>
+      <version>5.0.0.RC2</version>
     </dependency>
     <!-- You can use it to build a web application with built-in Jetty 9. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-with-jetty</artifactId>
-      <version>5.0.0.RC1</version>
+      <version>5.0.0.RC2</version>
     </dependency>
 
 ## Building
