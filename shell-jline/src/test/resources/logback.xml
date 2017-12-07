@@ -2,7 +2,7 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>{%level} %msg%n</pattern>
+            <pattern>%-4relative [%thread] %-5level %highlight(%msg) - %logger{30}.%M\(%line\)%n</pattern>
         </encoder>
     </appender>
     <Logger name="com.aspectran" level="debug" additivity="false">
