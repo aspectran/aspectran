@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aspectran</groupId>
-    <artifactId>aspectran-parent</artifactId>
-    <version>5.0.0.RC1</version>
+    <artifactId>aspectran</artifactId>
+    <version>5.0.0.RC2</version>
     <packaging>pom</packaging>
 
-    <name>Aspectran Parent</name>
+    <name>Aspectran</name>
     <url>http://www.aspectran.com/</url>
     <description>
         Aspectran is a Java framework for building Web and command-line applications.
@@ -105,37 +105,37 @@
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-all</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-core</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-embed</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell-jline</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-web</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-jetty</artifactId>
-                <version>5.0.0.RC1</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>

@@ -4,8 +4,8 @@
 
     <parent>
         <groupId>com.aspectran</groupId>
-        <artifactId>aspectran-parent</artifactId>
-        <version>5.0.0.RC1</version>
+        <artifactId>aspectran</artifactId>
+        <version>5.0.0.RC2</version>
     </parent>
 
     <artifactId>aspectran-with-jetty</artifactId>
