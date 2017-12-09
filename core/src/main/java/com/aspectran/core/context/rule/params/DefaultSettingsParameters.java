@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -63,7 +62,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public DefaultSettingsParameters(String text) throws AponParsingFailedException {
+    public DefaultSettingsParameters(String text) {
         super(parameterDefinitions, text);
     }
 

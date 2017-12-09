@@ -46,8 +46,7 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
-    protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text)
-            throws AponParsingFailedException {
+    protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text) {
         this(parameterDefinitions);
 
         if (text != null) {
@@ -56,7 +55,7 @@ public abstract class AbstractParameters implements Parameters {
                 aponReader.read(this);
                 aponReader.close();
             } catch (Exception e) {
-                throw new AponParsingFailedException("Could not read string in APON format", e);
+                throw new IllegalArgumentException("Could not read string in APON format");
             }
         }
     }

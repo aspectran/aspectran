@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -60,7 +59,7 @@ public class ContextConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContextConfig(String text) throws AponParsingFailedException {
+    public ContextConfig(String text) {
         super(parameterDefinitions, text);
     }
 

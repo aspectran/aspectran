@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -56,7 +55,7 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContextAutoReloadConfig(String text) throws AponParsingFailedException {
+    public ContextAutoReloadConfig(String text) {
         super(parameterDefinitions, text);
     }
 

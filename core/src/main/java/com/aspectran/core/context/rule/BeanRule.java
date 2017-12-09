@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.lang.reflect.Method;
@@ -893,7 +894,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         return br;
     }
 
-    public static void updateConstructorArgument(BeanRule beanRule, String text) throws IllegalRuleException {
+    public static void updateConstructorArgument(BeanRule beanRule, String text)
+            throws IllegalRuleException, AponParsingFailedException {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> argumentParametersList = ItemRule.toItemParametersList(text);
             if (argumentParametersList != null) {
@@ -905,7 +907,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         }
     }
 
-    public static void updateProperty(BeanRule beanRule, String text) throws IllegalRuleException {
+    public static void updateProperty(BeanRule beanRule, String text)
+            throws IllegalRuleException, AponParsingFailedException {
         if (!beanRule.isFactoryOffered()) {
             List<ItemParameters> propertyParametersList = ItemRule.toItemParametersList(text);
             if (propertyParametersList != null) {

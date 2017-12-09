@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -44,7 +43,7 @@ public class PointcutQualifierParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public PointcutQualifierParameters(String text) throws AponParsingFailedException {
+    public PointcutQualifierParameters(String text) {
         super(parameterDefinitions, text);
     }
 

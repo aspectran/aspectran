@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -73,7 +72,7 @@ public class ActionParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ActionParameters(String plaintext) throws AponParsingFailedException {
+    public ActionParameters(String plaintext) {
         super(parameterDefinitions, plaintext);
     }
 

@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -41,7 +40,7 @@ public class ExposalsConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExposalsConfig(String text) throws AponParsingFailedException {
+    public ExposalsConfig(String text) {
         super(parameterDefinitions, text);
     }
 

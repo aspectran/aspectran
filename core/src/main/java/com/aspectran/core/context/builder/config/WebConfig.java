@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -44,7 +43,7 @@ public class WebConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public WebConfig(String text) throws AponParsingFailedException {
+    public WebConfig(String text) {
         super(parameterDefinitions, text);
     }
 

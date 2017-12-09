@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -50,7 +49,7 @@ public class ShellConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ShellConfig(String text) throws AponParsingFailedException {
+    public ShellConfig(String text) {
         super(parameterDefinitions, text);
     }
 

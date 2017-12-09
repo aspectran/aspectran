@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -86,7 +85,7 @@ public class TransletParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public TransletParameters(String text) throws AponParsingFailedException {
+    public TransletParameters(String text) {
         super(parameterDefinitions, text);
     }
 
