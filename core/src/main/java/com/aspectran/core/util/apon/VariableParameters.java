@@ -26,18 +26,19 @@ public class VariableParameters extends AbstractParameters implements Serializab
     private static final long serialVersionUID = 4492298345259110525L;
 
     public VariableParameters() {
-        this(null, null);
+        super(null);
     }
 
-    public VariableParameters(String text) {
+    public VariableParameters(String text) throws AponParsingFailedException {
         this(null, text);
     }
 
     public VariableParameters(ParameterDefinition[] parameterDefinitions) {
-        this(parameterDefinitions, null);
+        super(parameterDefinitions);
     }
 
-    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
+    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text)
+            throws AponParsingFailedException {
         super(parameterDefinitions, text);
     }
 

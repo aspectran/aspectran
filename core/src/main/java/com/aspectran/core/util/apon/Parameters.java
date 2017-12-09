@@ -19,16 +19,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The Interface Parameters.
+ */
 public interface Parameters {
 
+    /**
+     * Returns a map of the {@code ParameterValue}s.
+     *
+     * @return a map of the {@code ParameterValue}s
+     */
     Map<String, ParameterValue> getParameterValueMap();
 
-    void setPrototype(Parameter parent);
+    /**
+     * Specifies the identifier {@code Parameter}.
+     *
+     * @param identifier the identifier {@code Parameter}
+     */
+    void setIdentifier(Parameter identifier);
 
-    Parameter getPrototype();
+    /**
+     * Returns the identifier {@code Parameter}.
+     *
+     * @return the identifier {@code Parameter}
+     */
+    Parameter getIdentifier();
 
+    /**
+     * Returns the qualified name.
+     *
+     * @return the qualified name
+     */
     String getQualifiedName();
 
+    /**
+     * Returns the parent {@code Parameter} of the identifier {@code Parameter}.
+     *
+     * @return a {@code Parameter}
+     */
     Parameter getParent();
 
     /**
@@ -48,32 +76,32 @@ public interface Parameters {
     /**
      * Returns whether this parameter exists.
      *
-     * @param name the parameter name
-     * @return {@code true} if this parameter exists, otherwise {@code false}
+     * @param name the name of the parameter to check
+     * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
     boolean hasParameter(String name);
 
     /**
-     * Returns whether this parameter exists.
+     * Returns whether the specified parameter exists.
      *
      * @param parameterDefinition the parameter definition
-     * @return {@code true} if this parameter exists, otherwise {@code false}
+     * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
     boolean hasParameter(ParameterDefinition parameterDefinition);
 
     /**
-     * Returns whether a value has been assigned to this parameter.
+     * Returns whether the value is assigned to the specified parameter.
      *
-     * @param name the parameter name
-     * @return {@code true} if a value has been assigned to this parameter, otherwise {@code false}
+     * @param name the name of the parameter to check
+     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
     boolean isValueAssigned(String name);
 
     /**
-     * Returns whether a value has been assigned to this parameter.
+     * Returns whether the value is assigned to the specified parameter.
      *
      * @param parameterDefinition the parameter definition
-     * @return {@code true} if a value has been assigned to this parameter, otherwise {@code false}
+     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
     boolean isValueAssigned(ParameterDefinition parameterDefinition);
 

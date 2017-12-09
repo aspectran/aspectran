@@ -145,7 +145,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Write a Parameters object to the character-output stream.
      *
-     * @param parameters the Parameters object
+     * @param parameters the Parameters object to be converted
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameters parameters) throws IOException {
@@ -162,7 +162,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Write a Parameter object to the character-output stream.
      *
-     * @param parameter the Parameter object
+     * @param parameter the Parameter object to be converted
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameter parameter) throws IOException {
@@ -484,13 +484,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
     }
 
-    private void increaseIndent() throws IOException {
+    private void increaseIndent() {
         if (prettyPrint) {
             indentDepth++;
         }
     }
 
-    private void decreaseIndent() throws IOException {
+    private void decreaseIndent() {
         if (prettyPrint) {
             indentDepth--;
         }
@@ -540,7 +540,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Closes the writer.
      *
-     * @throws IOException if an I/O error occurs.
+     * @throws IOException if an I/O error occurs
      */
     @Override
     public void close() throws IOException {
@@ -554,8 +554,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Converts a Parameters object to an APON formatted string.
      * By default, pretty printing is enabled, and the indent string is a tab character.
      *
-     * @param parameters the Parameters object
-     * @return the APON formatted string
+     * @param parameters the Parameters object to be converted
+     * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters) {
         return stringify(parameters, true, INDENT_STRING);
@@ -566,9 +566,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
      * The default indentation string is a tab character.
      *
-     * @param parameters the Parameters object
+     * @param parameters the Parameters object to be converted
      * @param prettyPrint enables or disables pretty-printing
-     * @return the APON formatted string
+     * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters, boolean prettyPrint) {
         if (prettyPrint) {
@@ -582,10 +582,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Converts a Parameters object to an APON formatted string.
      * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
      *
-     * @param parameters the Parameters object
+     * @param parameters the Parameters object to be converted
      * @param prettyPrint enables or disables pretty-printing
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
-     * @return the APON formatted string
+     * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters, boolean prettyPrint, String indentString) {
         if (parameters == null) {
@@ -597,8 +597,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             aponWriter.write(parameters);
             aponWriter.close();
             return writer.toString();
-        } catch (IOException e) {
-            throw new AponWriteFailedException("Cannot convert to an APON formatted string", e);
+        } catch (Exception e) {
+            throw new AponException("Could not convert to APON formatted string", e);
         }
     }
 

@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
@@ -76,7 +77,7 @@ public class AspectranParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AspectranParameters(String text) {
+    public AspectranParameters(String text) throws AponParsingFailedException {
         super(parameterDefinitions, text);
     }
 

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -55,7 +56,7 @@ public class SessionConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public SessionConfig(String text) {
+    public SessionConfig(String text) throws AponParsingFailedException {
         super(parameterDefinitions, text);
     }
 

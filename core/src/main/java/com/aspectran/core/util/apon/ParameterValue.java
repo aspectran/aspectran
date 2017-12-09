@@ -109,7 +109,7 @@ public class ParameterValue implements Parameter {
         if (container == null) {
             return name;
         }
-        Parameter prototype = container.getPrototype();
+        Parameter prototype = container.getIdentifier();
         if (prototype != null) {
             return prototype.getQualifiedName() + "." + name;
         }
@@ -388,7 +388,7 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public Parameters newParameters(Parameter prototype) {
+    public Parameters newParameters(Parameter identifier) {
         if (parameterValueType == ParameterValueType.VARIABLE) {
             parameterValueType = ParameterValueType.PARAMETERS;
             parametersClass = VariableParameters.class;
@@ -402,11 +402,11 @@ public class ParameterValue implements Parameter {
         try {
             Parameters p = ClassUtils.createInstance(parametersClass);
             assert p != null;
-            p.setPrototype(prototype);
+            p.setIdentifier(identifier);
             putValue(p);
             return p;
         } catch (Exception e) {
-            throw new InvalidParameterException("Could not instantiate parameters class " + parametersClass, e);
+            throw new InvalidParameterException("Could not instantiate Parameters with " + parametersClass, e);
         }
     }
 

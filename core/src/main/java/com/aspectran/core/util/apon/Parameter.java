@@ -284,6 +284,13 @@ public interface Parameter {
      */
     List<Parameters> getValueAsParametersList();
 
-    Parameters newParameters(Parameter prototype);
+    /**
+     * Creates a new instance of {@code Parameters} with the specified
+     * identifier {@code Parameter}.
+     *
+     * @param identifier the specified identifier {@code Parameter}
+     * @return a {@code Parameters}
+     */
+    Parameters newParameters(Parameter identifier);
 
 }

@@ -18,7 +18,6 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private Map<String, ParameterValue> parameterValueMap;
 
-    private Parameter prototype;
+    private Parameter identifier;
 
     private final boolean addable;
 
@@ -47,7 +46,8 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
-    protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text) {
+    protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text)
+            throws AponParsingFailedException {
         this(parameterDefinitions);
 
         if (text != null) {
@@ -55,36 +55,36 @@ public abstract class AbstractParameters implements Parameters {
                 AponReader aponReader = new AponReader(text);
                 aponReader.read(this);
                 aponReader.close();
-            } catch (IOException e) {
-                throw new AponReadFailedException(e);
+            } catch (Exception e) {
+                throw new AponParsingFailedException("Could not read string in APON format", e);
             }
         }
     }
 
     @Override
-    public Parameter getPrototype() {
-        return prototype;
+    public Parameter getIdentifier() {
+        return identifier;
     }
 
     @Override
-    public void setPrototype(Parameter prototype) {
-        this.prototype = prototype;
+    public void setIdentifier(Parameter identifier) {
+        this.identifier = identifier;
     }
 
     @Override
     public String getQualifiedName() {
-        if (prototype != null) {
-            return prototype.getQualifiedName();
+        if (identifier != null) {
+            return identifier.getQualifiedName();
         }
         return this.getClass().getName();
     }
 
     @Override
     public Parameter getParent() {
-        if (prototype != null) {
-            if (prototype.getContainer() != null) {
-                if (prototype.getContainer().getPrototype() != null) {
-                    return prototype.getContainer().getPrototype();
+        if (identifier != null) {
+            if (identifier.getContainer() != null) {
+                if (identifier.getContainer().getIdentifier() != null) {
+                    return identifier.getContainer().getIdentifier();
                 }
             }
         }

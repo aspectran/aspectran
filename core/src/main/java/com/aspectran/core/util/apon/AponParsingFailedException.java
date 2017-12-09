@@ -16,9 +16,9 @@
 package com.aspectran.core.util.apon;
 
 /**
- * The Class AponReadFailedException.
+ * Base for Exceptions thrown during parsing of a APON-formatted document.
  */
-public class AponReadFailedException extends AponException {
+public class AponParsingFailedException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = 3050709527383043944L;
@@ -26,7 +26,7 @@ public class AponReadFailedException extends AponException {
     /**
      * Simple constructor.
      */
-    public AponReadFailedException() {
+    public AponParsingFailedException() {
         super();
     }
 
@@ -35,7 +35,7 @@ public class AponReadFailedException extends AponException {
      *
      * @param msg a message to associate with the exception
      */
-    public AponReadFailedException(String msg) {
+    public AponParsingFailedException(String msg) {
         super(msg);
     }
 
@@ -44,7 +44,7 @@ public class AponReadFailedException extends AponException {
      *
      * @param cause the real cause of the exception
      */
-    public AponReadFailedException(Throwable cause) {
+    public AponParsingFailedException(Throwable cause) {
         super(cause);
     }
 
@@ -54,7 +54,7 @@ public class AponReadFailedException extends AponException {
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public AponReadFailedException(String msg, Throwable cause) {
+    public AponParsingFailedException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

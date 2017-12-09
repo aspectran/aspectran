@@ -18,9 +18,9 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * The Class InvalidParameterException.
+ * Exception thrown when an invalid parameter is encountered.
  */
-public class InvalidParameterException extends AponException {
+public class InvalidParameterException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = 3050709527383043944L;
