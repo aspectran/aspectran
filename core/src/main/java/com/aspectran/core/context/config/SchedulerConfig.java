@@ -13,38 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.config;
+package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class WebConfig extends AbstractParameters {
+public class SchedulerConfig extends AbstractParameters {
 
-    public static final ParameterDefinition uriDecoding;
-    public static final ParameterDefinition defaultServletName;
+    public static final ParameterDefinition startDelaySeconds;
+    public static final ParameterDefinition waitOnShutdown;
+    public static final ParameterDefinition startup;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
-        defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
+        startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                uriDecoding,
-                defaultServletName,
+                startDelaySeconds,
+                waitOnShutdown,
+                startup,
                 exposals
         };
     }
 
-    public WebConfig() {
+    public SchedulerConfig() {
         super(parameterDefinitions);
     }
 
-    public WebConfig(String text) {
-        super(parameterDefinitions, text);
+    public SchedulerConfig(String plaintext) {
+        super(parameterDefinitions, plaintext);
     }
 
     public ExposalsConfig newExposalsConfig() {

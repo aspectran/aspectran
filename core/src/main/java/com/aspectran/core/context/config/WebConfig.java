@@ -13,43 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.config;
+package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class ShellConfig extends AbstractParameters {
+public class WebConfig extends AbstractParameters {
 
-    public static final ParameterDefinition prompt;
-    public static final ParameterDefinition commands;
-    public static final ParameterDefinition verbose;
-    public static final ParameterDefinition greetings;
+    public static final ParameterDefinition uriDecoding;
+    public static final ParameterDefinition defaultServletName;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
-        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
-        greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
-        verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
+        uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
+        defaultServletName = new ParameterDefinition("defaultServletName", ParameterValueType.STRING);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                prompt,
-                commands,
-                greetings,
-                verbose,
+                uriDecoding,
+                defaultServletName,
                 exposals
         };
     }
 
-    public ShellConfig() {
+    public WebConfig() {
         super(parameterDefinitions);
     }
 
-    public ShellConfig(String text) {
+    public WebConfig(String text) {
         super(parameterDefinitions, text);
     }
 

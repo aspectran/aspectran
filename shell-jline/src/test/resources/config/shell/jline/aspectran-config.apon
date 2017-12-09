@@ -19,7 +19,7 @@ scheduler: {
 shell: {
     prompt: "test-console-app> "
     verbose: true
-    welcome: (
+    greetings: (
         |
         |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}
         |

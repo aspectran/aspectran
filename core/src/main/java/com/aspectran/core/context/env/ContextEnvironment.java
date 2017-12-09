@@ -16,7 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
 import java.io.File;

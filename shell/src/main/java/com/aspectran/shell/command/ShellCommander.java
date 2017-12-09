@@ -18,6 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.command.builtin.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
@@ -42,7 +43,12 @@ public class ShellCommander {
     public ShellCommander(ShellService service) {
         this.service = service;
         this.console = service.getConsole();
-        this.commandRegistry = service.getCommandRegistry();
+        if (service.getCommandRegistry() != null) {
+            this.commandRegistry = service.getCommandRegistry();
+        } else {
+            this.commandRegistry = new CommandRegistry(service);
+            this.commandRegistry.addCommand(QuitCommand.class);
+        }
     }
 
     public void perform() {

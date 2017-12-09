@@ -31,14 +31,14 @@ import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranActivityContext;
-import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.config.ContextAutoReloadConfig;
-import com.aspectran.core.context.builder.config.ContextConfig;
-import com.aspectran.core.context.builder.config.ContextProfilesConfig;
 import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.context.builder.resource.AspectranClassLoader;
-import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ContextAutoReloadConfig;
+import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -374,6 +374,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (aspectranClassLoader == null || hardReload) {
             // The major packages in Aspectran are excluded because they
             // are already loaded by the parent class loader running Aspectran.
+            /*
             String[] excludePackageNames = new String[] {
                     "com.aspectran.core",
                     "com.aspectran.scheduler",
@@ -383,9 +384,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     "com.aspectran.web",
                     "com.aspectran.with.jetty"
             };
-
+            */
             AspectranClassLoader acl = new AspectranClassLoader();
-            acl.excludePackage(excludePackageNames);
+            //acl.excludePackage(excludePackageNames);
             if (resourceLocations != null && resourceLocations.length > 0) {
                 acl.setResourceLocations(resourceLocations);
             }

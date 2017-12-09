@@ -13,41 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.config;
+package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class SchedulerConfig extends AbstractParameters {
+public class ShellConfig extends AbstractParameters {
 
-    public static final ParameterDefinition startDelaySeconds;
-    public static final ParameterDefinition waitOnShutdown;
-    public static final ParameterDefinition startup;
+    public static final ParameterDefinition prompt;
+    public static final ParameterDefinition commands;
+    public static final ParameterDefinition verbose;
+    public static final ParameterDefinition greetings;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
-        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
-        startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
+        prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
+        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
+        greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
+        verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                startDelaySeconds,
-                waitOnShutdown,
-                startup,
+                prompt,
+                commands,
+                greetings,
+                verbose,
                 exposals
         };
     }
 
-    public SchedulerConfig() {
+    public ShellConfig() {
         super(parameterDefinitions);
     }
 
-    public SchedulerConfig(String plaintext) {
-        super(parameterDefinitions, plaintext);
+    public ShellConfig(String text) {
+        super(parameterDefinitions, text);
     }
 
     public ExposalsConfig newExposalsConfig() {

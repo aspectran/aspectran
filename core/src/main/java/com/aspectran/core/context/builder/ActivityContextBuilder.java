@@ -17,9 +17,9 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.config.ContextConfig;
-import com.aspectran.core.context.builder.resource.AspectranClassLoader;
-import com.aspectran.core.context.builder.resource.InvalidResourceException;
+import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.ServiceController;

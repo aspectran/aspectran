@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.util.apon.test;
 
-import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 

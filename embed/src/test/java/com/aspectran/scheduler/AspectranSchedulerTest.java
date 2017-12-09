@@ -15,7 +15,7 @@
  */
 package com.aspectran.scheduler;
 
-import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
 import org.junit.Before;

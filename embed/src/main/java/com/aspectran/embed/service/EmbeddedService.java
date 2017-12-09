@@ -18,7 +18,7 @@ package com.aspectran.embed.service;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.builder.config.AspectranConfig;
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;

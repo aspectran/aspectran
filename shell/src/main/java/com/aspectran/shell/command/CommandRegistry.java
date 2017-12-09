@@ -58,14 +58,17 @@ public class CommandRegistry {
                     ClassLoader classLoader = service.getAspectranClassLoader();
                     @SuppressWarnings("unchecked")
                     Class<? extends Command> commandClass = (Class<? extends Command>)classLoader.loadClass(className);
-                    Command command = ClassUtils.createInstance(commandClass, this);
-                    assert command != null;
-                    commands.put(command.getDescriptor().getName(), command);
+                    addCommand(commandClass);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load Command class: " + className, e);
                 }
             }
         }
+    }
+
+    public void addCommand(Class<? extends Command> commandClass) {
+        Command command = ClassUtils.createInstance(commandClass, this);
+        commands.put(command.getDescriptor().getName(), command);
     }
 
     public Collection<Command> getAllCommands() {

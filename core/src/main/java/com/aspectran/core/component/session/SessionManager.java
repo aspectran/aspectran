@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.Component;
-import com.aspectran.core.context.builder.config.SessionConfig;
+import com.aspectran.core.context.config.SessionConfig;
 
 /**
  * The session manager initializes and destroys the session handler and session cache.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.resource;
+package com.aspectran.core.context.resource;
 
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
@@ -160,8 +160,8 @@ public class AspectranClassLoader extends ClassLoader {
 
         AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 
-        if (log.isTraceEnabled()) {
-            log.trace("Child AspectranClassLoader " + child);
+        if (log.isDebugEnabled()) {
+            log.debug("Child AspectranClassLoader " + child);
         }
 
         return child;

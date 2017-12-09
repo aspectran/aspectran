@@ -17,8 +17,8 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.config.AspectranConfig;
-import com.aspectran.core.context.builder.resource.AspectranClassLoader;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.resource.AspectranClassLoader;
 
 /**
  * The Interface CoreService.

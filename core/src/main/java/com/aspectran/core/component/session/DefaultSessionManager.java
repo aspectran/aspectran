@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.config.SessionConfig;
-import com.aspectran.core.context.builder.config.SessionFileStoreConfig;
+import com.aspectran.core.context.config.SessionConfig;
+import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.StringUtils;
 
