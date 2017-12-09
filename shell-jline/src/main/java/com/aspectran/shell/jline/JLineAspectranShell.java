@@ -15,10 +15,11 @@
  */
 package com.aspectran.shell.jline;
 
-import com.aspectran.shell.AspectranShell;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.jline.console.JLineConsole;
 import com.aspectran.shell.service.ShellService;
+
+import java.io.File;
 
 /**
  * Main entry point for the Aspectran Shell using JLine.
@@ -30,11 +31,11 @@ import com.aspectran.shell.service.ShellService;
 public class JLineAspectranShell {
 
     public static void main(String[] args) {
-        String aspectranConfigFile;
+        File aspectranConfigFile;
         if (args.length > 0) {
-            aspectranConfigFile = args[0];
+            aspectranConfigFile = ShellService.determineAspectranConfigFile(args[0]);
         } else {
-            aspectranConfigFile = AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
+            aspectranConfigFile = ShellService.determineAspectranConfigFile(null);
         }
 
         ShellService service = null;

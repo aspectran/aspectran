@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.resource;
 
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 
 import java.io.File;
@@ -23,6 +22,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
+
+import static com.aspectran.core.util.ResourceUtils.JAR_URL_PREFIX;
+import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
+import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceEntries.
@@ -40,38 +43,32 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 
     public void putResource(String resourceName, File file) throws InvalidResourceException {
         URL url;
-
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);
         }
-
         put(resourceName, url);
     }
 
     public void putResource(File file, JarEntry entry) throws InvalidResourceException {
         String resourceName = entry.getName();
         URL url;
-
         try {
             // "jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
-            url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
+            url = new URL(JAR_URL_PREFIX + file.toURI() + JAR_URL_SEPARATOR + resourceName);
         } catch (MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);
         }
-
         put(resourceName, url);
     }
 
     @Override
     public URL put(String resourceName, URL url) {
-        resourceName = resourceName.replace(File.separatorChar, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
-
-        if (StringUtils.endsWith(resourceName, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+        resourceName = resourceName.replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
+        if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
-
         return super.put(resourceName, url);
     }
 

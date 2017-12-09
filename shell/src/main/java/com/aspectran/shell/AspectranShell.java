@@ -18,6 +18,8 @@ package com.aspectran.shell;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.service.ShellService;
 
+import java.io.File;
+
 /**
  * Main entry point for the Aspectran Shell.
  *
@@ -28,11 +30,11 @@ public class AspectranShell {
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static void main(String[] args) {
-        String aspectranConfigFile;
+        File aspectranConfigFile;
         if (args.length > 0) {
-            aspectranConfigFile = args[0];
+            aspectranConfigFile = ShellService.determineAspectranConfigFile(args[0]);
         } else {
-            aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
+            aspectranConfigFile = ShellService.determineAspectranConfigFile(null);
         }
 
         ShellService service = null;

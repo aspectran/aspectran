@@ -18,12 +18,17 @@ package com.aspectran.shell.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+import static com.aspectran.shell.AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
 
 /**
  * The Interface ShellService.
@@ -146,6 +151,21 @@ public interface ShellService extends CoreService {
     static ShellService create(File aspectranConfigFile, Console console)
             throws AspectranServiceException, IOException {
         return AspectranShellService.create(aspectranConfigFile, console);
+    }
+
+    static File determineAspectranConfigFile(String arg) {
+        File file;
+        if (!StringUtils.isEmpty(arg)) {
+            file = new File(arg);
+        } else {
+            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            if (baseDir != null) {
+                file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
+            } else {
+                file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
+            }
+        }
+        return file;
     }
 
 }

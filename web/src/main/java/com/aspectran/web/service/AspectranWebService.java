@@ -180,10 +180,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
      * @param servletContext the servlet context
      * @param rootService the root service
      * @return the instance of {@code WebService}
-     * @throws AspectranServiceException the aspectran service exception
      */
-    public static WebService create(ServletContext servletContext, CoreService rootService)
-            throws AspectranServiceException {
+    public static WebService create(ServletContext servletContext, CoreService rootService) {
         AspectranWebService service = new AspectranWebService(rootService);
         service.setDefaultServletHttpRequestHandler(servletContext);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();

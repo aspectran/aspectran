@@ -32,6 +32,8 @@ import java.util.Map;
  */
 public interface EmbeddedService extends CoreService {
 
+    String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
+
     SessionAdapter newSessionAdapter();
 
     /**

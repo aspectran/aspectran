@@ -76,7 +76,8 @@ class AspectranShellService extends AbstractShellService {
                 } else {
                     long remains = pauseTimeout - System.currentTimeMillis();
                     if (remains > 0L) {
-                        getConsole().writeLine(getServiceName() + " has been paused and will resume after " + remains + " ms");
+                        getConsole().writeLine(getServiceName() + " has been paused and will resume after "
+                                + remains + " ms");
                     } else {
                         getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
                     }
@@ -92,7 +93,8 @@ class AspectranShellService extends AbstractShellService {
             try {
                 redirectionWriters = commandLineParser.getRedirectionWriters(getConsole());
             } catch (Exception e) {
-                getConsole().writeLine("Invalid Redirection: " + CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
+                getConsole().writeLine("Invalid Redirection: " +
+                        CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
                 return;
             }
         }
@@ -184,7 +186,12 @@ class AspectranShellService extends AbstractShellService {
             throws AspectranServiceException, IOException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {
-            AponReader.parse(aspectranConfigFile, aspectranConfig);
+            try {
+                AponReader.parse(aspectranConfigFile, aspectranConfig);
+            } catch (Exception e) {
+                throw new AspectranServiceException("Failed to parse aspectran config file: " +
+                        aspectranConfigFile, e);
+            }
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();

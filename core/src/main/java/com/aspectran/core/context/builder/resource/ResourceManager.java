@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.resource;
 
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 
 import java.net.URL;
@@ -23,6 +22,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceManager.
@@ -56,15 +57,12 @@ public class ResourceManager {
                         if (!owners.hasNext()) {
                             return false;
                         }
-
                         values = owners.next().getResourceManager().getResourceEntries().values().iterator();
                     }
-
                     if (values.hasNext()) {
                         next = values.next();
                         return true;
                     }
-
                     values = null;
                 }
             }
@@ -81,10 +79,8 @@ public class ResourceManager {
                         throw new NoSuchElementException();
                     }
                 }
-
                 current = next;
                 next = null;
-
                 return current;
             }
         };
@@ -94,8 +90,9 @@ public class ResourceManager {
         return getResources(owners, name, null);
     }
 
-    public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-        if (StringUtils.endsWith(name, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+    public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name,
+                                                final Enumeration<URL> inherited) {
+        if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
 
@@ -111,10 +108,8 @@ public class ResourceManager {
                     if (!owners.hasNext()) {
                         return false;
                     }
-
                     next = owners.next().getResourceManager().getResource(filterName);
                 } while (next == null);
-
                 return true;
             }
 
@@ -127,7 +122,6 @@ public class ResourceManager {
                         noMore = true;
                     }
                 }
-
                 return (next != null || hasNext());
             }
 
@@ -138,16 +132,13 @@ public class ResourceManager {
                         return inherited.nextElement();
                     }
                 }
-
                 if (next == null) {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
                 }
-
                 current = next;
                 next = null;
-
                 return current;
             }
         };
@@ -157,8 +148,9 @@ public class ResourceManager {
         return searchResources(owners, name, null);
     }
 
-    public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-        if (StringUtils.endsWith(name, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+    public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name,
+                                                   final Enumeration<URL> inherited) {
+        if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
 
@@ -175,19 +167,15 @@ public class ResourceManager {
                         if (!owners.hasNext()) {
                             return false;
                         }
-
                         current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
                     }
-
                     while (current.hasNext()) {
                         Map.Entry<String, URL> entry2 = current.next();
-
                         if (entry2.getKey().equals(filterName)) {
                             entry = entry2;
                             return true;
                         }
                     }
-
                     current = null;
                 }
             }
@@ -197,7 +185,6 @@ public class ResourceManager {
                 if (entry != null) {
                     return true;
                 }
-
                 if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return true;
@@ -205,7 +192,6 @@ public class ResourceManager {
                         noMore = true;
                     }
                 }
-
                 return hasNext();
             }
 
@@ -217,15 +203,12 @@ public class ResourceManager {
                             return inherited.nextElement();
                         }
                     }
-
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
                 }
-
                 URL url = entry.getValue();
                 entry = null;
-
                 return url;
             }
         };
