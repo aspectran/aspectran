@@ -41,6 +41,8 @@ import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
 
 import java.util.Map;
 
+import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+
 /**
  * The Class AspectranEmbeddedService.
  *
@@ -50,10 +52,6 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
 
     private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
 
-    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.embed.workingDir";
-
-    private static final String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
-
     private SessionManager sessionManager;
 
     private long pauseTimeout = -1L;
@@ -61,7 +59,7 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
     public AspectranEmbeddedService() {
         super(new EmbeddedApplicationAdapter());
 
-        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+        String basePath = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
         if (basePath != null) {
             setBasePath(basePath);
         }

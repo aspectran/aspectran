@@ -41,6 +41,8 @@ import com.aspectran.shell.console.Console;
 import java.io.File;
 import java.io.IOException;
 
+import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+
 /**
  * Abstract base class for {@link ShellService} implementations.
  *
@@ -49,8 +51,6 @@ import java.io.IOException;
 public abstract class AbstractShellService extends AspectranCoreService implements ShellService {
 
     private static final Log log = LogFactory.getLog(AbstractShellService.class);
-
-    private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.shell.workingDir";
 
     private SessionManager sessionManager;
 
@@ -70,7 +70,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     protected AbstractShellService() throws IOException {
         super(new ShellApplicationAdapter());
 
-        String basePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
+        String basePath = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
         if (basePath == null) {
             basePath = new File("").getCanonicalPath();
         }
