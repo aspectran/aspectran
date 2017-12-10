@@ -23,6 +23,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -63,6 +64,13 @@ public interface Translet extends BeanRegistry, MessageSource {
     MethodType getRequestMethod();
 
     /**
+     * Returns the environment of the current activity context.
+     *
+     * @return the environment
+     */
+    Environment getEnvironment();
+
+    /**
      * Gets the application adapter.
      *
      * @return the application adapter
@@ -91,6 +99,22 @@ public interface Translet extends BeanRegistry, MessageSource {
     ResponseAdapter getResponseAdapter();
 
     /**
+     * Returns the adaptee object to provide application information.
+     *
+     * @param <T> the type of the application adaptee
+     * @return the application adaptee object
+     */
+    <T> T getApplicationAdaptee();
+
+    /**
+     * Returns the adaptee object to provide session information.
+     *
+     * @param <T> the type of the session adaptee
+     * @return the session adaptee object
+     */
+    <T> T getSessionAdaptee();
+
+    /**
      * Returns the adaptee object to provide request information.
      *
      * @param <T> the type of the request adaptee
@@ -105,22 +129,6 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @return the response adaptee object
      */
     <T> T getResponseAdaptee();
-
-    /**
-     * Returns the adaptee object to provide session information.
-     *
-     * @param <T> the type of the session adaptee
-     * @return the session adaptee object
-     */
-    <T> T getSessionAdaptee();
-
-    /**
-     * Returns the adaptee object to provide application information.
-     *
-     * @param <T> the type of the application adaptee
-     * @return the application adaptee object
-     */
-    <T> T getApplicationAdaptee();
 
     /**
      * Returns the request encoding.
@@ -200,13 +208,6 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @return the activity data map
      */
     ActivityDataMap getActivityDataMap(boolean prefill);
-
-    /**
-     * Returns the class loader.
-     *
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
 
     /**
      * Gets the setting value in the translet scope.

@@ -122,7 +122,7 @@ public class DispatchResponse implements Response {
                 if (viewDispatcher == null) {
                     if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                         String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                        Class<?> viewDispatcherClass = activity.getClassLoader().loadClass(viewDispatcherClassName);
+                        Class<?> viewDispatcherClass = activity.getEnvironment().getClassLoader().loadClass(viewDispatcherClassName);
                         viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
                     } else {
                         viewDispatcher = activity.getBean(viewDispatcherName);

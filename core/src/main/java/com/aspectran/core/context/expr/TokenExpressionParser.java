@@ -423,7 +423,7 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             Properties props;
             try {
-                props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
+                props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getEnvironment().getClassLoader());
             } catch (IOException e) {
                 throw new TokenEvaluationException("Unable to load properties file for token", token,  e);
             }

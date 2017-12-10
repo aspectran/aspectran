@@ -28,6 +28,7 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -82,8 +83,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public ClassLoader getClassLoader() {
-        return context.getClassLoader();
+    public Environment getEnvironment() {
+        return context.getEnvironment();
     }
 
     /**
@@ -164,21 +165,11 @@ public abstract class AbstractActivity implements Activity {
         return ExceptionUtils.getRootCause(raisedException);
     }
 
-    /**
-     * Gets the application adapter.
-     *
-     * @return the application adapter
-     */
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return context.getApplicationAdapter();
+        return getEnvironment().getApplicationAdapter();
     }
 
-    /**
-     * Gets the session adapter.
-     *
-     * @return the session adapter
-     */
     @Override
     public SessionAdapter getSessionAdapter() {
         return sessionAdapter;
@@ -193,11 +184,6 @@ public abstract class AbstractActivity implements Activity {
         this.sessionAdapter = sessionAdapter;
     }
 
-    /**
-     * Gets the request adapter.
-     *
-     * @return the request adapter
-     */
     @Override
     public RequestAdapter getRequestAdapter() {
         return requestAdapter;
@@ -212,11 +198,6 @@ public abstract class AbstractActivity implements Activity {
         this.requestAdapter = requestAdapter;
     }
 
-    /**
-     * Gets the response adapter.
-     *
-     * @return the response adapter
-     */
     @Override
     public ResponseAdapter getResponseAdapter() {
         return responseAdapter;

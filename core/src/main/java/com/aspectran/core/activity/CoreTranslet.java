@@ -27,6 +27,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -78,8 +79,13 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
+    public Environment getEnvironment() {
+        return activity.getEnvironment();
+    }
+
+    @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return activity.getActivityContext().getApplicationAdapter();
+        return getEnvironment().getApplicationAdapter();
     }
 
     @Override
@@ -98,13 +104,8 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public <T> T getRequestAdaptee() {
-        return getRequestAdapter().getAdaptee();
-    }
-
-    @Override
-    public <T> T getResponseAdaptee() {
-        return getResponseAdapter().getAdaptee();
+    public <T> T getApplicationAdaptee() {
+        return getApplicationAdapter().getAdaptee();
     }
 
     @Override
@@ -114,8 +115,13 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public <T> T getApplicationAdaptee() {
-        return activity.getActivityContext().getApplicationAdapter().getAdaptee();
+    public <T> T getRequestAdaptee() {
+        return getRequestAdapter().getAdaptee();
+    }
+
+    @Override
+    public <T> T getResponseAdaptee() {
+        return getResponseAdapter().getAdaptee();
     }
 
     @Override
@@ -177,11 +183,6 @@ public class CoreTranslet implements Translet {
             activityDataMap = new ActivityDataMap(activity, false);
         }
         return activityDataMap;
-    }
-
-    @Override
-    public ClassLoader getClassLoader() {
-        return activity.getClassLoader();
     }
 
     @Override

@@ -329,10 +329,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 ((ActivityContextAware)bean).setActivityContext(context);
             }
             if (bean instanceof ApplicationAdapterAware) {
-                ((ApplicationAdapterAware)bean).setApplicationAdapter(context.getApplicationAdapter());
+                ((ApplicationAdapterAware)bean).setApplicationAdapter(context.getEnvironment().getApplicationAdapter());
             }
             if (bean instanceof ClassLoaderAware) {
-                ((ClassLoaderAware)bean).setClassLoader(context.getClassLoader());
+                ((ClassLoaderAware)bean).setClassLoader(context.getEnvironment().getClassLoader());
             }
             if (bean instanceof EnvironmentAware) {
                 ((EnvironmentAware)bean).setEnvironment(context.getEnvironment());

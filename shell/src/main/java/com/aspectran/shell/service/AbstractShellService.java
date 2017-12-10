@@ -70,11 +70,11 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     protected AbstractShellService() throws IOException {
         super(new ShellApplicationAdapter());
 
-        String basePath = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-        if (basePath == null) {
-            basePath = new File("").getCanonicalPath();
+        String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+        if (baseDir == null) {
+            baseDir = new File("").getCanonicalPath();
         }
-        setBasePath(basePath);
+        setBasePath(baseDir);
     }
 
     @Override

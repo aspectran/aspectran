@@ -214,7 +214,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Scope getApplicationScope() {
-        return context.getApplicationAdapter().getApplicationScope();
+        return context.getEnvironment().getApplicationAdapter().getApplicationScope();
     }
 
 }

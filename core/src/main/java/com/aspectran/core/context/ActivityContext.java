@@ -45,7 +45,7 @@ public interface ActivityContext {
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
-    String BASE_DIR_PROPERTY_NAME = "com.aspectran.baseDir";
+    String BASE_DIR_PROPERTY_NAME = "aspectran.baseDir";
 
     /**
      * Gets the description of this ActivityContext.
@@ -60,22 +60,6 @@ public interface ActivityContext {
      * @return the context environment
      */
     Environment getEnvironment();
-
-    String getProperty(String name);
-
-    /**
-     * Gets the class loader.
-     *
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
-
-    /**
-     * Gets the application adapter.
-     *
-     * @return the application adapter
-     */
-    ApplicationAdapter getApplicationAdapter();
 
     /**
      * Returns the Aspectran Service that created the current ActivityContext.

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.ApplicationAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,18 +62,18 @@ public interface Environment {
     <T> T getProperty(String name, Activity activity);
 
     /**
+     * Returns the application adapter.
+     *
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
+
+    /**
      * Returns the class loader used by the current application.
      *
      * @return the class loader
      */
     ClassLoader getClassLoader();
-
-    /**
-     * Specifies the class loader used by the current application.
-     *
-     * @param classLoader the class loader
-     */
-    void setClassLoader(ClassLoader classLoader);
 
     /**
      * Returns the base path that the current application is mapped to.

@@ -39,6 +39,7 @@ public class ContextEnvironment extends AbstractEnvironment {
         this.applicationAdapter = applicationAdapter;
     }
 
+    @Override
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
@@ -52,7 +53,6 @@ public class ContextEnvironment extends AbstractEnvironment {
         }
     }
 
-    @Override
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

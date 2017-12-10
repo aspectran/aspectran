@@ -17,7 +17,6 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -87,21 +86,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public Environment getEnvironment() {
         return contextEnvironment;
-    }
-
-    @Override
-    public String getProperty(String name) {
-        return contextEnvironment.getProperty(name, getCurrentActivity());
-    }
-
-    @Override
-    public ClassLoader getClassLoader() {
-        return contextEnvironment.getClassLoader();
-    }
-
-    @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return contextEnvironment.getApplicationAdapter();
     }
 
     @Override

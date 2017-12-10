@@ -36,7 +36,7 @@ fi
 
 "$JAVA_BIN" \
 -Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
--Dcom.aspectran.baseDir="$BASE_DIR" \
+-Daspectran.baseDir="$BASE_DIR" \
 -cp "$BASE_DIR/lib/*" \
 com.aspectran.shell.jline.JLineAspectranShell \
 "$BASE_DIR/config/aspectran-config.apon"

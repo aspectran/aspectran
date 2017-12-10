@@ -23,6 +23,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -206,11 +207,11 @@ public interface Activity extends BeanRegistry {
     ActivityContext getActivityContext();
 
     /**
-     * Returns the class loader.
+     * Returns the environment of the current activity context.
      *
-     * @return the class loader
+     * @return the environment
      */
-    ClassLoader getClassLoader();
+    Environment getEnvironment();
 
     /**
      * Create a new inner activity.
