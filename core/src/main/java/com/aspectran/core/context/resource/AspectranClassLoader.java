@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
@@ -39,6 +37,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import static com.aspectran.core.util.ClassUtils.CLASS_FILE_SUFFIX;
+import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
+import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
 /**
  * The Class AspectranClassLoader.
@@ -188,7 +193,7 @@ public class AspectranClassLoader extends ClassLoader {
                 if (excludePackageNames == null) {
                     excludePackageNames = new HashSet<>();
                 }
-                excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR_CHAR);
+                excludePackageNames.add(packageName + PACKAGE_SEPARATOR_CHAR);
             }
         }
     }
@@ -333,7 +338,7 @@ public class AspectranClassLoader extends ClassLoader {
         URL url;
         while (res.hasMoreElements()) {
             url = res.nextElement();
-            if (!ResourceUtils.URL_PROTOCOL_JAR.equals(url.getProtocol())) {
+            if (!URL_PROTOCOL_JAR.equals(url.getProtocol())) {
                 resources.add(url);
             }
         }
@@ -545,19 +550,19 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     public static String resourceNameToClassName(String resourceName) {
-        String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-        className = className.replace(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+        String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
+        className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
         return className;
     }
 
     public static String classNameToResourceName(String className) {
-        return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)
-                + ClassUtils.CLASS_FILE_SUFFIX;
+        return className.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR)
+                + CLASS_FILE_SUFFIX;
     }
 
     public static String packageNameToResourceName(String packageName) {
-        String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
-        if (StringUtils.endsWith(resourceName, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+        String resourceName = packageName.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
+        if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
         return resourceName;
@@ -570,15 +575,15 @@ public class AspectranClassLoader extends ClassLoader {
         }
 
         for (int i = 0; i < resourceLocations.length; i++) {
-            if (resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-                String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-                URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
+            if (resourceLocations[i].startsWith(CLASSPATH_URL_PREFIX)) {
+                String path = resourceLocations[i].substring(CLASSPATH_URL_PREFIX.length());
+                URL url = getDefaultClassLoader().getResource(path);
                 if (url == null) {
                     throw new InvalidResourceException("Class path resource [" + resourceLocations[i] +
                             "] cannot be resolved to URL because it does not exist");
                 }
                 resourceLocations[i] = url.getFile();
-            } else if (resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            } else if (resourceLocations[i].startsWith(FILE_URL_PREFIX)) {
                 try {
                     URL url = new URL(resourceLocations[i]);
                     resourceLocations[i] = url.getFile();
@@ -588,11 +593,16 @@ public class AspectranClassLoader extends ClassLoader {
                 }
             } else {
                 if (basePath != null) {
-                    resourceLocations[i] = basePath + resourceLocations[i];
+                    try {
+                        File f = new File(basePath, resourceLocations[i]);
+                        resourceLocations[i] = f.getCanonicalPath();
+                    } catch (IOException e) {
+                        throw new InvalidResourceException("Invalid resource location: " + resourceLocations[i], e);
+                    }
                 }
             }
-            resourceLocations[i] = resourceLocations[i].replace(File.separatorChar, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
-            if (StringUtils.endsWith(resourceLocations[i], ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
+            resourceLocations[i] = resourceLocations[i].replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
+            if (StringUtils.endsWith(resourceLocations[i], REGULAR_FILE_SEPARATOR_CHAR)) {
                 resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
             }
         }

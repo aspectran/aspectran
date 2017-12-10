@@ -136,7 +136,8 @@ public class ClassScanner {
      * @param matcher the matcher
      * @param saveHandler the save handler
      */
-    private void scan(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final SaveHandler saveHandler) {
+    private void scan(final String targetPath, final String basePackageName, final String relativePackageName,
+                      final WildcardMatcher matcher, final SaveHandler saveHandler) {
         final File target = new File(targetPath);
         if (!target.exists()) {
             return;

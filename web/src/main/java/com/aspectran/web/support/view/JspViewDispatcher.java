@@ -67,7 +67,8 @@ public class JspViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatcherException {
+    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule)
+            throws ViewDispatcherException {
         String dispatchName = null;
 
         try {
@@ -120,7 +121,8 @@ public class JspViewDispatcher implements ViewDispatcher {
                 log.debug("Dispatch to JSP [" + dispatchName + "]");
             }
         } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch for JSP " + dispatchResponseRule.toString(this, dispatchName), e);
+            throw new ViewDispatcherException("Failed to dispatch for JSP " +
+                    dispatchResponseRule.toString(this, dispatchName), e);
         }
     }
 

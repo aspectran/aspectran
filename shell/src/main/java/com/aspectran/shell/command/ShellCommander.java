@@ -90,7 +90,7 @@ public class ShellCommander {
                         service.execute(commandLine);
                         console.writeLine();
                     } catch (TransletNotFoundException e) {
-                        console.writeLine("No command or excutable tranlset mapped to '"
+                        console.writeLine("No command or executable translet mapped to '"
                                 + e.getTransletName() +  "'");
                     } catch (ConsoleTerminatedException e) {
                         throw e;

@@ -48,7 +48,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
 
     @Override
-    public void processActualRequest(Translet translet) throws CorsException, IOException {
+    public void processActualRequest(Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -86,7 +86,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     }
 
     @Override
-    public void processPreflightRequest(Translet translet) throws CorsException, IOException {
+    public void processPreflightRequest(Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -146,7 +146,6 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     @Override
     public void sendError(Translet translet) throws IOException {
         Throwable t = translet.getRootCauseOfRaisedException();
-
         if (t instanceof CorsException) {
             CorsException corsException = (CorsException)t;
 

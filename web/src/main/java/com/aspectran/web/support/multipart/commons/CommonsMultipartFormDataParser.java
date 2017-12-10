@@ -135,7 +135,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
             } catch (SizeLimitExceededException e) {
-                log.warn("Maximum request length exceeded. (multipart.maxRequestSize: " + maxRequestSize + ")");
+                log.warn("Maximum request length exceeded; multipart.maxRequestSize: " + maxRequestSize);
                 requestAdapter.setMaxLengthExceeded(true);
                 return;
             }

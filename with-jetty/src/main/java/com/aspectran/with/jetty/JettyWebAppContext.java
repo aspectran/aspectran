@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The Class JettyWebAppContext.
+ *
  * <p>Created: 2017. 1. 27.</p>
  */
 public class JettyWebAppContext extends WebAppContext implements ActivityContextAware, InitializableBean {

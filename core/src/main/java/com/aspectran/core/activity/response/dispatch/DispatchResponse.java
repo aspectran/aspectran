@@ -136,7 +136,7 @@ public class DispatchResponse implements Response {
                         viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
 
                         if (log.isDebugEnabled()) {
-                            log.debug("Cached View Dispatcher: " + viewDispatcher);
+                            log.debug("cached ViewDispatcher: " + viewDispatcher);
                         }
                     }
                 }

@@ -128,7 +128,8 @@ public class BeanClassScanner extends ClassScanner {
                 if (maskedBeanId != null) {
                     beanId = maskedBeanId;
                 } else {
-                    log.warn(String.format("Unmatched pattern can not be masking. beanId: %s (maskPattern: %s)", beanId, beanIdMaskPattern));
+                    log.warn(String.format("Unmatched pattern can not be masking. beanId: %s (maskPattern: %s)",
+                            beanId, beanIdMaskPattern));
                 }
             }
 

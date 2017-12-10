@@ -23,13 +23,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 /**
- * The Class JlineAnsiStringWriter.
+ * The Class JLineAnsiStringWriter.
  *
  * <p>Created: 2017. 5. 21.</p>
  *
  * @since 4.1.0
  */
-public class JlineAnsiStringWriter extends StringWriter {
+public class JLineAnsiStringWriter extends StringWriter {
 
     private final Terminal terminal;
 
@@ -37,7 +37,7 @@ public class JlineAnsiStringWriter extends StringWriter {
 
     private int flushPos;
 
-    public JlineAnsiStringWriter(Terminal terminal, Writer writer) {
+    public JLineAnsiStringWriter(Terminal terminal, Writer writer) {
         this.terminal = terminal;
         this.writer = writer;
     }

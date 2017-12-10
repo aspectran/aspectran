@@ -30,7 +30,6 @@ import org.jline.utils.AttributedStyle;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
@@ -175,8 +174,8 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public Writer getUnclosableWriter() throws UnsupportedEncodingException {
-        Writer writer = new JlineAnsiStringWriter(terminal, getWriter());
+    public Writer getUnclosableWriter() {
+        Writer writer = new JLineAnsiStringWriter(terminal, getWriter());
         return new UnclosablePrintWriter(writer);
     }
 

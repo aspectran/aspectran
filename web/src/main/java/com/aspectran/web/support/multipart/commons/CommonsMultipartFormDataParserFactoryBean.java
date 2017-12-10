@@ -28,7 +28,7 @@ public class CommonsMultipartFormDataParserFactoryBean
         implements FactoryBean<MultipartFormDataParser> {
 
     @Override
-    public MultipartFormDataParser getObject() throws Exception {
+    public MultipartFormDataParser getObject() {
         return createMultipartFormDataParser();
     }
 

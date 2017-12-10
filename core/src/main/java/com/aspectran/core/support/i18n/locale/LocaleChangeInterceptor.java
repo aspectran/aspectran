@@ -153,7 +153,6 @@ public class LocaleChangeInterceptor {
                     throw ex;
                 }
             }
-
             if (locale != null) {
                 if (localeResolver != null) {
                     localeResolver.setLocale(translet, locale);

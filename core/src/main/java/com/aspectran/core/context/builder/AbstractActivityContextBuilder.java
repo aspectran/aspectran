@@ -372,21 +372,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException {
         if (aspectranClassLoader == null || hardReload) {
-            // The major packages in Aspectran are excluded because they
-            // are already loaded by the parent class loader running Aspectran.
-            /*
-            String[] excludePackageNames = new String[] {
-                    "com.aspectran.core",
-                    "com.aspectran.scheduler",
-                    "com.aspectran.embed",
-                    "com.aspectran.shell",
-                    "com.aspectran.shell-jline",
-                    "com.aspectran.web",
-                    "com.aspectran.with.jetty"
-            };
-            */
             AspectranClassLoader acl = new AspectranClassLoader();
-            //acl.excludePackage(excludePackageNames);
             if (resourceLocations != null && resourceLocations.length > 0) {
                 acl.setResourceLocations(resourceLocations);
             }
@@ -418,7 +404,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
         AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
-
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             PointcutRule pointcutRule = aspectRule.getPointcutRule();
             if (pointcutRule != null) {
@@ -440,10 +425,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             Pointcut pointcut = aspectRule.getPointcut();
-
             if (pointcut != null) {
                 List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-
                 if (pointcutPatternRuleList != null) {
                     for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                         if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
