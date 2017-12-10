@@ -15,8 +15,6 @@ done
 PRG_DIR=`dirname "$PRG"`
 BASE_DIR="$PRG_DIR/.."
 
-echo "$BASE_DIR"
-
 if [ -z "$JAVA_HOME" ]; then
     JAVA_BIN="`which java 2>/dev/null || type java 2>&1`"
     while [ -h "$JAVA_BIN" ]; do
