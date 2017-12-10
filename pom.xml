@@ -4,7 +4,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>5.0.0.RC2</version>
+    <version>5.0.0.RC3</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
