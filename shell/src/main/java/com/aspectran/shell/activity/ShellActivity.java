@@ -98,7 +98,7 @@ public class ShellActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for shell service activity", e);
+            throw new AdapterException("Failed to specify adapters required for shell service activity", e);
         }
     }
 

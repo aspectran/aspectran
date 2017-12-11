@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.embed.activity;
+package com.aspectran.daemon.activity;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
@@ -21,19 +21,19 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
-import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.daemon.adapter.DaemonRequestAdapter;
+import com.aspectran.daemon.adapter.DaemonResponseAdapter;
+import com.aspectran.daemon.service.DaemonService;
 
 import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Class EmbeddedActivity.
+ * The Class DaemonActivity.
  */
-public class EmbeddedActivity extends CoreActivity {
+public class DaemonActivity extends CoreActivity {
 
-    private final EmbeddedService service;
+    private final DaemonService service;
 
     private final Writer outputWriter;
 
@@ -42,12 +42,12 @@ public class EmbeddedActivity extends CoreActivity {
     private Map<String, Object> attributeMap;
 
     /**
-     * Instantiates a new embedded activity.
+     * Instantiates a new daemon activity.
      *
-     * @param service the embedded service
+     * @param service the daemon service
      * @param outputWriter the output writer
      */
-    public EmbeddedActivity(EmbeddedService service, Writer outputWriter) {
+    public DaemonActivity(DaemonService service, Writer outputWriter) {
         super(service.getActivityContext());
 
         this.service = service;
@@ -67,10 +67,10 @@ public class EmbeddedActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
+            RequestAdapter requestAdapter = new DaemonRequestAdapter(parameterMap);
             setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
+            ResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
             if (attributeMap != null) {
@@ -81,14 +81,14 @@ public class EmbeddedActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters required for embedded service activity", e);
+            throw new AdapterException("Failed to specify adapters required for daemon service activity", e);
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        EmbeddedActivity activity = new EmbeddedActivity(service, outputWriter);
+        DaemonActivity activity = new DaemonActivity(service, outputWriter);
         activity.setIncluded(true);
         return (T)activity;
     }
