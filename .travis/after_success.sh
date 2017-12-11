@@ -15,7 +15,7 @@ if [ $TRAVIS_REPO_SLUG == "aspectran/aspectran" ] && [ "$TRAVIS_PULL_REQUEST" ==
     echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
 
   else
-    echo "Java Version does not support additonal activity for travis CI"
+    echo "Java Version does not support additional activity for travis CI"
   fi
 else
   echo "Travis Pull Request: $TRAVIS_PULL_REQUEST"
