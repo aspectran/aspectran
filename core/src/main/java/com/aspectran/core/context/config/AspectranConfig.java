@@ -16,14 +16,21 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParsingFailedException;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 
+import java.io.File;
+
 public class AspectranConfig extends AbstractParameters {
+
+    public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static final ParameterDefinition context;
     public static final ParameterDefinition session;
     public static final ParameterDefinition scheduler;
+    public static final ParameterDefinition daemon;
     public static final ParameterDefinition shell;
     public static final ParameterDefinition web;
 
@@ -33,6 +40,7 @@ public class AspectranConfig extends AbstractParameters {
         context = new ParameterDefinition("context", ContextConfig.class);
         session = new ParameterDefinition("session", SessionConfig.class);
         scheduler = new ParameterDefinition("scheduler", SchedulerConfig.class);
+        daemon = new ParameterDefinition("daemon", DaemonConfig.class);
         shell = new ParameterDefinition("shell", ShellConfig.class);
         web = new ParameterDefinition("web", WebConfig.class);
 
@@ -40,6 +48,7 @@ public class AspectranConfig extends AbstractParameters {
                 context,
                 session,
                 scheduler,
+                daemon,
                 shell,
                 web
         };
@@ -51,6 +60,11 @@ public class AspectranConfig extends AbstractParameters {
 
     public AspectranConfig(String text) {
         super(parameterDefinitions, text);
+    }
+
+    public AspectranConfig(File configFile) throws AponParsingFailedException {
+        super(parameterDefinitions);
+        AponReader.parse(configFile, this);
     }
 
     public ContextConfig newContextConfig() {
@@ -99,6 +113,22 @@ public class AspectranConfig extends AbstractParameters {
 
     public void putSchedulerConfig(SchedulerConfig schedulerConfig) {
         putValue(scheduler, schedulerConfig);
+    }
+
+    public DaemonConfig newDaemonConfig() {
+        return newParameters(daemon);
+    }
+
+    public DaemonConfig touchDaemonConfig() {
+        return touchParameters(daemon);
+    }
+
+    public DaemonConfig getDaemonConfig() {
+        return getParameters(daemon);
+    }
+
+    public void putDaemonConfig(DaemonConfig daemonConfig) {
+        putValue(daemon, daemonConfig);
     }
 
     public ShellConfig newShellConfig() {

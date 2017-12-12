@@ -22,8 +22,14 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 
+import java.io.File;
 import java.util.Map;
+
+import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ASPECTRAN_CONFIG_FILE;
 
 /**
  * The Interface DaemonService.
@@ -88,6 +94,21 @@ public interface DaemonService extends CoreService {
      */
     static DaemonService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
         return AspectranDaemonService.create(aspectranConfig);
+    }
+
+    static File determineAspectranConfigFile(String arg) {
+        File file;
+        if (!StringUtils.isEmpty(arg)) {
+            file = new File(arg);
+        } else {
+            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            if (baseDir != null) {
+                file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
+            } else {
+                file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
+            }
+        }
+        return file;
     }
 
 }

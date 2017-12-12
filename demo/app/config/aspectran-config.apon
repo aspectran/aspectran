@@ -18,6 +18,16 @@ scheduler: {
     waitOnShutdown: true
     startup: false
 }
+daemon: {
+    commander: /bin/command/command.apon
+    commands: [
+        com.aspectran.daemon.command.builtin.QuitCommand
+    ]
+    pollingIntervalSeconds: 3
+    exposals: {
+        -: /**
+    }
+}
 shell: {
     prompt: "{{BLUE}}aspectran-demo{{YELLOW}}>{{off}} "
     commands: [
