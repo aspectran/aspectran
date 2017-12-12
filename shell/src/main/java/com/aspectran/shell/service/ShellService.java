@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
-import static com.aspectran.shell.AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
 
 /**
  * The Interface ShellService.
@@ -36,6 +35,8 @@ import static com.aspectran.shell.AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
  * <p>Created: 2017. 10. 28.</p>
  */
 public interface ShellService extends CoreService {
+
+    String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     SessionAdapter newSessionAdapter();
 

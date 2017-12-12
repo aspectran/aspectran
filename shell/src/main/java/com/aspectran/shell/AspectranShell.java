@@ -27,8 +27,6 @@ import java.io.File;
  */
 public class AspectranShell {
 
-    public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
-
     public static void main(String[] args) {
         File aspectranConfigFile;
         if (args.length > 0) {
