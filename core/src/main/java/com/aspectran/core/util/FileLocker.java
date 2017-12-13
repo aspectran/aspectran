@@ -15,10 +15,15 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 /**
  * Used to obtain a lock that can be used to prevent other Aspectran services
@@ -28,14 +33,16 @@ import java.nio.channels.FileLock;
  */
 public class FileLocker {
 
+    private static final Log log = LogFactory.getLog(FileLocker.class);
+
     private File lockFile;
 
-    private RandomAccessFile file;
+    private FileChannel fileChannel;
 
     private FileLock fileLock;
 
     /**
-     * Creates an NIO FileLock on the specified file.
+     * Instantiates a new FileLocker.
      *
      * @param lockFile the file to lock
      */
@@ -47,23 +54,40 @@ public class FileLocker {
     }
 
     /**
-     * Creates an NIO FileLock on the specified file.
+     * Try to lock the file and return true if the locking succeeds.
      *
+     * @return true if the locking succeeds; false if the lock is already held
      * @throws Exception if the lock could not be obtained for any reason
      */
     public boolean lock() throws Exception {
-        try {
-            this.file = new RandomAccessFile(lockFile,"rw");
-            this.fileLock = this.file.getChannel().tryLock();
-        } catch (IOException e) {
-            throw new Exception("Exception occurred while trying to get a lock on file: " +
-                    lockFile.getAbsolutePath(), e);
+        synchronized (this) {
+            if (fileLock != null) {
+                throw new Exception("The lock is already held");
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Acquiring lock on " + lockFile.getAbsolutePath());
+            }
+            try {
+                fileChannel = new RandomAccessFile(lockFile, "rw").getChannel();
+                fileLock = fileChannel.tryLock();
+            } catch (OverlappingFileLockException | IOException e) {
+                throw new Exception("Exception occurred while trying to get a lock on file: " +
+                        lockFile.getAbsolutePath(), e);
+            }
+            if (fileLock == null) {
+                if (fileChannel != null) {
+                    try {
+                        fileChannel.close();
+                    } catch (IOException ie) {
+                        // ignore
+                    }
+                    fileChannel = null;
+                }
+                return false;
+            } else {
+                return true;
+            }
         }
-        if (fileLock == null) {
-            release();
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -72,27 +96,29 @@ public class FileLocker {
      * @throws Exception if the lock could not be released  for any reason
      */
     public void release() throws Exception {
-        if (fileLock != null) {
-            try {
-                fileLock.release();
-                fileLock =  null;
-            } catch (Exception e) {
-                throw new Exception("Unable to release locked file: " +
-                        lockFile.getAbsolutePath(), e);
+        synchronized (this) {
+            log.debug("Releasing lock on " + lockFile.getAbsolutePath());
+            if (fileLock != null) {
+                try {
+                    fileLock.release();
+                    fileLock = null;
+                } catch (Exception e) {
+                    throw new Exception("Unable to release locked file: " + lockFile.getAbsolutePath(), e);
+                }
+                if (fileChannel != null) {
+                    try {
+                        fileChannel.close();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                    fileChannel = null;
+                }
+                if (lockFile != null && lockFile.exists()) {
+                    lockFile.delete();
+                }
+                lockFile = null;
             }
         }
-        if (file != null) {
-            try {
-                file.close();
-            } catch (IOException e) {
-                // ignore
-            }
-            file = null;
-        }
-        if (lockFile != null && lockFile.exists()) {
-            lockFile.delete();
-        }
-        lockFile = null;
     }
 
 }

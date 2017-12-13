@@ -55,7 +55,7 @@ public interface Parameters {
     /**
      * Returns the parent {@code Parameter} of the identifier {@code Parameter}.
      * <pre>
-     *     parent = identifier --> container --> identifier
+     *     parent = identifier --&gt; container --&gt; identifier
      * </pre>
      *
      * @return a {@code Parameter}
