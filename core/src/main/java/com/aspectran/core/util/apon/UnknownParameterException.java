@@ -37,7 +37,7 @@ public class UnknownParameterException extends InvalidParameterException {
      * @param parameters the parameters
      */
     public UnknownParameterException(String parameterName, Parameters parameters) {
-        super("No such parameter '" + parameterName + "' in " + parameters);
+        super("No such parameter '" + parameterName + "' in " + describe(parameters));
     }
 
     /**
@@ -57,6 +57,14 @@ public class UnknownParameterException extends InvalidParameterException {
      */
     public UnknownParameterException(String msg, Throwable cause) {
         super(msg, cause);
+    }
+
+    private static String describe(Parameters parameters) {
+        if (parameters.getIdentifier() != null) {
+            return "'" + parameters.getIdentifier().getQualifiedName() + "' " + parameters.describe();
+        } else {
+            return parameters.describe();
+        }
     }
 
 }

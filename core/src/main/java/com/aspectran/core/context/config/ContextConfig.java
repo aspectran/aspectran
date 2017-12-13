@@ -18,6 +18,7 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContextConfig extends AbstractParameters {
@@ -29,6 +30,7 @@ public class ContextConfig extends AbstractParameters {
     public static final ParameterDefinition profiles;
     public static final ParameterDefinition hybridLoad;
     public static final ParameterDefinition autoReload;
+    public static final ParameterDefinition singleton;
     public static final ParameterDefinition parameters;
 
     private final static ParameterDefinition[] parameterDefinitions;
@@ -41,6 +43,7 @@ public class ContextConfig extends AbstractParameters {
         profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
         hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
+        singleton = new ParameterDefinition("singleton", ParameterValueType.BOOLEAN);
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -51,6 +54,7 @@ public class ContextConfig extends AbstractParameters {
                 profiles,
                 hybridLoad,
                 autoReload,
+                singleton,
                 parameters
         };
     }

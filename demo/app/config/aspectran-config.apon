@@ -4,14 +4,15 @@ context: {
         /classes
         /resources
     ]
+    profiles: {
+    }
     hybridLoad: false
     autoReload: {
         reloadMode: soft
         scanIntervalSeconds: 5
         startup: false
     }
-    profiles: {
-    }
+    singleton: true
 }
 scheduler: {
     startDelaySeconds: 3
