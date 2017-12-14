@@ -20,11 +20,15 @@ scheduler: {
     startup: false
 }
 daemon: {
-    commander: /bin/command/command.apon
     commands: [
         com.aspectran.daemon.command.builtin.QuitCommand
     ]
-    pollingIntervalSeconds: 3
+    commander: {
+        pollingInterval: 3000
+        inbound: /bin/inbound
+        out: /bin/inbound/out
+        processed: /bin/inbound/processed
+    }
     exposals: {
         -: /**
     }

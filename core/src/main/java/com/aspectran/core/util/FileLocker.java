@@ -97,7 +97,9 @@ public class FileLocker {
      */
     public void release() throws Exception {
         synchronized (this) {
-            log.debug("Releasing lock on " + lockFile.getAbsolutePath());
+            if (log.isDebugEnabled()) {
+                log.debug("Releasing lock on " + lockFile.getAbsolutePath());
+            }
             if (fileLock != null) {
                 try {
                     fileLock.release();

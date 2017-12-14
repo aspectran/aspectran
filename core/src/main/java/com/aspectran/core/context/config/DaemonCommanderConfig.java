@@ -24,27 +24,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
  *
  * @since 5.1.0
  */
-public class DaemonConfig extends AbstractParameters {
+public class DaemonCommanderConfig extends AbstractParameters {
 
-    public static final ParameterDefinition commander;
-    public static final ParameterDefinition commands;
-    public static final ParameterDefinition exposals;
+    public static final ParameterDefinition pollingInterval;
+    public static final ParameterDefinition inbound;
+    public static final ParameterDefinition output;
+    public static final ParameterDefinition processed;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
-        commander = new ParameterDefinition("commander", DaemonCommanderConfig.class);
-        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
+        pollingInterval = new ParameterDefinition("pollingInterval", ParameterValueType.LONG);
+        inbound = new ParameterDefinition("inbound", ParameterValueType.STRING);
+        output = new ParameterDefinition("output", ParameterValueType.STRING);
+        processed = new ParameterDefinition("processed", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
-                commander,
-                commands,
-                exposals
+                pollingInterval,
+                inbound,
+                output,
+                processed
         };
     }
 
-    public DaemonConfig() {
+    public DaemonCommanderConfig() {
         super(parameterDefinitions);
     }
 

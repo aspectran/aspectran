@@ -33,6 +33,7 @@ public class CommandParameters extends AbstractParameters {
     public static final ParameterDefinition template;
     public static final ParameterDefinition parameters;
     public static final ParameterDefinition attributes;
+    public static final ParameterDefinition output;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -45,6 +46,7 @@ public class CommandParameters extends AbstractParameters {
         template = new ParameterDefinition("template", ParameterValueType.STRING);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        output = new ParameterDefinition("output", ParameterValueType.TEXT);
 
         parameterDefinitions = new ParameterDefinition[] {
                 command,
@@ -54,7 +56,8 @@ public class CommandParameters extends AbstractParameters {
                 translet,
                 template,
                 parameters,
-                attributes
+                attributes,
+                output
         };
     }
 
