@@ -194,11 +194,7 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
      * @throws AspectranServiceException the aspectran service exception
      */
     protected static DaemonService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        ContextConfig contextConfig = aspectranConfig.getContextConfig();
-        if (contextConfig == null) {
-            contextConfig = aspectranConfig.newContextConfig();
-        }
-
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootConfigLocation = contextConfig.getString(ContextConfig.root);
         if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {

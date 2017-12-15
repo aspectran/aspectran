@@ -25,9 +25,12 @@ daemon: {
     ]
     commander: {
         pollingInterval: 3000
+        maxThreads: 5
         inbound: /bin/inbound
-        out: /bin/inbound/out
-        processed: /bin/inbound/processed
+        queued: /bin/inbound/queued
+        completed: /bin/inbound/completed
+        failed: /bin/inbound/failed
+        trash: /bin/inbound/trash
     }
     exposals: {
         -: /**
