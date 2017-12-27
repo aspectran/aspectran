@@ -20,5 +20,5 @@ package com.aspectran.daemon;
  *
  * @since 5.1.0
  */
-public class JsvcDaemon {
+public class JsvcDaemon extends AbstractDaemon {
 }

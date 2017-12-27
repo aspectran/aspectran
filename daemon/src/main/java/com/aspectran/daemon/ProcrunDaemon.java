@@ -20,5 +20,5 @@ package com.aspectran.daemon;
  *
  * @since 5.1.0
  */
-public class ProcrunDaemon {
+public class ProcrunDaemon extends AbstractDaemon {
 }

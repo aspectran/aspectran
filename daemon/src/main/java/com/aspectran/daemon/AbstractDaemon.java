@@ -19,6 +19,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.daemon.command.DaemonCommander;
 import com.aspectran.daemon.service.DaemonService;
 
 import java.io.File;
@@ -28,45 +29,11 @@ import java.io.File;
  *
  * @since 5.1.0
  */
-public class AbstractDaemon {
-
-    private long pollingInterval;
-
-    private File inboundPath;
-
-    private File queuedPath;
-
-    private File completedPath;
-
-    private File failedPath;
-
-    private File trashPath;
+public class AbstractDaemon implements Daemon {
 
     private DaemonService service;
 
-    public long getPollingInterval() {
-        return pollingInterval;
-    }
-
-    public File getInboundPath() {
-        return inboundPath;
-    }
-
-    public File getQueuedPath() {
-        return queuedPath;
-    }
-
-    public File getCompletedPath() {
-        return completedPath;
-    }
-
-    public File getFailedPath() {
-        return failedPath;
-    }
-
-    public File getTrashPath() {
-        return trashPath;
-    }
+    private DaemonCommander commander;
 
     public DaemonService getService() {
         return service;
@@ -82,10 +49,12 @@ public class AbstractDaemon {
                         aspectranConfigFile, e);
             }
 
+            DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
+
+
             service = DaemonService.create(aspectranConfig);
             service.start();
 
-            DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);
         }

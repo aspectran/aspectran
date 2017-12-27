@@ -15,8 +15,37 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.context.config.DaemonConfig;
+import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.service.DaemonService;
+
+import java.io.File;
+
 /**
  * <p>Created: 2017. 12. 11.</p>
  */
 public class DaemonCommander {
+
+    private final Daemon daemon;
+
+    private long pollingInterval;
+
+    private File inboundPath;
+
+    private File queuedPath;
+
+    private File completedPath;
+
+    private File failedPath;
+
+    private File trashPath;
+
+    public DaemonCommander(Daemon daemon) {
+        this.daemon = daemon;
+    }
+
+    public void init(DaemonConfig daemonConfig) {
+
+    }
+
 }
