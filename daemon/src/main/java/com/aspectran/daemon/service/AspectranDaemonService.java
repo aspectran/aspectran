@@ -39,6 +39,8 @@ import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.daemon.adapter.DaemonApplicationAdapter;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
@@ -56,13 +58,14 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
 
     private long pauseTimeout = -1L;
 
-    public AspectranDaemonService() {
+    public AspectranDaemonService() throws IOException {
         super(new DaemonApplicationAdapter());
 
-        String basePath = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-        if (basePath != null) {
-            setBasePath(basePath);
+        String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+        if (baseDir == null) {
+            baseDir = new File("").getCanonicalPath();
         }
+        setBasePath(baseDir);
     }
 
     @Override
@@ -179,8 +182,10 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
      * @param rootConfigLocation the root configuration location
      * @return the instance of {@code DaemonService}
      * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
      */
-    protected static DaemonService create(String rootConfigLocation) throws AspectranServiceException {
+    protected static DaemonService create(String rootConfigLocation)
+            throws AspectranServiceException, IOException {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootConfigLocation(rootConfigLocation);
         return create(aspectranConfig);
@@ -192,8 +197,10 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DaemonService}
      * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
      */
-    protected static DaemonService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected static DaemonService create(AspectranConfig aspectranConfig)
+            throws AspectranServiceException, IOException {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootConfigLocation = contextConfig.getString(ContextConfig.root);
         if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {

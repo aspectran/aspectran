@@ -29,12 +29,12 @@ public class DefaultDaemon extends AbstractDaemon implements Runnable {
     public DefaultDaemon() {
     }
 
+    @Override
     public void run() {
         while (!Thread.interrupted()) {
             try {
-                // do work
-
-                Thread.sleep(getPollingInterval());
+                getPoller().polling();
+                Thread.sleep(getPoller().getPollingInterval());
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
             }

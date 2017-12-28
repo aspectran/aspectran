@@ -26,26 +26,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
  */
 public class DaemonConfig extends AbstractParameters {
 
-    public static final ParameterDefinition commander;
     public static final ParameterDefinition commands;
+    public static final ParameterDefinition poller;
     public static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
         commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
-        commander = new ParameterDefinition("commander", DaemonCommanderConfig.class);
+        poller = new ParameterDefinition("poller", DaemonPollerConfig.class);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                commander,
                 commands,
+                poller,
                 exposals
         };
     }
 
     public DaemonConfig() {
         super(parameterDefinitions);
+    }
+
+    public DaemonPollerConfig touchDaemonPollerConfig() {
+        return touchParameters(poller);
     }
 
 }

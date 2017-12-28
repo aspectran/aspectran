@@ -24,7 +24,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
  *
  * @since 5.1.0
  */
-public class DaemonCommanderConfig extends AbstractParameters {
+public class DaemonPollerConfig extends AbstractParameters {
 
     public static final ParameterDefinition pollingInterval;
     public static final ParameterDefinition maxThreads;
@@ -56,7 +56,7 @@ public class DaemonCommanderConfig extends AbstractParameters {
         };
     }
 
-    public DaemonCommanderConfig() {
+    public DaemonPollerConfig() {
         super(parameterDefinitions);
     }
 

@@ -23,14 +23,14 @@ daemon: {
     commands: [
         com.aspectran.daemon.command.builtin.QuitCommand
     ]
-    commander: {
+    poller: {
         pollingInterval: 3000
         maxThreads: 5
-        inbound: /bin/inbound
-        queued: /bin/inbound/queued
-        completed: /bin/inbound/completed
-        failed: /bin/inbound/failed
-        trash: /bin/inbound/trash
+        inbound: /inbound
+        queued: /inbound/queued
+        completed: /inbound/completed
+        failed: /inbound/failed
+        trash: /inbound/trash
     }
     exposals: {
         -: /**

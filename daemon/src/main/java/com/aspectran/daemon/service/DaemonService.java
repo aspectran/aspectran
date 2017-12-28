@@ -26,6 +26,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
@@ -80,8 +81,10 @@ public interface DaemonService extends CoreService {
      * @param rootConfigLocation the root configuration location
      * @return the instance of DaemonService
      * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
      */
-    static DaemonService create(String rootConfigLocation) throws AspectranServiceException {
+    static DaemonService create(String rootConfigLocation)
+            throws AspectranServiceException, IOException {
         return AspectranDaemonService.create(rootConfigLocation);
     }
 
@@ -91,8 +94,10 @@ public interface DaemonService extends CoreService {
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of DaemonService
      * @throws AspectranServiceException the aspectran service exception
+     * @throws IOException if an I/O error has occurred
      */
-    static DaemonService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    static DaemonService create(AspectranConfig aspectranConfig)
+            throws AspectranServiceException, IOException {
         return AspectranDaemonService.create(aspectranConfig);
     }
 

@@ -17,8 +17,10 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.daemon.command.CommandPoller;
+import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommander;
 import com.aspectran.daemon.service.DaemonService;
 
@@ -35,8 +37,28 @@ public class AbstractDaemon implements Daemon {
 
     private DaemonCommander commander;
 
+    private CommandPoller commandPoller;
+
+    private CommandRegistry commandRegistry;
+
+    @Override
     public DaemonService getService() {
         return service;
+    }
+
+    @Override
+    public DaemonCommander getCommander() {
+        return commander;
+    }
+
+    @Override
+    public CommandPoller getCommandPoller() {
+        return commandPoller;
+    }
+
+    @Override
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
     }
 
     protected void init(File aspectranConfigFile) throws Exception {
@@ -49,11 +71,22 @@ public class AbstractDaemon implements Daemon {
                         aspectranConfigFile, e);
             }
 
+            this.service = DaemonService.create(aspectranConfig);
+            this.commander = new DaemonCommander(this);
+
             DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
+            DaemonPollerConfig pollderConfig = daemonConfig.touchDaemonPollerConfig();
 
+            CommandPoller commandPoller = new CommandPoller(this);
+            commandPoller.init(pollderConfig);
 
-            service = DaemonService.create(aspectranConfig);
+            CommandRegistry commandRegistry = new CommandRegistry(this);
+            commandRegistry.init(daemonConfig.getStringArray(DaemonConfig.commands));
+
             service.start();
+
+            this.commandPoller = commandPoller;
+            this.commandRegistry = commandRegistry;
 
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);

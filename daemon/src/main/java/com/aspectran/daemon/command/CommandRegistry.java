@@ -1,51 +1,33 @@
-/*
- * Copyright (c) 2008-2017 The Aspectran Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.aspectran.shell.command;
+package com.aspectran.daemon.command;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.shell.command.option.DefaultOptionParser;
-import com.aspectran.shell.command.option.OptionParser;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.daemon.Daemon;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * <p>Created: 2017. 10. 25.</p>
- */
 public class CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final OptionParser parser = new DefaultOptionParser();
+    private final Daemon daemon;
 
-    private ShellService service;
-
-    public CommandRegistry(ShellService service) {
-        this.service = service;
+    public CommandRegistry(Daemon daemon) {
+        this.daemon = daemon;
     }
 
-    public ShellService getService() {
-        return service;
+    public Daemon getDaemon() {
+        return daemon;
     }
 
-    public OptionParser getParser() {
-        return parser;
+    public void init(String[] classNames) throws Exception {
+        try {
+            addCommand(classNames);
+        } catch (Exception e) {
+            throw new Exception("Failed to initialize daemon commander", e);
+        }
     }
 
     public Command getCommand(String commandName) {

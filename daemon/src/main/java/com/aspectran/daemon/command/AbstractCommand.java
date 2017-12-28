@@ -15,8 +15,22 @@
  */
 package com.aspectran.daemon.command;
 
-/**
- * <p>Created: 2017. 12. 11.</p>
- */
-public class FileCommandReader {
+import com.aspectran.daemon.service.DaemonService;
+
+public abstract class AbstractCommand implements Command {
+
+    private final CommandRegistry commander;
+
+    public AbstractCommand(CommandRegistry commander) {
+        this.commander = commander;
+    }
+
+    public DaemonService getService() {
+        return commander.getDaemon().getService();
+    }
+
+    public CommandRegistry getDaemonCommander() {
+        return commander;
+    }
+
 }
