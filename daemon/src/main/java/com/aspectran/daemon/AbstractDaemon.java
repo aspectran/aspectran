@@ -75,10 +75,10 @@ public class AbstractDaemon implements Daemon {
             this.commander = new DaemonCommander(this);
 
             DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
-            DaemonPollerConfig pollderConfig = daemonConfig.touchDaemonPollerConfig();
+            DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();
 
             CommandPoller commandPoller = new CommandPoller(this);
-            commandPoller.init(pollderConfig);
+            commandPoller.init(pollerConfig);
 
             CommandRegistry commandRegistry = new CommandRegistry(this);
             commandRegistry.init(daemonConfig.getStringArray(DaemonConfig.commands));

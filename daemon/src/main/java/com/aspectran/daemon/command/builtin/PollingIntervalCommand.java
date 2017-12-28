@@ -19,15 +19,15 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 
-public class QuitCommand extends AbstractCommand {
+public class PollingIntervalCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "quit";
+    private static final String COMMAND_NAME = "pollingInterval";
 
     private CommandDescriptor descriptor = new CommandDescriptor();
 
-    public QuitCommand(CommandRegistry registry) {
+    public PollingIntervalCommand(CommandRegistry registry) {
         super(registry);
     }
 

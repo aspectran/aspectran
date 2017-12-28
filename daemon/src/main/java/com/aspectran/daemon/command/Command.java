@@ -24,11 +24,11 @@ public interface Command {
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.
      *
-     * @param args the command line arguments
+     * @param parameters the command parameters
      * @return the message output to the console as a result of an executed command
      * @throws Exception if an error occurs during command execution
      */
-    String execute(String[] args) throws Exception;
+    String execute(CommandParameters parameters) throws Exception;
 
     /**
      * This method returns an instance of Command.Descriptor.

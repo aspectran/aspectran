@@ -19,6 +19,7 @@ import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.daemon.Daemon;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
@@ -27,7 +28,7 @@ public class CommandPoller {
 
     private static final long DEFAULT_POLLING_INTERVAL = 5000L;
 
-    private static final int DEFAULT_MAX_THREADS = 5;
+    public static final int DEFAULT_MAX_THREADS = 5;
 
     private static final String DEFAULT_INBOUND_PATH = "/inbound";
 
@@ -45,15 +46,15 @@ public class CommandPoller {
 
     private int maxThreads = DEFAULT_MAX_THREADS;
 
-    private File inboundPath;
+    private File inboundDir;
 
-    private File queuedPath;
+    private File queuedDir;
 
-    private File completedPath;
+    private File completedDir;
 
-    private File failedPath;
+    private File failedDir;
 
-    private File trashPath;
+    private File trashDir;
 
     public CommandPoller(Daemon daemon) {
         this.daemon = daemon;
@@ -71,24 +72,24 @@ public class CommandPoller {
         return maxThreads;
     }
 
-    public File getInboundPath() {
-        return inboundPath;
+    public File getInboundDir() {
+        return inboundDir;
     }
 
-    public File getQueuedPath() {
-        return queuedPath;
+    public File getQueuedDir() {
+        return queuedDir;
     }
 
-    public File getCompletedPath() {
-        return completedPath;
+    public File getCompletedDir() {
+        return completedDir;
     }
 
-    public File getFailedPath() {
-        return failedPath;
+    public File getFailedDir() {
+        return failedDir;
     }
 
-    public File getTrashPath() {
-        return trashPath;
+    public File getTrashDir() {
+        return trashDir;
     }
 
     public void init(DaemonPollerConfig pollerConfig) throws Exception {
@@ -96,34 +97,43 @@ public class CommandPoller {
             this.pollingInterval = pollerConfig.getLong(DaemonPollerConfig.pollingInterval, DEFAULT_POLLING_INTERVAL);
             this.maxThreads = pollerConfig.getInt(DaemonPollerConfig.maxThreads, DEFAULT_MAX_THREADS);
 
+            daemon.getCommander().setMaxThreads(maxThreads);
+
             String basePath = daemon.getService().getActivityContext().getEnvironment().getBasePath();
-            String inbound = pollerConfig.getString(DaemonPollerConfig.inbound, DEFAULT_INBOUND_PATH);
-            File inboundPath = new File(basePath, inbound);
-            inboundPath.mkdirs();
-            this.inboundPath = inboundPath;
+            String inboundPath = pollerConfig.getString(DaemonPollerConfig.inbound, DEFAULT_INBOUND_PATH);
+            File inboundDir = new File(basePath, inboundPath);
+            inboundDir.mkdirs();
+            this.inboundDir = inboundDir;
 
-            File queuedPath = new File(inboundPath, INBOUND_QUEUED_DIR);
-            queuedPath.mkdir();
-            this.queuedPath = queuedPath;
+            File queuedDir = new File(inboundPath, INBOUND_QUEUED_DIR);
+            queuedDir.mkdir();
+            this.queuedDir = queuedDir;
 
-            File completedPath = new File(inboundPath, INBOUND_COMPLETED_DIR);
-            completedPath.mkdir();
-            this.completedPath = completedPath;
+            File completedDir = new File(inboundPath, INBOUND_COMPLETED_DIR);
+            completedDir.mkdir();
+            this.completedDir = completedDir;
 
-            File failedPath = new File(inboundPath, INBOUND_FAILED_DIR);
-            failedPath.mkdir();
-            this.failedPath = failedPath;
+            File failedDir = new File(inboundPath, INBOUND_FAILED_DIR);
+            failedDir.mkdir();
+            this.failedDir = failedDir;
 
-            File trashPath = new File(inboundPath, INBOUND_TRASH_DIR);
-            trashPath.mkdir();
-            this.trashPath = trashPath;
+            File trashDir = new File(inboundPath, INBOUND_TRASH_DIR);
+            trashDir.mkdir();
+            this.trashDir = trashDir;
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon command poller", e);
         }
     }
 
     public void polling() {
+        File[] commandFiles = getInbounds();
+        daemon.getCommander().execute(commandFiles);
+    }
 
+    private File[] getInbounds() {
+        File[] files = inboundDir.listFiles((file, name) -> (file.isFile() && name.toLowerCase().endsWith(".apon")));
+        Arrays.sort(files, (f1, f2) -> ((File)f1).getName().compareTo(((File)f2).getName()));
+        return files;
     }
 
 }

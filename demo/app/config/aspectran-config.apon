@@ -22,6 +22,9 @@ scheduler: {
 daemon: {
     commands: [
         com.aspectran.daemon.command.builtin.QuitCommand
+        com.aspectran.daemon.command.builtin.ForceQuitCommand
+        com.aspectran.daemon.command.builtin.TransletCommand
+        com.aspectran.daemon.command.builtin.TemplateCommand
     ]
     poller: {
         pollingInterval: 3000

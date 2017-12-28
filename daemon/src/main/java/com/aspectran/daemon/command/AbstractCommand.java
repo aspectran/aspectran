@@ -19,18 +19,18 @@ import com.aspectran.daemon.service.DaemonService;
 
 public abstract class AbstractCommand implements Command {
 
-    private final CommandRegistry commander;
+    private final CommandRegistry registry;
 
-    public AbstractCommand(CommandRegistry commander) {
-        this.commander = commander;
+    public AbstractCommand(CommandRegistry registry) {
+        this.registry = registry;
     }
 
     public DaemonService getService() {
-        return commander.getDaemon().getService();
+        return registry.getDaemon().getService();
     }
 
-    public CommandRegistry getDaemonCommander() {
-        return commander;
+    public CommandRegistry getCommandRegistry() {
+        return registry;
     }
 
 }
