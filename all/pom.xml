@@ -70,6 +70,12 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-daemon</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
         <!-- Add optional dependencies explicitly for aspectran-web -->
         <dependency>
             <groupId>commons-fileupload</groupId>

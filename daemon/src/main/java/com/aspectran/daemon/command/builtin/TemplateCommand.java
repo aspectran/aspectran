@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtin;
 
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandParameters;
+import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 
 public class TemplateCommand extends AbstractCommand {

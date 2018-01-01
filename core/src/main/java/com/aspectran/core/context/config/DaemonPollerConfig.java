@@ -29,10 +29,6 @@ public class DaemonPollerConfig extends AbstractParameters {
     public static final ParameterDefinition pollingInterval;
     public static final ParameterDefinition maxThreads;
     public static final ParameterDefinition inbound;
-    public static final ParameterDefinition queued;
-    public static final ParameterDefinition completed;
-    public static final ParameterDefinition failed;
-    public static final ParameterDefinition trash;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -40,19 +36,11 @@ public class DaemonPollerConfig extends AbstractParameters {
         pollingInterval = new ParameterDefinition("pollingInterval", ParameterValueType.LONG);
         maxThreads = new ParameterDefinition("maxThreads", ParameterValueType.INT);
         inbound = new ParameterDefinition("inbound", ParameterValueType.STRING);
-        queued = new ParameterDefinition("queued", ParameterValueType.STRING);
-        completed = new ParameterDefinition("completed", ParameterValueType.STRING);
-        failed = new ParameterDefinition("failed", ParameterValueType.STRING);
-        trash = new ParameterDefinition("trash", ParameterValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
                 pollingInterval,
                 maxThreads,
-                inbound,
-                queued,
-                completed,
-                failed,
-                trash
+                inbound
         };
     }
 

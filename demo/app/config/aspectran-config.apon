@@ -22,7 +22,6 @@ scheduler: {
 daemon: {
     commands: [
         com.aspectran.daemon.command.builtin.QuitCommand
-        com.aspectran.daemon.command.builtin.ForceQuitCommand
         com.aspectran.daemon.command.builtin.TransletCommand
         com.aspectran.daemon.command.builtin.TemplateCommand
     ]
@@ -30,10 +29,6 @@ daemon: {
         pollingInterval: 3000
         maxThreads: 5
         inbound: /inbound
-        queued: /inbound/queued
-        completed: /inbound/completed
-        failed: /inbound/failed
-        trash: /inbound/trash
     }
     exposals: {
         -: /**

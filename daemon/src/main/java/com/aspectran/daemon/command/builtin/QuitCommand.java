@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtin;
 
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandParameters;
+import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 
 public class QuitCommand extends AbstractCommand {
@@ -32,8 +32,8 @@ public class QuitCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) throws Exception {
-        //throw new ConsoleTerminatedException();
+    public String execute(CommandParameters parameters) {
+        getCommandRegistry().getDaemon().setStop(true);
         return null;
     }
 

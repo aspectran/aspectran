@@ -15,6 +15,7 @@
  */
 package com.aspectran.daemon;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
@@ -50,14 +51,18 @@ public class DefaultDaemonTest extends Thread {
     public static void main(String[] args) {
         try {
             File current = ResourceUtils.getResourceAsFile("");
-            File root = new File(current, "../../../demo/app");
+            File root = new File(current, "demo/app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-            System.setProperty("user.dir", root.getAbsolutePath());
+            //System.setProperty("user.dir", root.getAbsolutePath());
+            System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, root.getAbsolutePath());
 
-            AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
+            String[] args2 = { aspectranConfigFile.getAbsolutePath() };
+            DefaultDaemon.main(args2);
 
-            Thread t = new DefaultDaemonTest(aspectranConfig);
-            t.start();
+            //AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
+
+            //Thread t = new DefaultDaemonTest(aspectranConfig);
+            //t.start();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

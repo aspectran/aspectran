@@ -24,22 +24,7 @@ import java.io.File;
  *
  * @since 5.1.0
  */
-public class DefaultDaemon extends AbstractDaemon implements Runnable {
-
-    public DefaultDaemon() {
-    }
-
-    @Override
-    public void run() {
-        while (!Thread.interrupted()) {
-            try {
-                getPoller().polling();
-                Thread.sleep(getPoller().getPollingInterval());
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+public class DefaultDaemon extends AbstractDaemon {
 
     public static void main(String[] args) {
         File aspectranConfigFile;
@@ -54,9 +39,7 @@ public class DefaultDaemon extends AbstractDaemon implements Runnable {
 
         try {
             defaultDaemon.init(aspectranConfigFile);
-            Thread t = new Thread(defaultDaemon);
-            t.setName("default");
-            t.start();
+            defaultDaemon.run();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;

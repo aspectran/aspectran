@@ -19,9 +19,9 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.daemon.command.CommandPoller;
 import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.DaemonCommander;
+import com.aspectran.daemon.command.polling.CommandPoller;
+import com.aspectran.daemon.command.polling.FileCommandPoller;
 import com.aspectran.daemon.service.DaemonService;
 
 import java.io.File;
@@ -35,20 +35,15 @@ public class AbstractDaemon implements Daemon {
 
     private DaemonService service;
 
-    private DaemonCommander commander;
-
     private CommandPoller commandPoller;
 
     private CommandRegistry commandRegistry;
 
+    private boolean stop;
+
     @Override
     public DaemonService getService() {
         return service;
-    }
-
-    @Override
-    public DaemonCommander getCommander() {
-        return commander;
     }
 
     @Override
@@ -59,6 +54,16 @@ public class AbstractDaemon implements Daemon {
     @Override
     public CommandRegistry getCommandRegistry() {
         return commandRegistry;
+    }
+
+    @Override
+    public boolean isStop() {
+        return stop;
+    }
+
+    @Override
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
 
     protected void init(File aspectranConfigFile) throws Exception {
@@ -72,28 +77,39 @@ public class AbstractDaemon implements Daemon {
             }
 
             this.service = DaemonService.create(aspectranConfig);
-            this.commander = new DaemonCommander(this);
+            this.service.start();
 
             DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
             DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();
 
-            CommandPoller commandPoller = new CommandPoller(this);
-            commandPoller.init(pollerConfig);
+            CommandPoller commandPoller = new FileCommandPoller(this, pollerConfig);
 
             CommandRegistry commandRegistry = new CommandRegistry(this);
-            commandRegistry.init(daemonConfig.getStringArray(DaemonConfig.commands));
-
-            service.start();
+            commandRegistry.addCommand(daemonConfig.getStringArray(DaemonConfig.commands));
 
             this.commandPoller = commandPoller;
             this.commandRegistry = commandRegistry;
-
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);
         }
     }
 
+    protected void run() {
+        while (!isStop()) {
+            try {
+                getCommandPoller().polling();
+                Thread.sleep(getCommandPoller().getPollingInterval());
+                System.out.println(".");
+            } catch (InterruptedException ie) {
+                setStop(true);
+            }
+        }
+    }
+
     protected void destroy() {
+        if (commandPoller != null) {
+            commandPoller.stop();
+        }
         if (service != null) {
             service.stop();
         }

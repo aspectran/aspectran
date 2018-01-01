@@ -15,6 +15,8 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.daemon.command.polling.CommandParameters;
+
 /**
  * The Command interface is there to allow Commander to delegate tasks.
  */

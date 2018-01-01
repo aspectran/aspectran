@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command;
+package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -39,11 +39,11 @@ public class CommandParameters extends AbstractParameters {
 
     static {
         command = new ParameterDefinition("command", ParameterValueType.STRING);
+        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+        template = new ParameterDefinition("template", ParameterValueType.STRING);
         bean = new ParameterDefinition("bean", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
-        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-        template = new ParameterDefinition("template", ParameterValueType.STRING);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
         output = new ParameterDefinition("output", ParameterValueType.TEXT);
@@ -67,6 +67,54 @@ public class CommandParameters extends AbstractParameters {
 
     public CommandParameters(String text) {
         super(parameterDefinitions, text);
+    }
+
+    public String getCommandName() {
+        return getString(command);
+    }
+
+    public void setCommandName(String commandName) {
+        putValue(command, commandName);
+    }
+
+    public String getTransletName() {
+        return getString(translet);
+    }
+
+    public void setTransletName(String transletName) {
+        putValue(translet, transletName);
+    }
+
+    public String getTemplateName() {
+        return getString(template);
+    }
+
+    public void setTemplateName(String templateName) {
+        putValue(template, templateName);
+    }
+
+    public String getBeanName() {
+        return getString(bean);
+    }
+
+    public void setBeanName(String beanName) {
+        putValue(bean, beanName);
+    }
+
+    public String getMethodName() {
+        return getString(method);
+    }
+
+    public void setMethodName(String methodName) {
+        putValue(method, methodName);
+    }
+
+    public String getOutput() {
+        return getString(output);
+    }
+
+    public void setOutput(String outputText) {
+        putValue(output, outputText);
     }
 
 }

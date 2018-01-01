@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon;
+package com.aspectran.daemon.command.polling;
 
-import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.daemon.Daemon;
 
-public interface Daemon {
+/**
+ * <p>Created: 2017. 12. 11.</p>
+ */
+public interface CommandPoller {
 
-    DaemonService getService();
+    Daemon getDaemon();
 
-    CommandPoller getCommandPoller();
+    CommandExecutor getExecutor();
 
-    CommandRegistry getCommandRegistry();
+    void polling();
 
-    boolean isStop();
+    void stop();
 
-    void setStop(boolean stop);
+    long getPollingInterval();
+
+    void setPollingInterval(long pollingInterval);
+
+    int getMaxThreads();
+
 }
