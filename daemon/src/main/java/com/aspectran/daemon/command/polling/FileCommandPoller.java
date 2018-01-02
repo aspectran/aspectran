@@ -17,15 +17,15 @@ package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.FilenameUtils;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 
 /**
@@ -55,7 +55,14 @@ public class FileCommandPoller extends AbstractCommandPoller {
         try {
             String basePath = getDaemon().getService().getActivityContext().getEnvironment().getBasePath();
             String inboundPath = pollerConfig.getString(DaemonPollerConfig.inbound, DEFAULT_INBOUND_PATH);
-            File inboundDir = new File(basePath, inboundPath);
+            File inboundDir;
+            if (inboundPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+                // Using url fully qualified paths
+                URI uri = URI.create(inboundPath);
+                inboundDir = new File(uri);
+            } else {
+                inboundDir = new File(basePath, inboundPath);
+            }
             inboundDir.mkdirs();
             this.inboundDir = inboundDir;
 
@@ -78,26 +85,29 @@ public class FileCommandPoller extends AbstractCommandPoller {
     @Override
     public void polling() {
         File[] files = getInboundFiles();
-        for (int i = 0; i < files.length && i < getMaxThreads() - getExecutor().getQueueSize(); i++) {
-            File file = files[i];
-            final CommandParameters parameters = readCommandFile(file);
-            if (parameters != null) {
-                final String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
-                removeCommandFile(inboundDir, file.getName());
-                if (queuedFileName != null) {
-                    getExecutor().execute(parameters, new CommandExecutor.Callback() {
-                        @Override
-                        public void success() {
-                            removeCommandFile(queuedDir, queuedFileName);
-                            writeCommandFile(completedDir, queuedFileName, parameters);
-                        }
+        if (files != null) {
+            int limit = getMaxThreads() - getExecutor().getQueueSize();
+            for (int i = 0; i < files.length && i < limit; i++) {
+                File file = files[i];
+                final CommandParameters parameters = readCommandFile(file);
+                if (parameters != null) {
+                    final String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
+                    removeCommandFile(inboundDir, file.getName());
+                    if (queuedFileName != null) {
+                        getExecutor().execute(parameters, new CommandExecutor.Callback() {
+                            @Override
+                            public void success() {
+                                removeCommandFile(queuedDir, queuedFileName);
+                                writeCommandFile(completedDir, queuedFileName, parameters);
+                            }
 
-                        @Override
-                        public void failure() {
-                            removeCommandFile(queuedDir, queuedFileName);
-                            writeCommandFile(failedDir, queuedFileName, parameters);
-                        }
-                    });
+                            @Override
+                            public void failure() {
+                                removeCommandFile(queuedDir, queuedFileName);
+                                writeCommandFile(failedDir, queuedFileName, parameters);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -105,7 +115,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     private File[] getInboundFiles() {
         File[] files = inboundDir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
-        if (files.length > 0) {
+        if (files != null && files.length > 0) {
             Arrays.sort(files, (f1, f2) -> ((File)f1).getName().compareTo(((File)f2).getName()));
         }
         return files;

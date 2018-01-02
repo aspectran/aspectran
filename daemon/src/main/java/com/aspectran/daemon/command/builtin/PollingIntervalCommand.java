@@ -15,9 +15,13 @@
  */
 package com.aspectran.daemon.command.builtin;
 
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class PollingIntervalCommand extends AbstractCommand {
 
@@ -33,8 +37,19 @@ public class PollingIntervalCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        //throw new ConsoleTerminatedException();
-        return null;
+        long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
+        long pollingInterval = 0L;
+        ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
+        if (!itemRuleList.isEmpty()) {
+            ItemEvaluator evaluator = new ItemExpressionParser(new InstantActivity(getCommandRegistry().getDaemon().getService().getActivityContext()));
+            pollingInterval = evaluator.evaluate(itemRuleList.get(0));
+        }
+        if (pollingInterval != 0L) {
+            getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
+            return "The polling interval is changed from " + oldPollingInterval + " to " + pollingInterval;
+        } else {
+            return "The polling interval is not changed";
+        }
     }
 
     @Override

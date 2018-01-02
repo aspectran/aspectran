@@ -39,7 +39,7 @@ public class AbstractDaemon implements Daemon {
 
     private CommandRegistry commandRegistry;
 
-    private boolean stop;
+    private boolean active;
 
     @Override
     public DaemonService getService() {
@@ -57,13 +57,13 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
-    public boolean isStop() {
-        return stop;
+    public boolean isActive() {
+        return active;
     }
 
     @Override
-    public void setStop(boolean stop) {
-        this.stop = stop;
+    public void stop() {
+        this.active = false;
     }
 
     protected void init(File aspectranConfigFile) throws Exception {
@@ -95,12 +95,13 @@ public class AbstractDaemon implements Daemon {
     }
 
     protected void run() {
-        while (!isStop()) {
+        active = true;
+        while (active) {
             try {
                 getCommandPoller().polling();
                 Thread.sleep(getCommandPoller().getPollingInterval());
             } catch (InterruptedException ie) {
-                setStop(true);
+                active = false;
             }
         }
     }

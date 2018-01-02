@@ -770,6 +770,21 @@ public class ItemRule {
     }
 
     /**
+     * Convert the given item parameters list into an {@code ItemRuleList}.
+     *
+     * @param itemParametersList the item parameters list to convert
+     * @return the item rule list
+     * @throws IllegalRuleException if an illegal rule is found
+     */
+    public static ItemRuleList toItemRuleList(List<ItemParameters> itemParametersList) throws IllegalRuleException {
+        ItemRuleList itemRuleList = new ItemRuleList();
+        for (ItemParameters parameters : itemParametersList) {
+            itemRuleList.add(ItemRule.toItemRule(parameters));
+        }
+        return itemRuleList;
+    }
+
+    /**
      * Convert the given item parameters into an {@code ItemRule}.
      * <pre>
      * [

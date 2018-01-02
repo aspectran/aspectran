@@ -34,7 +34,7 @@ public class CommandExecutor {
 
     private final ExecutorService executorService;
 
-    private final BlockingQueue workQueue;
+    private final BlockingQueue<Runnable> workQueue;
 
     public CommandExecutor(Daemon daemon, int maxThreads) {
         this.daemon = daemon;
@@ -75,7 +75,9 @@ public class CommandExecutor {
     }
 
     public void shutdown() {
-        log.info("Shutting down executor...");
+        if (log.isDebugEnabled()) {
+            log.debug("Shutting down executor...");
+        }
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             while (true) {

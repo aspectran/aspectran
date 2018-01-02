@@ -33,7 +33,7 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) {
-        getCommandRegistry().getDaemon().setStop(true);
+        getCommandRegistry().getDaemon().stop();
         return null;
     }
 

@@ -27,7 +27,8 @@ public interface Daemon {
 
     CommandRegistry getCommandRegistry();
 
-    boolean isStop();
+    boolean isActive();
 
-    void setStop(boolean stop);
+    void stop();
+
 }

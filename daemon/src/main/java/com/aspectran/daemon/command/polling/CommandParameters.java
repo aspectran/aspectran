@@ -15,10 +15,17 @@
  */
 package com.aspectran.daemon.command.polling;
 
+import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleList;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
+import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
+
+import java.util.List;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
@@ -50,11 +57,11 @@ public class CommandParameters extends AbstractParameters {
 
         parameterDefinitions = new ParameterDefinition[] {
                 command,
+                translet,
+                template,
                 bean,
                 method,
                 arguments,
-                translet,
-                template,
                 parameters,
                 attributes,
                 output
@@ -107,6 +114,24 @@ public class CommandParameters extends AbstractParameters {
 
     public void setMethodName(String methodName) {
         putValue(method, methodName);
+    }
+
+    public ItemRuleList getArgumentItemRuleList() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(arguments);
+        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+        return ItemRule.toItemRuleList(itemParametersList);
+    }
+
+    public ItemRuleMap getParameterItemRuleMap() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(parameters);
+        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+        return ItemRule.toItemRuleMap(itemParametersList);
+    }
+
+    public ItemRuleMap getAttributeItemRuleMap() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(attributes);
+        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+        return ItemRule.toItemRuleMap(itemParametersList);
     }
 
     public String getOutput() {
