@@ -180,7 +180,7 @@ public class FileParameter {
         }
 
         if (!overwrite) {
-            File newFile = FilenameUtils.seekUniqueFile(destFile);
+            File newFile = FilenameUtils.getUniqueFile(destFile);
             if (destFile != newFile) {
                 destFile = newFile;
             }
