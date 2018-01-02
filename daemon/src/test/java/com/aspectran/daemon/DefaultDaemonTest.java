@@ -26,43 +26,17 @@ import java.io.File;
 /**
  * <p>Created: 2017. 12. 12.</p>
  */
-public class DefaultDaemonTest extends Thread {
-
-    private static final Log log = LogFactory.getLog(DefaultDaemonTest.class);
-
-    public DefaultDaemonTest(AspectranConfig aspectranConfig) {
-
-    }
-
-    @Override
-    public void run() {
-        while (!Thread.interrupted()) {
-            log.debug("run");
-
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+public class DefaultDaemonTest {
 
     public static void main(String[] args) {
         try {
             File current = ResourceUtils.getResourceAsFile("");
-            File root = new File(current, "demo/app");
+            File root = new File(current, "../../../demo/app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-            //System.setProperty("user.dir", root.getAbsolutePath());
-            System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, root.getAbsolutePath());
+            System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, root.getCanonicalPath());
 
-            String[] args2 = { aspectranConfigFile.getAbsolutePath() };
+            String[] args2 = { aspectranConfigFile.getCanonicalPath() };
             DefaultDaemon.main(args2);
-
-            //AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
-
-            //Thread t = new DefaultDaemonTest(aspectranConfig);
-            //t.start();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

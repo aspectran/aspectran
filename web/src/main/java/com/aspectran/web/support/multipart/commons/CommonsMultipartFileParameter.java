@@ -130,7 +130,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
             throw new IllegalStateException("File has been moved - cannot be read again");
         }
         if (!overwrite) {
-            File newFile = FilenameUtils.seekUniqueFile(destFile);
+            File newFile = FilenameUtils.getUniqueFile(destFile);
             if (destFile != newFile) {
                 destFile = newFile;
             }

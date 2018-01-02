@@ -284,8 +284,8 @@ public class FilenameUtils {
      * @return an unique file
      * @throws IOException if failed to obtain an unique file
      */
-    public static File seekUniqueFile(File srcFile) throws IOException {
-        return seekUniqueFile(srcFile, EXTENSION_SEPARATOR);
+    public static File getUniqueFile(File srcFile) throws IOException {
+        return getUniqueFile(srcFile, EXTENSION_SEPARATOR);
     }
 
     /**
@@ -297,14 +297,14 @@ public class FilenameUtils {
      * @return an unique file
      * @throws IOException if failed to obtain an unique file
      */
-    public static File seekUniqueFile(File srcFile, char extSeparator) throws IOException {
+    public static File getUniqueFile(File srcFile, char extSeparator) throws IOException {
         if (srcFile == null) {
             throw new IllegalArgumentException("Argument 'srcFile' must not be null");
         }
 
         String path = getFullPath(srcFile.getCanonicalPath());
-        String name = srcFile.getName();
-        String ext = getExtension(name);
+        String name = removeExtension(srcFile.getName());
+        String ext = getExtension(srcFile.getName());
 
         String newName;
         if (ext != null && !ext.isEmpty()) {
@@ -360,7 +360,7 @@ public class FilenameUtils {
 
         File file2 = new File(getFullPath(path), fullName);
 
-        return seekUniqueFile(file2, separator);
+        return getUniqueFile(file2, separator);
     }
 
 }

@@ -99,7 +99,6 @@ public class AbstractDaemon implements Daemon {
             try {
                 getCommandPoller().polling();
                 Thread.sleep(getCommandPoller().getPollingInterval());
-                System.out.println(".");
             } catch (InterruptedException ie) {
                 setStop(true);
             }

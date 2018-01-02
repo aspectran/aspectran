@@ -16,11 +16,16 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonPollerConfig;
+import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.apon.AponParsingFailedException;
 import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -54,18 +59,15 @@ public class FileCommandPoller extends AbstractCommandPoller {
             inboundDir.mkdirs();
             this.inboundDir = inboundDir;
 
-            System.out.println(inboundDir);
-            System.out.println(inboundDir.getCanonicalPath());
-
-            File queuedDir = new File(inboundPath, INBOUND_QUEUED_DIR);
+            File queuedDir = new File(inboundDir, INBOUND_QUEUED_DIR);
             queuedDir.mkdir();
             this.queuedDir = queuedDir;
 
-            File completedDir = new File(inboundPath, INBOUND_COMPLETED_DIR);
+            File completedDir = new File(inboundDir, INBOUND_COMPLETED_DIR);
             completedDir.mkdir();
             this.completedDir = completedDir;
 
-            File failedDir = new File(inboundPath, INBOUND_FAILED_DIR);
+            File failedDir = new File(inboundDir, INBOUND_FAILED_DIR);
             failedDir.mkdir();
             this.failedDir = failedDir;
         } catch (Exception e) {
@@ -76,43 +78,87 @@ public class FileCommandPoller extends AbstractCommandPoller {
     @Override
     public void polling() {
         File[] files = getInboundFiles();
-        System.out.println(files.length);
-        for (File file : files) {
-            System.out.println(file);
-        }
         for (int i = 0; i < files.length && i < getMaxThreads() - getExecutor().getQueueSize(); i++) {
-            final File file = files[i];
-            CommandParameters parameters = new CommandParameters();
-            try {
-                AponReader.parse(file, parameters);
-            } catch (AponParsingFailedException e) {
-                // TODO logging
-                e.printStackTrace();
+            File file = files[i];
+            final CommandParameters parameters = readCommandFile(file);
+            if (parameters != null) {
+                final String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
+                removeCommandFile(inboundDir, file.getName());
+                if (queuedFileName != null) {
+                    getExecutor().execute(parameters, new CommandExecutor.Callback() {
+                        @Override
+                        public void success() {
+                            removeCommandFile(queuedDir, queuedFileName);
+                            writeCommandFile(completedDir, queuedFileName, parameters);
+                        }
+
+                        @Override
+                        public void failure() {
+                            removeCommandFile(queuedDir, queuedFileName);
+                            writeCommandFile(failedDir, queuedFileName, parameters);
+                        }
+                    });
+                }
             }
-            //TODO queuing
-            CommandExecutor.Callback callback = new CommandExecutor.Callback() {
-                @Override
-                public void success() {
-
-                }
-
-                @Override
-                public void failure() {
-
-                }
-            };
-            getExecutor().execute(parameters, callback);
         }
     }
 
     private File[] getInboundFiles() {
-        //File[] files = inboundDir.listFiles((file, name) -> (file.isFile() && name.toLowerCase().endsWith(".apon")));
-        File[] files = inboundDir.listFiles((file, name) -> (name.toLowerCase().endsWith(".apon")));
-        //File[] files = inboundDir.listFiles();
+        File[] files = inboundDir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files.length > 0) {
             Arrays.sort(files, (f1, f2) -> ((File)f1).getName().compareTo(((File)f2).getName()));
         }
         return files;
+    }
+
+    private CommandParameters readCommandFile(File file) {
+        if (log.isDebugEnabled()) {
+            log.debug("Read command file: " + file.getAbsolutePath());
+        }
+        try {
+            CommandParameters parameters = new CommandParameters();
+            AponReader.parse(file, parameters);
+            return parameters;
+        } catch (AponParsingFailedException e) {
+            log.warn("Failed to read command file: " + file.getAbsolutePath(), e);
+            return null;
+        }
+    }
+
+    private String writeCommandFile(File targetDir, String fileName, CommandParameters parameters) {
+        synchronized (this) {
+            File completedFile = null;
+            try {
+                completedFile = FilenameUtils.getUniqueFile(new File(targetDir, fileName));
+                if (log.isDebugEnabled()) {
+                    log.debug("Write command file: " + completedFile.getAbsolutePath());
+                }
+                AponWriter aponWriter = new AponWriter(completedFile);
+                aponWriter.setPrettyPrint(true);
+                aponWriter.setIndentString("    ");
+                aponWriter.write(parameters);
+                aponWriter.close();
+                return completedFile.getName();
+            } catch (IOException e) {
+                if (completedFile != null) {
+                    log.warn("Failed to write command file: " + completedFile.getAbsolutePath(), e);
+                } else {
+                    File f = new File(targetDir, fileName);
+                    log.warn("Failed to write command file: " + f.getAbsolutePath(), e);
+                }
+                return null;
+            }
+        }
+    }
+
+    private void removeCommandFile(File targetDir, String fileName) {
+        File file = new File(targetDir, fileName);
+        if (log.isDebugEnabled()) {
+            log.debug("Delete command file: " + file.getAbsolutePath());
+        }
+        if (!file.delete()) {
+            log.warn("Failed to delete command file: " + file.getAbsolutePath());
+        }
     }
 
 }
