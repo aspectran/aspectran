@@ -26,6 +26,8 @@ public interface CommandPoller {
 
     CommandExecutor getExecutor();
 
+    void ready();
+
     void polling();
 
     void stop();

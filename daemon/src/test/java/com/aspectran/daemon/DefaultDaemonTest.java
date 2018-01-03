@@ -16,10 +16,7 @@
 package com.aspectran.daemon;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.File;
 
@@ -30,8 +27,8 @@ public class DefaultDaemonTest {
 
     public static void main(String[] args) {
         try {
-            File current = ResourceUtils.getResourceAsFile("");
-            File root = new File(current, "../../../demo/app");
+            File current = ResourceUtils.getResourceAsFile("com/aspectran/daemon");
+            File root = new File(current, "../../../../../../demo/app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
             System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, root.getCanonicalPath());
 

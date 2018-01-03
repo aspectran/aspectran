@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandExecutor {
 
@@ -35,6 +36,8 @@ public class CommandExecutor {
     private final ExecutorService executorService;
 
     private final BlockingQueue<Runnable> workQueue;
+
+    private final AtomicInteger queueSize = new AtomicInteger();
 
     public CommandExecutor(Daemon daemon, int maxThreads) {
         this.daemon = daemon;
@@ -53,15 +56,17 @@ public class CommandExecutor {
             String commandName = parameters.getCommandName();
             Command command = daemon.getCommandRegistry().getCommand(commandName);
             if (command != null) {
-                String result;
                 try {
-                    result = command.execute(parameters);
+                    queueSize.incrementAndGet();
+                    String result = command.execute(parameters);
+                    parameters.setOutput(result);
                     callback.success();
                 } catch (Exception e) {
-                    result = e.toString();
+                    parameters.setOutput(e.toString());
                     callback.failure();
+                } finally {
+                    queueSize.decrementAndGet();
                 }
-                parameters.setOutput(result);
             } else {
                 parameters.setOutput("No command mapped to '" + commandName + "'");
                 callback.failure();
@@ -71,7 +76,7 @@ public class CommandExecutor {
     }
 
     public int getQueueSize() {
-        return workQueue.size();
+        return queueSize.get();
     }
 
     public void shutdown() {

@@ -319,9 +319,9 @@ public class FilenameUtils {
         while (destFile.exists()) {
             count++;
             if (ext != null && !ext.isEmpty()) {
-                newName = name + count + extSeparator + ext;
+                newName = name + "-" + count + extSeparator + ext;
             } else {
-                newName = name + count;
+                newName = name + "-" + count;
             }
             destFile = new File(path, newName);
         }

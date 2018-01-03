@@ -95,6 +95,7 @@ public class AbstractDaemon implements Daemon {
     }
 
     protected void run() {
+        getCommandPoller().ready();
         active = true;
         while (active) {
             try {

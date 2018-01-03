@@ -83,38 +83,57 @@ public class FileCommandPoller extends AbstractCommandPoller {
     }
 
     @Override
-    public void polling() {
-        File[] files = getInboundFiles();
+    public void ready() {
+        File[] files = getCommandFiles(queuedDir);
         if (files != null) {
             int limit = getMaxThreads() - getExecutor().getQueueSize();
             for (int i = 0; i < files.length && i < limit; i++) {
                 File file = files[i];
-                final CommandParameters parameters = readCommandFile(file);
+                CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
-                    final String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
+                    executeQueuedCommand(parameters, file.getName());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void polling() {
+        File[] files = getCommandFiles(inboundDir);
+        if (files != null) {
+            int limit = getMaxThreads() - getExecutor().getQueueSize();
+            for (int i = 0; i < files.length && i < limit; i++) {
+                File file = files[i];
+                CommandParameters parameters = readCommandFile(file);
+                if (parameters != null) {
+                    String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
                     removeCommandFile(inboundDir, file.getName());
                     if (queuedFileName != null) {
-                        getExecutor().execute(parameters, new CommandExecutor.Callback() {
-                            @Override
-                            public void success() {
-                                removeCommandFile(queuedDir, queuedFileName);
-                                writeCommandFile(completedDir, queuedFileName, parameters);
-                            }
-
-                            @Override
-                            public void failure() {
-                                removeCommandFile(queuedDir, queuedFileName);
-                                writeCommandFile(failedDir, queuedFileName, parameters);
-                            }
-                        });
+                        executeQueuedCommand(parameters, queuedFileName);
                     }
                 }
             }
         }
     }
 
-    private File[] getInboundFiles() {
-        File[] files = inboundDir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
+    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
+        getExecutor().execute(parameters, new CommandExecutor.Callback() {
+            @Override
+            public void success() {
+                removeCommandFile(queuedDir, queuedFileName);
+                writeCommandFile(completedDir, queuedFileName, parameters);
+            }
+
+            @Override
+            public void failure() {
+                removeCommandFile(queuedDir, queuedFileName);
+                writeCommandFile(failedDir, queuedFileName, parameters);
+            }
+        });
+    }
+
+    private File[] getCommandFiles(File dir) {
+        File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files != null && files.length > 0) {
             Arrays.sort(files, (f1, f2) -> ((File)f1).getName().compareTo(((File)f2).getName()));
         }
@@ -145,7 +164,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 }
                 AponWriter aponWriter = new AponWriter(completedFile);
                 aponWriter.setPrettyPrint(true);
-                aponWriter.setIndentString("    ");
+                aponWriter.setIndentString("  ");
                 aponWriter.write(parameters);
                 aponWriter.close();
                 return completedFile.getName();
