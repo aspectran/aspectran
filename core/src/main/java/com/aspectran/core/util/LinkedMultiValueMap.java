@@ -130,7 +130,7 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
      * @see #clone()
      */
     public LinkedMultiValueMap<K, V> deepCopy() {
-        LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>(size());
+        LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>();
         for (Map.Entry<K, List<V>> entry : entrySet()) {
             copy.put(entry.getKey(), new LinkedList<>(entry.getValue()));
         }
