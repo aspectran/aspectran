@@ -118,20 +118,32 @@ public class CommandParameters extends AbstractParameters {
 
     public ItemRuleList getArgumentItemRuleList() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
-        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
-        return ItemRule.toItemRuleList(itemParametersList);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            return ItemRule.toItemRuleList(itemParametersList);
+        } else {
+            return null;
+        }
     }
 
     public ItemRuleMap getParameterItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(parameters);
-        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
-        return ItemRule.toItemRuleMap(itemParametersList);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            return ItemRule.toItemRuleMap(itemParametersList);
+        } else {
+            return null;
+        }
     }
 
     public ItemRuleMap getAttributeItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(attributes);
-        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
-        return ItemRule.toItemRuleMap(itemParametersList);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            return ItemRule.toItemRuleMap(itemParametersList);
+        } else {
+            return null;
+        }
     }
 
     public String getOutput() {

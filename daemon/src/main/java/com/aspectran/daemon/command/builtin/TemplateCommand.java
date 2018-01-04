@@ -15,9 +15,18 @@
  */
 package com.aspectran.daemon.command.builtin;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
+
+import java.util.Map;
 
 public class TemplateCommand extends AbstractCommand {
 
@@ -33,7 +42,25 @@ public class TemplateCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        return null;
+        String templateName = parameters.getTemplateName();
+        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+
+        ParameterMap parameterMap = null;
+        Map<String, Object> attrs = null;
+        if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
+            Activity activity = new InstantActivity(getService().getActivityContext());
+            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            if (parameterItemRuleMap != null) {
+                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+            }
+            if (attributeItemRuleMap != null) {
+                attrs = evaluator.evaluate(attributeItemRuleMap);
+            }
+        }
+
+        String output = getService().template(templateName, parameterMap, attrs);
+        return output;
     }
 
     @Override

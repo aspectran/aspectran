@@ -15,11 +15,14 @@
  */
 package com.aspectran.daemon.command.polling;
 
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.Command;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -62,7 +65,7 @@ public class CommandExecutor {
                     parameters.setOutput(result);
                     callback.success();
                 } catch (Exception e) {
-                    parameters.setOutput(e.toString());
+                    parameters.setOutput(ExceptionUtils.getStacktrace(e));
                     callback.failure();
                 } finally {
                     queueSize.decrementAndGet();
