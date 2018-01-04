@@ -15,9 +15,16 @@
  */
 package com.aspectran.daemon.command.builtin;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class BeanActionCommand extends AbstractCommand {
 
@@ -33,7 +40,36 @@ public class BeanActionCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        return null;
+        String beanName = parameters.getBeanName();
+        String methodName = parameters.getMethodName();
+        ItemRuleMap argumentItemRuleMap = parameters.getArgumentItemRuleMap();
+        ItemRuleMap propertyItemRuleMap = parameters.getPropertyItemRuleMap();
+
+        if (beanName == null) {
+            throw new IllegalRuleException("Parameter 'bean' is not specified");
+        }
+        if (methodName == null) {
+            throw new IllegalRuleException("Parameter 'method' is not specified");
+        }
+
+        BeanActionRule beanActionRule = new BeanActionRule();
+        beanActionRule.setBeanId(beanName);
+        beanActionRule.setMethodName(methodName);
+        beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+        beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+
+        if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+            String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+            Class<?> beanClass = getService().getAspectranClassLoader().loadClass(className);
+            beanActionRule.setBeanClass(beanClass);
+        }
+
+        Activity activity = new InstantActivity(getService().getActivityContext());
+
+        BeanAction beanAction = new BeanAction(beanActionRule, null);
+        Object result = beanAction.execute(activity);
+
+        return (result != null ? result.toString() : null);
     }
 
     @Override

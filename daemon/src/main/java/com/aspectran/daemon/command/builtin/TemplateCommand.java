@@ -17,10 +17,10 @@ package com.aspectran.daemon.command.builtin;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.polling.CommandParameters;
@@ -45,6 +45,10 @@ public class TemplateCommand extends AbstractCommand {
         String templateName = parameters.getTemplateName();
         ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
         ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+
+        if (templateName == null) {
+            throw new IllegalRuleException("Parameter 'template' is not specified");
+        }
 
         ParameterMap parameterMap = null;
         Map<String, Object> attrs = null;

@@ -91,7 +91,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 File file = files[i];
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
-                    executeQueuedCommand(parameters, file.getName());
+                    executeQueuedCommand(parameters, file.getName(), null);
                 }
             }
         }
@@ -106,28 +106,30 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 File file = files[i];
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
-                    String queuedFileName = writeCommandFile(queuedDir, file.getName(), parameters);
-                    removeCommandFile(inboundDir, file.getName());
+                    String inboundFileName = file.getName();
+                    String queuedFileName = writeCommandFile(queuedDir, inboundFileName, parameters);
+                    removeCommandFile(inboundDir, inboundFileName);
                     if (queuedFileName != null) {
-                        executeQueuedCommand(parameters, queuedFileName);
+                        executeQueuedCommand(parameters, queuedFileName, inboundFileName);
                     }
                 }
             }
         }
     }
 
-    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
+    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName,
+                                      final String inboundFileName) {
         getExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
                 removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(completedDir, queuedFileName, parameters);
+                writeCommandFile(completedDir, (inboundFileName != null ? inboundFileName : queuedFileName), parameters);
             }
 
             @Override
             public void failure() {
                 removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(failedDir, queuedFileName, parameters);
+                writeCommandFile(failedDir, (inboundFileName != null ? inboundFileName : queuedFileName), parameters);
             }
         });
     }
@@ -154,25 +156,25 @@ public class FileCommandPoller extends AbstractCommandPoller {
         }
     }
 
-    private String writeCommandFile(File targetDir, String fileName, CommandParameters parameters) {
+    private String writeCommandFile(File dir, String fileName, CommandParameters parameters) {
         synchronized (this) {
-            File completedFile = null;
+            File file = null;
             try {
-                completedFile = FilenameUtils.getUniqueFile(new File(targetDir, fileName));
+                file = FilenameUtils.getUniqueFile(new File(dir, fileName));
                 if (log.isDebugEnabled()) {
-                    log.debug("Write command file: " + completedFile.getAbsolutePath());
+                    log.debug("Write command file: " + file.getAbsolutePath());
                 }
-                AponWriter aponWriter = new AponWriter(completedFile);
+                AponWriter aponWriter = new AponWriter(file);
                 aponWriter.setPrettyPrint(true);
                 aponWriter.setIndentString("  ");
                 aponWriter.write(parameters);
                 aponWriter.close();
-                return completedFile.getName();
+                return file.getName();
             } catch (IOException e) {
-                if (completedFile != null) {
-                    log.warn("Failed to write command file: " + completedFile.getAbsolutePath(), e);
+                if (file != null) {
+                    log.warn("Failed to write command file: " + file.getAbsolutePath(), e);
                 } else {
-                    File f = new File(targetDir, fileName);
+                    File f = new File(dir, fileName);
                     log.warn("Failed to write command file: " + f.getAbsolutePath(), e);
                 }
                 return null;
@@ -180,8 +182,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
         }
     }
 
-    private void removeCommandFile(File targetDir, String fileName) {
-        File file = new File(targetDir, fileName);
+    private void removeCommandFile(File dir, String fileName) {
+        File file = new File(dir, fileName);
         if (log.isDebugEnabled()) {
             log.debug("Delete command file: " + file.getAbsolutePath());
         }

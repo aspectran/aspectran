@@ -21,7 +21,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
-import com.aspectran.core.context.rule.ItemRuleList;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.polling.CommandParameters;
@@ -46,6 +46,10 @@ public class TransletCommand extends AbstractCommand {
         String transletName = parameters.getTransletName();
         ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
         ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+
+        if (transletName == null) {
+            throw new IllegalRuleException("Parameter 'translet' is not specified");
+        }
 
         ParameterMap parameterMap = null;
         Map<String, Object> attrs = null;

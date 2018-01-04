@@ -36,6 +36,7 @@ public class CommandParameters extends AbstractParameters {
     public static final ParameterDefinition bean;
     public static final ParameterDefinition method;
     public static final ParameterDefinition arguments;
+    public static final ParameterDefinition properties;
     public static final ParameterDefinition translet;
     public static final ParameterDefinition template;
     public static final ParameterDefinition parameters;
@@ -51,6 +52,7 @@ public class CommandParameters extends AbstractParameters {
         bean = new ParameterDefinition("bean", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
+        properties = new ParameterDefinition("properties", ItemHolderParameters.class);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
         output = new ParameterDefinition("output", ParameterValueType.TEXT);
@@ -62,6 +64,7 @@ public class CommandParameters extends AbstractParameters {
                 bean,
                 method,
                 arguments,
+                properties,
                 parameters,
                 attributes,
                 output
@@ -121,6 +124,26 @@ public class CommandParameters extends AbstractParameters {
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
             return ItemRule.toItemRuleList(itemParametersList);
+        } else {
+            return null;
+        }
+    }
+
+    public ItemRuleMap getArgumentItemRuleMap() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(arguments);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            return ItemRule.toItemRuleMap(itemParametersList);
+        } else {
+            return null;
+        }
+    }
+
+    public ItemRuleMap getPropertyItemRuleMap() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(properties);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            return ItemRule.toItemRuleMap(itemParametersList);
         } else {
             return null;
         }

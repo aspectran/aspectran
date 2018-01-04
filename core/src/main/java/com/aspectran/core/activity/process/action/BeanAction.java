@@ -128,19 +128,23 @@ public class BeanAction extends AbstractAction {
             } else {
                 String methodName = beanActionRule.getMethodName();
                 Object result;
-                if (requiresTranslet == null) {
-                    try {
-                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
-                        requiresTranslet = Boolean.TRUE;
-                    } catch (NoSuchMethodException e) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("No have a Translet argument; beanActionRule " + beanActionRule);
+                if (activity.getTranslet() != null) {
+                    if (requiresTranslet == null) {
+                        try {
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
+                            requiresTranslet = Boolean.TRUE;
+                        } catch (NoSuchMethodException e) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("No have a Translet argument; beanActionRule " + beanActionRule);
+                            }
+                            requiresTranslet = Boolean.FALSE;
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
                         }
-                        requiresTranslet = Boolean.FALSE;
-                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
+                    } else {
+                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, requiresTranslet);
                     }
                 } else {
-                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, requiresTranslet);
+                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
                 }
                 return result;
             }

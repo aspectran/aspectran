@@ -1,0 +1,3 @@
+command: beanAction
+bean: helloAction
+method: helloWorld

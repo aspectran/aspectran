@@ -100,7 +100,7 @@
                 |You have entered the following parameters for changing the password:
                 |   email: ${email}
                 |   password: ${password}
-                |   confrim password: ${confirmPassword}
+                |   confirm password: ${confirmPassword}
                 |------------------------------------------------------------------------------------
             </template>
         </transform>

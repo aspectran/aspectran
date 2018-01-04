@@ -21,8 +21,6 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.Command;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -104,7 +102,7 @@ public class CommandExecutor {
         }
     }
 
-    public interface Callback {
+    interface Callback {
 
         void success();
 
