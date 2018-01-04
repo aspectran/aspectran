@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -99,12 +100,22 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
     @Override
     public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
-        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>(itemRuleMap.size());
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (ItemRule itemRule : itemRuleMap.values()) {
             String[] values = evaluateAsStringArray(itemRule);
             valueMap.put(itemRule.getName(), values);
         }
         return valueMap;
+    }
+
+    @Override
+    public ParameterMap evaluateAsParameterMap(ItemRuleMap itemRuleMap) {
+        ParameterMap params = new ParameterMap();
+        for (ItemRule itemRule : itemRuleMap.values()) {
+            String[] values = evaluateAsStringArray(itemRule);
+            params.put(itemRule.getName(), values);
+        }
+        return params;
     }
 
     @Override
