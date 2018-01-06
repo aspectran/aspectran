@@ -64,12 +64,6 @@
                                 <exclude>.gitignore</exclude>
                             </excludes>
                         </fileset>
-                        <fileset>
-                            <directory>app/webapps/root/WEB-INF/lib</directory>
-                            <includes>
-                                <include>taglibs-standard-*.jar</include>
-                            </includes>
-                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -121,25 +115,6 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-resources-3</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>app/webapps/root/WEB-INF/lib</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>app/lib</directory>
-                                    <includes>
-                                        <include>taglibs-standard-*.jar</include>
-                                    </includes>
                                 </resource>
                             </resources>
                             <overwrite>true</overwrite>
