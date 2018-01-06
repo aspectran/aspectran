@@ -44,7 +44,7 @@ public class DefaultDaemon extends AbstractDaemon {
             e.printStackTrace();
             exitStatus = 1;
         } finally {
-            defaultDaemon.destroy();
+            defaultDaemon.shutdown();
         }
 
         System.exit(exitStatus);

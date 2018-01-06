@@ -15,10 +15,58 @@
  */
 package com.aspectran.daemon;
 
+import com.aspectran.daemon.service.DaemonService;
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
+
+import java.io.File;
+
 /**
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
  */
-public class JsvcDaemon extends AbstractDaemon {
+public class JsvcDaemon implements Daemon {
+
+    private DefaultDaemon defaultDaemon;
+
+    private File aspectranConfigFile;
+
+    @Override
+    public void init(DaemonContext daemonContext) {
+        String[] args = daemonContext.getArguments();
+        File aspectranConfigFile;
+        if (args.length > 0) {
+            aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+        } else {
+            aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+        }
+        this.aspectranConfigFile = aspectranConfigFile;
+    }
+
+    @Override
+    public void start() throws Exception {
+        if (defaultDaemon != null) {
+            throw new IllegalStateException("Aspectran daemon is already running");
+        }
+
+        defaultDaemon = new DefaultDaemon();
+        defaultDaemon.init(aspectranConfigFile);
+        defaultDaemon.run();
+    }
+
+    @Override
+    public void stop() {
+        if (defaultDaemon == null) {
+            throw new IllegalStateException("Aspectran daemon is not running");
+        }
+
+        defaultDaemon.shutdown();
+    }
+
+    @Override
+    public void destroy() {
+        defaultDaemon = null;
+    }
+
 }

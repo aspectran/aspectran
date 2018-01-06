@@ -52,6 +52,8 @@ fi
 
 if [ "$1" = "start" ] ; then
 
+    sleep 1
+
     if [ -f "$BASE_DIR/.lock" ]; then
         echo "Aspectran Daemon is already started."
     else
@@ -63,10 +65,14 @@ if [ "$1" = "start" ] ; then
             "$BASE_DIR/config/aspectran-config.apon" \
             > "$BASE_DIR/logs/daemon.out" 2>&1 &
 
+        sleep 2
+
         echo "Aspectran Daemon started."
     fi
 
 elif [ "$1" = "stop" ] ; then
+
+    sleep 3
 
     if [ ! -f "$BASE_DIR/.lock" ]; then
         echo "Aspectran Daemon is already stopped."
@@ -78,7 +84,9 @@ elif [ "$1" = "stop" ] ; then
 elif [ "$1" = "version" ] ; then
 
     "$JAVA_BIN"   \
-        -classpath "$CATALINA_HOME/lib/catalina.jar" \
+        -classpath "$BASE_DIR/lib/*" \
+        -Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
+        -Daspectran.baseDir="$BASE_DIR" \
         com.aspectran.core.util.Aspectran
 
 else

@@ -79,20 +79,20 @@ public class FileCommandPoller extends AbstractCommandPoller {
             File failedDir = new File(inboundDir, INBOUND_FAILED_DIR);
             failedDir.mkdir();
             this.failedDir = failedDir;
+
+            File[] inboundFiles = getCommandFiles(inboundDir);
+            if (inboundFiles != null) {
+                for (File file : inboundFiles) {
+                    file.delete();
+                }
+            }
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon command poller", e);
         }
     }
 
     @Override
-    public void ready() {
-        File[] inboundFiles = getCommandFiles(inboundDir);
-        if (inboundFiles != null) {
-            for (File file : inboundFiles) {
-                file.delete();
-            }
-        }
-
+    public void requeue() {
         File[] queuedFiles = getCommandFiles(queuedDir);
         if (queuedFiles != null) {
             int limit = getMaxThreads() - getExecutor().getQueueSize();

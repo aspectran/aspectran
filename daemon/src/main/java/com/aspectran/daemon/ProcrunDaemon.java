@@ -15,10 +15,48 @@
  */
 package com.aspectran.daemon;
 
+import com.aspectran.daemon.service.DaemonService;
+
+import java.io.File;
+
 /**
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
  */
-public class ProcrunDaemon extends AbstractDaemon {
+public class ProcrunDaemon {
+
+    private static DefaultDaemon defaultDaemon;
+
+    public static void start(String[] args) {
+        try {
+            File aspectranConfigFile;
+            if (args.length > 0) {
+                aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+            } else {
+                aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+            }
+
+            defaultDaemon = new DefaultDaemon();
+            defaultDaemon.init(aspectranConfigFile);
+            defaultDaemon.run();
+        } catch (Exception e) {
+            defaultDaemon = null;
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public static void stop(String[] args) {
+        try {
+            if (defaultDaemon != null) {
+                defaultDaemon.shutdown();
+                defaultDaemon = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
 }

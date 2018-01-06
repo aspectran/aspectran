@@ -28,7 +28,7 @@ daemon: {
         com.aspectran.daemon.command.builtin.QuitCommand
     ]
     poller: {
-        pollingInterval: 3000
+        pollingInterval: 10000
         maxThreads: 5
         inbound: /inbound
     }

@@ -29,6 +29,6 @@ public interface Daemon {
 
     boolean isActive();
 
-    void stop();
+    void terminate();
 
 }
