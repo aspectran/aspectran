@@ -49,6 +49,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     private final File failedDir;
 
+    private final Object lock = new Object();
+
     public FileCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) throws Exception {
         super(daemon, pollerConfig);
 
@@ -84,11 +86,18 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     @Override
     public void ready() {
-        File[] files = getCommandFiles(queuedDir);
-        if (files != null) {
+        File[] inboundFiles = getCommandFiles(inboundDir);
+        if (inboundFiles != null) {
+            for (File file : inboundFiles) {
+                file.delete();
+            }
+        }
+
+        File[] queuedFiles = getCommandFiles(queuedDir);
+        if (queuedFiles != null) {
             int limit = getMaxThreads() - getExecutor().getQueueSize();
-            for (int i = 0; i < files.length && i < limit; i++) {
-                File file = files[i];
+            for (int i = 0; i < queuedFiles.length && i < limit; i++) {
+                File file = queuedFiles[i];
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
                     executeQueuedCommand(parameters, file.getName(), null);
@@ -157,28 +166,29 @@ public class FileCommandPoller extends AbstractCommandPoller {
     }
 
     private String writeCommandFile(File dir, String fileName, CommandParameters parameters) {
-        synchronized (this) {
-            File file = null;
-            try {
+        File file = null;
+        try {
+            synchronized (lock) {
                 file = FilenameUtils.getUniqueFile(new File(dir, fileName));
-                if (log.isDebugEnabled()) {
-                    log.debug("Write command file: " + file.getAbsolutePath());
-                }
-                AponWriter aponWriter = new AponWriter(file);
-                aponWriter.setPrettyPrint(true);
-                aponWriter.setIndentString("  ");
-                aponWriter.write(parameters);
-                aponWriter.close();
-                return file.getName();
-            } catch (IOException e) {
-                if (file != null) {
-                    log.warn("Failed to write command file: " + file.getAbsolutePath(), e);
-                } else {
-                    File f = new File(dir, fileName);
-                    log.warn("Failed to write command file: " + f.getAbsolutePath(), e);
-                }
-                return null;
+                file.createNewFile();
             }
+            if (log.isDebugEnabled()) {
+                log.debug("Write command file: " + file.getAbsolutePath());
+            }
+            AponWriter aponWriter = new AponWriter(file);
+            aponWriter.setPrettyPrint(true);
+            aponWriter.setIndentString("  ");
+            aponWriter.write(parameters);
+            aponWriter.close();
+            return file.getName();
+        } catch (IOException e) {
+            if (file != null) {
+                log.warn("Failed to write command file: " + file.getAbsolutePath(), e);
+            } else {
+                File f = new File(dir, fileName);
+                log.warn("Failed to write command file: " + f.getAbsolutePath(), e);
+            }
+            return null;
         }
     }
 
