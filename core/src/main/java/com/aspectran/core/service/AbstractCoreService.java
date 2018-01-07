@@ -250,10 +250,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 basePath = SystemUtils.getProperty("java.io.tmpdir");
             }
             if (basePath != null) {
-                FileLocker fileLocker = new FileLocker(new File(basePath, ".lock"));
+                fileLocker = new FileLocker(new File(basePath, ".lock"));
                 if (fileLocker.lock()) {
                     ShutdownHooks.add(() -> {
-                        if (this.fileLocker != null) {
+                        if (fileLocker != null) {
                             try {
                                 fileLocker.release();
                             } catch (Exception e) {
@@ -261,7 +261,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                             }
                         }
                     });
-                    this.fileLocker = fileLocker;
                     return true;
                 } else {
                     return false;

@@ -115,10 +115,12 @@ public class FileLocker {
                     }
                     fileChannel = null;
                 }
-                if (lockFile != null && lockFile.exists()) {
-                    lockFile.delete();
+                if (lockFile != null) {
+                    if (lockFile.exists()) {
+                        lockFile.delete();
+                    }
+                    lockFile = null;
                 }
-                lockFile = null;
             }
         }
     }

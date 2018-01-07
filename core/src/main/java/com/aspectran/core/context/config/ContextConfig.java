@@ -18,7 +18,6 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContextConfig extends AbstractParameters {
