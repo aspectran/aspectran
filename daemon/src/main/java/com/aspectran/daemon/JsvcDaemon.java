@@ -47,7 +47,7 @@ public class JsvcDaemon implements Daemon {
     @Override
     public void start() throws Exception {
         if (defaultDaemon != null) {
-            throw new IllegalStateException("Aspectran daemon is already running");
+            throw new IllegalStateException("Aspectran Daemon is already running");
         }
 
         defaultDaemon = new DefaultDaemon();
@@ -58,7 +58,7 @@ public class JsvcDaemon implements Daemon {
     @Override
     public void stop() {
         if (defaultDaemon == null) {
-            throw new IllegalStateException("Aspectran daemon is not running");
+            throw new IllegalStateException("Aspectran Daemon not running, will do nothing");
         }
 
         defaultDaemon.shutdown();

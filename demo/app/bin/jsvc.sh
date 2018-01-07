@@ -15,11 +15,11 @@
 # limitations under the License.
 
 # -----------------------------------------------------------------------------
-# Control Script for the Aspectran Daemon
+# Commons Daemon wrapper script.
 # -----------------------------------------------------------------------------
 
 PRG="$0"
-while [ -h "$PRG" ]; do
+while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
     link=`expr "$ls" : '.*-> \(.*\)$'`
     if expr "$link" : '/.*' > /dev/null; then
@@ -40,6 +40,21 @@ do
     ;;
     --java-home )
         JAVA_HOME="$2"
+        shift; shift;
+        continue
+    ;;
+    --daemon-pid )
+        DAEMON_PID="$2"
+        shift; shift;
+        continue
+    ;;
+    --daemon-user )
+        DAEMON_USER="$2"
+        shift; shift;
+        continue
+    ;;
+    --service-start-wait-time )
+        SERVICE_START_WAIT_TIME="$2"
         shift; shift;
         continue
     ;;
@@ -64,49 +79,46 @@ if [ -z "$JAVA_HOME" ]; then
 else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+# Set the default service-start wait time if necessary
+test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
+# Set -pidfile
+test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/logs/daemon.pid"
 TMP_DIR="$BASE_DIR/temp"
+JSVC="$BASE_DIR/bin/jsvc"
 LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
 CLASSPATH="$BASE_DIR/lib/*"
-LOCK_FILE="$BASE_DIR/.lock"
 
 case "$1" in
     start     )
-        sleep 0.5
-        if [ -f "$LOCK_FILE" ]; then
-            echo "Aspectran Daemon is already running."
-        else
-            nohup "$JAVA_BIN" \
-                -classpath "$CLASSPATH" \
-                -Djava.io.tmpdir="$TMP_DIR" \
-                -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
-                -Daspectran.baseDir="$BASE_DIR" \
-                com.aspectran.daemon.DefaultDaemon \
-                "$ASPECTRAN_CONFIG_FILE" \
-                > "$BASE_DIR/logs/daemon.out" 2>&1 &
-            sleep 2
-            echo "Aspectran Daemon started."
-        fi
-        sleep 0.5
+        "$JSVC" $JSVC_OPTS \
+            -java-home "$JAVA_HOME" \
+            -user $DAEMON_USER \
+            -pidfile "$DAEMON_PID" \
+            -wait "$SERVICE_START_WAIT_TIME" \
+            -outfile "$BASE_DIR/logs/daemon.out" \
+            -errfile "&1" \
+            -classpath "$CLASSPATH" \
+            -Djava.io.tmpdir="$TMP_DIR" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+            -Daspectran.baseDir="$BASE_DIR" \
+            com.aspectran.daemon.JsvcDaemon
+        exit $?
     ;;
     stop    )
-        sleep 0.5
-        if [ ! -f "$LOCK_FILE" ]; then
-            echo "Aspectran Daemon not running, will do nothing."
-        else
-            echo "Stopping ..."
-            echo "command: quit" > "$BASE_DIR/inbound/99-quit.apon"
-            while [ -f "$LOCK_FILE" ]; do
-                sleep 0.5
-            done
-            echo "Aspectran Daemon stopped."
-        fi
-        sleep 0.5
+        "$JSVC" $JSVC_OPTS \
+            -stop \
+            -pidfile "$DAEMON_PID" \
+            -classpath "$CLASSPATH" \
+            -Djava.io.tmpdir="$CATALINA_TMP" \
+            com.aspectran.daemon.JsvcDaemon
+        exit $?
     ;;
     version  )
         "$JAVA_BIN"   \
-            -classpath "$CLASSPATH" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+            -classpath "$BASE_DIR/lib/*" \
+            -Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
+            -Daspectran.baseDir="$BASE_DIR" \
             com.aspectran.core.util.Aspectran
     ;;
     *       )
