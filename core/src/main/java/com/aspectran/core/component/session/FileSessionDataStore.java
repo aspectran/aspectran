@@ -474,6 +474,10 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         }
         if (!storeDir.exists()) {
             storeDir.mkdirs();
+        } else {
+            if (!(storeDir.isDirectory() && storeDir.canWrite() && storeDir.canRead())) {
+                throw new IllegalStateException(storeDir.getAbsolutePath() + " must be readable/writeable directory");
+            }
         }
     }
 
