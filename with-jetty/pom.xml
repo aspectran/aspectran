@@ -11,7 +11,8 @@
     <artifactId>aspectran-with-jetty</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran With Jetty</name>
+    <name>Aspectran with Jetty</name>
+    <description>Add-on package for embedding Jetty</description>
 
     <licenses>
         <license>

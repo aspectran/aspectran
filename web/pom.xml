@@ -12,6 +12,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Web</name>
+    <description>Aspectran Web Integration</description>
 
     <licenses>
         <license>

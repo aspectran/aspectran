@@ -11,7 +11,7 @@
     <artifactId>aspectran-shell-jline</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran Shell with JLine</name>
+    <name>Aspectran Shell using JLine</name>
 
     <licenses>
         <license>

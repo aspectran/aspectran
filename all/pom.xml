@@ -14,6 +14,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
+    <description>A meta-dependency for all the major Aspectran modules</description>
 
     <licenses>
         <license>
