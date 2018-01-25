@@ -75,7 +75,7 @@ if [ -z "$JAVA_HOME" ]; then
         fi
     done
     test -x "$JAVA_BIN" && JAVA_HOME="`dirname $JAVA_BIN`"
-    test ".$JAVA_HOME" != . && JAVA_HOME=`cd "$JAVA_HOME/.." >/dev/null; pwd`
+    test ".$JAVA_HOME" != . && JAVA_HOME=`cd "$JAVA_HOME/.." > /dev/null; pwd`
 else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
@@ -110,7 +110,7 @@ case "$1" in
             -stop \
             -pidfile "$DAEMON_PID" \
             -classpath "$CLASSPATH" \
-            -Djava.io.tmpdir="$CATALINA_TMP" \
+            -Djava.io.tmpdir="$TMP_DIR" \
             com.aspectran.daemon.JsvcDaemon
         exit $?
     ;;
