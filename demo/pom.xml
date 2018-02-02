@@ -126,25 +126,6 @@
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-resources-3</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>app/webapps/root/WEB-INF/lib</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>app/lib</directory>
-                                    <includes>
-                                        <include>taglibs-standard-*.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
