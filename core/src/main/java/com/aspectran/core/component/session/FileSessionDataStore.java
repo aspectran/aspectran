@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A file-based store of session data.
@@ -58,7 +57,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
 
     private boolean deleteUnrestorableFiles;
 
-    private long lastSweepTime = 0L;
+    private long lastSweepTime;
 
     public File getStoreDir() {
         return storeDir;
@@ -148,7 +147,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         // that expired a long time ago.
         // If the graceperiod is disabled, don't do the sweep!
         if (gracePeriodSec > 0 &&
-                (lastSweepTime == 0 || ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec))))) {
+                (lastSweepTime == 0L || ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec))))) {
             lastSweepTime = now;
             sweepDisk();
         }
@@ -157,51 +156,38 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
 
     @Override
     public SessionData load(String id) throws Exception {
-        final AtomicReference<SessionData> reference = new AtomicReference<>();
-        final AtomicReference<Exception> exception = new AtomicReference<>();
-        Runnable r = () -> {
-            // load session info from its file
-            String filename = sessionFileMap.get(id);
-            if (filename == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Unknown session " + id);
-                }
-                return;
+        // load session info from its file
+        String filename = sessionFileMap.get(id);
+        if (filename == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Unknown session " + id);
             }
-
-            File file = new File(storeDir, filename);
-            if (!file.exists()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("No such file " + filename);
-                }
-                return;
-            }
-
-            try (FileInputStream in = new FileInputStream(file)) {
-                SessionData data = load(in, id);
-                data.setLastSaved(file.lastModified());
-                reference.set(data);
-            } catch (UnreadableSessionDataException e) {
-                if (isDeleteUnrestorableFiles() && file.exists() && file.getParentFile().equals(storeDir)) {
-                    try {
-                        delete(id);
-                        log.warn("Deleted unrestorable file for session " + id);
-                    } catch (Exception x) {
-                        log.warn("Unable to delete unrestorable file " + filename + " for session " + id, x);
-                    }
-                }
-                exception.set(e);
-            } catch (Exception e) {
-                exception.set(e);
-            }
-        };
-        r.run();
-
-        if (exception.get() != null) {
-            throw exception.get();
+            return null;
         }
 
-        return reference.get();
+        File file = new File(storeDir, filename);
+        if (!file.exists()) {
+            if (log.isDebugEnabled()) {
+                log.debug("No such file " + filename);
+            }
+            return null;
+        }
+
+        try (FileInputStream in = new FileInputStream(file)) {
+            SessionData data = load(in, id);
+            data.setLastSaved(file.lastModified());
+            return data;
+        } catch (UnreadableSessionDataException e) {
+            if (isDeleteUnrestorableFiles() && file.exists() && file.getParentFile().equals(storeDir)) {
+                try {
+                    delete(id);
+                    log.warn("Deleted unrestorable file for session " + id);
+                } catch (Exception x) {
+                    log.warn("Unable to delete unrestorable file " + filename + " for session " + id, x);
+                }
+            }
+            throw e;
+        }
     }
 
     @Override
