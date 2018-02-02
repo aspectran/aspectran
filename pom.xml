@@ -150,7 +150,7 @@
             <dependency>
                 <groupId>org.jline</groupId>
                 <artifactId>jline</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
