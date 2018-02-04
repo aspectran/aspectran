@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2017 The Aspectran Project
+ * Copyright (c) 2008-2018 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class SessionManagerTest {
 
         SessionAgent agent = sessionManager.newSessionAgent();
 
-        log.info("Created Session: " + agent.getSession(true));
+        log.info("Created Session " + agent.getSession(true));
 
         agent.setAttribute("attr1", "val-1");
         agent.setAttribute("attr2", "val-2");
@@ -69,7 +69,7 @@ public class SessionManagerTest {
 
         SessionAgent agent = sessionManager.newSessionAgent();
 
-        log.info("Created Session: " + agent.getSession(true));
+        log.info("Created Session " + agent.getSession(true));
 
         await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getSessionsCurrent() == 0);
     }

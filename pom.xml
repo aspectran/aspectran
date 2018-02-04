@@ -150,12 +150,12 @@
             <dependency>
                 <groupId>org.jline</groupId>
                 <artifactId>jline</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
-                <version>4.5.0</version>
+                <version>4.5.1</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -226,9 +226,9 @@
                 <version>1.2.17</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>5.1.0-M2</version>
             </dependency>
             <dependency>
                 <groupId>org.awaitility</groupId>
@@ -251,7 +251,7 @@
                         <aggregate>true</aggregate>
                         <strictCheck>true</strictCheck>
                         <properties>
-                            <copyright-range>${project.inceptionYear}-2017</copyright-range>
+                            <copyright-range>${project.inceptionYear}-2018</copyright-range>
                         </properties>
                         <mapping>
                             <java>SLASHSTAR_STYLE</java>
@@ -360,7 +360,7 @@
 
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0</version>
                     <configuration>
                         <doctitle>${javadoc.title}</doctitle>
                         <windowtitle>${javadoc.title}</windowtitle>
@@ -650,6 +650,23 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>fast</id>
+            <properties>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+                <maven.source.skip>true</maven.source.skip>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>fastest</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+                <maven.source.skip>true</maven.source.skip>
+            </properties>
         </profile>
     </profiles>
 </project>
