@@ -15,16 +15,17 @@
  */
 package com.aspectran.shell.command.builtin;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Collection;
+import java.util.Map;
+
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Collection;
-import java.util.Map;
 
 public class SysInfoCommand extends AbstractCommand {
 
@@ -70,7 +71,7 @@ public class SysInfoCommand extends AbstractCommand {
 
     private void printClasspath() {
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-        for (String line : StringUtils.split(bean.getClassPath(), ':')) {
+        for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             getConsole().writeLine(line);
         }
     }
@@ -80,7 +81,7 @@ public class SysInfoCommand extends AbstractCommand {
      *
      * @param gc true if performing garbage collection; false otherwise
      */
-    private void mem(boolean gc) throws Exception {
+    private void mem(boolean gc) {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
 
