@@ -35,33 +35,33 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlets</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-annotations</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
         <!-- JSP dependencies -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>9.4.8.v20171121</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
     </dependencies>
 </project>
