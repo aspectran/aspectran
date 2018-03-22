@@ -310,7 +310,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
      *
      * @param now the time now in msec
      * @param p the file to check
-     * @throws Exception
+     * @throws Exception indicating error in sweep
      */
     public void sweepFile(long now, Path p) throws Exception {
         if (p == null) {
