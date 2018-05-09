@@ -16,10 +16,10 @@ Aspectran will grow into a next-generation Java application framework that suppo
 
 The main features of Aspectran are as follows:
 
-* **Support various execution environments with the same configuration settings**  
-  You can share the same configuration settings among different execution environments, such as the Web and CLI-based applications.
+* **Support multiple execution environments with identical configuration settings**  
+  You can share the same configuration settings in different execution environments, such as Web and CLI-based applications.
 * **Support POJO (*Plain Old Java Object*) programming model**  
-  Rather than inheriting certain classes and extending functionality, you can focus on implementing real-world functionality.
+  Rather than inheriting certain classes and extending functionality, you can concentrate on implementing the functionality that is actually needed.
   The result value can be returned as the simplest Java object.
 * **Support Inversion of Control (*IoC*)**  
   The framework controls the overall flow and invokes the functionality of the module created by the developer.
