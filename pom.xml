@@ -269,6 +269,7 @@
                             <exclude>core/src/main/java/com/aspectran/core/util/logging/**</exclude>
                             <exclude>core/src/main/java/com/aspectran/core/util/statistic/**</exclude>
                             <exclude>core/src/main/java/com/aspectran/core/util/xml/**</exclude>
+                            <exclude>.mvn/wrapper/**</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
@@ -393,7 +394,7 @@
 
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.7</version>
+                    <version>3.7.1</version>
                 </plugin>
 
                 <plugin>
@@ -428,7 +429,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.0</version>
+                    <version>0.8.1</version>
                 </plugin>
 
                 <plugin>
