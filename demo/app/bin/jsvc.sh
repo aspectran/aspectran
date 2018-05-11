@@ -122,7 +122,7 @@ case "$1" in
             com.aspectran.core.util.Aspectran
     ;;
     *       )
-        echo "Usage: daemon.sh ( commands ... )"
+        echo "Usage: jsvc.sh ( commands ... )"
         echo "commands:"
         echo "  start     Start Aspectran Daemon"
         echo "  stop      Stop Aspectran Daemon"
