@@ -67,7 +67,7 @@ public class MethodAction extends AbstractAction {
     }
 
     public static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws IllegalAccessException, InvocationTargetException {
         Object[] args;
         if (requiresTranslet) {
             args = new Object[] { activity.getTranslet() };

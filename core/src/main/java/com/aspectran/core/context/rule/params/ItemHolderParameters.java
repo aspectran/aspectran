@@ -18,6 +18,8 @@ package com.aspectran.core.context.rule.params;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 
+import java.util.List;
+
 public class ItemHolderParameters extends AbstractParameters {
 
     public static final ParameterDefinition item;
@@ -38,6 +40,10 @@ public class ItemHolderParameters extends AbstractParameters {
 
     public ItemHolderParameters(String text) {
         super(parameterDefinitions, text);
+    }
+
+    public List<ItemParameters> getParametersList() {
+        return getParametersList(item);
     }
 
 }

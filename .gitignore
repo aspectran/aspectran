@@ -20,8 +20,11 @@
 /reports
 */reports
 
-# Mac-specific directory that no other operating system needs.
+# Mac-specific directory that no other operating system needs
 .DS_Store
 
 # JVM crash logs
 hs_err_pid*.log
+
+# These are needed if running in IDE without properties set
+.mvn/wrapper/maven-wrapper.jar

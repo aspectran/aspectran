@@ -37,7 +37,7 @@ public class AspectranDemoTest {
         try {
             File current = ResourceUtils.getResourceAsFile("");
             File root = new File(current, "../../app");
-            File aspectranConfigFile = new File(root, "aspectran-config.apon");
+            File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
             System.setProperty("user.dir", root.getAbsolutePath());
 
             ShellService service = ShellService.create(aspectranConfigFile, new JLineConsole());

@@ -76,4 +76,8 @@
         </transform>
     </translet>
 
+    <template id="hello" style="apon">
+        |Hello, ${what}!
+    </template>
+
 </aspectran>

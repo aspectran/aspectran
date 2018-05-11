@@ -5,13 +5,14 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran</artifactId>
-        <version>5.0.0</version>
+        <version>5.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-shell</artifactId>
     <packaging>jar</packaging>
 
     <name>Aspectran Shell</name>
+    <description>Aspectran with Command Line Interface</description>
 
     <licenses>
         <license>

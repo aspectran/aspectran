@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
-import static com.aspectran.shell.AspectranShell.DEFAULT_ASPECTRAN_CONFIG_FILE;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ASPECTRAN_CONFIG_FILE;
 
 /**
  * The Interface ShellService.

@@ -1,7 +1,6 @@
 #!/bin/sh
 
 PRG="$0"
-
 while [ -h "$PRG" ] ; do
   ls=`ls -ld "$PRG"`
   link=`expr "$ls" : '.*-> \(.*\)$'`
@@ -11,10 +10,8 @@ while [ -h "$PRG" ] ; do
     PRG=`dirname "$PRG"`/"$link"
   fi
 done
-
 PRG_DIR=`dirname "$PRG"`
 BASE_DIR="$PRG_DIR/.."
-
 if [ -z "$JAVA_HOME" ]; then
     JAVA_BIN="`which java 2>/dev/null || type java 2>&1`"
     while [ -h "$JAVA_BIN" ]; do
@@ -33,8 +30,8 @@ else
 fi
 
 "$JAVA_BIN" \
--Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
--Daspectran.baseDir="$BASE_DIR" \
--cp "$BASE_DIR/lib/*" \
-com.aspectran.shell.jline.JLineAspectranShell \
-"$BASE_DIR/config/aspectran-config.apon"
+    -Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
+    -Daspectran.baseDir="$BASE_DIR" \
+    -cp "$BASE_DIR/lib/*" \
+    com.aspectran.shell.jline.JLineAspectranShell \
+    "$BASE_DIR/config/aspectran-config.apon"

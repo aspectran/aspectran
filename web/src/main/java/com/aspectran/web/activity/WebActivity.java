@@ -115,7 +115,7 @@ public class WebActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for web service activity", e);
+            throw new AdapterException("Failed to specify adapters required for web service activity", e);
         }
     }
 

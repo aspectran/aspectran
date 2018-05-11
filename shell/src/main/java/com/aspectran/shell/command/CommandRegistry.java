@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.OptionParser;
@@ -29,9 +30,9 @@ import java.util.Map;
  */
 public class CommandRegistry {
 
-    private Map<String, Command> commands = new LinkedHashMap<>();
+    private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private OptionParser parser = new DefaultOptionParser();
+    private final OptionParser parser = new DefaultOptionParser();
 
     private ShellService service;
 
@@ -55,7 +56,7 @@ public class CommandRegistry {
         if (classNames != null) {
             for (String className : classNames) {
                 try {
-                    ClassLoader classLoader = service.getAspectranClassLoader();
+                    ClassLoader classLoader = AspectranClassLoader.getDefaultClassLoader();
                     @SuppressWarnings("unchecked")
                     Class<? extends Command> commandClass = (Class<? extends Command>)classLoader.loadClass(className);
                     addCommand(commandClass);

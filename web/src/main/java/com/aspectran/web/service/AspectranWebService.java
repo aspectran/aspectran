@@ -227,11 +227,11 @@ class AspectranWebService extends AspectranCoreService implements WebService {
      * Returns a new instance of {@code WebService}.
      *
      * @param servlet the servlet
-     * @param bootService the boot service
+     * @param rootService the root service
      * @return the instance of {@code WebService}
      * @throws AspectranServiceException the aspectran service exception
      */
-    public static WebService create(WebActivityServlet servlet, WebService bootService)
+    public static WebService create(WebActivityServlet servlet, WebService rootService)
             throws AspectranServiceException {
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
@@ -241,7 +241,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             servletContext.setAttribute(STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName(), service);
             return service;
         } else {
-            return bootService;
+            return rootService;
         }
     }
 

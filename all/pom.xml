@@ -7,13 +7,22 @@
     <parent>
         <artifactId>aspectran</artifactId>
         <groupId>com.aspectran</groupId>
-        <version>5.0.0</version>
+        <version>5.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-all</artifactId>
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
+    <description>A meta-dependency for all the major Aspectran modules</description>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <inceptionYear>2008</inceptionYear>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
@@ -59,6 +68,12 @@
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-daemon</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

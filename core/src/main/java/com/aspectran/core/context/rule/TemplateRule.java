@@ -299,21 +299,25 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     private void loadCachedTemplateSource(Environment environment) throws IOException {
         if (this.file != null) {
             File file = environment.toRealPathAsFile(this.file);
-            long lastModifiedTime = file.lastModified();
-            if (lastModifiedTime > this.lastModifiedTime) {
+            long time1 = this.lastModifiedTime;
+            long time2 = file.lastModified();
+            if (time2 > time1) {
                 synchronized (this) {
-                    lastModifiedTime = file.lastModified();
-                    if (lastModifiedTime > this.lastModifiedTime) {
+                    time1 = this.lastModifiedTime;
+                    time2 = file.lastModified();
+                    if (time2 > time1) {
                         String template = ResourceUtils.read(file, this.encoding);
                         setTemplateSource(template);
-                        this.lastModifiedTime = lastModifiedTime;
+                        this.lastModifiedTime = time2;
                     }
                 }
             }
         } else if (this.resource != null) {
-            if (!this.loaded) {
+            boolean loaded = this.loaded;
+            if (!loaded) {
                 synchronized (this) {
-                    if (!this.loaded) {
+                    loaded = this.loaded;
+                    if (!loaded) {
                         ClassLoader classLoader = environment.getClassLoader();
                         URL url = classLoader.getResource(this.resource);
                         String template = ResourceUtils.read(url, this.encoding);
@@ -323,9 +327,11 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
                 }
             }
         } else if (this.url != null) {
-            if (!this.loaded) {
+            boolean loaded = this.loaded;
+            if (!loaded) {
                 synchronized (this) {
-                    if (!this.loaded) {
+                    loaded = this.loaded;
+                    if (!loaded) {
                         URL url = new URL(this.url);
                         String template = ResourceUtils.read(url, this.encoding);
                         setTemplateSource(template);

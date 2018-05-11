@@ -4,19 +4,37 @@ context: {
         /classes
         /resources
     ]
+    profiles: {
+    }
     hybridLoad: false
     autoReload: {
         reloadMode: soft
         scanIntervalSeconds: 5
         startup: false
     }
-    profiles: {
-    }
+    singleton: true
 }
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
     startup: false
+}
+daemon: {
+    commands: [
+        com.aspectran.daemon.command.builtin.BeanActionCommand
+        com.aspectran.daemon.command.builtin.TransletCommand
+        com.aspectran.daemon.command.builtin.TemplateCommand
+        com.aspectran.daemon.command.builtin.PollingIntervalCommand
+        com.aspectran.daemon.command.builtin.QuitCommand
+    ]
+    poller: {
+        pollingInterval: 10000
+        maxThreads: 5
+        inbound: /inbound
+    }
+    exposals: {
+        -: /**
+    }
 }
 shell: {
     prompt: "{{BLUE}}aspectran-demo{{YELLOW}}>{{off}} "
@@ -38,7 +56,7 @@ shell: {
         |   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
         |  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
         | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
-        |=========== /_/ ================================================ {{red}}5.0.0{{off}} ===
+        |=========== /_/ ======================================= {{red}}5.1.0-SNAPSHOT{{off}} ===
         |
         |
         |   {{bold}}Welcome To Aspectran Demo{{bold:off}}

@@ -31,7 +31,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,7 +86,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         addBean(new ServletContainerInitializersStarter(this), true);
-        //setClassLoader(new URLClassLoader(new URL[0], context.getClassLoader()));
 
         if (!standalone) {
             CoreService rootService = context.getRootService();
@@ -100,9 +99,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private List<ContainerInitializer> jspInitializers() {
         JettyJasperInitializer sci = new JettyJasperInitializer();
         ContainerInitializer initializer = new ContainerInitializer(sci, null);
-        List<ContainerInitializer> initializers = new ArrayList<>();
-        initializers.add(initializer);
-        return initializers;
+        return Collections.singletonList(initializer);
     }
 
 }

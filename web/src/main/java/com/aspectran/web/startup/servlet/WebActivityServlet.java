@@ -56,17 +56,18 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         try {
             ServletContext servletContext = getServletContext();
             Object object = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
-            WebService bootService = null;
+            WebService rootService = null;
             if (object != null) {
                 if (!(object instanceof WebService)) {
-                    throw new IllegalStateException("Context attribute [" + object + "] is not of type [" + WebService.class.getName() + "]");
+                    throw new IllegalStateException("Context attribute [" + object + "] is not of type [" +
+                            WebService.class.getName() + "]");
                 }
-                bootService = (WebService)object;
-                webService = WebService.create(this, bootService);
+                rootService = (WebService)object;
+                webService = WebService.create(this, rootService);
             } else {
                 webService = WebService.create(this);
             }
-            standalone = (bootService != webService);
+            standalone = (rootService != webService);
             if (standalone) {
                 webService.start();
                 log.info("WebService is running in standalone mode inside the servlet: " + this);

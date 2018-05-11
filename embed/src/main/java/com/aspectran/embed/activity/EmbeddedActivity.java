@@ -81,7 +81,7 @@ public class EmbeddedActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters for embedded service activity", e);
+            throw new AdapterException("Failed to specify adapters required for embedded service activity", e);
         }
     }
 

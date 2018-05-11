@@ -537,13 +537,13 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public String describe(boolean details) {
         ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("qualifiedName", getQualifiedName());
         if (details) {
-            tsb.append("qualifiedName", getQualifiedName());
             tsb.append("parameters", parameterValueMap);
-            tsb.append("parent", getParent());
         } else {
-            tsb.append(parameterValueMap);
+            tsb.append("parameters", getParameterNames());
         }
+        tsb.append("parent", getParent());
         return tsb.toString();
     }
 

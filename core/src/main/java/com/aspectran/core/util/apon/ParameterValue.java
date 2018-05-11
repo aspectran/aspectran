@@ -53,11 +53,13 @@ public class ParameterValue implements Parameter {
         this(name, parameterValueType, array, false);
     }
 
-    public ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
+    public ParameterValue(String name, ParameterValueType parameterValueType, boolean array,
+                          boolean noBracket) {
         this(name, parameterValueType, array, noBracket, false);
     }
 
-    protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket, boolean predefined) {
+    protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array,
+                             boolean noBracket, boolean predefined) {
         this.name = name;
         this.parameterValueType = parameterValueType;
         this.array = array;
@@ -71,15 +73,18 @@ public class ParameterValue implements Parameter {
         this(name, parametersClass, false);
     }
 
-    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
+                          boolean array) {
         this(name, parametersClass, array, false);
     }
 
-    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
+    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
+                          boolean array, boolean noBracket) {
         this(name, parametersClass, array, noBracket, false);
     }
 
-    protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket, boolean predefined) {
+    protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
+                             boolean array, boolean noBracket, boolean predefined) {
         this.name = name;
         this.parameterValueType = ParameterValueType.PARAMETERS;
         this.parametersClass = parametersClass;

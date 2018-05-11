@@ -25,11 +25,16 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.util.FileLocker;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.thread.ShutdownHooks;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
+
+import java.io.File;
 
 /**
  * The Class AbstractCoreService.
@@ -54,6 +59,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private SchedulerService schedulerService;
 
+    private FileLocker fileLocker;
+
     public AbstractCoreService(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
@@ -73,6 +80,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         this.applicationAdapter = rootService.getApplicationAdapter();
         this.activityContext = rootService.getActivityContext();
         this.aspectranConfig = rootService.getAspectranConfig();
+    }
+
+    public String getBasePath() {
+        return basePath;
     }
 
     protected void setBasePath(String basePath) {
@@ -124,6 +135,14 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             this.schedulerConfig = aspectranConfig.getSchedulerConfig();
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
+            if (contextConfig != null) {
+                Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
+                if (Boolean.TRUE.equals(singleton)) {
+                    if (!checkSingletonLock()) {
+                        throw new IllegalStateException("Only one instance of the aspectran service is allowed to run");
+                    }
+                }
+            }
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.setBasePath(basePath);
@@ -159,7 +178,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     protected void destroyActivityContext() {
         if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state; First, call the prepare() method");
+            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state;" +
+                    " First, call the prepare() method");
         }
 
         activityContextBuilder.destroy();
@@ -217,6 +237,39 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     protected void resumeSchedulerService() throws Exception {
         if (schedulerService != null) {
             schedulerService.resume();
+        }
+    }
+
+    private boolean checkSingletonLock() throws Exception {
+        if (fileLocker != null) {
+            throw new IllegalStateException("Already instantiated a file locker for Singleton lock");
+        }
+        try {
+            String basePath = getBasePath();
+            if (basePath == null) {
+                basePath = SystemUtils.getProperty("java.io.tmpdir");
+            }
+            if (basePath != null) {
+                fileLocker = new FileLocker(new File(basePath, ".lock"));
+                if (fileLocker.lock()) {
+                    ShutdownHooks.add(() -> {
+                        if (fileLocker != null) {
+                            try {
+                                fileLocker.release();
+                            } catch (Exception e) {
+                                log.warn("Unable to release Singleton lock", e);
+                            }
+                        }
+                    });
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                throw new IllegalArgumentException("Unable to determine the directory where the lock file will be located");
+            }
+        } catch (Exception e) {
+            throw new Exception("Unable to acquire Singleton lock", e);
         }
     }
 
