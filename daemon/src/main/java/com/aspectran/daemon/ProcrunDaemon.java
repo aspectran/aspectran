@@ -18,6 +18,7 @@ package com.aspectran.daemon;
 import com.aspectran.daemon.service.DaemonService;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
@@ -56,6 +57,15 @@ public class ProcrunDaemon {
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    public static void main(String[] args) {
+        if ("start".equals(args[0])) {
+            String[] args2 = Arrays.copyOfRange(args, 1, args.length);
+            start(args2);
+        } else if ("end".equals(args[0])) {
+            stop(args);
         }
     }
 

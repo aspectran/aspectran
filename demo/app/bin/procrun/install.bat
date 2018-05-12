@@ -1,5 +1,11 @@
 @ECHO OFF
-set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_151
+
+if not defined JAVA_HOME (
+  :undefined
+  set /p JAVA_HOME=Enter path to JAVA_HOME:
+  if not defined JAVA_HOME goto:undefined
+)
+
 set BASE_DIR=%~dp0%..\..
 set SERVICE_NAME=DemoService
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
