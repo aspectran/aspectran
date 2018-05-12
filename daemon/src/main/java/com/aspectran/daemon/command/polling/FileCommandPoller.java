@@ -95,12 +95,16 @@ public class FileCommandPoller extends AbstractCommandPoller {
     public void requeue() {
         File[] queuedFiles = getCommandFiles(queuedDir);
         if (queuedFiles != null) {
-            int limit = getMaxThreads() - getExecutor().getQueueSize();
-            for (int i = 0; i < queuedFiles.length && i < limit; i++) {
-                File file = queuedFiles[i];
-                CommandParameters parameters = readCommandFile(file);
-                if (parameters != null) {
-                    executeQueuedCommand(parameters, file.getName(), null);
+            if (isRequeue()) {
+                for (File file : queuedFiles) {
+                    CommandParameters parameters = readCommandFile(file);
+                    if (parameters != null) {
+                        executeQueuedCommand(parameters, file.getName(), null);
+                    }
+                }
+            } else {
+                for (File file : queuedFiles) {
+                    removeCommandFile(queuedDir, file.getName());
                 }
             }
         }
