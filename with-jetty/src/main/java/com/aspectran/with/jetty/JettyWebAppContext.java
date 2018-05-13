@@ -31,6 +31,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.List;
 
@@ -86,6 +88,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         addBean(new ServletContainerInitializersStarter(this), true);
+        setClassLoader(getUrlClassLoader());
 
         if (!standalone) {
             CoreService rootService = context.getRootService();
@@ -100,6 +103,11 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         JettyJasperInitializer sci = new JettyJasperInitializer();
         ContainerInitializer initializer = new ContainerInitializer(sci, null);
         return Collections.singletonList(initializer);
+    }
+
+    private ClassLoader getUrlClassLoader() {
+        ClassLoader classLoader = new URLClassLoader(new URL[0], this.getClass().getClassLoader());
+        return classLoader;
     }
 
 }

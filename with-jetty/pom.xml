@@ -57,5 +57,16 @@
             <artifactId>jetty-annotations</artifactId>
             <version>9.4.10.v20180503</version>
         </dependency>
+        <!-- JSP and JSTL dependencies -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>9.4.10.v20180503</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jstl</artifactId>
+            <version>9.4.10.v20180503</version>
+        </dependency>
     </dependencies>
 </project>
