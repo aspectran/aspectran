@@ -85,4 +85,5 @@ public abstract class AbstractCommandPoller implements CommandPoller {
     public boolean isRequeue() {
         return requeue;
     }
+
 }

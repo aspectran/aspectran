@@ -18,6 +18,7 @@ package com.aspectran.daemon;
 import com.aspectran.daemon.service.DaemonService;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 
 import java.io.File;
 
@@ -30,43 +31,46 @@ public class JsvcDaemon implements Daemon {
 
     private DefaultDaemon defaultDaemon;
 
-    private File aspectranConfigFile;
-
     @Override
-    public void init(DaemonContext daemonContext) {
-        String[] args = daemonContext.getArguments();
-        File aspectranConfigFile;
-        if (args.length > 0) {
-            aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
-        } else {
-            aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+    public void init(DaemonContext daemonContext) throws DaemonInitException {
+        if (defaultDaemon == null) {
+            String[] args = daemonContext.getArguments();
+            File aspectranConfigFile;
+            if (args != null && args.length > 0) {
+                aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+            } else {
+                aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+            }
+
+            try {
+                defaultDaemon = new DefaultDaemon();
+                defaultDaemon.init(aspectranConfigFile);
+            } catch (Exception e) {
+                throw new DaemonInitException("Aspectran Daemon failed to initialize", e);
+            }
         }
-        this.aspectranConfigFile = aspectranConfigFile;
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         if (defaultDaemon != null) {
-            throw new IllegalStateException("Aspectran Daemon is already running");
+            defaultDaemon.run();
         }
-
-        defaultDaemon = new DefaultDaemon();
-        defaultDaemon.init(aspectranConfigFile);
-        defaultDaemon.run();
     }
 
     @Override
     public void stop() {
-        if (defaultDaemon == null) {
-            throw new IllegalStateException("Aspectran Daemon not running, will do nothing");
+        if (defaultDaemon != null) {
+            defaultDaemon.terminate();
         }
-
-        defaultDaemon.shutdown();
     }
 
     @Override
     public void destroy() {
-        defaultDaemon = null;
+        if (defaultDaemon != null) {
+            defaultDaemon.shutdown();
+            defaultDaemon = null;
+        }
     }
 
 }

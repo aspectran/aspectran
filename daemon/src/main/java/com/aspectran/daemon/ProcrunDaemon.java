@@ -30,42 +30,46 @@ public class ProcrunDaemon {
     private static DefaultDaemon defaultDaemon;
 
     public static void start(String[] args) {
-        try {
-            File aspectranConfigFile;
-            if (args.length > 0) {
-                aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
-            } else {
-                aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
-            }
+        if (defaultDaemon == null) {
+            try {
+                File aspectranConfigFile;
+                if (args != null && args.length > 0) {
+                    aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+                } else {
+                    aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+                }
 
-            defaultDaemon = new DefaultDaemon();
-            defaultDaemon.init(aspectranConfigFile);
-            defaultDaemon.run();
-        } catch (Exception e) {
-            defaultDaemon = null;
-            e.printStackTrace();
-            System.exit(1);
+                defaultDaemon = new DefaultDaemon();
+                defaultDaemon.init(aspectranConfigFile);
+                defaultDaemon.run();
+            } catch (Exception e) {
+                defaultDaemon = null;
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 
     public static void stop(String[] args) {
-        try {
-            if (defaultDaemon != null) {
+        if (defaultDaemon != null) {
+            try {
                 defaultDaemon.shutdown();
                 defaultDaemon = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
         }
     }
 
     public static void main(String[] args) {
-        if ("start".equals(args[0])) {
-            String[] args2 = Arrays.copyOfRange(args, 1, args.length);
-            start(args2);
-        } else if ("end".equals(args[0])) {
-            stop(args);
+        if (args.length > 0) {
+            if ("start".equals(args[0])) {
+                String[] args2 = Arrays.copyOfRange(args, 1, args.length);
+                start(args2);
+            } else if ("stop".equals(args[0])) {
+                stop(null);
+            }
         }
     }
 

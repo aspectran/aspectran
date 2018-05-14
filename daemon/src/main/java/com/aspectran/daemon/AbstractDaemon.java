@@ -63,8 +63,10 @@ public class AbstractDaemon implements Daemon {
 
     @Override
     public void terminate() {
-        this.active = false;
-        Thread.currentThread().interrupt();
+        if (active) {
+            active = false;
+            Thread.currentThread().interrupt();
+        }
     }
 
     protected void init(File aspectranConfigFile) throws Exception {
@@ -96,20 +98,25 @@ public class AbstractDaemon implements Daemon {
     }
 
     protected void run() {
-        getCommandPoller().requeue();
+        if (!active) {
+            active = true;
 
-        active = true;
-        while (active) {
-            try {
-                getCommandPoller().polling();
-                Thread.sleep(getCommandPoller().getPollingInterval());
-            } catch (InterruptedException ie) {
-                active = false;
+            getCommandPoller().requeue();
+
+            while (active) {
+                try {
+                    getCommandPoller().polling();
+                    Thread.sleep(getCommandPoller().getPollingInterval());
+                } catch (InterruptedException ie) {
+                    active = false;
+                }
             }
         }
     }
 
     protected void shutdown() {
+        terminate();
+
         if (commandPoller != null) {
             commandPoller.stop();
             commandPoller = null;
