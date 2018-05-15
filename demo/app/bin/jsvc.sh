@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # -----------------------------------------------------------------------------
-# Commons Daemon wrapper script.
+# Commons Daemon wrapper script
 # -----------------------------------------------------------------------------
 
 PRG="$0"

@@ -1,34 +1,44 @@
-@ECHO OFF
+@echo off
 
-set BASE_DIR=%~dp0..\..
 set SERVICE_NAME=DemoService
+set BASE_DIR=%~dp0..\..
 
-@REM Detect java home
-if not defined JAVA_HOME (
-  :undefined
-  set /p JAVA_HOME=Enter path to JAVA_HOME:
-  if not defined JAVA_HOME goto:undefined
-)
+rem Detect JAVA_HOME environment variable
+if not defined JAVA_HOME goto java-not-set
 
-@REM Detect x86 or x64
-IF PROCESSOR_ARCHITECTURE EQU "ia64" GOTO IS_ia64
-IF PROCESSOR_ARCHITEW6432 EQU "ia64" GOTO IS_ia64
-IF PROCESSOR_ARCHITECTURE EQU "amd64" GOTO IS_amd64
-IF PROCESSOR_ARCHITEW6432 EQU "amd64" GOTO IS_amd64
-IF DEFINED ProgramFiles(x86) GOTO IS_amd64
-:IS_x86
+rem Detect x86 or x64
+if PROCESSOR_ARCHITECTURE EQU "ia64" goto is-ia64
+if PROCESSOR_ARCHITEW6432 EQU "ia64" goto is-ia64
+if PROCESSOR_ARCHITECTURE EQU "amd64" goto is-amd64
+if PROCESSOR_ARCHITEW6432 EQU "amd64" goto is-amd64
+if defined ProgramFiles(x86) goto is-amd64
+:is-x86
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
-goto IS_x64End
-:IS_amd64
+goto is-detect-end
+:is-amd64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_amd64.exe
-goto IS_x64End
-:IS_ia64
+goto is-detect-end
+:is-ia64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_ia64.exe
-:IS_x64End
+:is-detect-end
+if not exist PR_INSTALL goto invalid-installer
 
-@REM Stop service:
+rem Stop service
 net stop %SERVICE_NAME% 2>nul
 
+rem Uninstall service
 %PR_INSTALL% //DS//%SERVICE_NAME%
+goto removed
 
+:java-not-set
+echo 'JAVA_HOME environment variable missing. Please set it before using the script.
+goto end
+
+:invalid-installer
+echo Could not find the installer %PR_INSTALL%
+goto end
+
+:removed
 echo The Service "%SERVICE_NAME%" has been removed.
+
+:end
