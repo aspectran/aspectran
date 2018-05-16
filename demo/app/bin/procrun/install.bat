@@ -14,14 +14,14 @@ if PROCESSOR_ARCHITEW6432 EQU "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
 :is-x86
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
-goto is-detect-end
+goto is-detected
 :is-amd64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_amd64.exe
-goto is-detect-end
+goto is-detected
 :is-ia64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_ia64.exe
-:is-detect-end
-if not exist PR_INSTALL goto invalid-installer
+:is-detected
+if not exist "%PR_INSTALL%" goto invalid-installer
 
 rem Service log configuration
 set PR_LOGPREFIX=%SERVICE_NAME%
