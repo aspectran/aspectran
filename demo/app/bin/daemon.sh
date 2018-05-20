@@ -30,6 +30,7 @@ while [ -h "$PRG" ]; do
 done
 PRG_DIR=`dirname "$PRG"`
 BASE_DIR="$PRG_DIR/.."
+BASE_DIR="$(cd "$BASE_DIR"; pwd)"
 while [ ".$1" != . ]
 do
   case "$1" in
@@ -69,6 +70,7 @@ LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
 CLASSPATH="$BASE_DIR/lib/*"
 LOCK_FILE="$BASE_DIR/.lock"
+OUT_FILE="$BASE_DIR/logs/daemon.out.log"
 
 case "$1" in
     start     )
@@ -83,7 +85,7 @@ case "$1" in
                 -Daspectran.baseDir="$BASE_DIR" \
                 com.aspectran.daemon.DefaultDaemon \
                 "$ASPECTRAN_CONFIG_FILE" \
-                > "$BASE_DIR/logs/daemon.out" 2>&1 &
+                > "$OUT_FILE" 2>&1 &
             sleep 2
             echo "Aspectran Daemon started."
         fi

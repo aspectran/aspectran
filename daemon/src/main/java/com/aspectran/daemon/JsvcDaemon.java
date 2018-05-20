@@ -46,6 +46,7 @@ public class JsvcDaemon implements Daemon {
                 defaultDaemon = new DefaultDaemon();
                 defaultDaemon.init(aspectranConfigFile);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new DaemonInitException("Aspectran Daemon failed to initialize", e);
             }
         }

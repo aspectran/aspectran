@@ -30,6 +30,7 @@ while [ -h "$PRG" ] ; do
 done
 PRG_DIR=`dirname "$PRG"`
 BASE_DIR="$PRG_DIR/.."
+BASE_DIR="$(cd "$BASE_DIR"; pwd)"
 while [ ".$1" != . ]
 do
   case "$1" in
@@ -79,34 +80,40 @@ if [ -z "$JAVA_HOME" ]; then
 else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+JSVC="$BASE_DIR/bin/jsvc"
+if [ ! -e "$JSVC" ]; then
+    JSVC="`which jsvc 2>/dev/null || type jsvc 2>&1`"
+fi
 # Set the default service-start wait time if necessary
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
-test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/logs/daemon.pid"
+test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/daemon.pid"
 TMP_DIR="$BASE_DIR/temp"
-JSVC="$BASE_DIR/bin/jsvc"
 LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
 CLASSPATH="$BASE_DIR/lib/*"
-
+OUT_FILE="$BASE_DIR/logs/jsvc_daemon.out.log"
+ERR_FILE="$BASE_DIR/logs/jsvc_daemon.err.log"
 case "$1" in
     start     )
-        "$JSVC" $JSVC_OPTS \
+        rm -f "$OUT_FILE"
+        rm -f "$ERR_FILE"
+        "$JSVC" \
             -java-home "$JAVA_HOME" \
-            -user $DAEMON_USER \
             -pidfile "$DAEMON_PID" \
             -wait "$SERVICE_START_WAIT_TIME" \
-            -outfile "$BASE_DIR/logs/daemon.out" \
-            -errfile "&1" \
+            -outfile "$OUT_FILE" \
+            -errfile "$ERR_FILE" \
             -classpath "$CLASSPATH" \
             -Djava.io.tmpdir="$TMP_DIR" \
             -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
             -Daspectran.baseDir="$BASE_DIR" \
-            com.aspectran.daemon.JsvcDaemon
+            com.aspectran.daemon.JsvcDaemon \
+            "$ASPECTRAN_CONFIG_FILE"
         exit $?
     ;;
     stop    )
-        "$JSVC" $JSVC_OPTS \
+        "$JSVC" \
             -stop \
             -pidfile "$DAEMON_PID" \
             -classpath "$CLASSPATH" \
@@ -115,14 +122,14 @@ case "$1" in
         exit $?
     ;;
     version  )
-        "$JAVA_BIN"   \
-            -classpath "$BASE_DIR/lib/*" \
-            -Dlogback.configurationFile="$BASE_DIR/config/logback.xml" \
+        "$JAVA_BIN" \
+            -classpath "$CLASSPATH" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
             -Daspectran.baseDir="$BASE_DIR" \
             com.aspectran.core.util.Aspectran
     ;;
     *       )
-        echo "Usage: jsvc.sh ( commands ... )"
+        echo "Usage: jsvc_daemon.sh ( commands ... )"
         echo "commands:"
         echo "  start     Start Aspectran Daemon"
         echo "  stop      Stop Aspectran Daemon"
