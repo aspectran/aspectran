@@ -19,21 +19,21 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
-public class QuitCommand extends AbstractCommand {
+public class RestartCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
 
-    private static final String COMMAND_NAME = "quit";
+    private static final String COMMAND_NAME = "restart";
 
     private CommandDescriptor descriptor = new CommandDescriptor();
 
-    public QuitCommand(CommandRegistry registry) {
+    public RestartCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
-        getCommandRegistry().getDaemon().stop();
+    public String execute(CommandParameters parameters) throws Exception {
+        getCommandRegistry().getDaemon().getService().restart();
         return null;
     }
 
@@ -56,7 +56,7 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Restart this application to reload all resources";
         }
 
     }

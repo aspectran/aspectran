@@ -29,13 +29,13 @@ if [ -z "$JAVA_HOME" ]; then
 else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
-LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
-ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
 CLASSPATH="$BASE_DIR/lib/*"
+LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
-    -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+    -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.baseDir="$BASE_DIR" \
     -classpath "$CLASSPATH" \
     com.aspectran.shell.jline.JLineAspectranShell \
-    "$ASPECTRAN_CONFIG_FILE"
+    "$ASPECTRAN_CONFIG"

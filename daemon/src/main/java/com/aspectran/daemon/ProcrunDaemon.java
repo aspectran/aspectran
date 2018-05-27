@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
+ * Start and Stop Aspectran Daemon using Procrun.
+ *
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
@@ -41,7 +43,7 @@ public class ProcrunDaemon {
 
                 defaultDaemon = new DefaultDaemon();
                 defaultDaemon.init(aspectranConfigFile);
-                defaultDaemon.run();
+                defaultDaemon.start();
             } catch (Exception e) {
                 defaultDaemon = null;
                 e.printStackTrace();
@@ -53,7 +55,7 @@ public class ProcrunDaemon {
     public static void stop(String[] args) {
         if (defaultDaemon != null) {
             try {
-                defaultDaemon.shutdown();
+                defaultDaemon.destroy();
                 defaultDaemon = null;
             } catch (Exception e) {
                 e.printStackTrace();

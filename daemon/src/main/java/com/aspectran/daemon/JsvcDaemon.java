@@ -23,6 +23,8 @@ import org.apache.commons.daemon.DaemonInitException;
 import java.io.File;
 
 /**
+ * Start and Stop Aspectran Daemon using Jsvc.
+ *
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
@@ -53,23 +55,23 @@ public class JsvcDaemon implements Daemon {
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         if (defaultDaemon != null) {
-            defaultDaemon.run();
+            defaultDaemon.start();
         }
     }
 
     @Override
     public void stop() {
         if (defaultDaemon != null) {
-            defaultDaemon.terminate();
+            defaultDaemon.stop();
         }
     }
 
     @Override
     public void destroy() {
         if (defaultDaemon != null) {
-            defaultDaemon.shutdown();
+            defaultDaemon.destroy();
             defaultDaemon = null;
         }
     }

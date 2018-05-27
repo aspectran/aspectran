@@ -31,7 +31,9 @@ import java.io.File;
  *
  * @since 5.1.0
  */
-public class AbstractDaemon implements Daemon {
+public class AbstractDaemon implements Daemon, Runnable {
+
+    private String name;
 
     private DaemonService service;
 
@@ -40,6 +42,16 @@ public class AbstractDaemon implements Daemon {
     private CommandRegistry commandRegistry;
 
     private boolean active;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public DaemonService getService() {
@@ -61,24 +73,20 @@ public class AbstractDaemon implements Daemon {
         return active;
     }
 
-    @Override
-    public void terminate() {
-        if (active) {
-            active = false;
-            Thread.currentThread().interrupt();
+    protected void init(File aspectranConfigFile) throws Exception {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        try {
+            AponReader.parse(aspectranConfigFile, aspectranConfig);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse aspectran config file: " +
+                    aspectranConfigFile, e);
         }
+
+        init(aspectranConfig);
     }
 
-    protected void init(File aspectranConfigFile) throws Exception {
+    protected void init(AspectranConfig aspectranConfig) throws Exception {
         try {
-            AspectranConfig aspectranConfig = new AspectranConfig();
-            try {
-                AponReader.parse(aspectranConfigFile, aspectranConfig);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to parse aspectran config file: " +
-                        aspectranConfigFile, e);
-            }
-
             this.service = DaemonService.create(aspectranConfig);
             this.service.start();
 
@@ -97,7 +105,25 @@ public class AbstractDaemon implements Daemon {
         }
     }
 
-    protected void run() {
+    protected void start() throws Exception {
+        start(false);
+    }
+
+    protected void start(boolean wait) throws Exception {
+        if (!active) {
+            if (name == null) {
+                name = this.getClass().getSimpleName();
+            }
+            Thread thread = new Thread(this, name);
+            thread.start();
+            if (wait) {
+                thread.join();
+            }
+        }
+    }
+
+    @Override
+    public void run() {
         if (!active) {
             active = true;
 
@@ -114,8 +140,16 @@ public class AbstractDaemon implements Daemon {
         }
     }
 
-    protected void shutdown() {
-        terminate();
+    @Override
+    public void stop() {
+        if (active) {
+            active = false;
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    protected void destroy() {
+        stop();
 
         if (commandPoller != null) {
             commandPoller.stop();

@@ -20,6 +20,8 @@ import com.aspectran.daemon.service.DaemonService;
 import java.io.File;
 
 /**
+ * Start and Stop Aspectran Daemon in standalone mode.
+ *
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
@@ -39,12 +41,12 @@ public class DefaultDaemon extends AbstractDaemon {
 
         try {
             defaultDaemon.init(aspectranConfigFile);
-            defaultDaemon.run();
+            defaultDaemon.start(true);
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
         } finally {
-            defaultDaemon.shutdown();
+            defaultDaemon.destroy();
         }
 
         System.exit(exitStatus);

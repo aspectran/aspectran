@@ -21,6 +21,10 @@ import com.aspectran.daemon.service.DaemonService;
 
 public interface Daemon {
 
+    String getName();
+
+    void setName(String name);
+
     DaemonService getService();
 
     CommandPoller getCommandPoller();
@@ -29,6 +33,6 @@ public interface Daemon {
 
     boolean isActive();
 
-    void terminate();
+    void stop();
 
 }

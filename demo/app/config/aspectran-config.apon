@@ -25,6 +25,7 @@ daemon: {
         com.aspectran.daemon.command.builtin.TransletCommand
         com.aspectran.daemon.command.builtin.TemplateCommand
         com.aspectran.daemon.command.builtin.PollingIntervalCommand
+        com.aspectran.daemon.command.builtin.RestartCommand
         com.aspectran.daemon.command.builtin.QuitCommand
     ]
     poller: {

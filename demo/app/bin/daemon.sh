@@ -66,11 +66,12 @@ else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 TMP_DIR="$BASE_DIR/temp"
-LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
-ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
 CLASSPATH="$BASE_DIR/lib/*"
+LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"
-OUT_FILE="$BASE_DIR/logs/daemon.out.log"
+DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 
 case "$1" in
     start     )
@@ -78,37 +79,38 @@ case "$1" in
         if [ -f "$LOCK_FILE" ]; then
             echo "Aspectran Daemon is already running."
         else
+            echo "Starting the Aspectran Daemon..."
             nohup "$JAVA_BIN" \
                 -classpath "$CLASSPATH" \
                 -Djava.io.tmpdir="$TMP_DIR" \
-                -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+                -Dlogback.configurationFile="$LOGGING_CONFIG" \
                 -Daspectran.baseDir="$BASE_DIR" \
-                com.aspectran.daemon.DefaultDaemon \
-                "$ASPECTRAN_CONFIG_FILE" \
-                > "$OUT_FILE" 2>&1 &
+                $DAEMON_MAIN \
+                "$ASPECTRAN_CONFIG" \
+                > "$DAEMON_OUT" 2>&1 &
             sleep 2
-            echo "Aspectran Daemon started."
+            echo "The Aspectran Daemon has started."
         fi
         sleep 0.5
     ;;
     stop    )
         sleep 0.5
         if [ ! -f "$LOCK_FILE" ]; then
-            echo "Aspectran Daemon not running, will do nothing."
+            echo "Service not running, will do nothing."
         else
-            echo "Stopping ..."
+            echo "Stopping the Aspectran Daemon..."
             echo "command: quit" > "$BASE_DIR/inbound/99-quit.apon"
             while [ -f "$LOCK_FILE" ]; do
                 sleep 0.5
             done
-            echo "Aspectran Daemon stopped."
+            echo "The Aspectran Daemon has stopped."
         fi
         sleep 0.5
     ;;
     version  )
         "$JAVA_BIN"   \
             -classpath "$CLASSPATH" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG" \
             com.aspectran.core.util.Aspectran
     ;;
     *       )

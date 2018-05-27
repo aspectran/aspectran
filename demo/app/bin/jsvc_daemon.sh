@@ -50,7 +50,7 @@ do
         continue
     ;;
     --daemon-user )
-        DAEMON_USER="$2"
+        DAEMON_USER="-user $2"
         shift; shift;
         continue
     ;;
@@ -84,47 +84,57 @@ JSVC="$BASE_DIR/bin/jsvc"
 if [ ! -e "$JSVC" ]; then
     JSVC="`which jsvc 2>/dev/null || type jsvc 2>&1`"
 fi
+if [ ! -x "$JSVC" ]; then
+    echo "Cannot find $JSVC."
+    echo "The file is absent or does not have execute permission."
+    echo "This file is needed to run this program."
+    exit 1
+fi
 # Set the default service-start wait time if necessary
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
-test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/daemon.pid"
-TMP_DIR="$BASE_DIR/temp"
-LOGGING_CONFIG_FILE="$BASE_DIR/config/logback.xml"
-ASPECTRAN_CONFIG_FILE="$BASE_DIR/config/aspectran-config.apon"
+test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/jsvc_daemon.pid"
+DAEMON_OUT="$BASE_DIR/logs/jsvc_daemon.out"
+DAEMON_ERR="$BASE_DIR/logs/jsvc_daemon.err"
 CLASSPATH="$BASE_DIR/lib/*"
-OUT_FILE="$BASE_DIR/logs/jsvc_daemon.out.log"
-ERR_FILE="$BASE_DIR/logs/jsvc_daemon.err.log"
+TMP_DIR="$BASE_DIR/temp"
+LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 case "$1" in
     start     )
-        rm -f "$OUT_FILE"
-        rm -f "$ERR_FILE"
+        rm -f "$DAEMON_OUT"
+        rm -f "$DAEMON_ERR"
         "$JSVC" \
+            $DAEMON_USER \
+            -jvm server \
             -java-home "$JAVA_HOME" \
             -pidfile "$DAEMON_PID" \
             -wait "$SERVICE_START_WAIT_TIME" \
-            -outfile "$OUT_FILE" \
-            -errfile "$ERR_FILE" \
+            -outfile "$DAEMON_OUT" \
+            -errfile "$DAEMON_ERR" \
             -classpath "$CLASSPATH" \
             -Djava.io.tmpdir="$TMP_DIR" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG" \
             -Daspectran.baseDir="$BASE_DIR" \
-            com.aspectran.daemon.JsvcDaemon \
-            "$ASPECTRAN_CONFIG_FILE"
+            $DAEMON_MAIN \
+            "$ASPECTRAN_CONFIG"
         exit $?
     ;;
     stop    )
         "$JSVC" \
             -stop \
+            -jvm server \
             -pidfile "$DAEMON_PID" \
             -classpath "$CLASSPATH" \
             -Djava.io.tmpdir="$TMP_DIR" \
-            com.aspectran.daemon.JsvcDaemon
+            $DAEMON_MAIN
         exit $?
     ;;
     version  )
         "$JAVA_BIN" \
             -classpath "$CLASSPATH" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG_FILE" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG" \
             -Daspectran.baseDir="$BASE_DIR" \
             com.aspectran.core.util.Aspectran
     ;;
