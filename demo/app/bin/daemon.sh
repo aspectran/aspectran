@@ -81,6 +81,7 @@ case "$1" in
         else
             echo "Starting the Aspectran Daemon..."
             nohup "$JAVA_BIN" \
+                $JAVA_OPTS \
                 -classpath "$CLASSPATH" \
                 -Djava.io.tmpdir="$TMP_DIR" \
                 -Dlogback.configurationFile="$LOGGING_CONFIG" \
@@ -108,7 +109,7 @@ case "$1" in
         sleep 0.5
     ;;
     version  )
-        "$JAVA_BIN"   \
+        "$JAVA_BIN" \
             -classpath "$CLASSPATH" \
             -Dlogback.configurationFile="$LOGGING_CONFIG" \
             com.aspectran.core.util.Aspectran

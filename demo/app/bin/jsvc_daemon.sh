@@ -106,6 +106,7 @@ case "$1" in
         rm -f "$DAEMON_OUT"
         rm -f "$DAEMON_ERR"
         "$JSVC" \
+            $JAVA_OPTS \
             $DAEMON_USER \
             -jvm server \
             -java-home "$JAVA_HOME" \
@@ -123,6 +124,7 @@ case "$1" in
     ;;
     stop    )
         "$JSVC" \
+            $JAVA_OPTS \
             -stop \
             -jvm server \
             -pidfile "$DAEMON_PID" \
