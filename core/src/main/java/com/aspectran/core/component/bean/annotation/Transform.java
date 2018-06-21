@@ -32,7 +32,7 @@ public @interface Transform {
 
     String contentType() default "";
 
-    String templateId() default "";
+    String template() default "";
 
     String encoding() default "";
 
