@@ -473,7 +473,7 @@ public class AnnotatedConfigParser {
     }
 
     private TransformRule parseTransformRule(Transform transformAnno) throws IllegalRuleException {
-        TransformType transformType = transformAnno.transformType();
+        TransformType transformType = transformAnno.type();
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
         String templateId = StringUtils.emptyToNull(transformAnno.templateId());
         String encoding = StringUtils.emptyToNull(transformAnno.encoding());
