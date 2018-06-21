@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.annotation.Around;
 import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.ExceptionThrown;
 import com.aspectran.core.component.bean.annotation.Finally;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
@@ -30,13 +31,13 @@ import com.aspectran.core.util.logging.LogFactory;
 @Configuration
 @Aspect(
         id = "aspect02",
-        order = 2,
-        description = "The annotated aspect02"
+        order = 2
 )
 @Joinpoint(
         target = JoinpointTargetType.METHOD,
         pointcut = "+aop/test/*"
 )
+@Description("The annotated aspect02")
 public class SampleAnnotatedAspect {
 
     private final Log log = LogFactory.getLog(SampleAnnotatedAspect.class);

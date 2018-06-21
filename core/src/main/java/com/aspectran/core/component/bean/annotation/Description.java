@@ -21,15 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Aspect {
+public @interface Description {
 
-    String id() default "";
-
-    int order() default Integer.MAX_VALUE;
-
-    boolean isolated() default false;
+    String value();
 
 }

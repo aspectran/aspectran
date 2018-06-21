@@ -24,6 +24,7 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.Destroy;
 import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.ExceptionThrown;
@@ -88,8 +89,6 @@ public class AnnotatedConfigParser {
 
     private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
-    private final BeanRuleRegistry beanRuleRegistry;
-
     private final AnnotatedConfigRelater relater;
 
     private final Environment environment;
@@ -101,13 +100,11 @@ public class AnnotatedConfigParser {
     private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
     public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater relater) {
-        this.beanRuleRegistry = assistant.getBeanRuleRegistry();
-        this.relater = relater;
         this.environment = assistant.getContextEnvironment();
-
-        this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
-        this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
-        this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
+        this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
+        this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
+        this.configBeanRuleMap = assistant.getBeanRuleRegistry().getConfigBeanRuleMap();
+        this.relater = relater;
     }
 
     public void parse() throws IllegalRuleException {
@@ -317,6 +314,10 @@ public class AnnotatedConfigParser {
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
         boolean lazyInit = beanAnno.lazyInit();
         boolean important = beanAnno.important();
+
+        Description descriptionAnno = method.getAnnotation(Description.class);
+        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
+
         BeanRule beanRule = new BeanRule();
         beanRule.setId(beanId);
         beanRule.setScopeType(scopeType);
@@ -333,6 +334,7 @@ public class AnnotatedConfigParser {
         if (important) {
             beanRule.setImportant(Boolean.TRUE);
         }
+        beanRule.setDescription(description);
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         relater.relay(targetBeanClass, beanRule);
@@ -350,13 +352,14 @@ public class AnnotatedConfigParser {
         }
         MethodType[] allowedMethods = requestAnno.method();
 
-        String actionId = null;
         Action actionAnno = method.getAnnotation(Action.class);
-        if (actionAnno != null) {
-            actionId = StringUtils.emptyToNull(actionAnno.id());
-        }
+        String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
+
+        Description descriptionAnno = method.getAnnotation(Description.class);
+        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
 
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
+        transletRule.setDescription(description);
 
         MethodActionRule methodActionRule = new MethodActionRule();
         methodActionRule.setActionId(actionId);
@@ -396,7 +399,9 @@ public class AnnotatedConfigParser {
         }
         int order = aspectAnno.order();
         boolean isolated = aspectAnno.isolated();
-        String description = StringUtils.emptyToNull(aspectAnno.description());
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
 
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(aspectId);
@@ -475,7 +480,7 @@ public class AnnotatedConfigParser {
     private TransformRule parseTransformRule(Transform transformAnno) throws IllegalRuleException {
         TransformType transformType = transformAnno.type();
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
-        String templateId = StringUtils.emptyToNull(transformAnno.templateId());
+        String templateId = StringUtils.emptyToNull(transformAnno.template());
         String encoding = StringUtils.emptyToNull(transformAnno.encoding());
         boolean pretty = transformAnno.pretty();
         TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, null, pretty);
