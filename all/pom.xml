@@ -335,6 +335,10 @@
                             <packages>com.aspectran.shell*</packages>
                         </group>
                         <group>
+                            <title>Aspectran Daemon</title>
+                            <packages>com.aspectran.daemon*</packages>
+                        </group>
+                        <group>
                             <title>Aspectran Embed</title>
                             <packages>com.aspectran.embed*</packages>
                         </group>
