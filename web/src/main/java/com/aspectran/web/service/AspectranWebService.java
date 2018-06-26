@@ -111,11 +111,11 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             activity.prepare(requestUri, request.getMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("No translet mapped to the request URI [" + requestUri + "]");
+            }
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("No translet mapped to the request URI [" + requestUri + "]");
-                    }
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e2) {
