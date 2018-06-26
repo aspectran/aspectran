@@ -115,13 +115,10 @@ public class DefaultServletHttpRequestHandler {
     public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (defaultServletName != null) {
             RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
-
             if (rd == null) {
                 throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'");
             }
-
             rd.forward(request, response);
-
             return true;
         } else {
             return false;
