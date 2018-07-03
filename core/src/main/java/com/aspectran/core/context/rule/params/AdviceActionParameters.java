@@ -40,8 +40,4 @@ public class AdviceActionParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AdviceActionParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

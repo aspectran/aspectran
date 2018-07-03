@@ -46,10 +46,6 @@ public class SchedulerConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public SchedulerConfig(String plaintext) {
-        super(parameterDefinitions, plaintext);
-    }
-
     public ExposalsConfig newExposalsConfig() {
         return newParameters(exposals);
     }

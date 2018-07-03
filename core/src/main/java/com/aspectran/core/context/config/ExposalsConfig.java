@@ -40,10 +40,6 @@ public class ExposalsConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExposalsConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public void addIncludePattern(String pattern) {
         putValue(plus, pattern);
     }

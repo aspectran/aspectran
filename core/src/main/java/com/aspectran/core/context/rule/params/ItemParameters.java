@@ -61,8 +61,4 @@ public class ItemParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ItemParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

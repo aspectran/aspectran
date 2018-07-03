@@ -59,8 +59,4 @@ public class AspectParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AspectParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

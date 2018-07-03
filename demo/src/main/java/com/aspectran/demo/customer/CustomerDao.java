@@ -49,7 +49,7 @@ public class CustomerDao {
             customerMap.put(i, customer);
         }
 
-        counter.set(customerMap.size() + 1);
+        counter.set(customerMap.size());
     }
     
     public Customer getCustomer(int id) {

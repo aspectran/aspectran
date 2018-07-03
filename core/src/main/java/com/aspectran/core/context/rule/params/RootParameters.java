@@ -36,10 +36,6 @@ public class RootParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public RootParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public RootParameters(AspectranParameters aspectranParameters) {
         this();
         putValue(aspectran, aspectranParameters);

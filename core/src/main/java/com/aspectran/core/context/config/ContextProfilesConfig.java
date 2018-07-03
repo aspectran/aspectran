@@ -40,8 +40,4 @@ public class ContextProfilesConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContextProfilesConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponParsingFailedException;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -71,7 +71,7 @@ public class SettingsAdviceRule {
     }
 
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text)
-            throws AponParsingFailedException {
+            throws AponParseException {
         if (StringUtils.hasText(text)) {
             Parameters settingsParameters = new VariableParameters(text);
             return newInstance(aspectRule, settingsParameters);
@@ -87,7 +87,7 @@ public class SettingsAdviceRule {
     }
 
     public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String text)
-            throws AponParsingFailedException {
+            throws AponParseException {
         if (StringUtils.hasText(text)) {
             Parameters settingsParameters = new VariableParameters(text);
             updateSettingsAdviceRule(sar, settingsParameters);

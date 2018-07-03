@@ -31,6 +31,10 @@ public abstract class AbstractParameters implements Parameters {
 
     private final boolean addable;
 
+    private boolean prettyPrint = true;
+
+    private String indentString = AponFormat.INDENT_STRING;
+
     protected AbstractParameters(ParameterDefinition[] parameterDefinitions) {
         this.parameterValueMap = new LinkedHashMap<>();
 
@@ -43,20 +47,6 @@ public abstract class AbstractParameters implements Parameters {
             addable = false;
         } else {
             addable = true;
-        }
-    }
-
-    protected AbstractParameters(ParameterDefinition[] parameterDefinitions, String text) {
-        this(parameterDefinitions);
-
-        if (text != null) {
-            try {
-                AponReader aponReader = new AponReader(text);
-                aponReader.read(this);
-                aponReader.close();
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Could not read string in APON format");
-            }
         }
     }
 
@@ -548,8 +538,35 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public boolean isPrettyPrint() {
+        return prettyPrint;
+    }
+
+    @Override
+    public void setPrettyPrint(boolean prettyPrint) {
+        this.prettyPrint = prettyPrint;
+    }
+
+    @Override
+    public String getIndentString() {
+        return indentString;
+    }
+
+    @Override
+    public void setIndentString(String indentString) {
+        this.indentString = indentString;
+    }
+
+    @Override
+    public void readFrom(String text) throws AponParseException {
+        if (text != null) {
+            AponReader.parse(text, this);
+        }
+    }
+
+    @Override
     public String toString() {
-        return AponWriter.stringify(this);
+        return AponWriter.stringify(this, prettyPrint, indentString);
     }
 
 }

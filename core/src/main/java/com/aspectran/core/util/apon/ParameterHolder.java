@@ -23,8 +23,7 @@ public class ParameterHolder {
 
     private final VariableParameters parameters;
 
-    public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array)
-            throws AponParsingFailedException {
+    public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array) {
         ParameterDefinition[] parameterDefinitions = new ParameterDefinition[] {
             new ParameterDefinition(PARAMETER_NAME, parametersClass, array)
         };

@@ -40,8 +40,4 @@ public class FilterParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public FilterParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

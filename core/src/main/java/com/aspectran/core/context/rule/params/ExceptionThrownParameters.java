@@ -52,8 +52,4 @@ public class ExceptionThrownParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExceptionThrownParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

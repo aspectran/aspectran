@@ -49,10 +49,6 @@ public class ShellConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ShellConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public ExposalsConfig newExposalsConfig() {
         return newParameters(exposals);
     }

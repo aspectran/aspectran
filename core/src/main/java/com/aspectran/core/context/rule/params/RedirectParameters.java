@@ -58,8 +58,4 @@ public class RedirectParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public RedirectParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

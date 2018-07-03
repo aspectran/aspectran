@@ -68,9 +68,9 @@ public class AponReader extends AponFormat {
      * Reads an APON document into a {@link VariableParameters} object.
      *
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public Parameters read() throws AponParsingFailedException {
+    public Parameters read() throws AponParseException {
         Parameters parameters = new VariableParameters();
         return read(parameters);
     }
@@ -81,9 +81,9 @@ public class AponReader extends AponFormat {
      * @param <T> the generic type
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public <T extends Parameters> T read(T parameters) throws AponParsingFailedException {
+    public <T extends Parameters> T read(T parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("Argument 'parameters' must not be null");
         }
@@ -91,7 +91,7 @@ public class AponReader extends AponFormat {
         try {
             valuelize(parameters, NO_CONTROL_CHAR, null, null, null, false);
         } catch (Exception e) {
-            throw new AponParsingFailedException("Could not read an APON formatted document into a Parameters object", e);
+            throw new AponParseException("Could not read an APON formatted document into a Parameters object", e);
         }
         return parameters;
     }
@@ -106,11 +106,11 @@ public class AponReader extends AponFormat {
      * @param parameterValueType the value type of the parameter
      * @param valueTypeHinted whether a value type hinted
      * @throws IOException if an I/O error occurs
-     * @throws InvalidParameterException if an invalid parameter is detected
+     * @throws AponParseException if an invalid parameter is detected
      */
     private void valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
             ParameterValueType parameterValueType, boolean valueTypeHinted)
-            throws IOException, InvalidParameterException {
+            throws IOException, AponParseException {
         Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 
         String line;
@@ -145,11 +145,11 @@ public class AponReader extends AponFormat {
 
                 int index = tline.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw new InvalidParameterException(lineNumber, line, tline,
+                    throw new AponSyntaxException(lineNumber, line, tline,
                             "Failed to break up string of name/value pairs");
                 }
                 if (index == 0) {
-                    throw new InvalidParameterException(lineNumber, line, tline,
+                    throw new AponSyntaxException(lineNumber, line, tline,
                             "Unrecognized parameter name");
                 }
 
@@ -254,13 +254,13 @@ public class AponReader extends AponFormat {
                         parameterValueType = ParameterValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
-                            throw new InvalidParameterException(lineNumber, line, tline,
+                            throw new AponSyntaxException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         parameterValueType = ParameterValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
-                            throw new InvalidParameterException(lineNumber, line, tline,
+                            throw new AponSyntaxException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         parameterValueType = ParameterValueType.STRING;
@@ -332,7 +332,6 @@ public class AponReader extends AponFormat {
             }
         }
 
-
         if (openBracket == CURLY_BRACKET_OPEN) {
             throw new MissingClosingBracketException("curly", name, parameterValue);
         } else if (openBracket == SQUARE_BRACKET_OPEN) {
@@ -340,7 +339,7 @@ public class AponReader extends AponFormat {
         }
     }
 
-    private String valuelizeText() throws IOException, InvalidParameterException {
+    private String valuelizeText() throws IOException, AponSyntaxException {
         String line;
         String tline = null;
         String str;
@@ -370,22 +369,22 @@ public class AponReader extends AponFormat {
                     sb.append(str);
                 }
             } else if (tlen > 0) {
-                throw new InvalidParameterException(lineNumber, line, tline,
+                throw new AponSyntaxException(lineNumber, line, tline,
                         "The closing round bracket was missing or Each text line is must start with a '|'");
             }
         }
 
-        throw new InvalidParameterException(lineNumber, "", tline,
+        throw new AponSyntaxException(lineNumber, "", tline,
                 "The end of the text line was reached with no closing round bracket found");
     }
 
-    private String unescape(String value, int lineNumber, String line, String ltrim) throws InvalidParameterException {
+    private String unescape(String value, int lineNumber, String line, String ltrim) throws AponSyntaxException {
         String s = unescape(value);
         if (Objects.equals(value, s)) {
             return value;
         }
         if (s == null) {
-            throw new InvalidParameterException(lineNumber, line, ltrim,
+            throw new AponSyntaxException(lineNumber, line, ltrim,
                     "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
         }
         return s;
@@ -408,9 +407,9 @@ public class AponReader extends AponFormat {
      *
      * @param text the APON formatted string
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(String text) throws AponParsingFailedException {
+    public static Parameters parse(String text) throws AponParseException {
         Parameters parameters = new VariableParameters();
         return parse(text, parameters);
     }
@@ -422,9 +421,9 @@ public class AponReader extends AponFormat {
      * @param text the APON formatted string
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(String text, T parameters) throws AponParsingFailedException {
+    public static <T extends Parameters> T parse(String text, T parameters) throws AponParseException {
         if (text == null) {
             throw new IllegalArgumentException("Argument 'text' must not be null");
         }
@@ -432,12 +431,14 @@ public class AponReader extends AponFormat {
             throw new IllegalArgumentException("Argument 'parameters' must not be null");
         }
         try {
-            AponReader aponReader = new AponReader(new StringReader(text));
+            AponReader aponReader = new AponReader(text);
             aponReader.read(parameters);
             aponReader.close();
             return parameters;
+        } catch (AponParseException e) {
+            throw e;
         } catch (Exception e) {
-            throw new AponParsingFailedException("Could not read string in APON format", e);
+            throw new AponParseException("Failed to parse string with APON format", e);
         }
     }
 
@@ -446,9 +447,9 @@ public class AponReader extends AponFormat {
      *
      * @param file the file to parse
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file) throws AponParsingFailedException {
+    public static Parameters parse(File file) throws AponParseException {
         return parse(file, (String)null);
     }
 
@@ -458,9 +459,9 @@ public class AponReader extends AponFormat {
      * @param file the file to parse
      * @param encoding the character encoding
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file, String encoding) throws AponParsingFailedException {
+    public static Parameters parse(File file, String encoding) throws AponParseException {
         if (file == null) {
             throw new IllegalArgumentException("Argument 'file' must not be null");
         }
@@ -475,9 +476,9 @@ public class AponReader extends AponFormat {
      * @param file the file to parse
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(File file, T parameters) throws AponParsingFailedException {
+    public static <T extends Parameters> T parse(File file, T parameters) throws AponParseException {
         return parse(file, null, parameters);
     }
 
@@ -489,10 +490,10 @@ public class AponReader extends AponFormat {
      * @param encoding the character encoding
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
     public static <T extends Parameters> T parse(File file, String encoding, T parameters)
-            throws AponParsingFailedException {
+            throws AponParseException {
         if (file == null) {
             throw new IllegalArgumentException("Argument 'file' must not be null");
         }
@@ -508,7 +509,7 @@ public class AponReader extends AponFormat {
             }
             return aponReader.read(parameters);
         } catch (Exception e) {
-            throw new AponParsingFailedException("Could not read string in APON format", e);
+            throw new AponParseException("Failed to parse string with APON format", e);
         } finally {
             if (aponReader != null) {
                 try {
@@ -525,9 +526,9 @@ public class AponReader extends AponFormat {
      *
      * @param reader the character-input stream
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(Reader reader) throws AponParsingFailedException {
+    public static Parameters parse(Reader reader) throws AponParseException {
         if (reader == null) {
             throw new IllegalArgumentException("Argument 'reader' must not be null");
         }
@@ -542,9 +543,9 @@ public class AponReader extends AponFormat {
      * @param reader the character-input stream
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws AponParsingFailedException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(Reader reader, T parameters) throws AponParsingFailedException {
+    public static <T extends Parameters> T parse(Reader reader, T parameters) throws AponParseException {
         AponReader aponReader = new AponReader(reader);
         aponReader.read(parameters);
         return parameters;

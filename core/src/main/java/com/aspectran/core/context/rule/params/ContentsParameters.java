@@ -43,8 +43,4 @@ public class ContentsParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContentsParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -52,13 +52,4 @@ public class Customer extends AbstractParameters {
         super(parameterDefinitions);
     }
     
-    /**
-     * Instantiates a new customer.
-     *
-     * @param text the text to be converted to APON format
-     */
-    public Customer(String text) {
-        super(parameterDefinitions, text);
-    }
-    
 }

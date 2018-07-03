@@ -15,12 +15,10 @@
  */
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.util.StringUtils;
-
 /**
  * Exception thrown when an invalid parameter is encountered.
  */
-public class InvalidParameterException extends RuntimeException {
+public class InvalidParameterException extends AponSyntaxException {
 
     /** @serial */
     private static final long serialVersionUID = 3050709527383043944L;
@@ -50,7 +48,7 @@ public class InvalidParameterException extends RuntimeException {
      * @param msg a message to associate with the exception
      */
     public InvalidParameterException(int lineNumber, String line, String tline, String msg) {
-        super(createMessage(lineNumber, line, tline, msg));
+        super(lineNumber, line, tline, msg);
     }
 
     /**
@@ -70,40 +68,6 @@ public class InvalidParameterException extends RuntimeException {
      */
     public InvalidParameterException(String msg, Throwable cause) {
         super(msg, cause);
-    }
-
-    /**
-     * Create a detail message.
-     *
-     * @param lineNumber the line number
-     * @param line the character line
-     * @param tline the trimmed character line
-     * @param msg the message
-     * @return the detail message
-     */
-    protected static String createMessage(int lineNumber, String line, String tline, String msg) {
-        int columnNumber = (tline != null ? line.indexOf(tline) : 0);
-        StringBuilder sb = new StringBuilder();
-        if (msg != null) {
-            sb.append(msg);
-        }
-        sb.append(" [lineNumber: ").append(lineNumber);
-        if (columnNumber != -1) {
-            String lspace = line.substring(0, columnNumber);
-            int tabCnt = StringUtils.search(lspace, "\t");
-            if (tline != null && tline.length() > 33) {
-                tline = tline.substring(0, 30) + "...";
-            }
-            sb.append(", columnNumber: ").append(columnNumber + 1);
-            if (tabCnt != 0) {
-                sb.append(" (");
-                sb.append("Tabs ").append(tabCnt);
-                sb.append(", Spaces ").append(columnNumber - tabCnt);
-                sb.append(")");
-            }
-            sb.append("] ").append(tline);
-        }
-        return sb.toString();
     }
 
 }

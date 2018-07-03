@@ -49,8 +49,4 @@ public class AdviceParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AdviceParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -76,10 +76,6 @@ public class AspectranParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AspectranParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public void setDescription(String desc) {
         putValue(description, desc);
     }

@@ -49,8 +49,4 @@ public class CallParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public CallParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

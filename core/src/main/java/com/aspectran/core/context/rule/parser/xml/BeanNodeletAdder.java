@@ -102,7 +102,8 @@ class BeanNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             Parameters filterParameters = parser.popObject();
             if (StringUtils.hasText(text)) {
-                filterParameters = new FilterParameters(text);
+                filterParameters = new FilterParameters();
+                filterParameters.readFrom(text);
             }
             if (filterParameters.isValueAssigned(FilterParameters.filterClass) &&
                     filterParameters.isValueAssigned(FilterParameters.exclude)) {

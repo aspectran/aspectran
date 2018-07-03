@@ -46,8 +46,4 @@ public class ScheduleParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ScheduleParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

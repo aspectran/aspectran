@@ -52,8 +52,4 @@ public class DispatchParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public DispatchParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

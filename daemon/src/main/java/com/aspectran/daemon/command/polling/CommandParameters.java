@@ -75,10 +75,6 @@ public class CommandParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public CommandParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public String getCommandName() {
         return getString(command);
     }

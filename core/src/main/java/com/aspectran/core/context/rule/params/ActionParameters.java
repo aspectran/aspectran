@@ -72,8 +72,4 @@ public class ActionParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ActionParameters(String plaintext) {
-        super(parameterDefinitions, plaintext);
-    }
-
 }

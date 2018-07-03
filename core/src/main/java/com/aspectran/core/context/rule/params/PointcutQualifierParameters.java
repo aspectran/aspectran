@@ -43,8 +43,4 @@ public class PointcutQualifierParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public PointcutQualifierParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

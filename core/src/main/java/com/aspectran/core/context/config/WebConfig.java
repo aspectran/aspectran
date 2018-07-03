@@ -43,10 +43,6 @@ public class WebConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public WebConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
     public ExposalsConfig newExposalsConfig() {
         return newParameters(exposals);
     }

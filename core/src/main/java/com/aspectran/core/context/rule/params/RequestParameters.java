@@ -46,8 +46,4 @@ public class RequestParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public RequestParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

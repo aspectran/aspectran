@@ -82,7 +82,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
             sb.append(" for the specified parameter ").append(parameterValue);
         }
 
-        return InvalidParameterException.createMessage(lineNumber, line, trim, sb.toString());
+        return createMessage(lineNumber, line, trim, sb.toString());
     }
 
 }

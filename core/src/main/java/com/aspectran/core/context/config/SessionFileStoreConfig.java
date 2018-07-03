@@ -40,8 +40,4 @@ public class SessionFileStoreConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public SessionFileStoreConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

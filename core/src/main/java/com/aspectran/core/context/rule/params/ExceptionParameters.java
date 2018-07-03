@@ -40,8 +40,4 @@ public class ExceptionParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExceptionParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

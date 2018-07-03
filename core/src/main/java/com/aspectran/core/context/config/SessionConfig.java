@@ -55,8 +55,4 @@ public class SessionConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public SessionConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

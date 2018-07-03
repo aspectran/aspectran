@@ -55,8 +55,4 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContextAutoReloadConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -706,4 +706,13 @@ public interface Parameters {
 
     String describe(boolean details);
 
+    boolean isPrettyPrint();
+
+    void setPrettyPrint(boolean prettyPrint);
+
+    String getIndentString();
+
+    void setIndentString(String indentString);
+
+    void readFrom(String text);
 }

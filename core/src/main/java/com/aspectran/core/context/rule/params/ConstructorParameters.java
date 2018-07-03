@@ -36,8 +36,4 @@ public class ConstructorParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ConstructorParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

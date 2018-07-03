@@ -39,7 +39,8 @@ public class ItemHolderParameters extends AbstractParameters {
     }
 
     public ItemHolderParameters(String text) {
-        super(parameterDefinitions, text);
+        this();
+        readFrom(text);
     }
 
     public List<ItemParameters> getParametersList() {

@@ -52,8 +52,4 @@ public class AppendParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AppendParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

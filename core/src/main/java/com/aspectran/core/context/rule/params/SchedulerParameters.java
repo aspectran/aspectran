@@ -40,8 +40,4 @@ public class SchedulerParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public SchedulerParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

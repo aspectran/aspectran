@@ -16,7 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.apon.AponParsingFailedException;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import java.io.IOException;
 public class AspectranConfigTest {
 
     @Test
-    public void aspectranConfigTest() throws IOException, AponParsingFailedException {
+    public void aspectranConfigTest() throws IOException {
         File file = new File(ResourceUtils.getResourceAsFile(""), "config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
         AponReader.parse(file, aspectranConfig);

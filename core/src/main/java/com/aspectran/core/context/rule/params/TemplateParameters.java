@@ -64,8 +64,4 @@ public class TemplateParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public TemplateParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

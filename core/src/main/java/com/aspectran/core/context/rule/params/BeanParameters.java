@@ -82,8 +82,4 @@ public class BeanParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public BeanParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

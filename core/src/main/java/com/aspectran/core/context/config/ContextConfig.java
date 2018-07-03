@@ -62,8 +62,4 @@ public class ContextConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ContextConfig(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

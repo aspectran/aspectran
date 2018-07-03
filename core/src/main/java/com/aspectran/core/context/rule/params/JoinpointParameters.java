@@ -47,7 +47,8 @@ public class JoinpointParameters extends AbstractParameters {
     }
 
     public JoinpointParameters(String text) {
-        super(parameterDefinitions, text);
+        this();
+        readFrom(text);
     }
 
     public void setJoinpointTargetType(String joinpointTargetType) {

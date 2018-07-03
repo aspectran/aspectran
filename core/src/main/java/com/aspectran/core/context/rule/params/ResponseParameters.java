@@ -52,8 +52,4 @@ public class ResponseParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ResponseParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

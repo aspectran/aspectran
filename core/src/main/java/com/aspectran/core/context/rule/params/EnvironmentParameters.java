@@ -41,8 +41,4 @@ public class EnvironmentParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public EnvironmentParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

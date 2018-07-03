@@ -62,7 +62,8 @@ public class TriggerParameters extends AbstractParameters {
     }
 
     public TriggerParameters(String text) {
-        super(parameterDefinitions, text);
+        this();
+        readFrom(text);
     }
 
 }

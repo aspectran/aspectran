@@ -18,7 +18,7 @@ package com.aspectran.core.util.apon;
 /**
  * This exception will be thrown when missing closing brackets.
  */
-public class MissingClosingBracketException extends InvalidParameterException {
+public class MissingClosingBracketException extends AponSyntaxException {
 
     /** @serial */
     private static final long serialVersionUID = -6294265620028959255L;

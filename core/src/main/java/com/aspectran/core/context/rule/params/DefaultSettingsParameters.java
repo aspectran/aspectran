@@ -62,8 +62,4 @@ public class DefaultSettingsParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public DefaultSettingsParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -85,8 +85,4 @@ public class TransletParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public TransletParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

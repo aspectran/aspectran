@@ -18,7 +18,7 @@ package com.aspectran.daemon.command.polling;
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.apon.AponParsingFailedException;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.daemon.Daemon;
@@ -163,7 +163,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
             CommandParameters parameters = new CommandParameters();
             AponReader.parse(file, parameters);
             return parameters;
-        } catch (AponParsingFailedException e) {
+        } catch (AponParseException e) {
             log.warn("Failed to read command file: " + file.getAbsolutePath(), e);
             return null;
         }

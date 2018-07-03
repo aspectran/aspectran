@@ -49,8 +49,4 @@ public class ForwardParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ForwardParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }

@@ -38,7 +38,8 @@ public class VariableParameters extends AbstractParameters implements Serializab
     }
 
     public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
-        super(parameterDefinitions, text);
+        super(parameterDefinitions);
+        readFrom(text);
     }
 
     @Override

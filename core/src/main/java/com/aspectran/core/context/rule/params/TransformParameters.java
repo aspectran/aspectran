@@ -58,8 +58,4 @@ public class TransformParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public TransformParameters(String text) {
-        super(parameterDefinitions, text);
-    }
-
 }
