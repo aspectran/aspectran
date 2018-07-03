@@ -219,7 +219,6 @@
     </div>
 </footer>
 <script src="http://www.aspectran.com/assets/js/foundation.min.js"></script>
-<script src="/assets/js/jquery.backstretch.js"></script>
 <script>
     $(document).foundation();
     $(document).ready(function() {
