@@ -68,7 +68,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @param prettyPrint enables or disables pretty-printing
      */
     public AponWriter(Writer writer, boolean prettyPrint) {
-        this(writer, prettyPrint, INDENT_STRING);
+        this.writer = writer;
+        this.prettyPrint = prettyPrint;
+        this.indentString = (prettyPrint ? INDENT_STRING : null);
     }
 
     /**
@@ -76,12 +78,11 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
      *
      * @param writer the character-output stream
-     * @param prettyPrint enables or disables pretty-printing
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
      */
-    public AponWriter(Writer writer, boolean prettyPrint, String indentString) {
+    public AponWriter(Writer writer, String indentString) {
         this.writer = writer;
-        this.prettyPrint = prettyPrint;
+        this.prettyPrint = (indentString != null);
         this.indentString = indentString;
     }
 
@@ -558,7 +559,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters) {
-        return stringify(parameters, true, INDENT_STRING);
+        return stringify(parameters, INDENT_STRING);
     }
 
     /**
@@ -572,9 +573,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      */
     public static String stringify(Parameters parameters, boolean prettyPrint) {
         if (prettyPrint) {
-            return stringify(parameters, true, INDENT_STRING);
+            return stringify(parameters, INDENT_STRING);
         } else {
-            return stringify(parameters, false, INDENT_STRING);
+            return stringify(parameters, null);
         }
     }
 
@@ -583,17 +584,16 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
      *
      * @param parameters the Parameters object to be converted
-     * @param prettyPrint enables or disables pretty-printing
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
      * @return a string that contains the APON text
      */
-    public static String stringify(Parameters parameters, boolean prettyPrint, String indentString) {
+    public static String stringify(Parameters parameters, String indentString) {
         if (parameters == null) {
             return null;
         }
         try {
             Writer writer = new StringWriter();
-            AponWriter aponWriter = new AponWriter(writer, prettyPrint, indentString);
+            AponWriter aponWriter = new AponWriter(writer, indentString);
             aponWriter.write(parameters);
             aponWriter.close();
             return writer.toString();

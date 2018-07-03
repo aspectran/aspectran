@@ -51,6 +51,16 @@ public class ContentsJsonWriter extends JsonWriter {
         super(writer, prettyPrint);
     }
 
+    /**
+     * Instantiates a new ContentsJsonWriter.
+     *
+     * @param writer a {@code Writer} object that can send character text
+     * @param indentString the string that should be used for indentation when pretty-printing is enabled
+     */
+    public ContentsJsonWriter(Writer writer, String indentString) {
+        super(writer, indentString);
+    }
+
     @Override
     public void write(Object object) throws IOException, InvocationTargetException {
         if (object instanceof ProcessResult) {
@@ -61,7 +71,7 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     /**
-     * Write a {@code ProcessResult} object to the character streams.
+     * Write a {@code ProcessResult} object to the character-output stream.
      *
      * @param processResult the {@code ProcessResult} object to write to a character-output stream
      * @throws IOException if an I/O error has occurred

@@ -42,10 +42,10 @@ public class AponTransformResponse extends TransformResponse {
 
     private final String contentType;
 
-    private boolean pretty;
+    private final Boolean pretty;
 
     /**
-     * Instantiates a new AponTransform.
+     * Instantiates a new AponTransformResponse.
      *
      * @param transformRule the transform rule
      */
@@ -54,7 +54,7 @@ public class AponTransformResponse extends TransformResponse {
 
         this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
-        this.pretty = transformRule.isPretty();
+        this.pretty = transformRule.getPretty();
     }
 
     @Override
@@ -84,10 +84,19 @@ public class AponTransformResponse extends TransformResponse {
 
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
-
             Parameters parameters = ContentsAponAssembler.assemble(processResult);
-            @SuppressWarnings("resource")
-            AponWriter aponWriter = new AponWriter(writer, pretty);
+
+            AponWriter aponWriter;
+            if (pretty == Boolean.FALSE) {
+                aponWriter = new AponWriter(writer, false);
+            } else {
+                String indentString = activity.getSetting("indentString");
+                if (indentString != null) {
+                    aponWriter = new AponWriter(writer, indentString);
+                } else {
+                    aponWriter = new AponWriter(writer, (pretty != null));
+                }
+            }
             aponWriter.write(parameters);
             aponWriter.flush(); // Never close at this time. Owner will be close.
         } catch (Exception e) {

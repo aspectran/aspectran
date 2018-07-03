@@ -21,7 +21,7 @@ package com.aspectran.core.util.apon;
 public class AponParseException extends AponException {
 
     /** @serial */
-    private static final long serialVersionUID = 3050709527383043945L;
+    private static final long serialVersionUID = -8511680666286307705L;
 
     /**
      * Simple constructor.

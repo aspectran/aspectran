@@ -47,10 +47,10 @@ public class JsonTransformResponse extends TransformResponse {
 
     private final String contentType;
 
-    private final boolean pretty;
+    private final Boolean pretty;
 
     /**
-     * Instantiates a new JsonTransform.
+     * Instantiates a new JsonTransformResponse.
      *
      * @param transformRule the transform rule
      */
@@ -59,7 +59,7 @@ public class JsonTransformResponse extends TransformResponse {
 
         this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
-        this.pretty = transformRule.isPretty();
+        this.pretty = transformRule.getPretty();
     }
 
     @Override
@@ -96,13 +96,21 @@ public class JsonTransformResponse extends TransformResponse {
                 writer.write(callback + ROUND_BRACKET_OPEN);
             }
 
-            JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
+            JsonWriter jsonWriter;
+            if (pretty == Boolean.FALSE) {
+                jsonWriter = new ContentsJsonWriter(writer, false);
+            } else {
+                String indentString = activity.getSetting("indentString");
+                if (indentString != null) {
+                    jsonWriter = new ContentsJsonWriter(writer, indentString);
+                } else {
+                    jsonWriter = new ContentsJsonWriter(writer, (pretty != null));
+                }
+            }
             jsonWriter.write(processResult);
-
             if (callback != null) {
                 writer.write(ROUND_BRACKET_CLOSE);
             }
-
             writer.flush(); // Never close at this time. Owner will be close.
         } catch (Exception e) {
             throw new TransformResponseException(transformRule, e);

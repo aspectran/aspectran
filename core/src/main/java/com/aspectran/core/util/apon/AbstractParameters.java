@@ -31,9 +31,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private final boolean addable;
 
-    private boolean prettyPrint = true;
-
-    private String indentString = AponFormat.INDENT_STRING;
+    private String indentString;
 
     protected AbstractParameters(ParameterDefinition[] parameterDefinitions) {
         this.parameterValueMap = new LinkedHashMap<>();
@@ -538,21 +536,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean isPrettyPrint() {
-        return prettyPrint;
-    }
-
-    @Override
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
-    }
-
-    @Override
-    public String getIndentString() {
-        return indentString;
-    }
-
-    @Override
     public void setIndentString(String indentString) {
         this.indentString = indentString;
     }
@@ -566,7 +549,11 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public String toString() {
-        return AponWriter.stringify(this, prettyPrint, indentString);
+        if (indentString != null) {
+            return AponWriter.stringify(this, indentString);
+        } else {
+            return AponWriter.stringify(this);
+        }
     }
 
 }

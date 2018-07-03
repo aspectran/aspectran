@@ -21,7 +21,7 @@ package com.aspectran.core.util.apon;
 public class InvalidParameterException extends AponSyntaxException {
 
     /** @serial */
-    private static final long serialVersionUID = 3050709527383043944L;
+    private static final long serialVersionUID = -459157992330424751L;
 
     /**
      * Simple constructor.

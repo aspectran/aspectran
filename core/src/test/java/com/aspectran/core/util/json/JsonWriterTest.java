@@ -26,14 +26,14 @@ public class JsonWriterTest {
 
     public static void main(String argv[]) {
         try {
-            Map<String, Object> map = new LinkedHashMap<String, Object>();
+            Map<String, Object> map = new LinkedHashMap<>();
             map.put("locale", "Start Testing Now!");
             map.put("one", 1);
             map.put("two", 2);
             map.put("three", 3);
             map.put("four", 4);
 
-            List<Customer> customerList = new ArrayList<Customer>();
+            List<Customer> customerList = new ArrayList<>();
 
             for (int i = 1; i <= 10; i++) {
                 Customer customer = new Customer();
@@ -48,7 +48,7 @@ public class JsonWriterTest {
 
             map.put("customers", customerList);
 
-            System.out.println(JsonWriter.stringify(map, true, "  "));
+            System.out.println(JsonWriter.stringify(map, "  "));
 
         } catch (Exception e) {
             e.printStackTrace();

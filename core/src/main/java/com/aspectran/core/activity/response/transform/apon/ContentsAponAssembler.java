@@ -148,7 +148,8 @@ public class ContentsAponAssembler {
 
     private static void checkCircularReference(Object wrapper, Object member) {
         if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("APON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+            throw new IllegalArgumentException("APON Serialization Failure: A circular reference was detected " +
+                    "while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }
 

@@ -43,6 +43,8 @@ import java.util.Map;
  */
 public class JsonWriter implements Flushable {
 
+    private static final String DEFALUT_INDENT_STRING = "\t";
+
     private Writer writer;
 
     private boolean prettyPrint;
@@ -60,7 +62,7 @@ public class JsonWriter implements Flushable {
      * @param writer the character-output stream
      */
     public JsonWriter(Writer writer) {
-        this(writer, false, null);
+        this(writer, false);
     }
 
     /**
@@ -72,7 +74,9 @@ public class JsonWriter implements Flushable {
      * @param prettyPrint enables or disables pretty-printing
      */
     public JsonWriter(Writer writer, boolean prettyPrint) {
-        this(writer, prettyPrint, "\t");
+        this.writer = writer;
+        this.prettyPrint = prettyPrint;
+        this.indentString = (prettyPrint ? DEFALUT_INDENT_STRING : null);
     }
 
     /**
@@ -80,12 +84,11 @@ public class JsonWriter implements Flushable {
      * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
      *
      * @param writer the character-output stream
-     * @param prettyPrint enables or disables pretty-printing
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
      */
-    public JsonWriter(Writer writer, boolean prettyPrint, String indentString) {
+    public JsonWriter(Writer writer, String indentString) {
         this.writer = writer;
-        this.prettyPrint = prettyPrint;
+        this.prettyPrint = (indentString != null);
         this.indentString = indentString;
     }
 
@@ -475,7 +478,7 @@ public class JsonWriter implements Flushable {
      * @return the JSON formatted string
      */
     public static String stringify(Object object) {
-        return stringify(object, false, null);
+        return stringify(object, null);
     }
 
     /**
@@ -489,9 +492,9 @@ public class JsonWriter implements Flushable {
      */
     public static String stringify(Object object, boolean prettyPrint) {
         if (prettyPrint) {
-            return stringify(object, true, "\t");
+            return stringify(object, DEFALUT_INDENT_STRING);
         } else {
-            return stringify(object, false, null);
+            return stringify(object, null);
         }
     }
 
@@ -500,11 +503,10 @@ public class JsonWriter implements Flushable {
      * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
      *
      * @param object an object to convert to a JSON formatted string
-     * @param prettyPrint enables or disables pretty-printing
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
      * @return the JSON formatted string
      */
-    public static String stringify(Object object, boolean prettyPrint, String indentString) {
+    public static String stringify(Object object, String indentString) {
         if (object == null) {
             return null;
         }
@@ -513,7 +515,7 @@ public class JsonWriter implements Flushable {
             Writer writer = new StringWriter();
 
             JsonWriter jsonWriter;
-            jsonWriter = new JsonWriter(writer, prettyPrint, indentString);
+            jsonWriter = new JsonWriter(writer, indentString);
             jsonWriter.write(object);
             jsonWriter.close();
 

@@ -23,7 +23,7 @@ import com.aspectran.core.util.StringUtils;
 public class AponSyntaxException extends AponParseException {
 
     /** @serial */
-    private static final long serialVersionUID = 3050709527383043944L;
+    private static final long serialVersionUID = -2012813522496665651L;
 
     /**
      * Simple constructor.

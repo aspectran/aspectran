@@ -27,6 +27,7 @@
             <setting name="characterEncoding" value="utf-8"/>
             <setting name="contentEncoding" value="gzip"/>
             <setting name="viewDispatcher" value="jspViewDispatcher"/>
+            <setting name="indentString" value="  "/>
         </settings>
     </aspect>
 
