@@ -58,7 +58,7 @@ public class TokenParser {
         List<Token> tokenList = Tokenizer.tokenize(text, optimize);
 
         if (!tokenList.isEmpty()) {
-            tokens = tokenList.toArray(new Token[tokenList.size()]);
+            tokens = tokenList.toArray(new Token[0]);
             if (optimize) {
                 tokens = Tokenizer.optimize(tokens);
             }

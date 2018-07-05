@@ -75,7 +75,7 @@ public class PebbleEngineFactory implements EnvironmentAware {
     }
 
     public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
-        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
+        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
     public void setTemplateLoader(Loader<?> templateLoaders) {
@@ -87,7 +87,7 @@ public class PebbleEngineFactory implements EnvironmentAware {
     }
 
     public void setTemplateLoader(List<Loader<?>> templateLoaderList) {
-        this.templateLoaders = templateLoaderList.toArray(new Loader<?>[templateLoaderList.size()]);
+        this.templateLoaders = templateLoaderList.toArray(new Loader<?>[0]);
     }
 
     /**

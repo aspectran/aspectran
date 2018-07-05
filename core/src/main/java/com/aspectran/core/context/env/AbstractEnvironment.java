@@ -51,7 +51,7 @@ public abstract class AbstractEnvironment implements Environment {
 
     @Override
     public String[] getActiveProfiles() {
-        return activeProfiles.toArray(new String[activeProfiles.size()]);
+        return activeProfiles.toArray(new String[0]);
     }
 
     /**
@@ -101,7 +101,7 @@ public abstract class AbstractEnvironment implements Environment {
 
     @Override
     public String[] getDefaultProfiles() {
-        return defaultProfiles.toArray(new String[defaultProfiles.size()]);
+        return defaultProfiles.toArray(new String[0]);
     }
 
     /**

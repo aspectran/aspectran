@@ -32,7 +32,8 @@ public class SystemUtils {
             return System.getProperty(name);
         } catch (AccessControlException ex) {
             log.info(String.format(
-                    "Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
+                    "Caught AccessControlException when accessing system property [%s]; " +
+                            "its value will be returned [null]. Reason: %s",
                     name, ex.getMessage()));
         }
         return null;
@@ -45,7 +46,8 @@ public class SystemUtils {
         } catch (AccessControlException ex) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format(
-                        "Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
+                        "Caught AccessControlException when accessing system property [%s]; " +
+                                "its value will be returned [null]. Reason: %s",
                         name, ex.getMessage()));
             }
         }

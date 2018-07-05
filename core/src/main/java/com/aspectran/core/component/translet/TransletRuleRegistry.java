@@ -222,7 +222,7 @@ public class TransletRuleRegistry extends AbstractComponent {
     private void saveRestfulTransletRule(TransletRule transletRule) {
         final String transletName = transletRule.getName();
         List<Token> tokenList = Tokenizer.tokenize(transletName, false);
-        Token[] nameTokens = tokenList.toArray(new Token[tokenList.size()]);
+        Token[] nameTokens = tokenList.toArray(new Token[0]);
 
         StringBuilder sb = new StringBuilder(transletName.length());
 

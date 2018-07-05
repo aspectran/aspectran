@@ -215,7 +215,8 @@ public class ToStringBuilder {
 
     private void checkCircularReference(Object wrapper, Object member) {
         if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+            throw new IllegalArgumentException("Serialization Failure: A circular reference was detected " +
+                    "while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }
 

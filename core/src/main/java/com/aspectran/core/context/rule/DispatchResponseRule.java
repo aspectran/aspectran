@@ -93,7 +93,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
         }
 
         if (tokenCount > 0) {
-            this.nameTokens = tokens.toArray(new Token[tokens.size()]);
+            this.nameTokens = tokens.toArray(new Token[0]);
         } else {
             this.nameTokens = null;
         }

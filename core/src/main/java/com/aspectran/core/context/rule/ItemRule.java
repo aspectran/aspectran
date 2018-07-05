@@ -532,7 +532,7 @@ public class ItemRule {
                 for (Token[] tokens : tokensList) {
                     Collections.addAll(list, tokens);
                 }
-                return list.toArray(new Token[list.size()]);
+                return list.toArray(new Token[0]);
             }
         } else if (isMappableType()) {
             if (tokensMap == null || tokensMap.isEmpty()) {
@@ -549,7 +549,7 @@ public class ItemRule {
                 for (Token[] tokens : tokensMap.values()) {
                     Collections.addAll(list, tokens);
                 }
-                return list.toArray(new Token[list.size()]);
+                return list.toArray(new Token[0]);
             }
         } else {
             return null;

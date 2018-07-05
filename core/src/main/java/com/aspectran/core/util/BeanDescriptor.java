@@ -39,15 +39,13 @@ public class BeanDescriptor {
 
     private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>();
 
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
     private String className;
 
-    private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
+    private String[] readablePropertyNames;
 
-    private String[] writablePropertyNames = EMPTY_STRING_ARRAY;
+    private String[] writablePropertyNames;
 
-    private String[] distinctMethodNames = EMPTY_STRING_ARRAY;
+    private String[] distinctMethodNames;
 
     private Map<String, Method> readMethods = new HashMap<>();
 
@@ -64,15 +62,15 @@ public class BeanDescriptor {
         addReadMethods(methods);
         addWriteMethods(methods);
 
-        readablePropertyNames = readMethods.keySet().toArray(new String[readMethods.keySet().size()]);
-        writablePropertyNames = writeMethods.keySet().toArray(new String[writeMethods.keySet().size()]);
+        this.readablePropertyNames = readMethods.keySet().toArray(new String[0]);
+        this.writablePropertyNames = writeMethods.keySet().toArray(new String[0]);
 
         Set<String> nameSet = new HashSet<>();
         for (Method method : methods) {
             nameSet.add(method.getName());
         }
 
-        distinctMethodNames = nameSet.toArray(new String[nameSet.size()]);
+        this.distinctMethodNames = nameSet.toArray(new String[0]);
     }
 
     private void addReadMethods(Method[] methods) {
@@ -113,11 +111,7 @@ public class BeanDescriptor {
     }
 
     private void addSetterConflict(Map<String, List<Method>> conflictingSetters, String name, Method method) {
-        List<Method> list = conflictingSetters.get(name);
-        if (list == null) {
-            list = new ArrayList<>();
-            conflictingSetters.put(name, list);
-        }
+        List<Method> list = conflictingSetters.computeIfAbsent(name, k -> new ArrayList<>());
         list.add(method);
     }
 
@@ -185,7 +179,7 @@ public class BeanDescriptor {
         }
 
         Collection<Method> methods = uniqueMethods.values();
-        return methods.toArray(new Method[methods.size()]);
+        return methods.toArray(new Method[0]);
     }
 
     private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
@@ -374,6 +368,7 @@ public class BeanDescriptor {
     }
 
     /**
+     *
      * Clear the ClassDescriptor cache.
      *
      * @return the number of cached ClassDescriptor cleared

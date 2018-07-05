@@ -233,7 +233,7 @@ public class ParameterValue implements Parameter {
 
     @Override
     public Object[] getValues() {
-        return (list != null ? list.toArray(new Object[list.size()]) : null);
+        return (list != null ? list.toArray(new Object[0]) : null);
     }
 
     @Override
@@ -285,7 +285,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Integer[] getValueAsIntArray() {
         List<Integer> intList = getValueAsIntList();
-        return (intList != null ? intList.toArray(new Integer[intList.size()]): null);
+        return (intList != null ? intList.toArray(new Integer[0]): null);
     }
 
     @Override
@@ -304,7 +304,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Long[] getValueAsLongArray() {
         List<Long> longList = getValueAsLongList();
-        return (longList != null ? longList.toArray(new Long[longList.size()]) : null);
+        return (longList != null ? longList.toArray(new Long[0]) : null);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Float[] getValueAsFloatArray() {
         List<Float> floatList = getValueAsFloatList();
-        return (floatList != null ? floatList.toArray(new Float[floatList.size()]) : null);
+        return (floatList != null ? floatList.toArray(new Float[0]) : null);
     }
 
     @Override
@@ -342,7 +342,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Double[] getValueAsDoubleArray() {
         List<Double> doubleList = getValueAsDoubleList();
-        return (doubleList != null ? doubleList.toArray(new Double[doubleList.size()]) : null);
+        return (doubleList != null ? doubleList.toArray(new Double[0]) : null);
     }
 
     @Override
@@ -361,7 +361,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Boolean[] getValueAsBooleanArray() {
         List<Boolean> booleanList = getValueAsBooleanList();
-        return (booleanList != null ? booleanList.toArray(new Boolean[booleanList.size()]) : null);
+        return (booleanList != null ? booleanList.toArray(new Boolean[0]) : null);
     }
 
     @Override
@@ -380,7 +380,7 @@ public class ParameterValue implements Parameter {
     @Override
     public Parameters[] getValueAsParametersArray() {
         List<Parameters> parametersList = getValueAsParametersList();
-        return (parametersList != null ? parametersList.toArray(new Parameters[parametersList.size()]) : null);
+        return (parametersList != null ? parametersList.toArray(new Parameters[0]) : null);
     }
 
     @Override

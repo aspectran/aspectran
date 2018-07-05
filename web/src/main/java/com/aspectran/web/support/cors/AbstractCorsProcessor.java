@@ -92,7 +92,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     public String[] getAllowedOrigins() {
         if (allowedOrigins != null) {
-            return allowedOrigins.toArray(new String[allowedOrigins.size()]);
+            return allowedOrigins.toArray(new String[0]);
         } else {
             return null;
         }
@@ -122,7 +122,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     public String[] getAllowedMethods() {
         if (allowedMethods != null) {
-            return allowedMethods.toArray(new String[allowedMethods.size()]);
+            return allowedMethods.toArray(new String[0]);
         } else {
             return null;
         }
@@ -167,7 +167,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     public String[] getAllowedHeaders() {
         if (allowedHeaders != null) {
-            return allowedHeaders.toArray(new String[allowedHeaders.size()]);
+            return allowedHeaders.toArray(new String[0]);
         } else {
             return null;
         }
@@ -208,7 +208,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     public String[] getExposedHeaders() {
         if (exposedHeaders != null) {
-            return exposedHeaders.toArray(new String[exposedHeaders.size()]);
+            return exposedHeaders.toArray(new String[0]);
         } else {
             return null;
         }

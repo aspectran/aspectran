@@ -89,7 +89,7 @@ public class ShellActivity extends CoreActivity {
                 List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
                 writerList.add(console.getUnclosableWriter());
                 Collections.addAll(writerList, redirectionWriters);
-                outputWriter = new MultiWriter(writerList.toArray(new Writer[writerList.size()]));
+                outputWriter = new MultiWriter(writerList.toArray(new Writer[0]));
             }
 
             ResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);

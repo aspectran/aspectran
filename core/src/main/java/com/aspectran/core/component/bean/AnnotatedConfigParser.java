@@ -520,7 +520,7 @@ public class AnnotatedConfigParser {
         list.add(null);
         Collections.reverse(list);
 
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     private String applyNamespace(String[] nameArray, String name) {

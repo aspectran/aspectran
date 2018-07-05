@@ -30,12 +30,12 @@ import static junit.framework.TestCase.assertNotNull;
 public class PathVariableMapTest {
 
     @Test
-    public void testNewInstance() throws Exception {
+    public void testNewInstance() {
         String transletNamePattern = "/aaa/${bbb1}/bbb2/ccc/${ddd:eee}/fff/${ggg:ggg}";
         String requestTransletName = "/aaa/bbb1/bbb2/ccc/ddd/fff/";
 
         List<Token> tokenList = Tokenizer.tokenize(transletNamePattern, false);
-        Token[] nameTokens = tokenList.toArray(new Token[tokenList.size()]);
+        Token[] nameTokens = tokenList.toArray(new Token[0]);
 
         Map<Token, String> map = PathVariableMap.newInstance(nameTokens, requestTransletName);
 

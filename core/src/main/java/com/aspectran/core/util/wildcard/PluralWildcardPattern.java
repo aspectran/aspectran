@@ -84,7 +84,7 @@ public class PluralWildcardPattern {
             }
         }
         if (wildcardPatternList.size() > 0) {
-            return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
+            return wildcardPatternList.toArray(new WildcardPattern[0]);
         } else {
             return null;
         }
@@ -102,7 +102,7 @@ public class PluralWildcardPattern {
             }
         }
         if (wildcardPatternList.size() > 0) {
-            return wildcardPatternList.toArray(new WildcardPattern[wildcardPatternList.size()]);
+            return wildcardPatternList.toArray(new WildcardPattern[0]);
         } else {
             return null;
         }

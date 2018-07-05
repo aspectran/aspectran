@@ -79,15 +79,12 @@ public class PropertiesLoaderUtils {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             URLConnection con = url.openConnection();
-            InputStream is = con.getInputStream();
-            try {
+            try (InputStream is = con.getInputStream()) {
                 if (resourceName.endsWith(XML_FILE_EXTENSION)) {
                     props.loadFromXML(is);
                 } else {
                     props.load(is);
                 }
-            } finally {
-                is.close();
             }
         }
 
@@ -99,8 +96,8 @@ public class PropertiesLoaderUtils {
     /**
      * Return the Properties from the cache, if present.
      *
-     * @param resourceName The resource name
-     * @return The cached Properties
+     * @param resourceName the resource name
+     * @return the cached Properties
      */
     private static Properties getCachedProperties(String resourceName) {
         if (cacheEnabled) {
@@ -115,8 +112,8 @@ public class PropertiesLoaderUtils {
     /**
      * Add a Properties to the cache.
      *
-     * @param resourceName The resource name
-     * @param props The Properties to cache
+     * @param resourceName the resource name
+     * @param props the Properties to cache
      */
     private static void cacheMethod(String resourceName, Properties props) {
         if (cacheEnabled) {

@@ -85,7 +85,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public String[] getParameterNames() {
-        return parameterValueMap.keySet().toArray(new String[parameterValueMap.size()]);
+        return parameterValueMap.keySet().toArray(new String[0]);
     }
 
     @Override

@@ -189,7 +189,7 @@ public class JoinpointRule {
                 }
                 methodTypes.add(methodType);
             }
-            methods2 = methodTypes.toArray(new MethodType[methodTypes.size()]);
+            methods2 = methodTypes.toArray(new MethodType[0]);
         }
         joinpointRule.setMethods(methods2);
     }
@@ -203,7 +203,7 @@ public class JoinpointRule {
                     headerList.add(header);
                 }
             }
-            headers2 = headerList.toArray(new String[headerList.size()]);
+            headers2 = headerList.toArray(new String[0]);
         }
         joinpointRule.setHeaders(headers2);
     }

@@ -113,7 +113,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
         List<String> list = transformSimpleSequenceAsStringList((SimpleSequence)paramModel, paramName);
 
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**

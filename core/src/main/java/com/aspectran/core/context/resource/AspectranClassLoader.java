@@ -343,7 +343,7 @@ public class AspectranClassLoader extends ClassLoader {
             }
         }
 
-        return resources.toArray(new URL[resources.size()]);
+        return resources.toArray(new URL[0]);
     }
 
     @Override
@@ -642,7 +642,7 @@ public class AspectranClassLoader extends ClassLoader {
                     list.add(r);
                 }
             }
-            return list.toArray(new String[list.size()]);
+            return list.toArray(new String[0]);
         } else {
             return resourceLocations;
         }

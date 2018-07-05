@@ -627,7 +627,7 @@ public class StringUtils {
         while (st.hasMoreTokens()) {
             tokens.add(trim ? st.nextToken().trim() : st.nextToken());
         }
-        return tokens.toArray(new String[tokens.size()]);
+        return tokens.toArray(new String[0]);
     }
 
     /**

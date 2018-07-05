@@ -72,7 +72,7 @@ public class HttpPutFormContentParser {
                 for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
                     String name = entry.getKey();
                     List<String> list = entry.getValue();
-                    String[] values = list.toArray(new String[list.size()]);
+                    String[] values = list.toArray(new String[0]);
                     requestAdapter.setParameter(name, values);
                 }
             }

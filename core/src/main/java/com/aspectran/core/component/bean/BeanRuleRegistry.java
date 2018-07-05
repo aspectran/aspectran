@@ -97,7 +97,7 @@ public class BeanRuleRegistry {
     public BeanRule[] getBeanRules(Class<?> requiredType) {
         Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
         if (list != null && !list.isEmpty()) {
-            return list.toArray(new BeanRule[list.size()]);
+            return list.toArray(new BeanRule[0]);
         } else {
             return null;
         }

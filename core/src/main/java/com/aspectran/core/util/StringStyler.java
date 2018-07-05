@@ -32,7 +32,6 @@ public class StringStyler {
         StringBuilder sb = new StringBuilder(content.length());
         int start = 0;
         int line = 0;
-        boolean flag = false;
         for (int end = 0; end < content.length(); end++) {
             char c = content.charAt(end);
             if (start == 0 && c == AponFormat.TEXT_LINE_START) {
@@ -44,14 +43,14 @@ public class StringStyler {
             } else if (start > 0) {
                 if (c == '\n' || c == '\r') {
                     if (end > start) {
-                        sb.append(content.substring(start, end));
+                        sb.append(content, start, end);
                     }
                     start = 0;
                 }
             }
         }
         if (start > 0 && start < content.length()) {
-            sb.append(content.substring(start));
+            sb.append(content, start, content.length());
         }
         return sb.toString();
     }

@@ -83,7 +83,7 @@ public class CommandLineParser {
                 OutputStream stream = new FileOutputStream(file, append);
                 writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
             }
-            return writerList.toArray(new Writer[writerList.size()]);
+            return writerList.toArray(new Writer[0]);
         } else {
             return null;
         }

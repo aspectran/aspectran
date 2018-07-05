@@ -129,7 +129,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
      * @param templateLoaderPathList a List of Freemarker template loader paths
      */
     public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
-        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
+        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
     /**
@@ -156,7 +156,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
      * @param templateLoaderList a List of TemplateLoaders
      */
     public void setTemplateLoader(List<TemplateLoader> templateLoaderList) {
-        this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
+        this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[0]);
     }
 
     public void setTrimDirectives(TrimDirective... trimDirectives) {
@@ -203,7 +203,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
         }
 
         if (!list.isEmpty()) {
-            trimDirectives = list.toArray(new TrimDirective[list.size()]);
+            trimDirectives = list.toArray(new TrimDirective[0]);
         } else {
             trimDirectives = null;
         }

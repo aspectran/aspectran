@@ -115,7 +115,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         }
 
         if (tokenCount > 0) {
-            this.targetTokens = tokens.toArray(new Token[tokens.size()]);
+            this.targetTokens = tokens.toArray(new Token[0]);
         } else {
             this.targetTokens = null;
         }

@@ -117,7 +117,7 @@ public class ShutdownHooks {
 
         // Iterate through copy of tasks list
         Collections.reverse(tasks);
-        for (Task task : tasks.toArray(new Task[tasks.size()])) {
+        for (Task task : tasks.toArray(new Task[0])) {
             if (log.isDebugEnabled()) {
                 log.debug("Running task: " + task);
             }

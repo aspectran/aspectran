@@ -177,25 +177,25 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         }
 
         if (valueType == ItemValueType.STRING) {
-            return list.toArray(new String[list.size()]);
+            return list.toArray(new String[0]);
         } else if (valueType == ItemValueType.INT) {
-            return list.toArray(new Integer[list.size()]);
+            return list.toArray(new Integer[0]);
         } else if (valueType == ItemValueType.LONG) {
-            return list.toArray(new Long[list.size()]);
+            return list.toArray(new Long[0]);
         } else if (valueType == ItemValueType.FLOAT) {
-            return list.toArray(new Float[list.size()]);
+            return list.toArray(new Float[0]);
         } else if (valueType == ItemValueType.DOUBLE) {
-            return list.toArray(new Double[list.size()]);
+            return list.toArray(new Double[0]);
         } else if (valueType == ItemValueType.BOOLEAN) {
-            return list.toArray(new Boolean[list.size()]);
+            return list.toArray(new Boolean[0]);
         } else if (valueType == ItemValueType.PARAMETERS) {
-            return list.toArray(new Parameters[list.size()]);
+            return list.toArray(new Parameters[0]);
         } else if (valueType == ItemValueType.FILE) {
-            return list.toArray(new File[list.size()]);
+            return list.toArray(new File[0]);
         } else if (valueType == ItemValueType.MULTIPART_FILE) {
-            return list.toArray(new FileParameter[list.size()]);
+            return list.toArray(new FileParameter[0]);
         } else {
-            return list.toArray(new Object[list.size()]);
+            return list.toArray(new Object[0]);
         }
     }
 

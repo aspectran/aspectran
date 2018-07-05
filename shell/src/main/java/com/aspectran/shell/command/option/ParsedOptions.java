@@ -222,7 +222,7 @@ public class ParsedOptions implements Serializable {
                 values.addAll(processedOption.getValuesList());
             }
         }
-        return (values.isEmpty() ? null : values.toArray(new String[values.size()]));
+        return (values.isEmpty() ? null : values.toArray(new String[0]));
     }
 
     /**
@@ -390,7 +390,7 @@ public class ParsedOptions implements Serializable {
      * @return an array of the processed {@link Option}s
      */
     public Option[] getOptions() {
-        return options.toArray(new Option[options.size()]);
+        return options.toArray(new Option[0]);
     }
 
     /**
@@ -408,7 +408,7 @@ public class ParsedOptions implements Serializable {
      * @return remaining items passed in but not parsed as an array
      */
     public String[] getArgs() {
-        return args.toArray(new String[args.size()]);
+        return args.toArray(new String[0]);
     }
 
     /**
