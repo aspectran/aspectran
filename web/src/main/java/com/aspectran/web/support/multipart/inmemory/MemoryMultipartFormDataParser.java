@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.commons;
+package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -27,13 +27,12 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
+import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.RequestContext;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -43,11 +42,9 @@ import java.util.Map;
 /**
  * Multi-part form data parser for Apache Commons FileUpload.
  */
-public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
+public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
 
-    private static final Log log = LogFactory.getLog(CommonsMultipartFormDataParser.class);
-
-    private String tempDirectoryPath;
+    private static final Log log = LogFactory.getLog(MemoryMultipartFormDataParser.class);
 
     private long maxRequestSize = -1L;
 
@@ -60,23 +57,19 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     private String deniedFileExtensions;
 
     /**
-     * Instantiates a new CommonsMultipartFormDataParser.
+     * Instantiates a new MemoryMultipartFormDataParser.
      */
-    public CommonsMultipartFormDataParser() {
+    public MemoryMultipartFormDataParser() {
     }
 
     @Override
     public String getTempDirectoryPath() {
-        return tempDirectoryPath;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setTempDirectoryPath(String tempDirectoryPath) {
-        File tempDirectory = new File(tempDirectoryPath);
-        if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
-            throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
-        }
-        this.tempDirectoryPath = tempDirectoryPath;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -86,12 +79,18 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
     @Override
     public void setMaxFileSize(long maxFileSize) {
+        if (maxFileSize > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("In the In-Memory file uploads," +
+                    "the maximum file size is up to 2147483648 bytes");
+        }
+
         this.maxFileSize = maxFileSize;
+        this.maxInMemorySize = (int)maxFileSize;
     }
 
     @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
-        this.maxInMemorySize = maxInMemorySize;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -107,25 +106,17 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     @Override
     public void parse(RequestAdapter requestAdapter) {
         try {
-            DiskFileItemFactory factory = new DiskFileItemFactory();
+            MemoryFileItemFactory factory = new MemoryFileItemFactory();
             if (maxInMemorySize > -1) {
                 factory.setSizeThreshold(maxInMemorySize);
             }
 
-            if (tempDirectoryPath != null) {
-                File repository = new File(tempDirectoryPath);
-                if (!repository.exists() && !repository.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
-                }
-                factory.setRepository(repository);
-            }
-
             FileUpload upload = new ServletFileUpload(factory);
             upload.setHeaderEncoding(requestAdapter.getEncoding());
-            if (maxRequestSize > -1L) {
+            if (maxRequestSize > -1) {
                 upload.setSizeMax(maxRequestSize);
             }
-            if (maxFileSize > -1L) {
+            if (maxFileSize > -1) {
                 upload.setFileSizeMax(maxFileSize);
             }
 
@@ -134,11 +125,11 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             try {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
-            } catch (FileUploadBase.SizeLimitExceededException e) {
+            } catch (SizeLimitExceededException e) {
                 log.warn("Maximum request length exceeded; multipart.maxRequestSize: " + maxRequestSize);
                 requestAdapter.setMaxLengthExceeded(true);
                 return;
-            } catch (FileUploadBase.FileSizeLimitExceededException e) {
+            } catch (FileSizeLimitExceededException e) {
                 log.warn("Maximum file length exceeded; multipart.maxFileSize: " + maxFileSize);
                 requestAdapter.setMaxLengthExceeded(true);
                 return;
@@ -184,7 +175,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                             continue;
                         }
 
-                        CommonsMultipartFileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
+                        MemoryMultipartFileParameter fileParameter = new MemoryMultipartFileParameter(fileItem);
                         fileParameterMap.add(fieldName, fileParameter);
 
                         if (log.isDebugEnabled()) {

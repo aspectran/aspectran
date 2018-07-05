@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.commons;
+package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class CommonsMultipartFormDataParserFactory.
+ * The Class MemoryMultipartFormDataParserFactory.
  *
- * @since 2.0.0
+ * @since 5.1.0
  */
-public class CommonsMultipartFormDataParserFactory {
-
-    private String tempDirectoryPath;
+public class MemoryMultipartFormDataParserFactory {
 
     private long maxRequestSize = -1L;
 
@@ -39,25 +36,7 @@ public class CommonsMultipartFormDataParserFactory {
     /**
      * Instantiates a new Multipart request wrapper resolver.
      */
-    public CommonsMultipartFormDataParserFactory() {
-    }
-
-    /**
-     * Gets the temporary file path.
-     *
-     * @return the temporary file path
-     */
-    public String getTempDirectoryPath() {
-        return tempDirectoryPath;
-    }
-
-    /**
-     * Sets the temporary directory path.
-     *
-     * @param tempDirectoryPath the temporary directory path
-     */
-    public void setTempDirectoryPath(String tempDirectoryPath) {
-        this.tempDirectoryPath = tempDirectoryPath;
+    public MemoryMultipartFormDataParserFactory() {
     }
 
     /**
@@ -147,12 +126,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @return the multipart form data parser
      */
     public MultipartFormDataParser createMultipartFormDataParser() {
-        MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
-        if (tempDirectoryPath != null) {
-            parser.setTempDirectoryPath(tempDirectoryPath);
-        } else {
-            parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
-        }
+        MultipartFormDataParser parser = new MemoryMultipartFormDataParser();
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);
         }
