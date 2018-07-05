@@ -20,7 +20,7 @@ import com.aspectran.core.util.SystemUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class MultipartFormDataParserFactory.
+ * The Class CommonsMultipartFormDataParserFactory.
  *
  * @since 2.0.0
  */
@@ -29,6 +29,8 @@ public class CommonsMultipartFormDataParserFactory {
     private String tempDirectoryPath;
 
     private long maxRequestSize = -1L;
+
+    private long maxFileSize = -1L;
 
     private String allowedFileExtensions;
 
@@ -128,20 +130,19 @@ public class CommonsMultipartFormDataParserFactory {
      */
     public MultipartFormDataParser createMultipartFormDataParser() {
         MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
-
-        if (maxRequestSize > -1) {
-            parser.setMaxRequestSize(maxRequestSize);
-        }
-
         if (tempDirectoryPath != null) {
             parser.setTempDirectoryPath(tempDirectoryPath);
         } else {
             parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
         }
-
+        if (maxRequestSize > -1) {
+            parser.setMaxRequestSize(maxRequestSize);
+        }
+        if (maxFileSize > -1) {
+            parser.setMaxFileSize(maxFileSize);
+        }
         parser.setAllowedFileExtensions(allowedFileExtensions);
         parser.setDeniedFileExtensions(deniedFileExtensions);
-
         return parser;
     }
 

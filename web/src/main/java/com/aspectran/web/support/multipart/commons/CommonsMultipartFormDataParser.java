@@ -231,8 +231,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     /**
      * Creates a RequestContext needed by Jakarta Commons Upload.
      *
-     * @param req the HTTP request.
-     * @return a new request context.
+     * @param req the HTTP request
+     * @return a new request context
      */
     private RequestContext createRequestContext(final HttpServletRequest req) {
         return new RequestContext() {

@@ -13,23 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.commons;
-
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.web.activity.request.MultipartFormDataParser;
-
 /**
- * The Class CommonsMultipartFormDataParserFactoryBean.
- *
- * @since 2.0.0
+ * Provides an In-Memory FileItem implementation which represents a file or
+ * form item that was received within a multipart / form-data POST request.
  */
-public class CommonsMultipartFormDataParserFactoryBean
-        extends CommonsMultipartFormDataParserFactory
-        implements FactoryBean<MultipartFormDataParser> {
-
-    @Override
-    public MultipartFormDataParser getObject() {
-        return createMultipartFormDataParser();
-    }
-
-}
+package com.aspectran.web.support.multipart.inmemory;
