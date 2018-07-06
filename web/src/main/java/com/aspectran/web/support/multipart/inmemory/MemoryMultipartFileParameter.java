@@ -19,7 +19,6 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.util.FilenameUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -28,14 +27,10 @@ import java.io.InputStream;
 
 /**
  * This class represents a file item that was received within a multipart/form-data POST request.
- * 
- * <p>Created: 2008. 04. 11 PM 8:55:25</p>
  */
 public class MemoryMultipartFileParameter extends FileParameter {
 
     private FileItem fileItem;
-
-    private long fileSize;
 
     /**
      * Create an instance wrapping the given FileItem.
@@ -44,7 +39,6 @@ public class MemoryMultipartFileParameter extends FileParameter {
      */
     public MemoryMultipartFileParameter(FileItem fileItem) {
         this.fileItem = fileItem;
-        this.fileSize = fileItem.getSize();
     }
 
     @Override
@@ -81,7 +75,7 @@ public class MemoryMultipartFileParameter extends FileParameter {
      */
     @Override
     public long getFileSize() {
-        return this.fileSize;
+        return fileItem.getSize();
     }
 
     /**
@@ -92,9 +86,6 @@ public class MemoryMultipartFileParameter extends FileParameter {
      */
     @Override
     public InputStream getInputStream() throws IOException {
-        if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again");
-        }
         InputStream inputStream = fileItem.getInputStream();
         return (inputStream != null ? inputStream : new ByteArrayInputStream(new byte[0]));
     }
@@ -106,9 +97,6 @@ public class MemoryMultipartFileParameter extends FileParameter {
      */
     @Override
     public byte[] getBytes() {
-        if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again");
-        }
         byte[] bytes = fileItem.get();
         return (bytes != null ? bytes : new byte[0]);
     }
@@ -126,9 +114,6 @@ public class MemoryMultipartFileParameter extends FileParameter {
         if (destFile == null) {
             throw new IllegalArgumentException("Argument 'destFile' must not be null");
         }
-        if (!isAvailable()) {
-            throw new IllegalStateException("File has been moved - cannot be read again");
-        }
         if (!overwrite) {
             File newFile = FilenameUtils.getUniqueFile(destFile);
             if (destFile != newFile) {
@@ -136,7 +121,8 @@ public class MemoryMultipartFileParameter extends FileParameter {
             }
         } else {
             if (destFile.exists() && !destFile.delete()) {
-                throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted");
+                throw new IOException("Destination file [" + destFile.getAbsolutePath() +
+                        "] already exists and could not be deleted");
             }
         }
 
@@ -184,25 +170,6 @@ public class MemoryMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Determine whether the multipart content is still available.
-     * If a temporary file has been moved, the content is no longer available.
-     *
-     * @return true, if the multipart content is still available
-     */
-    private boolean isAvailable() {
-        // If in memory, it's available.
-        if (this.fileItem.isInMemory()) {
-            return true;
-        }
-        // Check actual existence of temporary file.
-        if (this.fileItem instanceof DiskFileItem) {
-            return ((DiskFileItem)this.fileItem).getStoreLocation().exists();
-        }
-        // Check whether current file size is different than original one.
-        return (this.fileItem.getSize() == this.fileSize);
-    }
-
-    /**
      * Return a description for the storage location of the multipart content.
      * Tries to be as specific as possible: mentions the file location in case
      * of a temporary file.
@@ -210,13 +177,7 @@ public class MemoryMultipartFileParameter extends FileParameter {
      * @return a description for the storage location of the multipart content
      */
     public String getStorageDescription() {
-        if (this.fileItem.isInMemory()) {
-            return "in memory";
-        } else if (this.fileItem instanceof DiskFileItem) {
-            return "at [" + ((DiskFileItem)this.fileItem).getStoreLocation().getAbsolutePath() + "]";
-        } else {
-            return "on disk";
-        }
+        return "in memory";
     }
 
 }

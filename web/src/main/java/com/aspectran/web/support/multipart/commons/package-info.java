@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Support for parsing multi-part form data based on Apache Commons FileUpload.
+ * Support for parsing Multi-part form data that use Apache Commons FileUpload 1.3 or above.
  */
 package com.aspectran.web.support.multipart.commons;

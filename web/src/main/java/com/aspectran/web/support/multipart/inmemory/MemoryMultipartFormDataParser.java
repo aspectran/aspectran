@@ -40,7 +40,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Multi-part form data parser for Apache Commons FileUpload.
+ * Multi-part form data parser that use Apache Commons FileUpload 1.3 or above.
+ *
+ * <p>It is designed to store uploaded data items in memory, such as GAE,
+ * where the file system is not available.</p>
  */
 public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
 

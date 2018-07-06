@@ -40,7 +40,7 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      * Constructs an instance of this class which will trigger throw
      * UnsupportedOperationException if the specified threshold is reached.
      *
-     * @param threshold The number of bytes at which to trigger an event.
+     * @param threshold the number of bytes at which to trigger an event
      */
     public MemoryOutputStream(long threshold) {
         super((int)threshold);
@@ -51,8 +51,8 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      * Returns the current output stream. This may be memory based or disk based, depending on the
      * current state with respect to the threshold.
      *
-     * @return The underlying output stream.
-     * @exception IOException if an error occurs.
+     * @return the underlying output stream
+     * @exception IOException if an error occurs
      */
     @Override
     protected OutputStream getStream() throws IOException {
@@ -71,7 +71,7 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Determines whether or not the data for this output stream has been retained in memory.
      *
-     * @return always <code>true</code>
+     * @return always {@code true}
      */
     public boolean isInMemory() {
         return true;
@@ -80,7 +80,7 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Returns the data for this output stream as an array of bytes.
      *
-     * @return The data for this output stream, or <code>null</code> if no such data is available.
+     * @return the data for this output stream, or {@code null} if no such data is available
      */
     public byte[] getData() {
         return outputStream.toByteArray();
@@ -89,7 +89,7 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Closes underlying output stream, and mark this as closed
      *
-     * @exception IOException if an error occurs.
+     * @exception IOException if an error occurs
      */
     @Override
     public void close() throws IOException {
@@ -101,8 +101,8 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      * Writes the data from this output stream to the specified output stream, after it has been
      * closed.
      *
-     * @param out output stream to write to.
-     * @exception IOException if this stream is not yet closed or an error occurs.
+     * @param out output stream to write to
+     * @exception IOException if this stream is not yet closed or an error occurs
      */
     public void writeTo(OutputStream out) throws IOException {
         // we may only need to check if this is closed if we are working with a
