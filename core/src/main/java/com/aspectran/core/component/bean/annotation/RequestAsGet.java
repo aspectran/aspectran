@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
-import com.aspectran.core.context.rule.type.TransformType;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,16 +24,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Transform {
+public @interface RequestAsGet {
 
-    TransformType type();
-
-    String contentType() default "";
-
-    String template() default "";
-
-    String encoding() default "";
-
-    boolean pretty() default true;
+    String value() default "";
 
 }

@@ -35,6 +35,11 @@ import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Redirect;
 import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.core.component.bean.annotation.RequestAsDelete;
+import com.aspectran.core.component.bean.annotation.RequestAsGet;
+import com.aspectran.core.component.bean.annotation.RequestAsPatch;
+import com.aspectran.core.component.bean.annotation.RequestAsPost;
+import com.aspectran.core.component.bean.annotation.RequestAsPut;
 import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
@@ -178,7 +183,12 @@ public class AnnotatedConfigParser {
                 }
                 if (method.isAnnotationPresent(Bean.class)) {
                     parseBeanRule(beanClass, method, nameArray);
-                } else if (method.isAnnotationPresent(Request.class)) {
+                } else if (method.isAnnotationPresent(Request.class) ||
+                        method.isAnnotationPresent(RequestAsGet.class) ||
+                        method.isAnnotationPresent(RequestAsPost.class) ||
+                        method.isAnnotationPresent(RequestAsPut.class) ||
+                        method.isAnnotationPresent(RequestAsPatch.class) ||
+                        method.isAnnotationPresent(RequestAsDelete.class)) {
                     parseTransletRule(beanClass, method, nameArray);
                 }
             }
@@ -341,8 +351,36 @@ public class AnnotatedConfigParser {
     }
 
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
+        String transletName = null;
+        MethodType[] allowedMethods = null;
+
         Request requestAnno = method.getAnnotation(Request.class);
-        String transletName = StringUtils.emptyToNull(requestAnno.translet());
+        RequestAsGet requestAsGetAnno = method.getAnnotation(RequestAsGet.class);
+        RequestAsPost requestAsPostAnno = method.getAnnotation(RequestAsPost.class);
+        RequestAsPut requestAsPutAnno = method.getAnnotation(RequestAsPut.class);
+        RequestAsPatch requestAsPatchAnno = method.getAnnotation(RequestAsPatch.class);
+        RequestAsDelete requestAsDeleteAnno = method.getAnnotation(RequestAsDelete.class);
+
+        if (requestAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAnno.translet());
+            allowedMethods = requestAnno.method();
+        } else if (requestAsGetAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAsGetAnno.value());
+            allowedMethods = new MethodType[] { MethodType.GET };
+        } else if (requestAsPostAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAsPostAnno.value());
+            allowedMethods = new MethodType[] { MethodType.POST };
+        } else if (requestAsPutAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAsPutAnno.value());
+            allowedMethods = new MethodType[] { MethodType.PUT };
+        } else if (requestAsPatchAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAsPatchAnno.value());
+            allowedMethods = new MethodType[] { MethodType.PATCH };
+        } else if (requestAsDeleteAnno != null) {
+            transletName = StringUtils.emptyToNull(requestAsDeleteAnno.value());
+            allowedMethods = new MethodType[] { MethodType.DELETE };
+        }
+
         if (transletName == null) {
             transletName = method.getName();
             transletName = transletName.replace('_', ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
@@ -350,7 +388,6 @@ public class AnnotatedConfigParser {
         if (nameArray != null) {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
         }
-        MethodType[] allowedMethods = requestAnno.method();
 
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
