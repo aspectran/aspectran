@@ -885,11 +885,10 @@ public class MethodUtils {
         for (Method method : methods) {
             if (method.getName().equals(methodName)) {
                 // compare parameters
-                Class<?>[] methodsParams = method.getParameterTypes();
-                int methodParamSize = methodsParams.length;
-                if (methodParamSize == paramSize) {
+                if (method.getParameterCount() == paramSize) {
+                    Class<?>[] methodsParams = method.getParameterTypes();
                     boolean paramMatch = true;
-                    for (int n = 0; n < methodParamSize; n++) {
+                    for (int n = 0; n < methodsParams.length; n++) {
                         if (args != null) {
                             if (!TypeUtils.isAssignableValue(methodsParams[n], args[n])) {
                                 paramMatch = false;
@@ -904,9 +903,9 @@ public class MethodUtils {
                     }
                     if (paramMatch) {
                         if (args != null) {
-                            myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), args);
+                            myWeight = ReflectionUtils.getTypeDifferenceWeight(methodsParams, args);
                         } else {
-                            myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
+                            myWeight = ReflectionUtils.getTypeDifferenceWeight(methodsParams, paramTypes);
                         }
                         if (myWeight < bestMatchWeight) {
                             bestMatch = method;

@@ -306,7 +306,7 @@ public class ContentsXMLReader implements XMLReader {
 
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
         } else {
-            String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
+            String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 for (String name : readablePropertyNames) {
                     Object value = BeanUtils.getProperty(object, name);

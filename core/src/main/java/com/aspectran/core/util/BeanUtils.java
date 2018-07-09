@@ -616,10 +616,21 @@ public class BeanUtils {
      * Returns an array of the readable properties exposed by a bean.
      *
      * @param bean the bean
-     * @return the properties
+     * @return the readable properties
      */
     public static String[] getReadablePropertyNames(Object bean) {
         return getBeanDescriptor(bean.getClass()).getReadablePropertyNames();
+    }
+
+    /**
+     * Returns an array of readable properties exposed by the bean,
+     * except those specified by NonSerializable.
+     *
+     * @param bean the bean
+     * @return the readable properties without non serializable
+     */
+    public static String[] getReadablePropertyNamesWithoutNonSerializable(Object bean) {
+        return getBeanDescriptor(bean.getClass()).getReadablePropertyNamesWithoutNonSerializable();
     }
 
     /**

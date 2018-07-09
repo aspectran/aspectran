@@ -131,7 +131,7 @@ public class ContentsAponAssembler {
         } else if (object.getClass().isArray()) {
             return object.toString();
         } else {
-            String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
+            String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 Parameters p = new VariableParameters();
                 for (String name : readablePropertyNames) {

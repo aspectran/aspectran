@@ -117,8 +117,12 @@ public class MethodActionRule {
     }
 
     public static boolean isRequiresTranslet(Method method) {
-        Class<?>[] paramTypes = method.getParameterTypes();
-        return (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
+        if (method.getParameterCount() == 1) {
+            Class<?>[] paramTypes = method.getParameterTypes();
+            return paramTypes[0].isAssignableFrom(Translet.class);
+        } else {
+            return false;
+        }
     }
 
     public static MethodAction newMethodAction(Class<?> configBeanClass, Method method) {

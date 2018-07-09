@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class JsonWriter implements Flushable {
 
-    private static final String DEFALUT_INDENT_STRING = "\t";
+    private static final String DEFAULT_INDENT_STRING = "\t";
 
     private Writer writer;
 
@@ -76,7 +76,7 @@ public class JsonWriter implements Flushable {
     public JsonWriter(Writer writer, boolean prettyPrint) {
         this.writer = writer;
         this.prettyPrint = prettyPrint;
-        this.indentString = (prettyPrint ? DEFALUT_INDENT_STRING : null);
+        this.indentString = (prettyPrint ? DEFAULT_INDENT_STRING : null);
     }
 
     /**
@@ -179,7 +179,7 @@ public class JsonWriter implements Flushable {
 
             closeSquareBracket();
         } else {
-            String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
+            String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 openCurlyBracket();
 
@@ -492,7 +492,7 @@ public class JsonWriter implements Flushable {
      */
     public static String stringify(Object object, boolean prettyPrint) {
         if (prettyPrint) {
-            return stringify(object, DEFALUT_INDENT_STRING);
+            return stringify(object, DEFAULT_INDENT_STRING);
         } else {
             return stringify(object, null);
         }

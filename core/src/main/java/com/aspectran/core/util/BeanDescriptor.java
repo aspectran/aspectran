@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.component.bean.annotation.NonSerializable;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 import java.lang.reflect.Method;
@@ -39,69 +40,88 @@ public class BeanDescriptor {
 
     private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>();
 
-    private String className;
+    private final String className;
 
-    private String[] readablePropertyNames;
+    private final String[] readablePropertyNames;
 
-    private String[] writablePropertyNames;
+    private final String[] serializableReadablePropertyNames;
 
-    private String[] distinctMethodNames;
+    private final String[] writablePropertyNames;
 
-    private Map<String, Method> readMethods = new HashMap<>();
+    private final String[] distinctMethodNames;
 
-    private Map<String, Class<?>> readTypes = new HashMap<>();
+    private final Map<String, Method> readMethods = new HashMap<>();
 
-    private Map<String, Method> writeMethods = new HashMap<>();
+    private final Map<String, Method> nonSerializableReadMethods = new HashMap<>();
 
-    private Map<String, Class<?>> writeType = new HashMap<>();
+    private final Map<String, Class<?>> readTypes = new HashMap<>();
+
+    private final Map<String, Method> writeMethods = new HashMap<>();
+
+    private final Map<String, Class<?>> writeType = new HashMap<>();
 
     private BeanDescriptor(Class<?> beanClass) {
         this.className = beanClass.getName();
         Method[] methods = getAllMethods(beanClass);
 
-        addReadMethods(methods);
-        addWriteMethods(methods);
-
+        Set<String> nonSerializableReadPropertyNames = addReadMethods(methods);
         this.readablePropertyNames = readMethods.keySet().toArray(new String[0]);
+
+        if (!nonSerializableReadPropertyNames.isEmpty()) {
+            String[] serializableReadablePropertyNames = new String[readablePropertyNames.length - nonSerializableReadPropertyNames.size()];
+            int index = 0;
+            for (String name : readablePropertyNames) {
+                if (!nonSerializableReadPropertyNames.contains(name)) {
+                    serializableReadablePropertyNames[index++] = name;
+                }
+            }
+            this.serializableReadablePropertyNames = (index > 0 ? serializableReadablePropertyNames : null);
+        } else {
+            this.serializableReadablePropertyNames = this.readablePropertyNames;
+        }
+
+        addWriteMethods(methods);
         this.writablePropertyNames = writeMethods.keySet().toArray(new String[0]);
 
         Set<String> nameSet = new HashSet<>();
         for (Method method : methods) {
             nameSet.add(method.getName());
         }
-
         this.distinctMethodNames = nameSet.toArray(new String[0]);
     }
 
-    private void addReadMethods(Method[] methods) {
+    private Set<String> addReadMethods(Method[] methods) {
+        Set<String> nonSerializableReadPropertyNames = new HashSet<>();
         for (Method method : methods) {
-            String name = method.getName();
-
-            if (name.startsWith("get") && name.length() > 3) {
-                if (method.getParameterTypes().length == 0) {
+            if (method.getParameterCount() == 0) {
+                String name = method.getName();
+                if ((name.startsWith("get") && name.length() > 3) ||
+                        (name.startsWith("is") && name.length() > 2)) {
                     name = dropCase(name);
                     addGetMethod(name, method);
-                }
-            } else if (name.startsWith("is") && name.length() > 2) {
-                if (method.getParameterTypes().length == 0) {
-                    name = dropCase(name);
-                    addGetMethod(name, method);
+                    if (method.isAnnotationPresent(NonSerializable.class)) {
+                        nonSerializableReadPropertyNames.add(name);
+                    }
                 }
             }
         }
+        return nonSerializableReadPropertyNames;
     }
 
     private void addGetMethod(String name, Method method) {
         readMethods.put(name, method);
         readTypes.put(name, method.getReturnType());
+        if (method.isAnnotationPresent(NonSerializable.class)) {
+            nonSerializableReadMethods.put(name, method);
+        }
     }
 
     private void addWriteMethods(Method[] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
-            String name = method.getName();
-            if (name.startsWith("set") && name.length() > 3) {
-                if (method.getParameterTypes().length == 1) {
+            if (method.getParameterCount() == 1) {
+                String name = method.getName();
+                if (name.startsWith("set") && name.length() > 3) {
                     name = dropCase(name);
                     addSetterConflict(conflictingSetters, name, method);
                 }
@@ -132,7 +152,7 @@ public class BeanDescriptor {
                     Method setter = null;
                     while (methods.hasNext()) {
                         Method method = methods.next();
-                        if (method.getParameterTypes().length == 1 && expectedType.equals(method.getParameterTypes()[0])) {
+                        if (method.getParameterCount() == 1 && expectedType.equals(method.getParameterTypes()[0])) {
                             setter = method;
                             break;
                         }
@@ -196,17 +216,17 @@ public class BeanDescriptor {
     private String getSignature(Method method) {
         StringBuilder sb = new StringBuilder();
         sb.append(method.getName());
-        Class<?>[] parameters = method.getParameterTypes();
-
-        for (int i = 0; i < parameters.length; i++) {
-            if (i == 0) {
-                sb.append(':');
-            } else {
-                sb.append(',');
+        if (method.getParameterCount() > 0) {
+            Class<?>[] parameters = method.getParameterTypes();
+            for (int i = 0; i < parameters.length; i++) {
+                if (i == 0) {
+                    sb.append(':');
+                } else {
+                    sb.append(',');
+                }
+                sb.append(parameters[i].getName());
             }
-            sb.append(parameters[i].getName());
         }
-
         return sb.toString();
     }
 
@@ -296,6 +316,10 @@ public class BeanDescriptor {
      */
     public String[] getReadablePropertyNames() {
         return readablePropertyNames;
+    }
+
+    public String[] getReadablePropertyNamesWithoutNonSerializable() {
+        return serializableReadablePropertyNames;
     }
 
     /**
