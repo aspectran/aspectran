@@ -52,8 +52,6 @@ public class BeanDescriptor {
 
     private final Map<String, Method> readMethods = new HashMap<>();
 
-    private final Map<String, Method> nonSerializableReadMethods = new HashMap<>();
-
     private final Map<String, Class<?>> readTypes = new HashMap<>();
 
     private final Map<String, Method> writeMethods = new HashMap<>();
@@ -111,9 +109,6 @@ public class BeanDescriptor {
     private void addGetMethod(String name, Method method) {
         readMethods.put(name, method);
         readTypes.put(name, method.getReturnType());
-        if (method.isAnnotationPresent(NonSerializable.class)) {
-            nonSerializableReadMethods.put(name, method);
-        }
     }
 
     private void addWriteMethods(Method[] methods) {
@@ -185,8 +180,8 @@ public class BeanDescriptor {
         Map<String, Method> uniqueMethods = new HashMap<>();
         Class<?> currentClass = beanClass;
 
-        while (currentClass != null) {
-            addUniqueMethods(uniqueMethods, currentClass.getMethods());
+        while (currentClass != null && currentClass != Object.class) {
+            addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 
             // we also need to look for interface methods -
             // because the class may be abstract
@@ -265,8 +260,8 @@ public class BeanDescriptor {
      * Gets the getter for a property as a Method object.
      *
      * @param name the name of the property
-     * @return the Method
-     * @throws NoSuchMethodException the no such method exception
+     * @return the getter Method
+     * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Method getGetter(String name) throws NoSuchMethodException {
         Method method = readMethods.get(name);
@@ -282,7 +277,7 @@ public class BeanDescriptor {
      *
      * @param name the name of the property
      * @return the Class of the property setter
-     * @throws NoSuchMethodException the no such method exception
+     * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Class<?> getSetterType(String name) throws NoSuchMethodException {
         Class<?> clazz = writeType.get(name);
@@ -298,7 +293,7 @@ public class BeanDescriptor {
      *
      * @param name the name of the property
      * @return the Class of the property getter
-     * @throws NoSuchMethodException the no such method exception
+     * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Class<?> getGetterType(String name) throws NoSuchMethodException {
         Class<?> clazz = readTypes.get(name);

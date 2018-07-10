@@ -399,6 +399,8 @@ public class CoreActivity extends BasicActivity {
             if (forwardTransletName != null) {
                 forward();
             }
+        } else {
+            getResponseAdapter().flush();
         }
     }
 

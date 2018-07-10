@@ -485,9 +485,9 @@ public class BeanUtils {
         Throwable t2 = t;
         while (true) {
             if (t2 instanceof InvocationTargetException) {
-                t2 = ((InvocationTargetException)t).getTargetException();
-            } else if (t instanceof UndeclaredThrowableException) {
-                t2 = ((UndeclaredThrowableException)t).getUndeclaredThrowable();
+                t2 = ((InvocationTargetException)t2).getTargetException();
+            } else if (t2 instanceof UndeclaredThrowableException) {
+                t2 = ((UndeclaredThrowableException)t2).getUndeclaredThrowable();
             } else {
                 return t2;
             }
@@ -505,7 +505,6 @@ public class BeanUtils {
      */
     public static Class<?> getPropertyTypeForSetter(Object bean, String name) throws NoSuchMethodException {
         Class<?> type = bean.getClass();
-
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForSetter((Class<?>)bean, name);
         } else if (bean instanceof Map<?, ?>) {
@@ -527,7 +526,6 @@ public class BeanUtils {
                 type = getBeanDescriptor(type).getSetterType(name);
             }
         }
-
         return type;
     }
 
@@ -541,7 +539,6 @@ public class BeanUtils {
      */
     public static Class<?> getPropertyTypeForGetter(Object bean, String name) throws NoSuchMethodException {
         Class<?> type = bean.getClass();
-
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForGetter((Class<?>)bean, name);
         } else if (bean instanceof Map<?, ?>) {
@@ -563,7 +560,6 @@ public class BeanUtils {
                 type = getBeanDescriptor(type).getGetterType(name);
             }
         }
-
         return type;
     }
 
@@ -585,7 +581,6 @@ public class BeanUtils {
         } else {
             type = getBeanDescriptor(type).getGetterType(name);
         }
-
         return type;
     }
 
@@ -608,7 +603,6 @@ public class BeanUtils {
         } else {
             type = getBeanDescriptor(type).getSetterType(name);
         }
-
         return type;
     }
 
