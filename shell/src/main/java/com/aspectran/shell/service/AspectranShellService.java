@@ -65,7 +65,7 @@ class AspectranShellService extends AbstractShellService {
     @Override
     public void execute(CommandLineParser commandLineParser) {
         if (!isExposable(commandLineParser.getCommand())) {
-            getConsole().writeLine("Unexposable Translet: " + commandLineParser.getCommand());
+            getConsole().writeLine("Unexposable translet: " + commandLineParser.getCommand());
             return;
         }
 

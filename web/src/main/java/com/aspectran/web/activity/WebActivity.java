@@ -158,7 +158,9 @@ public class WebActivity extends CoreActivity {
     private void parseMultipartFormData() {
         String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
         if (multipartFormDataParser == null) {
-            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' has not been specified in the default translet settings");
+            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' for multipart " +
+                    "form data parsing is not specified. Please specify 'multipartFormDataParser' via Aspect so " +
+                    "that Translet can parse multipart form data.");
         }
 
         MultipartFormDataParser parser = getBean(multipartFormDataParser);

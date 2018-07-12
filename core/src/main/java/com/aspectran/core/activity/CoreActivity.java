@@ -142,6 +142,12 @@ public class CoreActivity extends BasicActivity {
         }
     }
 
+    /**
+     * Prepare activity for Translet.
+     *
+     * @param transletRule the translet rule
+     * @param processResult
+     */
     private void prepare(TransletRule transletRule, ProcessResult processResult) {
         try {
             if (log.isDebugEnabled()) {
@@ -179,7 +185,7 @@ public class CoreActivity extends BasicActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActivityException("Failed to prepare activity", e);
+            throw new ActivityException("Failed to prepare activity for Translet " + transletRule, e);
         }
     }
 
@@ -298,7 +304,7 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Performs core activity.
+     * Perform core activity for Translet.
      */
     private void performActivity() {
         try {

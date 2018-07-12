@@ -81,10 +81,14 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         if (!isExposable(requestUri)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Unexposable translet: " + requestUri);
+            try {
+                if (!defaultServletHttpRequestHandler.handle(request, response)) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                log.error("An unexposed Translet passed over to the default servlet and an error occurred during processing", e);
             }
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
