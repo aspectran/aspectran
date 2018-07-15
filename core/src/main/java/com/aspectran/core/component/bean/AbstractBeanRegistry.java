@@ -43,7 +43,12 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
     public <T> T getBean(Class<T> requiredType) {
         BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
         if (beanRules == null || beanRules.length == 0) {
-            throw new RequiredTypeBeanNotFoundException(requiredType);
+            BeanRule configBeanRule = beanRuleRegistry.getConfigBeanRule(requiredType);
+            if (configBeanRule != null) {
+                return getBean(configBeanRule);
+            } else {
+                throw new RequiredTypeBeanNotFoundException(requiredType);
+            }
         }
         if (beanRules.length > 1) {
             throw new NoUniqueBeanException(requiredType, beanRules);
