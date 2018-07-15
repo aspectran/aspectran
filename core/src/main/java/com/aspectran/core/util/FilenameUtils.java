@@ -239,14 +239,14 @@ public class FilenameUtils {
             return false;
         }
 
-        String ext = getExtension(filename);
+        String ext = getExtension(filename).toLowerCase();
 
         if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
             if (ext.length() == 0) {
                 return false;
             }
 
-            StringTokenizer st = new StringTokenizer(allowedFileExtensions, EXTENSIONS_SEPARATORS);
+            StringTokenizer st = new StringTokenizer(allowedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
             while (st.hasMoreTokens()) {
                 String ext2 = st.nextToken();
                 if (ext.equals(ext2)) {
@@ -262,7 +262,7 @@ public class FilenameUtils {
                 return true;
             }
 
-            StringTokenizer st = new StringTokenizer(deniedFileExtensions, EXTENSIONS_SEPARATORS);
+            StringTokenizer st = new StringTokenizer(deniedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
             while (st.hasMoreTokens()) {
                 String ext2 = st.nextToken();
                 if (ext.equals(ext2)) {
