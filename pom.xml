@@ -4,7 +4,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>5.1.0-SNAPSHOT</version>
+    <version>5.1.0</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -151,7 +151,7 @@
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
-                <version>3.2.6</version>
+                <version>3.2.7</version>
             </dependency>
             <dependency>
                 <groupId>org.jline</groupId>
@@ -161,7 +161,7 @@
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
-                <version>4.5.1</version>
+                <version>4.5.2</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
