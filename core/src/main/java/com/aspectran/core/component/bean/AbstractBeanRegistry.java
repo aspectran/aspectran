@@ -42,7 +42,7 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
     @Override
     public <T> T getBean(Class<T> requiredType) {
         BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
-        if (beanRules == null || beanRules.length == 0) {
+        if (beanRules == null) {
             BeanRule configBeanRule = beanRuleRegistry.getConfigBeanRule(requiredType);
             if (configBeanRule != null) {
                 return getBean(configBeanRule);
