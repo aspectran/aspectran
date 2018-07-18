@@ -34,7 +34,8 @@ The main features of Aspectran are as follows:
 
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
-* `com.aspectran.shell`: Provides an interactive shell to run Aspectran's Translets from the command line
+* `com.aspectran.daemon`: Supports running Aspectran in the background on Unix-based or Windows operating systems
+* `com.aspectran.shell`: Provides an interactive shell for providing Aspectran services on the command line
 * `com.aspectran.embed`: Provides the ability to embed Aspectran in other Java applications
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
 * `com.aspectran.with.jetty`: Supports for building standalone Web application that is built-in Jetty server
