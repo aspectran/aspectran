@@ -46,7 +46,7 @@ Use the following definition to use Aspectran in your maven project:
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-all</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1-SNAPSHOT</version>
     </dependency>
 
 Aspectran can also be used with more low-level jars:
@@ -55,25 +55,25 @@ Aspectran can also be used with more low-level jars:
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-shell</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1-SNAPSHOT</version>
     </dependency>
     <!-- You can use this as a library for building other applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-embed</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1-SNAPSHOT</version>
     </dependency>
     <!-- You can use it to build a web application. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-web</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1-SNAPSHOT</version>
     </dependency>
     <!-- You can use it to build a web application with built-in Jetty 9. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-with-jetty</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1-SNAPSHOT</version>
     </dependency>
 
 ## Building
