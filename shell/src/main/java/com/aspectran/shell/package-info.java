@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains core classes for Aspectran Shell.
- * Aspectran Shell provides an interactive shell to run Aspectran's Translets from the command line.
+ * Aspectran Shell provides an interactive shell for providing Aspectran services on the command line.
  */
 package com.aspectran.shell;
