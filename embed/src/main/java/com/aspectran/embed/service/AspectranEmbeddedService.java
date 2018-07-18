@@ -210,7 +210,7 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated without completion: " + e.getMessage());
+                log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             throw new AspectranRuntimeException("An error occurred while processing an EmbeddedActivity", e);

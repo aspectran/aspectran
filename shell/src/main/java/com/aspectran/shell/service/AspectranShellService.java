@@ -112,7 +112,7 @@ class AspectranShellService extends AbstractShellService {
             throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated without completion: " + e.getMessage());
+                log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             log.error("An error occurred while processing the command", e);

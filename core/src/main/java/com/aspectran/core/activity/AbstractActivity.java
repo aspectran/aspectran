@@ -407,7 +407,7 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public void terminate() {
-        throw new ActivityTerminatedException();
+        terminate("Terminated by user code");
     }
 
     @Override

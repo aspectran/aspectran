@@ -133,7 +133,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated without completion: " + e.getMessage());
+                log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             log.error("An error occurred while processing the web activity", e);

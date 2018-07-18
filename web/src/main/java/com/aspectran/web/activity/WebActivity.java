@@ -16,6 +16,7 @@
 package com.aspectran.web.activity;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestException;
@@ -23,12 +24,14 @@ import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.HttpPutFormContentParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
@@ -88,7 +91,19 @@ public class WebActivity extends CoreActivity {
             }
         }
 
-        super.prepare(transletName, requestMethod);
+        try {
+            super.prepare(transletName, requestMethod);
+        } catch (TransletNotFoundException e) {
+            if (!StringUtils.endsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+                String transletName2 = transletName + ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR;
+                response.setStatus(301);
+                response.setHeader("Location", transletName2);
+                response.setHeader("Connection", "close" );
+                throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and serving directory index files");
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
