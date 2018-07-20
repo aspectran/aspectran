@@ -45,6 +45,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -132,21 +133,14 @@ public class CoreActivity extends BasicActivity {
             throw new TransletNotFoundException(transletName);
         }
 
-        // for RESTful
-        PathVariableMap pathVariableMap = getTransletRuleRegistry().getPathVariableMap(transletRule, transletName);
-
         prepare(transletRule, processResult);
-
-        if (pathVariableMap != null) {
-            pathVariableMap.apply(translet);
-        }
     }
 
     /**
-     * Prepare activity for Translet.
+     * Prepare activity for Translet with process result.
      *
      * @param transletRule the translet rule
-     * @param processResult
+     * @param processResult the process result
      */
     private void prepare(TransletRule transletRule, ProcessResult processResult) {
         try {
@@ -178,6 +172,7 @@ public class CoreActivity extends BasicActivity {
 
             prepareAspectAdviceRule(transletRule);
             parseRequest();
+            parsePathVariable();
 
             if (forwardTransletName == null) {
                 resolveLocale();
@@ -300,6 +295,14 @@ public class CoreActivity extends BasicActivity {
                 Object value = evaluator.evaluate(itemRule);
                 getRequestAdapter().setAttribute(itemRule.getName(), value);
             }
+        }
+    }
+
+    private void parsePathVariable() {
+        Token[] nameTokens = transletRule.getNameTokens();
+        if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
+            PathVariableMap pathVariableMap = PathVariableMap.newInstance(nameTokens, transletName);
+            pathVariableMap.apply(translet);
         }
     }
 

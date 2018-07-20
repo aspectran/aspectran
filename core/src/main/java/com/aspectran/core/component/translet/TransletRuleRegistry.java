@@ -84,14 +84,6 @@ public class TransletRuleRegistry extends AbstractComponent {
         return transletRuleMap.get(transletName);
     }
 
-    public PathVariableMap getPathVariableMap(TransletRule transletRule, String requestTransletName) {
-        Token[] nameTokens = transletRule.getNameTokens();
-        if (nameTokens == null || nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT) {
-            return null;
-        }
-        return PathVariableMap.newInstance(nameTokens, requestTransletName);
-    }
-
     public TransletRule getRestfulTransletRule(String requestTransletName, MethodType requestMethod) {
         if (!restfulTransletRuleSet.isEmpty()) {
             for (TransletRule transletRule : restfulTransletRuleSet) {

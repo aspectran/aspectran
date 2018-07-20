@@ -32,10 +32,6 @@ public class PathVariableMap extends HashMap<Token, String> {
 
     private static final long serialVersionUID = -3327966082696522044L;
 
-    public PathVariableMap(int initialCapacity) {
-        super(initialCapacity);
-    }
-
     protected void apply(Translet translet) {
         for (Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
@@ -48,7 +44,7 @@ public class PathVariableMap extends HashMap<Token, String> {
     }
 
     public static PathVariableMap newInstance(Token[] nameTokens, String requestTransletRuleName) {
-        PathVariableMap pathVariableMap = new PathVariableMap(nameTokens.length);
+        PathVariableMap pathVariableMap = new PathVariableMap();
 
         /*
             /example/customers/123-567/approval
