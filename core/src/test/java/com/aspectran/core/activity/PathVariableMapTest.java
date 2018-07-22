@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 /**
@@ -31,7 +32,7 @@ public class PathVariableMapTest {
 
     @Test
     public void testNewInstance() {
-        String transletNamePattern = "/aaa/${bbb1}/bbb2/ccc/${ddd:eee}/fff/${ggg:ggg}";
+        String transletNamePattern = "/aaa/${bbb1}/bbb2/ccc/${ddd:eee}/fff/@{ggg:ggg}";
         String requestTransletName = "/aaa/bbb1/bbb2/ccc/ddd/fff/";
 
         List<Token> tokenList = Tokenizer.tokenize(transletNamePattern, false);
@@ -39,10 +40,13 @@ public class PathVariableMapTest {
 
         Map<Token, String> map = PathVariableMap.newInstance(nameTokens, requestTransletName);
 
-        //System.out.println();
-        //System.out.println(map);
-
         assertNotNull(map);
+
+        for (Map.Entry<Token, String> entry : map.entrySet()) {
+            Token token = entry.getKey();
+            String value = entry.getValue();
+            assertEquals(token.getName(), value);
+        }
     }
 
 }
