@@ -18,6 +18,7 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
@@ -41,6 +42,11 @@ public class DefaultActivity extends BasicActivity {
 
     @Override
     public void prepare(String transletName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(TransletRule transletRule) {
         throw new UnsupportedOperationException();
     }
 

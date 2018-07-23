@@ -109,6 +109,14 @@ public class CoreActivity extends BasicActivity {
     }
 
     @Override
+    public void prepare(TransletRule transletRule) {
+        this.transletName = transletRule.getName();
+        this.requestMethod = MethodType.GET;
+
+        prepare(transletRule, null);
+    }
+
+    @Override
     public void prepare(String transletName, String requestMethod) {
         prepare(transletName, MethodType.resolve(requestMethod));
     }

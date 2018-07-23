@@ -66,11 +66,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 
     @Override
     public void add(String key, V value) {
-        List<V> headerValues = this.values.get(key);
-        if (headerValues == null) {
-            headerValues = new LinkedList<>();
-            this.values.put(key, headerValues);
-        }
+        List<V> headerValues = this.values.computeIfAbsent(key, k -> new LinkedList<>());
         headerValues.add(value);
     }
 

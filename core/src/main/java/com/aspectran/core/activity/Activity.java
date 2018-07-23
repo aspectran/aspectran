@@ -27,6 +27,7 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 
 import java.util.List;
@@ -44,6 +45,13 @@ public interface Activity extends BeanRegistry {
      * @param transletName the translet name
      */
     void prepare(String transletName);
+
+    /**
+     * Prepare for the activity.
+     *
+     * @param transletRule the translet rule
+     */
+    void prepare(TransletRule transletRule);
 
     /**
      * Prepare for the activity.

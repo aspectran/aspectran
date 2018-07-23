@@ -285,6 +285,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return explicitContent;
     }
 
+    public boolean isRestful() {
+        return (nameTokens != null);
+    }
+
     /**
      * Sets the content list.
      *

@@ -441,9 +441,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     protected void prepareAspectAdviceRule(TransletRule transletRule) {
-        if (transletRule.getNameTokens() == null) {
-            this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
-        } else {
+        if (transletRule.isRestful()) {
             AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
                 JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
@@ -460,6 +458,8 @@ public abstract class AbstractActivity implements Activity {
                 }
             }
             this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
+        } else {
+            this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
         }
     }
 

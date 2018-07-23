@@ -49,7 +49,7 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
     }
 
     /**
-     * Auto-naming for unnamed item name.
+     * Auto-naming for unnamed item.
      * Auto-naming if did not specify the name of the item.
      *
      * @param itemRule the item rule
