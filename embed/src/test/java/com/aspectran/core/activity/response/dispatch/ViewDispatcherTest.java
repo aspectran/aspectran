@@ -31,6 +31,8 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean;
 import com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine;
+import com.aspectran.core.support.pebble.PebbleEngineFactoryBean;
+import com.aspectran.core.support.pebble.PebbleTemplateEngine;
 import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
 import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
@@ -89,6 +91,27 @@ public class ViewDispatcherTest {
         propertyItemRule2.setValue(".ftl");
         parameters.addRule(freeMarkerViewDispatcherBeanRule);
 
+        BeanRule pebbleEngineFactoryBeanRule = new BeanRule();
+        pebbleEngineFactoryBeanRule.setId("pebbleEngineFactory");
+        pebbleEngineFactoryBeanRule.setBeanClass(PebbleEngineFactoryBean.class);
+        parameters.addRule(pebbleEngineFactoryBeanRule);
+
+        BeanRule pebbleBeanRule = new BeanRule();
+        pebbleBeanRule.setId("pebble");
+        pebbleBeanRule.setBeanClass(PebbleTemplateEngine.class);
+        ItemRule constructorArgumentItemRule3 = pebbleBeanRule.newConstructorArgumentItemRule();
+        constructorArgumentItemRule3.setValue("#{pebbleEngineFactory}");
+        parameters.addRule(pebbleBeanRule);
+
+        /*
+        BeanRule pebbleViewDispatcherBeanRule = new BeanRule();
+        pebbleViewDispatcherBeanRule.setId("pebbleViewDispatcher");
+        pebbleViewDispatcherBeanRule.setBeanClass(PebbleViewDispatcher.class);
+        ItemRule constructorArgumentItemRule4 = pebbleViewDispatcherBeanRule.newConstructorArgumentItemRule();
+        constructorArgumentItemRule4.setValue("#{pebbleEngineFactory}");
+        parameters.addRule(pebbleViewDispatcherBeanRule);
+        */
+
         AspectRule aspectRule1 = new AspectRule();
         aspectRule1.setId("transletSettings");
         SettingsAdviceRule settingsAdviceRule1 = aspectRule1.touchSettingsAdviceRule();
@@ -125,6 +148,17 @@ public class ViewDispatcherTest {
         dispatchResponseRule1.setName("freemarker-template1");
         transletRule3.applyResponseRule(dispatchResponseRule1);
         aspectran1.addRule(transletRule3);
+
+        TransletRule transletRule4 = new TransletRule();
+        transletRule4.setName("test/pebble");
+        TransformRule transformRule4 = new TransformRule();
+        transformRule4.setTransformType(TransformType.TEXT);
+        TemplateRule templateRule3 = new TemplateRule();
+        templateRule3.setEngineBeanId("pebble");
+        templateRule3.setTemplateSource("{{ param1 }} {{ param2 }}");
+        transformRule4.setTemplateRule(templateRule3);
+        transletRule4.applyResponseRule(transformRule4);
+        aspectran1.addRule(transletRule4);
 
         parameters.addRule(aspectran1);
 
@@ -180,6 +214,19 @@ public class ViewDispatcherTest {
         String result = translet.getResponseAdapter().getWriter().toString();
 
         System.out.println(result);
+    }
+
+    @Test
+    public void testPebbleTemplate() throws IOException {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("param1", "hello");
+        params.setParameter("param2", "pebble");
+
+        Translet translet = service.translet("test/pebble", params);
+        String result = translet.getResponseAdapter().getWriter().toString();
+
+        assertEquals("hello pebble", result);
+        //System.out.println(result);
     }
 
 }
