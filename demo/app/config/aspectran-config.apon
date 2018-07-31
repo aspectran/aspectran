@@ -58,10 +58,10 @@ shell: {
         |   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
         |  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
         | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
-        |=========== /_/ ================================================ {{red}}5.1.0{{off}} ===
+        |=========== /_/ ==========================================================
         |
         |
-        |   {{bold}}Welcome To Aspectran Demo{{bold:off}}
+        |   {{bold}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{bold:off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
         |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
