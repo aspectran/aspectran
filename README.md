@@ -93,10 +93,8 @@ Check out and build:
 ## Links
 
 * [Web Site](http://www.aspectran.com/)
-* [Quick Start Guide](http://www.aspectran.com/getting-started/quickstart/)
-* [Downloads](http://www.aspectran.com/getting-started/download/)
-* [API Reference](http://api.aspectran.com/)
-* [Changelog](http://www.aspectran.com/docs/changelog/)
+* [Downloads](http://www.aspectran.com/getting-started/downloads/)
+* [API Reference](http://javadoc.io/doc/com.aspectran/aspectran-all)
 
 ## License
 
