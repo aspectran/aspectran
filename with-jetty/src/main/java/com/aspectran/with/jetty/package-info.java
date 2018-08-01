@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Supports for building standalone Web application that is built-in Jetty server.
+ * Supports for building standalone Web application using embedded Jetty 9 server.
  */
 package com.aspectran.with.jetty;
