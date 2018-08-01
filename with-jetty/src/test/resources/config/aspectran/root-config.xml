@@ -1,0 +1,73 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+<aspectran>
+
+    <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
+    <aspect id="activityDataAccessibility">
+        <description>
+            The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
+        </description>
+        <joinpoint target="translet"/>
+        <advice>
+            <before>
+                <echo>
+                    <attributes>
+                        <item name="data">
+                            <call bean="currentActivityData"/>
+                        </item>
+                    </attributes>
+                </echo>
+            </before>
+        </advice>
+    </aspect>
+
+    <aspect id="errorReport">
+        <description>
+            Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
+        </description>
+        <joinpoint target="translet"/>
+        <exception>
+            <thrown>
+                <transform type="transform/text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}An Error Occurred!{{off}}
+                        |{{BLUE}}-----------------------------------------------------------------------------------------{{off}}
+                        |   #{currentTranslet^rootCauseOfRaisedException}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+        <description>
+            Register a JSP View Dispatcher.
+        </description>
+        <properties>
+            <item name="prefix">/target/jsp/</item>
+            <item name="suffix">.jsp</item>
+        </properties>
+    </bean>
+
+    <aspect id="transletSettings">
+        <description>
+            Specifies the environment variables used during request and response processing.
+        </description>
+        <joinpoint target="translet"/>
+        <settings>
+            <setting name="characterEncoding" value="utf-8"/>
+            <setting name="contentEncoding" value="gzip"/>
+            <setting name="viewDispatcher" value="jspViewDispatcher"/>
+            <setting name="indentString" value="  "/>
+        </settings>
+    </aspect>
+
+    <append resource="config/aspectran/jetty-config.xml"/>
+    <append resource="config/aspectran/jetty-controller.xml"/>
+
+</aspectran>

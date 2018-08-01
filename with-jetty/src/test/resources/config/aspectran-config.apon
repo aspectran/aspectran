@@ -1,0 +1,26 @@
+context: {
+    root: classpath:config/aspectran/root-config.xml
+    resources: [
+    ]
+    profiles: {
+    }
+    hybridLoad: false
+    autoReload: {
+        reloadMode: soft
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    singleton: true
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    startup: false
+}
+web: {
+    uriDecoding: utf-8
+    defaultServletName: default
+    exposals: {
+        +: /**
+    }
+}

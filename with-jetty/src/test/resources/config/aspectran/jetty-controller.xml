@@ -1,0 +1,70 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        A collection of commands for controlling the Jetty Server.
+    </description>
+
+    <translet name="jetty">
+        <description style="apon">
+            |
+            |{{underline}}To control Jetty, try one of the following commands:{{off}}
+            |   {{CYAN}}jetty start{{fg:off}}  Runs a Jetty Server
+            |   {{CYAN}}jetty stop{{fg:off}}   Stops the currently running Jetty Server
+        </description>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="jetty start">
+        <description style="apon">
+            |
+            |   {{WHITE}}Starting the Jetty Server...{{off}}
+            |-----------------------------------------
+        </description>
+        <action bean="jetty.server" method="start"/>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   Web server started on localhost:%{jetty.server.port}
+                |
+            </template>
+        </transform>
+        <exception>
+            <thrown type="java.net.BindException">
+                <transform type="transform/text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}Jetty Server Error - Port %{jetty.server.port} already in use{{off}}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </translet>
+
+    <translet name="jetty stop">
+        <description style="apon">
+            |
+            |   {{WHITE}}Stopping the Jetty Server...{{off}}
+            |-----------------------------------------
+        </description>
+        <action bean="jetty.server" method="stop"/>
+        <transform type="transform/text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>
