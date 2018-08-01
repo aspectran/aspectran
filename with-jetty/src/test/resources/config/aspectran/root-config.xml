@@ -49,7 +49,7 @@
             Register a JSP View Dispatcher.
         </description>
         <properties>
-            <item name="prefix">/target/jsp/</item>
+            <item name="prefix">/WEB-INF/jsp/</item>
             <item name="suffix">.jsp</item>
         </properties>
     </bean>
@@ -69,5 +69,17 @@
 
     <append resource="config/aspectran/jetty-config.xml"/>
     <append resource="config/aspectran/jetty-controller.xml"/>
+
+    <translet name="/hello">
+        <transform type="transform/text">
+            <template style="apon">
+                |world
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="/hello2">
+        <dispatch name="hello"/>
+    </translet>
 
 </aspectran>

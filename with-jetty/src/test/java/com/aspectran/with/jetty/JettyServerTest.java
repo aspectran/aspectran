@@ -15,15 +15,26 @@
  */
 package com.aspectran.with.jetty;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.embed.service.EmbeddedService;
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+
+import static junit.framework.TestCase.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JettyServerTest {
@@ -32,8 +43,16 @@ public class JettyServerTest {
 
     @Before
     public void ready() throws Exception {
+        String basePath = new File("target").getCanonicalPath();
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
+
+        new File(basePath, "logs").mkdirs();
+        new File(basePath, "webapps/root/WEB-INF").mkdirs();
+
+        FileUtils.copyFile(ResourceUtils.getResourceAsFile("config/web.xml"), new File(basePath, "webapps/root/WEB-INF/web.xml"));
+
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
+        aspectranConfig.updateBasePath(basePath);
 
         service = EmbeddedService.create(aspectranConfig);
         service.start();
@@ -44,6 +63,26 @@ public class JettyServerTest {
         if (service != null) {
             service.stop();
         }
+    }
+
+    @Test
+    public void test1() {
+        service.translet("jetty start");
+
+        Awaitility.await().until(() -> {
+            Translet translet = service.translet("/hello");
+            assertEquals(translet.getResponseAdapter().getWriter().toString(), "world");
+
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpGet request = new HttpGet("http://localhost:8099/hello");
+            HttpResponse response = client.execute(request);
+            String responseString = new BasicResponseHandler().handleResponse(response);
+            assertEquals(responseString, "world");
+
+            return true;
+        });
+
+        service.translet("jetty stop");
     }
 
 }
