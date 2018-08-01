@@ -163,6 +163,11 @@ public class AspectranConfig extends AbstractParameters {
         putValue(web, webConfig);
     }
 
+    public void updateBasePath(String basePath) {
+        Parameters contextParameters = touchParameters(context);
+        contextParameters.putValue(ContextConfig.base, basePath);
+    }
+
     public void updateRootConfigLocation(String rootConfigLocation) {
         Parameters contextParameters = touchParameters(context);
         contextParameters.putValue(ContextConfig.root, rootConfigLocation);

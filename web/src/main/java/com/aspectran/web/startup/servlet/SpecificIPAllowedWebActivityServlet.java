@@ -52,12 +52,9 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     @Override
     public void init() throws ServletException {
         String addresses = getServletConfig().getInitParameter("allowedAddresses");
-
         if (addresses != null) {
-            allowedAddresses = new HashSet<String>();
-
+            allowedAddresses = new HashSet<>();
             StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
-
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
                 allowedAddresses.add(token);
@@ -70,12 +67,10 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String remoteAddr = req.getRemoteAddr();
-
         if (!isAllowedAddress(remoteAddr)) {
             if (debugEnabled) {
                 log.debug("Access Denied: " + remoteAddr);
             }
-
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
