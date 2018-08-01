@@ -331,16 +331,16 @@
                             <packages>com.aspectran.core*:com.aspectran.scheduler*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Shell</title>
-                            <packages>com.aspectran.shell*</packages>
-                        </group>
-                        <group>
                             <title>Aspectran Daemon</title>
                             <packages>com.aspectran.daemon*</packages>
                         </group>
                         <group>
                             <title>Aspectran Embed</title>
                             <packages>com.aspectran.embed*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran Shell</title>
+                            <packages>com.aspectran.shell*</packages>
                         </group>
                         <group>
                             <title>Aspectran Web</title>
