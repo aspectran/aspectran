@@ -11,8 +11,8 @@
         <properties>
             <item name="jetty.startup" value="false" valueType="boolean"/>
             <item name="jetty.server.port" value="8099" valueType="int"/>
-            <item name="jetty.server.minThreads" value="10" valueType="int"/>
-            <item name="jetty.server.maxThreads" value="100" valueType="int"/>
+            <item name="jetty.server.minThreads" value="1" valueType="int"/>
+            <item name="jetty.server.maxThreads" value="5" valueType="int"/>
         </properties>
     </environment>
 
@@ -92,7 +92,7 @@
 
     <bean id="jetty.ncsaRequestLog" class="org.eclipse.jetty.server.NCSARequestLog" scope="prototype">
         <properties>
-            <item name="filename">#{basePath}/logs/demo-yyyy_mm_dd.request.log</item>
+            <item name="filename">#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
             <item name="filenameDateFormat">yyyy_MM_dd</item>
             <item name="logDateFormat">yyyy-MM-dd HH:mm:ss Z</item>
             <item name="logTimeZone">GMT+9</item>

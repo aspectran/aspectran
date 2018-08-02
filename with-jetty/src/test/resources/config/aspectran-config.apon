@@ -19,7 +19,6 @@ scheduler: {
 }
 web: {
     uriDecoding: utf-8
-    defaultServletName: default
     exposals: {
         +: /**
     }

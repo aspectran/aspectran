@@ -25,7 +25,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -33,6 +32,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+import java.io.IOException;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -47,42 +47,34 @@ public class JettyServerTest {
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
 
         new File(basePath, "logs").mkdirs();
-        new File(basePath, "webapps/root/WEB-INF").mkdirs();
-
-        FileUtils.copyFile(ResourceUtils.getResourceAsFile("config/web.xml"), new File(basePath, "webapps/root/WEB-INF/web.xml"));
+        FileUtils.copyDirectory(ResourceUtils.getResourceAsFile("webapps"), new File(basePath, "webapps"));
 
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.updateBasePath(basePath);
 
         service = EmbeddedService.create(aspectranConfig);
         service.start();
+        service.translet("jetty start");
     }
 
     @After
     public void finish() {
         if (service != null) {
+            service.translet("jetty stop");
             service.stop();
         }
     }
 
     @Test
-    public void test1() {
-        service.translet("jetty start");
+    public void testHello() throws IOException {
+        Translet translet = service.translet("/hello");
+        assertEquals(translet.getResponseAdapter().getWriter().toString(), "world");
 
-        Awaitility.await().until(() -> {
-            Translet translet = service.translet("/hello");
-            assertEquals(translet.getResponseAdapter().getWriter().toString(), "world");
-
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("http://localhost:8099/hello");
-            HttpResponse response = client.execute(request);
-            String responseString = new BasicResponseHandler().handleResponse(response);
-            assertEquals(responseString, "world");
-
-            return true;
-        });
-
-        service.translet("jetty stop");
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet("http://localhost:8099/hello_jsp");
+        HttpResponse response = client.execute(request);
+        String responseString = new BasicResponseHandler().handleResponse(response);
+        assertEquals(responseString.trim(), "world");
     }
 
 }

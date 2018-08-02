@@ -78,7 +78,7 @@
         </transform>
     </translet>
 
-    <translet name="/hello2">
+    <translet name="/hello_jsp">
         <dispatch name="hello"/>
     </translet>
 
