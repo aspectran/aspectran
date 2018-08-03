@@ -71,7 +71,7 @@ public class JettyServerTest {
         assertEquals(translet.getResponseAdapter().getWriter().toString(), "world");
 
         HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet("http://localhost:8099/hello_jsp");
+        HttpGet request = new HttpGet("http://127.0.0.0:8099/hello_jsp");
         HttpResponse response = client.execute(request);
         String responseString = new BasicResponseHandler().handleResponse(response);
         assertEquals(responseString.trim(), "world");
