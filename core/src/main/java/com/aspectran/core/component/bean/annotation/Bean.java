@@ -36,8 +36,6 @@ public @interface Bean {
 
     String destroyMethod() default "";
 
-    String factoryMethod() default "";
-
     boolean lazyInit() default false;
     
     boolean important() default false;
