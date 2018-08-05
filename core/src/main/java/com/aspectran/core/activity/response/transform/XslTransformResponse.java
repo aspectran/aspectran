@@ -138,7 +138,7 @@ public class XslTransformResponse extends TransformResponse {
             if (noCache) {
                 File file = environment.toRealPathAsFile(templateFile);
                 this.templates = createTemplates(file);
-                determineOutoutStyle();
+                determineOutputStyle();
             } else {
                 File file = environment.toRealPathAsFile(templateFile);
                 long lastModifiedTime = file.lastModified();
@@ -147,7 +147,7 @@ public class XslTransformResponse extends TransformResponse {
                         lastModifiedTime = file.lastModified();
                         if (lastModifiedTime > this.templateLastModifiedTime) {
                             this.templates = createTemplates(file);
-                            determineOutoutStyle();
+                            determineOutputStyle();
                             this.templateLastModifiedTime = lastModifiedTime;
                         }
                     }
@@ -157,14 +157,14 @@ public class XslTransformResponse extends TransformResponse {
             if (noCache) {
                 ClassLoader classLoader = environment.getClassLoader();
                 this.templates = createTemplates(classLoader.getResource(templateResource));
-                determineOutoutStyle();
+                determineOutputStyle();
             } else {
                 if (!this.templateLoaded) {
                     synchronized (this) {
                         if (!this.templateLoaded) {
                             ClassLoader classLoader = environment.getClassLoader();
                             this.templates = createTemplates(classLoader.getResource(templateResource));
-                            determineOutoutStyle();
+                            determineOutputStyle();
                             this.templateLoaded = true;
                         }
                     }
@@ -173,13 +173,13 @@ public class XslTransformResponse extends TransformResponse {
         } else if (templateUrl != null) {
             if (noCache) {
                 this.templates = createTemplates(new URL(templateUrl));
-                determineOutoutStyle();
+                determineOutputStyle();
             } else {
                 if (!this.templateLoaded) {
                     synchronized (this) {
                         if (!this.templateLoaded) {
                             this.templates = createTemplates(new URL(templateUrl));
-                            determineOutoutStyle();
+                            determineOutputStyle();
                             this.templateLoaded = true;
                         }
                     }
@@ -190,7 +190,7 @@ public class XslTransformResponse extends TransformResponse {
         }
     }
 
-    private void determineOutoutStyle() {
+    private void determineOutputStyle() {
         contentType = transformRule.getContentType();
         if (contentType == null) {
             contentType = getContentType(templates);
@@ -223,7 +223,6 @@ public class XslTransformResponse extends TransformResponse {
         Properties outputProperties = templates.getOutputProperties();
         String outputMethod = outputProperties.getProperty(OutputKeys.METHOD);
         String contentType = null;
-
         if (outputMethod != null) {
             if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_XML)) {
                 contentType = ContentType.TEXT_XML.toString();
@@ -233,7 +232,6 @@ public class XslTransformResponse extends TransformResponse {
                 contentType = ContentType.TEXT_PLAIN.toString();
             }
         }
-
         return contentType;
     }
     
