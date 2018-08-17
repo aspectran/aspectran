@@ -361,7 +361,7 @@ public class Token implements BeanReferenceInspectable, Replicable {
 
     @Override
     public boolean equals(Object token) {
-        return this == token || (token instanceof Token && deepEquals((Token)token));
+        return (this == token || (token instanceof Token && deepEquals((Token)token)));
     }
 
     private boolean deepEquals(Token token) {

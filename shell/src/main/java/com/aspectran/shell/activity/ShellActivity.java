@@ -239,10 +239,10 @@ public class ShellActivity extends CoreActivity {
         console.writeLine("Enter a value for each token:");
         console.offStyle();
 
-        Set<ItemRule> missingItemRules = new LinkedHashSet<>(itemRuleList.size());
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>();
 
         try {
-            Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>(itemRuleList.size());
+            Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>();
             for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
@@ -258,13 +258,13 @@ public class ShellActivity extends CoreActivity {
                                 break;
                             }
                         }
-                        if (!exists) {
+                        if (exists) {
+                            Set<ItemRule> rules = inputTokens.get(t1);
+                            rules.add(itemRule);
+                        } else {
                             Set<ItemRule> rules = new LinkedHashSet<>();
                             rules.add(itemRule);
                             inputTokens.put(t1, rules);
-                        } else {
-                            Set<ItemRule> rules = inputTokens.get(t1);
-                            rules.add(itemRule);
                         }
                     }
                 }
