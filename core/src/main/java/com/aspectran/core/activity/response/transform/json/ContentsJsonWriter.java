@@ -62,12 +62,13 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     @Override
-    public void write(Object object) throws IOException, InvocationTargetException {
+    public ContentsJsonWriter write(Object object) throws IOException, InvocationTargetException {
         if (object instanceof ProcessResult) {
             write((ProcessResult)object);
         } else {
             super.write(object);
         }
+        return this;
     }
 
     /**

@@ -96,19 +96,20 @@ public class JsonWriter implements Flushable {
      * Write an object to a character stream.
      *
      * @param object the object to write to a character-output stream.
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs.
      * @throws InvocationTargetException the invocation target exception
      */
-    public void write(Object object) throws IOException, InvocationTargetException {
+    public JsonWriter write(Object object) throws IOException, InvocationTargetException {
         if (object == null) {
             writeNull();
         } else if (object instanceof String
                 || object instanceof Date) {
-            writeString(object.toString());
+            writeValue(object.toString());
         } else if (object instanceof Boolean) {
-            writeBoolean((Boolean)object);
+            writeValue((Boolean)object);
         } else if (object instanceof Number) {
-            writeNumber((Number)object);
+            writeValue((Number)object);
         } else if (object instanceof Parameters) {
             openCurlyBracket();
 
@@ -196,9 +197,10 @@ public class JsonWriter implements Flushable {
 
                 closeCurlyBracket();
             } else {
-                writeString(object.toString());
+                writeValue(object.toString());
             }
         }
+        return this;
     }
 
     private void checkCircularReference(Object wrapper, Object member) {
@@ -225,19 +227,18 @@ public class JsonWriter implements Flushable {
      * Writes a key name to a character stream.
      *
      * @param name the string to write to a character-output stream
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeName(String name) throws IOException {
+    public JsonWriter writeName(String name) throws IOException {
         indent();
-
         writer.write(escape(name));
         writer.write(":");
-
         if (prettyPrint) {
             writer.write(" ");
         }
-
         willWriteValue = true;
+        return this;
     }
 
     /**
@@ -245,72 +246,74 @@ public class JsonWriter implements Flushable {
      * If {@code value} is null, write a null string ("").
      *
      * @param value the string to write to a character-output stream
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeString(String value) throws IOException {
+    public JsonWriter writeValue(String value) throws IOException {
         if (!willWriteValue) {
             indent();
         }
-
         writer.write(escape(value));
-
         willWriteValue = false;
+        return this;
     }
 
     /**
      *  Writes a {@code Boolean} object to a character stream.
      *
      * @param value a {@code Boolean} object to write to a character-output stream
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeBoolean(Boolean value) throws IOException {
+    public JsonWriter writeValue(Boolean value) throws IOException {
         if (!willWriteValue) {
             indent();
         }
-
         writer.write(value.toString());
-
         willWriteValue = false;
+        return this;
     }
 
     /**
      *  Writes a {@code Number} object to a character stream.
      *
      * @param value a {@code Number} object to write to a character-output stream
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeNumber(Number value) throws IOException {
+    public JsonWriter writeValue(Number value) throws IOException {
         if (!willWriteValue) {
             indent();
         }
-
         writer.write(value.toString());
-
         willWriteValue = false;
+        return this;
     }
 
     /**
      * Write a string "null" to a character stream.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeNull() throws IOException {
+    public JsonWriter writeNull() throws IOException {
         writer.write("null");
+        return this;
     }
 
     /**
      * Write a comma character to a character stream.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void writeComma() throws IOException {
+    public JsonWriter writeComma() throws IOException {
         writer.write(",");
-
         if (prettyPrint) {
             writer.write(" ");
         }
-
         nextLine();
+        return this;
     }
 
     /**
@@ -325,64 +328,64 @@ public class JsonWriter implements Flushable {
     }
 
     /**
-     * Open brace.
+     * Open a single curly bracket.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void openCurlyBracket() throws IOException {
+    public JsonWriter openCurlyBracket() throws IOException {
         if (!willWriteValue) {
             indent();
         }
-
         writer.write("{");
         nextLine();
-
         indentDepth++;
+        return this;
     }
 
     /**
-     * Close brace.
+     * Close the open curly bracket.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void closeCurlyBracket() throws IOException {
+    public JsonWriter closeCurlyBracket() throws IOException {
         indentDepth--;
-
         nextLine();
         indent();
-
         writer.write("}");
+        return this;
     }
 
     /**
-     * Open square bracket.
+     * Open a single square bracket.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void openSquareBracket() throws IOException {
+    public JsonWriter openSquareBracket() throws IOException {
         if (!willWriteValue) {
             indent();
         }
-
         writer.write("[");
         nextLine();
-
         indentDepth++;
         willWriteValue = false;
+        return this;
     }
 
     /**
-     * Close square bracket.
+     * Close the open square bracket.
      *
+     * @return this JsonWriter
      * @throws IOException an I/O error occurs
      */
-    protected void closeSquareBracket() throws IOException {
+    public JsonWriter closeSquareBracket() throws IOException {
         indentDepth--;
-
         nextLine();
         indent();
-
         writer.write("]");
+        return this;
     }
 
     @Override
@@ -399,7 +402,6 @@ public class JsonWriter implements Flushable {
         if (writer != null) {
             writer.close();
         }
-        writer = null;
     }
 
     /**
@@ -408,7 +410,7 @@ public class JsonWriter implements Flushable {
      * text to be delivered in HTML. In JSON text, a string cannot contain a
      * control character or an unescaped quote or backslash.
      *
-     * @param string a String
+     * @param string the input String, may be null
      * @return a String correctly formatted for insertion in a JSON text
      */
     private static String escape(String string) {
@@ -510,16 +512,12 @@ public class JsonWriter implements Flushable {
         if (object == null) {
             return null;
         }
-
         try {
-            Writer writer = new StringWriter();
-
-            JsonWriter jsonWriter;
-            jsonWriter = new JsonWriter(writer, indentString);
+            Writer out = new StringWriter();
+            JsonWriter jsonWriter = new JsonWriter(out, indentString);
             jsonWriter.write(object);
             jsonWriter.close();
-
-            return writer.toString();
+            return out.toString();
         } catch (Exception e) {
             throw new RuntimeException("Cannot convert to a JSON formatted string", e);
         }
