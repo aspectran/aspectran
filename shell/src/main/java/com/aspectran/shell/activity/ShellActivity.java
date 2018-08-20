@@ -135,18 +135,20 @@ public class ShellActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            console.setStyle("WHITE", "underline");
+            console.setStyle("WHITE", "bold");
             console.writeLine("Required parameters:");
             console.offStyle();
 
             for (ItemRule itemRule : parameterItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null) {
-                    tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
+                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                    t.setDefaultValue(itemRule.getDefaultValue());
+                    tokens = new Token[] { t };
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                console.setStyle("GREEN");
+                console.setStyle("YELLOW");
                 console.write(mandatoryMarker);
                 console.offStyle();
                 console.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
@@ -161,7 +163,7 @@ public class ShellActivity extends CoreActivity {
 
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
-            console.writeLine("Missing required parameters.");
+            console.writeLine("Required parameters are missing.");
             console.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
@@ -175,7 +177,7 @@ public class ShellActivity extends CoreActivity {
                     console.writeLine("   %s", name);
                 }
                 console.offStyle();
-                terminate("Missing required parameters");
+                terminate("Required parameters are missing");
             }
         }
     }
@@ -189,18 +191,20 @@ public class ShellActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            console.setStyle("WHITE", "underline");
+            console.setStyle("WHITE", "bold");
             console.writeLine("Required attributes:");
             console.offStyle();
 
             for (ItemRule itemRule : attributeItemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null) {
-                    tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
+                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                    t.setDefaultValue(itemRule.getDefaultValue());
+                    tokens = new Token[] { t };
                 }
 
                 String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                console.setStyle("GREEN");
+                console.setStyle("YELLOW");
                 console.write(mandatoryMarker);
                 console.offStyle();
                 console.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
@@ -215,7 +219,7 @@ public class ShellActivity extends CoreActivity {
 
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
-            console.writeLine("Missing required attributes.");
+            console.writeLine("Required attributes are missing.");
             console.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
@@ -229,13 +233,13 @@ public class ShellActivity extends CoreActivity {
                     console.writeLine("   %s", name);
                 }
                 console.offStyle();
-                terminate("Missing required attributes");
+                terminate("Required attributes are missing");
             }
         }
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
-        console.setStyle("underline");
+        console.setStyle("WHITE", "bold");
         console.writeLine("Enter a value for each token:");
         console.offStyle();
 
@@ -247,6 +251,7 @@ public class ShellActivity extends CoreActivity {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
                     Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                    t.setDefaultValue(itemRule.getDefaultValue());
                     tokens = new Token[] { t };
                 }
                 for (Token t1 : tokens) {
@@ -272,6 +277,11 @@ public class ShellActivity extends CoreActivity {
 
             for (Map.Entry<Token, Set<ItemRule>> entry : inputTokens.entrySet()) {
                 Token token = entry.getKey();
+                String value = getRequestAdapter().getParameter(token.getName());
+                if (value != null) {
+                    console.writeLine("   %s: %s", token.stringify(), value);
+                    continue;
+                }
                 Set<ItemRule> rules = entry.getValue();
                 boolean security = false;
                 for (ItemRule ir : rules) {
@@ -280,7 +290,6 @@ public class ShellActivity extends CoreActivity {
                         break;
                     }
                 }
-                String value;
                 if (security) {
                     value = console.readPassword("   %s: ", token.stringify());
                 } else {

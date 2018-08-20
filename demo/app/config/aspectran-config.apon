@@ -61,7 +61,7 @@ shell: {
         |=========== /_/ ==========================================================
         |
         |
-        |   {{bold}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{bold:off}}
+        |   {{WHITE,bold}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{fg:off,bold:off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
         |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.

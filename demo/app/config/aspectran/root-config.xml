@@ -4,7 +4,7 @@
 
     <description style="apon">
         |
-        |{{underline}}Commands that can run examples:{{underline:off}}
+        |{{WHITE,bold}}Commands that can run examples:{{fg:off,bold:off}}
         |   {{CYAN}}hello{{fg:off}}      Prints "Hello, World!" in your console
         |   {{CYAN}}hello2{{fg:off}}     Prints "Hello, World!" in your console using ANSI escape sequences
         |   {{CYAN}}echo{{fg:off}}       It accepts parameters and print as is
@@ -12,12 +12,12 @@
         |   {{CYAN}}login{{fg:off}}      It accepts parameters required for login and print them
         |   {{CYAN}}chpw{{fg:off}}       It accepts parameters for changing the password and print them
         |
-        |{{underline}}To control Jetty, try one of the following commands:{{underline:off}}
+        |{{WHITE,bold}}To control Jetty, try one of the following commands:{{fg:off,bold:off}}
         |   {{MAGENTA}}jetty{{fg:off}}        Displays commands required to control Jetty server
         |   {{MAGENTA}}jetty start{{fg:off}}  Runs a Jetty server
         |   {{MAGENTA}}jetty stop{{fg:off}}   Stops the currently running Jetty server
         |
-        |{{underline}}Once a Jetty server is running, point your web browser to:{{underline:off}}
+        |{{WHITE,bold}}Once a Jetty server is running, point your web browser to:{{fg:off,bold:off}}
         |   {{YELLOW}}http://localhost:8088/{{fg:off}}
         |
     </description>
