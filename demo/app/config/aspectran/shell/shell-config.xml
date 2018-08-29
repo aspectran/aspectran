@@ -10,5 +10,6 @@
 
     <append file="/config/aspectran/shell/translets/hello.xml"/>
     <append file="/config/aspectran/shell/translets/echo.xml"/>
+    <append file="/config/aspectran/shell/translets/speak.xml"/>
 
 </aspectran>

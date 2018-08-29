@@ -1,0 +1,27 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        Simple program to demonstrate the use of the FreeTTS speech synthesizer.
+    </description>
+
+    <bean id="speaker" class="com.aspectran.demo.speak.SpeakerBean">
+        <properties>
+            <item name="voiceName">kevin16</item>
+        </properties>
+    </bean>
+
+    <translet name="speak${text}" method="GET">
+        <description>
+            To call this translet, type "GET speak [TEXT]".
+        </description>
+        <action bean="speaker" method="speak">
+            <arguments>
+                <item>${text:Hello}</item>
+            </arguments>
+        </action>
+    </translet>
+
+</aspectran>
