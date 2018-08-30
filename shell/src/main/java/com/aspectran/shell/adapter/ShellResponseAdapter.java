@@ -16,7 +16,9 @@
 package com.aspectran.shell.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.context.ActivityContext;
 
+import java.io.IOException;
 import java.io.Writer;
 
 /**

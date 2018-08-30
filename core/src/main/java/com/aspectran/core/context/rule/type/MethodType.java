@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
  */
 public enum MethodType {
 
-    ALL,
+    ANY,
 
     /**
      * retrieves a representation of a resource without side-effects
@@ -79,7 +79,7 @@ public enum MethodType {
 
     public boolean containsTo(MethodType[] types) {
         for (MethodType type : types) {
-            if (equals(type) || ALL.equals(type)) {
+            if (equals(type) || ANY.equals(type)) {
                 return true;
             }
         }
@@ -98,7 +98,7 @@ public enum MethodType {
      * @return a {@code MethodType}, may be {@code null}
      */
     public static MethodType resolve(String methodType) {
-        return (methodType != null ? mappings.get(methodType) : null);
+        return (methodType != null ? mappings.get(methodType.toUpperCase()) : null);
     }
 
     /**
@@ -120,7 +120,7 @@ public enum MethodType {
                 if (type != null) {
                     int ord = type.ordinal();
                     if (ord == 0) {
-                        return new MethodType[] { ALL };
+                        return new MethodType[] {ANY};
                     } else {
                         if (types[ord] == null) {
                             types[ord] = type;
@@ -131,17 +131,16 @@ public enum MethodType {
             }
         }
 
-        if (count == 0)
+        if (count == 0) {
             return null;
+        }
 
         MethodType[] orderedTypes = new MethodType[count];
-
         for (int i = 1, seq = 0; i < MAX_COUNT; i++) {
             if (types[i] != null) {
                 orderedTypes[seq++] = types[i];
             }
         }
-
         return orderedTypes;
     }
 

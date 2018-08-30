@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.translet;
 
-import com.aspectran.core.activity.PathVariableMap;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.ActivityContext;
@@ -120,10 +119,8 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
 
         String scanPath = transletRule.getScanPath();
-
         if (scanPath != null) {
             TransletFileScanner scanner = new TransletFileScanner(basePath, classLoader);
-
             if (transletRule.getFilterParameters() != null) {
                 scanner.setFilterParameters(transletRule.getFilterParameters());
             }
@@ -132,12 +129,9 @@ public class TransletRuleRegistry extends AbstractComponent {
             } else {
                 scanner.setTransletNameMaskPattern(scanPath);
             }
-
             PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
-
             scanner.scan(scanPath, (filePath, scannedFile) -> {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
-
                 if (prefixSuffixPattern.isSplitted()) {
                     newTransletRule.setName(prefixSuffixPattern.join(filePath));
                 } else {
@@ -145,7 +139,6 @@ public class TransletRuleRegistry extends AbstractComponent {
                         newTransletRule.setName(transletRule.getName() + filePath);
                     }
                 }
-
                 dissectTransletRule(newTransletRule);
             });
         } else {
@@ -160,7 +153,6 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
 
         List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-
         if (responseRuleList == null || responseRuleList.isEmpty()) {
             saveTransletRule(transletRule);
         } else if (responseRuleList.size() == 1) {
@@ -168,10 +160,8 @@ public class TransletRuleRegistry extends AbstractComponent {
             saveTransletRule(transletRule);
         } else {
             ResponseRule defaultResponseRule = null;
-
             for (ResponseRule responseRule : responseRuleList) {
                 String responseName = responseRule.getName();
-
                 if (responseName == null || responseName.isEmpty()) {
                     if (defaultResponseRule != null) {
                         log.warn("Ignore duplicated default response rule " + defaultResponseRule +
@@ -184,7 +174,6 @@ public class TransletRuleRegistry extends AbstractComponent {
                     saveTransletRule(subTransletRule);
                 }
             }
-
             if (defaultResponseRule != null) {
                 transletRule.setResponseRule(defaultResponseRule);
                 saveTransletRule(transletRule);
@@ -198,7 +187,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         String transletName = applyTransletNamePattern(transletRule.getName());
         transletRule.setName(transletName);
 
-        if (transletRule.getAllowedMethods() != null) {
+        if (transletRule.getAllowedMethods() != null || TransletRule.isRestfulTransletName(transletName)) {
             String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getAllowedMethods());
             transletRuleMap.put(key, transletRule);
             saveRestfulTransletRule(transletRule);
@@ -215,7 +204,6 @@ public class TransletRuleRegistry extends AbstractComponent {
         final String transletName = transletRule.getName();
         List<Token> tokenList = Tokenizer.tokenize(transletName, false);
         Token[] nameTokens = tokenList.toArray(new Token[0]);
-
         StringBuilder sb = new StringBuilder(transletName.length());
 
         for (Token token : nameTokens) {
@@ -228,10 +216,8 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
 
         String newTransletName = sb.toString();
-
         if (WildcardPattern.hasWildcards(newTransletName)) {
             WildcardPattern namePattern = WildcardPattern.compile(newTransletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
-
             transletRule.setNamePattern(namePattern);
             transletRule.setNameTokens(nameTokens);
         }

@@ -61,17 +61,14 @@ public class PathVariableMap extends HashMap<Token, String> {
 
         for (Token token : nameTokens) {
             TokenType type = token.getType();
-
             if (type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
                 lastToken = token;
             } else {
                 String term = token.stringify();
                 endIndex = requestTransletRuleName.indexOf(term, beginIndex);
-
                 if (endIndex == -1) {
                     return null;
                 }
-
                 if (endIndex > beginIndex) {
                     String value = requestTransletRuleName.substring(beginIndex, endIndex);
                     if (!value.isEmpty()) {
@@ -84,10 +81,8 @@ public class PathVariableMap extends HashMap<Token, String> {
                         pathVariableMap.put(prevToken, prevToken.getDefaultValue());
                     }
                 }
-
                 beginIndex += term.length();
             }
-
             prevToken = (token.getType() != TokenType.TEXT ? token : null);
         }
 

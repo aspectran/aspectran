@@ -28,6 +28,8 @@
         </description>
     </bean>
 
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
     <aspect id="sampleAdviceAspect">
         <description>
             sampleAction Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
@@ -78,10 +80,10 @@
                 |   input-2: ${input-2}
                 |   input-3: ${input-3}
                 |----------------------------------------------------------
-                |Retrieve from the Activity data map:
-                |   input-1: @{data^input-1}
-                |   input-2: @{data^input-2}
-                |   input-3: @{data^input-3}
+                |Retrieve from the Activity Data Map:
+                |   input-1: #{currentActivityData^input-1}
+                |   input-2: #{currentActivityData^input-2}
+                |   input-3: #{currentActivityData^input-3}
                 |----------------------------------------------------------
             </template>
         </transform>
@@ -111,6 +113,12 @@
                 |   input-4: @{input-4} - This is an attribute.
                 |----------------------------------------------------------
             </template>
+        </transform>
+    </translet>
+
+    <translet name="echo ${text}">
+        <transform type="transform/text">
+            <template>   > ${text}</template>
         </transform>
     </translet>
 

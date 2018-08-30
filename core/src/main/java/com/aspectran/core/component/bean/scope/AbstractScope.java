@@ -66,7 +66,7 @@ public class AbstractScope implements Scope {
     @Override
     public void destroy() {
         if (log.isDebugEnabled()) {
-            if (scopedBeanMap.size() > 0) {
+            if (!scopedBeanMap.isEmpty()) {
                 log.debug("Destroy the " + scopeType + " scoped beans in the " + this);
             }
         }

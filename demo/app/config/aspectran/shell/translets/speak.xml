@@ -13,9 +13,10 @@
         </properties>
     </bean>
 
-    <translet name="speak${text}" method="GET">
-        <description>
-            To call this translet, type "GET speak [TEXT]".
+    <translet name="speak${text}">
+        <description style="apon">
+            |   To call this translet, type "speak [TEXT]".
+            |   If your system's audio works well, it will speak the text you type.
         </description>
         <action bean="speaker" method="speak">
             <arguments>

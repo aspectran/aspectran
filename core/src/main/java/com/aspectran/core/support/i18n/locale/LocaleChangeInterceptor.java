@@ -136,7 +136,6 @@ public class LocaleChangeInterceptor {
 
     public void handle(Translet translet, LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
-
         if (!checkRequestMethod(requestAdapter.getRequestMethod())) {
             return;
         }
@@ -193,7 +192,7 @@ public class LocaleChangeInterceptor {
         if (requestMethodType == null) {
             return false;
         }
-        if (requestMethodType == MethodType.ALL) {
+        if (requestMethodType == MethodType.ANY) {
             return true;
         }
         for (String configuredMethod : configuredMethods) {

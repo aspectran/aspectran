@@ -133,8 +133,8 @@ public class CoreActivity extends BasicActivity {
         TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
         // for RESTful
-        if (transletRule == null && requestMethod != null) {
-            transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, requestMethod);
+        if (transletRule == null || TransletRule.isRestfulTransletName(transletName)) {
+            transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, this.requestMethod);
         }
 
         if (transletRule == null) {
