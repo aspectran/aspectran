@@ -33,6 +33,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -136,6 +137,18 @@ public class BeanRuleRegistry {
 
     public Map<Class<?>, BeanRule> getConfigBeanRuleMap() {
         return configBeanRuleMap;
+    }
+
+    public Collection<BeanRule> getIdBasedBeanRules() {
+        return idBasedBeanRuleMap.values();
+    }
+
+    public Collection<Set<BeanRule>> getTypeBasedBeanRules() {
+        return typeBasedBeanRuleMap.values();
+    }
+
+    public Collection<BeanRule> getConfigBeanRules() {
+        return configBeanRuleMap.values();
     }
 
     /**

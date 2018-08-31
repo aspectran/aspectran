@@ -25,4 +25,20 @@
         </action>
     </translet>
 
+    <translet name="speak2">
+        <description style="apon">
+            |   If your system's audio works well, it will speak the text you type.
+        </description>
+        <request>
+            <parameters>
+                <item name="text"/>
+            </parameters>
+        </request>
+        <action bean="speaker" method="speak">
+            <arguments>
+                <item>${text:Hello}</item>
+            </arguments>
+        </action>
+    </translet>
+
 </aspectran>

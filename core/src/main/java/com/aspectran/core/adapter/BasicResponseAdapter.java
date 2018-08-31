@@ -111,7 +111,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() {
-        // nothing to do
+        // Nothing to do
     }
 
 }

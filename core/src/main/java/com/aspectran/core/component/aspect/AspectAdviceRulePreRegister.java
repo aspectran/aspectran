@@ -77,17 +77,17 @@ public class AspectAdviceRulePreRegister {
     }
 
     public void register(BeanRuleRegistry beanRuleRegistry) {
-        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
             if (beanRule.isProxiable()) {
                 determineProxyBean(beanRule);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             if (beanRule.isProxiable()) {
                 determineProxyBean(beanRule);
             }
         }
-        for (Set<BeanRule> set : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+        for (Set<BeanRule> set : beanRuleRegistry.getTypeBasedBeanRules()) {
             for (BeanRule beanRule : set) {
                 if (beanRule.isProxiable()) {
                     determineProxyBean(beanRule);

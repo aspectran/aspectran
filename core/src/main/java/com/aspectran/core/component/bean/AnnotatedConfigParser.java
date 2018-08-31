@@ -207,7 +207,6 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> beanClass = beanRule.getBeanClass();
-
         while (beanClass != null) {
             for (Field field : beanClass.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Autowired.class)) {
@@ -244,7 +243,6 @@ public class AnnotatedConfigParser {
                     }
                 }
             }
-
             beanClass = beanClass.getSuperclass();
         }
     }
@@ -257,7 +255,6 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> beanClass = beanRule.getBeanClass();
-
         while (beanClass != null) {
             for (Method method : beanClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Autowired.class)) {
@@ -305,7 +302,6 @@ public class AnnotatedConfigParser {
                     }
                 }
             }
-
             beanClass = beanClass.getSuperclass();
         }
     }
@@ -463,7 +459,6 @@ public class AnnotatedConfigParser {
                 joinpointRule.setHeaders(headers);
             }
             joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
-
             aspectRule.setJoinpointRule(joinpointRule);
         }
 

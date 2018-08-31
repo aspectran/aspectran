@@ -15,17 +15,17 @@
  */
 package com.aspectran.shell.command.builtin;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Collection;
-import java.util.Map;
-
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Collection;
+import java.util.Map;
 
 public class SysInfoCommand extends AbstractCommand {
 

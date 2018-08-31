@@ -38,16 +38,16 @@ public class AspectRuleRegistry extends AbstractComponent {
     public AspectRuleRegistry() {
     }
 
-    public Map<String, AspectRule> getAspectRuleMap() {
-        return aspectRuleMap;
-    }
-
-    public boolean contains(String aspectId) {
-        return aspectRuleMap.containsKey(aspectId);
+    public Collection<AspectRule> getAspectRules() {
+        return aspectRuleMap.values();
     }
 
     public AspectRule getAspectRule(String aspectId) {
         return aspectRuleMap.get(aspectId);
+    }
+
+    public boolean contains(String aspectId) {
+        return aspectRuleMap.containsKey(aspectId);
     }
 
     public void addAspectRule(AspectRule aspectRule) {
@@ -56,10 +56,6 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (log.isTraceEnabled()) {
             log.trace("add AspectRule " + aspectRule);
         }
-    }
-
-    public Collection<AspectRule> getAspectRules() {
-        return aspectRuleMap.values();
     }
 
     public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {

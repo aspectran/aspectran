@@ -38,6 +38,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,17 +159,16 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             return;
         }
 
-        Map<String, ScheduleRule> scheduleRuleMap = context.getScheduleRuleRegistry().getScheduleRuleMap();
-        if (scheduleRuleMap == null) {
+        Collection<ScheduleRule> scheduleRules = context.getScheduleRuleRegistry().getScheduleRules();
+        if (scheduleRules == null || scheduleRules.isEmpty()) {
             return;
         }
 
         log.info("Now try to starting QuartzSchedulerService");
 
         try {
-            for (ScheduleRule scheduleRule : scheduleRuleMap.values()) {
+            for (ScheduleRule scheduleRule : scheduleRules) {
                 Scheduler scheduler = buildScheduler((scheduleRule));
-
                 schedulerSet.add(scheduler);
                 schedulerMap.put(scheduleRule.getId(), scheduler);
             }
@@ -176,7 +176,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             for (Scheduler scheduler : schedulerSet) {
                 log.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
 
-                //Listener attached to jobKey
+                // Listener attached to jobKey
                 JobListener defaultJobListener = new QuartzJobListener();
                 scheduler.getListenerManager().addJobListener(defaultJobListener);
 

@@ -88,11 +88,9 @@ public abstract class AbstractDynamicBeanProxy {
 
     private RelevantAspectRuleHolder createRelevantAspectRuleHolder(
             String transletName, String beanId, String className, String methodName) {
-        Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
         AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
-
-        for (AspectRule aspectRule : aspectRuleMap.values()) {
+        for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
@@ -106,7 +104,6 @@ public abstract class AbstractDynamicBeanProxy {
         }
 
         AspectAdviceRuleRegistry registry = postRegister.getAspectAdviceRuleRegistry();
-
         if (!dynamicAspectRuleList.isEmpty() || (registry != null && registry.getAspectRuleCount() > 0)) {
             RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
             if (!dynamicAspectRuleList.isEmpty()) {

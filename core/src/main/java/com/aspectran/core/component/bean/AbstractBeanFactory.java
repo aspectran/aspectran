@@ -402,15 +402,15 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         Activity activity = context.getDefaultActivity();
 
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             instantiateSingleton(beanRule, activity);
         }
-        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
             for (BeanRule beanRule : beanRuleSet) {
                 instantiateSingleton(beanRule, activity);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
             instantiateSingleton(beanRule, activity);
         }
     }
@@ -433,15 +433,15 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         int failedDestroyes = 0;
 
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
-        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
             for (BeanRule beanRule : beanRuleSet) {
                 failedDestroyes += doDestroySingleton(beanRule);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
 

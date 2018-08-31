@@ -44,16 +44,16 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         this.assistantLocal = assistantLocal;
     }
 
-    public Map<String, ScheduleRule> getScheduleRuleMap() {
-        return scheduleRuleMap;
-    }
-
-    public boolean contains(String scheduleId) {
-        return scheduleRuleMap.containsKey(scheduleId);
+    public Collection<ScheduleRule> getScheduleRules() {
+        return scheduleRuleMap.values();
     }
 
     public ScheduleRule getScheduleRule(String scheduleId) {
         return scheduleRuleMap.get(scheduleId);
+    }
+
+    public boolean contains(String scheduleId) {
+        return scheduleRuleMap.containsKey(scheduleId);
     }
 
     public void addScheduleRule(ScheduleRule scheduleRule) {
@@ -72,10 +72,6 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         if (log.isTraceEnabled()) {
             log.trace("add ScheduleRule " + scheduleRule);
         }
-    }
-
-    public Collection<ScheduleRule> getScheduleRules() {
-        return scheduleRuleMap.values();
     }
 
     @Override

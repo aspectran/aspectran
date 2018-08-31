@@ -677,7 +677,7 @@ public class ContextRuleAssistant {
      * @return the aspect rules
      */
     public Collection<AspectRule> getAspectRules() {
-        return aspectRuleRegistry.getAspectRuleMap().values();
+        return aspectRuleRegistry.getAspectRules();
     }
 
     /**
@@ -687,11 +687,11 @@ public class ContextRuleAssistant {
      */
     public Collection<BeanRule> getBeanRules() {
         Set<BeanRule> beanRuleSet = new HashSet<>();
-        beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRuleMap().values());
-        for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+        beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRules());
+        for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
             beanRuleSet.addAll(brs);
         }
-        beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRuleMap().values());
+        beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRules());
         return beanRuleSet;
     }
 
@@ -701,7 +701,7 @@ public class ContextRuleAssistant {
      * @return the schedule rules
      */
     public Collection<ScheduleRule> getScheduleRules() {
-        return scheduleRuleRegistry.getScheduleRuleMap().values();
+        return scheduleRuleRegistry.getScheduleRules();
     }
 
     /**
@@ -710,7 +710,7 @@ public class ContextRuleAssistant {
      * @return the translet rules
      */
     public Collection<TransletRule> getTransletRules() {
-        return transletRuleRegistry.getTransletRuleMap().values();
+        return transletRuleRegistry.getTransletRules();
     }
 
     /**
@@ -719,7 +719,7 @@ public class ContextRuleAssistant {
      * @return the template rules
      */
     public Collection<TemplateRule> getTemplateRules() {
-        return templateRuleRegistry.getTemplateRuleMap().values();
+        return templateRuleRegistry.getTemplateRules();
     }
 
     /**

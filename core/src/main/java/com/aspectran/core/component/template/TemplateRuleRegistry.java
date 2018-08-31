@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,16 +46,16 @@ public class TemplateRuleRegistry extends AbstractComponent {
         this.assistantLocal = assistantLocal;
     }
 
-    public Map<String, TemplateRule> getTemplateRuleMap() {
-        return templateRuleMap;
-    }
-
-    public boolean contains(String templateId) {
-        return templateRuleMap.containsKey(templateId);
+    public Collection<TemplateRule> getTemplateRules() {
+        return templateRuleMap.values();
     }
 
     public TemplateRule getTemplateRule(String templateId) {
         return templateRuleMap.get(templateId);
+    }
+
+    public boolean contains(String templateId) {
+        return templateRuleMap.containsKey(templateId);
     }
 
     public void addTemplateRule(TemplateRule templateRule) {
@@ -67,7 +68,6 @@ public class TemplateRuleRegistry extends AbstractComponent {
         }
 
         assistantLocal.getAssistant().resolveBeanClass(templateRule);
-
         templateRuleMap.put(templateRule.getId(), templateRule);
 
         if (log.isTraceEnabled()) {
