@@ -65,7 +65,7 @@ public enum MethodType {
 
     TRACE;
 
-    private static final int MAX_COUNT = 9;
+    private static final int MAX_COUNT = 8;
 
     private static final Map<String, MethodType> mappings = new HashMap<>();
 
@@ -130,7 +130,7 @@ public enum MethodType {
         }
 
         MethodType[] orderedTypes = new MethodType[count];
-        for (int i = 1, seq = 0; i < MAX_COUNT; i++) {
+        for (int i = 0, seq = 0; i < MAX_COUNT; i++) {
             if (types[i] != null) {
                 orderedTypes[seq++] = types[i];
             }

@@ -96,13 +96,14 @@ public class WebActivity extends CoreActivity {
         } catch (TransletNotFoundException e) {
             if (!StringUtils.endsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
                 String transletName2 = transletName + ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR;
-                response.setStatus(301);
-                response.setHeader("Location", transletName2);
-                response.setHeader("Connection", "close" );
-                throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and serving directory index files");
-            } else {
-                throw e;
+                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
+                    response.setStatus(301);
+                    response.setHeader("Location", transletName2);
+                    response.setHeader("Connection", "close");
+                    throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and serving directory index files");
+                }
             }
+            throw e;
         }
     }
 

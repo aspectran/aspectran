@@ -79,14 +79,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         if (requestMethod == null) {
             throw new IllegalArgumentException("Argument 'requestMethod' must not be null");
         }
+
         TransletRule transletRule = transletRuleMap.get(transletName);
-        if (transletRule != null) {
-            if (transletRule.getAllowedMethods() == null ||
-                    requestMethod.containsTo(transletRule.getAllowedMethods())) {
-                return transletRule;
-            }
+        if (transletRule == null) {
+            transletRule = getWildTransletRule(transletName, requestMethod);;
         }
-        return getWildTransletRule(transletName, requestMethod);
+        return transletRule;
     }
 
     private TransletRule getWildTransletRule(String transletName, MethodType requestMethod) {
@@ -198,8 +196,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         transletRule.setName(transletName);
 
         MethodType[] allowedMethods = transletRule.getAllowedMethods();
-        boolean pathVariables = hasPathVariables(transletName);
-        if (pathVariables) {
+        if (allowedMethods != null || hasPathVariables(transletName)) {
             String restfulTransletName = makeRestfulTransletName(transletName, allowedMethods);
             transletRuleMap.put(restfulTransletName, transletRule);
             saveWildTransletRule(transletRule);
