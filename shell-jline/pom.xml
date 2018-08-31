@@ -35,8 +35,8 @@
             <artifactId>jline</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-terminal-jna</artifactId>
             <scope>runtime</scope>
         </dependency>
         <!-- Test dependencies -->
