@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jstl</artifactId>
-            <version>9.4.11.v20180605</version>
+            <version>9.4.12.v20180830</version>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
