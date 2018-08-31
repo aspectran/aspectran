@@ -26,8 +26,6 @@ import java.util.StringTokenizer;
  */
 public enum MethodType {
 
-    ANY,
-
     /**
      * retrieves a representation of a resource without side-effects
      * (nothing changes on the server).
@@ -79,7 +77,7 @@ public enum MethodType {
 
     public boolean containsTo(MethodType[] types) {
         for (MethodType type : types) {
-            if (equals(type) || ANY.equals(type)) {
+            if (equals(type)) {
                 return true;
             }
         }
@@ -119,13 +117,9 @@ public enum MethodType {
                 MethodType type = resolve(token);
                 if (type != null) {
                     int ord = type.ordinal();
-                    if (ord == 0) {
-                        return new MethodType[] {ANY};
-                    } else {
-                        if (types[ord] == null) {
-                            types[ord] = type;
-                            count++;
-                        }
+                    if (types[ord] == null) {
+                        types[ord] = type;
+                        count++;
                     }
                 }
             }

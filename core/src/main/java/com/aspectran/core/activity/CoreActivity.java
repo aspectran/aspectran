@@ -130,13 +130,7 @@ public class CoreActivity extends BasicActivity {
         this.transletName = transletName;
         this.requestMethod = (requestMethod == null ? MethodType.GET : requestMethod);
 
-        TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
-
-        // for RESTful
-        if (transletRule == null || TransletRule.isRestfulTransletName(transletName)) {
-            transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, this.requestMethod);
-        }
-
+        TransletRule transletRule = getTransletRuleRegistry().getTransletRule(this.transletName, this.requestMethod);
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName);
         }

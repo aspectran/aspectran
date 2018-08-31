@@ -50,7 +50,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 
-    private final Set<TransletRule> restfulTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildTransletRuleSet = new HashSet<>();
 
     private final String basePath;
 
@@ -67,35 +67,41 @@ public class TransletRuleRegistry extends AbstractComponent {
         this.assistantLocal = assistantLocal;
     }
 
-    public Map<String, TransletRule> getTransletRuleMap() {
-        return transletRuleMap;
-    }
-
-    public Set<TransletRule> getRestfulTransletRuleSet() {
-        return restfulTransletRuleSet;
-    }
-
-    public boolean contains(String transletName) {
-        return transletRuleMap.containsKey(transletName);
+    public Collection<TransletRule> getTransletRules() {
+        return transletRuleMap.values();
     }
 
     public TransletRule getTransletRule(String transletName) {
-        return transletRuleMap.get(transletName);
+        return getTransletRule(transletName, MethodType.GET);
     }
 
-    public TransletRule getRestfulTransletRule(String requestTransletName, MethodType requestMethod) {
-        if (!restfulTransletRuleSet.isEmpty()) {
-            for (TransletRule transletRule : restfulTransletRuleSet) {
+    public TransletRule getTransletRule(String transletName, MethodType requestMethod) {
+        if (requestMethod == null) {
+            throw new IllegalArgumentException("Argument 'requestMethod' must not be null");
+        }
+        TransletRule transletRule = transletRuleMap.get(transletName);
+        if (transletRule != null) {
+            if (transletRule.getAllowedMethods() == null ||
+                    requestMethod.containsTo(transletRule.getAllowedMethods())) {
+                return transletRule;
+            }
+        }
+        return getWildTransletRule(transletName, requestMethod);
+    }
+
+    private TransletRule getWildTransletRule(String transletName, MethodType requestMethod) {
+        if (!wildTransletRuleSet.isEmpty()) {
+            for (TransletRule transletRule : wildTransletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
                 if (namePattern != null) {
-                    if (namePattern.matches(requestTransletName)) {
+                    if (namePattern.matches(transletName)) {
                         if (transletRule.getAllowedMethods() == null
                                 || requestMethod.containsTo(transletRule.getAllowedMethods())) {
                             return transletRule;
                         }
                     }
                 } else {
-                    if (requestTransletName.equals(transletRule.getName())) {
+                    if (transletName.equals(transletRule.getName())) {
                         if (transletRule.getAllowedMethods() == null
                                 || requestMethod.containsTo(transletRule.getAllowedMethods())) {
                             return transletRule;
@@ -107,8 +113,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
-    public Collection<TransletRule> getTransletRules() {
-        return transletRuleMap.values();
+    public boolean contains(String transletName) {
+        return contains(transletName, MethodType.GET);
+    }
+
+    public boolean contains(String transletName, MethodType requestMethod) {
+        return (getTransletRule(transletName, requestMethod) != null);
     }
 
     public void addTransletRule(final TransletRule transletRule) {
@@ -187,10 +197,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         String transletName = applyTransletNamePattern(transletRule.getName());
         transletRule.setName(transletName);
 
-        if (transletRule.getAllowedMethods() != null || TransletRule.isRestfulTransletName(transletName)) {
-            String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getAllowedMethods());
-            transletRuleMap.put(key, transletRule);
-            saveRestfulTransletRule(transletRule);
+        MethodType[] allowedMethods = transletRule.getAllowedMethods();
+        boolean pathVariables = hasPathVariables(transletName);
+        if (pathVariables) {
+            String restfulTransletName = makeRestfulTransletName(transletName, allowedMethods);
+            transletRuleMap.put(restfulTransletName, transletRule);
+            saveWildTransletRule(transletRule);
         } else {
             transletRuleMap.put(transletName, transletRule);
         }
@@ -200,12 +212,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
-    private void saveRestfulTransletRule(TransletRule transletRule) {
+    private void saveWildTransletRule(TransletRule transletRule) {
         final String transletName = transletRule.getName();
         List<Token> tokenList = Tokenizer.tokenize(transletName, false);
         Token[] nameTokens = tokenList.toArray(new Token[0]);
-        StringBuilder sb = new StringBuilder(transletName.length());
 
+        StringBuilder sb = new StringBuilder(transletName.length());
         for (Token token : nameTokens) {
             if (token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
                 sb.append(WildcardPattern.STAR_CHAR);
@@ -215,14 +227,14 @@ public class TransletRuleRegistry extends AbstractComponent {
             }
         }
 
-        String newTransletName = sb.toString();
-        if (WildcardPattern.hasWildcards(newTransletName)) {
-            WildcardPattern namePattern = WildcardPattern.compile(newTransletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+        String wildTransletName = sb.toString();
+        if (WildcardPattern.hasWildcards(wildTransletName)) {
+            WildcardPattern namePattern = WildcardPattern.compile(wildTransletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
             transletRule.setNamePattern(namePattern);
             transletRule.setNameTokens(nameTokens);
         }
 
-        restfulTransletRuleSet.add(transletRule);
+        wildTransletRuleSet.add(transletRule);
     }
 
     /**
@@ -279,7 +291,32 @@ public class TransletRuleRegistry extends AbstractComponent {
     @Override
     protected void doDestroy() {
         transletRuleMap.clear();
-        restfulTransletRuleSet.clear();
+        wildTransletRuleSet.clear();
+    }
+
+    private boolean hasPathVariables(String transletName) {
+        return ((transletName.contains("${") || transletName.contains("@{")) && transletName.contains("}"));
+    }
+
+    private String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
+        if (allowedMethods != null) {
+            if (allowedMethods.length > 1) {
+                int len = transletName.length() + (allowedMethods.length * 8);
+                StringBuilder sb = new StringBuilder(len);
+                for (MethodType type : allowedMethods) {
+                    sb.append(type).append(" ");
+                }
+                sb.append(transletName);
+                return sb.toString();
+            } else if (allowedMethods.length == 1) {
+                return makeRestfulTransletName(transletName, allowedMethods[0]);
+            }
+        }
+        return makeRestfulTransletName(transletName, MethodType.GET);
+    }
+
+    private String makeRestfulTransletName(String transletName, MethodType requestMethod) {
+        return (requestMethod + " " + transletName);
     }
 
 }

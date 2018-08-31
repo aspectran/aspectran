@@ -635,22 +635,4 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return rr;
     }
 
-    public static boolean isRestfulTransletName(String transletName) {
-        return (transletName.contains("${") || transletName.contains("@{"));
-    }
-
-    public static String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
-        if (allowedMethods != null) {
-            int len = transletName.length() + (allowedMethods.length * 8);
-            StringBuilder sb = new StringBuilder(len);
-            for (MethodType type : allowedMethods) {
-                sb.append(type).append(" ");
-            }
-            sb.append(transletName);
-            return sb.toString();
-        } else {
-            return (MethodType.ANY + " " + transletName);
-        }
-    }
-
 }
