@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 /**
- * Contains classes that take advantage of the JLine library to handle shell input and output.
+ * Support for interactive shell using the feature-rich <a href="https://github.com/jline/jline3">JLine</a>
+ * library for providing Aspectran services on the command line.
+ * <p>
+ * Due to Windows' lack of color ANSI services out-of-the-box, this implementation automatically detects the classpath
+ * presence of <a href="http://jansi.fusesource.org/">Jansi</a> and uses it if present. If in addition to Jansi, the
+ * ANSI support will include colour if <a href="https://jna.dev.java.net/">JNA</a> library is also available. Neither
+ * of these libraries are necessary for *nix machines, which support colour ANSI without any special effort. This
+ * implementation has been written to use reflection in order to avoid hard dependencies on Jansi or JNA.
  */
 package com.aspectran.shell.jline;
