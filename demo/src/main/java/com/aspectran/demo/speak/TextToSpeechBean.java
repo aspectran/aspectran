@@ -17,31 +17,60 @@ package com.aspectran.demo.speak;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
+
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * <p>Created: 2018. 8. 29.</p>
  */
-public class SpeakerBean implements InitializableBean, DisposableBean {
+public class TextToSpeechBean implements InitializableBean, DisposableBean {
+
+    private static final Log log = LogFactory.getLog(TextToSpeechBean.class);
 
     private String voiceName;
 
     private Voice voice;
+
+    public void setProperties(Properties properties) {
+        Set<String> keys = properties.stringPropertyNames();
+        for (String key : keys) {
+            System.setProperty(key, properties.getProperty(key));
+        }
+    }
 
     public void setVoiceName(String voiceName) {
         this.voiceName = voiceName;
     }
 
     @Override
-    public void initialize() throws Exception {
-        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-
-        if (voiceName == null) {
-            voiceName = "kevin16";
+    public void initialize() {
+        if (log.isDebugEnabled()) {
+            VoiceManager voiceManager = VoiceManager.getInstance();
+            Voice[] voices = voiceManager.getVoices();
+            String[] arr = new String[voices.length];
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = voices[i].getName() + "(" + voices[i].getDomain() + " domain)";
+            }
+            ToStringBuilder tsb = new ToStringBuilder("All voices available");
+            tsb.append("voices", arr);
+            log.debug(tsb.toString());
         }
 
         VoiceManager voiceManager = VoiceManager.getInstance();
+        if (voiceName != null) {
+            voice = voiceManager.getVoice(voiceName);
+        } else {
+            Voice[] voices = voiceManager.getVoices();
+            if (voices != null && voices.length > 0) {
+                voice = voices[0];
+            }
+        }
         voice = voiceManager.getVoice(voiceName);
         if (voice != null) {
             voice.allocate();
@@ -49,7 +78,7 @@ public class SpeakerBean implements InitializableBean, DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         if (voice != null) {
             voice.deallocate();
         }
@@ -74,7 +103,15 @@ public class SpeakerBean implements InitializableBean, DisposableBean {
     }
 
     public static void main(String[] args) {
-        listAllVoices();
+        Properties props = new Properties();
+        props.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+
+        TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
+        textToSpeechBean.setProperties(props);
+        textToSpeechBean.setVoiceName("kevin16");
+        textToSpeechBean.initialize();
+        textToSpeechBean.speak("test");
+        textToSpeechBean.destroy();
     }
 
 }

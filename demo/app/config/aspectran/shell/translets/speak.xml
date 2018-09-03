@@ -7,8 +7,11 @@
         Simple program to demonstrate the use of the FreeTTS speech synthesizer.
     </description>
 
-    <bean id="speaker" class="com.aspectran.demo.speak.SpeakerBean">
+    <bean id="speaker" class="com.aspectran.demo.speak.TextToSpeechBean">
         <properties>
+            <item name="properties" type="properties">
+                <value name="freetts.voices">com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory</value>
+            </item>
             <item name="voiceName">kevin16</item>
         </properties>
     </bean>

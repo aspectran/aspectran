@@ -32,6 +32,8 @@ public class ToStringBuilder {
 
     private StringBuilder sb;
 
+    private final int start;
+
     public ToStringBuilder() {
         this(null);
     }
@@ -48,6 +50,9 @@ public class ToStringBuilder {
         this.sb = new StringBuilder(capacity);
         if (name != null) {
             this.sb.append(name).append(" ");
+            this.start = sb.length() + 1;
+        } else {
+            this.start = 1;
         }
         this.sb.append("{");
     }
@@ -112,45 +117,19 @@ public class ToStringBuilder {
         }
     }
 
-    public void append(Map<?, ?> map) {
-        if (map != null) {
-            this.sb.append("{");
-            int len = this.sb.length();
-            for (Map.Entry<?, ?> entry : ((Map<?, ?>)map).entrySet()) {
-                Object key = entry.getKey();
-                Object value = entry.getValue();
-                if (value != null) {
-                    appendName(key, len);
-                    append(value);
-                }
-            }
-            this.sb.append("}");
-        }
+    private void appendName(Object name) {
+        appendName(name, this.start);
     }
 
-    public void append(Collection<?> list) {
-        if (list != null) {
-            this.sb.append("[");
-            int len = this.sb.length();
-            for (Object o : list) {
-                if (this.sb.length() > len) {
-                    appendComma();
-                }
-                append(o);
-            }
-            this.sb.append("]");
+    private void appendName(Object name, int start) {
+        if (this.sb.length() > start) {
+            appendComma();
         }
+        this.sb.append(name).append("=");
     }
 
-    public void append(Enumeration<?> en) {
-        if (en != null) {
-            while (en.hasMoreElements()) {
-                append(en.nextElement());
-                if (en.hasMoreElements()) {
-                    appendComma();
-                }
-            }
-        }
+    private void appendComma() {
+        this.sb.append(", ");
     }
 
     private void append(Object object) {
@@ -185,32 +164,57 @@ public class ToStringBuilder {
         }
     }
 
-    public void appendName(Object name) {
-        if (this.sb.length() > 1) {
-            appendComma();
+    private void append(Map<?, ?> map) {
+        if (map != null) {
+            this.sb.append("{");
+            int len = this.sb.length();
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>)map).entrySet()) {
+                Object key = entry.getKey();
+                Object value = entry.getValue();
+                if (value != null) {
+                    appendName(key, len);
+                    append(value);
+                }
+            }
+            this.sb.append("}");
         }
-        this.sb.append(name).append("=");
     }
 
-    private void appendName(Object name, int len) {
-        if (this.sb.length() > len) {
-            appendComma();
+    private void append(Collection<?> list) {
+        if (list != null) {
+            this.sb.append("[");
+            int len = this.sb.length();
+            for (Object o : list) {
+                if (this.sb.length() > len) {
+                    appendComma();
+                }
+                append(o);
+            }
+            this.sb.append("]");
         }
-        this.sb.append(name).append("=");
     }
 
-    private void appendComma() {
-        this.sb.append(", ");
-    }
-
-    protected StringBuilder getStringBuilder() {
-        return this.sb;
+    private void append(Enumeration<?> en) {
+        if (en != null) {
+            this.sb.append("[");
+            while (en.hasMoreElements()) {
+                append(en.nextElement());
+                if (en.hasMoreElements()) {
+                    appendComma();
+                }
+            }
+            this.sb.append("]");
+        }
     }
 
     @Override
     public String toString() {
         this.sb.append("}");
         return this.sb.toString();
+    }
+
+    protected StringBuilder getStringBuilder() {
+        return this.sb;
     }
 
     private void checkCircularReference(Object wrapper, Object member) {
