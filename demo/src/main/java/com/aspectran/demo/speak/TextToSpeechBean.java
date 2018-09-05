@@ -33,6 +33,8 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     private static final Log log = LogFactory.getLog(TextToSpeechBean.class);
 
+    private String voicePackage;
+
     private String voiceName;
 
     private Voice voice;
@@ -44,12 +46,21 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         }
     }
 
+    public void setVoicePackage(String voicePackage) {
+        this.voicePackage = voicePackage;
+        System.setProperty("freetts.voices", voicePackage);
+    }
+
     public void setVoiceName(String voiceName) {
         this.voiceName = voiceName;
     }
 
     @Override
     public void initialize() {
+        if (voicePackage == null) {
+            setVoicePackage("com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+        }
+
         if (log.isDebugEnabled()) {
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
@@ -91,23 +102,8 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         voice.speak(text);
     }
 
-    public static void listAllVoices() {
-        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-        System.out.println();
-        System.out.println("All voices available:");
-        VoiceManager voiceManager = VoiceManager.getInstance();
-        Voice[] voices = voiceManager.getVoices();
-        for (Voice voice1 : voices) {
-            System.out.println("    " + voice1.getName() + " (" + voice1.getDomain() + " domain)");
-        }
-    }
-
     public static void main(String[] args) {
-        Properties props = new Properties();
-        props.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-
         TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
-        textToSpeechBean.setProperties(props);
         textToSpeechBean.setVoiceName("kevin16");
         textToSpeechBean.initialize();
         textToSpeechBean.speak("test");
