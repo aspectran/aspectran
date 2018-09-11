@@ -22,7 +22,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
+import com.sun.speech.freetts.audio.AudioPlayer;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -39,12 +45,11 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     private Voice voice;
 
-    public void setProperties(Properties properties) {
-        Set<String> keys = properties.stringPropertyNames();
-        for (String key : keys) {
-            System.setProperty(key, properties.getProperty(key));
-        }
-    }
+    private Float rate = 150.0F;
+
+    private Float pitch = 100.0F;
+
+    private Float pitchRange = 12.0F;
 
     public void setVoicePackage(String voicePackage) {
         this.voicePackage = voicePackage;
@@ -55,14 +60,34 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         this.voiceName = voiceName;
     }
 
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setPitchRange(float pitchRange) {
+        this.pitchRange = pitchRange;
+    }
+
+    public void setProperties(Properties properties) {
+        Set<String> keys = properties.stringPropertyNames();
+        for (String key : keys) {
+            System.setProperty(key, properties.getProperty(key));
+        }
+    }
+
     @Override
     public void initialize() {
         if (voicePackage == null) {
             setVoicePackage("com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
         }
 
+        VoiceManager voiceManager = VoiceManager.getInstance();
+
         if (log.isDebugEnabled()) {
-            VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
             String[] arr = new String[voices.length];
             for (int i = 0; i < arr.length; i++) {
@@ -73,7 +98,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
             log.debug(tsb.toString());
         }
 
-        VoiceManager voiceManager = VoiceManager.getInstance();
         if (voiceName != null) {
             voice = voiceManager.getVoice(voiceName);
         } else {
@@ -82,8 +106,10 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
                 voice = voices[0];
             }
         }
-        voice = voiceManager.getVoice(voiceName);
         if (voice != null) {
+            voice.setRate(rate);
+            voice.setPitch(pitch);
+            voice.setPitchRange(pitchRange);
             voice.allocate();
         }
     }
@@ -92,6 +118,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
     public void destroy() {
         if (voice != null) {
             voice.deallocate();
+            voice = null;
         }
     }
 
@@ -100,6 +127,19 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
             throw new IllegalStateException("Cannot find a voice named " + voiceName);
         }
         voice.speak(text);
+    }
+
+    public synchronized void speak(String text, ByteArrayOutputStream out) throws IOException {
+        if (voice == null) {
+            throw new IllegalStateException("Cannot find a voice named " + voiceName);
+        }
+        AudioPlayer oldAudioPlayer = voice.getAudioPlayer();
+        ByteArrayAudioPlayer audioPlayer = new ByteArrayAudioPlayer();
+        voice.setAudioPlayer(audioPlayer);
+        voice.speak(text);
+        voice.setAudioPlayer(oldAudioPlayer);
+        AudioInputStream ais = audioPlayer.getAudioInputStream();
+        AudioSystem.write(ais, AudioFileFormat.Type.WAVE, out);
     }
 
     public static void main(String[] args) {
