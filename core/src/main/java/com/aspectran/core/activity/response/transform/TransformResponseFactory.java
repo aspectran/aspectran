@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.TransformType;
 
 /**
- * A factory for creating Transform objects.
+ * A factory for creating TransformResponse objects.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -36,7 +36,6 @@ public class TransformResponseFactory {
     public static Response createTransformResponse(TransformRule transformRule) {
         TransformType transformType = transformRule.getTransformType();
         Response transformResponse;
-
         if (transformType == TransformType.XSL) {
             transformResponse = new XslTransformResponse(transformRule);
         } else if (transformType == TransformType.XML) {
@@ -57,9 +56,8 @@ public class TransformResponseFactory {
             }
             transformResponse = new AponTransformResponse(transformRule);
         } else {
-            throw new TransformResponseException(transformRule, "Invalid transform type");
+            transformResponse = new NullTransformResponse(transformRule);
         }
-
         return transformResponse;
     }
 

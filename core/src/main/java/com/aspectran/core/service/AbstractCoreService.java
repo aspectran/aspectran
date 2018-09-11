@@ -139,7 +139,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
                 if (Boolean.TRUE.equals(singleton)) {
                     if (!checkSingletonLock()) {
-                        throw new IllegalStateException("Only one instance of the aspectran service is allowed to run");
+                        throw new IllegalStateException("Allow only one instance of Aspectran to run");
                     }
                 }
             }

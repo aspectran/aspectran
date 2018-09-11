@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.demo.speak;
+package com.aspectran.demo.tts;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -27,12 +27,15 @@ import com.sun.speech.freetts.audio.AudioPlayer;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Set;
 
 /**
+ * Synthesizes speech from text for immediate playback or
+ * sends synthesized sound data to an output stream of bytes.
+ *
  * <p>Created: 2018. 8. 29.</p>
  */
 public class TextToSpeechBean implements InitializableBean, DisposableBean {
@@ -122,6 +125,11 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         }
     }
 
+    /**
+     * Synthesizes speech of the given text and plays immediately.
+     *
+     * @param text the text that will be transformed to speech
+     */
     public void speak(String text) {
         if (voice == null) {
             throw new IllegalStateException("Cannot find a voice named " + voiceName);
@@ -129,7 +137,14 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         voice.speak(text);
     }
 
-    public synchronized void speak(String text, ByteArrayOutputStream out) throws IOException {
+    /**
+     * Sends synthesized sound data to an output stream of bytes.
+     *
+     * @param text the text that will be transformed to speech
+     * @param out the output stream of bytes
+     * @throws IOException
+     */
+    public synchronized void speak(String text, OutputStream out) throws IOException {
         if (voice == null) {
             throw new IllegalStateException("Cannot find a voice named " + voiceName);
         }

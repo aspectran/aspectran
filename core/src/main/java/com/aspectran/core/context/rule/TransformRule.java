@@ -237,13 +237,10 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     }
 
     public static TransformRule newInstance(String type, String contentType,
-            String encoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
+            String encoding, Boolean defaultResponse, Boolean pretty) {
         TransformType transformType = TransformType.resolve(type);
         if (transformType == null && contentType != null) {
             transformType = TransformType.resolve(ContentType.resolve(contentType));
-        }
-        if (transformType == null) {
-            throw new IllegalRuleException("No transform type for '" + type + "'");
         }
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformType);
@@ -257,12 +254,9 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     }
 
     public static TransformRule newInstance(TransformType transformType, String contentType,
-            String encoding, Boolean defaultResponse, Boolean pretty) throws IllegalRuleException {
+            String encoding, Boolean defaultResponse, Boolean pretty) {
         if (transformType == null && contentType != null) {
             transformType = TransformType.resolve(ContentType.resolve(contentType));
-        }
-        if (transformType == null) {
-            throw new IllegalRuleException("The transform type is not specified");
         }
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformType);

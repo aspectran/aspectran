@@ -200,8 +200,6 @@ public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
      * character encoding.  This method uses {@link #get()} to retrieve the
      * contents of the file.
      *
-     * TODO Consider making this method throw UnsupportedEncodingException.
-     *
      * @return the contents of the file, as a string
      */
     public String getString() {
