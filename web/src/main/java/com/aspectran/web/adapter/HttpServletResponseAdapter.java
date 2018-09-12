@@ -20,6 +20,7 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +57,52 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
         super(response);
         this.activity = activity;
+    }
+
+    @Override
+    public MultiValueMap<String, String> touchHeaders() {
+        return getHeaders();
+    }
+
+    @Override
+    public MultiValueMap<String, String> getHeaders() {
+        MultiValueMap<String, String> headers = new LinkedCaseInsensitiveMultiValueMap<>();
+        for (String name : ((HttpServletResponse)adaptee).getHeaderNames()) {
+            for (String value : ((HttpServletResponse)adaptee).getHeaders(name)) {
+                headers.add(name, value);
+            }
+        }
+        return headers;
+    }
+
+    @Override
+    public String getHeader(String name) {
+        return ((HttpServletResponse)adaptee).getHeader(name);
+    }
+
+    @Override
+    public Collection<String> getHeaders(String name) {
+        return ((HttpServletResponse)adaptee).getHeaders(name);
+    }
+
+    @Override
+    public Collection<String> getHeaderNames() {
+        return ((HttpServletResponse)adaptee).getHeaderNames();
+    }
+
+    @Override
+    public boolean containsHeader(String name) {
+        return ((HttpServletResponse)adaptee).containsHeader(name);
+    }
+
+    @Override
+    public void setHeader(String name, String value) {
+        ((HttpServletResponse)adaptee).setHeader(name, value);
+    }
+
+    @Override
+    public void addHeader(String name, String value) {
+        ((HttpServletResponse)adaptee).addHeader(name, value);
     }
 
     @Override
@@ -149,26 +197,13 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void flush() {
-        MultiValueMap<String, String> headers = getHeaders();
-        if (headers != null && !headers.isEmpty()) {
-            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-                List<String> values = entry.getValue();
-                if (values.size() > 0) {
-                    ((HttpServletResponse)adaptee).setHeader(entry.getKey(), values.get(0));
-                    if (values.size() > 1) {
-                        for (int i = 1; i < values.size(); i++) {
-                            ((HttpServletResponse)adaptee).addHeader(entry.getKey(), values.get(i));
-                        }
-                    }
+    public int getStatus() {
+        return ((HttpServletResponse)adaptee).getStatus();
+    }
 
-                }
-            }
-        }
-
-        if (getStatus() != 0) {
-            ((HttpServletResponse)adaptee).setStatus(getStatus());
-        }
+    @Override
+    public void setStatus(int status) {
+        ((HttpServletResponse)adaptee).setStatus(status);
     }
 
 }

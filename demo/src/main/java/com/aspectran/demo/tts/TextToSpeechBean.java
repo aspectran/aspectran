@@ -15,6 +15,7 @@
  */
 package com.aspectran.demo.tts;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.ToStringBuilder;
@@ -137,14 +138,8 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         voice.speak(text);
     }
 
-    /**
-     * Sends synthesized sound data to an output stream of bytes.
-     *
-     * @param text the text that will be transformed to speech
-     * @param out the output stream of bytes
-     * @throws IOException
-     */
-    public synchronized void speak(String text, OutputStream out) throws IOException {
+
+    public synchronized ByteArrayAudioPlayer getAudioPlayer(String text) {
         if (voice == null) {
             throw new IllegalStateException("Cannot find a voice named " + voiceName);
         }
@@ -153,8 +148,40 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         voice.setAudioPlayer(audioPlayer);
         voice.speak(text);
         voice.setAudioPlayer(oldAudioPlayer);
-        AudioInputStream ais = audioPlayer.getAudioInputStream();
+        return audioPlayer;
+    }
+
+    public synchronized AudioInputStream getAudioInputStream(String text) {
+        if (voice == null) {
+            throw new IllegalStateException("Cannot find a voice named " + voiceName);
+        }
+        ByteArrayAudioPlayer audioPlayer = getAudioPlayer(text);
+        return audioPlayer.getAudioInputStream();
+    }
+
+    /**
+     * Sends synthesized sound data to an output stream of bytes.
+     *
+     * @param text the text that will be transformed to speech
+     * @param out the output stream of bytes
+     * @throws IOException
+     */
+    public synchronized void speak(String text, OutputStream out) throws IOException {
+        AudioInputStream ais = getAudioInputStream(text);
         AudioSystem.write(ais, AudioFileFormat.Type.WAVE, out);
+    }
+
+    public void speak(Translet translet) throws IOException {
+        translet.getResponseAdapter().setHeader("Content-Type", "audio/wav");
+        translet.getResponseAdapter().setHeader("Content-Disposition", "attachment; filename=\"voice.wav\"");
+        String text = translet.getParameter("text");
+        if (text != null && text.length() > 0) {
+            ByteArrayAudioPlayer audioPlayer = getAudioPlayer(text);
+            translet.getResponseAdapter().setHeader("Content-Range", "bytes 0-" + audioPlayer.getTotalBytes() + "/*");
+            translet.getResponseAdapter().setHeader("Content-Length", Integer.toString(audioPlayer.getTotalBytes()));
+            AudioInputStream ais = audioPlayer.getAudioInputStream();
+            AudioSystem.write(ais, AudioFileFormat.Type.WAVE, translet.getResponseAdapter().getOutputStream());
+        }
     }
 
     public static void main(String[] args) {

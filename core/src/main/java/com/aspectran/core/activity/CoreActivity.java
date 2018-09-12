@@ -394,14 +394,10 @@ public class CoreActivity extends BasicActivity {
     private void response() {
         Response res = (this.reservedResponse != null ? this.reservedResponse : getDeclaredResponse());
         if (res != null) {
-            if (res.getResponseType() != ResponseType.FORWARD) {
-                getResponseAdapter().flush();
-            }
-
             res.respond(this);
 
             if (res.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse)res;
+                ForwardResponse forwardResponse = (ForwardResponse) res;
                 this.forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
             } else {
                 this.forwardTransletName = null;
@@ -410,8 +406,6 @@ public class CoreActivity extends BasicActivity {
             if (forwardTransletName != null) {
                 forward();
             }
-        } else {
-            getResponseAdapter().flush();
         }
     }
 
