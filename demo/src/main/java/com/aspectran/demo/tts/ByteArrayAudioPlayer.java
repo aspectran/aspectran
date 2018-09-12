@@ -19,7 +19,6 @@ import com.sun.speech.freetts.audio.AudioPlayer;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
@@ -226,13 +225,9 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
         InputStream inputStream = new SequenceInputStream(outputList.elements());
         AudioFormat af = getAudioFormat();
         if (af == null) {
-            af = new AudioFormat(16000, 16, 1, true, true);
+            af = new AudioFormat(16000.0f, 16, 1, true, true);
         }
-        int sampleSize = af.getSampleSizeInBits();
-        if (sampleSize == AudioSystem.NOT_SPECIFIED) {
-            sampleSize = 16; // usually 16 bit data
-        }
-        long lengthInSamples = totalBytes / (sampleSize / 8);
+        long lengthInSamples = totalBytes / af.getFrameSize();
         return new AudioInputStream(inputStream, af, lengthInSamples);
     }
 

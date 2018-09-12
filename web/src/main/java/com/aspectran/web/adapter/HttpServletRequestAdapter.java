@@ -59,10 +59,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     protected MultiValueMap<String, String> touchHeaders() {
         boolean headersInstantiated = isHeadersInstantiated();
         MultiValueMap<String, String> headers = super.touchHeaders();
-
         if (!headersInstantiated) {
             HttpServletRequest request = ((HttpServletRequest)adaptee);
-
             for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
                 String name = names.nextElement();
                 for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
@@ -71,7 +69,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
                 }
             }
         }
-
         return headers;
     }
 

@@ -30,7 +30,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
