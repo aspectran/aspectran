@@ -57,6 +57,14 @@ public interface Activity extends BeanRegistry {
      * Prepare for the activity.
      *
      * @param transletName the translet name
+     * @param transletRule the translet rule
+     */
+    void prepare(String transletName, TransletRule transletRule);
+
+    /**
+     * Prepare for the activity.
+     *
+     * @param transletName the translet name
      * @param requestMethod the request method
      */
     void prepare(String transletName, String requestMethod);

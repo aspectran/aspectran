@@ -100,7 +100,6 @@ public class CoreActivity extends BasicActivity {
         this.requestMethod = MethodType.GET;
 
         TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
-
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName);
         }
@@ -111,6 +110,15 @@ public class CoreActivity extends BasicActivity {
     @Override
     public void prepare(TransletRule transletRule) {
         this.transletName = transletRule.getName();
+        this.requestMethod = MethodType.GET;
+
+        prepare(transletRule, null);
+    }
+
+
+    @Override
+    public void prepare(String transletName, TransletRule transletRule) {
+        this.transletName = transletName;
         this.requestMethod = MethodType.GET;
 
         prepare(transletRule, null);

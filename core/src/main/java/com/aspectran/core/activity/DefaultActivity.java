@@ -51,6 +51,11 @@ public class DefaultActivity extends BasicActivity {
     }
 
     @Override
+    public void prepare(String transletName, TransletRule transletRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void prepare(String transletName, String requestMethod) {
         throw new UnsupportedOperationException();
     }

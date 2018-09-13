@@ -82,7 +82,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
         TransletRule transletRule = transletRuleMap.get(transletName);
         if (transletRule == null) {
-            transletRule = getWildTransletRule(transletName, requestMethod);;
+            transletRule = getWildTransletRule(transletName, requestMethod);
         }
         return transletRule;
     }
