@@ -22,7 +22,6 @@ import com.aspectran.core.util.MultiValueMap;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -57,24 +56,6 @@ public interface RequestAdapter {
      * @return the request scope
      */
     RequestScope getRequestScope(boolean create);
-
-    /**
-     * Returns the name of the character encoding used in the body of this request.
-     *
-     * @return a {@code String} containing the name of the character encoding,
-     *         or {@code null} if the request does not specify a character encoding
-     */
-    String getEncoding();
-
-    /**
-     * Overrides the name of the character encoding used in the body of this request.
-     * This method must be called prior to reading request parameters
-     * or reading input using getReader(). Otherwise, it has no effect.
-     *
-     * @param encoding a {@code String} containing the name of the character encoding.
-     * @throws UnsupportedEncodingException if the specified encoding is invalid
-     */
-    void setEncoding(String encoding) throws UnsupportedEncodingException;
 
     /**
      * Returns the method used for the request.
@@ -171,15 +152,15 @@ public interface RequestAdapter {
     String[] getParameterValues(String name);
 
     /**
-     * Returns an {@code Enumeration} of {@code String} objects containing
+     * Returns a {@code Collection} of {@code String} objects containing
      * the names of the parameters contained in this request.
      * If the request has no parameters, the method returns an empty {@code Enumeration}.
      *
-     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     * @return a {@code Collection} of {@code String} objects, each {@code String}
      *         containing the name of a request parameter;
      *         or an empty {@code Enumeration} if the request has no parameters
      */
-    Enumeration<String> getParameterNames();
+    Collection<String> getParameterNames();
 
     /**
      * Sets the value to the parameter with the given name.
@@ -202,30 +183,23 @@ public interface RequestAdapter {
     void setParameter(String name, String[] values);
 
     /**
-     * Return an immutable Map of the request parameters,
+     * Return an mutable Map of the request parameters,
      * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the String then map value will be of type String.
-     * If the parameter value type is the String array then map value will be of type String array.
+     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
+     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
      *
-     * @return the immutable parameter map
+     * @return the mutable parameter map
      * @since 1.4.0
      */
     Map<String, Object> getAllParameters();
 
     /**
-     * Returns the parameter copied to the new instance.
-     *
-     * @return the mutable parameter map
-     */
-    Map<String, Object> copyAllParameters();
-
-    /**
-     * Fills all parameters to the specified map.
+     * Extracts all the parameters and fills in the specified map.
      *
      * @param targetParameters the target parameter map to be filled
      * @since 2.0.0
      */
-    void fillAllParameters(Map<String, Object> targetParameters);
+    void extractParameters(Map<String, Object> targetParameters);
 
     /**
      * Returns a {@code FileParameter} object as a given request parameter name,
@@ -251,15 +225,15 @@ public interface RequestAdapter {
     FileParameter[] getFileParameterValues(String name);
 
     /**
-     * Returns an {@code Enumeration} of {@code String} objects containing
+     * Returns a {@code Collection} of {@code String} objects containing
      * the names of the file parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Enumeration}.
+     * If the request has no parameters, the method returns an empty {@code Collection}.
      *
-     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     * @return a {@code Collection} of {@code String} objects, each {@code String}
      *         containing the name of a file parameter;
-     *         or an empty {@code Enumeration} if the request has no file parameters
+     *         or an empty {@code Collection} if the request has no file parameters
      */
-    Enumeration<String> getFileParameterNames();
+    Collection<String> getFileParameterNames();
 
     /**
      * Sets the {@code FileParameter} object to the file parameter with the given name.
@@ -308,14 +282,14 @@ public interface RequestAdapter {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@code Enumeration} containing the
+     * Returns a {@code Collection} containing the
      * names of the attributes available to this request.
-     * This method returns an empty {@code Enumeration}
+     * This method returns an empty {@code Collection}
      * if the request has no attributes available to it.
      *
      * @return the attribute names
      */
-    Enumeration<String> getAttributeNames();
+    Collection<String> getAttributeNames();
 
     /**
      * Removes an attribute from this request.
@@ -340,26 +314,30 @@ public interface RequestAdapter {
     void putAllAttributes(Map<String, Object> attributes);
 
     /**
-     * Fills all attributes to the specified map.
+     * Extracts all the attributes and fills in the specified map.
      *
      * @param targetAttributes the target attribute map to be filled
      * @since 2.0.0
      */
-    void fillAllAttributes(Map<String, Object> targetAttributes);
+    void extractAttributes(Map<String, Object> targetAttributes);
 
     /**
-     * Returns whether request header has exceed the maximum length.
+     * Returns the name of the character encoding used in the body of this request.
      *
-     * @return true, if max length exceeded
+     * @return a {@code String} containing the name of the character encoding,
+     *         or {@code null} if the request does not specify a character encoding
      */
-    boolean isMaxLengthExceeded();
+    String getEncoding();
 
     /**
-     * Sets whether request header has exceed the maximum length.
+     * Overrides the name of the character encoding used in the body of this request.
+     * This method must be called prior to reading request parameters
+     * or reading input using getReader(). Otherwise, it has no effect.
      *
-     * @param maxLengthExceeded whether the max length exceeded
+     * @param encoding a {@code String} containing the name of the character encoding.
+     * @throws UnsupportedEncodingException if the specified encoding is invalid
      */
-    void setMaxLengthExceeded(boolean maxLengthExceeded);
+    void setEncoding(String encoding) throws UnsupportedEncodingException;
 
     /**
      * Returns the preferred {@code Locale}.
@@ -388,5 +366,19 @@ public interface RequestAdapter {
      * @param timeZone a given {@code TimeZone}
      */
     void setTimeZone(TimeZone timeZone);
+
+    /**
+     * Returns whether request header has exceed the maximum length.
+     *
+     * @return true, if max length exceeded
+     */
+    boolean isMaxLengthExceeded();
+
+    /**
+     * Sets whether request header has exceed the maximum length.
+     *
+     * @param maxLengthExceeded whether the max length exceeded
+     */
+    void setMaxLengthExceeded(boolean maxLengthExceeded);
 
 }

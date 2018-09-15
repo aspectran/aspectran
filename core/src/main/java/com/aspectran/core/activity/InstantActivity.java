@@ -18,8 +18,6 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringOutputWriter;
@@ -56,17 +54,19 @@ public class InstantActivity extends DefaultActivity {
     }
 
     private void adapt(ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        RequestAdapter requestAdapter = new BasicRequestAdapter(null, parameterMap);
+        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null);
         setRequestAdapter(requestAdapter);
 
         Writer writer = new StringOutputWriter();
-        ResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+        BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
         setResponseAdapter(responseAdapter);
 
+        if (parameterMap != null) {
+            requestAdapter.touchParameterMap().putAll(parameterMap);
+        }
+
         if (attributeMap != null) {
-            for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-                requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-            }
+            requestAdapter.touchAttributes().putAll(attributeMap);
         }
     }
 

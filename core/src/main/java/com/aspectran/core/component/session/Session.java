@@ -22,7 +22,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.Locker.Lock;
 
-import java.util.Enumeration;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -113,7 +113,7 @@ public class Session {
         sessionHandler.sessionAttributeChanged(this, name, old, value);
     }
 
-    public Enumeration<String> getAttributeNames() {
+    public Collection<String> getAttributeNames() {
         try (Lock ignored = locker.lockIfNotHeld()) {
             checkValidForRead();
             return sessionData.getAttributeNames();

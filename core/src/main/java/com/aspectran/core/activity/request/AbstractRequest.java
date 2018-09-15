@@ -21,13 +21,11 @@ import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.thread.Locker;
-import com.aspectran.core.util.thread.Locker.Lock;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,21 +46,17 @@ public abstract class AbstractRequest {
 
     private FileParameterMap fileParameterMap;
 
+    private Map<String, Object> attributes;
+
+    private String encoding;
+
     private Locale locale;
 
     private TimeZone timeZone;
 
     private boolean maxLengthExceeded;
 
-    protected Locker locker = new Locker();
-
     public AbstractRequest() {
-    }
-
-    public AbstractRequest(Map<String, String[]> parameterMap) {
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            this.parameterMap = new ParameterMap(parameterMap);
-        }
     }
 
     public MethodType getRequestMethod() {
@@ -85,9 +79,7 @@ public abstract class AbstractRequest {
      *         on this response
      */
     public String getHeader(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return touchHeaders().getFirst(name);
-        }
+        return (headers != null ? headers.getFirst(name) : null);
     }
 
     /**
@@ -98,9 +90,7 @@ public abstract class AbstractRequest {
      *         of the response header with the given name
      */
     public Collection<String> getHeaders(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return touchHeaders().get(name);
-        }
+        return (headers != null ? headers.get(name) : null);
     }
 
     /**
@@ -110,9 +100,7 @@ public abstract class AbstractRequest {
      *         of the headers of this response
      */
     public Collection<String> getHeaderNames() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return touchHeaders().keySet();
-        }
+        return (headers != null ? headers.keySet() : null);
     }
 
     /**
@@ -124,9 +112,11 @@ public abstract class AbstractRequest {
      *         has already been set; {@code false} otherwise
      */
     public boolean containsHeader(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            List<String> values = touchHeaders().get(name);
+        if (headers != null) {
+            List<String> values = headers.get(name);
             return (values != null && !values.isEmpty());
+        } else {
+            return false;
         }
     }
 
@@ -137,9 +127,7 @@ public abstract class AbstractRequest {
      * @param value the header value to set
      */
     public void setHeader(String name, String value) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchHeaders().set(name, value);
-        }
+        touchHeaders().set(name, value);
     }
 
     /**
@@ -150,20 +138,20 @@ public abstract class AbstractRequest {
      * @param value the header value to be added
      */
     public void addHeader(String name, String value) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchHeaders().add(name, value);
-        }
+        touchHeaders().add(name, value);
     }
 
     /**
      * Returns a map of the request headers that can be modified.
      *
-     * @return an {@code MultiValueMap} object, may be {@code null}
+     * @return an {@code MultiValueMap} object, must not be {@code null}
      */
     public MultiValueMap<String, String> getAllHeaders() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return touchHeaders();
-        }
+        return touchHeaders();
+    }
+
+    public MultiValueMap<String, String> getHeaders() {
+        return headers;
     }
 
     /**
@@ -172,166 +160,159 @@ public abstract class AbstractRequest {
      *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
-    protected MultiValueMap<String, String> touchHeaders() {
+    public MultiValueMap<String, String> touchHeaders() {
         if (headers == null) {
-            headers = new LinkedCaseInsensitiveMultiValueMap<>(12);
+            headers = new LinkedCaseInsensitiveMultiValueMap<>();
         }
         return headers;
     }
 
-    protected boolean isHeadersInstantiated() {
-        return (headers != null);
-    }
-
     public String getParameter(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return (parameterMap != null ? parameterMap.getParameter(name) : null);
-        }
+        return (parameterMap != null ? parameterMap.getParameter(name) : null);
     }
 
     public String[] getParameterValues(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
-        }
+        return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
     }
 
-    public Enumeration<String> getParameterNames() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return (parameterMap != null ? parameterMap.getParameterNames() : null);
-        }
+    public Collection<String> getParameterNames() {
+        return (parameterMap != null ? parameterMap.getParameterNames() : null);
     }
 
     public void setParameter(String name, String value) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchParameterMap().setParameter(name, value);
-        }
+        touchParameterMap().setParameter(name, value);
     }
 
     public void setParameter(String name, String[] values) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchParameterMap().put(name, values);
-        }
+        touchParameterMap().put(name, values);
     }
 
+    /**
+     * Returns a map of the request parameters that can be modified.
+     *
+     * @return an {@code Map<String, Object>} object, must not be {@code null}
+     */
     public Map<String, Object> getAllParameters() {
-        return Collections.unmodifiableMap(this.parameterMap);
+        return touchParameterMap().extractParameters();
     }
 
-    public Map<String, Object> copyAllParameters() {
-        Map<String, Object> params = new LinkedHashMap<>(parameterMap.size());
-        fillAllParameters(params);
-        return params;
-    }
-
-    public void fillAllParameters(Map<String, Object> targetParameters) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (this.parameterMap != null) {
-                for (Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
-                    String name = entry.getKey();
-                    String[] values = entry.getValue();
-                    if (values.length == 1) {
-                        targetParameters.put(name, values[0]);
-                    } else {
-                        targetParameters.put(name, values);
-                    }
-                }
-            }
+    public void extractParameters(Map<String, Object> targetParameters) {
+        if (parameterMap != null) {
+            parameterMap.extractParameters(targetParameters);
         }
     }
 
-    private ParameterMap touchParameterMap() {
-        if (this.parameterMap == null) {
-            this.parameterMap = new ParameterMap();
+    public ParameterMap getParameterMap() {
+        return parameterMap;
+    }
+
+    public ParameterMap touchParameterMap() {
+        if (parameterMap == null) {
+            parameterMap = new ParameterMap();
         }
-        return this.parameterMap;
+        return parameterMap;
     }
 
     public FileParameter getFileParameter(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
-        }
+        return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
     }
 
     public FileParameter[] getFileParameterValues(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
-        }
+        return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
     }
 
     public void removeFileParameter(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (fileParameterMap != null) {
-                fileParameterMap.remove(name);
-            }
+        if (fileParameterMap != null) {
+            fileParameterMap.remove(name);
         }
     }
 
     public void setFileParameter(String name, FileParameter fileParameter) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchFileParameterMap().setFileParameter(name, fileParameter);
-        }
+        touchFileParameterMap().setFileParameter(name, fileParameter);
     }
 
     public void setFileParameter(String name, FileParameter[] fileParameters) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            touchFileParameterMap().setFileParameter(name, fileParameters);
-        }
+        touchFileParameterMap().setFileParameter(name, fileParameters);
     }
 
-    public Enumeration<String> getFileParameterNames() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            FileParameterMap fileParameterMap = touchFileParameterMap();
-            return (fileParameterMap != null ? Collections.enumeration(fileParameterMap.keySet()) : null);
-        }
+    public Collection<String> getFileParameterNames() {
+        FileParameterMap fileParameterMap = touchFileParameterMap();
+        return (fileParameterMap != null ? fileParameterMap.keySet() : null);
     }
 
-    private FileParameterMap touchFileParameterMap() {
+    public FileParameterMap getFileParameterMap() {
+        return fileParameterMap;
+    }
+
+    public FileParameterMap touchFileParameterMap() {
         if (fileParameterMap == null) {
             fileParameterMap = new FileParameterMap();
         }
         return fileParameterMap;
     }
 
-    public abstract <T> T getAttribute(String name);
-
-    public abstract Enumeration<String> getAttributeNames();
-
-    public abstract void setAttribute(String name, Object value);
-
-    public abstract void removeAttribute(String name);
-
-    /**
-     * Returns an unmodifiable map of the attributes.
-     *
-     * @return an unmodifiable map of the attributes
-     */
-    public abstract Map<String, Object> getAllAttributes();
-
-    /**
-     * Copies all of the mappings from the specified attributes.
-     *
-     * @param attributes the specified attributes
-     */
-    public abstract void putAllAttributes(Map<String, Object> attributes);
-
-    public abstract void fillAllAttributes(Map<String, Object> targetAttributes);
-
-    /**
-     * Sets whether the request header has exceeded the maximum length.
-     *
-     * @param maxLengthExceeded whether the request header has exceeded the maximum length
-     */
-    public void setMaxLengthExceeded(boolean maxLengthExceeded) {
-        this.maxLengthExceeded = maxLengthExceeded;
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (attributes != null ? (T)attributes.get(name) : null);
     }
 
-    /**
-     * Returns whether request header has exceed the maximum length.
-     *
-     * @return true, if is max length exceeded
-     */
-    public boolean isMaxLengthExceeded() {
-        return maxLengthExceeded;
+    public void setAttribute(String name, Object value) {
+        if (value == null) {
+            // If the object passed in is null, the effect is the same as calling removeAttribute(java.lang.String).
+            removeAttribute(name);
+        } else {
+            touchAttributes().put(name, value);
+        }
+    }
+
+    public Collection<String> getAttributeNames() {
+        return (attributes != null ? attributes.keySet() : Collections.emptySet());
+    }
+
+    public void removeAttribute(String name) {
+        if (attributes != null) {
+            attributes.remove(name);
+        }
+    }
+
+    public Map<String, Object> getAllAttributes() {
+        return touchAttributes();
+    }
+
+    public void putAllAttributes(Map<String, Object> attributes) {
+        touchAttributes().putAll(attributes);
+    }
+
+    public void extractAttributes(Map<String, Object> targetAttributes) {
+        if (targetAttributes == null) {
+            throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
+        }
+        if (attributes != null) {
+            targetAttributes.putAll(attributes);
+        }
+    }
+
+    public Map<String, Object> touchAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        return attributes;
+    }
+
+    public Map<String, Object> getAttributeMap() {
+        return attributes;
+    }
+
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributes = attributeMap;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) throws UnsupportedEncodingException {
+        this.encoding = encoding;
     }
 
     public Locale getLocale() {
@@ -363,6 +344,24 @@ public abstract class AbstractRequest {
      */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+    }
+
+    /**
+     * Sets whether the request header has exceeded the maximum length.
+     *
+     * @param maxLengthExceeded whether the request header has exceeded the maximum length
+     */
+    public void setMaxLengthExceeded(boolean maxLengthExceeded) {
+        this.maxLengthExceeded = maxLengthExceeded;
+    }
+
+    /**
+     * Returns whether request header has exceed the maximum length.
+     *
+     * @return true, if is max length exceeded
+     */
+    public boolean isMaxLengthExceeded() {
+        return maxLengthExceeded;
     }
 
 }

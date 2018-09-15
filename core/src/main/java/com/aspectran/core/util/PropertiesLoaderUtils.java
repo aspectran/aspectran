@@ -73,9 +73,8 @@ public class PropertiesLoaderUtils {
             return props;
         }
 
-        Enumeration<URL> urls = classLoader.getResources(resourceName);
         props = new Properties();
-
+        Enumeration<URL> urls = classLoader.getResources(resourceName);
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             URLConnection con = url.openConnection();
@@ -87,9 +86,7 @@ public class PropertiesLoaderUtils {
                 }
             }
         }
-
         cacheMethod(resourceName, props);
-
         return props;
     }
     

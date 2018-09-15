@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
@@ -67,16 +66,18 @@ public class DaemonActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            RequestAdapter requestAdapter = new DaemonRequestAdapter(parameterMap);
+            DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter();
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
+            if (parameterMap != null) {
+                requestAdapter.touchParameterMap().putAll(parameterMap);
+            }
+
             if (attributeMap != null) {
-                for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-                    requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-                }
+                requestAdapter.touchAttributes().putAll(attributeMap);
             }
 
             super.adapt();

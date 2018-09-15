@@ -15,7 +15,6 @@
  */
 package com.aspectran.daemon.adapter;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
@@ -28,15 +27,6 @@ public class DaemonRequestAdapter extends BasicRequestAdapter {
      */
     public DaemonRequestAdapter() {
         super(null);
-    }
-
-    /**
-     * Instantiates a new DaemonRequestAdapter.
-     *
-     * @param parameterMap the parameter map
-     */
-    public DaemonRequestAdapter(ParameterMap parameterMap) {
-        super(null, parameterMap);
     }
 
 }

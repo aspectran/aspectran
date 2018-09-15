@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 
-import java.util.Enumeration;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -242,7 +242,7 @@ public interface Translet extends BeanRegistry, MessageSource {
     String[] getParameterValues(String name);
 
     /**
-     * Returns an {@code Enumeration} of {@code String} objects containing
+     * Returns an {@code Collection} of {@code String} objects containing
      * the names of the parameters contained in this request.
      * If the request has no parameters, the method returns an empty {@code Enumeration}.
      *
@@ -250,7 +250,7 @@ public interface Translet extends BeanRegistry, MessageSource {
      *             containing the name of a request parameter;
      *             or an empty {@code Enumeration} if the request has no parameters
      */
-    Enumeration<String> getParameterNames();
+    Collection<String> getParameterNames();
 
     /**
      * Sets the value to the parameter with the given name.
@@ -273,30 +273,23 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setParameter(String name, String[] values);
 
     /**
-     * Return an immutable Map of the request parameters,
+     * Return an mutable Map of the request parameters,
      * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the String then map value will be of type String.
-     * If the parameter value type is the String array then map value will be of type String array.
+     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
+     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
      *
-     * @return the immutable parameter map
+     * @return the mutable parameter map
      * @since 1.4.0
      */
     Map<String, Object> getAllParameters();
 
     /**
-     * Returns the parameter copied to the new instance.
-     *
-     * @return the mutable parameter map
-     */
-    Map<String, Object> copyAllParameters();
-
-    /**
-     * Fills all parameters to the specified map.
+     * Extracts all the parameters and fills in the specified map.
      *
      * @param targetParameters the target parameter map to be filled
      * @since 2.0.0
      */
-    void fillAllParameters(Map<String, Object> targetParameters);
+    void extractParameters(Map<String, Object> targetParameters);
 
     /**
      * Returns a {@code FileParameter} object as a given activity's request parameter name,
@@ -322,7 +315,7 @@ public interface Translet extends BeanRegistry, MessageSource {
     FileParameter[] getFileParameterValues(String name);
 
     /**
-     * Returns an {@code Enumeration} of {@code String} objects containing
+     * Returns an {@code Collection} of {@code String} objects containing
      * the names of the file parameters contained in this request.
      * If the request has no parameters, the method returns an empty {@code Enumeration}.
      *
@@ -330,7 +323,7 @@ public interface Translet extends BeanRegistry, MessageSource {
      *             containing the name of a file parameter;
      *             or an empty {@code Enumeration} if the request has no file parameters
      */
-    Enumeration<String> getFileParameterNames();
+    Collection<String> getFileParameterNames();
 
     /**
      * Sets the {@code FileParameter} object to the file parameter with the given name.
@@ -379,14 +372,14 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@code Enumeration} containing the
+     * Returns an {@code Collection} containing the
      * names of the attributes available to this request.
      * This method returns an empty {@code Enumeration}
      * if the request has no attributes available to it.
      *
      * @return the attribute names
      */
-    Enumeration<String> getAttributeNames();
+    Collection<String> getAttributeNames();
 
     /**
      * Removes an attribute from this request.
@@ -405,12 +398,12 @@ public interface Translet extends BeanRegistry, MessageSource {
     Map<String, Object> getAllAttributes();
 
     /**
-     * Fills all attributes to the specified map.
+     * Extracts all the attribues and fills in the specified map.
      *
-     * @param attributeMap the attribute map
+     * @param attributes the attribute map
      * @since 2.0.0
      */
-    void fillAttributeMap(Map<String, Object> attributeMap);
+    void extractAttributes(Map<String, Object> attributes);
 
     /**
      * Respond immediately, and the remaining jobs will be canceled.

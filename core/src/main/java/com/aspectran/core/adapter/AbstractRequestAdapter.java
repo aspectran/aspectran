@@ -17,9 +17,6 @@ package com.aspectran.core.adapter;
 
 import com.aspectran.core.activity.request.AbstractRequest;
 import com.aspectran.core.component.bean.scope.RequestScope;
-import com.aspectran.core.util.thread.Locker;
-
-import java.util.Map;
 
 /**
  * The Class AbstractRequestAdapter.
@@ -42,17 +39,6 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
         this.adaptee = adaptee;
     }
 
-    /**
-     * Instantiates a new AbstractRequestAdapter.
-     *
-     * @param adaptee the adaptee object
-     * @param parameterMap the parameter map
-     */
-    public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
-        super(parameterMap);
-        this.adaptee = adaptee;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
@@ -66,12 +52,10 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 
     @Override
     public RequestScope getRequestScope(boolean create) {
-        try (Locker.Lock ignored = locker.lockIfNotHeld()) {
-            if (requestScope == null && create) {
-                requestScope = new RequestScope();
-            }
-            return requestScope;
+        if (requestScope == null && create) {
+            requestScope = new RequestScope();
         }
+        return requestScope;
     }
 
 }

@@ -512,7 +512,6 @@ public class CoreActivity extends BasicActivity {
      */
     protected void execute(ActionList actionList) {
         ContentResult contentResult = null;
-
         if (translet.getProcessResult() != null) {
             contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
             contentResult.setName(actionList.getName());
@@ -522,7 +521,6 @@ public class CoreActivity extends BasicActivity {
                 contentResult.setOmittable(true);
             }
         }
-
         for (Executable action : actionList) {
             execute(action, contentResult);
             if (isResponseReserved()) {
@@ -544,7 +542,6 @@ public class CoreActivity extends BasicActivity {
 
         try {
             Object resultValue = action.execute(this);
-
             if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 ActionResult actionResult = new ActionResult(contentResult);
                 actionResult.setActionId(action.getActionId());

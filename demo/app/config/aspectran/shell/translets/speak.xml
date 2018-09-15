@@ -16,19 +16,7 @@
         </properties>
     </bean>
 
-    <translet name="speak${text}">
-        <description style="apon">
-            |   To call this translet, type "speak [TEXT]".
-            |   If your system's audio works well, it will speak the text you type.
-        </description>
-        <action bean="speaker" method="speak">
-            <arguments>
-                <item>${text:Hello}</item>
-            </arguments>
-        </action>
-    </translet>
-
-    <translet name="speak2">
+    <translet name="speak">
         <description style="apon">
             |   If your system's audio works well, it will speak the text you type.
         </description>
@@ -37,6 +25,18 @@
                 <item name="text"/>
             </parameters>
         </request>
+        <action bean="speaker" method="speak">
+            <arguments>
+                <item>${text:Hello}</item>
+            </arguments>
+        </action>
+    </translet>
+
+    <translet name="speak ${text}">
+        <description style="apon">
+            |   To call this translet, type "speak [TEXT]".
+            |   If your system's audio works well, it will speak the text you type.
+        </description>
         <action bean="speaker" method="speak">
             <arguments>
                 <item>${text:Hello}</item>

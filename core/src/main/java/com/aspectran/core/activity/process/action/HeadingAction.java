@@ -27,6 +27,9 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Class HeadingAction.
  * 
@@ -60,12 +63,16 @@ public class HeadingAction extends AbstractAction {
         try {
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
             MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
-
             if (!valueMap.isEmpty()) {
                 ResponseAdapter responseAdapter = activity.getResponseAdapter();
-                responseAdapter.touchHeaders().putAll(valueMap);
+                for (Map.Entry<String, List<String>> entry : valueMap.entrySet()) {
+                    String name = entry.getKey();
+                    List<String> values = entry.getValue();
+                    for (String value : values) {
+                        responseAdapter.addHeader(name, value);
+                    }
+                }
             }
-
             return valueMap;
         } catch (Exception e) {
             log.error("Failed to execute an action that generates response headers. headingActionRule " + headingActionRule);

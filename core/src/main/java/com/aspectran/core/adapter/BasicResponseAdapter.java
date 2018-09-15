@@ -64,28 +64,6 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     /**
-     * Returns a map of the request headers that can be modified.
-     * If not yet instantiated then create a new one.
-     *
-     * @return an {@code MultiValueMap} object, may not be {@code null}
-     */
-    public MultiValueMap<String, String> touchHeaders() {
-        if (headers == null) {
-            headers = new LinkedCaseInsensitiveMultiValueMap<>(8);
-        }
-        return headers;
-    }
-
-    /**
-     * Returns a map of the request headers that can be modified.
-     *
-     * @return an {@code MultiValueMap} object, may be {@code null}
-     */
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    /**
      * Returns the value of the response header with the given name.
      *
      * <p>If a response header with the given name exists and contains
@@ -96,6 +74,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      *         or {@code null} if no header with the given name has been set
      *         on this response
      */
+    @Override
     public String getHeader(String name) {
         return (headers != null ? headers.getFirst(name) : null);
     }
@@ -107,6 +86,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
      */
+    @Override
     public Collection<String> getHeaders(String name) {
         return (headers != null ? headers.get(name) : null);
     }
@@ -117,6 +97,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
+    @Override
     public Collection<String> getHeaderNames() {
         return (headers != null ? headers.keySet() : null);
     }
@@ -129,6 +110,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      * @return {@code true} if the named response header
      *         has already been set; {@code false} otherwise
      */
+    @Override
     public boolean containsHeader(String name) {
         return (headers != null && headers.get(name) != null && !headers.get(name).isEmpty());
     }
@@ -139,6 +121,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      * @param name the header name
      * @param value the header value to set
      */
+    @Override
     public void setHeader(String name, String value) {
         touchHeaders().set(name, value);
     }
@@ -150,8 +133,31 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      * @param name the header name
      * @param value the header value to be added
      */
+    @Override
     public void addHeader(String name, String value) {
         touchHeaders().add(name, value);
+    }
+
+    /**
+     * Returns a map of the request headers that can be modified.
+     *
+     * @return an {@code MultiValueMap} object, may be {@code null}
+     */
+    protected MultiValueMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Returns a map of the response headers that can be modified.
+     * If not yet instantiated then create a new one.
+     *
+     * @return an {@code MultiValueMap} object, may not be {@code null}
+     */
+    protected MultiValueMap<String, String> touchHeaders() {
+        if (headers == null) {
+            headers = new LinkedCaseInsensitiveMultiValueMap<>();
+        }
+        return headers;
     }
 
     @Override

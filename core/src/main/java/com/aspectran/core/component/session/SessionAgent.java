@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
 
+import java.util.Collections;
 import java.util.Enumeration;
 
 /**
@@ -66,7 +67,7 @@ public class SessionAgent {
         if (session == null) {
             return null;
         }
-        return session.getAttributeNames();
+        return Collections.enumeration(session.getAttributeNames());
     }
 
     @SuppressWarnings("unchecked")

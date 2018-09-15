@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.request.parameter;
 
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -105,16 +105,16 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     /**
-     * Returns an {@code Enumeration} of {@code String} objects containing
+     * Returns an {@code Collection} of {@code String} objects containing
      * the names of the parameters.
      * If no parameters, the method returns an empty {@code Enumeration}.
      *
-     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     * @return an {@code Collection} of {@code String} objects, each {@code String}
      *             containing the name of a parameter;
      *             or an empty {@code Enumeration} if no parameters
      */
-    public Enumeration<String> getParameterNames() {
-        return Collections.enumeration(keySet());
+    public Collection<String> getParameterNames() {
+        return keySet();
     }
 
     /**
@@ -126,6 +126,27 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             setParameter(entry.getKey(), entry.getValue());
         }
+    }
+
+    public Map<String, Object> extractParameters() {
+        Map<String, Object> refinedParameters = new HashMap<>();
+        return extractParameters(refinedParameters);
+    }
+
+    public Map<String, Object> extractParameters(Map<String, Object> targetParameters) {
+        if (targetParameters == null) {
+            throw new IllegalArgumentException("Argument 'targetParameters' must not be null");
+        }
+        for (Map.Entry<String, String[]> entry : this.entrySet()) {
+            String name = entry.getKey();
+            String[] values = entry.getValue();
+            if (values.length == 1) {
+                targetParameters.put(name, values[0]);
+            } else {
+                targetParameters.put(name, values);
+            }
+        }
+        return targetParameters;
     }
 
 }

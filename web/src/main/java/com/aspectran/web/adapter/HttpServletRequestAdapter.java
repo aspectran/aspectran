@@ -15,14 +15,15 @@
  */
 package com.aspectran.web.adapter;
 
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.web.activity.request.RequestAttributeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -39,8 +40,45 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
      * @param request the HTTP request
      */
     public HttpServletRequestAdapter(HttpServletRequest request) {
-        super(request, request.getParameterMap());
+        super(request);
         setRequestMethod(MethodType.resolve(request.getMethod()));
+    }
+
+    @Override
+    public MultiValueMap<String, String> touchHeaders() {
+        MultiValueMap<String, String> headers = getHeaders();
+        if (headers == null) {
+            headers = super.touchHeaders();
+            HttpServletRequest request = ((HttpServletRequest)adaptee);
+            for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements(); ) {
+                String name = names.nextElement();
+                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements(); ) {
+                    String value = values.nextElement();
+                    headers.add(name, value);
+                }
+            }
+        }
+        return headers;
+    }
+
+    @Override
+    public ParameterMap touchParameterMap() {
+        ParameterMap parameterMap = getParameterMap();
+        if (parameterMap == null) {
+            parameterMap = super.touchParameterMap();
+            parameterMap.putAll(((HttpServletRequest)getAdaptee()).getParameterMap());
+        }
+        return parameterMap;
+    }
+
+    @Override
+    public Map<String, Object> touchAttributes() {
+        Map<String, Object> attributeMap = getAttributeMap();
+        if (attributeMap == null) {
+            attributeMap = new RequestAttributeMap((HttpServletRequest)adaptee);
+            setAttributeMap(attributeMap);
+        }
+        return attributeMap;
     }
 
     @Override
@@ -51,73 +89,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         if (encoding != null) {
+            super.setEncoding(encoding);
             ((HttpServletRequest)adaptee).setCharacterEncoding(encoding);
-        }
-    }
-
-    @Override
-    protected MultiValueMap<String, String> touchHeaders() {
-        boolean headersInstantiated = isHeadersInstantiated();
-        MultiValueMap<String, String> headers = super.touchHeaders();
-        if (!headersInstantiated) {
-            HttpServletRequest request = ((HttpServletRequest)adaptee);
-            for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
-                String name = names.nextElement();
-                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
-                    String value = values.nextElement();
-                    headers.add(name, value);
-                }
-            }
-        }
-        return headers;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getAttribute(String name) {
-        return (T)((HttpServletRequest)adaptee).getAttribute(name);
-    }
-
-    @Override
-    public void setAttribute(String name, Object o) {
-        ((HttpServletRequest)adaptee).setAttribute(name, o);
-    }
-
-    @Override
-    public Enumeration<String> getAttributeNames() {
-        return ((HttpServletRequest)adaptee).getAttributeNames();
-    }
-
-    @Override
-    public void removeAttribute(String name) {
-        ((HttpServletRequest)adaptee).removeAttribute(name);
-    }
-
-    @Override
-    public Map<String, Object> getAllAttributes() {
-        Map<String, Object> attrs = new LinkedHashMap<>();
-        fillAllAttributes(attrs);
-        return attrs;
-    }
-
-    @Override
-    public void putAllAttributes(Map<String, Object> attributes) {
-        if (attributes != null) {
-            for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-                setAttribute(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
-    @Override
-    public void fillAllAttributes(Map<String, Object> targetAttributes) {
-        if (targetAttributes == null) {
-            throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
-        }
-        Enumeration<String> names = getAttributeNames();
-        while(names.hasMoreElements()) {
-            String name = names.nextElement();
-            targetAttributes.put(name, getAttribute(name));
         }
     }
 

@@ -37,7 +37,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 
-import java.util.Enumeration;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
@@ -201,7 +201,7 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Enumeration<String> getParameterNames() {
+    public Collection<String> getParameterNames() {
         return getRequestAdapter().getParameterNames();
     }
 
@@ -221,13 +221,8 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Map<String, Object> copyAllParameters() {
-        return getRequestAdapter().copyAllParameters();
-    }
-
-    @Override
-    public void fillAllParameters(Map<String, Object> targetParameters) {
-        getRequestAdapter().fillAllParameters(targetParameters);
+    public void extractParameters(Map<String, Object> targetParameters) {
+        getRequestAdapter().extractParameters(targetParameters);
     }
 
     @Override
@@ -241,7 +236,7 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Enumeration<String> getFileParameterNames() {
+    public Collection<String> getFileParameterNames() {
         return getRequestAdapter().getFileParameterNames();
     }
 
@@ -271,7 +266,7 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public Enumeration<String> getAttributeNames() {
+    public Collection<String> getAttributeNames() {
         return getRequestAdapter().getAttributeNames();
     }
 
@@ -286,8 +281,8 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public void fillAttributeMap(Map<String, Object> attributeMap) {
-        getRequestAdapter().fillAllAttributes(attributeMap);
+    public void extractAttributes(Map<String, Object> targetAttributes) {
+        getRequestAdapter().extractAttributes(targetAttributes);
     }
 
     @Override

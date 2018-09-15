@@ -16,7 +16,6 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.util.MultiValueMap;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,21 +37,6 @@ public interface ResponseAdapter {
      * @return the adaptee object
      */
     <T> T getAdaptee();
-
-    /**
-     * Returns a map of the request headers that can be modified.
-     * If not yet instantiated then create a new one.
-     *
-     * @return an {@code MultiValueMap} object, may not be {@code null}
-     */
-    MultiValueMap<String, String> touchHeaders();
-
-    /**
-     * Returns a map of the request headers that can be modified.
-     *
-     * @return an {@code MultiValueMap} object, may be {@code null}
-     */
-    MultiValueMap<String, String> getHeaders();
 
     /**
      * Returns the value of the response header with the given name.
@@ -96,6 +80,7 @@ public interface ResponseAdapter {
 
     /**
      * Set the given single header value under the given header name.
+     * If the header had already been set, the new value overwrites the previous one.
      *
      * @param name the header name
      * @param value the header value to set

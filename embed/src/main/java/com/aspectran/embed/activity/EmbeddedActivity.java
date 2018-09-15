@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
@@ -67,16 +66,18 @@ public class EmbeddedActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            RequestAdapter requestAdapter = new EmbeddedRequestAdapter(parameterMap);
+            EmbeddedRequestAdapter requestAdapter = new EmbeddedRequestAdapter();
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
+            if (parameterMap != null) {
+                requestAdapter.touchParameterMap().putAll(parameterMap);
+            }
+
             if (attributeMap != null) {
-                for (Map.Entry<String, Object> entry : attributeMap.entrySet()) {
-                    requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-                }
+                requestAdapter.touchAttributes().putAll(attributeMap);
             }
 
             super.adapt();

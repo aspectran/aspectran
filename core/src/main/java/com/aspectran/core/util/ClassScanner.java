@@ -128,7 +128,7 @@ public class ClassScanner {
     }
 
     /**
-     * Recursive method used to find all classes in a given directory and subdirs.
+     * Recursive method used to find all classes in a given directory and sub dirs.
      *
      * @param targetPath the target path
      * @param basePackageName the base package name
@@ -163,7 +163,7 @@ public class ClassScanner {
                     className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
                 }
 
-                String relativePath = className.substring(basePackageName.length(), className.length());
+                String relativePath = className.substring(basePackageName.length());
                 if (matcher.matches(relativePath)) {
                     String resourceName = targetPath + fileName;
                     Class<?> classType = loadClass(className);

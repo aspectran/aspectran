@@ -20,8 +20,6 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -56,22 +54,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
         super(response);
         this.activity = activity;
-    }
-
-    @Override
-    public MultiValueMap<String, String> touchHeaders() {
-        return getHeaders();
-    }
-
-    @Override
-    public MultiValueMap<String, String> getHeaders() {
-        MultiValueMap<String, String> headers = new LinkedCaseInsensitiveMultiValueMap<>();
-        for (String name : ((HttpServletResponse)adaptee).getHeaderNames()) {
-            for (String value : ((HttpServletResponse)adaptee).getHeaders(name)) {
-                headers.add(name, value);
-            }
-        }
-        return headers;
     }
 
     @Override
