@@ -242,13 +242,13 @@ public interface Translet extends BeanRegistry, MessageSource {
     String[] getParameterValues(String name);
 
     /**
-     * Returns an {@code Collection} of {@code String} objects containing
+     * Returns a {@code Collection} of {@code String} objects containing
      * the names of the parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Enumeration}.
+     * If the request has no parameters, the method returns an empty {@code Collection}.
      *
-     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     * @return an {@code Collection} of {@code String} objects, each {@code String}
      *             containing the name of a request parameter;
-     *             or an empty {@code Enumeration} if the request has no parameters
+     *             or an empty {@code Collection} if the request has no parameters
      */
     Collection<String> getParameterNames();
 
@@ -315,13 +315,13 @@ public interface Translet extends BeanRegistry, MessageSource {
     FileParameter[] getFileParameterValues(String name);
 
     /**
-     * Returns an {@code Collection} of {@code String} objects containing
+     * Returns a {@code Collection} of {@code String} objects containing
      * the names of the file parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Enumeration}.
+     * If the request has no parameters, the method returns an empty {@code Collection}.
      *
-     * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+     * @return an {@code Collection} of {@code String} objects, each {@code String}
      *             containing the name of a file parameter;
-     *             or an empty {@code Enumeration} if the request has no file parameters
+     *             or an empty {@code Collection} if the request has no file parameters
      */
     Collection<String> getFileParameterNames();
 
@@ -372,9 +372,9 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@code Collection} containing the
+     * Returns a {@code Collection} containing the
      * names of the attributes available to this request.
-     * This method returns an empty {@code Enumeration}
+     * This method returns an empty {@code Collection}
      * if the request has no attributes available to it.
      *
      * @return the attribute names
@@ -398,7 +398,7 @@ public interface Translet extends BeanRegistry, MessageSource {
     Map<String, Object> getAllAttributes();
 
     /**
-     * Extracts all the attribues and fills in the specified map.
+     * Extracts all the attributes and fills in the specified map.
      *
      * @param attributes the attribute map
      * @since 2.0.0

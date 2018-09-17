@@ -143,7 +143,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      *
      * @return an {@code MultiValueMap} object, may be {@code null}
      */
-    protected MultiValueMap<String, String> getHeaders() {
+    public MultiValueMap<String, String> getAllHeaders() {
         return headers;
     }
 
@@ -153,7 +153,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
-    protected MultiValueMap<String, String> touchHeaders() {
+    public MultiValueMap<String, String> touchHeaders() {
         if (headers == null) {
             headers = new LinkedCaseInsensitiveMultiValueMap<>();
         }

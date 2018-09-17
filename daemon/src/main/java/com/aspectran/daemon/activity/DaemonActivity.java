@@ -69,7 +69,7 @@ public class DaemonActivity extends CoreActivity {
             DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter();
             setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
+            DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
             if (parameterMap != null) {
