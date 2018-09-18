@@ -105,13 +105,13 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     /**
-     * Returns an {@code Collection} of {@code String} objects containing
+     * Returns a {@code Collection} of {@code String} objects containing
      * the names of the parameters.
-     * If no parameters, the method returns an empty {@code Enumeration}.
+     * If no parameters, the method returns an empty {@code Collection}.
      *
-     * @return an {@code Collection} of {@code String} objects, each {@code String}
+     * @return a {@code Collection} of {@code String} objects, each {@code String}
      *             containing the name of a parameter;
-     *             or an empty {@code Enumeration} if no parameters
+     *             or an empty {@code Collection} if no parameters
      */
     public Collection<String> getParameterNames() {
         return keySet();
