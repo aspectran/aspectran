@@ -28,7 +28,7 @@ public interface SessionCache {
 
     int EVICT_ON_SESSION_EXIT = 0;
 
-    int EVICT_ON_INACTIVITY = 1; //any number equal or greater is time in seconds
+    int EVICT_ON_INACTIVITY = 1; // any number equal or greater is time in seconds
 
     SessionDataStore getSessionDataStore();
 

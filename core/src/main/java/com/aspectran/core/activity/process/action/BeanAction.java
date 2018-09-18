@@ -83,7 +83,6 @@ public class BeanAction extends AbstractAction {
     public Object execute(Activity activity) throws Exception {
         try {
             Object bean = null;
-
             if (aspectAdviceRule != null) {
                 bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
                 if (bean == null) {
@@ -102,16 +101,12 @@ public class BeanAction extends AbstractAction {
 
             ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
             ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
-
             ItemEvaluator evaluator = null;
-
             if (propertyItemRuleMap != null || argumentItemRuleMap != null) {
                 evaluator = new ItemExpressionParser(activity);
             }
             if (propertyItemRuleMap != null) {
                 Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
-
-                // set properties for ActionBean
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
                 }
@@ -157,17 +152,14 @@ public class BeanAction extends AbstractAction {
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
         Object[] args = null;
-
         if (argumentItemRuleMap != null) {
             if (evaluator == null) {
                 evaluator = new ItemExpressionParser(activity);
             }
 
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
-
             int size = argumentItemRuleMap.size();
             int index;
-
             if (requiresTranslet) {
                 index = 1;
                 args = new Object[size + index];
@@ -202,7 +194,6 @@ public class BeanAction extends AbstractAction {
             }
 
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
-
             int argSize = argumentItemRuleMap.size();
             int argIndex;
 

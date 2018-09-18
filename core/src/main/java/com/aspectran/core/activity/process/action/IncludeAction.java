@@ -59,7 +59,6 @@ public class IncludeAction extends AbstractAction {
 
             if (includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
                 ItemEvaluator evaluator = new ItemExpressionParser(activity);
-
                 if (includeActionRule.getParameterItemRuleMap() != null) {
                     Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
                     for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -73,7 +72,6 @@ public class IncludeAction extends AbstractAction {
             }
 
             innerActivity.perform();
-
             return innerActivity.getProcessResult();
         } catch (Exception e) {
             log.error("Failed to execute an action that includes other translet. includeActionRule " + includeActionRule);

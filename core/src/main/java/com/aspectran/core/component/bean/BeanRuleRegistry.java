@@ -161,7 +161,6 @@ public class BeanRuleRegistry {
         try {
             final PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
             String scanPattern = beanRule.getScanPattern();
-
             if (scanPattern != null) {
                 BeanClassScanner scanner = new BeanClassScanner(classLoader);
                 if (beanRule.getFilterParameters() != null) {
@@ -170,7 +169,6 @@ public class BeanRuleRegistry {
                 if (beanRule.getMaskPattern() != null) {
                     scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
                 }
-
                 try {
                     scanner.scan(scanPattern, (resourceName, scannedClass) -> {
                         BeanRule beanRule2 = beanRule.replicate();
@@ -207,14 +205,12 @@ public class BeanRuleRegistry {
 
     private void dissectBeanRule(BeanRule beanRule) {
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
         } else {
             if (beanRule.getId() != null) {
                 saveBeanRule(beanRule.getId(), beanRule);
             }
-
             if (!beanRule.isFactoryOffered()) {
                 if (targetBeanClass.isAnnotationPresent(Configuration.class)) {
                     // bean rule for configuration
@@ -339,7 +335,6 @@ public class BeanRuleRegistry {
 
     private Class<?> resolveOfferedFactoryBeanClass(BeanRule beanRule) {
         BeanRule offeredFactoryBeanRule;
-
         if (beanRule.getFactoryBeanClass() == null) {
             offeredFactoryBeanRule = getBeanRule(beanRule.getFactoryBeanId());
             if (offeredFactoryBeanRule == null) {
@@ -355,11 +350,10 @@ public class BeanRuleRegistry {
             }
             offeredFactoryBeanRule = beanRules[0];
         }
-
         if (offeredFactoryBeanRule.isFactoryOffered()) {
-            throw new BeanRuleException("Invalid BeanRule: An offered factory bean can not call another offered factory bean. caller:", beanRule);
+            throw new BeanRuleException("Invalid BeanRule: An offered factory bean can not call " +
+                    "another offered factory bean. caller:", beanRule);
         }
-
         return offeredFactoryBeanRule.getTargetBeanClass();
     }
 

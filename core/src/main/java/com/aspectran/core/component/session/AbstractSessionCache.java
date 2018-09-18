@@ -348,7 +348,8 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("Req count=" + session.getRequests() + " for id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) { // ensure it is the map, but don't save it to the backing store until the last request exists
+                if (doPutIfAbsent(id, session) == null) {
+                    // ensure it is the map, but don't save it to the backing store until the last request exists
                     session.updateInactivityTimer();
                 }
             }
@@ -426,7 +427,8 @@ public abstract class AbstractSessionCache implements SessionCache {
         if (allCandidates != null) {
             for (String c : allCandidates) {
                 Session s = doGet(c);
-                if (s != null && s.getRequests() > 0) { // if the session is in my cache, check its not in use first
+                if (s != null && s.getRequests() > 0) {
+                    // if the session is in my cache, check its not in use first
                     sessionsInUse.add(c);
                 }
             }

@@ -163,7 +163,6 @@ public class AnnotatedConfigParser {
     private void parseConfigBean(BeanRule beanRule) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-
         if (configAnno != null) {
             if (beanClass.isAnnotationPresent(Profile.class)) {
                 Profile profileAnno = beanClass.getAnnotation(Profile.class);
@@ -171,9 +170,7 @@ public class AnnotatedConfigParser {
                     return;
                 }
             }
-
             String[] nameArray = splitNamespace(configAnno.namespace());
-
             for (Method method : beanClass.getMethods()) {
                 if (method.isAnnotationPresent(Profile.class)) {
                     Profile profileAnno = method.getAnnotation(Profile.class);
@@ -192,7 +189,6 @@ public class AnnotatedConfigParser {
                     parseTransletRule(beanClass, method, nameArray);
                 }
             }
-
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
             }

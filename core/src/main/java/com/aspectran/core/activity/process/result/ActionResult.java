@@ -37,7 +37,7 @@ public class ActionResult {
     /**
      * Instantiates a new Action result.
      *
-     * @param parent the parent
+     * @param parent the parent result
      */
     public ActionResult(ContentResult parent) {
         this.parent = parent;
@@ -50,7 +50,7 @@ public class ActionResult {
     /**
      * Gets the parent.
      *
-     * @return the parent
+     * @return the parent result
      */
     public ContentResult getParent() {
         return parent;

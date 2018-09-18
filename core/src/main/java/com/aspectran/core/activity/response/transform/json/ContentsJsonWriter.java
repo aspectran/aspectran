@@ -86,18 +86,14 @@ public class ContentsJsonWriter extends JsonWriter {
             write(contentResult);
         } else {
             openSquareBracket();
-
             Iterator<ContentResult> iter = processResult.iterator();
-
             while (iter.hasNext()) {
                 ContentResult contentResult = iter.next();
                 write(contentResult);
-
                 if (iter.hasNext()) {
                     writeComma();
                 }
             }
-
             closeSquareBracket();
         }
     }
@@ -114,34 +110,26 @@ public class ContentsJsonWriter extends JsonWriter {
             writeNull();
             return;
         }
-
         if (contentResult.getName() != null) {
             openCurlyBracket();
             writeName(contentResult.getName());
         }
-
         if (contentResult.size() == 1) {
             ActionResult actionResult = contentResult.get(0);
-
             if (actionResult.getActionId() != null) {
                 openCurlyBracket();
-
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());
-
                 closeCurlyBracket();
             } else {
                 write(actionResult.getResultValue());
             }
         } else {
             openCurlyBracket();
-
             Iterator<ActionResult> iter = contentResult.iterator();
             int cnt = 0;
-
             while (iter.hasNext()) {
                 ActionResult actionResult = iter.next();
-
                 if (actionResult.getActionId() != null) {
                     if (cnt++ > 0) {
                         writeComma();
@@ -150,10 +138,8 @@ public class ContentsJsonWriter extends JsonWriter {
                     write(actionResult.getResultValue());
                 }
             }
-
             closeCurlyBracket();
         }
-
         if (contentResult.getName() != null) {
             closeCurlyBracket();
         }

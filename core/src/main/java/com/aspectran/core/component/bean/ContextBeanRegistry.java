@@ -36,7 +36,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
     private final ReadWriteLock singletonScopeLock = new ReentrantReadWriteLock();
 
-    public ContextBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+    public ContextBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
+                               BeanProxifierType beanProxifierType) {
         super(context, beanRuleRegistry, beanProxifierType);
     }
 
@@ -55,7 +56,6 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         } else if (beanRule.getScopeType() == ScopeType.APPLICATION) {
             return (T)getApplicationScopeBean(beanRule);
         }
-
         throw new BeanException();
     }
 
@@ -71,14 +71,12 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         boolean readLocked = true;
         singletonScopeLock.readLock().lock();
         Object bean;
-
         try {
             InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
             if (instantiatedBean == null) {
                 readLocked = false;
                 singletonScopeLock.readLock().unlock();
                 singletonScopeLock.writeLock().lock();
-
                 try {
                     instantiatedBean = beanRule.getInstantiatedBean();
                     if (instantiatedBean == null) {
@@ -112,7 +110,6 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                 singletonScopeLock.readLock().unlock();
             }
         }
-
         return bean;
     }
 
@@ -142,18 +139,15 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
 
     private Object getScopedBean(Scope scope, BeanRule beanRule) {
         ReadWriteLock scopeLock = scope.getScopeLock();
-
         boolean readLocked = true;
         scopeLock.readLock().lock();
         Object bean;
-
         try {
             InstantiatedBean instantiatedBean = scope.getInstantiatedBean(beanRule);
             if (instantiatedBean == null) {
                 readLocked = false;
                 scopeLock.readLock().unlock();
                 scopeLock.writeLock().lock();
-
                 try {
                     instantiatedBean = scope.getInstantiatedBean(beanRule);
                     if (instantiatedBean == null) {
@@ -174,7 +168,6 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     readLocked = false;
                     scopeLock.readLock().unlock();
                     scopeLock.writeLock().lock();
-
                     try {
                         bean = getFactoryProducedObject(beanRule, bean);
                     } finally {
@@ -187,7 +180,6 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                 scopeLock.readLock().unlock();
             }
         }
-
         return bean;
     }
 

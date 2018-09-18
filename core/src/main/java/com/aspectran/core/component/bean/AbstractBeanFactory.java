@@ -454,7 +454,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private int doDestroySingleton(BeanRule beanRule) {
         int failedCount = 0;
-
         if (beanRule.getInstantiatedBean() != null && beanRule.isSingleton()) {
             try {
                 InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
@@ -471,19 +470,16 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 failedCount++;
                 log.error("Could not destroy singleton bean " + beanRule, e);
             }
-
             beanRule.setInstantiatedBean(null);
         }
-
         return failedCount;
     }
 
     private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) throws BeanInstantiationException {
-        if (beanClass.isInterface())
+        if (beanClass.isInterface()) {
             throw new BeanInstantiationException(beanClass, "Specified class is an interface");
-
+        }
         Constructor<?> constructorToUse;
-
         try {
             constructorToUse = getMatchConstructor(beanClass, args);
             if (constructorToUse == null) {
@@ -492,7 +488,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         } catch (NoSuchMethodException e) {
             throw new BeanInstantiationException(beanClass, "No default constructor found", e);
         }
-
         return newInstance(constructorToUse, args);
     }
 
@@ -520,11 +515,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {
         Constructor<?>[] candidates = clazz.getDeclaredConstructors();
-
         Constructor<?> constructorToUse = null;
         float bestMatchWeight = Float.MAX_VALUE;
         float matchWeight;
-
         for (Constructor<?> candidate : candidates) {
             matchWeight = ReflectionUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
             if (matchWeight < bestMatchWeight) {
@@ -532,7 +525,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 bestMatchWeight = matchWeight;
             }
         }
-
         return constructorToUse;
     }
 

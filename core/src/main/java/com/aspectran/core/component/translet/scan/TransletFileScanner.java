@@ -77,7 +77,8 @@ public class TransletFileScanner extends FileScanner {
         try {
             templateFileScanFilter = (TransletFileScanFilter)ClassUtils.createInstance(templateFileScanFilterClass);
         } catch (Exception e) {
-            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
+            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter ["
+                    + templateFileScanFilterClass + "]", e);
         }
     }
 
@@ -98,7 +99,8 @@ public class TransletFileScanner extends FileScanner {
         try {
             filterClass = classLoader.loadClass(templateFileScanFilterClassName);
         } catch (ClassNotFoundException e) {
-            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClassName + "]", e);
+            throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" +
+                    templateFileScanFilterClassName + "]", e);
         }
         setTemplateFileScanFilter(filterClass);
     }
@@ -125,7 +127,8 @@ public class TransletFileScanner extends FileScanner {
                 if (maskedTransletName != null) {
                     transletName = maskedTransletName;
                 }  else {
-                    log.warn("The translet name [" + transletName + "] can not be masked by the mask pattern [" + transletNameMaskPattern + "]");
+                    log.warn("The translet name [" + transletName + "] can not be masked by the mask pattern [" +
+                            transletNameMaskPattern + "]");
                 }
             }
 
@@ -138,7 +141,6 @@ public class TransletFileScanner extends FileScanner {
 
             if (filterParameters != null) {
                 String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-
                 if (excludePatterns != null) {
                     for (String excludePattern : excludePatterns) {
                         WildcardPattern pattern = excludePatternCache.get(excludePattern);

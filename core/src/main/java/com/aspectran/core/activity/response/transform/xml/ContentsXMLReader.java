@@ -148,18 +148,15 @@ public class ContentsXMLReader implements XMLReader {
 
     @Override
     public void parse(InputSource is) throws IOException, SAXException {
-        if (handler == null)
+        if (handler == null) {
             throw new SAXException("No XML ContentHandler");
-
+        }
         try {
             ContentsInputSource cis = (ContentsInputSource)is;
             ProcessResult processResult = cis.getProcessResult();
-
             handler.startDocument();
-
             if (processResult != null && !processResult.isEmpty()) {
                 String contentsName = processResult.getName();
-
                 if (!processResult.isOmittable()) {
                     if (contentsName != null) {
                         handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
@@ -167,9 +164,7 @@ public class ContentsXMLReader implements XMLReader {
                         handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
                     }
                 }
-
                 parse(processResult);
-
                 if (!processResult.isOmittable()) {
                     if (contentsName != null) {
                         handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
@@ -181,7 +176,6 @@ public class ContentsXMLReader implements XMLReader {
                 handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
                 handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
             }
-
             handler.endDocument();
         } catch (InvocationTargetException e) {
             throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
@@ -201,7 +195,6 @@ public class ContentsXMLReader implements XMLReader {
     private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
         for (ContentResult contentResult : processResult) {
             String contentName = contentResult.getName();
-
             if (!contentResult.isOmittable()) {
                 if (contentName != null) {
                     handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
@@ -209,26 +202,21 @@ public class ContentsXMLReader implements XMLReader {
                     handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
                 }
             }
-
             for (ActionResult actionResult : contentResult) {
                 String actionId = actionResult.getActionId();
                 Object resultValue = actionResult.getResultValue();
-
                 if (resultValue instanceof ProcessResult) {
                     parse((ProcessResult)resultValue);
                 } else {
                     if (actionId != null) {
                         handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
                     }
-
                     parse(resultValue);
-
                     if (actionId != null) {
                         handler.endElement(StringUtils.EMPTY, actionId, actionId);
                     }
                 }
             }
-
             if (!contentResult.isOmittable()) {
                 if (contentResult.getName() != null) {
                     handler.endElement(StringUtils.EMPTY, contentName, contentName);
@@ -251,7 +239,8 @@ public class ContentsXMLReader implements XMLReader {
     private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
         if (object == null) {
             return;
-        } else if (object instanceof ProcessResult) {
+        }
+        if (object instanceof ProcessResult) {
             parse((ProcessResult)object);
         } else if (object instanceof String
                 || object instanceof Number
@@ -264,7 +253,6 @@ public class ContentsXMLReader implements XMLReader {
                 String name = p.getName();
                 Object value = p.getValue();
                 checkCircularReference(object, value);
-
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
                 parse(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
@@ -274,36 +262,29 @@ public class ContentsXMLReader implements XMLReader {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
-
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
                 parse(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
         } else if (object instanceof Collection<?>) {
             handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
-
             for (Object value : ((Collection<Object>) object)) {
                 checkCircularReference(object, value);
-
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
                 parse(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
-
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
         } else if (object.getClass().isArray()) {
             handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
-
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
                 Object value = Array.get(object, i);
                 checkCircularReference(object, value);
-
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
                 parse(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
-
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
@@ -311,7 +292,6 @@ public class ContentsXMLReader implements XMLReader {
                 for (String name : readablePropertyNames) {
                     Object value = BeanUtils.getProperty(object, name);
                     checkCircularReference(object, value);
-
                     handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
                     parse(value);
                     handler.endElement(StringUtils.EMPTY, name, name);

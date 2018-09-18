@@ -92,7 +92,8 @@ public class BeanRuleAnalyzer {
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
             if (m2 == null) {
-                throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+                throw new BeanRuleException("No such factory method " + factoryMethodName +
+                        "() on bean class: " + beanClass.getName(), beanRule);
             }
             beanRule.setFactoryMethod(m2);
             targetBeanClass = m2.getReturnType();
@@ -105,10 +106,12 @@ public class BeanRuleAnalyzer {
 
     public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isInitializableBean()) {
-            throw new BeanRuleException("Bean initialization method is duplicated; Already implemented the InitializableBean", beanRule);
+            throw new BeanRuleException("Bean initialization method is duplicated; " +
+                    "Already implemented the InitializableBean", beanRule);
         }
         if (beanRule.isInitializableTransletBean()) {
-            throw new BeanRuleException("Bean initialization method is duplicated; Already implemented the InitializableTransletBean", beanRule);
+            throw new BeanRuleException("Bean initialization method is duplicated; " +
+                    "Already implemented the InitializableTransletBean", beanRule);
         }
 
         String initMethodName = beanRule.getInitMethodName();
@@ -120,7 +123,8 @@ public class BeanRuleAnalyzer {
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
             if (m2 == null) {
-                throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+                throw new BeanRuleException("No such initialization method " +
+                        initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
             beanRule.setInitMethod(m2);
         }
@@ -128,13 +132,15 @@ public class BeanRuleAnalyzer {
 
     public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isDisposableBean()) {
-            throw new BeanRuleException("Bean destroy method is duplicated; Already implemented the DisposableBean", beanRule);
+            throw new BeanRuleException("Bean destroy method is duplicated; " +
+                    "Already implemented the DisposableBean", beanRule);
         }
 
         String destroyMethodName = beanRule.getDestroyMethodName();
         Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
         if (m == null) {
-            throw new BeanRuleException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+            throw new BeanRuleException("No such destroy method " +
+                    destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
         }
         beanRule.setDestroyMethod(m);
     }

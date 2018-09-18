@@ -203,7 +203,8 @@ public class Session {
                     //set the time to the lesser of the session's maxInactive and eviction timeout
                     setInactivityTimer(Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionPolicy)));
                     if (log.isDebugEnabled()) {
-                        log.debug("Inactivity timer set to lesser of maxInactive=" + maxInactive + " and inactivityEvict=" + evictionPolicy);
+                        log.debug("Inactivity timer set to lesser of maxInactive=" + maxInactive +
+                                " and inactivityEvict=" + evictionPolicy);
                     }
                 }
             }

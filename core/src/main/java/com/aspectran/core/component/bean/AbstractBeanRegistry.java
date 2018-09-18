@@ -26,7 +26,8 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
  */
 public abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanRegistry {
 
-    public AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+    public AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
+                                BeanProxifierType beanProxifierType) {
         super(context, beanRuleRegistry, beanProxifierType);
     }
 

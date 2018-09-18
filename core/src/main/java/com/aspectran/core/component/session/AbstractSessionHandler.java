@@ -87,7 +87,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         this.defaultMaxIdleSecs = defaultMaxIdleSecs;
         if (log.isDebugEnabled()) {
             if (defaultMaxIdleSecs <= 0) {
-                log.debug("Sessions created by this manager are immortal (default maxInactiveInterval=" + defaultMaxIdleSecs + ")");
+                log.debug("Sessions created by this manager are immortal (default maxInactiveInterval="
+                        + defaultMaxIdleSecs + ")");
             } else {
                 log.debug("SessionHandler default maxInactiveInterval=" + defaultMaxIdleSecs);
             }
@@ -130,7 +131,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     public Session newSession(String id) {
         long created = System.currentTimeMillis();
         Session session = sessionCache.newSession(id, created, (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1));
-
         try {
             sessionCache.put(id, session);
             sessionsCreatedStats.increment();
@@ -284,7 +284,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param value the bound value
      */
     private void unbindValue(Session session, String name, Object value) {
-        if (value != null && value instanceof SessionBindingListener) {
+        if (value instanceof SessionBindingListener) {
             ((SessionBindingListener)value).valueUnbound(session, name, value);
         }
     }
@@ -298,7 +298,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param value the bound value
      */
     private void bindValue(Session session, String name, Object value) {
-        if (value != null&&value instanceof SessionBindingListener) {
+        if (value instanceof SessionBindingListener) {
             ((SessionBindingListener)value).valueBound(session, name, value);
         }
     }

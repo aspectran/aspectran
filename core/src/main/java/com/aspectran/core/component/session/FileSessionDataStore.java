@@ -198,7 +198,6 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             // make a fresh file using the latest session expiry
             String filename = getIdWithExpiry(data);
             File file = new File(storeDir, filename);
-
             try(FileOutputStream fos = new FileOutputStream(file,false)) {
                 save(fos, id, data);
                 sessionFileMap.put(id, filename);

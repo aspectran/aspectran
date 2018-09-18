@@ -63,10 +63,7 @@ public class ForwardResponse implements Response {
         if (forwardResponseRule.getAttributeItemRuleMap() != null) {
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
             Map<String, Object> valueMap = evaluator.evaluate(forwardResponseRule.getAttributeItemRuleMap());
-
-            for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-            }
+            requestAdapter.putAllAttributes(valueMap);
         }
     }
 

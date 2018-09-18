@@ -68,7 +68,6 @@ public class RedirectResponse implements Response {
                     responseAdapter.setEncoding(encoding);
                 }
             }
-
             responseAdapter.redirect(redirectResponseRule);
         } catch (Exception e) {
             throw new ResponseException("Failed to redirect " + redirectResponseRule, e);

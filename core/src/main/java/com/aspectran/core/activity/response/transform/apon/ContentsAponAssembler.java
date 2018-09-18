@@ -63,7 +63,6 @@ public class ContentsAponAssembler {
         for (ContentResult contentResult : processResult) {
             assemble(contentResult, container);
         }
-
         return container;
     }
 
@@ -71,13 +70,11 @@ public class ContentsAponAssembler {
         if (contentResult.isEmpty()) {
             return;
         }
-
         if (contentResult.getName() != null) {
             Parameters p = new VariableParameters();
             container.putValue(contentResult.getName(), p);
             container = p;
         }
-
         for (ActionResult actionResult : contentResult) {
             String actionId = actionResult.getActionId();
             if (actionId != null) {

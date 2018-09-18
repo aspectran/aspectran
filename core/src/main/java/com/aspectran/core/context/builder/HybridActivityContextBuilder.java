@@ -137,7 +137,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             log.info("ActivityContext build completed in " + elapsedTime + " ms");
 
             registerDestroyTask();
-
             startReloadingTimer();
 
             this.active.set(true);
@@ -159,18 +158,14 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private void doDestroy() {
         if (this.active.get()) {
             stopReloadingTimer();
-
             getApplicationAdapter().getApplicationScope().destroy();
-
             if (activityContext != null) {
                 ((Component)activityContext).destroy();
                 activityContext = null;
             }
-
             if (coreService != null) {
                 coreService.setActivityContext(null);
             }
-
             this.active.set(false);
         }
     }
