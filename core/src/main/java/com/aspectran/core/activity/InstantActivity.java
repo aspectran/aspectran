@@ -62,11 +62,10 @@ public class InstantActivity extends DefaultActivity {
         setResponseAdapter(responseAdapter);
 
         if (parameterMap != null) {
-            requestAdapter.touchParameterMap().putAll(parameterMap);
+            requestAdapter.setParameterMap(parameterMap);
         }
-
         if (attributeMap != null) {
-            requestAdapter.touchAttributes().putAll(attributeMap);
+            requestAdapter.setAttributeMap(attributeMap);
         }
     }
 

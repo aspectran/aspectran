@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
@@ -73,11 +72,10 @@ public class DaemonActivity extends CoreActivity {
             setResponseAdapter(responseAdapter);
 
             if (parameterMap != null) {
-                requestAdapter.touchParameterMap().putAll(parameterMap);
+                requestAdapter.setParameterMap(parameterMap);
             }
-
             if (attributeMap != null) {
-                requestAdapter.touchAttributes().putAll(attributeMap);
+                requestAdapter.setAttributeMap(attributeMap);
             }
 
             super.adapt();

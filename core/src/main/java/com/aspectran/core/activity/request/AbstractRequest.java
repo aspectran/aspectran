@@ -24,7 +24,6 @@ import com.aspectran.core.util.MultiValueMap;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -79,7 +78,7 @@ public abstract class AbstractRequest {
      *         on this response
      */
     public String getHeader(String name) {
-        return (headers != null ? headers.getFirst(name) : null);
+        return touchHeaders().getFirst(name);
     }
 
     /**
@@ -90,7 +89,7 @@ public abstract class AbstractRequest {
      *         of the response header with the given name
      */
     public Collection<String> getHeaders(String name) {
-        return (headers != null ? headers.get(name) : null);
+        return touchHeaders().get(name);
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class AbstractRequest {
      *         of the headers of this response
      */
     public Collection<String> getHeaderNames() {
-        return (headers != null ? headers.keySet() : null);
+        return touchHeaders().keySet();
     }
 
     /**
@@ -112,12 +111,8 @@ public abstract class AbstractRequest {
      *         has already been set; {@code false} otherwise
      */
     public boolean containsHeader(String name) {
-        if (headers != null) {
-            List<String> values = headers.get(name);
-            return (values != null && !values.isEmpty());
-        } else {
-            return false;
-        }
+        List<String> values = touchHeaders().get(name);
+        return (values != null && !values.isEmpty());
     }
 
     /**
@@ -150,13 +145,10 @@ public abstract class AbstractRequest {
         return touchHeaders();
     }
 
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
-    }
-
     /**
      * Returns a map of the request headers that can be modified.
      * If not yet instantiated then create a new one.
+     * Must be touch first, because it is lazy initialization.
      *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
@@ -167,16 +159,24 @@ public abstract class AbstractRequest {
         return headers;
     }
 
+    public MultiValueMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(MultiValueMap<String, String> headers) {
+        this.headers = headers;
+    }
+
     public String getParameter(String name) {
-        return (parameterMap != null ? parameterMap.getParameter(name) : null);
+        return touchParameterMap().getParameter(name);
     }
 
     public String[] getParameterValues(String name) {
-        return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
+        return touchParameterMap().getParameterValues(name);
     }
 
     public Collection<String> getParameterNames() {
-        return (parameterMap != null ? parameterMap.getParameterNames() : null);
+        return touchParameterMap().getParameterNames();
     }
 
     public void setParameter(String name, String value) {
@@ -197,15 +197,13 @@ public abstract class AbstractRequest {
     }
 
     public void extractParameters(Map<String, Object> targetParameters) {
-        if (parameterMap != null) {
-            parameterMap.extractParameters(targetParameters);
-        }
+        touchParameterMap().extractParameters(targetParameters);
     }
 
-    public ParameterMap getParameterMap() {
-        return parameterMap;
-    }
-
+    /**
+     * Must be touch first, because it is lazy initialization.
+     * @return the parameter map
+     */
     public ParameterMap touchParameterMap() {
         if (parameterMap == null) {
             parameterMap = new ParameterMap();
@@ -213,18 +211,24 @@ public abstract class AbstractRequest {
         return parameterMap;
     }
 
+    public ParameterMap getParameterMap() {
+        return parameterMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
+    }
+
     public FileParameter getFileParameter(String name) {
-        return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
+        return touchFileParameterMap().getFileParameter(name);
     }
 
     public FileParameter[] getFileParameterValues(String name) {
-        return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
+        return touchFileParameterMap().getFileParameterValues(name);
     }
 
     public void removeFileParameter(String name) {
-        if (fileParameterMap != null) {
-            fileParameterMap.remove(name);
-        }
+        touchFileParameterMap().remove(name);
     }
 
     public void setFileParameter(String name, FileParameter fileParameter) {
@@ -236,14 +240,18 @@ public abstract class AbstractRequest {
     }
 
     public Collection<String> getFileParameterNames() {
-        FileParameterMap fileParameterMap = touchFileParameterMap();
-        return (fileParameterMap != null ? fileParameterMap.keySet() : null);
+        return touchFileParameterMap().keySet();
     }
 
     public FileParameterMap getFileParameterMap() {
         return fileParameterMap;
     }
 
+    /**
+     * Must be touch first, because it is lazy initialization.
+     *
+     * @return the file parameter map
+     */
     public FileParameterMap touchFileParameterMap() {
         if (fileParameterMap == null) {
             fileParameterMap = new FileParameterMap();
@@ -253,7 +261,7 @@ public abstract class AbstractRequest {
 
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return (attributes != null ? (T)attributes.get(name) : null);
+        return (T)touchAttributes().get(name);
     }
 
     public void setAttribute(String name, Object value) {
@@ -266,13 +274,11 @@ public abstract class AbstractRequest {
     }
 
     public Collection<String> getAttributeNames() {
-        return (attributes != null ? attributes.keySet() : Collections.emptySet());
+        return touchAttributes().keySet();
     }
 
     public void removeAttribute(String name) {
-        if (attributes != null) {
-            attributes.remove(name);
-        }
+        touchAttributes().remove(name);
     }
 
     public Map<String, Object> getAllAttributes() {
@@ -287,11 +293,14 @@ public abstract class AbstractRequest {
         if (targetAttributes == null) {
             throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
         }
-        if (attributes != null) {
-            targetAttributes.putAll(attributes);
-        }
+        targetAttributes.putAll(touchAttributes());
     }
 
+    /**
+     * Must be touch first, because it is lazy initialization.
+     *
+     * @return the attribute map
+     */
     public Map<String, Object> touchAttributes() {
         if (attributes == null) {
             attributes = new HashMap<>();

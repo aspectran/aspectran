@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
 import com.aspectran.embed.service.EmbeddedService;
@@ -69,15 +68,14 @@ public class EmbeddedActivity extends CoreActivity {
             EmbeddedRequestAdapter requestAdapter = new EmbeddedRequestAdapter();
             setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
+            EmbeddedResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
             if (parameterMap != null) {
-                requestAdapter.touchParameterMap().putAll(parameterMap);
+                requestAdapter.setParameterMap(parameterMap);
             }
-
             if (attributeMap != null) {
-                requestAdapter.touchAttributes().putAll(attributeMap);
+                requestAdapter.setAttributeMap(attributeMap);
             }
 
             super.adapt();

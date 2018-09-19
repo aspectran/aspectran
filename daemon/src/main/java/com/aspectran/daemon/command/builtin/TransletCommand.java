@@ -44,15 +44,15 @@ public class TransletCommand extends AbstractCommand {
     @Override
     public String execute(CommandParameters parameters) throws Exception {
         String transletName = parameters.getTransletName();
-        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
-
         if (transletName == null) {
             throw new IllegalRuleException("Parameter 'translet' is not specified");
         }
 
+        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+
         ParameterMap parameterMap = null;
-        Map<String, Object> attrs = null;
+        Map<String, Object> attributeMap = null;
         if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
             Activity activity = new InstantActivity(getService().getActivityContext());
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
@@ -60,11 +60,11 @@ public class TransletCommand extends AbstractCommand {
                 parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
             }
             if (attributeItemRuleMap != null) {
-                attrs = evaluator.evaluate(attributeItemRuleMap);
+                attributeMap = evaluator.evaluate(attributeItemRuleMap);
             }
         }
 
-        Translet translet = getService().translet(transletName, parameterMap, attrs);
+        Translet translet = getService().translet(transletName, parameterMap, attributeMap);
         return translet.getResponseAdapter().getWriter().toString();
     }
 
