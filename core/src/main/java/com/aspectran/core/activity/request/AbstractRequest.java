@@ -37,6 +37,8 @@ import java.util.TimeZone;
  */
 public abstract class AbstractRequest {
 
+    private final boolean touchFirst;
+
     private MethodType requestMethod;
 
     private MultiValueMap<String, String> headers;
@@ -55,7 +57,8 @@ public abstract class AbstractRequest {
 
     private boolean maxLengthExceeded;
 
-    public AbstractRequest() {
+    public AbstractRequest(boolean touchFirst) {
+        this.touchFirst = touchFirst;
     }
 
     public MethodType getRequestMethod() {
@@ -78,7 +81,11 @@ public abstract class AbstractRequest {
      *         on this response
      */
     public String getHeader(String name) {
-        return touchHeaders().getFirst(name);
+        if (touchFirst) {
+            return touchHeaders().getFirst(name);
+        } else {
+            return (headers != null ? headers.getFirst(name) : null);
+        }
     }
 
     /**
@@ -89,7 +96,11 @@ public abstract class AbstractRequest {
      *         of the response header with the given name
      */
     public Collection<String> getHeaders(String name) {
-        return touchHeaders().get(name);
+        if (touchFirst) {
+            return touchHeaders().get(name);
+        } else {
+            return (headers != null ? headers.get(name) : null);
+        }
     }
 
     /**
@@ -99,7 +110,11 @@ public abstract class AbstractRequest {
      *         of the headers of this response
      */
     public Collection<String> getHeaderNames() {
-        return touchHeaders().keySet();
+        if (touchFirst) {
+            return touchHeaders().keySet();
+        } else {
+            return (headers != null ? headers.keySet() : null);
+        }
     }
 
     /**
@@ -111,8 +126,17 @@ public abstract class AbstractRequest {
      *         has already been set; {@code false} otherwise
      */
     public boolean containsHeader(String name) {
-        List<String> values = touchHeaders().get(name);
-        return (values != null && !values.isEmpty());
+        if (touchFirst) {
+            List<String> values = touchHeaders().get(name);
+            return (values != null && !values.isEmpty());
+        } else {
+            if (headers != null) {
+                List<String> values = headers.get(name);
+                return (values != null && !values.isEmpty());
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -168,15 +192,27 @@ public abstract class AbstractRequest {
     }
 
     public String getParameter(String name) {
-        return touchParameterMap().getParameter(name);
+        if (touchFirst) {
+            return touchParameterMap().getParameter(name);
+        } else {
+            return (parameterMap != null ? parameterMap.getParameter(name) : null);
+        }
     }
 
     public String[] getParameterValues(String name) {
-        return touchParameterMap().getParameterValues(name);
+        if (touchFirst) {
+            return touchParameterMap().getParameterValues(name);
+        } else {
+            return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
+        }
     }
 
     public Collection<String> getParameterNames() {
-        return touchParameterMap().getParameterNames();
+        if (touchFirst) {
+            return touchParameterMap().getParameterNames();
+        } else {
+            return (parameterMap != null ? parameterMap.getParameterNames() : null);
+        }
     }
 
     public void setParameter(String name, String value) {
@@ -197,7 +233,13 @@ public abstract class AbstractRequest {
     }
 
     public void extractParameters(Map<String, Object> targetParameters) {
-        touchParameterMap().extractParameters(targetParameters);
+        if (touchFirst) {
+            touchParameterMap().extractParameters(targetParameters);
+        } else {
+            if (parameterMap != null) {
+                parameterMap.extractParameters(targetParameters);
+            }
+        }
     }
 
     /**
@@ -220,15 +262,29 @@ public abstract class AbstractRequest {
     }
 
     public FileParameter getFileParameter(String name) {
-        return touchFileParameterMap().getFileParameter(name);
+        if (touchFirst) {
+            return touchFileParameterMap().getFileParameter(name);
+        } else {
+            return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
+        }
     }
 
     public FileParameter[] getFileParameterValues(String name) {
-        return touchFileParameterMap().getFileParameterValues(name);
+        if (touchFirst) {
+            return touchFileParameterMap().getFileParameterValues(name);
+        } else {
+            return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
+        }
     }
 
     public void removeFileParameter(String name) {
-        touchFileParameterMap().remove(name);
+        if (touchFirst) {
+            touchFileParameterMap().remove(name);
+        } else {
+            if (fileParameterMap != null) {
+                fileParameterMap.remove(name);
+            }
+        }
     }
 
     public void setFileParameter(String name, FileParameter fileParameter) {
@@ -240,11 +296,11 @@ public abstract class AbstractRequest {
     }
 
     public Collection<String> getFileParameterNames() {
-        return touchFileParameterMap().keySet();
-    }
-
-    public FileParameterMap getFileParameterMap() {
-        return fileParameterMap;
+        if (touchFirst) {
+            return touchFileParameterMap().keySet();
+        } else {
+            return (fileParameterMap != null ? fileParameterMap.keySet() : null);
+        }
     }
 
     /**
@@ -259,9 +315,17 @@ public abstract class AbstractRequest {
         return fileParameterMap;
     }
 
+    public FileParameterMap getFileParameterMap() {
+        return fileParameterMap;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return (T)touchAttributes().get(name);
+        if (touchFirst) {
+            return (T) touchAttributes().get(name);
+        } else {
+            return (attributes != null ? (T)attributes.get(name) : null);
+        }
     }
 
     public void setAttribute(String name, Object value) {
@@ -274,11 +338,21 @@ public abstract class AbstractRequest {
     }
 
     public Collection<String> getAttributeNames() {
-        return touchAttributes().keySet();
+        if (touchFirst) {
+            return touchAttributes().keySet();
+        } else {
+            return (attributes != null ? attributes.keySet() : null);
+        }
     }
 
     public void removeAttribute(String name) {
-        touchAttributes().remove(name);
+        if (touchFirst) {
+            touchAttributes().remove(name);
+        } else {
+            if (attributes != null) {
+                attributes.remove(name);
+            }
+        }
     }
 
     public Map<String, Object> getAllAttributes() {
@@ -293,7 +367,13 @@ public abstract class AbstractRequest {
         if (targetAttributes == null) {
             throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
         }
-        targetAttributes.putAll(touchAttributes());
+        if (touchFirst) {
+            targetAttributes.putAll(touchAttributes());
+        } else {
+            if (attributes != null) {
+                targetAttributes.putAll(attributes);
+            }
+        }
     }
 
     /**

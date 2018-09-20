@@ -33,9 +33,10 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
      * Instantiates a new AbstractRequestAdapter.
      *
      * @param adaptee the adaptee object
+     * @param touchFirst whether to lazy initialize headers, parameters, and attributes
      */
-    public AbstractRequestAdapter(Object adaptee) {
-        super();
+    public AbstractRequestAdapter(Object adaptee, boolean touchFirst) {
+        super(touchFirst);
         this.adaptee = adaptee;
     }
 

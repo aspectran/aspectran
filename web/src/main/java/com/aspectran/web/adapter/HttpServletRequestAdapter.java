@@ -40,7 +40,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
      * @param request the HTTP request
      */
     public HttpServletRequestAdapter(HttpServletRequest request) {
-        super(request);
+        super(request, true);
         setRequestMethod(MethodType.resolve(request.getMethod()));
     }
 

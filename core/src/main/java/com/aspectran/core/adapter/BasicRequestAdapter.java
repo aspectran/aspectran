@@ -28,7 +28,7 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
      * @param adaptee the adaptee object
      */
     public BasicRequestAdapter(Object adaptee) {
-        super(adaptee);
+        super(adaptee, false);
     }
 
 }
