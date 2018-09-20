@@ -46,20 +46,17 @@ public class JLineAnsiStyler {
         }
 
         final AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
-
         AnsiStyleHandler handler = new AnsiStyleHandler() {
             @Override
             public void character(char c) {
                 asb.append(c);
             }
-
             @Override
             public void attribute(String... attrs) {
                 asb.style(makeStyle(asb.style(), attrs));
             }
         };
         handler.handle(input);
-
         return asb.toAnsi(terminal);
     }
 

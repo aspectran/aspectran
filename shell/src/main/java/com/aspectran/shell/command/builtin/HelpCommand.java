@@ -141,12 +141,10 @@ public class HelpCommand extends AbstractCommand {
         while (true) {
             text = padding + text.substring(pos).trim();
             pos = OptionUtils.findWrapPos(text, width, 0);
-
             if (pos == -1) {
                 sb.append(text);
                 return sb;
             }
-
             if (text.length() > width && pos == nextLineTabStop - 1) {
                 pos = width;
             }

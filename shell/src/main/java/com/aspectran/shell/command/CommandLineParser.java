@@ -96,18 +96,15 @@ public class CommandLineParser {
      */
     private void parse(String commandLine) {
         String[] tokens = splitCommandLine(commandLine);
-
         if (tokens.length > 1) {
             this.requestMethod = MethodType.resolve(tokens[0]);
             if (requestMethod != null) {
                 this.command = commandLine.substring(tokens[0].length()).trim();
             }
         }
-
         if (this.requestMethod == null) {
             this.command = commandLine;
         }
-
         parseRedirection(this.command);
     }
 
@@ -122,7 +119,6 @@ public class CommandLineParser {
         CommandLineRedirection prevRedirectionOperation = null;
         boolean haveDoubleQuote = false;
         boolean haveSingleQuote = false;
-
         while (matcher.find()) {
             if (matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
                 String string = buffer.substring(0, matcher.start(1)).trim();
@@ -149,21 +145,21 @@ public class CommandLineParser {
                 matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
             }
             else if (matcher.group(3) != null) {
-                if ((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) && !haveSingleQuote) {
+                if ((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) &&
+                        !haveSingleQuote) {
                     haveDoubleQuote = !haveDoubleQuote;
                 }
             }
             else if (matcher.group(4) != null) {
-                if ((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) && !haveDoubleQuote) {
+                if ((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) &&
+                        !haveDoubleQuote) {
                     haveSingleQuote = !haveSingleQuote;
                 }
             }
         }
-
         if (prevRedirectionOperation != null) {
             prevRedirectionOperation.setOperand(buffer.trim());
         }
-
         this.redirectionList = (redirectionList.size() > 0 ? redirectionList : null);
     }
 

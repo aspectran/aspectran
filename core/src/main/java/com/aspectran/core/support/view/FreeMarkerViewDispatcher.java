@@ -88,12 +88,11 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchResponseRule.getContentType();
-            String encoding = dispatchResponseRule.getEncoding();
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
 
+            String encoding = dispatchResponseRule.getEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             } else {
@@ -104,7 +103,6 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
             }
 
             TemplateDataMap model = new TemplateDataMap(activity);
-
             Template template = configuration.getTemplate(dispatchName);
             template.process(model, responseAdapter.getWriter());
 

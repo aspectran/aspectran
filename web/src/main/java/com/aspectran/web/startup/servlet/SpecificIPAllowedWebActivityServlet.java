@@ -82,7 +82,6 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
      * Returns whether IP address is valid.
      *
      * @param ipAddress the IP address
-     *
      * @return true if IP address is a valid; false otherwise
      */
     private boolean isAllowedAddress(String ipAddress) {
@@ -101,7 +100,6 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
         }
 
         String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
-
         return (allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress));
     }
 

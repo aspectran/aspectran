@@ -91,7 +91,6 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
         } else {
             props = new Properties();
         }
-
         if (this.schedulerName != null) {
             props.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, this.schedulerName);
         }
@@ -108,12 +107,10 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory(props);
         Scheduler newScheduler = schedulerFactory.getScheduler();
-
         if (!this.exposeSchedulerInRepository) {
             // Need to remove it in this case, since Quartz shares the Scheduler instance by default!
             SchedulerRepository.getInstance().remove(newScheduler.getSchedulerName());
         }
-
         return newScheduler;
     }
 

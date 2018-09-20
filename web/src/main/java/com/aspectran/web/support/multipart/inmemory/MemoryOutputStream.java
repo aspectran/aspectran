@@ -65,7 +65,8 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      */
     @Override
     protected void thresholdReached() {
-        throw new UnsupportedOperationException("Not possible in GAE. Will never reach!! Try changing max upload size setting.");
+        throw new UnsupportedOperationException("Not possible in GAE. Will never reach!! " +
+                "Try changing max upload size setting.");
     }
 
     /**
@@ -105,10 +106,8 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      * @exception IOException if this stream is not yet closed or an error occurs
      */
     public void writeTo(OutputStream out) throws IOException {
-        // we may only need to check if this is closed if we are working with a
-        // file
-        // but we should force the habit of closing whether we are working with
-        // a file or memory.
+        // we may only need to check if this is closed if we are working with a file
+        // but we should force the habit of closing whether we are working with a file or memory.
         if (!closed) {
             throw new IOException("Stream not closed");
         }

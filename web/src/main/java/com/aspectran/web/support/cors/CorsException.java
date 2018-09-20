@@ -65,7 +65,8 @@ public class CorsException extends AspectranCheckedException {
      * Missing Access-Control-Request-Method header.
      */
     public static final CorsException MISSING_ACCESS_CONTROL_REQUEST_METHOD_HEADER =
-            new CorsException("Invalid preflight CORS request: Missing Access-Control-Request-Method header", HttpServletResponse.SC_BAD_REQUEST);
+            new CorsException("Invalid preflight CORS request: Missing Access-Control-Request-Method header",
+                    HttpServletResponse.SC_BAD_REQUEST);
 
     /**
      * The HTTP status code, zero if not specified.
@@ -76,8 +77,8 @@ public class CorsException extends AspectranCheckedException {
      * Creates a new CORS exception with the specified message and
      * associated HTTP status code.
      *
-     * @param message the message.
-     * @param httpStatusCode the HTTP status code, zero if not specified.
+     * @param message the message
+     * @param httpStatusCode the HTTP status code, zero if not specified
      */
     private CorsException(String message, int httpStatusCode) {
         super(message);
@@ -87,7 +88,7 @@ public class CorsException extends AspectranCheckedException {
     /**
      * Returns the associated HTTP status code.
      *
-     * @return the HTTP status code, zero if not specified.
+     * @return the HTTP status code, zero if not specified
      */
     public int getHttpStatusCode() {
         return httpStatusCode;

@@ -100,7 +100,8 @@ public class WebActivity extends CoreActivity {
                     response.setStatus(301);
                     response.setHeader("Location", transletName2);
                     response.setHeader("Connection", "close");
-                    throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and serving directory index files");
+                    throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and " +
+                            "serving directory index files");
                 }
             }
             throw e;
@@ -146,14 +147,13 @@ public class WebActivity extends CoreActivity {
             }
         }
 
-        String contentType = request.getContentType();
-
         MethodType requestMethod = getRequestAdapter().getRequestMethod();
         MethodType allowedMethod = getRequestRule().getAllowedMethod();
         if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
             throw new RequestMethodNotAllowedException(allowedMethod);
         }
 
+        String contentType = request.getContentType();
         if (contentType != null) {
             if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
                 parseMultipartFormData();
@@ -183,7 +183,6 @@ public class WebActivity extends CoreActivity {
         if (parser == null) {
             throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined");
         }
-
         parser.parse(getRequestAdapter());
     }
 
@@ -200,7 +199,8 @@ public class WebActivity extends CoreActivity {
         if (localeResolver != null) {
             String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
             if (localeChangeInterceptorId != null) {
-                LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+                LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId,
+                        LocaleChangeInterceptor.class);
                 localeChangeInterceptor.handle(getTranslet(), localeResolver);
             }
         }

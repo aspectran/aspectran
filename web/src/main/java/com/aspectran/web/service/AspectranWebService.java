@@ -75,11 +75,9 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUri = request.getRequestURI();
-
         if (uriDecoding != null) {
             requestUri = URLDecoder.decode(requestUri, uriDecoding);
         }
-
         if (!isExposable(requestUri)) {
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {
@@ -87,7 +85,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
                 }
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                log.error("An unexposed Translet passed over to the default servlet and an error occurred during processing", e);
+                log.error("An unexposed Translet passed over to the default servlet and an error" +
+                        "occurred during processing", e);
             }
             return;
         }
@@ -99,7 +98,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranWebService has been paused, so did not respond to the request URI \"" + requestUri + "\"");
+                    log.debug("AspectranWebService has been paused, so did not respond to the request URI \"" +
+                            requestUri + "\"");
                 }
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
@@ -109,7 +109,6 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         Activity activity = null;
-
         try {
             activity = new WebActivity(getActivityContext(), request, response);
             activity.prepare(requestUri, request.getMethod());
@@ -167,7 +166,6 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         WebService service = create(servletContext, aspectranConfigParam);
-
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, service);
 
         if (log.isDebugEnabled()) {
@@ -215,7 +213,6 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         WebService service = create(servletContext, aspectranConfigParam);
-
         String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
         servletContext.setAttribute(attrName, service);
 
@@ -242,7 +239,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam != null) {
             WebService service = create(servletContext, aspectranConfigParam);
-            servletContext.setAttribute(STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName(), service);
+            servletContext.setAttribute(STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX +
+                    servlet.getServletName(), service);
             return service;
         } else {
             return rootService;
@@ -282,7 +280,6 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         setServiceStateListener(service);
-
         return service;
     }
 
@@ -317,7 +314,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             @Override
             public void paused(long millis) {
                 if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
+                    throw new IllegalArgumentException("Pause timeout in milliseconds " +
+                            "needs to be set to a value of greater than 0");
                 }
                 AspectranWebService.pauseTimeout = System.currentTimeMillis() + millis;
             }
@@ -348,7 +346,8 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     public static ActivityContext getActivityContext(ServletContext servletContext) {
         ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTRIBUTE);
         if (activityContext == null) {
-            throw new IllegalStateException("No Root AspectranWebService found; No AspectranServiceListener registered?");
+            throw new IllegalStateException("No Root AspectranWebService found; " +
+                    "No AspectranServiceListener registered?");
         }
         return activityContext;
     }
@@ -363,10 +362,11 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         ServletContext servletContext = servlet.getServletContext();
         String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
         ActivityContext activityContext = getActivityContext(servletContext, attrName);
-        if (activityContext == null) {
+        if (activityContext != null) {
+            return activityContext;
+        } else {
             return getActivityContext(servletContext);
         }
-        return activityContext;
     }
 
     /**

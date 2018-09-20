@@ -109,20 +109,22 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     @Override
     public Enumeration<String> getAttributeNames() {
         HttpSession session = getSession(false);
-        if (session == null) {
+        if (session != null) {
+            return session.getAttributeNames();
+        } else {
             return null;
         }
-        return session.getAttributeNames();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         HttpSession session = getSession(false);
-        if (session == null) {
+        if (session != null) {
+            return (T)session.getAttribute(name);
+        } else {
             return null;
         }
-        return (T)session.getAttribute(name);
     }
 
     @Override

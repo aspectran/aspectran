@@ -55,17 +55,14 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         if (!isCorsRequest(req)) {
             return;
         }
-
         if (!checkProcessable(res)) {
             return;
         }
-
         if (!isAllowedMethod(req.getMethod())) {
             rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
         }
 
         String origin = req.getHeader(HttpHeaders.ORIGIN);
-
         if (!isAllowedOrigin(origin)) {
             rejectRequest(translet, CorsException.ORIGIN_DENIED);
         }
@@ -93,7 +90,6 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         if (!isPreFlightRequest(req)) {
             rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
         }
-
         if (!checkProcessable(res)) {
             return;
         }
@@ -131,13 +127,11 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         if (getAllowedMethodsString() != null) {
             res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
         }
-
         if (getAllowedHeadersString() != null) {
             res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
         } else if (rawRequestHeadersString != null) {
             res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
         }
-
         if (getMaxAgeSeconds() > 0) {
             res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
         }
@@ -148,7 +142,6 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         Throwable t = translet.getRootCauseOfRaisedException();
         if (t instanceof CorsException) {
             CorsException corsException = (CorsException)t;
-
             HttpServletResponse res = translet.getResponseAdaptee();
             res.sendError(corsException.getHttpStatusCode(), corsException.getMessage());
         }
@@ -160,7 +153,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
      *
      * @param translet the translet
      * @param ce the CORS Exception
-     * @throws CorsException if the request is denied.
+     * @throws CorsException if the request is denied
      */
     protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
         HttpServletResponse res = translet.getResponseAdaptee();

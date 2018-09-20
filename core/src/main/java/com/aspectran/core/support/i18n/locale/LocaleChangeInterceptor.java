@@ -173,7 +173,6 @@ public class LocaleChangeInterceptor {
                     throw ex;
                 }
             }
-
             if (timeZone != null) {
                 if (localeResolver != null) {
                     localeResolver.setTimeZone(translet, timeZone);

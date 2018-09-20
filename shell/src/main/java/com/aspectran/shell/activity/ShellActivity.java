@@ -160,14 +160,12 @@ public class ShellActivity extends CoreActivity {
 
     private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
         ItemRuleList missingItemRules1 = enterEachParameter(parameterItemRuleList);
-
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required parameters are missing.");
             console.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
-
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
                 console.setStyle("RED");
@@ -187,7 +185,6 @@ public class ShellActivity extends CoreActivity {
      */
     private void receiveAttributes() {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
@@ -216,14 +213,12 @@ public class ShellActivity extends CoreActivity {
 
     private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
         ItemRuleList missingItemRules1 = enterEachParameter(attributeItemRuleList);
-
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required attributes are missing.");
             console.offStyle();
 
             ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
-
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
                 console.setStyle("RED");

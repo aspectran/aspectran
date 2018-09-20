@@ -50,7 +50,7 @@ public class HttpPutFormContentParser {
         try {
             HttpServletRequest request = requestAdapter.getAdaptee();
             String requestEncoding = requestAdapter.getEncoding();
-            Charset charset = (requestEncoding != null) ? Charset.forName(requestEncoding) : DEFAULT_CHARSET;
+            Charset charset = (requestEncoding != null ? Charset.forName(requestEncoding) : DEFAULT_CHARSET);
             String body = copyToString(request.getInputStream(), charset);
 
             String[] pairs = StringUtils.tokenize(body, "&");
@@ -82,8 +82,8 @@ public class HttpPutFormContentParser {
     }
 
     private static String copyToString(InputStream in, Charset charset) throws IOException {
-        StringBuilder out = new StringBuilder();
         InputStreamReader reader = new InputStreamReader(in, charset);
+        StringBuilder out = new StringBuilder();
         char[] buffer = new char[BUFFER_SIZE];
         int bytesRead;
         while ((bytesRead = reader.read(buffer)) != -1) {

@@ -199,9 +199,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
 
         EmbeddedActivity activity = null;
         Translet translet = null;
-        StringOutputWriter outputWriter = new StringOutputWriter();
-
         try {
+            StringOutputWriter outputWriter = new StringOutputWriter();
             activity = new EmbeddedActivity(this, outputWriter);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
@@ -219,7 +218,6 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
                 activity.finish();
             }
         }
-
         return translet;
     }
 
@@ -317,7 +315,6 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
         service.prepare(aspectranConfig);
 
         setServiceStateListener(service);
-
         return service;
     }
 

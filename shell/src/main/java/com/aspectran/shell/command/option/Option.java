@@ -554,14 +554,12 @@ public class Option implements Cloneable, Serializable {
         }
 
         Option option = (Option)o;
-
         if (opt != null ? !opt.equals(option.opt) : option.opt != null) {
             return false;
         }
         if (longOpt != null ? !longOpt.equals(option.longOpt) : option.longOpt != null) {
             return false;
         }
-
         return true;
     }
 

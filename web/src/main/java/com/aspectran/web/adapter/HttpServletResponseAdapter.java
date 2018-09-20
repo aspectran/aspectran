@@ -128,7 +128,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         int questionPos = -1;
 
         StringBuilder sb = new StringBuilder(256);
-
         if (target != null) {
             sb.append(target);
             questionPos = target.indexOf(QUESTION_CHAR);
@@ -137,7 +136,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (redirectResponseRule.getParameterItemRuleMap() != null) {
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
             Map<String, Object> valueMap = evaluator.evaluate(redirectResponseRule.getParameterItemRuleMap());
-
             if (valueMap != null && !valueMap.isEmpty()) {
                 if (questionPos == -1) {
                     sb.append(QUESTION_CHAR);
@@ -145,7 +143,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
                 String name = null;
                 Object value;
-
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     if (name != null) {
                         sb.append(AMPERSAND_CHAR);
@@ -153,9 +150,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
                     name = entry.getKey();
                     value = entry.getValue();
-
                     String string = (value != null ? value.toString() : null);
-
                     if (redirectResponseRule.isExcludeEmptyParameter() && string != null && !string.isEmpty()) {
                         sb.append(name).append(EQUAL_CHAR);
                     } else if (redirectResponseRule.isExcludeNullParameter() && string != null) {
@@ -173,7 +168,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
         target = sb.toString();
         redirect(target);
-
         return target;
     }
 

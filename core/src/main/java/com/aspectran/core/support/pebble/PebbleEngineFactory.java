@@ -98,11 +98,9 @@ public class PebbleEngineFactory implements EnvironmentAware {
     public PebbleEngine createPebbleEngine() {
         PebbleEngine.Builder builder = new PebbleEngine.Builder();
         builder.strictVariables(strictVariables);
-
         if (defaultLocale != null) {
             builder.defaultLocale(defaultLocale);
         }
-
         if (templateLoaders == null) {
             if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
                 List<Loader<?>> templateLoaderList = new ArrayList<>();
@@ -112,10 +110,8 @@ public class PebbleEngineFactory implements EnvironmentAware {
                 setTemplateLoader(templateLoaderList);
             }
         }
-
         Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
         builder.loader(templateLoader);
-
         return builder.build();
     }
 

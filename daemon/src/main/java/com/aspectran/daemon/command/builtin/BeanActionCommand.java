@@ -65,10 +65,8 @@ public class BeanActionCommand extends AbstractCommand {
         }
 
         Activity activity = new InstantActivity(getService().getActivityContext());
-
         BeanAction beanAction = new BeanAction(beanActionRule, null);
         Object result = beanAction.execute(activity);
-
         return (result != null ? result.toString() : null);
     }
 

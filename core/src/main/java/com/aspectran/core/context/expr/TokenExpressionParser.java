@@ -82,7 +82,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (tokens == null || tokens.length == 0) {
             return null;
         }
-
         if (tokens.length > 1) {
             StringBuilder sb = new StringBuilder();
             for (Token t : tokens) {
@@ -102,7 +101,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (tokens == null || tokens.length == 0) {
             return;
         }
-
         for (Token t : tokens) {
             Object value = evaluate(t);
             if (value != null) {
@@ -145,7 +143,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (tokensList == null || tokensList.isEmpty()) {
             return cast(getParameterAsList(parameterName));
         }
-
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
@@ -159,7 +156,6 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (tokensSet == null || tokensSet.isEmpty()) {
             return cast(getParameterAsSet(parameterName));
         }
-
         Set<Object> valueSet = new HashSet<>(tokensSet.size());
         for (Token[] tokens : tokensSet) {
             Object value = evaluate(parameterName, tokens);

@@ -130,9 +130,8 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
 
         DaemonActivity activity = null;
         Translet translet = null;
-        StringOutputWriter outputWriter = new StringOutputWriter();
-
         try {
+            StringOutputWriter outputWriter = new StringOutputWriter();
             activity = new DaemonActivity(this, outputWriter);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
@@ -144,13 +143,12 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing an DaemonActivity", e);
+            throw new AspectranRuntimeException("An error occurred while processing a DaemonActivity", e);
         } finally {
             if (activity != null) {
                 activity.finish();
             }
         }
-
         return translet;
     }
 
@@ -213,7 +211,6 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
         service.prepare(aspectranConfig);
 
         setServiceStateListener(service);
-
         return service;
     }
 

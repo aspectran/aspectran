@@ -309,7 +309,8 @@ public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
      */
     @Override
     public String toString() {
-        return "name=" + this.getName() + ", size=" + this.getSize() + "bytes, " + "isFormField=" + isFormField() + ", FieldName=" + this.getFieldName();
+        return "name=" + this.getName() + ", size=" + this.getSize() + "bytes, " +
+                "isFormField=" + isFormField() + ", FieldName=" + this.getFieldName();
     }
 
     /**

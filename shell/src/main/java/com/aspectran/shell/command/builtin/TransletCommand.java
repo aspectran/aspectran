@@ -44,7 +44,6 @@ public class TransletCommand extends AbstractCommand {
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
-
         if (!options.hasOptions() && options.hasArgs()) {
             String commandLine = String.join(" ", options.getArgs());
             CommandLineParser parser = CommandLineParser.parseCommandLine(commandLine);
@@ -60,14 +59,12 @@ public class TransletCommand extends AbstractCommand {
         } else {
             printUsage();
         }
-
         return null;
     }
 
     private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
             if (getService().isExposable(name)) {

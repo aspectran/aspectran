@@ -34,7 +34,7 @@ public interface CorsProcessor {
      * Process a simple or actual CORS request.
      *
      * @param translet the translet
-     * @throws CorsException if the request is invalid or denied.
+     * @throws CorsException if the request is invalid or denied
      * @throws IOException in case of I/O errors
      */
     void processActualRequest(Translet translet) throws CorsException, IOException;
@@ -46,7 +46,7 @@ public interface CorsProcessor {
      * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/#resource-preflight-requests">PreflightRequest</a>
      *
      * @param translet the translet
-     * @throws CorsException if the request is invalid or denied.
+     * @throws CorsException if the request is invalid or denied
      * @throws IOException in case of I/O errors
      */
     void processPreflightRequest(Translet translet) throws CorsException, IOException;

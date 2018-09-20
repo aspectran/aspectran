@@ -474,9 +474,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             }
         }
 
-        AspectAdviceRuleRegistry sessionScopeAspectAdviceRuleRegistry = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
-        if (sessionScopeAspectAdviceRuleRegistry != null) {
-            aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
+        AspectAdviceRuleRegistry sessionScopeAarr = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
+        if (sessionScopeAarr != null) {
+            aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAarr);
         }
     }
 

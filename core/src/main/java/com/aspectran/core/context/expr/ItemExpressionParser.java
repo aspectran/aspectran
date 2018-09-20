@@ -76,7 +76,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         ItemValueType valueType = itemRule.getValueType();
         String name = itemRule.getName();
         Object value = null;
-
         if (itemType == ItemType.SINGLE) {
             Token[] tokens = itemRule.getTokens();
             value = evaluate(name, tokens, valueType);
@@ -94,7 +93,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         } else if (itemType == ItemType.PROPERTIES) {
             value = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
         }
-
         return (T)value;
     }
 
@@ -123,7 +121,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         ItemType itemType = itemRule.getType();
         ItemValueType valueType = itemRule.getValueType();
         String name = itemRule.getName();
-
         if (itemType == ItemType.SINGLE) {
             Token[] tokens = itemRule.getTokens();
             Object value = evaluate(name, tokens, valueType);
@@ -160,7 +157,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
                 return new String[] { properties.toString() };
             }
         }
-
         return null;
     }
 

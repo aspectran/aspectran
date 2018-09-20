@@ -96,9 +96,9 @@ public final class OptionUtils {
             return null;
         }
         if (str.startsWith("--")) {
-            return str.substring(2, str.length());
+            return str.substring(2);
         } else if (str.startsWith("-")) {
-            return str.substring(1, str.length());
+            return str.substring(1);
         }
         return str;
     }

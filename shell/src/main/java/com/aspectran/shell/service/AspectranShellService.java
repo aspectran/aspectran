@@ -100,7 +100,6 @@ class AspectranShellService extends AbstractShellService {
         }
 
         Activity activity = null;
-
         try {
             activity = new ShellActivity(this, redirectionWriters);
             activity.prepare(commandLineParser.getCommand(), commandLineParser.getRequestMethod());
@@ -202,7 +201,6 @@ class AspectranShellService extends AbstractShellService {
 
         AspectranShellService service = new AspectranShellService();
         service.prepare(aspectranConfig);
-
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
             if (console != null) {
@@ -220,7 +218,6 @@ class AspectranShellService extends AbstractShellService {
             }
             service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
             service.setGreetings(shellConfig.getString(ShellConfig.greetings));
-
             ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
             if (exposalsConfig != null) {
                 String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
@@ -232,7 +229,6 @@ class AspectranShellService extends AbstractShellService {
         }
 
         setServiceStateListener(service);
-
         return service;
     }
 
@@ -253,7 +249,8 @@ class AspectranShellService extends AbstractShellService {
             @Override
             public void paused(long millis) {
                 if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
+                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be " +
+                            "set to a value of greater than 0");
                 }
                 service.pauseTimeout = System.currentTimeMillis() + millis;
             }

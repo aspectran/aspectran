@@ -149,7 +149,6 @@ public class AspectranClassLoader extends ClassLoader {
             }
 
             AspectranClassLoader acl = this;
-
             for (String resourceLocation : resourceLocations) {
                 if (resourceLocation != null) {
                     acl = acl.createChild(resourceLocation);
@@ -174,7 +173,6 @@ public class AspectranClassLoader extends ClassLoader {
 
     public AspectranClassLoader wishBrother(String resourceLocation) throws InvalidResourceException {
         AspectranClassLoader parent = (AspectranClassLoader)getParent();
-
         return parent.createChild(resourceLocation);
     }
 
@@ -291,7 +289,6 @@ public class AspectranClassLoader extends ClassLoader {
 
         AspectranClassLoader firstborn = null;
         List<AspectranClassLoader> removeList = new ArrayList<>();
-
         for (AspectranClassLoader child : self.getChildren()) {
             if (child.isFirstborn()) {
                 firstborn = child;
@@ -299,11 +296,9 @@ public class AspectranClassLoader extends ClassLoader {
                 removeList.add(child);
             }
         }
-
         if (!removeList.isEmpty()) {
             self.remove(removeList);
         }
-
         if (firstborn != null) {
             reload(firstborn);
         }
@@ -334,7 +329,6 @@ public class AspectranClassLoader extends ClassLoader {
     public URL[] extractResources() {
         Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root));
         List<URL> resources = new LinkedList<>();
-
         URL url;
         while (res.hasMoreElements()) {
             url = res.nextElement();
@@ -342,7 +336,6 @@ public class AspectranClassLoader extends ClassLoader {
                 resources.add(url);
             }
         }
-
         return resources.toArray(new URL[0]);
     }
 
@@ -350,11 +343,9 @@ public class AspectranClassLoader extends ClassLoader {
     public Enumeration<URL> getResources(String name) throws IOException {
         ClassLoader parentClassLoader = root.getParent();
         Enumeration<URL> parentResources = null;
-
         if (parentClassLoader != null) {
             parentResources = parentClassLoader.getResources(name);
         }
-
         return ResourceManager.getResources(getAspectranClassLoaders(root), name, parentResources);
     }
 
@@ -362,22 +353,18 @@ public class AspectranClassLoader extends ClassLoader {
     public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
         // First check if the class is already loaded
         Class<?> c = findLoadedClass(name);
-
         if (c == null) {
             byte[] classData = null;
-
             try  {
                 classData = loadClassData(name, root);
             } catch (InvalidResourceException e) {
                 log.error("Unable to load class " + name, e);
             }
-
             if (classData != null) {
                 c = defineClass(name, classData, 0, classData.length);
                 resolveClass(c);
             }
         }
-
         if (c == null && root.getParent() != null) {
             try {
                 c = root.getParent().loadClass(name);
@@ -387,7 +374,6 @@ public class AspectranClassLoader extends ClassLoader {
                 c = findClass(name);
             }
         }
-
         return c;
     }
 
@@ -412,9 +398,8 @@ public class AspectranClassLoader extends ClassLoader {
         }
 
         String resourceName = classNameToResourceName(className);
-
-        URL url = null;
         Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(owner), resourceName);
+        URL url = null;
         if (res.hasMoreElements()) {
             url = res.nextElement();
         }
@@ -435,7 +420,6 @@ public class AspectranClassLoader extends ClassLoader {
             }
 
             input.close();
-
             return output.toByteArray();
         } catch (IOException e) {
             throw new InvalidResourceException("Unable to read class file: " + url, e);
@@ -483,17 +467,14 @@ public class AspectranClassLoader extends ClassLoader {
                 }
 
                 current = next;
-
                 if (children.hasNext()) {
                     next = children.next();
-
                     if (firstChild == null) {
                         firstChild = next;
                     }
                 } else {
                     if (firstChild != null) {
                         children = firstChild.getChildren().iterator();
-
                         if (children.hasNext()) {
                             next = children.next();
                             firstChild = next;
@@ -504,7 +485,6 @@ public class AspectranClassLoader extends ClassLoader {
                         next = null;
                     }
                 }
-
                 return current;
             }
 

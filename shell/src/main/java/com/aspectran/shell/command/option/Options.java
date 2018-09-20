@@ -63,17 +63,14 @@ public class Options implements Serializable {
         if (group.isRequired()) {
             requiredOpts.add(group);
         }
-
         for (Option option : group.getOptions()) {
             // an Option cannot be required if it is in an
             // OptionGroup, either the group is required or
             // nothing is required
             option.setRequired(false);
             addOption(option);
-
             optionGroups.put(option.getKey(), group);
         }
-
         return this;
     }
 
@@ -316,13 +313,13 @@ public class Options implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder();
-        buff.append("[ Options: [ short ");
-        buff.append(shortOpts.toString());
-        buff.append(" ] [ long ");
-        buff.append(longOpts);
-        buff.append(" ]");
-        return buff.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ Options: [ short ");
+        sb.append(shortOpts.toString());
+        sb.append(" ] [ long ");
+        sb.append(longOpts);
+        sb.append(" ]");
+        return sb.toString();
     }
 
 }

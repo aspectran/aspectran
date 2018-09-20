@@ -45,7 +45,6 @@ public class VerboseCommand extends AbstractCommand {
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
-
         if (options.hasOption("on")) {
             getService().setVerbose(true);
             getConsole().writeLine("Enabled verbose mode");
@@ -55,7 +54,6 @@ public class VerboseCommand extends AbstractCommand {
         } else {
             printUsage();
         }
-
         return null;
     }
 

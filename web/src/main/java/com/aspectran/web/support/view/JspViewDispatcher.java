@@ -70,7 +70,6 @@ public class JspViewDispatcher implements ViewDispatcher {
     public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule)
             throws ViewDispatcherException {
         String dispatchName = null;
-
         try {
             dispatchName = dispatchResponseRule.getName(activity);
             if (dispatchName == null) {
@@ -89,14 +88,13 @@ public class JspViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchResponseRule.getContentType();
-            String encoding = dispatchResponseRule.getEncoding();
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             } else {
                 responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
             }
 
+            String encoding = dispatchResponseRule.getEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             } else {

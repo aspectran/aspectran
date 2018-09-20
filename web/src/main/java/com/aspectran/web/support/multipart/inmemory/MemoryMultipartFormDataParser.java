@@ -124,7 +124,6 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
             }
 
             Map<String, List<FileItem>> fileItemListMap;
-
             try {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
@@ -137,7 +136,6 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
                 requestAdapter.setMaxLengthExceeded(true);
                 return;
             }
-
             parseMultipartParameters(fileItemListMap, requestAdapter);
         } catch (Exception e) {
             throw new MultipartRequestParseException("Could not parse multipart servlet request", e);
@@ -158,7 +156,6 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
         for (Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
             String fieldName = entry.getKey();
             List<FileItem> fileItemList = entry.getValue();
-
             if (fileItemList != null && !fileItemList.isEmpty()) {
                 for (FileItem fileItem : fileItemList) {
                     if (fileItem.isFormField()) {

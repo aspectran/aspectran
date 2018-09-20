@@ -83,7 +83,6 @@ public class JobActivityReport {
             if (activity != null) {
                 Writer writer = activity.getResponseAdapter().getWriter();
                 String output = writer.toString();
-
                 if (!output.isEmpty()) {
                     sb.append(output).append(ActivityContext.LINE_SEPARATOR);
                     sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);

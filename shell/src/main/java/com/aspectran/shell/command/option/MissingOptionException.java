@@ -69,7 +69,6 @@ public class MissingOptionException extends OptionParserException {
         StringBuilder buf = new StringBuilder("Missing required option");
         buf.append(missingOptions.size() == 1 ? "" : "s");
         buf.append(": ");
-
         Iterator<?> it = missingOptions.iterator();
         while (it.hasNext()) {
             buf.append(it.next());
@@ -77,7 +76,6 @@ public class MissingOptionException extends OptionParserException {
                 buf.append(", ");
             }
         }
-
         return buf.toString();
     }
 

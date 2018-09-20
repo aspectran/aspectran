@@ -87,12 +87,11 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchResponseRule.getContentType();
-            String encoding = dispatchResponseRule.getEncoding();
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
 
+            String encoding = dispatchResponseRule.getEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             } else {
@@ -103,7 +102,6 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             }
 
             TemplateDataMap model = new TemplateDataMap(activity);
-
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
             compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 

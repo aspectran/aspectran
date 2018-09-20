@@ -531,7 +531,6 @@ public class HelpFormatter {
         for (Iterator<Option> it = optList.iterator(); it.hasNext();) {
             // whether the option is required or not is handled at group level
             appendOption(sb, it.next(), true);
-
             if (it.hasNext()) {
                 sb.append(" | ");
             }
@@ -644,14 +643,11 @@ public class HelpFormatter {
         int max = 0;
         List<StringBuilder> prefixList = new ArrayList<>();
         List<Option> optList = options.helpOptions();
-
         if (optList.size() > 1 && getOptionComparator() != null) {
             optList.sort(getOptionComparator());
         }
-
         for (Option option : optList) {
             StringBuilder optBuf = new StringBuilder();
-
             if (option.getOpt() == null) {
                 optBuf.append(lpad).append("   ").append(getLongOptPrefix()).append(option.getLongOpt());
             } else {
@@ -661,7 +657,6 @@ public class HelpFormatter {
                     optBuf.append(',').append(getLongOptPrefix()).append(option.getLongOpt());
                 }
             }
-
             if (option.hasArg()) {
                 final String argName = option.getArgName();
                 if (argName != null && argName.length() == 0) {
@@ -672,36 +667,27 @@ public class HelpFormatter {
                     optBuf.append("<").append(argName != null ? option.getArgName() : getArgName()).append(">");
                 }
             }
-
             prefixList.add(optBuf);
             max = (optBuf.length() > max ? optBuf.length() : max);
         }
 
         int x = 0;
-
         for (Iterator<Option> it = optList.iterator(); it.hasNext();) {
             Option option = it.next();
             StringBuilder optBuf = new StringBuilder(prefixList.get(x++).toString());
-
             if (optBuf.length() < max) {
                 optBuf.append(OptionUtils.createPadding(max - optBuf.length()));
             }
-
             optBuf.append(dpad);
-
             int nextLineTabStop = max + descPad;
-
             if (option.getDescription() != null) {
                 optBuf.append(option.getDescription());
             }
-
             renderWrappedText(sb, width, nextLineTabStop, optBuf.toString());
-
             if (it.hasNext()) {
                 sb.append(getNewLine());
             }
         }
-
         return sb;
     }
 
@@ -731,20 +717,16 @@ public class HelpFormatter {
 
         // all following lines must be padded with nextLineTabStop space characters
         String padding = OptionUtils.createPadding(nextLineTabStop);
-
         while (true) {
             text = padding + text.substring(pos).trim();
             pos = OptionUtils.findWrapPos(text, width, 0);
-
             if (pos == -1) {
                 sb.append(text);
                 return sb;
             }
-
             if (text.length() > width && pos == nextLineTabStop - 1) {
                 pos = width;
             }
-
             sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(getNewLine());
         }
     }

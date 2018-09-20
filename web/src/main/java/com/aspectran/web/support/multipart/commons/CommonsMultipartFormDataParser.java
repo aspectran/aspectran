@@ -74,7 +74,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     public void setTempDirectoryPath(String tempDirectoryPath) {
         File tempDirectory = new File(tempDirectoryPath);
         if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
-            throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
+            throw new IllegalArgumentException("Given tempDirectoryPath [" +
+                    tempDirectoryPath + "] could not be created");
         }
         this.tempDirectoryPath = tempDirectoryPath;
     }
@@ -115,7 +116,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             if (tempDirectoryPath != null) {
                 File repository = new File(tempDirectoryPath);
                 if (!repository.exists() && !repository.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempDirectoryPath [" + tempDirectoryPath + "] could not be created");
+                    throw new IllegalArgumentException("Given tempDirectoryPath [" +
+                            tempDirectoryPath + "] could not be created");
                 }
                 factory.setRepository(repository);
             }
@@ -179,7 +181,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                             continue;
                         }
 
-                        boolean valid = FilenameUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
+                        boolean valid = FilenameUtils.isValidFileExtension(fileName,
+                                allowedFileExtensions, deniedFileExtensions);
                         if (!valid) {
                             continue;
                         }

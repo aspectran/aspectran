@@ -32,7 +32,6 @@ public abstract class AnsiStyleHandler {
         }
 
         int inputLen = input.length();
-
         char c;
         int p1 = 0;
         int p2 = 0;
@@ -40,7 +39,6 @@ public abstract class AnsiStyleHandler {
 
         for (int i = 0; i < inputLen; i++) {
             c = input.charAt(i);
-
             switch (c) {
                 case '{':
                     if (p1 < 2) {
@@ -69,7 +67,6 @@ public abstract class AnsiStyleHandler {
                         p1 = p3 = i;
                     }
             }
-
             if (p1 == 0) {
                 character(c);
             } else if (p1 >= 2 && p1 < p2) {

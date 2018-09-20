@@ -49,7 +49,7 @@ public class MessageSourceSupport {
      * codes are cached on a specific basis in subclasses.
      */
     private final Map<String, Map<Locale, MessageFormat>> messageFormatsPerMessage =
-            new HashMap<String, Map<Locale, MessageFormat>>();
+            new HashMap<>();
 
     /**
      * Set whether to always apply the MessageFormat rules, parsing even

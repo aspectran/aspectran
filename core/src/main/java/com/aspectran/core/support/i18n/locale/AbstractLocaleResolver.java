@@ -100,8 +100,9 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         if (defaultLocale != null) {
             translet.getRequestAdapter().setLocale(defaultLocale);
             return defaultLocale;
+        } else {
+            return translet.getRequestAdapter().getLocale();
         }
-        return translet.getRequestAdapter().getLocale();
     }
 
     /**
@@ -117,8 +118,9 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         if (defaultTimeZone != null) {
             translet.getRequestAdapter().setTimeZone(defaultTimeZone);
             return defaultTimeZone;
+        } else {
+            return translet.getRequestAdapter().getTimeZone();
         }
-        return translet.getRequestAdapter().getTimeZone();
     }
 
     @Override

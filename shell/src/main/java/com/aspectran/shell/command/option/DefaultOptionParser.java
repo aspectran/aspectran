@@ -177,7 +177,6 @@ public class DefaultOptionParser implements OptionParser {
 
         for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
             String option = e.nextElement().toString();
-
             Option opt = options.getOption(option);
             if (opt == null) {
                 throw new UnrecognizedOptionException("Default option wasn't defined", option);
@@ -186,11 +185,9 @@ public class DefaultOptionParser implements OptionParser {
             // if the option is part of a group, check if another option of the group has been selected
             OptionGroup group = options.getOptionGroup(opt);
             boolean selected = (group != null && group.getSelected() != null);
-
             if (!parsedOptions.hasOption(option) && !selected) {
                 // get the value from the properties
                 String value = properties.getProperty(option);
-
                 if (opt.hasArg()) {
                     if (opt.getValues() == null || opt.getValues().length == 0) {
                         opt.addValueForProcessing(value);
@@ -201,7 +198,6 @@ public class DefaultOptionParser implements OptionParser {
                     // if the value is not yes, true or 1 then don't add the option to the ParsedOptions
                     continue;
                 }
-
                 handleOption(opt);
                 currentOption = null;
             }
@@ -330,7 +326,6 @@ public class DefaultOptionParser implements OptionParser {
 
         int pos = token.indexOf("=");
         String t = (pos == -1 ? token : token.substring(0, pos));
-
         if (!getMatchingLongOptions(t).isEmpty()) {
             // long or partial long options (--L, -L, --L=V, -L=V, --l, --l=V)
             return true;
@@ -338,7 +333,6 @@ public class DefaultOptionParser implements OptionParser {
             // -LV
             return true;
         }
-
         return false;
     }
 
@@ -423,7 +417,6 @@ public class DefaultOptionParser implements OptionParser {
         int pos = token.indexOf('=');
         String value = token.substring(pos + 1);
         String opt = token.substring(0, pos);
-
         List<String> matchingOpts = getMatchingLongOptions(opt);
         if (matchingOpts.isEmpty()) {
             handleUnknownToken(currentToken);
@@ -432,7 +425,6 @@ public class DefaultOptionParser implements OptionParser {
         } else {
             String key = (options.hasLongOption(opt) ? opt : matchingOpts.get(0));
             Option option = options.getOption(key);
-
             if (option.acceptsArg()) {
                 handleOption(option);
                 currentOption.addValueForProcessing(value);
@@ -467,7 +459,6 @@ public class DefaultOptionParser implements OptionParser {
     private void handleShortAndLongOption(String token) throws OptionParserException {
         String t = OptionUtils.stripLeadingHyphens(token);
         int pos = t.indexOf('=');
-
         if (t.length() == 1) {
             // -S
             if (options.hasShortOption(t)) {
@@ -485,7 +476,6 @@ public class DefaultOptionParser implements OptionParser {
             } else {
                 // look for a long prefix (-Xmx512m)
                 String opt = getLongPrefix(t);
-
                 if (opt != null && options.getOption(opt).acceptsArg()) {
                     handleOption(options.getOption(opt));
                     currentOption.addValueForProcessing(t.substring(opt.length()));
@@ -504,7 +494,6 @@ public class DefaultOptionParser implements OptionParser {
             // equal sign found (-xxx=yyy)
             String opt = t.substring(0, pos);
             String value = t.substring(pos + 1);
-
             if (opt.length() == 1) {
                 // -S=V
                 Option option = options.getOption(opt);
@@ -536,7 +525,6 @@ public class DefaultOptionParser implements OptionParser {
     private String getLongPrefix(String token) {
         String t = OptionUtils.stripLeadingHyphens(token);
         String opt = null;
-
         for (int i = t.length() - 2; i > 1; i--) {
             String prefix = t.substring(0, i);
             if (options.hasLongOption(prefix)) {
@@ -544,7 +532,6 @@ public class DefaultOptionParser implements OptionParser {
                 break;
             }
         }
-        
         return opt;
     }
 
@@ -557,20 +544,15 @@ public class DefaultOptionParser implements OptionParser {
     private boolean isJavaProperty(String token) {
         String opt = token.substring(0, 1);
         Option option = options.getOption(opt);
-
         return (option != null && (option.getArgs() >= 2 || option.getArgs() == Option.UNLIMITED_VALUES));
     }
 
     private void handleOption(Option option) throws OptionParserException {
         // check the previous option before handling the next one
         checkRequiredArgs();
-
         option = option.clone();
-
         updateRequiredOptions(option);
-
         parsedOptions.addOption(option);
-
         if (option.hasArg()) {
             currentOption = option;
         } else {
@@ -646,10 +628,8 @@ public class DefaultOptionParser implements OptionParser {
     protected void handleConcatenatedOptions(String token) throws OptionParserException {
         for (int i = 1; i < token.length(); i++) {
             String ch = String.valueOf(token.charAt(i));
-
             if (options.hasOption(ch)) {
                 handleOption(options.getOption(ch));
-
                 if (currentOption != null && token.length() != i + 1) {
                     // add the trail as an argument of the option
                     currentOption.addValueForProcessing(token.substring(i + 1));
