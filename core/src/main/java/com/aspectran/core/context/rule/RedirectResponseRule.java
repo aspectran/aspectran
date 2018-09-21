@@ -41,9 +41,9 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 
     private String contentType;
 
-    private String target;
+    private String path;
 
-    private Token[] targetTokens;
+    private Token[] pathTokens;
 
     private String encoding;
 
@@ -74,65 +74,63 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Gets the redirect target.
+     * Gets the redirect path.
      *
-     * @return the redirect target
+     * @return the redirect path
      */
-    public String getTarget() {
-        return target;
+    public String getPath() {
+        return path;
     }
 
     /**
-     * Gets the redirect target.
+     * Gets the redirect path.
      *
      * @param activity the activity
-     * @return the redirect target
+     * @return the redirect path
      */
-    public String getTarget(Activity activity) {
-        if (targetTokens != null && targetTokens.length > 0) {
+    public String getPath(Activity activity) {
+        if (pathTokens != null && pathTokens.length > 0) {
             TokenEvaluator evaluator = new TokenExpressionParser(activity);
-            return evaluator.evaluateAsString(targetTokens);
+            return evaluator.evaluateAsString(pathTokens);
         } else {
-            return target;
+            return path;
         }
     }
 
     /**
-     * Sets the target name.
+     * Sets the redirect path.
      *
-     * @param target the new target name
+     * @param path the redirect path
      */
-    public void setTarget(String target) {
-        this.target = target;
+    public void setPath(String path) {
+        this.path = path;
 
-        List<Token> tokens = Tokenizer.tokenize(target, true);
+        List<Token> tokens = Tokenizer.tokenize(path, true);
         int tokenCount = 0;
-
         for (Token t : tokens) {
             if (t.getType() != TokenType.TEXT) {
                 tokenCount++;
             }
         }
-
         if (tokenCount > 0) {
-            this.targetTokens = tokens.toArray(new Token[0]);
+            this.pathTokens = tokens.toArray(new Token[0]);
         } else {
-            this.targetTokens = null;
+            this.pathTokens = null;
         }
     }
 
-    public void setTarget(String target, Token[] targetTokens) {
-        this.target = target;
-        this.targetTokens = targetTokens;
+    public void setPath(String path, Token[] pathTokens) {
+        this.path = path;
+        this.pathTokens = pathTokens;
     }
 
     /**
-     * Gets the tokens of the redirect target.
+     * Gets the tokens of the redirect path.
      *
-     * @return the tokens of the redirect target
+     * @return the tokens of the redirect path
      */
-    public Token[] getTargetTokens() {
-        return targetTokens;
+    public Token[] getPathTokens() {
+        return pathTokens;
     }
 
     /**
@@ -308,7 +306,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("contentType", contentType);
-        tsb.appendForce("target", target);
+        tsb.appendForce("path", path);
         tsb.appendForce("encoding", encoding);
         tsb.append("excludeNullParameter", excludeNullParameter);
         tsb.append("excludeEmptyParameter", excludeEmptyParameter);
@@ -316,12 +314,12 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         return tsb.toString();
     }
 
-    public static RedirectResponseRule newInstance(String contentType, String target, String encoding,
+    public static RedirectResponseRule newInstance(String contentType, String path, String encoding,
                                                    Boolean excludeNullParameter, Boolean excludeEmptyParameter, Boolean defaultResponse) {
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setContentType(contentType);
-        if (target != null && target.length() > 0) {
-            rrr.setTarget(target);
+        if (path != null && path.length() > 0) {
+            rrr.setPath(path);
         }
         rrr.setEncoding(encoding);
         rrr.setExcludeNullParameter(excludeNullParameter);
@@ -330,19 +328,19 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         return rrr;
     }
 
-    public static RedirectResponseRule newInstance(String target) throws IllegalRuleException {
-        if (target == null) {
-            throw new IllegalRuleException("Argument 'target' must not be null");
+    public static RedirectResponseRule newInstance(String path) throws IllegalRuleException {
+        if (path == null) {
+            throw new IllegalRuleException("Argument 'path' must not be null");
         }
         RedirectResponseRule rrr = new RedirectResponseRule();
-        rrr.setTarget(target);
+        rrr.setPath(path);
         return rrr;
     }
 
     public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setContentType(redirectResponseRule.getContentType());
-        rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
+        rrr.setPath(redirectResponseRule.getPath(), redirectResponseRule.getPathTokens());
         rrr.setEncoding(redirectResponseRule.getEncoding());
         rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
         rrr.setExcludeEmptyParameter(redirectResponseRule.getExcludeEmptyParameter());

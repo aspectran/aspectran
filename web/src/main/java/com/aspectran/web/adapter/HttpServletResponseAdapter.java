@@ -117,20 +117,20 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void redirect(String target) throws IOException {
-        ((HttpServletResponse)adaptee).sendRedirect(target);
+    public void redirect(String path) throws IOException {
+        ((HttpServletResponse)adaptee).sendRedirect(path);
     }
 
     @Override
     public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
         String encoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
-        String target = redirectResponseRule.getTarget(activity);
+        String path = redirectResponseRule.getPath(activity);
         int questionPos = -1;
 
         StringBuilder sb = new StringBuilder(256);
-        if (target != null) {
-            sb.append(target);
-            questionPos = target.indexOf(QUESTION_CHAR);
+        if (path != null) {
+            sb.append(path);
+            questionPos = path.indexOf(QUESTION_CHAR);
         }
 
         if (redirectResponseRule.getParameterItemRuleMap() != null) {
@@ -166,9 +166,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
             }
         }
 
-        target = sb.toString();
-        redirect(target);
-        return target;
+        path = sb.toString();
+        redirect(path);
+        return path;
     }
 
     @Override

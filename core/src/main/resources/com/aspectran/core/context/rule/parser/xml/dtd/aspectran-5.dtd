@@ -229,7 +229,7 @@
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType           CDATA #IMPLIED
-  target                CDATA #REQUIRED
+  path                  CDATA #REQUIRED
   encoding              CDATA #IMPLIED
   excludeNullParameter  (true | false) #IMPLIED
   excludeEmptyParameter (true | false) #IMPLIED

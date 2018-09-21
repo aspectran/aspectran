@@ -620,7 +620,7 @@ public class RuleToParamsConverter {
     public static RedirectParameters toRedirectParameters(RedirectResponseRule redirectResponseRule) {
         RedirectParameters redirectParameters = new RedirectParameters();
         redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
-        redirectParameters.putValueNonNull(RedirectParameters.target, redirectResponseRule.getTarget());
+        redirectParameters.putValueNonNull(RedirectParameters.path, redirectResponseRule.getPath());
         redirectParameters.putValueNonNull(RedirectParameters.encoding, redirectResponseRule.getEncoding());
         redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
         redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameter, redirectResponseRule.getExcludeEmptyParameter());

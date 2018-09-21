@@ -149,16 +149,16 @@ public interface ResponseAdapter {
     /**
      * Redirects a client to a new URL.
      *
-     * @param target the redirect target
+     * @param path the redirect path
      * @throws IOException if an input or output exception occurs
      */
-    void redirect(String target) throws IOException;
+    void redirect(String path) throws IOException;
 
     /**
      * Redirects a client to a new URL.
      *
      * @param redirectResponseRule the redirect response rule
-     * @return the redirect target
+     * @return the redirect path
      * @throws IOException if an input or output exception occurs
      */
     String redirect(RedirectResponseRule redirectResponseRule) throws IOException;

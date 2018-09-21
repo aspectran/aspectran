@@ -134,13 +134,14 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/redirect");
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
-            String target = attrs.get("target");
+            String path = attrs.get("path");
             String encoding = attrs.get("encoding");
             Boolean excludeNullParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeNullParameter"));
             Boolean excludeEmptyParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeEmptyParameter"));
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
-            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
+            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameter,
+                    excludeEmptyParameter, defaultResponse);
             parser.pushObject(rrr);
 
             ActionList actionList = new ActionList();
@@ -151,10 +152,9 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = parser.popObject();
             RedirectResponseRule rrr = parser.popObject();
 
-            if (rrr.getTarget() == null) {
-                throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute");
+            if (rrr.getPath() == null) {
+                throw new IllegalArgumentException("The <redirect> element requires a 'path' attribute");
             }
-
             if (!actionList.isEmpty()) {
                 rrr.setActionList(actionList);
             }
@@ -162,7 +162,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(rrr);
 
-            assistant.resolveBeanClass(rrr.getTargetTokens());
+            assistant.resolveBeanClass(rrr.getPathTokens());
         });
         parser.setXpath(xpath + "/redirect/parameters");
         parser.addNodelet(attrs -> {

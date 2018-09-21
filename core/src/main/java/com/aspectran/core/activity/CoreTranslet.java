@@ -339,34 +339,34 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public void redirect(String target) {
-        redirect(target, false);
+    public void redirect(String path) {
+        redirect(path, false);
     }
 
     @Override
-    public void redirect(String target, boolean immediately) {
+    public void redirect(String path, boolean immediately) {
         if (!immediately && activity.getDeclaredResponse() != null) {
             Response res = activity.getDeclaredResponse();
             if (res.getResponseType() == ResponseType.REDIRECT) {
                 Response r = res.replicate();
                 RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
-                rrr.setTarget(target);
+                rrr.setPath(path);
                 redirect(rrr);
                 return;
             }
         }
         try {
-            RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
+            RedirectResponseRule rrr = RedirectResponseRule.newInstance(path);
             redirect(rrr);
         } catch (IllegalRuleException e) {
-            throw new ResponseException("Failed to redirect to [" + target + "]", e);
+            throw new ResponseException("Failed to redirect to [" + path + "]", e);
         }
     }
 
     @Override
-    public void redirect(String target, Map<String, String> parameters) {
+    public void redirect(String path, Map<String, String> parameters) {
         RedirectResponseRule rrr = new RedirectResponseRule();
-        rrr.setTarget(target, null);
+        rrr.setPath(path, null);
         rrr.setParameterMap(parameters);
         redirect(rrr);
     }

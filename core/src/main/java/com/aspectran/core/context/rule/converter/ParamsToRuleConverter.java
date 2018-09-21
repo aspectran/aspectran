@@ -322,15 +322,12 @@ public class ParamsToRuleConverter {
         } else {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
         }
-
         if (description != null) {
             beanRule.setDescription(description);
         }
-
         if (filterParameters != null) {
             beanRule.setFilterParameters(filterParameters);
         }
-
         if (constructorParameters != null) {
             ItemHolderParameters constructorArgumentItemHolderParameters = constructorParameters.getParameters(ConstructorParameters.arguments);
             if (constructorArgumentItemHolderParameters != null) {
@@ -338,7 +335,6 @@ public class ParamsToRuleConverter {
                 beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
             }
         }
-
         if (propertyItemHolderParameters != null) {
             ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
             beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
@@ -505,17 +501,14 @@ public class ParamsToRuleConverter {
         ItemHolderParameters attributesItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 
         RequestRule requestRule = RequestRule.newInstance(allowedMethod, encoding);
-
         if (parametersItemHolderParameters != null) {
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
             requestRule.setParameterItemRuleMap(parameterItemRuleMap);
         }
-
         if (attributesItemHolderParameters != null) {
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
             requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
         }
-
         return requestRule;
     }
 
@@ -554,14 +547,12 @@ public class ParamsToRuleConverter {
         List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
 
         ContentList contentList = ContentList.newInstance(name, omittable);
-
         if (contentParametersList != null) {
             for (ContentParameters contentParameters : contentParametersList) {
                 ActionList actionList = convertAsActionList(contentParameters);
                 contentList.addActionList(actionList);
             }
         }
-
         return contentList;
     }
 
@@ -572,13 +563,11 @@ public class ParamsToRuleConverter {
         List<ActionParameters> actionParametersList = contentParameters.getParametersList(ContentParameters.action);
 
         ActionList actionList = ActionList.newInstance(name, omittable, hidden);
-
         if (actionParametersList != null) {
             for (ActionParameters actionParameters : actionParametersList) {
                 convertAsActionRule(actionParameters, actionList);
             }
         }
-
         return actionList;
     }
 
@@ -686,7 +675,6 @@ public class ParamsToRuleConverter {
         CallParameters callParameters = transformParameters.getParameters(TransformParameters.call);
 
         TransformRule tr = TransformRule.newInstance(transformType, contentType, encoding, defaultResponse, pretty);
-
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
             for (ActionParameters actionParameters : actionParametersList) {
@@ -694,7 +682,6 @@ public class ParamsToRuleConverter {
             }
             tr.setActionList(actionList);
         }
-
         if (callParameters != null) {
             String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
             TransformRule.updateTemplateId(tr, templateId);
@@ -712,10 +699,8 @@ public class ParamsToRuleConverter {
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, style, encoding2, noCache);
             tr.setTemplateRule(templateRule);
-
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
         }
-
         return tr;
     }
 
@@ -736,7 +721,6 @@ public class ParamsToRuleConverter {
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
         DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
-
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
             for (ActionParameters actionParameters : actionParametersList) {
@@ -744,7 +728,6 @@ public class ParamsToRuleConverter {
             }
             drr.setActionList(actionList);
         }
-
         return drr;
     }
 
@@ -758,7 +741,7 @@ public class ParamsToRuleConverter {
 
     private RedirectResponseRule convertAsRedirectResponseRule(RedirectParameters redirectParameters) throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
-        String target = redirectParameters.getString(RedirectParameters.target);
+        String path = redirectParameters.getString(RedirectParameters.path);
         ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);
         Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
@@ -766,13 +749,11 @@ public class ParamsToRuleConverter {
         Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
         List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
 
-        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
-
+        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
         if (parameterItemHolderParametersList != null) {
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParametersList);
             rrr.setParameterItemRuleMap(parameterItemRuleMap);
         }
-
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
             for (ActionParameters actionParameters : actionParametersList) {
@@ -780,7 +761,6 @@ public class ParamsToRuleConverter {
             }
             rrr.setActionList(actionList);
         }
-
         return rrr;
     }
 
@@ -802,12 +782,10 @@ public class ParamsToRuleConverter {
         translet = assistant.applyTransletNamePattern(translet);
 
         ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
-
         if (attributeItemHolderParametersList != null) {
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributeItemHolderParametersList);
             frr.setAttributeItemRuleMap(attributeItemRuleMap);
         }
-
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
             for (ActionParameters actionParameters : actionParametersList) {
@@ -815,20 +793,17 @@ public class ParamsToRuleConverter {
             }
             frr.setActionList(actionList);
         }
-
         return frr;
     }
 
     private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
         List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList(ItemHolderParameters.item);
         ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
-
         if (itemRuleMap != null) {
             for (ItemRule itemRule : itemRuleMap.values()) {
                 assistant.resolveBeanClass(itemRule);
             }
         }
-
         return itemRuleMap;
     }
 
@@ -845,7 +820,6 @@ public class ParamsToRuleConverter {
         Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
         TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, style, encoding, noCache);
-
         assistant.addTemplateRule(templateRule);
     }
     

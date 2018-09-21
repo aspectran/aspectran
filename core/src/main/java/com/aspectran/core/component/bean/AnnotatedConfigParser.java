@@ -522,8 +522,8 @@ public class AnnotatedConfigParser {
     }
 
     private RedirectResponseRule parseRedirectResponseRule(Redirect redirectAnno) throws IllegalRuleException {
-        String target = StringUtils.emptyToNull(redirectAnno.target());
-        return RedirectResponseRule.newInstance(target);
+        String path = StringUtils.emptyToNull(redirectAnno.path());
+        return RedirectResponseRule.newInstance(path);
     }
 
     private String[] splitNamespace(String namespace) {

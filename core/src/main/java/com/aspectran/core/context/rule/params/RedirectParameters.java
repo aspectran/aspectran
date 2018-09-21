@@ -23,7 +23,7 @@ public class RedirectParameters extends AbstractParameters {
 
     public static final ParameterDefinition action;
     public static final ParameterDefinition contentType;
-    public static final ParameterDefinition target;
+    public static final ParameterDefinition path;
     public static final ParameterDefinition encoding;
     public static final ParameterDefinition excludeNullParameter;
     public static final ParameterDefinition excludeEmptyParameter;
@@ -35,7 +35,7 @@ public class RedirectParameters extends AbstractParameters {
     static {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
         contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        target = new ParameterDefinition("target", ParameterValueType.STRING);
+        path = new ParameterDefinition("path", ParameterValueType.STRING);
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         excludeNullParameter = new ParameterDefinition("excludeNullParameter", ParameterValueType.BOOLEAN);
         excludeEmptyParameter = new ParameterDefinition("excludeEmptyParameter", ParameterValueType.BOOLEAN);
@@ -45,7 +45,7 @@ public class RedirectParameters extends AbstractParameters {
         parameterDefinitions = new ParameterDefinition[] {
                 action,
                 contentType,
-                target,
+                path,
                 encoding,
                 excludeNullParameter,
                 excludeEmptyParameter,

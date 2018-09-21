@@ -205,7 +205,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void redirect(String target) throws IOException {
+    public void redirect(String path) throws IOException {
     }
 
     @Override

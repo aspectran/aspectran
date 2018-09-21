@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Redirect {
 
-    String target();
+    String path();
 
 }
