@@ -52,10 +52,8 @@ public class HttpPutFormContentParser {
             String requestEncoding = requestAdapter.getEncoding();
             Charset charset = (requestEncoding != null ? Charset.forName(requestEncoding) : DEFAULT_CHARSET);
             String body = copyToString(request.getInputStream(), charset);
-
             String[] pairs = StringUtils.tokenize(body, "&");
             MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
-
             for (String pair : pairs) {
                 int idx = pair.indexOf('=');
                 if (idx == -1) {
@@ -67,7 +65,6 @@ public class HttpPutFormContentParser {
                     parameterMap.add(name, value);
                 }
             }
-
             if (!parameterMap.isEmpty()) {
                 for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
                     String name = entry.getKey();

@@ -106,8 +106,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     private ClassLoader getUrlClassLoader() {
-        ClassLoader classLoader = new URLClassLoader(new URL[0], this.getClass().getClassLoader());
-        return classLoader;
+        return new URLClassLoader(new URL[0], this.getClass().getClassLoader());
     }
 
 }

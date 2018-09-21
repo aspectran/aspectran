@@ -46,11 +46,9 @@ public class HelpCommand extends AbstractCommand {
         if (options.hasArgs()) {
             filteredCommands = options.getArgs();
         }
-
         if (filteredCommands == null) {
             getService().printHelp();
         }
-
         if (filteredCommands != null && filteredCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(filteredCommands[0]);
             getConsole().writeLine(command.getDescriptor().getDescription());
@@ -61,7 +59,6 @@ public class HelpCommand extends AbstractCommand {
             getConsole().offStyle();
             printHelp(filteredCommands);
         }
-
         return null;
     }
 
@@ -70,7 +67,6 @@ public class HelpCommand extends AbstractCommand {
         final int commandWidth = maxLengthOfCommandName(filteredCommands);
         final String lpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_LEFT_PAD);
         final String dpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_DESC_PAD);
-
         for (Command command : getCommandRegistry().getAllCommands()) {
             String name = command.getDescriptor().getName();
             if (commandWidth == 0 || filteredCommands == null || contains(name, filteredCommands)) {
