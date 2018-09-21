@@ -57,7 +57,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
 
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
-    private long pauseTimeout = -1L;
+    private long pauseTimeout = -2L;
 
     private AspectranWebService(ServletContext servletContext) {
         super(new WebApplicationAdapter(servletContext));
@@ -101,6 +101,10 @@ class AspectranWebService extends AspectranCoreService implements WebService {
                     log.debug("AspectranWebService has been paused, so did not respond to the request URI \"" +
                             requestUri + "\"");
                 }
+                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                return;
+            } else if (pauseTimeout == -2L) {
+                log.error("AspectranWebService is not yet started");
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
             } else {
