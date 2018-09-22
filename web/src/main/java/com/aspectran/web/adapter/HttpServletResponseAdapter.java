@@ -134,11 +134,13 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
+        precommit();
         return getAdaptee().getOutputStream();
     }
 
     @Override
     public Writer getWriter() throws IOException {
+        precommit();
         return getAdaptee().getWriter();
     }
 
