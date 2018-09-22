@@ -87,7 +87,7 @@ public class RequestRule {
     }
 
     /**
-     * Gets the allowed method.
+     * Returns the method allowed on the requested resource.
      *
      * @return the allowed method
      */
@@ -96,7 +96,7 @@ public class RequestRule {
     }
 
     /**
-     * Sets the allowed method.
+     * Sets the method allowed on the requested resource.
      *
      * @param allowedMethod the new allowed method
      */

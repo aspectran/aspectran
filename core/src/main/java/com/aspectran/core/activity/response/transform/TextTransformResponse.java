@@ -62,7 +62,7 @@ public class TextTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void respond(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -81,13 +81,11 @@ public class TextTransformResponse extends TransformResponse {
                     responseAdapter.setEncoding(encoding);
                 }
             }
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
 
             Writer writer = responseAdapter.getWriter();
-
             if (templateId != null) {
                 activity.getTemplateProcessor().process(templateId, activity);
             } else if (templateRule != null) {
@@ -109,8 +107,6 @@ public class TextTransformResponse extends TransformResponse {
                     }
                 }
             }
-
-            writer.flush();  // Never close at this time. It will be closed by the owner.
         } catch (Exception e) {
             throw new TransformResponseException(transformRule, e);
         }

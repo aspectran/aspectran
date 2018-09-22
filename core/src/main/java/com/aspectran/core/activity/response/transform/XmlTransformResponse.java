@@ -70,7 +70,7 @@ public class XmlTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void respond(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -87,11 +87,9 @@ public class XmlTransformResponse extends TransformResponse {
             } else {
                 encoding = activity.getTranslet().getResponseEncoding();
             }
-
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             }
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
@@ -100,18 +98,15 @@ public class XmlTransformResponse extends TransformResponse {
             ProcessResult processResult = activity.getProcessResult();
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
             if (pretty) {
                 transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
             }
 
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
-
             if (encoding != null) {
                 transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             }
-
             if (pretty) {
                 transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
             }

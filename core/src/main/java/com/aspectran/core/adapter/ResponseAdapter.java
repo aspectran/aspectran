@@ -147,6 +147,13 @@ public interface ResponseAdapter {
     Writer getWriter() throws IOException;
 
     /**
+     * Forces any content in the buffer to be written to the client.
+     *
+     * @throws IOException if an input or output exception occurs
+     */
+    void flush() throws IOException;
+
+    /**
      * Redirects a client to a new URL.
      *
      * @param path the redirect path

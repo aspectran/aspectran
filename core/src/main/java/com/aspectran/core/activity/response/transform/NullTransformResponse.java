@@ -42,7 +42,7 @@ public class NullTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void respond(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;

@@ -34,5 +34,6 @@
     <append file="/config/aspectran/web/translets/main.xml"/>
     <append file="/config/aspectran/web/translets/hello-world.xml"/>
     <append file="/config/aspectran/web/translets/gs-rest-service.xml"/>
+    <append file="/config/aspectran/web/terminal/translet-interpreter.xml"/>
 
 </aspectran>

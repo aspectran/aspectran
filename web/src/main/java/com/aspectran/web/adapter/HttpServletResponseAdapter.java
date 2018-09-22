@@ -16,10 +16,17 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.web.activity.response.GZipServletResponseWrapper;
+import com.aspectran.web.support.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,6 +52,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     private final Activity activity;
 
+    private volatile HttpServletResponse response;
+
     /**
      * Instantiates a new HttpServletResponseAdapter.
      *
@@ -57,73 +66,95 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public HttpServletResponse getAdaptee() {
+        if (response == null) {
+            if (!activity.isIncluded() && isGzipAccepted()) {
+                response = new GZipServletResponseWrapper(super.getAdaptee());
+                ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
+                // indicate to the client that the servlet varies it's
+                // output depending on the "Accept-Encoding" header
+                ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
+            } else {
+                response = super.getAdaptee();
+            }
+        }
+        return response;
+    }
+
+    @Override
     public String getHeader(String name) {
-        return ((HttpServletResponse)adaptee).getHeader(name);
+        return getAdaptee().getHeader(name);
     }
 
     @Override
     public Collection<String> getHeaders(String name) {
-        return ((HttpServletResponse)adaptee).getHeaders(name);
+        return getAdaptee().getHeaders(name);
     }
 
     @Override
     public Collection<String> getHeaderNames() {
-        return ((HttpServletResponse)adaptee).getHeaderNames();
+        return getAdaptee().getHeaderNames();
     }
 
     @Override
     public boolean containsHeader(String name) {
-        return ((HttpServletResponse)adaptee).containsHeader(name);
+        return getAdaptee().containsHeader(name);
     }
 
     @Override
     public void setHeader(String name, String value) {
-        ((HttpServletResponse)adaptee).setHeader(name, value);
+        getAdaptee().setHeader(name, value);
     }
 
     @Override
     public void addHeader(String name, String value) {
-        ((HttpServletResponse)adaptee).addHeader(name, value);
+        getAdaptee().addHeader(name, value);
     }
 
     @Override
     public String getEncoding() {
-        return ((HttpServletResponse)adaptee).getCharacterEncoding();
+        return getAdaptee().getCharacterEncoding();
     }
 
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
-        ((HttpServletResponse)adaptee).setCharacterEncoding(encoding);
+        getAdaptee().setCharacterEncoding(encoding);
     }
 
     @Override
     public String getContentType() {
-        return ((HttpServletResponse)adaptee).getContentType();
+        return getAdaptee().getContentType();
     }
 
     @Override
     public void setContentType(String contentType) {
-        ((HttpServletResponse)adaptee).setContentType(contentType);
+        getAdaptee().setContentType(contentType);
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        return ((HttpServletResponse)adaptee).getOutputStream();
+        return getAdaptee().getOutputStream();
     }
 
     @Override
     public Writer getWriter() throws IOException {
-        return ((HttpServletResponse)adaptee).getWriter();
+        return getAdaptee().getWriter();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        getAdaptee().flushBuffer();
     }
 
     @Override
     public void redirect(String path) throws IOException {
-        ((HttpServletResponse)adaptee).sendRedirect(path);
+        getAdaptee().sendRedirect(path);
     }
 
     @Override
     public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
-        String encoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
+        String encoding = getAdaptee().getCharacterEncoding();
         String path = redirectResponseRule.getPath(activity);
         int questionPos = -1;
 
@@ -173,12 +204,33 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public int getStatus() {
-        return ((HttpServletResponse)adaptee).getStatus();
+        return getAdaptee().getStatus();
     }
 
     @Override
     public void setStatus(int status) {
-        ((HttpServletResponse)adaptee).setStatus(status);
+        getAdaptee().setStatus(status);
+    }
+
+    private void precommit() {
+        Response response = activity.getDeclaredResponse();
+        if (response != null && response.getResponseType() == ResponseType.TRANSFORM) {
+            TransformType transformType = ((TransformResponse)response).getTransformType();
+            if (transformType == null) {
+                response.commit(activity);
+            }
+        }
+    }
+
+    private boolean isGzipAccepted() {
+        String contentEncoding = activity.getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+        if (contentEncoding != null) {
+            String acceptEncoding = activity.getRequestAdapter().getHeader(HttpHeaders.ACCEPT_ENCODING);
+            if (acceptEncoding != null) {
+                return acceptEncoding.contains(contentEncoding);
+            }
+        }
+        return false;
     }
 
 }

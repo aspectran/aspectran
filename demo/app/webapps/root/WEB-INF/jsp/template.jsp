@@ -4,8 +4,8 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${empty page.title ? "Aspectran Demo" : page.title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <title>${empty page.title ? "Aspectran Demo Site" : page.title}</title>
     <meta name="description" content="${empty page.description ? "Welcome to Aspectran Demo" : page.description}" />
     <link rel="stylesheet" type="text/css" href="http://www.aspectran.com/assets/css/styles_aspectran.css" />
     <link href="http://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
@@ -50,30 +50,39 @@
 </head>
 <body id="top-of-page" class="article" itemscope itemtype="http://schema.org/WebPage">
 <nav id="navigation" class="no-js">
-    <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large">
+    <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
         <div class="title-bar-left">
             <a class="logo" href="/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-icon.png" alt="Aspectran"/></a>
         </div>
         <div class="title-bar-center">
             <a href="#top-of-page">Aspectran</a>
         </div>
-        <div class="title-bar-right">
-            <button class="menu-icon" type="button" data-toggle></button>
+        <div class="title-bar-right" data-toggle>
+            <a class="menu-icon" title="Menu"></a>
         </div>
     </div>
-    <div class="top-bar" id="gnb-menu">
+    <div class="top-bar" id="gnb-menu" style="display:none">
         <div class="row">
             <div class="top-bar-logo">
-                <a class="logo" href="/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-icon.png" alt="Aspectran"/></a>
+                <div class="circle">
+                    <a class="logo" href="/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-icon.png" alt="Aspectran"/></a>
+                </div>
             </div>
             <div class="top-bar-left">
                 <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
-                    <li class="active">
-                        <a href="/">Examples</a>
+                    <li>
+                        <a href="/examples/hello-world">Examples</a>
                         <ul class="menu" data-submenu data-close-on-click-inside="false">
                             <li><a href="/examples/hello-world">Hello World</a></li>
                             <li><a href="/examples/gs-rest-service/">RESTful Web Service</a></li>
+                            <li><a href="/examples/file-upload/">File Upload</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="/terminal/">Terminal</a>
+                    </li>
+                    <li>
+                        <a href="/skylark/">Skylark</a>
                     </li>
                 </ul>
             </div>
@@ -102,6 +111,16 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="breadcrumbs-bar" style="display:none" data-hide-for="medium down">
+            <div class="row">
+                <nav role="navigation" aria-label="You are here:">
+                    <ul class="breadcrumbs" itemprop="breadcrumb">
+                        <li><a href="http://www.aspectran.com/">Aspectran</a></li>
+                        <li><a href="/">Demo</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -171,16 +190,16 @@
                 <h5>Navigation</h5>
                 <ul class="no-bullet">
                     <li class="">
-                        <a href="/getting-started/" title="">Getting-Started</a>
+                        <a href="http://www.aspectran.com/getting-started/" title="">Getting-Started</a>
                     </li>
                     <li class="">
-                        <a href="/docs/" title="">Documentation</a>
+                        <a href="http://www.aspectran.com/docs/" title="">Documentation</a>
                     </li>
                     <li class="" >
-                        <a href="/guides/" title="">Guides</a>
+                        <a href="http://www.aspectran.com/guides/" title="">Guides</a>
                     </li>
                     <li class="" >
-                        <a href="/projects/" title="">Projects</a>
+                        <a href="http://www.aspectran.com/projects/" title="">Projects</a>
                     </li>
                 </ul>
             </div>
@@ -220,32 +239,67 @@
 </footer>
 <script src="http://www.aspectran.com/assets/js/foundation.min.js"></script>
 <script>
-    $(document).foundation();
-    $(document).ready(function() {
-        var navFixed = false;
-        var navHeight = $("#masthead").height() - $("#navigation").height();
-        var $win = $(window);
-        $win.scroll(function() {
-            var scrollTop = $win.scrollTop();
-            if(navFixed) {
-                if(scrollTop < navHeight) {
-                    navFixed = false;
-                    $("#navigation").removeClass("fixed");
-                    $("#navigation").hide();
-                    $("#navigation").slideDown(220);
-                }
-            } else {
-                if(scrollTop > navHeight) {
-                    navFixed = true;
-                    $("#navigation").addClass("fixed");
-                    $("#navigation").hide();
-                    $("#navigation").fadeIn(450);
+    var path = location.pathname;
+    var a1 = $("#gnb-menu .top-bar-left .dropdown li a[href='" + path + "']").last();
+    if (a1.size() > 0) {
+        var arr = [];
+        arr.push({'name': a1.text(), 'href': null});
+        a1.parentsUntil(".dropdown > li:eq(0)").each(function() {
+            if ($(this).hasClass("menu")) {
+                var a2 = $(this).prev();
+                if (a2.is("a")) {
+                    arr.push({'name': a2.text(), 'href': a2.attr("href")||""});
                 }
             }
         });
-        if($win.scrollTop() > navHeight) {
-            $win.scroll();
+        arr.reverse();
+        for (var i in arr) {
+            var item = arr[i];
+            if (i < arr.length - 1) {
+                $(".breadcrumbs").append("<li><a href='" + item.href + "'>" + item.name + "</a></li>");
+            } else {
+                $(".breadcrumbs").append("<li><span class='show-for-sr'>Current: </span> <span class='current'>" + item.name + "</span></li>");
+            }
         }
+    }
+    $(document).foundation();
+    $(document).ready(function() {
+        var $win = $(window);
+        var $nav = $("#navigation");
+        var navHeight = $("#masthead").height() - $nav.height();
+        var lastScrollTop = 0;
+        var scrolled;
+        var navFixed;
+        $win.scroll(function() {
+            scrolled = true;
+        });
+        setInterval(function() {
+            if (scrolled) {
+                var scrollTop = $win.scrollTop();
+                if (Math.abs(lastScrollTop - scrollTop) <= 10) {
+                    return;
+                }
+                if (scrollTop <= navHeight) {
+                    if (navFixed) {
+                        $nav.removeClass("fixed");
+                        navFixed = false;
+                    }
+                } else if (scrollTop > lastScrollTop) {
+                    if (navFixed) {
+                        $nav.removeClass("fixed");
+                        navFixed = false;
+                    }
+                } else {
+                    if (!navFixed) {
+                        $nav.addClass("fixed");
+                        $nav.hide().fadeIn(500);
+                        navFixed = true;
+                    }
+                }
+                lastScrollTop = scrollTop;
+                scrolled = false;
+            }
+        }, 200);
         /* google search */
         $("form[name=google_quick_search]").submit(function(event) {
             window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:http%3A%2F%2F0.0.0.0%3A4000');
@@ -263,36 +317,6 @@
                 $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
             }
             $("#toc ul").append("<li class='toc-" + tagn + "'><a anchor='" + anchor + "' href='#" + anchor + "'>" + $(item).text() + "</a></li>");
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $(".breadcrumbs").each(function() {
-            var path = location.pathname;
-            var dropdown = $("#gnb-menu .dropdown");
-            var a1 = dropdown.find("a[href='" + path + "']").last();
-            var arr = [];
-            if (a1.size() > 0) {
-                arr.push({'name': a1.text(), 'href': null});
-                a1.parentsUntil(".dropdown > li").each(function () {
-                    if ($(this).hasClass("menu")) {
-                        var a2 = $(this).prev();
-                        if (a2.is("a")) {
-                            arr.push({'name': a2.text(), 'href': a2.attr("href")||""});
-                        }
-                    }
-                });
-                arr.reverse();
-                for (var i in arr) {
-                    var item = arr[i];
-                    if (i < arr.length - 1) {
-                        $(".breadcrumbs").append("<li><a href='" + item.href + "'>" + item.name + "</a></li>");
-                    } else {
-                        $(".breadcrumbs").append("<li><span class='show-for-sr'>Current: </span> <span class='current'>" + item.name + "</span></li>");
-                    }
-                }
-            }
         });
     });
 </script>

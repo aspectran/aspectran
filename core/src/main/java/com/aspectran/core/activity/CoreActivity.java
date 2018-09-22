@@ -85,6 +85,8 @@ public class CoreActivity extends BasicActivity {
 
     private Response reservedResponse;
 
+    private volatile boolean committed;
+
     /**
      * Instantiates a new CoreActivity.
      *
@@ -166,7 +168,6 @@ public class CoreActivity extends BasicActivity {
             }
 
             translet = newTranslet(this, transletRule);
-
             if (processResult != null) {
                 translet.setProcessResult(processResult);
             }
@@ -245,6 +246,12 @@ public class CoreActivity extends BasicActivity {
     public void finish() {
         try {
             release();
+
+            if (getResponseAdapter() != null) {
+                getResponseAdapter().flush();
+            }
+        } catch (Exception e) {
+            log.error("Failed to finish activity", e);
         } finally {
             removeCurrentActivity();
         }
@@ -347,6 +354,7 @@ public class CoreActivity extends BasicActivity {
 
             if (isExceptionRaised()) {
                 reserveResponse(null);
+                committed = false;
 
                 if (transletRule.getExceptionRule() != null) {
                     handleException(transletRule.getExceptionRule());
@@ -370,14 +378,12 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Produces content.
+     * Produce the result of the content and its subordinate actions.
      */
     private void produce() {
         ContentList contentList = transletRule.getContentList();
-
         if (contentList != null) {
             ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
-
             if (transletRule.isExplicitContent()) {
                 processResult.setOmittable(contentList.isOmittable());
             } else {
@@ -385,7 +391,6 @@ public class CoreActivity extends BasicActivity {
                     processResult.setOmittable(true);
                 }
             }
-
             for (ActionList actionList : contentList) {
                 execute(actionList);
                 if (isResponseReserved()) {
@@ -395,26 +400,31 @@ public class CoreActivity extends BasicActivity {
         }
     }
 
-    protected Response getDeclaredResponse() {
-        return (responseRule != null ? responseRule.getResponse() : null);
-    }
-
     private void response() {
+        if (!committed) {
+            committed = true;
+        } else {
+            return;
+        }
+
         Response res = (this.reservedResponse != null ? this.reservedResponse : getDeclaredResponse());
         if (res != null) {
-            res.respond(this);
+            res.commit(this);
 
             if (res.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse) res;
+                ForwardResponse forwardResponse = (ForwardResponse)res;
                 this.forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
             } else {
                 this.forwardTransletName = null;
             }
-
             if (forwardTransletName != null) {
                 forward();
             }
         }
+    }
+
+    public Response getDeclaredResponse() {
+        return (responseRule != null ? responseRule.getResponse() : null);
     }
 
     /**
@@ -446,6 +456,7 @@ public class CoreActivity extends BasicActivity {
         }
 
         reserveResponse(null);
+        committed = false;
 
         prepare(forwardTransletName, requestMethod, translet.getProcessResult());
         perform();
@@ -472,20 +483,17 @@ public class CoreActivity extends BasicActivity {
     private void handleException(ExceptionThrownRule exceptionThrownRule) {
         Response response = getDeclaredResponse();
         Response targetResponse;
-
         if (response != null && response.getContentType() != null) {
             targetResponse = exceptionThrownRule.getResponse(response.getContentType());
         } else {
             targetResponse = exceptionThrownRule.getDefaultResponse();
         }
-
         if (targetResponse != null) {
             ResponseRule newResponseRule = new ResponseRule();
             newResponseRule.setResponse(targetResponse);
             if (this.responseRule != null) {
                 newResponseRule.setEncoding(this.responseRule.getEncoding());
             }
-
             setResponseRule(newResponseRule);
 
             if (log.isDebugEnabled()) {

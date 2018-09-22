@@ -84,7 +84,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
     public AspectAdviceRuleRegistry replicate() {
         AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
         aarr.setAspectRuleCount(aspectRuleCount);
-
         if (settings != null) {
             Map<String, Object> newSettings = new HashMap<>(settings);
             aarr.setSettings(newSettings);
@@ -104,7 +103,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         if (exceptionRuleList != null) {
             aarr.setExceptionRuleList(new LinkedList<>(exceptionRuleList));
         }
-
         return aarr;
     }
 

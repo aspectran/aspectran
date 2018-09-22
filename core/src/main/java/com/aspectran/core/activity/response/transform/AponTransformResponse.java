@@ -58,7 +58,7 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void respond(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -77,7 +77,6 @@ public class AponTransformResponse extends TransformResponse {
                     responseAdapter.setEncoding(encoding);
                 }
             }
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
@@ -98,7 +97,6 @@ public class AponTransformResponse extends TransformResponse {
                 }
             }
             aponWriter.write(parameters);
-            aponWriter.flush(); // Never close at this time. Owner will be close.
         } catch (Exception e) {
             throw new TransformResponseException(transformRule, e);
         }

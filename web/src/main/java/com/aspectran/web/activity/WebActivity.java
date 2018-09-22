@@ -27,7 +27,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
@@ -35,7 +34,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.HttpPutFormContentParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
-import com.aspectran.web.activity.response.GZipServletResponseWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
@@ -117,18 +115,8 @@ public class WebActivity extends CoreActivity {
             RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
             setRequestAdapter(requestAdapter);
 
-            boolean contentEncoding = false;
-            if (!isIncluded() && isGzipAccepted()) {
-                response = new GZipServletResponseWrapper(response);
-                contentEncoding = true;
-            }
-
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
             setResponseAdapter(responseAdapter);
-
-            if (contentEncoding) {
-                setGzipContentEncoded();
-            }
 
             super.adapt();
         } catch (Exception e) {
@@ -210,28 +198,9 @@ public class WebActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        WebActivity activity = new WebActivity(getActivityContext(), request, response);
+        WebActivity activity = new WebActivity(getActivityContext(), request, getResponseAdapter().getAdaptee());
         activity.setIncluded(true);
         return (T)activity;
-    }
-
-    private boolean isGzipAccepted() {
-        String contentEncoding = getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-        if (contentEncoding != null) {
-            String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
-            if (acceptEncoding != null) {
-                return acceptEncoding.contains(contentEncoding);
-            }
-        }
-        return false;
-    }
-
-    private void setGzipContentEncoded() {
-        getResponseAdapter().setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
-
-        // indicate to the client that the servlet varies it's
-        // output depending on the "Accept-Encoding" header
-        getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
     }
 
 }

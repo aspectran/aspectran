@@ -405,6 +405,15 @@ public interface Translet extends BeanRegistry, MessageSource {
      */
     void extractAttributes(Map<String, Object> attributes);
 
+
+    /**
+     * Returns the originally declared response.
+     *
+     * @return the declared response
+     * @since 5.2.0
+     */
+    Response getDeclaredResponse();
+
     /**
      * Respond immediately, and the remaining jobs will be canceled.
      */

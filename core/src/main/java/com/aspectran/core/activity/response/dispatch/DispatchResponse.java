@@ -52,7 +52,7 @@ public class DispatchResponse implements Response {
     }
 
     @Override
-    public void respond(Activity activity) {
+    public void commit(Activity activity) {
         try {
             if (debugEnabled) {
                 log.debug("response " + dispatchResponseRule);
@@ -104,7 +104,6 @@ public class DispatchResponse implements Response {
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
         try {
             String viewDispatcherName;
-
             if (dispatchResponseRule.getDispatcher() != null) {
                 viewDispatcherName = dispatchResponseRule.getDispatcher();
             } else {
@@ -116,7 +115,6 @@ public class DispatchResponse implements Response {
             }
 
             ViewDispatcher viewDispatcher;
-
             synchronized (viewDispatcherCache) {
                 viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
                 if (viewDispatcher == null) {
@@ -127,7 +125,6 @@ public class DispatchResponse implements Response {
                     } else {
                         viewDispatcher = activity.getBean(viewDispatcherName);
                     }
-
                     if (viewDispatcher == null) {
                         throw new IllegalArgumentException("No bean named '" + viewDispatcherName + "' is defined");
                     }
@@ -141,7 +138,6 @@ public class DispatchResponse implements Response {
                     }
                 }
             }
-
             return viewDispatcher;
         } catch(Exception e) {
             throw new ViewDispatcherException("Unable to determine ViewDispatcher", e);

@@ -49,7 +49,7 @@ public class RedirectResponse implements Response {
     }
 
     @Override
-    public void respond(Activity activity) throws ResponseException {
+    public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -81,10 +81,11 @@ public class RedirectResponse implements Response {
 
     @Override
     public String getContentType() {
-        if (redirectResponseRule == null) {
+        if (redirectResponseRule != null) {
+            return redirectResponseRule.getContentType();
+        } else {
             return null;
         }
-        return redirectResponseRule.getContentType();
     }
 
     @Override

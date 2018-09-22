@@ -28,13 +28,13 @@ import com.aspectran.core.context.rule.type.ResponseType;
 public interface Response extends Replicable<Response> {
 
     /**
-     * Response.
+     * The result of the activity is processed into a specific response
+     * form and then sent to the client.
      *
      * @param activity the current Activity
-     *
      * @throws ResponseException the response exception
      */
-    void respond(Activity activity);
+    void commit(Activity activity);
 
     /**
      * Gets the response type.

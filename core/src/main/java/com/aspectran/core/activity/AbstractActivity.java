@@ -122,11 +122,7 @@ public abstract class AbstractActivity implements Activity {
         }
     }
 
-    /**
-     * Returns whether or not contained in other activity.
-     *
-     * @return true, if this activity is included in the other activity
-     */
+    @Override
     public boolean isIncluded() {
         return included;
     }

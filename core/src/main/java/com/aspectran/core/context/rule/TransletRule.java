@@ -103,7 +103,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     /**
-     * Gets the allowed methods.
+     * Returns the array of methods allowed on the requested resource.
      *
      * @return the allowed methods
      */
@@ -112,7 +112,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     /**
-     * Sets the allowed methods.
+     * Sets the array of methods allowed on the requested resource.
      *
      * @param allowedMethods the allowed methods
      */

@@ -50,7 +50,7 @@ public class ForwardResponse implements Response {
     }
 
     @Override
-    public void respond(Activity activity) {
+    public void commit(Activity activity) {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         if (requestAdapter == null) {
             return;
@@ -74,10 +74,11 @@ public class ForwardResponse implements Response {
 
     @Override
     public String getContentType() {
-        if (forwardResponseRule == null) {
+        if (forwardResponseRule != null) {
+            return forwardResponseRule.getContentType();
+        } else {
             return null;
         }
-        return forwardResponseRule.getContentType();
     }
 
     @Override

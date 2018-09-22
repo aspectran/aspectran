@@ -205,6 +205,16 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
+    public void flush() throws IOException {
+        if (outputStream != null) {
+            outputStream.flush();
+        }
+        if (writer != null) {
+            writer.flush();
+        }
+    }
+
+    @Override
     public void redirect(String path) throws IOException {
     }
 

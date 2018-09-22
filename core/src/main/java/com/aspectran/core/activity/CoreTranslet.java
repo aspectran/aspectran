@@ -286,6 +286,11 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
+    public Response getDeclaredResponse() {
+        return activity.getDeclaredResponse();
+    }
+
+    @Override
     public void response() {
         activity.reserveResponse();
     }

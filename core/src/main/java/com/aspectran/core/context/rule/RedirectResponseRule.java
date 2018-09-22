@@ -306,8 +306,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("contentType", contentType);
-        tsb.appendForce("path", path);
-        tsb.appendForce("encoding", encoding);
+        tsb.append("path", path);
+        tsb.append("encoding", encoding);
         tsb.append("excludeNullParameter", excludeNullParameter);
         tsb.append("excludeEmptyParameter", excludeEmptyParameter);
         tsb.append("default", defaultResponse);

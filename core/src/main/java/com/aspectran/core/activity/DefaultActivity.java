@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -102,6 +103,11 @@ public class DefaultActivity extends BasicActivity {
 
     @Override
     public Object getProcessResult(String actionId) {
+        return null;
+    }
+
+    @Override
+    public Response getDeclaredResponse() {
         return null;
     }
 

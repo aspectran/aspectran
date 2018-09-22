@@ -63,7 +63,7 @@ public class JsonTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void respond(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) throws TransformResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -82,7 +82,6 @@ public class JsonTransformResponse extends TransformResponse {
                     responseAdapter.setEncoding(encoding);
                 }
             }
-
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
@@ -111,7 +110,6 @@ public class JsonTransformResponse extends TransformResponse {
             if (callback != null) {
                 writer.write(ROUND_BRACKET_CLOSE);
             }
-            writer.flush(); // Never close at this time. Owner will be close.
         } catch (Exception e) {
             throw new TransformResponseException(transformRule, e);
         }

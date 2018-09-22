@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -174,11 +175,26 @@ public interface Activity extends BeanRegistry {
     void executeAdviceWithoutThrow(AspectAdviceRule aspectAdviceRule);
 
     /**
+     * Returns the originally declared response.
+     *
+     * @return the declared response
+     * @since 5.2.0
+     */
+    Response getDeclaredResponse();
+
+    /**
      * Returns whether the response is reserved.
      *
      * @return true, if the response is reserved
      */
     boolean isResponseReserved();
+
+    /**
+     * Returns whether or not contained in other activity.
+     *
+     * @return true, if this activity is included in the other activity
+     */
+    boolean isIncluded();
 
     /**
      * Exception handling.
