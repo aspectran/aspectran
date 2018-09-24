@@ -94,7 +94,7 @@
                 term.echo('');
             }
         }, {
-            greetings: 'Translet Interpreter\nType "hello" or "speak"',
+            greetings: 'Translet Interpreter\nType "hello"',
             name: 'transletInterpreter',
             height: 500,
             width: "100%",

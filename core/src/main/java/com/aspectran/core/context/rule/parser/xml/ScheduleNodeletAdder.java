@@ -64,7 +64,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.apply(text, style);
+                text = ContentStyleType.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 ScheduleRule scheduleRule = parser.peekObject();

@@ -142,7 +142,6 @@ public class BeanClassScanner extends ClassScanner {
 
             if (filterParameters != null) {
                 String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-
                 if (excludePatterns != null) {
                     for (String excludePattern : excludePatterns) {
                         WildcardPattern pattern = excludePatternCache.get(excludePattern);

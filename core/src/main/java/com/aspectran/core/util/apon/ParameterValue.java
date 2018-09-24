@@ -27,6 +27,8 @@ public class ParameterValue implements Parameter {
 
     private final String name;
 
+    private final ParameterValueType originParameterValueType;
+
     private ParameterValueType parameterValueType;
 
     private boolean valueTypeHinted;
@@ -39,7 +41,7 @@ public class ParameterValue implements Parameter {
 
     private final boolean predefined;
 
-    private Object value;
+    private volatile Object value;
 
     private List<Object> list;
 
@@ -62,6 +64,7 @@ public class ParameterValue implements Parameter {
                              boolean noBracket, boolean predefined) {
         this.name = name;
         this.parameterValueType = parameterValueType;
+        this.originParameterValueType = parameterValueType;
         this.array = array;
         this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
         if (this.array && !noBracket) {
@@ -87,6 +90,7 @@ public class ParameterValue implements Parameter {
                              boolean array, boolean noBracket, boolean predefined) {
         this.name = name;
         this.parameterValueType = ParameterValueType.PARAMETERS;
+        this.originParameterValueType = parameterValueType;
         this.parametersClass = parametersClass;
         this.array = array;
         this.predefined = predefined;
@@ -167,7 +171,17 @@ public class ParameterValue implements Parameter {
 
     @Override
     public int getArraySize() {
+        List<?> list = getValueList();
         return (list != null ? list.size() : 0);
+    }
+
+    @Override
+    public void arraylize() {
+        if (assigned) {
+            throw new IllegalStateException("Can not change to an array type because a variable is already assigned a value.");
+        }
+        array = true;
+        bracketed = true;
     }
 
     @Override
@@ -201,13 +215,6 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    @Override
-    public void clearValue() {
-        value = null;
-        list = null;
-        assigned = false;
-    }
-
     private synchronized void addValue(Object value) {
         if (list == null) {
             list = new ArrayList<>();
@@ -218,21 +225,21 @@ public class ParameterValue implements Parameter {
 
     @Override
     public Object getValue() {
-        return (array ? list : value);
+        return (array ? getValueList() : value);
     }
 
     @Override
     public List<?> getValueList() {
-        if (!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
-            List<Object> list = new ArrayList<>();
-            list.add(value);
-            return list;
+        if (!predefined && value != null && list == null &&
+                originParameterValueType == ParameterValueType.VARIABLE) {
+            addValue(value);
         }
         return list;
     }
 
     @Override
     public Object[] getValues() {
+        List<?> list = getValueList();
         return (list != null ? list.toArray(new Object[0]) : null);
     }
 
@@ -244,36 +251,42 @@ public class ParameterValue implements Parameter {
     @Override
     public String[] getValueAsStringArray() {
         if (array) {
-            if (list == null) {
+            List<?> list = getValueList();
+            if (list != null) {
+                String[] s = new String[list.size()];
+                for (int i = 0; i < s.length; i++) {
+                    s[i] = list.get(i).toString();
+                }
+                return s;
+            } else {
                 return null;
             }
-            String[] s = new String[list.size()];
-            for (int i = 0; i < s.length; i++) {
-                s[i] = list.get(i).toString();
-            }
-            return s;
         } else {
-            if (value == null) {
+            if (value != null) {
+                return new String[] {value.toString()};
+            } else {
                 return null;
             }
-            return new String[] { value.toString() };
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getValueAsStringList() {
-        if (list == null) {
-            return null;
-        }
         if (parameterValueType == ParameterValueType.STRING) {
             return (List<String>)getValueList();
+        } else {
+            List<?> list1 = getValueList();
+            if (list1 != null) {
+                List<String> list2 = new ArrayList<>();
+                for (Object o : list1) {
+                    list2.add(o.toString());
+                }
+                return list2;
+            } else {
+                return null;
+            }
         }
-        List<String> list2 = new ArrayList<>();
-        for (Object o : list) {
-            list2.add(o.toString());
-        }
-        return list2;
     }
 
     @Override
@@ -403,7 +416,6 @@ public class ParameterValue implements Parameter {
                 parametersClass = VariableParameters.class;
             }
         }
-
         try {
             Parameters p = ClassUtils.createInstance(parametersClass);
             assert p != null;
@@ -419,6 +431,13 @@ public class ParameterValue implements Parameter {
         if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType) {
             throw new IncompatibleParameterValueTypeException(this, parameterValueType);
         }
+    }
+
+    @Override
+    public void clearValue() {
+        value = null;
+        list = null;
+        assigned = false;
     }
 
     @Override

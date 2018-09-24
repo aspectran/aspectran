@@ -81,9 +81,6 @@
                     <li>
                         <a href="/terminal/">Terminal</a>
                     </li>
-                    <li>
-                        <a href="/skylark/">Skylark</a>
-                    </li>
                 </ul>
             </div>
             <div class="top-bar-right">

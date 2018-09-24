@@ -54,7 +54,8 @@ class TemplateNodeletAdder implements NodeletAdder {
             String encoding = attrs.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
-            TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, null, style, encoding, noCache);
+            TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file,
+                    resource, url, null, style, encoding, noCache);
             parser.pushObject(templateRule);
         });
         parser.addNodeEndlet(text -> {

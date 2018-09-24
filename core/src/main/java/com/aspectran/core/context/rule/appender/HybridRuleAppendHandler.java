@@ -60,7 +60,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         setCurrentRuleAppender(appender);
 
         AssistantLocal assistantLocal = getContextRuleAssistant().backupAssistantLocal();
-
         boolean hybridon = false;
 
         if (appender != null) {
@@ -123,7 +122,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         log.info("Save as APON formatted " + fileRuleAppender);
 
         File aponFile = null;
-
         try {
             aponFile = makeAponFile(fileRuleAppender);
 
@@ -153,7 +151,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 try {
                     aponWriter.close();
                 } catch (IOException e) {
-                    // ignore
+                    log.error("Exception during closing file " + aponFile, e);
                 }
             }
 
@@ -166,7 +164,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     private File makeAponFile(FileRuleAppender fileRuleAppender) {
         String basePath = fileRuleAppender.getBasePath();
         String filePath = fileRuleAppender.getFilePath() + "." + AppenderFileFormatType.APON.toString();
-
         return new File(basePath, filePath);
     }
 

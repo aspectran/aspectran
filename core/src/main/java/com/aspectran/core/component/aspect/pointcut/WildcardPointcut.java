@@ -83,7 +83,6 @@ public class WildcardPointcut extends AbstractPointcut {
                 }
             }
         }
-
         return wildcardPattern.matches(compareString);
     }
 

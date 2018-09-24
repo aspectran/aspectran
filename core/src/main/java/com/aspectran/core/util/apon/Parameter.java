@@ -112,16 +112,18 @@ public interface Parameter {
     Object getValue();
 
     /**
+     * Change parameter type to array type.
+     *
+     * @return
+     */
+    void arraylize();
+
+    /**
      * Puts the parameter value.
      *
      * @param value the parameter value
      */
     void putValue(Object value);
-
-    /**
-     * Clears the parameter value.
-     */
-    void clearValue();
 
     /**
      * Returns a value as an {@code Object} array.
@@ -292,5 +294,10 @@ public interface Parameter {
      * @return a {@code Parameters}
      */
     Parameters newParameters(Parameter identifier);
+
+    /**
+     * Clears the parameter value.
+     */
+    void clearValue();
 
 }

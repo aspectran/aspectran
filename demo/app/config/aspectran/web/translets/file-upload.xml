@@ -1,0 +1,58 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <settings>
+        <setting name="transletNamePattern" value="/examples/file-upload/*"/>
+    </settings>
+
+    <aspect id="transletSettingsForFileUpload">
+        <description>
+            Specifies the environment variables used during request and response processing.
+        </description>
+        <joinpoint target="translet">
+            methods: [
+                POST
+            ]
+            pointcut: {
+                +: /examples/file-upload/files
+            }
+        </joinpoint>
+        <settings>
+            <setting name="multipartFormDataParser" value="imageFileUploader"/>
+        </settings>
+    </aspect>
+
+    <bean id="imageFileUploader" class="com.aspectran.web.support.multipart.inmemory.MemoryMultipartFormDataParserFactoryBean">
+        <description>
+            Required to handle multi-part form data.
+        </description>
+        <properties>
+            <item name="maxRequestSize" value="6M"/>
+            <item name="maxFileSize" value="5M"/>
+            <item name="allowedFileExtensions" value="jpg,jpeg,png,gif"/>
+        </properties>
+    </bean>
+
+    <bean class="com.aspectran.demo.examples.upload.SimpleFileUploadAction">
+        <properties>
+            <item name="maxFiles" valueType="int">12</item>
+        </properties>
+    </bean>
+
+    <translet name="/">
+        <action id="files" bean="class:com.aspectran.demo.examples.upload.SimpleFileUploadAction" method="list"/>
+        <dispatch name="templates/default">
+            <echo id="page">
+                <attributes>
+                    <item name="headline">Uploading Files</item>
+                    <item name="teaser">This guide walks you through the process of creating a server application that can receive HTTP multi-part file uploads.</item>
+                    <item name="include">pages/file-upload</item>
+                    <item name="maxFiles">#{class:com.aspectran.demo.examples.upload.SimpleFileUploadAction^maxFiles}</item>
+                </attributes>
+            </echo>
+        </dispatch>
+    </translet>
+
+</aspectran>

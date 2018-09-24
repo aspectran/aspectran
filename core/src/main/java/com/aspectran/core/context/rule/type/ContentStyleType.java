@@ -55,15 +55,15 @@ public enum ContentStyleType {
         return null;
     }
 
-    public static String apply(String content, String style) {
+    public static String styling(String content, String style) {
         ContentStyleType contentStyleType = ContentStyleType.resolve(style);
         if (style != null && contentStyleType == null) {
             throw new IllegalArgumentException("No content style type for '" + style + "'");
         }
-        return apply(content, contentStyleType);
+        return styling(content, contentStyleType);
     }
 
-    public static String apply(String content, ContentStyleType contentStyleType) {
+    public static String styling(String content, ContentStyleType contentStyleType) {
         if (contentStyleType == ContentStyleType.APON) {
             return StringStyler.toAponStyle(content);
         } else if (contentStyleType == ContentStyleType.COMPACT) {

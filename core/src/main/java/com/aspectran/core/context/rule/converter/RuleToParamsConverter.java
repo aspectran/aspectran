@@ -84,11 +84,13 @@ import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
@@ -109,13 +111,13 @@ public class RuleToParamsConverter {
         this.assistant = assistant;
     }
 
-    public RootParameters toRootParameters() throws Exception {
+    public RootParameters toRootParameters() {
         RootParameters rootParameters = new RootParameters();
         rootParameters.putValue(RootParameters.aspectran, toAspectranParameters());
         return rootParameters;
     }
 
-    public AspectranParameters toAspectranParameters() throws Exception {
+    public AspectranParameters toAspectranParameters() {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();
@@ -456,26 +458,30 @@ public class RuleToParamsConverter {
         List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
         if (responseRuleList != null) {
             for (ResponseRule responseRule : responseRuleList) {
-                transletParameters.putValue(TransletParameters.response, toResponseParameters(responseRule));
+                if (responseRule != null) {
+                    transletParameters.putValue(TransletParameters.response, toResponseParameters(responseRule));
+                }
             }
         } else {
             ResponseRule responseRule = transletRule.getResponseRule();
-            if (!transletRule.isImplicitResponse()) {
-                transletParameters.putValue(TransletParameters.response, toResponseParameters(responseRule));
-            } else {
-                Response response = responseRule.getResponse();
-                if (response.getResponseType() == ResponseType.TRANSFORM) {
-                    TransformResponse transformResponse = (TransformResponse)response;
-                    transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
-                } else if (response.getResponseType() == ResponseType.DISPATCH) {
-                    DispatchResponse dispatchResponse = (DispatchResponse)response;
-                    transletParameters.putValue(TransletParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
-                } else if (response.getResponseType() == ResponseType.FORWARD) {
-                    ForwardResponse forwardResponse = (ForwardResponse)response;
-                    transletParameters.putValue(TransletParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
-                } else if (response.getResponseType() == ResponseType.REDIRECT) {
-                    RedirectResponse redirectResponse = (RedirectResponse)response;
-                    transletParameters.putValue(TransletParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+            if (responseRule != null) {
+                if (!transletRule.isImplicitResponse()) {
+                    transletParameters.putValue(TransletParameters.response, toResponseParameters(responseRule));
+                } else {
+                    Response response = responseRule.getResponse();
+                    if (response.getResponseType() == ResponseType.TRANSFORM) {
+                        TransformResponse transformResponse = (TransformResponse)response;
+                        transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                    } else if (response.getResponseType() == ResponseType.DISPATCH) {
+                        DispatchResponse dispatchResponse = (DispatchResponse)response;
+                        transletParameters.putValue(TransletParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+                    } else if (response.getResponseType() == ResponseType.FORWARD) {
+                        ForwardResponse forwardResponse = (ForwardResponse)response;
+                        transletParameters.putValue(TransletParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
+                    } else if (response.getResponseType() == ResponseType.REDIRECT) {
+                        RedirectResponse redirectResponse = (RedirectResponse)response;
+                        transletParameters.putValue(TransletParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+                    }
                 }
             }
         }
@@ -648,11 +654,18 @@ public class RuleToParamsConverter {
         templateParameters.putValueNonNull(TemplateParameters.resource, templateRule.getResource());
         templateParameters.putValueNonNull(TemplateParameters.url, templateRule.getUrl());
         if (templateRule.getContent() != null) {
-            templateParameters.putValue(TemplateParameters.content, templateRule.getContent());
+            ContentStyleType contentStyleType = templateRule.getContentStyle();
+            if (contentStyleType == ContentStyleType.APON) {
+                String content = ContentStyleType.styling(templateRule.getContent(), contentStyleType);
+                templateParameters.putValue(TemplateParameters.content, content);
+            } else {
+                templateParameters.putValue(TemplateParameters.content, templateRule.getContent());
+                templateParameters.putValueNonNull(TemplateParameters.style, contentStyleType);
+            }
         } else {
             templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getTemplateSource());
+            templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
         }
-        templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
         templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
         templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
 
@@ -774,10 +787,12 @@ public class RuleToParamsConverter {
             itemParameters.putValueNonNull(ItemParameters.value, o);
         } else if (itemRule.isListableType()) {
             List<String> valueList = itemRule.getValueList();
-            if (valueList != null) {
+            if (valueList != null && !valueList.isEmpty()) {
+                Parameter p = itemParameters.getParameter(ItemParameters.value);
+                p.arraylize();
                 for (String value : valueList) {
                     Object o = determineItemValue(itemRule.getValueType(), value);
-                    itemParameters.putValue(ItemParameters.value, o);
+                    p.putValue(o);
                 }
             }
         } else if (itemRule.isMappableType()) {
@@ -797,7 +812,8 @@ public class RuleToParamsConverter {
     private static Object determineItemValue(ItemValueType valueType, String value) {
         if (value == null) {
             return null;
-        } else if (valueType == ItemValueType.PARAMETERS) {
+        }
+        if (valueType == ItemValueType.PARAMETERS) {
             return new VariableParameters(value);
         } else {
             return value;

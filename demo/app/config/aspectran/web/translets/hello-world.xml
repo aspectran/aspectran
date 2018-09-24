@@ -4,7 +4,7 @@
 <aspectran>
 
     <translet name="/examples/hello-world">
-        <dispatch name="template">
+        <dispatch name="templates/default">
             <echo id="page">
                 <attributes>
                     <item name="headline">Hello, World!</item>

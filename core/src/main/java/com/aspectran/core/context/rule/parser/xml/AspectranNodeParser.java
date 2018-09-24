@@ -123,7 +123,7 @@ public class AspectranNodeParser {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.apply(text, style);
+                text = ContentStyleType.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 assistant.getAssistantLocal().setDescription(text);

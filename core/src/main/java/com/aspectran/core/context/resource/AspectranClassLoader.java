@@ -114,7 +114,6 @@ public class AspectranClassLoader extends ClassLoader {
         this(parent);
 
         AspectranClassLoader acl = this;
-
         for (String resourceLocation : resourceLocations) {
             acl = acl.createChild(resourceLocation);
         }
@@ -414,7 +413,6 @@ public class AspectranClassLoader extends ClassLoader {
 
             byte[] buffer = new byte[8192];
             int len;
-
             while ((len = input.read(buffer)) >= 0) {
                 output.write(buffer, 0, len);
             }

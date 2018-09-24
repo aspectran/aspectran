@@ -32,20 +32,29 @@ import java.io.PrintWriter;
  */
 public class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
+    private WrappingStarted wrappingStarted;
+
     private GZipServletOutputStream gzipOutputStream;
 
     private PrintWriter printWriter;
 
-    public GZipServletResponseWrapper(HttpServletResponse response) {
+    public GZipServletResponseWrapper(HttpServletResponse response, WrappingStarted wrappingStarted) {
         super(response);
+        this.wrappingStarted = wrappingStarted;
     }
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
+        if (getResponse().isCommitted()) {
+            return getResponse().getOutputStream();
+        }
         if (this.printWriter != null) {
             throw new IllegalStateException("PrintWriter obtained already - cannot get OutputStream");
         }
         if (this.gzipOutputStream == null) {
+            if (wrappingStarted != null) {
+                wrappingStarted.handle();
+            }
             this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
         }
         return this.gzipOutputStream;
@@ -53,10 +62,16 @@ public class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public PrintWriter getWriter() throws IOException {
+        if (getResponse().isCommitted()) {
+            return getResponse().getWriter();
+        }
         if (this.printWriter == null && this.gzipOutputStream != null) {
             throw new IllegalStateException("OutputStream obtained already - cannot get PrintWriter");
         }
         if (this.printWriter == null) {
+            if (wrappingStarted != null) {
+                wrappingStarted.handle();
+            }
             this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
             this.printWriter = new PrintWriter(new OutputStreamWriter(this.gzipOutputStream,
                     getResponse().getCharacterEncoding()));
@@ -79,6 +94,12 @@ public class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     public void setContentLength(int length) {
         // ignore, since content length of zipped content
         // does not match content length of unzipped content.
+    }
+
+    public interface WrappingStarted {
+
+        void handle();
+
     }
 
 }

@@ -8,7 +8,7 @@
     </description>
 
     <translet name="/">
-        <dispatch name="template">
+        <dispatch name="templates/default">
             <echo id="page">
                 <attributes>
                     <item name="headline">Welcome to Aspectran Demo</item>

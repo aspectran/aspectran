@@ -54,7 +54,6 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
         String methodName = method.getName();
 
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
-
         if (aarr == null) {
             return methodProxy.invokeSuper(proxy, args);
         }
@@ -74,7 +73,6 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
                 }
 
                 Object result = methodProxy.invokeSuper(proxy, args);
-
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
@@ -82,7 +80,6 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
                         }
                     }
                 }
-
                 return result;
             } finally {
                 if (aarr.getFinallyAdviceRuleList() != null) {

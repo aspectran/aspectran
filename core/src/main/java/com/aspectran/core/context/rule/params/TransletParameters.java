@@ -58,7 +58,7 @@ public class TransletParameters extends AbstractParameters {
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
         redirect = new ParameterDefinition("redirect", RedirectParameters.class);
         forward = new ParameterDefinition("forward", ForwardParameters.class);
-        exception = new ParameterDefinition("exception", ExceptionParameters.class, true, true);
+        exception = new ParameterDefinition("exception", ExceptionParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 description,

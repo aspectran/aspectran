@@ -83,7 +83,7 @@ class BeanNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (text != null) {
-                text = ContentStyleType.apply(text, style);
+                text = ContentStyleType.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 BeanRule beanRule = parser.peekObject();

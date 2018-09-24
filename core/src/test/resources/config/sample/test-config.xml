@@ -67,6 +67,15 @@
                 <item name="input-1">${input-1:12345}</item>
                 <item name="input-2">${input-2:67890}</item>
             </parameters>
+            <attributes>
+                <item name="array1" type="array">
+                    <value>a</value>
+                    <value>b</value>
+                </item>
+                <item name="array2" type="array">
+                    <value>c</value>
+                </item>
+            </attributes>
         </request>
         <transform type="transform/text" contentType="text/plain">
             <template engine="token" style="apon">

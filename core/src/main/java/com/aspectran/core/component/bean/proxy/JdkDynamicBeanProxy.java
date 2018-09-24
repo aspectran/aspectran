@@ -56,7 +56,6 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
         String methodName = method.getName();
 
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
-
         if (aarr == null) {
             return method.invoke(bean, args);
         }
@@ -76,7 +75,6 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
                 }
 
                 Object result = method.invoke(bean, args);
-
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
@@ -84,7 +82,6 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
                         }
                     }
                 }
-
                 return result;
             } finally {
                 if (aarr.getFinallyAdviceRuleList() != null) {

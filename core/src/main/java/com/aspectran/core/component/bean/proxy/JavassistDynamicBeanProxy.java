@@ -55,7 +55,6 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
         String methodName = overridden.getName();
 
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
-
         if (aarr == null) {
             return proceed.invoke(self, args);
         }
@@ -75,7 +74,6 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                 }
 
                 Object result = proceed.invoke(self, args);
-
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
@@ -83,7 +81,6 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                         }
                     }
                 }
-
                 return result;
             } finally {
                 if (aarr.getFinallyAdviceRuleList() != null) {

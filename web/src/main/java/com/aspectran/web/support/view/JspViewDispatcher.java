@@ -30,6 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 
 /**
  * JSP or other web resource integration.
@@ -118,6 +119,10 @@ public class JspViewDispatcher implements ViewDispatcher {
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
             requestDispatcher.forward(request, response);
+
+            if (response.getStatus() == 404) {
+                throw new FileNotFoundException("Failed to find resource '" + dispatchName);
+            }
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch for JSP " +
                     dispatchResponseRule.toString(this, dispatchName), e);

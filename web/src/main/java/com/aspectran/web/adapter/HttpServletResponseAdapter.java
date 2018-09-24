@@ -70,11 +70,12 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     public HttpServletResponse getAdaptee() {
         if (response == null) {
             if (!activity.isIncluded() && isGzipAccepted()) {
-                response = new GZipServletResponseWrapper(super.getAdaptee());
-                ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
-                // indicate to the client that the servlet varies it's
-                // output depending on the "Accept-Encoding" header
-                ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
+                response = new GZipServletResponseWrapper(super.getAdaptee(), () -> {
+                    ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
+                    // indicate to the client that the servlet varies it's
+                    // output depending on the "Accept-Encoding" header
+                    ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
+                });
             } else {
                 response = super.getAdaptee();
             }

@@ -68,7 +68,6 @@ public abstract class AbstractDynamicBeanProxy {
 
         // Check the cache first
         RelevantAspectRuleHolder holder = cache.get(pattern);
-
         if (holder == null) {
             synchronized (cache) {
                 holder = cache.get(pattern);
@@ -82,7 +81,6 @@ public abstract class AbstractDynamicBeanProxy {
                 }
             }
         }
-
         return holder;
     }
 

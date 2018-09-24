@@ -73,7 +73,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.apply(text, style);
+                text = ContentStyleType.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 TransletRule transletRule = parser.peekObject();

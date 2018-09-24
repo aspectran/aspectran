@@ -16,7 +16,7 @@
     <bean class="com.aspectran.demo.customer.CustomerAction"/>
 
     <translet name="/">
-        <dispatch name="template">
+        <dispatch name="templates/default">
             <echo id="page">
                 <attributes>
                     <item name="headline">Building a RESTful Web Service</item>

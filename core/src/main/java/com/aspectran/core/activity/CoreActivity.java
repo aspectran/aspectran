@@ -423,6 +423,7 @@ public class CoreActivity extends BasicActivity {
         }
     }
 
+    @Override
     public Response getDeclaredResponse() {
         return (responseRule != null ? responseRule.getResponse() : null);
     }

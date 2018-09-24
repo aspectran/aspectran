@@ -200,11 +200,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         try {
             ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-
             if (propertyItemRuleMap != null) {
                 ItemEvaluator evaluator = new ItemExpressionParser(activity);
                 Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
-
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
                 }
@@ -401,7 +399,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
 
         Activity activity = context.getDefaultActivity();
-
         for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             instantiateSingleton(beanRule, activity);
         }
@@ -432,7 +429,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
 
         int failedDestroyes = 0;
-
         for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
@@ -444,7 +440,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
-
         if (failedDestroyes > 0) {
             log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
         } else {
