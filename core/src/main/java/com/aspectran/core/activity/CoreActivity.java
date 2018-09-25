@@ -673,7 +673,7 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Determine the request encoding.
+     * Determines the request encoding.
      *
      * @return the request encoding
      */
@@ -686,7 +686,7 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Determine the response encoding.
+     * Determines the response encoding.
      *
      * @return the response encoding
      */

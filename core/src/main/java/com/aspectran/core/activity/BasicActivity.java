@@ -144,10 +144,8 @@ public abstract class BasicActivity extends AbstractActivity {
                 }
 
                 Object result = action.execute(this);
-
                 if (result != null && result != ActionResult.NO_RESULT) {
                     putAdviceResult(aspectAdviceRule, result);
-
                     if (action.getActionType() == ActionType.ECHO) {
                         @SuppressWarnings("unchecked")
                         Map<String, Object> echos = (Map<String, Object>)result;

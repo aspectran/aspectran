@@ -185,7 +185,8 @@ public class BeanRuleRegistry {
                         dissectBeanRule(beanRule2);
                     });
                 } catch (IOException e) {
-                    throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " + scanPattern, e);
+                    throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " +
+                            scanPattern, e);
                 }
             } else {
                 if (!beanRule.isFactoryOffered()) {
@@ -248,11 +249,7 @@ public class BeanRuleRegistry {
         if (beanRule.isImportant()) {
             importantBeanTypeSet.add(beanClass);
         }
-        Set<BeanRule> list = typeBasedBeanRuleMap.get(beanClass);
-        if (list == null) {
-            list = new HashSet<>();
-            typeBasedBeanRuleMap.put(beanClass, list);
-        }
+        Set<BeanRule> list = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
         list.add(beanRule);
     }
 
@@ -269,18 +266,15 @@ public class BeanRuleRegistry {
 
                 if (beanRule.isFactoryOffered()) {
                     Class<?> offeredFactoryBeanClass = resolveOfferedFactoryBeanClass(beanRule);
-                    Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(offeredFactoryBeanClass, beanRule);
-
+                    Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(
+                            offeredFactoryBeanClass, beanRule);
                     if (beanRule.getInitMethodName() != null) {
                         BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
                     }
-
                     if (beanRule.getDestroyMethodName() != null) {
                         BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
                     }
-
                     saveBeanRule(targetBeanClass, beanRule);
-
                     for (Class<?> ifc : targetBeanClass.getInterfaces()) {
                         if (!ignoredDependencyInterfaces.contains(ifc)) {
                             saveBeanRule(ifc, beanRule);

@@ -183,7 +183,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             } else {
                 bean = activity.getBean(factoryBeanId);
             }
-
+            
             bean = invokeFactoryMethod(beanRule, bean, activity);
             if (bean == null) {
                 throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
@@ -220,7 +220,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private Object createBeanInstance(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
-
         if (beanRule.isProxied()) {
             bean = createDynamicBeanProxy(beanRule, args, argTypes);
         } else {
@@ -230,13 +229,11 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 bean = newInstance(beanRule.getBeanClass());
             }
         }
-
         return bean;
     }
 
     private Object createDynamicBeanProxy(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
-
         if (beanProxifierType == BeanProxifierType.JAVASSIST) {
             if (log.isTraceEnabled()) {
                 log.trace("Create a dynamic proxy bean " + beanRule + " using Javassist");
@@ -258,7 +255,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
             bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
         }
-
         return bean;
     }
 
@@ -373,20 +369,17 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private Object invokeMethodOfFactoryBean(BeanRule beanRule, Object bean) {
         FactoryBean<?> factoryBean = (FactoryBean<?>)bean;
         Object exposedBean;
-
         try {
             exposedBean = factoryBean.getObject();
         } catch (Exception e) {
             throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
         }
-
         if (exposedBean == null) {
             throw new FactoryBeanNotInitializedException(
                             "FactoryBean returned null object: " +
                             "probably not fully initialized (maybe due to circular bean reference)",
                             beanRule);
         }
-
         return exposedBean;
     }
 
