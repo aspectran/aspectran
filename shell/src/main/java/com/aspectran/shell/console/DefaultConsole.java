@@ -31,18 +31,16 @@ import java.nio.charset.Charset;
  */
 public class DefaultConsole extends AbstractConsole {
 
+    private boolean reading;
+
     @Override
     public String readCommandLine() {
-        return readLine(getCommandPrompt());
+        String prompt = getCommandPrompt();
+        return readCommandLine(prompt);
     }
 
     @Override
-    public String readLine() {
-        return readLine(null);
-    }
-
-    @Override
-    public String readLine(String prompt) {
+    public String readCommandLine(String prompt) {
         try {
             if (System.console() != null) {
                 return System.console().readLine(prompt);
@@ -55,6 +53,31 @@ public class DefaultConsole extends AbstractConsole {
             }
         } catch (IOException e) {
             throw new IOError(e);
+        }
+    }
+
+    @Override
+    public String readLine() {
+        return readLine(null);
+    }
+
+    @Override
+    public String readLine(String prompt) {
+        try {
+            reading = true;
+            if (System.console() != null) {
+                return System.console().readLine(prompt);
+            } else {
+                if (prompt != null) {
+                    write(prompt);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                return reader.readLine();
+            }
+        } catch (IOException e) {
+            throw new IOError(e);
+        } finally {
+            reading = false;
         }
     }
 
@@ -110,7 +133,8 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public void clearScreen() {
-        // Nothing to do
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     @Override
@@ -148,6 +172,37 @@ public class DefaultConsole extends AbstractConsole {
 
     private String stripStyle() {
         return null;
+    }
+
+    @Override
+    public boolean isReading() {
+        return reading;
+    }
+
+    @Override
+    public boolean confirmRestart() {
+        return confirmRestart(null);
+    }
+
+    @Override
+    public boolean confirmRestart(String message) {
+        if (isReading()) {
+            writeLine("Illegal State");
+            return false;
+        }
+        if (message != null) {
+            writeLine(message);
+        }
+        String confirm = "Do you want to restart the shell [Y/n]?";
+        String yn = readLine(confirm);
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    @Override
+    public boolean confirmQuit() {
+        String confirm = "Are you sure you want to quit [Y/n]?";
+        String yn = readLine(confirm);
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
 }

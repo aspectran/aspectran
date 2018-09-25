@@ -36,7 +36,10 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        throw new ConsoleTerminatedException();
+        if (getService().getConsole().confirmQuit()) {
+            throw new ConsoleTerminatedException();
+        }
+        return null;
     }
 
     @Override

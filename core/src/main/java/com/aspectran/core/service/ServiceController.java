@@ -51,6 +51,14 @@ public interface ServiceController {
     void restart() throws Exception;
 
     /**
+     * Restarts the service.
+     *
+     * @param message the message to be delivered to the system before restart
+     * @throws Exception if the service control fails
+     */
+    void restart(String message) throws Exception;
+
+    /**
      * Pauses the service.
      *
      * @throws Exception if the service control fails
@@ -81,8 +89,15 @@ public interface ServiceController {
     /**
      * Returns whether this service is currently started and active.
      *
-     * @return whether this service is still active
+     * @return true, if the service is active; false otherwise
      */
     boolean isActive();
+
+    /**
+     * Returns whether this service has any work in progress.
+     *
+     * @return true, if this service is busy; false otherwise
+     */
+    boolean isBusy();
 
 }

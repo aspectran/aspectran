@@ -107,6 +107,11 @@ public abstract class AbstractServiceController implements ServiceController {
     }
 
     @Override
+    public void restart(String message) throws Exception {
+        restart();
+    }
+
+    @Override
     public void pause() throws Exception {
         synchronized (lock) {
             if (!active) {
@@ -196,6 +201,11 @@ public abstract class AbstractServiceController implements ServiceController {
         synchronized (lock) {
             return active;
         }
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
 }

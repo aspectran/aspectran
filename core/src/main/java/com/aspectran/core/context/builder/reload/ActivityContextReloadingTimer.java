@@ -21,7 +21,6 @@ import com.aspectran.core.util.logging.LogFactory;
 
 import java.net.URL;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Provides timer control to reload the ActivityContext.
@@ -32,20 +31,19 @@ public class ActivityContextReloadingTimer {
 
     private final ServiceController serviceController;
 
-    private final URL[] resources;
+    private URL[] resources;
 
     private Timer timer;
 
-    private TimerTask timerTask;
+    private ActivityContextReloadingTimerTask timerTask;
 
-    public ActivityContextReloadingTimer(ServiceController serviceController, URL[] resources) {
+    public ActivityContextReloadingTimer(ServiceController serviceController) {
         this.serviceController = serviceController;
-        this.resources = resources;
-
-        init();
     }
 
-    private void init() {
+    public void setResources(URL[] resources) {
+        this.resources = resources;
+
         if (log.isDebugEnabled()) {
             log.debug("ActivityContextReloadingTimer is initialized");
         }
@@ -58,9 +56,10 @@ public class ActivityContextReloadingTimer {
             log.debug("Starting ActivityContextReloadingTimer...");
         }
 
-        timerTask = new ActivityContextReloadingTimerTask(serviceController, resources);
+        timerTask = new ActivityContextReloadingTimerTask(serviceController);
+        timerTask.setResources(resources);
 
-        timer = new Timer();
+        timer = new Timer("ActivityContextReloadingTimer");
         timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
     }
 

@@ -36,6 +36,8 @@ public interface Console {
 
     String readCommandLine();
 
+    String readCommandLine(String prompt);
+
     String readLine();
 
     String readLine(String prompt);
@@ -73,6 +75,14 @@ public interface Console {
     void setStyle(String... styles);
 
     void offStyle();
+
+    boolean isReading();
+
+    boolean confirmRestart();
+
+    boolean confirmRestart(String message);
+
+    boolean confirmQuit();
 
 }
 

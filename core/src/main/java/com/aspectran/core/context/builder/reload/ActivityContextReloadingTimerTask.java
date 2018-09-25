@@ -35,58 +35,74 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private final ServiceController serviceController;
 
-    private final URL[] resources;
+    private URL[] resources;
 
     private Map<String, Long> modifiedTimeMap = new HashMap<>();
 
     private boolean modified = false;
 
-    private int cycle;
-
-    public ActivityContextReloadingTimerTask(ServiceController serviceController, URL[] resources) {
+    public ActivityContextReloadingTimerTask(ServiceController serviceController) {
         this.serviceController = serviceController;
+    }
+
+    public void setResources(URL[] resources) {
         this.resources = resources;
+        if (resources != null) {
+            for (URL url : resources) {
+                try {
+                    File file = new File(url.toURI());
+                    String filePath = file.getAbsolutePath();
+                    modifiedTimeMap.put(filePath, file.lastModified());
+                } catch (URISyntaxException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
     }
 
     @Override
     public void run() {
-        if (resources == null || modified) {
+        if (resources == null) {
             return;
         }
-
+        if (modified) {
+            if (!serviceController.isBusy()) {
+                restartService();
+            } else {
+                return;
+            }
+        }
         for (URL url : resources) {
             try {
                 File file = new File(url.toURI());
                 String filePath = file.getAbsolutePath();
                 long modifiedTime = file.lastModified();
-
-                if (cycle == 0) {
+                Long modifiedTime2 = modifiedTimeMap.get(filePath);
+                if (modifiedTime2 != null && modifiedTime2 != modifiedTime) {
+                    modified = true;
                     modifiedTimeMap.put(filePath, modifiedTime);
-                } else {
-                    Long modifiedTime2 = modifiedTimeMap.get(filePath);
-                    if (modifiedTime2 != null) {
-                        if (modifiedTime != modifiedTime2) {
-                            modified = true;
-                            if (debugEnabled) {
-                                log.debug("Detected modified file: " + url);
-                            }
-                            break;
-                        }
+                    if (debugEnabled) {
+                        log.debug("Detected modified file: " + url);
                     }
                 }
             } catch (URISyntaxException e) {
                 log.error(e.getMessage(), e);
             }
-
-            cycle++;
         }
-
         if (modified) {
-            try {
-                serviceController.restart();
-            } catch (Exception e) {
-                throw new AspectranRuntimeException(e);
+            if (!serviceController.isBusy()) {
+                restartService();
             }
+        }
+    }
+
+    private void restartService() {
+        try {
+            String message = "Some resource file changes have been detected.";
+            serviceController.restart(message);
+        } catch (Exception e) {
+            throw new AspectranRuntimeException(e);
+        } finally {
             modified = false;
         }
     }

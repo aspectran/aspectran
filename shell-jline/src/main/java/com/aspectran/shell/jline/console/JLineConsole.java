@@ -22,10 +22,12 @@ import org.jline.builtins.Options;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
+import org.jline.utils.InfoCmp;
 
 import java.io.IOError;
 import java.io.IOException;
@@ -55,6 +57,8 @@ public class JLineConsole extends AbstractConsole {
     private AttributedStyle style;
 
     public JLineConsole() throws IOException {
+        new DefaultParser();
+
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
         this.reader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
         this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
@@ -62,8 +66,13 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readCommandLine() {
+        String prompt = toAnsi(getCommandPrompt());
+        return readCommandLine(prompt);
+    }
+
+    @Override
+    public String readCommandLine(String prompt) {
         try {
-            String prompt = toAnsi(getCommandPrompt());
             return commandReader.readLine(prompt);
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
@@ -72,12 +81,6 @@ public class JLineConsole extends AbstractConsole {
                 return null;
             }
         }
-    }
-
-    private boolean confirmQuit() {
-        String confirm = toAnsi("{{yellow}}Are you sure you want to quit [{{bold}}Y{{bold:off}}/{{bold}}n{{bold:off}}]?{{off}}");
-        String yn = readLine(confirm);
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
@@ -160,8 +163,8 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public void clearScreen() {
-        writeRawText("\033[2J");
-        flush();
+        terminal.puts(InfoCmp.Capability.clear_screen);
+        terminal.flush();
     }
 
     @Override
@@ -206,6 +209,38 @@ public class JLineConsole extends AbstractConsole {
 
     private String toAnsi(String string) {
         return JLineAnsiStyler.parse(string, terminal);
+    }
+
+    @Override
+    public boolean isReading() {
+        return reader.isReading();
+    }
+
+    @Override
+    public boolean confirmRestart() {
+        return confirmRestart(null);
+    }
+
+    @Override
+    public boolean confirmRestart(String message) {
+        if (reader.isReading()) {
+            reader.printAbove("Illegal State");
+            return false;
+        }
+        if (message != null) {
+            String message2 = toAnsi("{{YELLOW}}" + message + "{{off}}");
+            reader.printAbove(message2);
+        }
+        String confirm = toAnsi("{{YELLOW}}Do you want to restart the shell [{{bold}}Y{{bold:off}}/{{bold}}n{{bold:off}}]?{{off}}");
+        String yn = readLine(confirm);
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    @Override
+    public boolean confirmQuit() {
+        String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [{{bold}}Y{{bold:off}}/{{bold}}n{{bold:off}}]?{{off}}");
+        String yn = readLine(confirm);
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
 }
