@@ -113,8 +113,6 @@ public interface Parameter {
 
     /**
      * Change parameter type to array type.
-     *
-     * @return
      */
     void arraylize();
 
