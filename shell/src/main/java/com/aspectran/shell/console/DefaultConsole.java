@@ -193,7 +193,7 @@ public class DefaultConsole extends AbstractConsole {
         if (message != null) {
             writeLine(message);
         }
-        String confirm = "Do you want to restart the shell [Y/n]?";
+        String confirm = "Would you like to restart this shell [Y/n]?";
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
