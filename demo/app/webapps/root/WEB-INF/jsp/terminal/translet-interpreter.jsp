@@ -30,8 +30,12 @@
                     dataType: 'json',
                     success: function(data) {
                         var prompts = [];
+                        var translet = data.translet;
                         var request = data.request;
                         var response = data.response;
+                        if (!translet) {
+                            return;
+                        }
                         if (request) {
                             var prev = null;
                             var params = request.parameters;

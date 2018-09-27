@@ -33,6 +33,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.json.JsonWriter;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -46,6 +48,8 @@ import java.util.Set;
 
 @Configuration(namespace = "/terminal")
 public class TransletInterpreter implements ActivityContextAware {
+
+    private final Log log = LogFactory.getLog(TransletInterpreter.class);
 
     private static final String COMMAND_PREFIX = "/terminal/";
 
@@ -68,7 +72,20 @@ public class TransletInterpreter implements ActivityContextAware {
 
         TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
         if (transletRule == null) {
-            throw new TransletNotFoundException(transletName);
+            if (log.isDebugEnabled()) {
+                log.debug("Translet not found: " + transletFullName);
+            }
+
+            JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
+            jsonWriter.openCurlyBracket();
+            jsonWriter.writeName("translet");
+            jsonWriter.writeNull();
+            jsonWriter.writeName("request");
+            jsonWriter.writeNull();
+            jsonWriter.writeName("response");
+            jsonWriter.writeNull();
+            jsonWriter.closeCurlyBracket();
+            return;
         }
 
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
