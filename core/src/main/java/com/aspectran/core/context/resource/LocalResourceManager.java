@@ -35,7 +35,7 @@ public class LocalResourceManager extends ResourceManager {
 
     private final String resourceLocation;
 
-    private final int resourceLocationSubLen;
+    private final int resourceNameStart;
 
     private final AspectranClassLoader owner;
 
@@ -44,7 +44,7 @@ public class LocalResourceManager extends ResourceManager {
 
         this.owner = owner;
         this.resourceLocation = null;
-        this.resourceLocationSubLen = 0;
+        this.resourceNameStart = 0;
     }
 
     public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
@@ -54,16 +54,17 @@ public class LocalResourceManager extends ResourceManager {
 
         if (resourceLocation != null) {
             File file = new File(resourceLocation);
-            this.resourceLocation = file.getAbsolutePath();
-            this.resourceLocationSubLen = this.resourceLocation.length() + 1;
-            if (!file.isDirectory()
-                    || (file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
+            if (!file.isDirectory() && !resourceLocation.toLowerCase().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
                 throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
             }
+
+            this.resourceLocation = file.getAbsolutePath();
+            this.resourceNameStart = this.resourceLocation.length() + 1;
+
             findResource(file);
         } else {
             this.resourceLocation = null;
-            this.resourceLocationSubLen = 0;
+            this.resourceNameStart = 0;
         }
     }
 
@@ -80,7 +81,7 @@ public class LocalResourceManager extends ResourceManager {
         try {
             if (file.isDirectory()) {
                 List<File> jarFileList = new ArrayList<>();
-                findResource(file, jarFileList);
+                findResourceInDir(file, jarFileList);
                 if (!jarFileList.isEmpty()) {
                     for (File jarFile : jarFileList) {
                         owner.wishBrother(jarFile.getAbsolutePath());
@@ -94,19 +95,19 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
-    private void findResource(File target, List<File> jarFileList) {
-        target.listFiles(file -> {
+    private void findResourceInDir(File dir, List<File> jarFileList) {
+        dir.listFiles(file -> {
             String filePath = file.getAbsolutePath();
-            String resourceName = filePath.substring(resourceLocationSubLen);
+            String resourceName = filePath.substring(resourceNameStart);
             try {
                 resourceEntries.putResource(resourceName, file);
             } catch (InvalidResourceException e) {
                 throw new AspectranRuntimeException(e);
             }
             if (file.isDirectory()) {
-                findResource(file, jarFileList);
+                findResourceInDir(file, jarFileList);
             } else if (file.isFile()) {
-                if (filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+                if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
                     jarFileList.add(file);
                 }
             }
