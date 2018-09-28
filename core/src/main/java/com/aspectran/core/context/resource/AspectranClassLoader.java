@@ -170,7 +170,7 @@ public class AspectranClassLoader extends ClassLoader {
         return child;
     }
 
-    public AspectranClassLoader wishBrother(String resourceLocation) throws InvalidResourceException {
+    public AspectranClassLoader joinBrother(String resourceLocation) throws InvalidResourceException {
         AspectranClassLoader parent = (AspectranClassLoader)getParent();
         return parent.createChild(resourceLocation);
     }
@@ -309,7 +309,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     private void remove(AspectranClassLoader child) {
         if (log.isDebugEnabled()) {
-            log.debug("Remove child AspectranClassLoader " + child);
+            log.debug("Remove a child AspectranClassLoader " + child);
         }
 
         ResourceManager rm = child.getResourceManager();
@@ -340,10 +340,10 @@ public class AspectranClassLoader extends ClassLoader {
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        ClassLoader parentClassLoader = root.getParent();
         Enumeration<URL> parentResources = null;
-        if (parentClassLoader != null) {
-            parentResources = parentClassLoader.getResources(name);
+        ClassLoader parent = root.getParent();
+        if (parent != null) {
+            parentResources = parent.getResources(name);
         }
         return ResourceManager.getResources(getAspectranClassLoaders(root), name, parentResources);
     }
@@ -387,8 +387,9 @@ public class AspectranClassLoader extends ClassLoader {
         }
         if (url == null) {
             return findResource(name);
+        } else {
+            return url;
         }
-        return url;
     }
 
     private byte[] loadClassData(String className, AspectranClassLoader owner) throws InvalidResourceException {
@@ -594,13 +595,11 @@ public class AspectranClassLoader extends ClassLoader {
                     resourceLocation = resourceLocations[i];
                     File f1 = new File(resourceLocations[i]);
                     String l1 = f1.getCanonicalPath();
-
                     for (int j = i + 1; j < resourceLocations.length; j++) {
                         if (resourceLocations[j] != null) {
                             resourceLocation = resourceLocations[j];
                             File f2 = new File(resourceLocations[j]);
                             String l2 = f2.getCanonicalPath();
-
                             if (l1.equals(l2)) {
                                 resourceLocations[j] = null;
                                 cleared++;

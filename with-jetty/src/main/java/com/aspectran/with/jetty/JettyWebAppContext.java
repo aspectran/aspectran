@@ -56,7 +56,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     public void setTempDirectory(String tempDirectory) {
         File tempDir = null;
-
         try {
             tempDir = new File(tempDirectory);
             if (!tempDir.exists()) {

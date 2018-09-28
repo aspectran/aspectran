@@ -84,7 +84,7 @@ public class LocalResourceManager extends ResourceManager {
                 findResourceInDir(file, jarFileList);
                 if (!jarFileList.isEmpty()) {
                     for (File jarFile : jarFileList) {
-                        owner.wishBrother(jarFile.getAbsolutePath());
+                        owner.joinBrother(jarFile.getAbsolutePath());
                     }
                 }
             } else {
