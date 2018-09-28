@@ -15,6 +15,7 @@
  */
 package com.aspectran.demo;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.jline.console.JLineConsole;
@@ -38,7 +39,10 @@ public class AspectranDemoTest {
             File current = ResourceUtils.getResourceAsFile("");
             File root = new File(current, "../../app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-            System.setProperty("user.dir", root.getAbsolutePath());
+
+            String baseDir = root.getCanonicalPath();
+            System.setProperty("user.dir", root.getCanonicalPath());
+            System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, baseDir);
 
             ShellService service = ShellService.create(aspectranConfigFile, new JLineConsole());
             service.start();

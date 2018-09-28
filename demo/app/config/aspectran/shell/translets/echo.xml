@@ -114,4 +114,18 @@
         </transform>
     </translet>
 
+    <bean id="sampleResources" class="com.aspectran.demo.examples.SampleResources"/>
+
+    <translet name="getSampleResourceFile">
+        <transform type="transform/text">
+            <action id="sampleResourceFile" bean="sampleResources" method="getSampleResourceFile"/>
+        </transform>
+    </translet>
+
+    <translet name="printSampleResource">
+        <transform type="transform/text">
+            <template resource="sample_resource.txt"/>
+        </transform>
+    </translet>
+
 </aspectran>
