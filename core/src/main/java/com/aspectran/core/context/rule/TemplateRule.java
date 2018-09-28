@@ -224,7 +224,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     public String getTemplateSource(Environment environment) throws IOException {
         if (this.file != null || this.resource != null || this.url != null) {
-            if (this.noCache) {
+            if (isNoCache()) {
                 return loadTemplateSource(environment);
             } else {
                 loadCachedTemplateSource(environment);
@@ -256,7 +256,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
             throw new UnsupportedOperationException();
         }
         if (this.file != null || this.resource != null || this.url != null) {
-            if (this.noCache) {
+            if (isNoCache()) {
                 String source = loadTemplateSource(environment);
                 return parseContentTokens(source);
             } else {
