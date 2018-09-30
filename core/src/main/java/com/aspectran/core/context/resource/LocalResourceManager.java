@@ -17,6 +17,9 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +35,8 @@ import java.util.jar.JarFile;
  * <p>Created: 2014. 12. 18 PM 5:51:13</p>
  */
 public class LocalResourceManager extends ResourceManager {
+
+    private static final Log log = LogFactory.getLog(LocalResourceManager.class);
 
     private final String resourceLocation;
 
@@ -52,8 +57,14 @@ public class LocalResourceManager extends ResourceManager {
 
         this.owner = owner;
 
-        if (resourceLocation != null) {
+        if (resourceLocation != null && !resourceLocation.isEmpty()) {
             File file = new File(resourceLocation);
+            if (!file.exists() || !file.canRead()) {
+                log.warn("Resource [" + resourceLocation + "] does not exist or you do not have access");
+                this.resourceLocation = null;
+                this.resourceNameStart = 0;
+                return;
+            }
             if (!file.isDirectory() && !resourceLocation.toLowerCase().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
                 throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
             }
@@ -132,6 +143,15 @@ public class LocalResourceManager extends ResourceManager {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.appendForce("resourceLocation", resourceLocation);
+        tsb.append("resourceEntries", resourceEntries);
+        tsb.append("owner", owner);
+        return tsb.toString();
     }
 
 }
