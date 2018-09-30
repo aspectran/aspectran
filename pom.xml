@@ -395,6 +395,7 @@
                     <configuration>
                         <releaseProfiles>release</releaseProfiles>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
                         <goal>deploy</goal>
                     </configuration>
                 </plugin>
