@@ -10,7 +10,7 @@
     border-top: 0;
   }
 </style>
-<div class="panel white b20">
+<div class="panel white">
   <div class="undercon" style="text-align:center;font-size:100px;font-weight:bold;color:#4B4B4B;padding:50px 0;">
     <svg xmlns="http://www.w3.org/2000/svg"
          version="1.1"
