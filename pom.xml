@@ -44,7 +44,7 @@
 
     <scm>
         <url>https://github.com/aspectran/aspectran</url>
-        <connection>scm:git:git://github.com/aspectran/aspectran.git</connection>
+        <connection>scm:git:ssh://git@github.com/aspectran/aspectran.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
