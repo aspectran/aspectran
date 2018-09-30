@@ -17,7 +17,6 @@ package com.aspectran.demo.examples;
 
 import com.aspectran.core.activity.Translet;
 
-import java.io.File;
 import java.net.URL;
 
 public class SampleResources {

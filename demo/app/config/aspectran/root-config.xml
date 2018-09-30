@@ -9,8 +9,9 @@
         |   {{CYAN}}hello2{{fg:off}}     Prints "Hello, World!" in your console using ANSI escape sequences
         |   {{CYAN}}echo{{fg:off}}       It accepts parameters and print as is
         |   {{CYAN}}echo2{{fg:off}}      It accepts parameters and attributes, and print them as is
-        |   {{CYAN}}login{{fg:off}}      It accepts parameters required for login and print them
-        |   {{CYAN}}chpw{{fg:off}}       It accepts parameters for changing the password and print them
+        |   {{CYAN}}login{{fg:off}}      It accepts parameters required for login and prints them
+        |   {{CYAN}}chpw{{fg:off}}       It accepts parameters required for changing password and prints them
+        |   {{CYAN}}speak{{fg:off}}      Converts any written text into spoken words
         |
         |{{bold}}To control Jetty, try one of the following commands:{{bold:off}}
         |   {{MAGENTA}}jetty{{fg:off}}        Displays commands required to control Jetty server
