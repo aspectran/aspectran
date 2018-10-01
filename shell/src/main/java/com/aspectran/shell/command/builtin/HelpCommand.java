@@ -54,7 +54,7 @@ public class HelpCommand extends AbstractCommand {
             getConsole().writeLine(command.getDescriptor().getDescription());
             command.printUsage();
         } else {
-            getConsole().setStyle("WHITE", "bold");
+            getConsole().setStyle("bold");
             getConsole().writeLine("Built-in commands used in this application:");
             getConsole().offStyle();
             printHelp(filteredCommands);

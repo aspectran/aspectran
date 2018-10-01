@@ -135,7 +135,7 @@ public class ShellActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            console.setStyle("CYAN");
+            console.setStyle("cyan");
             console.writeLine("Required parameters:");
             console.offStyle();
 
@@ -191,7 +191,7 @@ public class ShellActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            console.setStyle("CYAN");
+            console.setStyle("cyan");
             console.writeLine("Required attributes:");
             console.offStyle();
 
@@ -240,7 +240,7 @@ public class ShellActivity extends CoreActivity {
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
-        console.setStyle("CYAN");
+        console.setStyle("cyan");
         console.writeLine("Enter a value for each token:");
         console.offStyle();
 
