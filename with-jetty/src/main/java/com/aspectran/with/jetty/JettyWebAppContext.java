@@ -27,6 +27,7 @@ import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
+import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
@@ -77,7 +78,9 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             throw new IllegalStateException();
         }
 
-        setClassLoader(context.getEnvironment().getClassLoader());
+        ClassLoader parent = context.getEnvironment().getClassLoader();
+        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);
+        setClassLoader(webAppClassLoader);
 
         /*
          * Configure the application to support the compilation of JSP files.
