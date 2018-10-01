@@ -135,7 +135,7 @@ public class ShellActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
 
-            console.setStyle("WHITE", "bold");
+            console.setStyle("CYAN");
             console.writeLine("Required parameters:");
             console.offStyle();
 
@@ -151,7 +151,10 @@ public class ShellActivity extends CoreActivity {
                 console.setStyle("YELLOW");
                 console.write(mandatoryMarker);
                 console.offStyle();
-                console.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
+                console.setStyle("bold");
+                console.write("%s: ", itemRule.getName());
+                console.offStyle();
+                console.writeLine(TokenParser.toString(tokens));
             }
 
             enterRequiredParameters(parameterItemRuleList);
@@ -188,7 +191,7 @@ public class ShellActivity extends CoreActivity {
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
 
-            console.setStyle("WHITE", "bold");
+            console.setStyle("CYAN");
             console.writeLine("Required attributes:");
             console.offStyle();
 
@@ -204,7 +207,10 @@ public class ShellActivity extends CoreActivity {
                 console.setStyle("YELLOW");
                 console.write(mandatoryMarker);
                 console.offStyle();
-                console.writeLine("%s: %s", itemRule.getName(), TokenParser.toString(tokens));
+                console.setStyle("bold");
+                console.write("%s: ", itemRule.getName());
+                console.offStyle();
+                console.writeLine(TokenParser.toString(tokens));
             }
 
             enterRequiredAttributes(attributeItemRuleList);
@@ -234,7 +240,7 @@ public class ShellActivity extends CoreActivity {
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
-        console.setStyle("WHITE", "bold");
+        console.setStyle("CYAN");
         console.writeLine("Enter a value for each token:");
         console.offStyle();
 
