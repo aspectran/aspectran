@@ -193,7 +193,7 @@
             <dependency>
                 <groupId>io.pebbletemplates</groupId>
                 <artifactId>pebble</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
