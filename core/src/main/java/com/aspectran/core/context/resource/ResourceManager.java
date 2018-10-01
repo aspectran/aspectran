@@ -18,6 +18,7 @@ package com.aspectran.core.context.resource;
 import com.aspectran.core.util.StringUtils;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
@@ -92,6 +93,10 @@ public class ResourceManager {
 
     public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name,
                                                 final Enumeration<URL> inherited) {
+        if (owners == null || name == null) {
+            return Collections.emptyEnumeration();
+        }
+
         if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
@@ -105,16 +110,17 @@ public class ResourceManager {
 
             private boolean hasNext() {
                 do {
-                    if (!owners.hasNext()) {
+                    if (owners.hasNext()) {
+                        next = owners.next().getResourceManager().getResource(filterName);
+                    } else {
                         return false;
                     }
-                    next = owners.next().getResourceManager().getResource(filterName);
                 } while (next == null);
                 return true;
             }
 
             @Override
-            public synchronized boolean hasMoreElements() {
+            public boolean hasMoreElements() {
                 if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return true;
@@ -126,7 +132,7 @@ public class ResourceManager {
             }
 
             @Override
-            public synchronized URL nextElement() {
+            public URL nextElement() {
                 if (!noMore) {
                     if (inherited != null && inherited.hasMoreElements()) {
                         return inherited.nextElement();

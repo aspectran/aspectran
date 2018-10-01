@@ -32,9 +32,11 @@ import java.security.AccessController;
 import java.security.Policy;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -478,22 +480,6 @@ public class AspectranClassLoader extends ClassLoader {
         }
     }
 
-    @Override
-    public URL getResource(String name) {
-        URL url = super.getResource(name);
-        if (url == null) {
-            Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
-            if (res.hasMoreElements()) {
-                url = res.nextElement();
-            }
-        }
-        if (url == null) {
-            return findResource(name);
-        } else {
-            return url;
-        }
-    }
-
     private byte[] loadClassData(String className) throws InvalidResourceException {
         if (isExcluded(className)) {
             return null;
@@ -525,6 +511,36 @@ public class AspectranClassLoader extends ClassLoader {
         } catch (IOException e) {
             throw new InvalidResourceException("Unable to read class file: " + url, e);
         }
+    }
+
+    @Override
+    public URL getResource(String name) {
+        // Search local repositories
+        URL url = findResource(name);
+        if (url == null) {
+            url = getParent().getResource(name);
+        }
+        return url;
+    }
+
+    @Override
+    public URL findResource(String name) {
+        URL url = null;
+        Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
+        if (res.hasMoreElements()) {
+            url = res.nextElement();
+        }
+        return url;
+    }
+
+    @Override
+    public Enumeration<URL> findResources(String name) {
+        LinkedHashSet<URL> result = new LinkedHashSet<>();
+        Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
+        if (res.hasMoreElements()) {
+            result.add(res.nextElement());
+        }
+        return Collections.enumeration(result);
     }
 
     public Iterator<AspectranClassLoader> getAllMembers() {
