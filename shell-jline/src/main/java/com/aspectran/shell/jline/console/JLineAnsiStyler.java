@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.console.AnsiStyleHandler;
@@ -23,8 +22,6 @@ import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.Colors;
-
-import java.util.Arrays;
 
 /**
  * Utilities to handle ANSI escape sequences with JLine.
@@ -118,7 +115,9 @@ public class JLineAnsiStyler {
                     as = as.crossedOutOff();
                     break;
                 case "black":
+                case "BLACK":
                 case "fg:black":
+                case "fg:BLACK":
                     as = as.foreground(0);
                     break;
                 case "red":
@@ -178,13 +177,16 @@ public class JLineAnsiStyler {
                     as = as.foreground(14);
                     break;
                 case "WHITE":
+                case "white":
                 case "fg:WHITE":
+                case "fg:white":
                     as = as.foreground(15);
                     break;
                 case "fg:off":
                     as = as.foregroundOff();
                     break;
                 case "bg:black":
+                case "bg:BLACK":
                     as = as.background(0);
                     break;
                 case "bg:red":
@@ -230,6 +232,7 @@ public class JLineAnsiStyler {
                     as = as.background(14);
                     break;
                 case "bg:WHITE":
+                case "bg:white":
                     as = as.background(15);
                     break;
                 case "bg:off":
