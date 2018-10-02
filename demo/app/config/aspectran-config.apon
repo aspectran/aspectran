@@ -41,7 +41,7 @@ daemon: {
     }
 }
 shell: {
-    prompt: "{{BLUE}}aspectran-demo{{YELLOW}}>{{off}} "
+    prompt: "{{GREEN}}aspectran-demo>{{off}} "
     commands: [
         com.aspectran.shell.command.builtin.HelpCommand
         com.aspectran.shell.command.builtin.VerboseCommand
@@ -55,21 +55,20 @@ shell: {
     ]
     greetings: (
         |
-        |     ___                         __                      ____  __         ____
-        |    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
-        |   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
-        |  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
-        | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
-        |=========== /_/ ==========================================================
+        |{{154}}     ___                         __                      ____  __         ____
+        |{{155}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
+        |{{156}}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
+        |{{157}}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
+        |{{158}} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
+        |{{159}}=========== /_/ ==========================================================
+        |{{off}}
+        |{{OrangeRed1}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
-        |
-        |{{bold}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{off}}
-        |
-        |To run a command, type '{{green}}command_name [options] [args]{{off}}'.
-        |To run a translet, type '{{green}}translet translet_name{{off}}' or '{{green}}translet_name{{off}}'.
-        |To get help on a specific command, type '{{green}}command_name --help{{off}}'.
-        |If you want a list of all supported built-in commands, type '{{green}}help{{off}}'.
-        |If you want a list of all available translets, type '{{green}}translet -l{{off}}'.
+        |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
+        |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name --help{{off}}'.
+        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
+        |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.
     )
     verbose: true
     exposals: {

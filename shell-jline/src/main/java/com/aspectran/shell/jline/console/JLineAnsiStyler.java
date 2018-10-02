@@ -22,6 +22,7 @@ import com.aspectran.shell.console.AnsiStyleHandler;
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.jline.utils.Colors;
 
 import java.util.Arrays;
 
@@ -144,12 +145,12 @@ public class JLineAnsiStyler {
                 case "fg:cyan":
                     as = as.foreground(6);
                     break;
-                case "white":
-                case "fg:white":
+                case "GRAY":
+                case "fg:GRAY":
                     as = as.foreground(7);
                     break;
-                case "BLACK":
-                case "fg:BLACK":
+                case "gray":
+                case "fg:gray":
                     as = as.foreground(8);
                     break;
                 case "RED":
@@ -204,10 +205,10 @@ public class JLineAnsiStyler {
                 case "bg:cyan":
                     as = as.background(6);
                     break;
-                case "bg:white":
+                case "bg:GRAY":
                     as = as.background(7);
                     break;
-                case "bg:BLACK":
+                case "bg:gray":
                     as = as.background(8);
                     break;
                 case "bg:RED":
@@ -235,49 +236,41 @@ public class JLineAnsiStyler {
                     as = as.backgroundOff();
                     break;
                 default:
-                    // rgb:123:123:123
-                    if (style.startsWith("rgb:")) {
-                        String[] arr = StringUtils.split(style.substring(4), ':');
-                        int col = rgbColor(arr);
-                        if (col > -1) {
-                            as = as.foreground(col);
+                    int color = -1;
+                    if (style.startsWith("bg:")) {
+                        try {
+                            color = Integer.parseInt(style.substring(3));
+                        } catch (NumberFormatException ignored) {
+                            try {
+                                color = Colors.rgbColor(style.toLowerCase());
+                            } catch (Throwable e) {
+                                log.warn("Parsing RGB color failed: " + style, e);
+                            }
                         }
+                        as = as.background(color);
+                    } else {
+                        try {
+                            if (style.startsWith("fb:")) {
+                                color = Integer.parseInt(style.substring(3));
+                            } else {
+                                color = Integer.parseInt(style);
+                            }
+                        } catch (NumberFormatException ignored) {
+                            try {
+                                color = Colors.rgbColor(style.toLowerCase());
+                            } catch (Throwable e) {
+                                log.warn("Parsing RGB color failed: " + style, e);
+                            }
+                        }
+                        as = as.foreground(color);
                     }
-                    // fg:rgb:123:123:123
-                    if (style.startsWith("fg:rgb:")) {
-                        String[] arr = StringUtils.split(style.substring(7), ':');
-                        int col = rgbColor(arr);
-                        if (col > -1) {
-                            as = as.foreground(col);
-                        }
-                    }
-                    // bg:rgb:123:123:123
-                    if (style.startsWith("bg:rgb:")) {
-                        String[] arr = StringUtils.split(style.substring(7), ':');
-                        int col = rgbColor(arr);
-                        if (col > -1) {
-                            as = as.background(col);
-                        }
+                    if (color == -1) {
+                        log.warn("Unknown color code \"" + style + "\"");
                     }
                     break;
             }
         }
         return as;
-    }
-
-    private static int rgbColor(String[] rgb) {
-        if (rgb.length == 3) {
-            try {
-                int r = Integer.parseInt(rgb[0]);
-                int b = Integer.parseInt(rgb[1]);
-                int g = Integer.parseInt(rgb[2]);
-                // convert to 256 colors
-                return (16 + (r >> 3) * 36 + (g >> 3) * 6 + (b >> 3));
-            } catch (NumberFormatException e) {
-                log.warn("Parsing RGB color failed: " + Arrays.toString(rgb), e);
-            }
-        }
-        return -1;
     }
 
 }

@@ -19,7 +19,7 @@
         |   {{MAGENTA}}jetty stop{{fg:off}}   Stops the currently running Jetty server
         |
         |{{bold}}Once a Jetty server is running, point your web browser to:{{bold:off}}
-        |   {{yellow}}http://localhost:8088/{{fg:off}}
+        |   {{81}}http://localhost:8088/{{fg:off}}
         |
     </description>
 
