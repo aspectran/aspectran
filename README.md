@@ -92,8 +92,9 @@ Check out and build:
     
 ## Links
 
-* [Web Site](http://www.aspectran.com/)
-* [Downloads](http://www.aspectran.com/getting-started/downloads/)
+* [Official Website](http://www.aspectran.com/)
+* [Aspectran Demo Site](http://demo.aspectran.com/)
+* [Skylark (Online Text to Speech Web APP)](http://skylark.aspectran.com/)
 * [API Reference](http://javadoc.io/doc/com.aspectran/aspectran-all)
 
 ## License
