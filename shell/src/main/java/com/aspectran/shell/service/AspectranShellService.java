@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -57,15 +56,18 @@ class AspectranShellService extends AbstractShellService {
     }
 
     @Override
-    public void execute(String command) {
-        CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(command);
+    public void execute(String commandLine) {
+        CommandLineParser commandLineParser = CommandLineParser.parse(commandLine, true);
+        if (!commandLineParser.hasParameters()) {
+            commandLineParser = CommandLineParser.parse(commandLine, false);
+        }
         execute(commandLineParser);
     }
 
     @Override
     public void execute(CommandLineParser commandLineParser) {
-        if (!isExposable(commandLineParser.getCommand())) {
-            getConsole().writeLine("Unexposable translet: " + commandLineParser.getCommand());
+        if (!isExposable(commandLineParser.getCommandName())) {
+            getConsole().writeLine("Unexposable translet: " + commandLineParser.getCommandName());
             return;
         }
 
@@ -99,14 +101,17 @@ class AspectranShellService extends AbstractShellService {
             }
         }
 
-        Activity activity = null;
+        ShellActivity activity = null;
         try {
-            activity = new ShellActivity(this, redirectionWriters);
-            activity.prepare(commandLineParser.getCommand(), commandLineParser.getRequestMethod());
+            activity = new ShellActivity(this);
+            activity.setProcedural(!commandLineParser.hasParameters());
+            activity.setParameterMap(commandLineParser.extractParameters());
+            activity.setRedirectionWriters(redirectionWriters);
+            activity.prepare(commandLineParser.getCommandName(), commandLineParser.getRequestMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Unknown translet: " + commandLineParser.getCommand());
+            if (log.isTraceEnabled()) {
+                log.trace("Unknown translet: " + commandLineParser.getCommandName());
             }
             throw e;
         } catch (ActivityTerminatedException e) {

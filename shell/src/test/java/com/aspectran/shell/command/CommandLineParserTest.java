@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,18 +28,22 @@ public class CommandLineParserTest {
 
     @Test
     public void testCommandLineParser() {
-        CommandLineParser parser = CommandLineParser.parseCommandLine("GET /path/work1 >> abcde.txt > 12345.txt");
+        CommandLineParser parser = CommandLineParser.parse("GET /path/work1 --param1 apple --param2 strawberry >> abcde.txt > 12345.txt");
         Assert.assertEquals(parser.getRequestMethod().toString(), "GET");
-        Assert.assertEquals(parser.getCommand(), "/path/work1");
+        Assert.assertEquals(parser.getCommandName(), "/path/work1");
+        ParameterMap params = parser.extractParameters();
+        Assert.assertEquals(params.getParameter("param1"), "apple");
+        Assert.assertEquals(params.getParameter("param2"), "strawberry");
         Assert.assertEquals(parser.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
-        //System.out.println(parser.getRequestMethod());
-        //System.out.println(parser.getCommand());
-        //System.out.println(parser.getRedirectionList());
+//        System.out.println(parser.getRequestMethod());
+//        System.out.println(parser.getCommandName());
+//        System.out.println(params);
+//        System.out.println(parser.getRedirectionList());
     }
 
     @Test
     public void testRedirectionOperators() {
-        List<CommandLineRedirection> list = CommandLineParser.parseCommandLine(">> abcde > 12345").getRedirectionList();
+        List<CommandLineRedirection> list = CommandLineParser.parse(">> abcde > 12345").getRedirectionList();
         Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
         Assert.assertEquals(list.get(0).getOperand(), "abcde");
         Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
@@ -47,7 +52,7 @@ public class CommandLineParserTest {
 
     @Test
     public void testRedirectionOperators2() {
-        List<CommandLineRedirection> list = CommandLineParser.parseCommandLine("> '<abcde>' >> 12345").getRedirectionList();
+        List<CommandLineRedirection> list = CommandLineParser.parse("> '<abcde>' >> 12345").getRedirectionList();
         Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
         Assert.assertEquals(list.get(0).getOperand(), "'<abcde>'");
         Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);

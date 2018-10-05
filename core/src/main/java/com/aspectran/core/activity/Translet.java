@@ -599,6 +599,8 @@ public interface Translet extends BeanRegistry, MessageSource {
      */
     <T> T getFinallyAdviceResult(String aspectId);
 
+    boolean hasPathVariable();
+
     /**
      * Try to resolve the message. Return default message if no message was found.
      *

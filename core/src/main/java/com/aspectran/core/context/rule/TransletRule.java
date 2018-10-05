@@ -285,7 +285,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return explicitContent;
     }
 
-    public boolean isRestful() {
+    public boolean hasPathVariable() {
         return (nameTokens != null);
     }
 

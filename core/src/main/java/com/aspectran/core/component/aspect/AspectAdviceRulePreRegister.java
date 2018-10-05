@@ -123,7 +123,7 @@ public class AspectAdviceRulePreRegister {
 
     public void register(TransletRuleRegistry transletRuleRegistry) {
         for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-            if (!transletRule.isRestful()) {
+            if (!transletRule.hasPathVariable()) {
                 register(transletRule);
             }
         }

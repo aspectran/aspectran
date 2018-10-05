@@ -462,6 +462,11 @@ public class CoreTranslet implements Translet {
         return activity.getTransletImplementationClass();
     }
 
+    @Override
+    public boolean hasPathVariable() {
+        return activity.getTransletRule().hasPathVariable();
+    }
+
     //---------------------------------------------------------------------
     // Implementation of BeanRegistry interface
     //---------------------------------------------------------------------

@@ -48,11 +48,15 @@ public class HelpCommand extends AbstractCommand {
         }
         if (filteredCommands == null) {
             getService().printHelp();
-        }
-        if (filteredCommands != null && filteredCommands.length == 1) {
+        } else if (filteredCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(filteredCommands[0]);
-            getConsole().writeLine(command.getDescriptor().getDescription());
-            command.printUsage();
+            if (command != null) {
+                getConsole().writeLine(command.getDescriptor().getDescription());
+                command.printUsage();
+            } else {
+                getConsole().writeLine("No command mapped to '"
+                        + filteredCommands[0] +  "'");
+            }
         } else {
             getConsole().setStyle("bold");
             getConsole().writeLine("Built-in commands used in this application:");

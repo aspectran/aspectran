@@ -18,8 +18,9 @@ package com.aspectran.shell.activity;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
@@ -57,19 +58,33 @@ public class ShellActivity extends CoreActivity {
 
     private final Console console;
 
-    private final Writer[] redirectionWriters;
+    private boolean procedural;
+
+    private ParameterMap parameterMap;
+
+    private Writer[] redirectionWriters;
 
     /**
      * Instantiates a new ShellActivity.
      *
      * @param service the shell service
-     * @param redirectionWriters the redirection writers
      */
-    public ShellActivity(ShellService service, Writer[] redirectionWriters) {
+    public ShellActivity(ShellService service) {
         super(service.getActivityContext());
 
         this.service = service;
         this.console = service.getConsole();
+    }
+
+    public void setProcedural(boolean procedural) {
+        this.procedural = procedural;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
+    }
+
+    public void setRedirectionWriters(Writer[] redirectionWriters) {
         this.redirectionWriters = redirectionWriters;
     }
 
@@ -78,7 +93,10 @@ public class ShellActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            RequestAdapter requestAdapter = new ShellRequestAdapter();
+            ShellRequestAdapter requestAdapter = new ShellRequestAdapter();
+            if (parameterMap != null) {
+                requestAdapter.setParameterMap(parameterMap);
+            }
             requestAdapter.setEncoding(console.getEncoding());
             setRequestAdapter(requestAdapter);
 
@@ -92,7 +110,7 @@ public class ShellActivity extends CoreActivity {
                 outputWriter = new MultiWriter(writerList.toArray(new Writer[0]));
             }
 
-            ResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
+            ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
             responseAdapter.setEncoding(console.getEncoding());
             setResponseAdapter(responseAdapter);
 
@@ -131,38 +149,41 @@ public class ShellActivity extends CoreActivity {
      */
     private void receiveParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
+            if (procedural) {
+                console.setStyle("GREEN");
+                console.writeLine("Required parameters:");
+                console.offStyle();
 
-            console.setStyle("GREEN");
-            console.writeLine("Required parameters:");
-            console.offStyle();
-
-            for (ItemRule itemRule : parameterItemRuleList) {
-                Token[] tokens = itemRule.getAllTokens();
-                if (tokens == null) {
-                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                    t.setDefaultValue(itemRule.getDefaultValue());
-                    tokens = new Token[] { t };
+                for (ItemRule itemRule : parameterItemRuleList) {
+                    Token[] tokens = itemRule.getAllTokens();
+                    if (tokens == null) {
+                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                        t.setDefaultValue(itemRule.getDefaultValue());
+                        tokens = new Token[]{t};
+                    }
+                    String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                    console.setStyle("YELLOW");
+                    console.write(mandatoryMarker);
+                    console.offStyle();
+                    console.setStyle("bold");
+                    console.write("%s: ", itemRule.getName());
+                    console.offStyle();
+                    console.writeLine(TokenParser.toString(tokens));
                 }
-
-                String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                console.setStyle("YELLOW");
-                console.write(mandatoryMarker);
-                console.offStyle();
-                console.setStyle("bold");
-                console.write("%s: ", itemRule.getName());
-                console.offStyle();
-                console.writeLine(TokenParser.toString(tokens));
             }
-
             enterRequiredParameters(parameterItemRuleList);
         }
     }
 
     private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
-        ItemRuleList missingItemRules1 = enterEachParameter(parameterItemRuleList);
+        ItemRuleList missingItemRules1;
+        if (procedural) {
+            missingItemRules1 = enterEachParameter(parameterItemRuleList);
+        } else {
+            missingItemRules1 = checkRequiredParameter(parameterItemRuleList);
+        }
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required parameters are missing.");
@@ -190,35 +211,39 @@ public class ShellActivity extends CoreActivity {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
+            if (procedural) {
+                console.setStyle("GREEN");
+                console.writeLine("Required attributes:");
+                console.offStyle();
 
-            console.setStyle("GREEN");
-            console.writeLine("Required attributes:");
-            console.offStyle();
-
-            for (ItemRule itemRule : attributeItemRuleList) {
-                Token[] tokens = itemRule.getAllTokens();
-                if (tokens == null) {
-                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                    t.setDefaultValue(itemRule.getDefaultValue());
-                    tokens = new Token[] { t };
+                for (ItemRule itemRule : attributeItemRuleList) {
+                    Token[] tokens = itemRule.getAllTokens();
+                    if (tokens == null) {
+                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                        t.setDefaultValue(itemRule.getDefaultValue());
+                        tokens = new Token[]{t};
+                    }
+                    String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                    console.setStyle("YELLOW");
+                    console.write(mandatoryMarker);
+                    console.offStyle();
+                    console.setStyle("bold");
+                    console.write("%s: ", itemRule.getName());
+                    console.offStyle();
+                    console.writeLine(TokenParser.toString(tokens));
                 }
-
-                String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                console.setStyle("YELLOW");
-                console.write(mandatoryMarker);
-                console.offStyle();
-                console.setStyle("bold");
-                console.write("%s: ", itemRule.getName());
-                console.offStyle();
-                console.writeLine(TokenParser.toString(tokens));
             }
-
             enterRequiredAttributes(attributeItemRuleList);
         }
     }
 
     private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
-        ItemRuleList missingItemRules1 = enterEachParameter(attributeItemRuleList);
+        ItemRuleList missingItemRules1;
+        if (procedural) {
+            missingItemRules1 = enterEachParameter(attributeItemRuleList);
+        } else {
+            missingItemRules1 = checkRequiredAttributes(attributeItemRuleList);
+        }
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required attributes are missing.");
@@ -317,10 +342,39 @@ public class ShellActivity extends CoreActivity {
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
+    private ItemRuleList checkRequiredParameter(ItemRuleList itemRuleList) {
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>();
+        ItemEvaluator evaluator = new ItemExpressionParser(this);
+        for (ItemRule itemRule : itemRuleList) {
+            String[] values = evaluator.evaluateAsStringArray(itemRule);
+            if (values != null && values.length > 0) {
+                getRequestAdapter().setParameter(itemRule.getName(), values);
+            } else {
+                missingItemRules.add(itemRule);
+            }
+        }
+        return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
+    private ItemRuleList checkRequiredAttributes(ItemRuleList itemRuleList) {
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>();
+        ItemEvaluator evaluator = new ItemExpressionParser(this);
+        for (ItemRule itemRule : itemRuleList) {
+            Object value = evaluator.evaluate(itemRule);
+            if (value != null) {
+                getRequestAdapter().setAttribute(itemRule.getName(), value);
+            } else {
+                missingItemRules.add(itemRule);
+            }
+        }
+        return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        ShellActivity activity = new ShellActivity(service, redirectionWriters);
+        ShellActivity activity = new ShellActivity(service);
+        activity.setRedirectionWriters(redirectionWriters);
         activity.setIncluded(true);
         return (T)activity;
     }

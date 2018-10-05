@@ -23,8 +23,6 @@ import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
-import java.util.Arrays;
-
 /**
  * The Shell Command Handler.
  *
@@ -63,12 +61,9 @@ public class ShellCommander {
                     continue;
                 }
 
-                CommandLineParser commandLineParser = CommandLineParser.parseCommandLine(commandLine);
-                String[] arr = CommandLineParser.splitCommandLine(commandLineParser.getCommand());
-
-                String commandName = arr[0];
-                String[] args = Arrays.copyOfRange(arr, 1, arr.length);
-
+                CommandLineParser commandLineParser = CommandLineParser.parse(commandLine);
+                String commandName = commandLineParser.getCommandName();
+                String[] args = commandLineParser.getArgs();
                 Command command = commandRegistry.getCommand(commandName);
                 if (command != null) {
                     String result;

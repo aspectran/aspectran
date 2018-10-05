@@ -437,7 +437,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     protected void prepareAspectAdviceRule(TransletRule transletRule) {
-        if (transletRule.isRestful()) {
+        if (transletRule.hasPathVariable()) {
             AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
                 JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();

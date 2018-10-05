@@ -46,11 +46,10 @@ public class TransletCommand extends AbstractCommand {
         ParsedOptions options = parse(args);
         if (!options.hasOptions() && options.hasArgs()) {
             String commandLine = String.join(" ", options.getArgs());
-            CommandLineParser parser = CommandLineParser.parseCommandLine(commandLine);
             try {
-                getService().execute(parser);
+                getService().execute(commandLine);
             } catch (TransletNotFoundException e) {
-                getConsole().writeLine("No translet mapped to '" + parser.getCommand() + "'");
+                getConsole().writeLine("No translet mapped to '" + commandLine + "'");
             }
             getConsole().writeLine();
         } else if (options.hasOption("l")) {

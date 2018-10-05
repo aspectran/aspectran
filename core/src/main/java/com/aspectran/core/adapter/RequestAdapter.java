@@ -16,6 +16,7 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
@@ -192,6 +193,14 @@ public interface RequestAdapter {
      * @since 1.4.0
      */
     Map<String, Object> getAllParameters();
+
+    /**
+     * Copies all of the mappings from the specified parameters.
+     *
+     * @param parameterMap the specified parameters
+     * @since 5.2.3
+     */
+    void putAllParameters(ParameterMap parameterMap);
 
     /**
      * Extracts all the parameters and fills in the specified map.

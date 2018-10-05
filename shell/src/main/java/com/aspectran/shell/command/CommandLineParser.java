@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.Console;
@@ -27,7 +28,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,20 +41,30 @@ import java.util.regex.Pattern;
  */
 public class CommandLineParser {
 
+    private static final String PARAM_NAME_PREFIX = "--";
+
     private static final Pattern REDIRECTION_OPERATOR_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
     private static final char ESCAPE = '\\';
 
+    private final boolean parseArgs;
+
     private MethodType requestMethod;
 
-    private String command;
+    private String commandName;
+
+    private String[] args;
+
+    private boolean hasParameters;
 
     private List<CommandLineRedirection> redirectionList;
 
-    /**
-     * Instantiates a new Command line parser.
-     */
-    private CommandLineParser() {
+    private CommandLineParser(boolean parseArgs) {
+        this.parseArgs = parseArgs;
+    }
+
+    public boolean isParseArgs() {
+        return parseArgs;
     }
 
     /**
@@ -66,8 +81,46 @@ public class CommandLineParser {
      *
      * @return the translet name
      */
-    public String getCommand() {
-        return command;
+    public String getCommandName() {
+        return commandName;
+    }
+
+    /**
+     * Gets the command arguments.
+     *
+     * @return the command arguments
+     */
+    public String[] getArgs() {
+        return args;
+    }
+
+    public boolean hasParameters() {
+        return hasParameters;
+    }
+
+    public ParameterMap extractParameters() {
+        if (!hasParameters) {
+            return null;
+        }
+        ParameterMap params = new ParameterMap();
+        String name = null;
+        for (String arg : args) {
+            if (arg.startsWith(PARAM_NAME_PREFIX)) {
+                name = arg.substring(PARAM_NAME_PREFIX.length());
+                params.setParameterValues(name, null);
+            } else if (name != null) {
+                String[] values = params.getParameterValues(name);
+                if (values != null) {
+                    values = Arrays.copyOf(values, values.length + 1);
+                    values[values.length - 1] = arg;
+                } else {
+                    values = new String[] { arg };
+                }
+                params.setParameterValues(name, values);
+                name = null;
+            }
+        }
+        return params;
     }
 
     public List<CommandLineRedirection> getRedirectionList() {
@@ -90,22 +143,35 @@ public class CommandLineParser {
     }
 
     /**
-     * Parse the command.
+     * Parse the command line.
      *
      * @param commandLine the command line
      */
-    private void parse(String commandLine) {
+    private void parseCommandLine(String commandLine) {
         String[] tokens = splitCommandLine(commandLine);
         if (tokens.length > 1) {
-            this.requestMethod = MethodType.resolve(tokens[0]);
+            requestMethod = MethodType.resolve(tokens[0]);
             if (requestMethod != null) {
-                this.command = commandLine.substring(tokens[0].length()).trim();
+                commandName = commandLine.substring(tokens[0].length()).trim();
             }
         }
-        if (this.requestMethod == null) {
-            this.command = commandLine;
+        if (requestMethod == null) {
+            commandName = commandLine;
         }
-        parseRedirection(this.command);
+        parseRedirection(commandName);
+        if (parseArgs) {
+            tokens = splitCommandLine(commandName);
+            if (tokens.length > 1) {
+                commandName = tokens[0];
+                args = Arrays.copyOfRange(tokens, 1, tokens.length);
+                for (String arg : args) {
+                    if (arg.startsWith(PARAM_NAME_PREFIX)) {
+                        hasParameters = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -125,7 +191,7 @@ public class CommandLineParser {
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
-                    this.command = string;
+                    this.commandName = string;
                 }
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.APPEND_OUT);
                 redirectionList.add(prevRedirectionOperation);
@@ -137,7 +203,7 @@ public class CommandLineParser {
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
-                    this.command = string;
+                    this.commandName = string;
                 }
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.OVERWRITE_OUT);
                 redirectionList.add(prevRedirectionOperation);
@@ -169,9 +235,15 @@ public class CommandLineParser {
      * @param commandLine the command line
      * @return the command line parser
      */
-    public static CommandLineParser parseCommandLine(String commandLine) {
-        CommandLineParser parser = new CommandLineParser();
-        parser.parse(commandLine);
+    public static CommandLineParser parse(String commandLine) {
+        CommandLineParser parser = new CommandLineParser(true);
+        parser.parseCommandLine(commandLine);
+        return parser;
+    }
+
+    public static CommandLineParser parse(String commandLine, boolean parseArgs) {
+        CommandLineParser parser = new CommandLineParser(parseArgs);
+        parser.parseCommandLine(commandLine);
         return parser;
     }
 

@@ -20,6 +20,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
@@ -31,6 +32,7 @@ import com.aspectran.core.util.apon.VariableParameters;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -98,8 +100,13 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
     @Override
     public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
+        return evaluateAsMultiValueMap(itemRuleMap.values());
+    }
+
+    @Override
+    public MultiValueMap<String, String> evaluateAsMultiValueMap(Collection<ItemRule> itemRules) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        for (ItemRule itemRule : itemRuleMap.values()) {
+        for (ItemRule itemRule : itemRules) {
             String[] values = evaluateAsStringArray(itemRule);
             valueMap.put(itemRule.getName(), values);
         }
@@ -108,8 +115,13 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 
     @Override
     public ParameterMap evaluateAsParameterMap(ItemRuleMap itemRuleMap) {
+        return evaluateAsParameterMap(itemRuleMap.values());
+    }
+
+    @Override
+    public ParameterMap evaluateAsParameterMap(Collection<ItemRule> itemRules) {
         ParameterMap params = new ParameterMap();
-        for (ItemRule itemRule : itemRuleMap.values()) {
+        for (ItemRule itemRule : itemRules) {
             String[] values = evaluateAsStringArray(itemRule);
             params.put(itemRule.getName(), values);
         }

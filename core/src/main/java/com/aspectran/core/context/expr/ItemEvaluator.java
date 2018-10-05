@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.MultiValueMap;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -37,7 +38,11 @@ public interface ItemEvaluator {
 
     MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
 
+    MultiValueMap<String, String> evaluateAsMultiValueMap(Collection<ItemRule> itemRuleLIst);
+
     ParameterMap evaluateAsParameterMap(ItemRuleMap itemRuleMap);
+
+    ParameterMap evaluateAsParameterMap(Collection<ItemRule> itemRules);
 
     String[] evaluateAsStringArray(ItemRule itemRule);
 
