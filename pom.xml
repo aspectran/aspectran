@@ -69,12 +69,12 @@
     <modules>
         <module>all</module>
         <module>core</module>
+        <module>daemon</module>
         <module>embed</module>
         <module>shell</module>
         <module>shell-jline</module>
         <module>web</module>
         <module>with-jetty</module>
-        <module>daemon</module>
         <module>demo</module>
     </modules>
 
