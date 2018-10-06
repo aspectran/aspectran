@@ -19,7 +19,6 @@ import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
@@ -48,10 +47,10 @@ public class TransletCommand extends AbstractCommand {
             String commandLine = String.join(" ", options.getArgs());
             try {
                 getService().execute(commandLine);
+                getConsole().writeLine();
             } catch (TransletNotFoundException e) {
                 getConsole().writeLine("No translet mapped to '" + commandLine + "'");
             }
-            getConsole().writeLine();
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
             listTranslets(keywords.length > 0 ? keywords : null);

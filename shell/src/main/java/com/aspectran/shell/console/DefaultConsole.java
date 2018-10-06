@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.context.ActivityContext;
+
 import java.io.BufferedReader;
 import java.io.IOError;
 import java.io.IOException;
@@ -31,7 +33,11 @@ import java.nio.charset.Charset;
  */
 public class DefaultConsole extends AbstractConsole {
 
-    private boolean reading;
+    private static final String MULTILINE_DELIMITER = "\\\\";
+
+    private static final String COMMENT_DELIMITER = "//";
+
+    private volatile boolean reading;
 
     @Override
     public String readCommandLine() {
@@ -42,17 +48,66 @@ public class DefaultConsole extends AbstractConsole {
     @Override
     public String readCommandLine(String prompt) {
         try {
+            String line;
             if (System.console() != null) {
-                return System.console().readLine(prompt);
+                line = System.console().readLine(prompt).trim();
             } else {
                 if (prompt != null) {
                     write(prompt);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                return reader.readLine();
+                line = reader.readLine().trim();
+            }
+            line = readCommandMultiLine(line);
+            if (line == null || line.startsWith(COMMENT_DELIMITER)) {
+                return null;
+            } else {
+                return line;
             }
         } catch (IOException e) {
             throw new IOError(e);
+        }
+    }
+
+    private String readCommandMultiLine(String line) throws IOException {
+        boolean comments = COMMENT_DELIMITER.equals(line);
+        boolean continuous = (MULTILINE_DELIMITER.equals(line) || comments);
+        if (line == null || continuous) {
+            if (System.console() != null) {
+                line = System.console().readLine("> ").trim();
+            } else {
+                write("> ");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                line = reader.readLine().trim();
+            }
+        }
+        String nextLine = null;
+        if (continuous) {
+            if (!line.isEmpty()) {
+                if (comments) {
+                    nextLine = readCommandMultiLine(COMMENT_DELIMITER);
+                } else {
+                    nextLine = readCommandMultiLine(MULTILINE_DELIMITER);
+                }
+            } else {
+                return null;
+            }
+        } else if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
+            nextLine = readCommandMultiLine(null);
+        }
+        if (comments) {
+            if (nextLine != null) {
+                return COMMENT_DELIMITER + line + ActivityContext.LINE_SEPARATOR + nextLine;
+            } else {
+                return COMMENT_DELIMITER + line;
+            }
+        } else {
+            if (nextLine != null && !nextLine.isEmpty()) {
+                return line + " " + nextLine;
+            } else {
+                return line;
+            }
         }
     }
 
@@ -65,20 +120,39 @@ public class DefaultConsole extends AbstractConsole {
     public String readLine(String prompt) {
         try {
             reading = true;
+            String line;
             if (System.console() != null) {
-                return System.console().readLine(prompt);
+                line = System.console().readLine(prompt);
             } else {
                 if (prompt != null) {
                     write(prompt);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                return reader.readLine();
+                line = reader.readLine();
             }
+            return readMultiLine(line);
         } catch (IOException e) {
             throw new IOError(e);
         } finally {
             reading = false;
         }
+    }
+
+    private String readMultiLine(String line) throws IOException {
+        if (line == null) {
+            if (System.console() != null) {
+                line = System.console().readLine("> ").trim();
+            } else {
+                write("> ");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                line = reader.readLine().trim();
+            }
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
+                    ActivityContext.LINE_SEPARATOR + readMultiLine(null);
+        }
+        return line;
     }
 
     @Override
@@ -168,10 +242,6 @@ public class DefaultConsole extends AbstractConsole {
     @Override
     public void offStyle() {
         // Nothing to do
-    }
-
-    private String stripStyle() {
-        return null;
     }
 
     @Override

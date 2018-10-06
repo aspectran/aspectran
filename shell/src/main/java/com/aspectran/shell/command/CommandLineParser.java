@@ -29,10 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +104,24 @@ public class CommandLineParser {
         for (String arg : args) {
             if (arg.startsWith(PARAM_NAME_PREFIX)) {
                 name = arg.substring(PARAM_NAME_PREFIX.length());
-                params.setParameterValues(name, null);
+                int index = name.indexOf('=');
+                if (index == 0) {
+                    name = null;
+                } else if (index > 0) {
+                    String value = name.substring(index + 1);
+                    name = name.substring(0, index);
+                    String[] values = params.getParameterValues(name);
+                    if (values != null) {
+                        values = Arrays.copyOf(values, values.length + 1);
+                        values[values.length - 1] = value;
+                    } else {
+                        values = new String[] { value };
+                    }
+                    params.setParameterValues(name, values);
+                    name = null;
+                } else {
+                    params.setParameterValues(name, null);
+                }
             } else if (name != null) {
                 String[] values = params.getParameterValues(name);
                 if (values != null) {
@@ -262,7 +276,7 @@ public class CommandLineParser {
     }
 
     public static String[] splitCommandLine(String commandLine) {
-        return StringUtils.tokenize(commandLine, " ", true);
+        return StringUtils.tokenize(commandLine, " \n\t", true);
     }
 
 }

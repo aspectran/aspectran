@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
@@ -46,6 +47,10 @@ public class JLineConsole extends AbstractConsole {
 
     private static final Character MASK_CHAR = '*';
 
+    private static final String MULTILINE_DELIMITER = "\\";
+
+    private static final String COMMENT_DELIMITER = "//";
+
     private static final String encoding = Charset.defaultCharset().name();
 
     private final Terminal terminal;
@@ -57,11 +62,11 @@ public class JLineConsole extends AbstractConsole {
     private AttributedStyle style;
 
     public JLineConsole() throws IOException {
-        new DefaultParser();
+        DefaultParser parser = new DefaultParser();
 
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
-        this.reader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
-        this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).terminal(terminal).build();
+        this.reader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();
+        this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();
     }
 
     @Override
@@ -73,12 +78,54 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readCommandLine(String prompt) {
         try {
-            return commandReader.readLine(prompt);
+            String line = commandReader.readLine(prompt).trim();
+            line = readCommandMultiLine(line);
+            if (line == null || line.startsWith(COMMENT_DELIMITER)) {
+                return null;
+            } else {
+                return line;
+            }
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
                 throw new ConsoleTerminatedException();
             } else {
                 return null;
+            }
+        }
+    }
+
+    private String readCommandMultiLine(String line) {
+        boolean comments = COMMENT_DELIMITER.equals(line);
+        boolean continuous = (MULTILINE_DELIMITER.equals(line) || comments);
+        if (line == null || continuous) {
+            line = commandReader.readLine("> ").trim();
+        }
+        String nextLine = null;
+        if (continuous) {
+            if (!line.isEmpty()) {
+                if (comments) {
+                    nextLine = readCommandMultiLine(COMMENT_DELIMITER);
+                } else {
+                    nextLine = readCommandMultiLine(MULTILINE_DELIMITER);
+                }
+            } else {
+                return null;
+            }
+        } else if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
+            nextLine = readCommandMultiLine(null);
+        }
+        if (comments) {
+            if (nextLine != null) {
+                return COMMENT_DELIMITER + line + ActivityContext.LINE_SEPARATOR + nextLine;
+            } else {
+                return COMMENT_DELIMITER + line;
+            }
+        } else {
+            if (nextLine != null && !nextLine.isEmpty()) {
+                return line + " " + nextLine;
+            } else {
+                return line;
             }
         }
     }
@@ -91,10 +138,22 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readLine(String prompt) {
         try {
-            return reader.readLine(prompt);
+            String line = reader.readLine(prompt);
+            return readMultiLine(line);
         } catch (UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
+    }
+
+    private String readMultiLine(String line) {
+        if (line == null) {
+            line = reader.readLine("> ").trim();
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
+                    ActivityContext.LINE_SEPARATOR + readMultiLine(null);
+        }
+        return line;
     }
 
     @Override

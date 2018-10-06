@@ -24,7 +24,6 @@ import com.aspectran.core.util.MultiValueMap;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;

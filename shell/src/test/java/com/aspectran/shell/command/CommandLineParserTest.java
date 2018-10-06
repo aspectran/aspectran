@@ -27,18 +27,16 @@ import java.util.List;
 public class CommandLineParserTest {
 
     @Test
-    public void testCommandLineParser() {
-        CommandLineParser parser = CommandLineParser.parse("GET /path/work1 --param1 apple --param2 strawberry >> abcde.txt > 12345.txt");
+    public void testExtractParameters() {
+        CommandLineParser parser = CommandLineParser.parse("GET /path/work1 --param1 apple --param2=strawberry --arr=a --arr=b >> abcde.txt > 12345.txt");
         Assert.assertEquals(parser.getRequestMethod().toString(), "GET");
         Assert.assertEquals(parser.getCommandName(), "/path/work1");
         ParameterMap params = parser.extractParameters();
         Assert.assertEquals(params.getParameter("param1"), "apple");
         Assert.assertEquals(params.getParameter("param2"), "strawberry");
+        Assert.assertEquals("a", params.getParameterValues("arr")[0]);
+        Assert.assertEquals("b", params.getParameterValues("arr")[1]);
         Assert.assertEquals(parser.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
-//        System.out.println(parser.getRequestMethod());
-//        System.out.println(parser.getCommandName());
-//        System.out.println(params);
-//        System.out.println(parser.getRedirectionList());
     }
 
     @Test
