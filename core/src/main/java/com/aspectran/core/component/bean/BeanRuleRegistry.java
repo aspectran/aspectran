@@ -263,7 +263,6 @@ public class BeanRuleRegistry {
                 if (beanRule.getId() != null) {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
-
                 if (beanRule.isFactoryOffered()) {
                     Class<?> offeredFactoryBeanClass = resolveOfferedFactoryBeanClass(beanRule);
                     Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(
@@ -282,13 +281,10 @@ public class BeanRuleRegistry {
                     }
                 }
             }
-
             postProcessBeanRuleMap.clear();
         }
-
         importantBeanIdSet.clear();
         importantBeanTypeSet.clear();
-
         parseAnnotatedConfig(assistant);
     }
 

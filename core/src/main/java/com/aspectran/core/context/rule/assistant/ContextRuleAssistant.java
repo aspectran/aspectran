@@ -686,8 +686,7 @@ public class ContextRuleAssistant {
      * @return the bean rules
      */
     public Collection<BeanRule> getBeanRules() {
-        Set<BeanRule> beanRuleSet = new HashSet<>();
-        beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRules());
+        Set<BeanRule> beanRuleSet = new HashSet<>(beanRuleRegistry.getIdBasedBeanRules());
         for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
             beanRuleSet.addAll(brs);
         }
