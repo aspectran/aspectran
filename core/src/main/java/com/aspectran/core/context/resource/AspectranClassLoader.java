@@ -47,7 +47,6 @@ import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
 import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
-import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
 /**
  * Specialized aspectran class loader.
@@ -339,29 +338,6 @@ public class AspectranClassLoader extends ClassLoader {
         }
     }
 
-    public URL[] extractResources() {
-        Enumeration<URL> res = ResourceManager.getResources(getAllMembers());
-        List<URL> resources = new LinkedList<>();
-        URL url;
-        while (res.hasMoreElements()) {
-            url = res.nextElement();
-            if (!URL_PROTOCOL_JAR.equals(url.getProtocol())) {
-                resources.add(url);
-            }
-        }
-        return resources.toArray(new URL[0]);
-    }
-
-    @Override
-    public Enumeration<URL> getResources(String name) throws IOException {
-        Enumeration<URL> parentResources = null;
-        ClassLoader parent = root.getParent();
-        if (parent != null) {
-            parentResources = parent.getResources(name);
-        }
-        return ResourceManager.getResources(getAllMembers(), name, parentResources);
-    }
-
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
@@ -524,6 +500,16 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        Enumeration<URL> parentResources = null;
+        ClassLoader parent = root.getParent();
+        if (parent != null) {
+            parentResources = parent.getResources(name);
+        }
+        return ResourceManager.getResources(getAllMembers(), name, parentResources);
+    }
+
+    @Override
     public URL findResource(String name) {
         URL url = null;
         Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
@@ -545,6 +531,10 @@ public class AspectranClassLoader extends ClassLoader {
 
     public Iterator<AspectranClassLoader> getAllMembers() {
         return getMembers(root);
+    }
+
+    public Enumeration<URL> getAllResources() {
+        return ResourceManager.getResources(getAllMembers());
     }
 
     @Override

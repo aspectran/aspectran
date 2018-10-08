@@ -20,6 +20,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Timer;
 
 /**
@@ -31,7 +32,7 @@ public class ActivityContextReloadingTimer {
 
     private final ServiceController serviceController;
 
-    private URL[] resources;
+    private Enumeration<URL> resources;
 
     private Timer timer;
 
@@ -41,7 +42,7 @@ public class ActivityContextReloadingTimer {
         this.serviceController = serviceController;
     }
 
-    public void setResources(URL[] resources) {
+    public void setResources(Enumeration<URL> resources) {
         this.resources = resources;
 
         if (log.isDebugEnabled()) {

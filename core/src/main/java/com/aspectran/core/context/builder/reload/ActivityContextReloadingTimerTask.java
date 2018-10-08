@@ -17,15 +17,20 @@ package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
+
+import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
+import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
 public class ActivityContextReloadingTimerTask extends TimerTask {
 
@@ -35,8 +40,6 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private final ServiceController serviceController;
 
-    private URL[] resources;
-
     private Map<String, Long> modifiedTimeMap = new HashMap<>();
 
     private boolean modified = false;
@@ -45,15 +48,22 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
         this.serviceController = serviceController;
     }
 
-    public void setResources(URL[] resources) {
-        this.resources = resources;
+    public void setResources(Enumeration<URL> resources) {
         if (resources != null) {
-            for (URL url : resources) {
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
                 try {
-                    File file = new File(url.toURI());
+                    File file;
+                    if (URL_PROTOCOL_JAR.equals(url.getProtocol())) {
+                        URL fileUrl = new URL(url.getFile());
+                        String[] parts = StringUtils.split(fileUrl.getFile(), JAR_URL_SEPARATOR);
+                        file = new File(parts[0]);
+                    } else {
+                        file = new File(url.getFile());
+                    }
                     String filePath = file.getAbsolutePath();
                     modifiedTimeMap.put(filePath, file.lastModified());
-                } catch (URISyntaxException e) {
+                } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
             }
@@ -62,7 +72,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     @Override
     public void run() {
-        if (resources == null) {
+        if (modifiedTimeMap.isEmpty()) {
             return;
         }
         if (modified) {
@@ -72,21 +82,17 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
                 return;
             }
         }
-        for (URL url : resources) {
-            try {
-                File file = new File(url.toURI());
-                String filePath = file.getAbsolutePath();
-                long modifiedTime = file.lastModified();
-                Long modifiedTime2 = modifiedTimeMap.get(filePath);
-                if (modifiedTime2 != null && modifiedTime2 != modifiedTime) {
-                    modified = true;
-                    modifiedTimeMap.put(filePath, modifiedTime);
-                    if (debugEnabled) {
-                        log.debug("Detected modified file: " + url);
-                    }
+        for (Map.Entry<String, Long> entry : modifiedTimeMap.entrySet()) {
+            String filePath = entry.getKey();
+            long prevLastModifiedTime = entry.getValue();
+            File file = new File(filePath);
+            long lastModifiedTime = file.lastModified();
+            if (prevLastModifiedTime != lastModifiedTime) {
+                modified = true;
+                modifiedTimeMap.put(filePath, lastModifiedTime);
+                if (debugEnabled) {
+                    log.debug("Detected modified file: " + filePath);
                 }
-            } catch (URISyntaxException e) {
-                log.error(e.getMessage(), e);
             }
         }
         if (modified) {
