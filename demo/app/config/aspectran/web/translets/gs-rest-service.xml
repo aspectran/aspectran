@@ -27,7 +27,7 @@
         <description>
             전체 고객 목록을 조회합니다.
         </description>
-        <action id="customers" bean="class:com.aspectran.demo.customer.CustomerAction" method="getCustomerList"/>
+        <action id="customers" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomerList"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -36,7 +36,7 @@
             id를 파라메터로 받아서 해당 id를 가진 고객의 상세정보를 조회합니다.
             고객번호를 지정하지 않으면 고객번호가 "guest"인 고객의 상세정보를 조회합니다.
         </description>
-        <action id="customer" bean="class:com.aspectran.demo.customer.CustomerAction" method="getCustomer"/>
+        <action id="customer" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomer"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -44,7 +44,7 @@
         <description>
             고객정보를 등록합니다.
         </description>
-        <action bean="class:com.aspectran.demo.customer.CustomerAction" method="insertCustomer"/>
+        <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="insertCustomer"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -52,7 +52,7 @@
         <description>
             고객정보를 수정합니다.
         </description>
-        <action bean="class:com.aspectran.demo.customer.CustomerAction" method="updateCustomer"/>
+        <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="updateCustomer"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -61,7 +61,7 @@
             id를 파라메터로 받아서 해당 id를 가진 고객에 대해 승인처리를 합니다.
             "${approved}"는 승인여부에 해당하는 값을 지정합니다. (true or false)
         </description>
-        <action id="result" bean="class:com.aspectran.demo.customer.CustomerAction" method="approve"/>
+        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="approve"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -69,7 +69,7 @@
         <description>
             id를 파라메터로 받아서 해당 id를 가진 고객에 대하여 승인여부를 조회합니다.
         </description>
-        <action id="result" bean="class:com.aspectran.demo.customer.CustomerAction" method="isApproved"/>
+        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="isApproved"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 
@@ -77,7 +77,7 @@
         <description>
             id를 파라메터로 받아서 해당 id를 가진 고객의 정보를 삭제합니다.
         </description>
-        <action id="result" bean="class:com.aspectran.demo.customer.CustomerAction" method="deleteCustomer"/>
+        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="deleteCustomer"/>
         <transform type="transform/json" pretty="true"/>
     </translet>
 

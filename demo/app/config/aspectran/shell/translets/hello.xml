@@ -7,18 +7,6 @@
         An Aspectran configuration for printing "Hello, World!".
     </description>
 
-    <bean id="helloAction" class="com.aspectran.demo.hello.HelloAction">
-        <description>
-            Defines a Hello Action Bean that contains the helloWorld() method.
-        </description>
-    </bean>
-
-    <bean id="helloAdvice" class="com.aspectran.demo.hello.HelloAdvice">
-        <description>
-            Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.
-        </description>
-    </bean>
-
     <aspect id="helloAdviceAspect">
         <description>
             If a translet that executes the helloWorld method of the helloAction bean is found,
