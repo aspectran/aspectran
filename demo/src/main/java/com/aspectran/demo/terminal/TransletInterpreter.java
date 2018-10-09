@@ -17,6 +17,7 @@ package com.aspectran.demo.terminal;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.core.component.bean.annotation.RequestAsGet;
 import com.aspectran.core.component.bean.annotation.RequestAsPost;
@@ -47,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Configuration(namespace = "/terminal")
+@Bean (id = "transletInterpreter")
 public class TransletInterpreter implements ActivityContextAware {
 
     private final Log log = LogFactory.getLog(TransletInterpreter.class);
@@ -69,7 +71,6 @@ public class TransletInterpreter implements ActivityContextAware {
         }
 
         String transletFullName = COMMAND_PREFIX + transletName;
-
         TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
         if (transletRule == null) {
             if (log.isDebugEnabled()) {
@@ -141,7 +142,6 @@ public class TransletInterpreter implements ActivityContextAware {
         }
 
         String transletFullName = COMMAND_PREFIX + transletName;
-
         TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName);

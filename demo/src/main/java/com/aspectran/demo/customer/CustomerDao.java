@@ -15,6 +15,8 @@
  */
 package com.aspectran.demo.customer;
 
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -27,6 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * The DAO to retrieve or manipulate customer data.
  */
+@Configuration
+@Bean
 public class CustomerDao {
     
     private final Log log = LogFactory.getLog(CustomerDao.class);

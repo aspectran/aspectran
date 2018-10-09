@@ -77,6 +77,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String[] resourceLocations;
 
+    private String[] scanBasePackages;
+
     private String[] activeProfiles;
 
     private String[] defaultProfiles;
@@ -164,6 +166,16 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setResourceLocations(String... resourceLocations) {
         this.resourceLocations = resourceLocations;
+    }
+
+    @Override
+    public String[] getScanBasePackages() {
+        return scanBasePackages;
+    }
+
+    @Override
+    public void setScanBasePackages(String[] scanBasePackages) {
+        this.scanBasePackages = scanBasePackages;
     }
 
     @Override
@@ -264,6 +276,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         String[] resourceLocations = contextConfig.getStringArray(ContextConfig.resources);
         this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, getBasePath());
+
+        this.scanBasePackages = contextConfig.getStringArray(ContextConfig.scan);
 
         ContextProfilesConfig contextProfilesConfig = contextConfig.getParameters(ContextConfig.profiles);
         if (contextProfilesConfig != null) {

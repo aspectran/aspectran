@@ -17,6 +17,7 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.component.Component;
+import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -108,6 +109,11 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             ContextEnvironment contextEnvironment = createContextEnvironment();
             ContextRuleAssistant assistant = new ContextRuleAssistant(contextEnvironment);
             assistant.ready();
+
+            if (getScanBasePackages() != null) {
+                BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
+                beanRuleRegistry.scanConfigBeans(getScanBasePackages());
+            }
 
             if (rootConfigLocation != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);

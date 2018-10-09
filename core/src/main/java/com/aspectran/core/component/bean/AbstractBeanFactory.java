@@ -65,7 +65,7 @@ import java.util.Set;
  */
 public abstract class AbstractBeanFactory extends AbstractComponent {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(AbstractBeanFactory.class);
 
     protected final ActivityContext context;
 
@@ -100,10 +100,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private Object createBean(BeanRule beanRule, Activity activity) {
         Object bean;
-        if (!beanRule.isFactoryOffered()) {
-            bean = createNormalBean(beanRule, activity);
-        } else {
+        if (beanRule.isFactoryOffered()) {
             bean = createOfferedFactoryBean(beanRule, activity);
+        } else {
+            bean = createNormalBean(beanRule, activity);
         }
         return bean;
     }
@@ -260,7 +260,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
         List<AutowireRule> autowireRuleList = beanRule.getAutowireRuleList();
-
         if (autowireRuleList != null) {
             for (AutowireRule autowireRule : autowireRuleList) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {

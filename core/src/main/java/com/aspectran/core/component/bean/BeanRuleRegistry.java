@@ -22,6 +22,7 @@ import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
+import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -46,7 +47,7 @@ import java.util.Set;
  */
 public class BeanRuleRegistry {
 
-    private final Log log = LogFactory.getLog(BeanRuleRegistry.class);
+    private static final Log log = LogFactory.getLog(BeanRuleRegistry.class);
 
     private final ClassLoader classLoader;
 
@@ -60,9 +61,9 @@ public class BeanRuleRegistry {
 
     private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
 
-    private Set<String> importantBeanIdSet = new HashSet<>();
+    private final Set<String> importantBeanIdSet = new HashSet<>();
 
-    private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
+    private final Set<Class<?>> importantBeanTypeSet = new HashSet<>();
 
     public BeanRuleRegistry(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -151,6 +152,23 @@ public class BeanRuleRegistry {
         return configBeanRuleMap.values();
     }
 
+    public void scanConfigBeans(String... basePackages) throws IOException {
+        if (basePackages == null || basePackages.length == 0) {
+            return;
+        }
+        for (String basePackage : basePackages) {
+            log.info("Scan configurations from " + basePackage);
+            BeanClassScanner scanner = new BeanClassScanner(classLoader);
+            scanner.scan(basePackage + ".**", (resourceName, scannedClass) -> {
+                if (scannedClass.isAnnotationPresent(Configuration.class)) {
+                    BeanRule beanRule = new BeanRule();
+                    beanRule.setBeanClass(scannedClass);
+                    saveConfigBeanRule(beanRule);
+                }
+            });
+        }
+    }
+
     /**
      * Adds a bean rule.
      *
@@ -225,7 +243,6 @@ public class BeanRuleRegistry {
                     }
                 }
             }
-
             if (log.isTraceEnabled()) {
                 log.trace("add BeanRule " + beanRule);
             }
@@ -254,6 +271,9 @@ public class BeanRuleRegistry {
     }
 
     private void saveConfigBeanRule(BeanRule beanRule) {
+        if (beanRule.getBeanClass() == null) {
+            throw new AspectranRuntimeException("Illegal Bean Rule " + beanRule);
+        }
         configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
@@ -349,12 +369,6 @@ public class BeanRuleRegistry {
 
     public void ignoreDependencyInterface(Class<?> ifc) {
         this.ignoredDependencyInterfaces.add(ifc);
-    }
-
-    public void clear() {
-        idBasedBeanRuleMap.clear();
-        typeBasedBeanRuleMap.clear();
-        configBeanRuleMap.clear();
     }
 
 }

@@ -6,6 +6,9 @@ context: {
         /resources
         /config
     ]
+    scan: [
+        com.aspectran.demo
+    ]
     profiles: {
     }
     hybridLoad: false

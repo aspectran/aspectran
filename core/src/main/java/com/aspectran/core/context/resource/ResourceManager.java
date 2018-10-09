@@ -101,7 +101,7 @@ public class ResourceManager {
             name = name.substring(0, name.length() - 1);
         }
 
-        final String filterName = name;
+        final String nameToSearch = name;
 
         return new Enumeration<URL>() {
             private URL next;
@@ -111,7 +111,7 @@ public class ResourceManager {
             private boolean hasNext() {
                 do {
                     if (owners.hasNext()) {
-                        next = owners.next().getResourceManager().getResource(filterName);
+                        next = owners.next().getResourceManager().getResource(nameToSearch);
                     } else {
                         return false;
                     }
@@ -160,7 +160,7 @@ public class ResourceManager {
             name = name.substring(0, name.length() - 1);
         }
 
-        final String filterName = name;
+        final String nameToSearch = name;
 
         return new Enumeration<URL>() {
             private Iterator<Map.Entry<String, URL>> current;
@@ -177,7 +177,7 @@ public class ResourceManager {
                     }
                     while (current.hasNext()) {
                         Map.Entry<String, URL> entry2 = current.next();
-                        if (entry2.getKey().equals(filterName)) {
+                        if (entry2.getKey().equals(nameToSearch)) {
                             entry = entry2;
                             return true;
                         }

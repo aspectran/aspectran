@@ -53,6 +53,10 @@ public interface ActivityContextBuilder {
 
     void setResourceLocations(String... resourceLocations);
 
+    String[] getScanBasePackages();
+
+    void setScanBasePackages(String[] scanBasePackages);
+
     String[] getActiveProfiles();
 
     void setActiveProfiles(String... activeProfiles);

@@ -21,6 +21,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
@@ -34,11 +36,13 @@ import java.util.List;
  */
 public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodHandler  {
 
+    private static final Log log = LogFactory.getLog(JavassistDynamicBeanProxy.class);
+
     private final ActivityContext context;
 
     private final BeanRule beanRule;
 
-    public JavassistDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
+    private JavassistDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
@@ -115,7 +119,8 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
      * @param constructorArgTypes the parameter types for a constructor
      * @return a new proxy bean object
      */
-    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs, Class<?>[] constructorArgTypes) {
+    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs,
+                                     Class<?>[] constructorArgTypes) {
         try {
             ProxyFactory proxyFactory = new ProxyFactory();
             proxyFactory.setSuperclass(beanRule.getBeanClass());

@@ -92,7 +92,7 @@ import java.util.StringTokenizer;
  */
 public class AnnotatedConfigParser {
 
-    private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
+    private static final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
     private final AnnotatedConfigRelater relater;
 
@@ -113,48 +113,58 @@ public class AnnotatedConfigParser {
     }
 
     public void parse() throws IllegalRuleException {
+        if (configBeanRuleMap.isEmpty() && idBasedBeanRuleMap.isEmpty() && typeBasedBeanRuleMap.isEmpty()) {
+            return;
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("Now try to parse annotated configurations");
-            log.debug("Parsing bean rules for configuring: " + configBeanRuleMap.size());
         }
 
-        for (BeanRule beanRule : configBeanRuleMap.values()) {
-            if (log.isTraceEnabled()) {
-                log.trace("configBeanRule " + beanRule);
+        if (!configBeanRuleMap.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing bean rules for configuring: " + configBeanRuleMap.size());
             }
-            if (!beanRule.isFactoryOffered()) {
-                parseConfigBean(beanRule);
-                parseFieldAutowire(beanRule);
-                parseMethodAutowire(beanRule);
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Parsing ID-based bean rules: " + idBasedBeanRuleMap.size());
-        }
-
-        for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
-            if (log.isTraceEnabled()) {
-                log.trace("idBasedBeanRule " + beanRule);
-            }
-            if (!beanRule.isFactoryOffered()) {
-                parseFieldAutowire(beanRule);
-                parseMethodAutowire(beanRule);
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Parsing Type-based bean rules: " + typeBasedBeanRuleMap.size());
-        }
-
-        for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
-            for (BeanRule beanRule : set) {
+            for (BeanRule beanRule : configBeanRuleMap.values()) {
+                if (log.isTraceEnabled()) {
+                    log.trace("configBeanRule " + beanRule);
+                }
                 if (!beanRule.isFactoryOffered()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("typeBasedBeanRule " + beanRule);
-                    }
+                    parseConfigBean(beanRule);
                     parseFieldAutowire(beanRule);
                     parseMethodAutowire(beanRule);
+                }
+            }
+        }
+
+        if (!idBasedBeanRuleMap.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing ID-based bean rules: " + idBasedBeanRuleMap.size());
+            }
+            for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
+                if (log.isTraceEnabled()) {
+                    log.trace("idBasedBeanRule " + beanRule);
+                }
+                if (!beanRule.isFactoryOffered()) {
+                    parseFieldAutowire(beanRule);
+                    parseMethodAutowire(beanRule);
+                }
+            }
+        }
+
+        if (!typeBasedBeanRuleMap.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing Type-based bean rules: " + typeBasedBeanRuleMap.size());
+            }
+            for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
+                for (BeanRule beanRule : set) {
+                    if (!beanRule.isFactoryOffered()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("typeBasedBeanRule " + beanRule);
+                        }
+                        parseFieldAutowire(beanRule);
+                        parseMethodAutowire(beanRule);
+                    }
                 }
             }
         }
@@ -171,6 +181,9 @@ public class AnnotatedConfigParser {
                 }
             }
             String[] nameArray = splitNamespace(configAnno.namespace());
+            if (beanClass.isAnnotationPresent(Bean.class)) {
+                parseBeanRule(beanRule, nameArray);
+            }
             for (Method method : beanClass.getMethods()) {
                 if (method.isAnnotationPresent(Profile.class)) {
                     Profile profileAnno = method.getAnnotation(Profile.class);
@@ -300,6 +313,37 @@ public class AnnotatedConfigParser {
             }
             beanClass = beanClass.getSuperclass();
         }
+    }
+
+    private void parseBeanRule(BeanRule beanRule, String[] nameArray) {
+        Class<?> beanClass = beanRule.getBeanClass();
+        Bean beanAnno = beanClass.getAnnotation(Bean.class);
+        String beanId = StringUtils.emptyToNull(beanAnno.id());
+        if (beanId != null && nameArray != null) {
+            beanId = applyNamespace(nameArray, beanId);
+        }
+        ScopeType scopeType = beanAnno.scope();
+        String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
+        String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+        boolean lazyInit = beanAnno.lazyInit();
+        boolean important = beanAnno.important();
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
+
+        beanRule.setId(beanId);
+        beanRule.setScopeType(scopeType);
+        beanRule.setInitMethodName(initMethodName);
+        beanRule.setDestroyMethodName(destroyMethodName);
+        if (lazyInit) {
+            beanRule.setLazyInit(Boolean.TRUE);
+        }
+        if (important) {
+            beanRule.setImportant(Boolean.TRUE);
+        }
+        beanRule.setDescription(description);
+
+        relater.relay(beanClass, beanRule);
     }
 
     private void parseBeanRule(Class<?> beanClass, Method method, String[] nameArray) {

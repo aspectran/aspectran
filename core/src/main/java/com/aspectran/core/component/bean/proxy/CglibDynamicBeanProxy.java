@@ -21,6 +21,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -33,11 +35,13 @@ import java.util.List;
  */
 public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
 
+    private static final Log log = LogFactory.getLog(CglibDynamicBeanProxy.class);
+
     private final ActivityContext context;
 
     private final BeanRule beanRule;
 
-    public CglibDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
+    private CglibDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
@@ -114,7 +118,8 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
      * @param constructorArgTypes the parameter types for a constructor
      * @return a new proxy bean object
      */
-    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs, Class<?>[] constructorArgTypes) {
+    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs,
+                                     Class<?>[] constructorArgTypes) {
         Enhancer enhancer = new Enhancer();
         enhancer.setClassLoader(context.getEnvironment().getClassLoader());
         enhancer.setSuperclass(beanRule.getBeanClass());

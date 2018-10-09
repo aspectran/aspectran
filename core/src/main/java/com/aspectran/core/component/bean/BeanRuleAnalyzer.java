@@ -33,7 +33,6 @@ public class BeanRuleAnalyzer {
 
     public static Class<?> determineBeanClass(BeanRule beanRule) {
         Class<?> targetBeanClass;
-
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
             if (targetBeanClass == null) {
@@ -44,19 +43,15 @@ public class BeanRuleAnalyzer {
         } else {
             targetBeanClass = beanRule.getBeanClass();
         }
-
         if (targetBeanClass == null) {
             throw new BeanRuleException("Invalid BeanRule", beanRule);
         }
-
         if (beanRule.getInitMethodName() != null) {
             checkInitMethod(targetBeanClass, beanRule);
         }
-
         if (beanRule.getDestroyMethodName() != null) {
             checkDestroyMethod(targetBeanClass, beanRule);
         }
-
         if (!beanRule.isFactoryOffered()) {
             if (beanRule.isFactoryBean()) {
                 targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
@@ -64,7 +59,6 @@ public class BeanRuleAnalyzer {
                 targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
             }
         }
-
         return targetBeanClass;
     }
 
@@ -81,10 +75,8 @@ public class BeanRuleAnalyzer {
 
     protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
         String factoryMethodName = beanRule.getFactoryMethodName();
-
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
         Class<?> targetBeanClass;
-
         if (m1 != null) {
             beanRule.setFactoryMethod(m1);
             beanRule.setFactoryMethodRequiresTranslet(true);
@@ -98,9 +90,7 @@ public class BeanRuleAnalyzer {
             beanRule.setFactoryMethod(m2);
             targetBeanClass = m2.getReturnType();
         }
-
         beanRule.setTargetBeanClass(targetBeanClass);
-
         return targetBeanClass;
     }
 
@@ -116,7 +106,6 @@ public class BeanRuleAnalyzer {
 
         String initMethodName = beanRule.getInitMethodName();
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
         if (m1 != null) {
             beanRule.setInitMethod(m1);
             beanRule.setInitMethodRequiresTranslet(true);

@@ -17,10 +17,14 @@ package com.aspectran.demo.customer;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Configuration;
 import com.aspectran.web.support.http.HttpStatusSetter;
 
 import java.util.List;
 
+@Configuration
+@Bean
 public class CustomerAction {
     
     @Autowired

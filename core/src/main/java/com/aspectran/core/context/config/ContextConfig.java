@@ -26,6 +26,7 @@ public class ContextConfig extends AbstractParameters {
     public static final ParameterDefinition root;
     public static final ParameterDefinition encoding;
     public static final ParameterDefinition resources;
+    public static final ParameterDefinition scan;
     public static final ParameterDefinition profiles;
     public static final ParameterDefinition hybridLoad;
     public static final ParameterDefinition autoReload;
@@ -39,6 +40,7 @@ public class ContextConfig extends AbstractParameters {
         root = new ParameterDefinition("root", ParameterValueType.STRING);
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
         resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
+        scan = new ParameterDefinition("scan", ParameterValueType.STRING, true);
         profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
         hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
@@ -50,6 +52,7 @@ public class ContextConfig extends AbstractParameters {
                 root,
                 encoding,
                 resources,
+                scan,
                 profiles,
                 hybridLoad,
                 autoReload,

@@ -38,7 +38,7 @@ import java.util.WeakHashMap;
  */
 public abstract class AbstractDynamicBeanProxy {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
@@ -65,7 +65,6 @@ public abstract class AbstractDynamicBeanProxy {
     private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
             String transletName, String beanId, String className, String methodName) {
         String pattern = PointcutPatternRule.combinePattern(transletName, beanId, className, methodName);
-
         // Check the cache first
         RelevantAspectRuleHolder holder = cache.get(pattern);
         if (holder == null) {

@@ -11,8 +11,6 @@
         <setting name="transletNamePattern" value="/terminal/*"/>
     </settings>
 
-    <bean id="transletInterpreter" class="com.aspectran.demo.terminal.TransletInterpreter"/>
-
     <translet name="/">
         <dispatch name="templates/default">
             <echo id="page">

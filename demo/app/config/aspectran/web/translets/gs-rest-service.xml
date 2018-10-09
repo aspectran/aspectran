@@ -11,10 +11,6 @@
         <setting name="transletNamePattern" value="/examples/gs-rest-service/*"/>
     </settings>
 
-    <bean class="com.aspectran.demo.customer.CustomerDao"/>
-
-    <bean class="com.aspectran.demo.customer.CustomerAction"/>
-
     <translet name="/">
         <dispatch name="templates/default">
             <echo id="page">
