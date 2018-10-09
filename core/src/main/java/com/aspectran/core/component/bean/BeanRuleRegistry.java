@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.AspectranRuntimeException;
@@ -160,7 +160,7 @@ public class BeanRuleRegistry {
             log.info("Scan configurations from " + basePackage);
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, scannedClass) -> {
-                if (scannedClass.isAnnotationPresent(Configuration.class)) {
+                if (scannedClass.isAnnotationPresent(Component.class)) {
                     BeanRule beanRule = new BeanRule();
                     beanRule.setBeanClass(scannedClass);
                     saveConfigBeanRule(beanRule);
@@ -231,7 +231,7 @@ public class BeanRuleRegistry {
                 saveBeanRule(beanRule.getId(), beanRule);
             }
             if (!beanRule.isFactoryOffered()) {
-                if (targetBeanClass.isAnnotationPresent(Configuration.class)) {
+                if (targetBeanClass.isAnnotationPresent(Component.class)) {
                     // bean rule for configuration
                     saveConfigBeanRule(beanRule);
                 } else {

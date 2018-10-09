@@ -18,7 +18,7 @@ package com.aspectran.demo.terminal;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.RequestAsGet;
 import com.aspectran.core.component.bean.annotation.RequestAsPost;
 import com.aspectran.core.component.bean.annotation.Transform;
@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Configuration(namespace = "/terminal")
+@Component(namespace = "/terminal")
 @Bean (id = "transletInterpreter")
 public class TransletInterpreter implements ActivityContextAware {
 

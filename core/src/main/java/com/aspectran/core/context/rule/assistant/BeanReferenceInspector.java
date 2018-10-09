@@ -33,10 +33,8 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.nodelet.NodeTracker;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -77,7 +75,7 @@ public class BeanReferenceInspector {
      * @throws BeanReferenceException the bean reference exception
      */
     public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
-        List<Object> brokenReferences = new ArrayList<>();
+        Set<Object> brokenReferences = new LinkedHashSet<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
             RefererKey refererKey = entry.getKey();

@@ -17,10 +17,10 @@ package com.aspectran.embed.sample.anno;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.context.rule.type.ScopeType;
 
-@Configuration
+@Component
 public class TestConfiguration {
 
     @Autowired

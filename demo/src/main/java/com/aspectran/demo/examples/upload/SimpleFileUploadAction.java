@@ -18,7 +18,7 @@ package com.aspectran.demo.examples.upload;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.component.bean.annotation.Action;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.RequestAsDelete;
 import com.aspectran.core.component.bean.annotation.RequestAsGet;
 import com.aspectran.core.component.bean.annotation.RequestAsPost;
@@ -43,7 +43,7 @@ import java.util.UUID;
 /**
  * <p>Created: 2018. 7. 9.</p>
  */
-@Configuration(namespace = "/examples/file-upload")
+@Component(namespace = "/examples/file-upload")
 public class SimpleFileUploadAction {
 
     private Log log = LogFactory.getLog(SimpleFileUploadAction.class);

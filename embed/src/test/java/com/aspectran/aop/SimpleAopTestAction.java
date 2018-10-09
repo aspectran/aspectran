@@ -16,13 +16,13 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Request;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
  */
-@Configuration
+@Component
 public class SimpleAopTestAction {
 
     @Request (translet = "aop/test/action1")

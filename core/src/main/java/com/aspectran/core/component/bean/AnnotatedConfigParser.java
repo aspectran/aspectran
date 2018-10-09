@@ -23,7 +23,7 @@ import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Before;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.Destroy;
 import com.aspectran.core.component.bean.annotation.Dispatch;
@@ -172,15 +172,15 @@ public class AnnotatedConfigParser {
 
     private void parseConfigBean(BeanRule beanRule) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
-        Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-        if (configAnno != null) {
+        Component componentAnno = beanClass.getAnnotation(Component.class);
+        if (componentAnno != null) {
             if (beanClass.isAnnotationPresent(Profile.class)) {
                 Profile profileAnno = beanClass.getAnnotation(Profile.class);
                 if (!environment.acceptsProfiles(profileAnno.value())) {
                     return;
                 }
             }
-            String[] nameArray = splitNamespace(configAnno.namespace());
+            String[] nameArray = splitNamespace(componentAnno.namespace());
             if (beanClass.isAnnotationPresent(Bean.class)) {
                 parseBeanRule(beanRule, nameArray);
             }

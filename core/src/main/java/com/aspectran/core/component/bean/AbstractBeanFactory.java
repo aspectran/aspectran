@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
-import com.aspectran.core.component.bean.annotation.Configuration;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
@@ -175,7 +175,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         try {
             if (factoryBeanClass != null) {
-                if (factoryBeanClass.isAnnotationPresent(Configuration.class)) {
+                if (factoryBeanClass.isAnnotationPresent(Component.class)) {
                     bean = activity.getConfigBean(factoryBeanClass);
                 } else {
                     bean = activity.getBean(factoryBeanClass);
