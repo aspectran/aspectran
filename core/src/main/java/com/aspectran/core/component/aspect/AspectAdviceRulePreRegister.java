@@ -133,7 +133,6 @@ public class AspectAdviceRulePreRegister {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
             Pointcut pointcut = aspectRule.getPointcut();
-
             if (!aspectRule.isBeanRelevant() && joinpointTargetType != JoinpointTargetType.SESSION) {
                 if (pointcut == null || pointcut.matches(transletRule.getName())) {
                     // register to the translet scope
@@ -149,7 +148,6 @@ public class AspectAdviceRulePreRegister {
 
     private boolean existsMatchedBean(Pointcut pointcut, String beanId, String className) {
         List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-
         if (pointcutPatternRuleList != null) {
             for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                 if (existsBean(pointcut, ppr, beanId, className, null)) {
@@ -157,7 +155,6 @@ public class AspectAdviceRulePreRegister {
                 }
             }
         }
-
         return false;
     }
 

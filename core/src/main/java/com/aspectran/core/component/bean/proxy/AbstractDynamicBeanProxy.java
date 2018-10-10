@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -53,13 +54,20 @@ public abstract class AbstractDynamicBeanProxy {
     protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity,
             String transletName, String beanId, String className, String methodName) {
         RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
+        AspectAdviceRuleRegistry aarr = holder.getAspectAdviceRuleRegistry();
+        if (aarr != null && aarr.getSettingsAdviceRuleList() != null) {
+            for (SettingsAdviceRule sar : aarr.getSettingsAdviceRuleList()) {
+                activity.registerSettingsAdviceRule(sar);
+            }
+        }
         if (holder.getDynamicAspectRuleList() != null) {
             for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
                 // register dynamically
                 activity.registerAspectRule(aspectRule);
+
             }
         }
-        return holder.getAspectAdviceRuleRegistry();
+        return aarr;
     }
 
     private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
@@ -103,10 +111,9 @@ public abstract class AbstractDynamicBeanProxy {
         AspectAdviceRuleRegistry registry = postRegister.getAspectAdviceRuleRegistry();
         if (!dynamicAspectRuleList.isEmpty() || (registry != null && registry.getAspectRuleCount() > 0)) {
             RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
+            holder.setAspectAdviceRuleRegistry(registry);
             if (!dynamicAspectRuleList.isEmpty()) {
                 holder.setDynamicAspectRuleList(dynamicAspectRuleList);
-            } else {
-                holder.setAspectAdviceRuleRegistry(registry);
             }
             return holder;
         } else {

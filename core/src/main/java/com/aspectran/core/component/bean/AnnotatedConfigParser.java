@@ -41,6 +41,7 @@ import com.aspectran.core.component.bean.annotation.RequestAsPatch;
 import com.aspectran.core.component.bean.annotation.RequestAsPost;
 import com.aspectran.core.component.bean.annotation.RequestAsPut;
 import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.ActivityContext;
@@ -60,6 +61,7 @@ import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -237,7 +239,6 @@ public class AnnotatedConfigParser {
                 } else if (field.isAnnotationPresent(Value.class)) {
                     Value valueAnno = field.getAnnotation(Value.class);
                     String value = StringUtils.emptyToNull(valueAnno.value());
-
                     if (value != null) {
                         Token[] tokens = TokenParser.parse(value);
                         if (tokens != null && tokens.length > 0) {
@@ -328,9 +329,6 @@ public class AnnotatedConfigParser {
         boolean lazyInit = beanAnno.lazyInit();
         boolean important = beanAnno.important();
 
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
-
         beanRule.setId(beanId);
         beanRule.setScopeType(scopeType);
         beanRule.setInitMethodName(initMethodName);
@@ -341,7 +339,12 @@ public class AnnotatedConfigParser {
         if (important) {
             beanRule.setImportant(Boolean.TRUE);
         }
-        beanRule.setDescription(description);
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            beanRule.setDescription(description);
+        }
 
         relater.relay(beanClass, beanRule);
     }
@@ -361,9 +364,6 @@ public class AnnotatedConfigParser {
         boolean lazyInit = beanAnno.lazyInit();
         boolean important = beanAnno.important();
 
-        Description descriptionAnno = method.getAnnotation(Description.class);
-        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
-
         BeanRule beanRule = new BeanRule();
         beanRule.setId(beanId);
         beanRule.setScopeType(scopeType);
@@ -380,7 +380,12 @@ public class AnnotatedConfigParser {
         if (important) {
             beanRule.setImportant(Boolean.TRUE);
         }
-        beanRule.setDescription(description);
+
+        Description descriptionAnno = method.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            beanRule.setDescription(description);
+        }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         relater.relay(targetBeanClass, beanRule);
@@ -428,11 +433,7 @@ public class AnnotatedConfigParser {
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
 
-        Description descriptionAnno = method.getAnnotation(Description.class);
-        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
-
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
-        transletRule.setDescription(description);
 
         MethodActionRule methodActionRule = new MethodActionRule();
         methodActionRule.setActionId(actionId);
@@ -458,6 +459,12 @@ public class AnnotatedConfigParser {
             transletRule.setResponseRule(ResponseRule.newInstance(rrr));
         }
 
+        Description descriptionAnno = method.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            transletRule.setDescription(description);
+        }
+
         relater.relay(transletRule);
     }
 
@@ -473,14 +480,10 @@ public class AnnotatedConfigParser {
         int order = aspectAnno.order();
         boolean isolated = aspectAnno.isolated();
 
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        String description = (descriptionAnno != null ? StringUtils.emptyToNull(descriptionAnno.value()) : null);
-
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(aspectId);
         aspectRule.setOrder(order);
         aspectRule.setIsolated(isolated);
-        aspectRule.setDescription(description);
         aspectRule.setAdviceBeanClass(beanClass);
 
         if (beanClass.isAnnotationPresent(Joinpoint.class)) {
@@ -500,6 +503,16 @@ public class AnnotatedConfigParser {
             }
             joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
             aspectRule.setJoinpointRule(joinpointRule);
+        }
+
+        if (beanClass.isAnnotationPresent(Settings.class)) {
+            Settings settingsAnno = beanClass.getAnnotation(Settings.class);
+            String text = StringUtils.arrayToDelimitedString(settingsAnno.value(), ActivityContext.LINE_SEPARATOR);
+            if (!text.isEmpty()) {
+                SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+                SettingsAdviceRule.updateSettingsAdviceRule(sar, text);
+                aspectRule.setSettingsAdviceRule(sar);
+            }
         }
 
         for (Method method : beanClass.getMethods()) {
@@ -536,6 +549,12 @@ public class AnnotatedConfigParser {
                     exceptionThrownRule.applyResponseRule(rrr);
                 }
             }
+        }
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            aspectRule.setDescription(description);
         }
 
         relater.relay(aspectRule);

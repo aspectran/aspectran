@@ -39,14 +39,17 @@ public class AspectranSimpleAopTest {
     }
 
     @Test
-    public void test1() throws AspectranServiceException {
+    public void test1() {
         Translet translet = service.translet("aop/test/action1");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         assertEquals(sampleAnnotatedAspect.foo(), "foo");
+        assertEquals(translet.getSetting("setting1"), "value1");
+        assertEquals(translet.getSetting("setting2"), "value2");
+        assertEquals(translet.getSetting("setting3"), "value3");
     }
 
     @Test
-    public void test2() throws AspectranServiceException {
+    public void test2() {
         service.translet("aop/test/action2");
     }
 

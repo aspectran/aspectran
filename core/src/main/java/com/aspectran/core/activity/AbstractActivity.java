@@ -32,6 +32,7 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
@@ -434,6 +435,11 @@ public abstract class AbstractActivity implements Activity {
          * The before advice is excluded because it was already executed.
          */
         touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
+    }
+
+    @Override
+    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        touchAspectAdviceRuleRegistry().addAspectAdviceRule(settingsAdviceRule);
     }
 
     protected void prepareAspectAdviceRule(TransletRule transletRule) {

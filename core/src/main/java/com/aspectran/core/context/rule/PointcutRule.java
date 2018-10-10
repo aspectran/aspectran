@@ -95,13 +95,21 @@ public class PointcutRule {
         List<PointcutPatternRule> pointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
         List<PointcutPatternRule> excludePointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
         for (String pattern : patterns) {
-            if (pattern != null){
+            if (pattern != null) {
+                pattern = pattern.trim();
                 if (pattern.startsWith("-")) {
+                    if (pattern.startsWith("-:")) {
+                        pattern = pattern.substring(2).trim();
+                    } else {
+                        pattern = pattern.substring(1).trim();
+                    }
                     PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
                     excludePointcutPatternRuleList.add(pointcutPatternRule);
                 } else {
-                    if (pattern.startsWith("+")) {
-                        pattern = pattern.substring(1);
+                    if (pattern.startsWith("+:")) {
+                        pattern = pattern.substring(2).trim();
+                    } else if (pattern.startsWith("+")) {
+                        pattern = pattern.substring(1).trim();
                     }
                     PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
                     pointcutPatternRuleList.add(pointcutPatternRule);

@@ -24,6 +24,7 @@ import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.ExceptionThrown;
 import com.aspectran.core.component.bean.annotation.Finally;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
+import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -35,12 +36,20 @@ import com.aspectran.core.util.logging.LogFactory;
 )
 @Joinpoint(
         target = JoinpointTargetType.METHOD,
-        pointcut = "+aop/test/*"
+        pointcut = {
+                "+: aop/test/*",
+                "-: aop/foo/*"
+        }
 )
+@Settings({
+       "setting1: value1",
+       "setting2: value2",
+       "setting3: value3"
+})
 @Description("The annotated aspect02")
 public class SampleAnnotatedAspect {
 
-    private final Log log = LogFactory.getLog(SampleAnnotatedAspect.class);
+    private static final Log log = LogFactory.getLog(SampleAnnotatedAspect.class);
 
     @Before
     public String helloWorld() {
@@ -78,7 +87,7 @@ public class SampleAnnotatedAspect {
         return msg;
     }
 
-    @ExceptionThrown (type = SimpleAopTestException.class)
+    @ExceptionThrown(type = SimpleAopTestException.class)
     public String oops() {
         String msg = "Oops!!!!!!!!!!!!!!!";
 
@@ -88,7 +97,7 @@ public class SampleAnnotatedAspect {
     }
 
     @ExceptionThrown
-    public String oopsGloba() {
+    public String oopsGlobal() {
         String msg = "Global Oops!!!!!!!!!!!!!!!";
 
         log.info("===> aspect02: " + msg);

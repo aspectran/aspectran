@@ -125,6 +125,10 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         }
     }
 
+    public List<SettingsAdviceRule> getSettingsAdviceRuleList() {
+        return settingsAdviceRuleList;
+    }
+
     private void setSettingsAdviceRuleList(List<SettingsAdviceRule> settingsAdviceRuleList) {
         this.settingsAdviceRuleList = settingsAdviceRuleList;
         for (SettingsAdviceRule settingsAdviceRule : settingsAdviceRuleList) {
@@ -156,16 +160,15 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         this.finallyAdviceRuleList = finallyAdviceRuleList;
     }
 
-    private void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+    public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         if (settingsAdviceRuleList == null) {
             settingsAdviceRuleList = new ArrayList<>();
         }
         settingsAdviceRuleList.add(settingsAdviceRule);
-
         addSettings(settingsAdviceRule.getSettings());
     }
 
-    private void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+    public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
         if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
             addBeforeAdviceRule(aspectAdviceRule);
         } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {

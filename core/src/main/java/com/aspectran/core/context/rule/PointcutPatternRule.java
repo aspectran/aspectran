@@ -185,7 +185,6 @@ public class PointcutPatternRule {
         String methodNamePattern = null;
 
         int beanClassDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_CLASS_DELIMITER);
-
         if (beanClassDelimiterIndex == -1) {
             transletNamePattern = patternString;
         } else if (beanClassDelimiterIndex == 0) {
@@ -197,7 +196,6 @@ public class PointcutPatternRule {
 
         if (beanClassPattern != null) {
             int methodNameDelimiterIndex = beanClassPattern.indexOf(POINTCUT_METHOD_NAME_DELIMITER);
-
             if (methodNameDelimiterIndex == 0) {
                 methodNamePattern = beanClassPattern.substring(1);
                 beanClassPattern = null;

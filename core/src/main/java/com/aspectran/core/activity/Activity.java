@@ -28,6 +28,7 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 
@@ -310,6 +311,8 @@ public interface Activity extends BeanRegistry {
      * @param aspectRule the aspect rule
      */
     void registerAspectRule(AspectRule aspectRule);
+
+    void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**
      * Gets the aspect advice bean.
