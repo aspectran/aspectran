@@ -43,7 +43,6 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.PropertiesLoaderUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -133,7 +132,6 @@ public class ContextRuleAssistant {
 
             BeanDescriptor.clearCache();
             MethodUtils.clearCache();
-            PropertiesLoaderUtils.clearCache();
         }
     }
 
@@ -158,7 +156,6 @@ public class ContextRuleAssistant {
 
             BeanDescriptor.clearCache();
             MethodUtils.clearCache();
-            PropertiesLoaderUtils.clearCache();
         }
     }
 

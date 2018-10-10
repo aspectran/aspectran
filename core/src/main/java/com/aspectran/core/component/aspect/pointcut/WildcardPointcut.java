@@ -21,7 +21,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Pointcut using Wildcard Matching to identify joinpoints.
@@ -30,7 +30,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
     private static final String OR_MATCH_DELIMITER = "|";
 
-    private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<>();
+    private final Map<String, WildcardPattern> cache = new ConcurrentHashMap<>();
 
     public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);
@@ -73,37 +73,27 @@ public class WildcardPointcut extends AbstractPointcut {
             return pattern.equals(compareString);
         }
 
-        WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
+        WildcardPattern wildcardPattern = cache.get(pattern);
         if (wildcardPattern == null) {
-            synchronized (wildcardPatternCache) {
-                wildcardPattern = wildcardPatternCache.get(pattern);
-                if (wildcardPattern == null) {
-                    wildcardPattern = new WildcardPattern(pattern);
-                    wildcardPatternCache.put(pattern, wildcardPattern);
-                }
-            }
+            wildcardPattern = new WildcardPattern(pattern);
+            cache.put(pattern, wildcardPattern);
         }
         return wildcardPattern.matches(compareString);
     }
 
     private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
         String patternKey = pattern + separator;
-        WildcardPattern wildcardPattern = wildcardPatternCache.get(patternKey);
+        WildcardPattern wildcardPattern = cache.get(patternKey);
         if (wildcardPattern == null) {
-            synchronized (wildcardPatternCache) {
-                wildcardPattern = wildcardPatternCache.get(patternKey);
-                if (wildcardPattern == null) {
-                    wildcardPattern = new WildcardPattern(pattern, separator);
-                    wildcardPatternCache.put(patternKey, wildcardPattern);
-                }
-            }
+            wildcardPattern = new WildcardPattern(pattern, separator);
+            cache.put(patternKey, wildcardPattern);
         }
         return wildcardPattern.matches(compareString);
     }
 
     @Override
     public void clear() {
-        wildcardPatternCache.clear();
+        cache.clear();
     }
 
 }

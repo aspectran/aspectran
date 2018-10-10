@@ -32,7 +32,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Class AbstractDynamicBeanProxy.
@@ -43,7 +43,7 @@ public abstract class AbstractDynamicBeanProxy {
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
-    private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
+    private static final Map<String, RelevantAspectRuleHolder> cache = new ConcurrentHashMap<>();
 
     private final AspectRuleRegistry aspectRuleRegistry;
 
@@ -73,21 +73,20 @@ public abstract class AbstractDynamicBeanProxy {
     private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
             String transletName, String beanId, String className, String methodName) {
         String pattern = PointcutPatternRule.combinePattern(transletName, beanId, className, methodName);
+
         // Check the cache first
         RelevantAspectRuleHolder holder = cache.get(pattern);
-        if (holder == null) {
-            synchronized (cache) {
-                holder = cache.get(pattern);
-                if (holder == null) {
-                    holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);
-                    cache.put(pattern, holder);
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("cache relevantAspectRuleHolder [" + pattern + "] " + holder);
-                    }
-                }
-            }
+        if (holder != null) {
+            return holder;
         }
+
+        holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);
+        cache.put(pattern, holder);
+
+        if (log.isDebugEnabled()) {
+            log.debug("caching relevantAspectRuleHolder [" + pattern + "] " + holder);
+        }
+
         return holder;
     }
 
