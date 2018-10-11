@@ -363,12 +363,15 @@ public class BeanDescriptor {
      */
     public static BeanDescriptor getInstance(Class<?> clazz) {
         if (cacheEnabled) {
-            BeanDescriptor cached = cache.get(clazz);
-            if (cached == null) {
-                cached = new BeanDescriptor(clazz);
-                cache.put(clazz, cached);
+            BeanDescriptor bd = cache.get(clazz);
+            if (bd == null) {
+                bd = new BeanDescriptor(clazz);
+                BeanDescriptor bd2 = cache.putIfAbsent(clazz, bd);
+                if (bd2 != null) {
+                    bd = bd2;
+                }
             }
-            return cached;
+            return bd;
         } else {
             return new BeanDescriptor(clazz);
         }

@@ -39,7 +39,10 @@ public class RegexpPointcut extends AbstractPointcut {
         Pattern pattern = cache.get(regex);
         if (pattern == null) {
             pattern = Pattern.compile(regex);
-            cache.put(regex, pattern);
+            Pattern pattern2 = cache.putIfAbsent(regex, pattern);
+            if (pattern2 != null) {
+                pattern = pattern2;
+            }
         }
         Matcher matcher = pattern.matcher(compareString);
         return matcher.matches();
