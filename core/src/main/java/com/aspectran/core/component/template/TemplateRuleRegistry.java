@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class TemplateRuleRegistry extends AbstractComponent {
 
-    private final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
+    private static final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
 
     private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<>();
 

@@ -15,7 +15,7 @@ context: {
     autoReload: {
         reloadMode: hard
         scanIntervalSeconds: 5
-        startup: true
+        startup: false
     }
     singleton: true
 }

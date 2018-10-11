@@ -51,19 +51,19 @@ public class BeanRuleRegistry {
 
     private final ClassLoader classLoader;
 
-    private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>();
+    private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>(256);
 
-    private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>();
+    private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>(256);
 
-    private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<>();
+    private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<>(256);
 
     private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
-    private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
+    private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>(128);
 
-    private final Set<String> importantBeanIdSet = new HashSet<>();
+    private final Set<String> importantBeanIdSet = new HashSet<>(32);
 
-    private final Set<Class<?>> importantBeanTypeSet = new HashSet<>();
+    private final Set<Class<?>> importantBeanTypeSet = new HashSet<>(32);
 
     public BeanRuleRegistry(ClassLoader classLoader) {
         this.classLoader = classLoader;

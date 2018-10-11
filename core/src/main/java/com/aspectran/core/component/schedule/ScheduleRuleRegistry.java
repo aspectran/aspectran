@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class ScheduleRuleRegistry extends AbstractComponent {
 
-    private final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
+    private static final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
 
     private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
 

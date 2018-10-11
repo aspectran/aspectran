@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  */
 public class ClassScanner {
 
-    private final Log log = LogFactory.getLog(ClassScanner.class);
+    private static final Log log = LogFactory.getLog(ClassScanner.class);
 
     private final ClassLoader classLoader;
 

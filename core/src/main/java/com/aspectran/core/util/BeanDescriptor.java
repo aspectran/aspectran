@@ -18,8 +18,6 @@ package com.aspectran.core.util;
 import com.aspectran.core.component.bean.annotation.NonSerializable;
 import com.aspectran.core.context.AspectranRuntimeException;
 
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BeanDescriptor {
 
-    private static final Map<Class<?>, Reference<BeanDescriptor>> cache = new ConcurrentHashMap<>(128);
+    private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>(256);
 
     private final String className;
 
@@ -359,19 +357,12 @@ public class BeanDescriptor {
      * @return the method cache for the class
      */
     public static BeanDescriptor getInstance(Class<?> clazz) {
-        Reference<BeanDescriptor> ref = cache.get(clazz);
-        BeanDescriptor bd = (ref != null ? ref.get() : null);
+        BeanDescriptor bd = cache.get(clazz);
         if (bd == null) {
             bd = new BeanDescriptor(clazz);
-            Reference<BeanDescriptor> newRef = new SoftReference<>(bd);
-            Reference<BeanDescriptor> oldRef = cache.putIfAbsent(clazz, newRef);
-            if (oldRef != null) {
-                BeanDescriptor oldBd = oldRef.get();
-                if (oldBd != null) {
-                    bd = oldBd;
-                } else {
-                    cache.put(clazz, newRef);
-                }
+            BeanDescriptor bd2 = cache.putIfAbsent(clazz, bd);
+            if (bd2 != null) {
+                bd = bd2;
             }
         }
         return bd;

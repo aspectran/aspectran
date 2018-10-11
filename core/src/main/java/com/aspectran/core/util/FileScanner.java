@@ -65,7 +65,6 @@ public class FileScanner {
         matcher.separate(filePathPattern);
 
         StringBuilder sb = new StringBuilder();
-
         while (matcher.hasNext()) {
             String term = matcher.next();
             if (term.length() > 0) {
@@ -82,7 +81,6 @@ public class FileScanner {
         }
 
         String basePath = sb.toString();
-
         scan(basePath, matcher, saveHandler);
     }
 

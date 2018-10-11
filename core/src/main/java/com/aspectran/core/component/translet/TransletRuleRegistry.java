@@ -46,9 +46,9 @@ import java.util.Set;
  */
 public class TransletRuleRegistry extends AbstractComponent {
 
-    private final Log log = LogFactory.getLog(TransletRuleRegistry.class);
+    private static final Log log = LogFactory.getLog(TransletRuleRegistry.class);
 
-    private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
+    private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>(256);
 
     private final Set<TransletRule> wildTransletRuleSet = new HashSet<>();
 
