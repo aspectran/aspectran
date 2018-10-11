@@ -41,8 +41,6 @@ import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.MethodUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -129,9 +127,6 @@ public class ContextRuleAssistant {
             templateRuleRegistry.setAssistantLocal(assistantLocal);
 
             beanReferenceInspector = new BeanReferenceInspector();
-
-            BeanDescriptor.clearCache();
-            MethodUtils.clearCache();
         }
     }
 
@@ -153,9 +148,6 @@ public class ContextRuleAssistant {
             templateRuleRegistry = null;
 
             beanReferenceInspector = null;
-
-            BeanDescriptor.clearCache();
-            MethodUtils.clearCache();
         }
     }
 

@@ -16,7 +16,7 @@
 package com.aspectran.core.util;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -31,43 +31,16 @@ import java.util.WeakHashMap;
  */
 public class MethodUtils {
 
-    /**
-     * Indicates whether methods should be cached for improved performance.
-     * <p>
-     * Note that when this class is deployed via a shared classloader in
-     * a container, this will affect all webapps. However making this
-     * configurable per webapp would mean having a map keyed by context classloader
-     * which may introduce memory-leak problems.</p>
-     */
-    private static volatile boolean cacheEnabled = true;
-
     /** An empty class array */
-    public static final Class<?>[] EMPTY_CLASS_PARAMETERS = new Class[0];
+    public static final Class<?>[] EMPTY_CLASS_PARAMETERS = {};
 
     /** An empty object array */
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    public static final Object[] EMPTY_OBJECT_ARRAY = {};
 
     /**
      * Stores a cache of MethodDescriptor -> Method in a WeakHashMap.
-     *
-     * <p>The keys into this map only ever exist as temporary variables within
-     * methods of this class, and are never exposed to users of this class.
-     * This means that the WeakHashMap is used only as a mechanism for
-     * limiting the size of the cache, ie a way to tell the garbage collector
-     * that the contents of the cache can be completely garbage-collected
-     * whenever it needs the memory. Whether this is a good approach to
-     * this problem is doubtful; something like the commons-collections
-     * LRUMap may be more appropriate (though of course selecting an
-     * appropriate size is an issue).</p>
-     *
-     * <p>This static variable is safe even when this code is deployed via a
-     * shared classloader because it is keyed via a MethodDescriptor object
-     * which has a Class as one of its members and that member is used in
-     * the MethodDescriptor.equals method. So two components that parse the same
-     * class via different classloaders will generate non-equal MethodDescriptor
-     * objects and hence end up with different entries in the map.</p>
      */
-    private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<>(256));
 
     /**
      * Sets the value of a bean property to an Object.
@@ -949,44 +922,23 @@ public class MethodUtils {
     /**
      * Return the method from the cache, if present.
      *
-     * @param md The method descriptor
+     * @param md the method descriptor
      * @return the cached method
      */
     private static Method getCachedMethod(MethodDescriptor md) {
-        if (cacheEnabled) {
-            Reference<Method> methodRef = cache.get(md);
-            if (methodRef != null) {
-                return methodRef.get();
-            }
-        }
-        return null;
+        Reference<Method> ref = cache.get(md);
+        return (ref != null ? ref.get() : null);
     }
 
     /**
      * Add a method to the cache.
      *
-     * @param md The method descriptor
-     * @param method The method to cache
+     * @param md the method descriptor
+     * @param method the method to cache
      */
     private static void cacheMethod(MethodDescriptor md, Method method) {
-        if (cacheEnabled) {
-            if (method != null) {
-                cache.put(md, new WeakReference<>(method));
-            }
-        }
-    }
-
-    /**
-     * Set whether methods should be cached for greater performance or not,
-     * default is {@code true}.
-     *
-     * @param cacheEnabling {@code true} if methods should be
-     * cached for greater performance, otherwise {@code false}
-     */
-    public static synchronized void setCacheEnabled(boolean cacheEnabling) {
-        cacheEnabled = cacheEnabling;
-        if (!cacheEnabled) {
-            clearCache();
+        if (method != null) {
+            cache.put(md, new SoftReference<>(method));
         }
     }
 

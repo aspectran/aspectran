@@ -18,6 +18,8 @@ package com.aspectran.core.util;
 import com.aspectran.core.component.bean.annotation.NonSerializable;
 import com.aspectran.core.context.AspectranRuntimeException;
 
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,9 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BeanDescriptor {
 
-    private static volatile boolean cacheEnabled = true;
-
-    private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Reference<BeanDescriptor>> cache = new ConcurrentHashMap<>(128);
 
     private final String className;
 
@@ -56,7 +56,7 @@ public class BeanDescriptor {
 
     private final Map<String, Method> writeMethods = new HashMap<>();
 
-    private final Map<String, Class<?>> writeType = new HashMap<>();
+    private final Map<String, Class<?>> writeTypes = new HashMap<>();
 
     private BeanDescriptor(Class<?> beanClass) {
         this.className = beanClass.getName();
@@ -165,7 +165,7 @@ public class BeanDescriptor {
 
     private void addWriteMethod(String name, Method method) {
         writeMethods.put(name, method);
-        writeType.put(name, method.getParameterTypes()[0]);
+        writeTypes.put(name, method.getParameterTypes()[0]);
     }
 
     /**
@@ -179,7 +179,6 @@ public class BeanDescriptor {
     private Method[] getAllMethods(Class<?> beanClass) {
         Map<String, Method> uniqueMethods = new HashMap<>();
         Class<?> currentClass = beanClass;
-
         while (currentClass != null && currentClass != Object.class) {
             addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 
@@ -189,10 +188,8 @@ public class BeanDescriptor {
             for (Class<?> anInterface : interfaces) {
                 addUniqueMethods(uniqueMethods, anInterface.getMethods());
             }
-
             currentClass = currentClass.getSuperclass();
         }
-
         Collection<Method> methods = uniqueMethods.values();
         return methods.toArray(new Method[0]);
     }
@@ -280,7 +277,7 @@ public class BeanDescriptor {
      * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Class<?> getSetterType(String name) throws NoSuchMethodException {
-        Class<?> clazz = writeType.get(name);
+        Class<?> clazz = writeTypes.get(name);
         if (clazz == null) {
             throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
                     "' in class '" + className + "'");
@@ -362,35 +359,25 @@ public class BeanDescriptor {
      * @return the method cache for the class
      */
     public static BeanDescriptor getInstance(Class<?> clazz) {
-        if (cacheEnabled) {
-            BeanDescriptor bd = cache.get(clazz);
-            if (bd == null) {
-                bd = new BeanDescriptor(clazz);
-                BeanDescriptor bd2 = cache.putIfAbsent(clazz, bd);
-                if (bd2 != null) {
-                    bd = bd2;
+        Reference<BeanDescriptor> ref = cache.get(clazz);
+        BeanDescriptor bd = (ref != null ? ref.get() : null);
+        if (bd == null) {
+            bd = new BeanDescriptor(clazz);
+            Reference<BeanDescriptor> newRef = new SoftReference<>(bd);
+            Reference<BeanDescriptor> oldRef = cache.putIfAbsent(clazz, newRef);
+            if (oldRef != null) {
+                BeanDescriptor oldBd = oldRef.get();
+                if (oldBd != null) {
+                    bd = oldBd;
+                } else {
+                    cache.put(clazz, newRef);
                 }
             }
-            return bd;
-        } else {
-            return new BeanDescriptor(clazz);
         }
+        return bd;
     }
 
     /**
-     * You can manually turn off caching enabled by default.
-     *
-     * @param cacheEnabling if true, turn caching on; otherwise, turn off caching
-     */
-    public static synchronized void setCacheEnabled(boolean cacheEnabling) {
-        cacheEnabled = cacheEnabling;
-        if (!cacheEnabled) {
-            clearCache();
-        }
-    }
-
-    /**
-     *
      * Clear the ClassDescriptor cache.
      *
      * @return the number of cached ClassDescriptor cleared
