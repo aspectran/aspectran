@@ -43,7 +43,7 @@ public abstract class AbstractDynamicBeanProxy {
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
-    private static final Map<String, RelevantAspectRuleHolder> cache = new ConcurrentHashMap<>();
+    private static final Map<String, RelevantAspectRuleHolder> cache = new ConcurrentHashMap<>(256);
 
     private final AspectRuleRegistry aspectRuleRegistry;
 

@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class TransletFileScanner extends FileScanner {
 
-    private final Log log = LogFactory.getLog(TransletFileScanner.class);
+    private static final Log log = LogFactory.getLog(TransletFileScanner.class);
 
     private final ClassLoader classLoader;
 

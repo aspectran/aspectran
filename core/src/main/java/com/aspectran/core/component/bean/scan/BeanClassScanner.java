@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class BeanClassScanner extends ClassScanner {
 
-    private final Log log = LogFactory.getLog(BeanClassScanner.class);
+    private static final Log log = LogFactory.getLog(BeanClassScanner.class);
 
     private Parameters filterParameters;
 
