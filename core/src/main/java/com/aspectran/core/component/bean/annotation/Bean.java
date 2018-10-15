@@ -30,6 +30,8 @@ public @interface Bean {
 
     String id() default "";
 
+    String value() default "";
+
     ScopeType scope() default ScopeType.SINGLETON;
 
     String initMethod() default "";

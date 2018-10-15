@@ -320,6 +320,9 @@ public class AnnotatedConfigParser {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.id());
+        if (beanId == null) {
+            beanId = StringUtils.emptyToNull(beanAnno.value());
+        }
         if (beanId != null && nameArray != null) {
             beanId = applyNamespace(nameArray, beanId);
         }
@@ -352,6 +355,9 @@ public class AnnotatedConfigParser {
     private void parseBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
         Bean beanAnno = method.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.id());
+        if (beanId == null) {
+            beanId = StringUtils.emptyToNull(beanAnno.value());
+        }
         if (beanId == null) {
             beanId = method.getName();
         }

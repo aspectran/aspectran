@@ -23,7 +23,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 @Component
-@Bean(id = "helloAdvice")
+@Bean("helloAdvice")
 @Description("Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.")
 public class HelloAdvice {
 
