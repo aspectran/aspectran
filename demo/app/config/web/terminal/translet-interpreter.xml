@@ -23,6 +23,6 @@
         </dispatch>
     </translet>
 
-    <append file="/config/aspectran/web/terminal/terminal-commands.xml"/>
+    <append file="/config/web/terminal/terminal-commands.xml"/>
 
 </aspectran>

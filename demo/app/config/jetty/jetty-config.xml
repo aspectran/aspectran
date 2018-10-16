@@ -77,6 +77,7 @@
             <item name="contextPath" value="/"/>
             <item name="war" value="#{basePath}/webapps/root"/>
             <item name="persistTempDirectory" value="true" valueType="boolean"/>
+            <item name="defaultsDescriptor" value="#{basePath}/config/jetty/webdefault.xml"/>
         </properties>
     </bean>
 
@@ -102,6 +103,6 @@
         </properties>
     </bean>
 
-    <append file="/config/aspectran/jetty/translets/jetty-controller.xml"/>
+    <append file="/config/jetty/jetty-controller.xml"/>
 
 </aspectran>

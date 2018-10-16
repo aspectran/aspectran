@@ -4,8 +4,9 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for Web Application Service.
-        Note that the name of the Translet corresponding to the request URI always starts with a forward slash (/).
+        An Aspectran configuration for the Web Application.
+        Note that names of translets that match the request URI
+        always start with a forward slash (/).
     </description>
 
     <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
@@ -31,10 +32,10 @@
         </settings>
     </aspect>
 
-    <append file="/config/aspectran/web/translets/main.xml"/>
-    <append file="/config/aspectran/web/translets/hello-world.xml"/>
-    <append file="/config/aspectran/web/translets/gs-rest-service.xml"/>
-    <append file="/config/aspectran/web/translets/file-upload.xml"/>
-    <append file="/config/aspectran/web/terminal/translet-interpreter.xml"/>
+    <append file="/config/web/main/main.xml"/>
+    <append file="/config/web/examples/hello-world.xml"/>
+    <append file="/config/web/examples/gs-rest-service.xml"/>
+    <append file="/config/web/examples/file-upload.xml"/>
+    <append file="/config/web/terminal/translet-interpreter.xml"/>
 
 </aspectran>

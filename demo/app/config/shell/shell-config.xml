@@ -1,0 +1,16 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        An Aspectran configuration for the Aspectran Shell Application.
+        Note that translets with names that begin with a slash (/) are
+        only accessible in the Web environment.
+    </description>
+
+    <append file="/config/shell/examples/hello.xml"/>
+    <append file="/config/shell/examples/echo.xml"/>
+    <append file="/config/shell/examples/speak.xml"/>
+
+</aspectran>

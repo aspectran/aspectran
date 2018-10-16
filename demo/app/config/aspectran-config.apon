@@ -1,5 +1,5 @@
 context: {
-    root: /config/aspectran/root-config.xml
+    root: /config/app-root-config.xml
     resources: [
         /lib
         /classes

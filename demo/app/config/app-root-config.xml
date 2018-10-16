@@ -65,8 +65,8 @@
         </exception>
     </aspect>
 
-    <append file="/config/aspectran/jetty/jetty-config.xml"/>
-    <append file="/config/aspectran/shell/shell-config.xml"/>
-    <append file="/config/aspectran/web/web-config.xml"/>
+    <append file="/config/jetty/jetty-config.xml"/>
+    <append file="/config/shell/shell-config.xml"/>
+    <append file="/config/web/web-config.xml"/>
 
 </aspectran>
