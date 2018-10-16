@@ -32,9 +32,12 @@ fi
 CLASSPATH="$BASE_DIR/lib/*"
 LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+if [ -z "$JAVA_OPTS" ]; then
+    JAVA_OPTS="-Xms256m -Xmx1024m"
+fi
 
 "$JAVA_BIN" \
-    $JAVA_OPTS \
+    ${JAVA_OPTS} \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.baseDir="$BASE_DIR" \
     -classpath "$CLASSPATH" \
