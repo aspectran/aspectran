@@ -16,6 +16,7 @@
 package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.util.ConcurrentReferenceHashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class RegexpPointcut extends AbstractPointcut {
 
-    private final Map<String, Pattern> cache = new ConcurrentHashMap<>();
+    private final Map<String, Pattern> cache = new ConcurrentReferenceHashMap<>(256);
 
     public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);

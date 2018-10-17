@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class represents a cached set of bean property information that
@@ -36,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BeanDescriptor {
 
-    private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>(256);
+    private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentReferenceHashMap<>(256);
 
     private final String className;
 

@@ -26,6 +26,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.util.ConcurrentReferenceHashMap;
+import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -43,7 +45,7 @@ public abstract class AbstractDynamicBeanProxy {
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
-    private static final Map<String, RelevantAspectRuleHolder> cache = new ConcurrentHashMap<>(256);
+    private static final Map<String, RelevantAspectRuleHolder> cache = new ConcurrentReferenceHashMap<>(256);
 
     private final AspectRuleRegistry aspectRuleRegistry;
 
@@ -121,10 +123,10 @@ public abstract class AbstractDynamicBeanProxy {
     }
 
     protected boolean isSameBean(BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
-        if (beanRule.getId() != null) {
-            return (beanRule.getId().equals(aspectAdviceRule.getAdviceBeanId()));
+        if (beanRule.getId() != null && beanRule.getId().equals(aspectAdviceRule.getAdviceBeanId())) {
+            return true;
         }
-        if (beanRule.getBeanClass() != null) {
+        if (beanRule.getBeanClass() != null && aspectAdviceRule.getAdviceBeanClass() != null) {
             return (beanRule.getBeanClass() == aspectAdviceRule.getAdviceBeanClass());
         }
         return false;

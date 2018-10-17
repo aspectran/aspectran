@@ -31,14 +31,16 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * <p>(This class is a member of the Spring Framework.)</p>
+ *
  * {@link MessageSource} implementation that
  * accesses resource bundles using specified basenames. This class relies
  * on the underlying JDK's {@link java.util.ResourceBundle} implementation,
@@ -76,7 +78,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * This allows for very efficient hash lookups, significantly faster
      * than the ResourceBundle class's own cache.
      */
-    private final Map<String, Map<Locale, ResourceBundle>> cachedResourceBundles = new HashMap<>();
+    private final Map<String, Map<Locale, ResourceBundle>> cachedResourceBundles = new ConcurrentHashMap<>();
 
     /**
      * Cache to hold already generated MessageFormats.
@@ -86,7 +88,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * very efficient hash lookups without concatenated keys.
      * @see #getMessageFormat
      */
-    private final Map<ResourceBundle, Map<String, Map<Locale, MessageFormat>>> cachedBundleMessageFormats = new HashMap<>();
+    private final Map<ResourceBundle, Map<String, Map<Locale, MessageFormat>>> cachedBundleMessageFormats =
+            new ConcurrentHashMap<>();
 
     /**
      * Set the default charset to use for parsing resource bundle files.
@@ -249,29 +252,30 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             return doGetBundle(basename, locale);
         } else {
             // Cache forever: prefer locale cache over repeated getBundle calls.
-            synchronized (this.cachedResourceBundles) {
-                Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
-                if (localeMap != null) {
-                    ResourceBundle bundle = localeMap.get(locale);
-                    if (bundle != null) {
-                        return bundle;
-                    }
-                }
-                try {
-                    ResourceBundle bundle = doGetBundle(basename, locale);
-                    if (localeMap == null) {
-                        localeMap = new HashMap<>();
-                        this.cachedResourceBundles.put(basename, localeMap);
-                    }
-                    localeMap.put(locale, bundle);
+            Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
+            if (localeMap != null) {
+                ResourceBundle bundle = localeMap.get(locale);
+                if (bundle != null) {
                     return bundle;
-                } catch (MissingResourceException ex) {
-                    log.warn("ResourceBundle [" + basename + "] not found for MessageSource: " + ex.getMessage());
-
-                    // Assume bundle not found
-                    // -> do NOT throw the exception to allow for checking parent message source.
-                    return null;
                 }
+            }
+            try {
+                ResourceBundle bundle = doGetBundle(basename, locale);
+                if (localeMap == null) {
+                    localeMap = new ConcurrentHashMap<>();
+                    Map<Locale, ResourceBundle> existing = this.cachedResourceBundles.putIfAbsent(basename, localeMap);
+                    if (existing != null) {
+                        localeMap = existing;
+                    }
+                }
+                localeMap.put(locale, bundle);
+                return bundle;
+            } catch (MissingResourceException ex) {
+                log.warn("ResourceBundle [" + basename + "] not found for MessageSource: " + ex.getMessage());
+
+                // Assume bundle not found
+                // -> do NOT throw the exception to allow for checking parent message source.
+                return null;
             }
         }
     }
@@ -303,6 +307,28 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     }
 
     /**
+     * Load a property-based resource bundle from the given input stream,
+     * picking up the default properties encoding on JDK 9+.
+     * <p>This will only be called with {@link #setDefaultEncoding "defaultEncoding"}
+     * set to {@code null}, explicitly enforcing the platform default encoding
+     * (which is UTF-8 with a ISO-8859-1 fallback on JDK 9+ but configurable
+     * through the "java.util.PropertyResourceBundle.encoding" system property).
+     * Note that this method can only be called with a {@code ResourceBundle.Control}:
+     * When running on the JDK 9+ module path where such control handles are not
+     * supported, any overrides in custom subclasses will effectively get ignored.
+     * <p>The default implementation returns a {@link PropertyResourceBundle}.
+     *
+     * @param inputStream the input stream for the target resource
+     * @return the fully loaded bundle
+     * @throws IOException in case of I/O failure
+     * @see #loadBundle(Reader)
+     * @see PropertyResourceBundle#PropertyResourceBundle(InputStream)
+     */
+    protected ResourceBundle loadBundle(InputStream inputStream) throws IOException {
+        return new PropertyResourceBundle(inputStream);
+    }
+
+    /**
      * Return a MessageFormat for the given bundle and code,
      * fetching already generated MessageFormats from the cache.
      *
@@ -314,37 +340,40 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      */
     protected MessageFormat getMessageFormat(ResourceBundle bundle, String code, Locale locale)
             throws MissingResourceException {
-
-        synchronized (this.cachedBundleMessageFormats) {
-            Map<String, Map<Locale, MessageFormat>> codeMap = this.cachedBundleMessageFormats.get(bundle);
-            Map<Locale, MessageFormat> localeMap = null;
-            if (codeMap != null) {
-                localeMap = codeMap.get(code);
-                if (localeMap != null) {
-                    MessageFormat result = localeMap.get(locale);
-                    if (result != null) {
-                        return result;
-                    }
+        Map<String, Map<Locale, MessageFormat>> codeMap = this.cachedBundleMessageFormats.get(bundle);
+        Map<Locale, MessageFormat> localeMap = null;
+        if (codeMap != null) {
+            localeMap = codeMap.get(code);
+            if (localeMap != null) {
+                MessageFormat result = localeMap.get(locale);
+                if (result != null) {
+                    return result;
                 }
             }
-
-            String msg = getStringOrNull(bundle, code);
-            if (msg != null) {
-                if (codeMap == null) {
-                    codeMap = new HashMap<>();
-                    this.cachedBundleMessageFormats.put(bundle, codeMap);
-                }
-                if (localeMap == null) {
-                    localeMap = new HashMap<>();
-                    codeMap.put(code, localeMap);
-                }
-                MessageFormat result = createMessageFormat(msg, locale);
-                localeMap.put(locale, result);
-                return result;
-            }
-
-            return null;
         }
+
+        String msg = getStringOrNull(bundle, code);
+        if (msg != null) {
+            if (codeMap == null) {
+                codeMap = new ConcurrentHashMap<>();
+                Map<String, Map<Locale, MessageFormat>> existing =
+                        this.cachedBundleMessageFormats.putIfAbsent(bundle, codeMap);
+                if (existing != null) {
+                    codeMap = existing;
+                }
+            }
+            if (localeMap == null) {
+                localeMap = new ConcurrentHashMap<>();
+                Map<Locale, MessageFormat> existing = codeMap.putIfAbsent(code, localeMap);
+                if (existing != null) {
+                    localeMap = existing;
+                }
+            }
+            MessageFormat result = createMessageFormat(msg, locale);
+            localeMap.put(locale, result);
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -392,9 +421,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
                 final String resourceName = toResourceName(bundleName, "properties");
                 final ClassLoader classLoader = loader;
                 final boolean reloadFlag = reload;
-                InputStream stream;
+                InputStream inputStream;
                 try {
-                    stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
+                    inputStream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
                         InputStream is = null;
                         if (reloadFlag) {
                             URL url = classLoader.getResource(resourceName);
@@ -413,11 +442,15 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
                 } catch (PrivilegedActionException ex) {
                     throw (IOException)ex.getException();
                 }
-                if (stream != null) {
-                    try {
-                        return loadBundle(new InputStreamReader(stream, defaultEncoding));
-                    } finally {
-                        stream.close();
+                if (inputStream != null) {
+                    if (defaultEncoding != null) {
+                        try (InputStreamReader bundleReader = new InputStreamReader(inputStream, defaultEncoding)) {
+                            return loadBundle(bundleReader);
+                        }
+                    } else {
+                        try (InputStream bundleStream = inputStream) {
+                            return loadBundle(bundleStream);
+                        }
                     }
                 } else {
                     return null;

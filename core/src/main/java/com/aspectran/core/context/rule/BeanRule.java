@@ -800,7 +800,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             Boolean singleton,
             Boolean lazyInit,
             Boolean important) {
-
         if (className == null && scanPattern == null) {
             throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute");
         }

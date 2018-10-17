@@ -15,16 +15,12 @@
  */
 package com.aspectran.core.util;
 
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Utility reflection methods.
@@ -37,10 +33,12 @@ public class MethodUtils {
     /** An empty object array */
     public static final Object[] EMPTY_OBJECT_ARRAY = {};
 
+    public static final Method[] NO_METHODS = {};
+
     /**
-     * Stores a cache of MethodDescriptor -> Method in a WeakHashMap.
+     * Stores a cache of MethodDescriptor -> Method.
      */
-    private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<>(256));
+    private static final Map<MethodDescriptor, Method[]> cache = new ConcurrentReferenceHashMap<>(256);
 
     /**
      * Sets the value of a bean property to an Object.
@@ -640,22 +638,18 @@ public class MethodUtils {
      * @return the accessible method
      */
     public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
-        try {
-            MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, true);
-
-            // Check the cache first
-            Method method = getCachedMethod(md);
-            if (method != null) {
-                return method;
+        MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, true);
+        Method[] result = cache.get(md);
+        if (result == null) {
+            try {
+                Method method = getAccessibleMethod(clazz.getMethod(methodName, paramTypes));
+                result = new Method[] { method };
+            } catch (NoSuchMethodException e) {
+                result = NO_METHODS;
             }
-
-            method = getAccessibleMethod(clazz.getMethod(methodName, paramTypes));
-            cacheMethod(md, method);
-
-            return method;
-        } catch (NoSuchMethodException e) {
-            return (null);
+            cache.put(md, result);
         }
+        return (result.length > 0 ? result[0] : null);
     }
 
     /**
@@ -701,7 +695,8 @@ public class MethodUtils {
         } else {
             sameClass = clazz.equals(method.getDeclaringClass());
             if (!method.getDeclaringClass().isAssignableFrom(clazz)) {
-                throw new IllegalArgumentException(clazz.getName() + " is not assignable from " + method.getDeclaringClass().getName());
+                throw new IllegalArgumentException(clazz.getName() + " is not assignable from " +
+                        method.getDeclaringClass().getName());
             }
         }
 
@@ -738,7 +733,6 @@ public class MethodUtils {
      */
     private static Method getAccessibleMethodFromSuperclass(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
         Class<?> parentClazz = clazz.getSuperclass();
-
         while (parentClazz != null) {
             if (Modifier.isPublic(parentClazz.getModifiers())) {
                 try {
@@ -747,10 +741,8 @@ public class MethodUtils {
                     return null;
                 }
             }
-
             parentClazz = parentClazz.getSuperclass();
         }
-
         return null;
     }
 
@@ -832,17 +824,18 @@ public class MethodUtils {
     public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Object[] args, Class<?>[] paramTypes) {
         MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, false);
 
+        // Check the cache first
+        Method[] result = cache.get(md);
+        if (result != null) {
+            return (result.length > 0 ? result[0] : null);
+        }
+
         // see if we can find the method directly
         // most of the time this works and it's much faster
         try {
-            // Check the cache first
-            Method method = getCachedMethod(md);
-            if (method != null) {
-                return method;
-            }
-            method = clazz.getMethod(methodName, paramTypes);
+            Method method = clazz.getMethod(methodName, paramTypes);
             ReflectionUtils.makeAccessible(method); // Default access superclass workaround
-            cacheMethod(md, method);
+            cache.put(md, new Method[] { method });
             return method;
         } catch (NoSuchMethodException e) {
             // ignore
@@ -890,7 +883,9 @@ public class MethodUtils {
         }
 
         if (bestMatch != null) {
-            cacheMethod(md, bestMatch);
+            cache.put(md, new Method[] { bestMatch });
+        } else {
+            cache.put(md, NO_METHODS);
         }
 
         return bestMatch;
@@ -920,29 +915,6 @@ public class MethodUtils {
     }
 
     /**
-     * Return the method from the cache, if present.
-     *
-     * @param md the method descriptor
-     * @return the cached method
-     */
-    private static Method getCachedMethod(MethodDescriptor md) {
-        Reference<Method> ref = cache.get(md);
-        return (ref != null ? ref.get() : null);
-    }
-
-    /**
-     * Add a method to the cache.
-     *
-     * @param md the method descriptor
-     * @param method the method to cache
-     */
-    private static void cacheMethod(MethodDescriptor md, Method method) {
-        if (method != null) {
-            cache.put(md, new SoftReference<>(method));
-        }
-    }
-
-    /**
      * Clear the method cache.
      * @return the number of cached methods cleared
      */
@@ -951,7 +923,8 @@ public class MethodUtils {
         cache.clear();
         return size;
     }
-    
+
+
     /**
      * Represents the key to looking up a Method by reflection.
      */
