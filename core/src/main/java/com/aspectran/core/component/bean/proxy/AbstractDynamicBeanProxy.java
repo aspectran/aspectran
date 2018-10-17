@@ -27,14 +27,12 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.ConcurrentReferenceHashMap;
-import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Class AbstractDynamicBeanProxy.

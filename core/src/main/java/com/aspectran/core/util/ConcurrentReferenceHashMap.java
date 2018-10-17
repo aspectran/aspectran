@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2008-2018 The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.core.util;
 
 import java.lang.ref.ReferenceQueue;
@@ -27,15 +42,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * {@code Collections.synchronizedMap(new WeakHashMap<K, Reference<V>>())} in order to
  * support better performance when accessed concurrently. This implementation follows the
  * same design constraints as {@link ConcurrentHashMap} with the exception that
- * {@code null} values and {@code null} keys are supported.
+ * {@code null} values and {@code null} keys are supported.</p>
  *
  * <p><b>NOTE:</b> The use of references means that there is no guarantee that items
  * placed into the map will be subsequently available. The garbage collector may discard
  * references at any time, so it may appear that an unknown thread is silently removing
- * entries.
+ * entries.TaskOption</p>
  *
  * <p>If not explicitly specified, this implementation will use
- * {@linkplain SoftReference soft entry references}.
+ * {@linkplain SoftReference soft entry references}.</p>
  *
  * @author Phillip Webb
  * @author Juergen Hoeller

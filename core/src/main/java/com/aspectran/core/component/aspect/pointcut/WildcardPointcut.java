@@ -22,7 +22,6 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Pointcut using Wildcard Matching to identify joinpoints.
