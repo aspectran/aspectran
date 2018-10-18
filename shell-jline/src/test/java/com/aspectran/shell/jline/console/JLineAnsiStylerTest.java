@@ -25,9 +25,14 @@ import java.io.IOException;
 public class JLineAnsiStylerTest {
 
     @Test
-    public void testAnsiColor() throws IOException {
-        String s1 = "Ansi 8 colors {{white,bg:black}} Black {{black,bg:red}} Red {{white,bg:green}} Green {{black,bg:yellow}} Yellow {{bg:blue}} Blue {{bg:magenta}} Magenta {{bg:cyan}} Cyan {{black,bg:white}} White {{off}}";
+    public void testAnsiColor() {
+        String s0 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{off}}";
+        System.out.println(JLineAnsiStyler.parse(s0));
+        String s1 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{off}}";
         System.out.println(JLineAnsiStyler.parse(s1));
+        String s2 = "{{white,bg:black}} black {{black,bg:red}} red {{white,bg:green}} green {{black,bg:yellow}} yellow {{bg:blue}} blue {{bg:magenta}} magenta {{bg:cyan}} cyan {{black,bg:gray}} gray  {{off}}\n" +
+                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{off}}";
+        System.out.println(JLineAnsiStyler.parse(s2));
     }
 
 }
