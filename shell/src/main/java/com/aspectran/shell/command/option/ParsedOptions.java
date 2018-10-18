@@ -308,11 +308,11 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the map of values associated to the option. This is convenient
-     * for options specifying Java properties like <tt>-Dparam1=value1
-     * -Dparam2=value2</tt>. The first argument of the option is the key, and
+     * for options specifying Java properties like <code>-Dparam1=value1
+     * -Dparam2=value2</code>. The first argument of the option is the key, and
      * the 2nd argument is the value. If the option has only one argument
-     * (<tt>-Dfoo</tt>) it is considered as a boolean flag and the value is
-     * <tt>"true"</tt>.
+     * (<code>-Dfoo</code>) it is considered as a boolean flag and the value is
+     * <code>"true"</code>.
      *
      * @param option the option to be processed
      * @return the Properties mapped by the option, never {@code null}
@@ -337,11 +337,11 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the map of values associated to the option. This is convenient
-     * for options specifying Java properties like <tt>-Dparam1=value1
-     * -Dparam2=value2</tt>. The first argument of the option is the key, and
+     * for options specifying Java properties like <code>-Dparam1=value1
+     * -Dparam2=value2</code>. The first argument of the option is the key, and
      * the 2nd argument is the value. If the option has only one argument
-     * (<tt>-Dfoo</tt>) it is considered as a boolean flag and the value is
-     * <tt>"true"</tt>.
+     * (<code>-Dfoo</code>) it is considered as a boolean flag and the value is
+     * <code>"true"</code>.
      *
      * @param opt the name of the option
      * @return the Properties mapped by the option, never {@code null}

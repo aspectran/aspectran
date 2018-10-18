@@ -505,6 +505,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * Apply an update operation to this segment.
          * The segment will be locked during the update.
          *
+         * @param <T> the type of the results of the task
          * @param hash the hash of the key
          * @param key the key
          * @param task the update operation
@@ -660,6 +661,8 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         /**
          * Return the size of the current references array.
+         *
+         * @return the size of the current references array
          */
         public final int getSize() {
             return this.references.length;
@@ -667,6 +670,8 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         /**
          * Return the total number of references in this segment.
+         *
+         * @return the total number of references in this segment
          */
         public final int getCount() {
             return this.count;
@@ -686,16 +691,22 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         /**
          * Return the referenced entry, or {@code null} if the entry is no longer available.
+         *
+         * @return the referenced entry
          */
         Entry<K, V> get();
 
         /**
          * Return the hash for the reference.
+         *
+         * @return the hash
          */
         int getHash();
 
         /**
          * Return the next reference in the chain, or {@code null} if none.
+         *
+         * @return the next reference
          */
         Reference<K, V> getNext();
 
@@ -771,6 +782,8 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * A task that can be {@link Segment#doTask run} against a {@link Segment}.
+     *
+     * @param <T> the type of the results of the task
      */
     private abstract class Task<T> {
 
@@ -799,6 +812,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         /**
          * Convenience method that can be used for tasks that do not need access to {@link Entries}.
+         *
          * @param ref the found reference (or {@code null})
          * @param entry the found entry (or {@code null})
          * @return the result of the task
@@ -1003,6 +1017,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * underlying structure or {@code null} if no references need purging. This
          * method must be thread safe and ideally should not block when returning
          * {@code null}. References should be returned once and only once.
+         *
          * @return a reference to purge or {@code null}
          */
         @SuppressWarnings("unchecked")

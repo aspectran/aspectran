@@ -99,6 +99,9 @@ public abstract class ObjectUtils {
      * this method will delegate to any of the {@code nullSafeHashCode}
      * methods for arrays in this class. If the object is {@code null},
      * this method returns 0.
+     *
+     * @param obj the given object
+     * @return a hash code value
      */
     public static int nullSafeHashCode(Object obj) {
         if (obj == null) {
@@ -139,6 +142,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(Object[] array) {
         if (array == null) {
@@ -154,6 +160,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(boolean[] array) {
         if (array == null) {
@@ -169,6 +178,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(byte[] array) {
         if (array == null) {
@@ -184,6 +196,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(char[] array) {
         if (array == null) {
@@ -199,6 +214,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(double[] array) {
         if (array == null) {
@@ -214,6 +232,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(float[] array) {
         if (array == null) {
@@ -229,6 +250,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(int[] array) {
         if (array == null) {
@@ -244,6 +268,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(long[] array) {
         if (array == null) {
@@ -259,6 +286,9 @@ public abstract class ObjectUtils {
     /**
      * Return a hash code based on the contents of the specified array.
      * If {@code array} is {@code null}, this method returns 0.
+     *
+     * @param array the specified array
+     * @return a hash code value
      */
     public static int nullSafeHashCode(short[] array) {
         if (array == null) {
