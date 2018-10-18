@@ -25,6 +25,10 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Convenient utility methods for loading of java.util.Properties,
+ * performing standard handling of input streams.
+ */
 public class PropertiesLoaderUtils {
 
     private static final String XML_FILE_EXTENSION = ".xml";
