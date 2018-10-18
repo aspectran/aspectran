@@ -281,86 +281,29 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     private V put(final K key, final V value, final boolean overwriteExisting) {
-        return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.RESIZE) {
-            @Override
-            protected V execute(Reference<K, V> ref, Entry<K, V> entry, Entries entries) {
-                if (entry != null) {
-                    V oldValue = entry.getValue();
-                    if (overwriteExisting) {
-                        entry.setValue(value);
-                    }
-                    return oldValue;
-                }
-                if (entries == null) {
-                    throw new IllegalStateException("No entries segment");
-                }
-                entries.add(value);
-                return null;
-            }
-        });
+        return doTask(key, new PutTask(value, overwriteExisting));
     }
 
     @Override
     public V remove(Object key) {
-        return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY) {
-            @Override
-            protected V execute(Reference<K, V> ref, Entry<K, V> entry) {
-                if (entry != null) {
-                    if (ref != null) {
-                        ref.release();
-                    }
-                    return entry.value;
-                }
-                return null;
-            }
-        });
+        return doTask(key, new RemoveTask());
     }
 
     @Override
     public boolean remove(Object key, final Object value) {
-        Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY) {
-            @Override
-            protected Boolean execute(Reference<K, V> ref, Entry<K, V> entry) {
-                if (entry != null && ObjectUtils.nullSafeEquals(entry.getValue(), value)) {
-                    if (ref != null) {
-                        ref.release();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
+        Boolean result = doTask(key, new RemoveValueTask(value));
         return (result == Boolean.TRUE);
     }
 
     @Override
     public boolean replace(K key, final V oldValue, final V newValue) {
-        Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
-            @Override
-            protected Boolean execute(Reference<K, V> ref, Entry<K, V> entry) {
-                if (entry != null && ObjectUtils.nullSafeEquals(entry.getValue(), oldValue)) {
-                    entry.setValue(newValue);
-                    return true;
-                }
-                return false;
-            }
-        });
+        Boolean result = doTask(key, new ReplaceTask(oldValue, newValue));
         return (result == Boolean.TRUE);
     }
 
     @Override
     public V replace(K key, final V value) {
-        return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
-            @Override
-            protected V execute(Reference<K, V> ref, Entry<K, V> entry) {
-                if (entry != null) {
-                    V oldValue = entry.getValue();
-                    entry.setValue(value);
-                    return oldValue;
-                }
-                return null;
-            }
-        });
+        return doTask(key, new ReplaceForceTask(value));
     }
 
     @Override
@@ -775,6 +718,126 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         @Override
         public final int hashCode() {
             return (ObjectUtils.nullSafeHashCode(this.key) ^ ObjectUtils.nullSafeHashCode(this.value));
+        }
+
+    }
+
+
+    private class PutTask extends Task<V> {
+
+        private final V value;
+
+        private final boolean overwriteExisting;
+
+        public PutTask(V value, boolean overwriteExisting) {
+            super(TaskOption.RESTRUCTURE_BEFORE, TaskOption.RESIZE);
+            this.value = value;
+            this.overwriteExisting = overwriteExisting;
+        }
+
+        @Override
+        protected V execute(Reference<K, V> ref, Entry<K, V> entry, Entries entries) {
+            if (entry != null) {
+                V oldValue = entry.getValue();
+                if (overwriteExisting) {
+                    entry.setValue(value);
+                }
+                return oldValue;
+            }
+            if (entries == null) {
+                throw new IllegalStateException("No entries segment");
+            }
+            entries.add(value);
+            return null;
+        }
+
+    }
+
+
+    private class RemoveTask extends Task<V> {
+
+        public RemoveTask() {
+            super(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY);
+        }
+
+        @Override
+        protected V execute(Reference<K, V> ref, Entry<K, V> entry) {
+            if (entry != null) {
+                if (ref != null) {
+                    ref.release();
+                }
+                return entry.value;
+            }
+            return null;
+        }
+
+    }
+
+
+    private class RemoveValueTask extends Task<Boolean> {
+
+        private final Object value;
+
+        public RemoveValueTask(Object value) {
+            super(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY);
+            this.value = value;
+        }
+
+        @Override
+        protected Boolean execute(Reference<K, V> ref, Entry<K, V> entry) {
+            if (entry != null && ObjectUtils.nullSafeEquals(entry.getValue(), value)) {
+                if (ref != null) {
+                    ref.release();
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+
+    private class ReplaceTask extends Task<Boolean> {
+
+        private final V oldValue;
+
+        private final V newValue;
+
+        public ReplaceTask(V oldValue, V newValue) {
+            super(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY);
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+
+        @Override
+        protected Boolean execute(Reference<K, V> ref, Entry<K, V> entry) {
+            if (entry != null && ObjectUtils.nullSafeEquals(entry.getValue(), oldValue)) {
+                entry.setValue(newValue);
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+
+    private class ReplaceForceTask extends Task<V> {
+
+        private final V value;
+
+        public ReplaceForceTask(V value) {
+            super(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY);
+            this.value = value;
+        }
+
+        @Override
+        protected V execute(Reference<K, V> ref, Entry<K, V> entry) {
+            if (entry != null) {
+                V oldValue = entry.getValue();
+                entry.setValue(value);
+                return oldValue;
+            }
+            return null;
         }
 
     }
