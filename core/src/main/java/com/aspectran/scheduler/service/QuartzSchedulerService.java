@@ -235,7 +235,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         }
     }
 
-    private Scheduler getScheduler(String scheduleId) throws SchedulerException {
+    private Scheduler getScheduler(String scheduleId) {
         return schedulerMap.get(scheduleId);
     }
 
@@ -309,7 +309,6 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             Boolean repeatForever = triggerParameters.getBoolean(TriggerParameters.repeatForever);
 
             SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
-
             if (intervalInMilliseconds != null) {
                 builder.withIntervalInMilliseconds(intervalInMilliseconds);
             }

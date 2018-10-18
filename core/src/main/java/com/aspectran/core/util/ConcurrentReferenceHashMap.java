@@ -186,7 +186,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         this.shift = calculateShift(concurrencyLevel, MAXIMUM_CONCURRENCY_LEVEL);
         int size = 1 << this.shift;
         this.referenceType = referenceType;
-        int roundedUpSegmentCapacity = (int) ((initialCapacity + size - 1L) / size);
+        int roundedUpSegmentCapacity = (int)((initialCapacity + size - 1L) / size);
         this.segments = (Segment[])Array.newInstance(Segment.class, size);
         for (int i = 0; i < this.segments.length; i++) {
             this.segments[i] = new Segment(roundedUpSegmentCapacity);
@@ -1059,6 +1059,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
             enqueue();
             clear();
         }
+
     }
 
 

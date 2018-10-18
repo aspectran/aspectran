@@ -40,7 +40,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private final ServiceController serviceController;
 
-    private Map<String, Long> modifiedTimeMap = new HashMap<>();
+    private final Map<String, Long> modifiedTimeMap = new HashMap<>();
 
     private boolean modified = false;
 
