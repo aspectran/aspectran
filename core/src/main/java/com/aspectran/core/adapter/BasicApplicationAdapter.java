@@ -17,8 +17,8 @@ package com.aspectran.core.adapter;
 
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Class BasicApplicationAdapter.
@@ -27,9 +27,7 @@ import java.util.Map;
  */
 public class BasicApplicationAdapter extends AbstractApplicationAdapter {
 
-    private final Object lock = new Object();
-
-    private final Map<String, Object> attributes = new HashMap<>();
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new BasicApplicationAdapter.
@@ -50,30 +48,22 @@ public class BasicApplicationAdapter extends AbstractApplicationAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        synchronized (lock) {
-            return (T)attributes.get(name);
-        }
+        return (T)attributes.get(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        synchronized (lock) {
-            attributes.put(name, value);
-        }
+        attributes.put(name, value);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        synchronized (lock) {
-            return Collections.enumeration(attributes.keySet());
-        }
+        return Collections.enumeration(attributes.keySet());
     }
 
     @Override
     public void removeAttribute(String name) {
-        synchronized (lock) {
-            attributes.remove(name);
-        }
+        attributes.remove(name);
     }
 
 }
