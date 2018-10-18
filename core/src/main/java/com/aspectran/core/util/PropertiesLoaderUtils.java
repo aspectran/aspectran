@@ -15,30 +15,86 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.context.resource.AspectranClassLoader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 public class PropertiesLoaderUtils {
 
     private static final String XML_FILE_EXTENSION = ".xml";
 
+    private static final Map<String, Properties> cache = new ConcurrentReferenceHashMap<>(32);
+
+    /**
+     * Load all properties from the specified class path resource
+     * (in ISO-8859-1 encoding), using the default class loader.
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     *
+     * @param resourceName the name of the class path resource
+     * @return the Properties instance
+     * @throws IOException if loading failed
+     */
+    public static Properties loadProperties(String resourceName) throws IOException {
+        return loadProperties(resourceName, AspectranClassLoader.getDefaultClassLoader());
+    }
+
     /**
      * Load all properties from the specified class path resource
      * (in ISO-8859-1 encoding), using the given class loader.
      * <p>Merges properties if more than one resource of the same name
-     * found in the class path.
+     * found in the class path.</p>
      *
      * @param resourceName the name of the class path resource
      * @param classLoader the class loader
      * @return the Properties instance
      * @throws IOException if loading failed
      */
-    public static synchronized Properties loadProperties(String resourceName, ClassLoader classLoader) throws IOException {
-        Properties props = new Properties();
+    public static Properties loadProperties(String resourceName, ClassLoader classLoader) throws IOException {
+        Properties props = cache.get(resourceName);
+        if (props == null) {
+            props = new Properties();
+            fillProperties(props, resourceName, classLoader);
+            Properties existing = cache.putIfAbsent(resourceName, props);
+            if (existing != null) {
+                props = existing;
+            }
+        }
+        return props;
+    }
+
+    /**
+     * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     *
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @throws IOException if loading failed
+     */
+    public static void fillProperties(Properties props, String resourceName)
+            throws IOException {
+        fillProperties(props, resourceName, AspectranClassLoader.getDefaultClassLoader());
+    }
+
+    /**
+     * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     *
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @param classLoader the class loader
+     * @throws IOException if loading failed
+     */
+    public static void fillProperties(Properties props, String resourceName, ClassLoader classLoader)
+            throws IOException {
         Enumeration<URL> urls = classLoader.getResources(resourceName);
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -51,7 +107,6 @@ public class PropertiesLoaderUtils {
                 }
             }
         }
-        return props;
     }
 
 }
