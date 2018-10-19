@@ -16,8 +16,11 @@
             <echo id="page">
                 <attributes>
                     <item name="headline">Building a RESTful Web Service</item>
-                    <item name="teaser">A sample page that uses RESTful web services using HTTP support methods such as GET, PUT, POST, and DELETE.</item>
-                    <item name="include">pages/gs-rest-service</item>
+                    <item name="teaser">
+                        A sample page that uses RESTful web services using HTTP support methods such as
+                        GET, PUT, POST, and DELETE.
+                    </item>
+                    <item name="include">examples/gs-rest-service</item>
                 </attributes>
             </echo>
         </dispatch>
@@ -25,60 +28,50 @@
 
     <translet name="customers" method="GET">
         <description>
-            전체 고객 목록을 조회합니다.
+            Returns a list of all customers in JSON format.
         </description>
         <action id="customers" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomerList"/>
-        <transform type="transform/json" pretty="true"/>
+        <transform type="transform/json"/>
     </translet>
 
     <translet name="customers/${id:guest}" method="GET">
         <description>
-            id를 파라메터로 받아서 해당 id를 가진 고객의 상세정보를 조회합니다.
-            고객번호를 지정하지 않으면 고객번호가 "guest"인 고객의 상세정보를 조회합니다.
+            Retrieve customer info by a given id parameter.
         </description>
         <action id="customer" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomer"/>
-        <transform type="transform/json" pretty="true"/>
+        <transform type="transform/json"/>
     </translet>
 
     <translet name="customers" method="POST">
         <description>
-            고객정보를 등록합니다.
+            Register a new customer.
         </description>
         <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="insertCustomer"/>
-        <transform type="transform/json" pretty="true"/>
+        <transform type="transform/json"/>
     </translet>
 
     <translet name="customers/${id}" method="PUT">
         <description>
-            고객정보를 수정합니다.
+            Update customer info by a given id parameter.
         </description>
         <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="updateCustomer"/>
-        <transform type="transform/json" pretty="true"/>
+        <transform type="transform/json"/>
     </translet>
 
-    <translet name="customers/${id}/approve/${approved}" method="PUT">
+    <translet name="customers/${id}/attributes" method="PUT">
         <description>
-            id를 파라메터로 받아서 해당 id를 가진 고객에 대해 승인처리를 합니다.
-            "${approved}"는 승인여부에 해당하는 값을 지정합니다. (true or false)
+            Update customer's attributes by a given id parameter.
         </description>
-        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="approve"/>
-        <transform type="transform/json" pretty="true"/>
-    </translet>
-
-    <translet name="customers/${id}/approve" method="GET">
-        <description>
-            id를 파라메터로 받아서 해당 id를 가진 고객에 대하여 승인여부를 조회합니다.
-        </description>
-        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="isApproved"/>
-        <transform type="transform/json" pretty="true"/>
+        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="updateAttributes"/>
+        <transform type="transform/json"/>
     </translet>
 
     <translet name="customers/${id}" method="DELETE">
         <description>
-            id를 파라메터로 받아서 해당 id를 가진 고객의 정보를 삭제합니다.
+            Delete customer info by a given id parameter.
         </description>
         <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="deleteCustomer"/>
-        <transform type="transform/json" pretty="true"/>
+        <transform type="transform/json"/>
     </translet>
 
 </aspectran>

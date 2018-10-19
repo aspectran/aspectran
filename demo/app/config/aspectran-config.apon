@@ -1,5 +1,5 @@
 context: {
-    root: /config/app-root-config.xml
+    root: /config/app-config.xml
     resources: [
         /lib
         /config
@@ -32,7 +32,7 @@ daemon: {
         com.aspectran.daemon.command.builtin.QuitCommand
     ]
     poller: {
-        pollingInterval: 10000
+        pollingInterval: 5000
         maxThreads: 5
         inbound: /inbound
         requeue: false

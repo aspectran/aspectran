@@ -17,6 +17,7 @@ package com.aspectran.web.activity.response;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -40,7 +41,11 @@ public class GZipServletOutputStream extends ServletOutputStream {
 
     @Override
     public void flush() throws IOException {
-        this.stream.flush();
+        try {
+            this.stream.flush();
+        } catch (EOFException e) {
+            // ignore
+        }
     }
 
     @Override

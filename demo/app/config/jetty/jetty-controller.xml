@@ -26,7 +26,7 @@
     <translet name="jetty start">
         <description style="apon">
             |
-            |   {{WHITE}}Starting the Jetty Server...{{off}}
+            |   {{cyan}}Starting the Jetty Server...{{off}}
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="start"/>
@@ -54,7 +54,7 @@
     <translet name="jetty stop">
         <description style="apon">
             |
-            |   {{WHITE}}Stopping the Jetty Server...{{off}}
+            |   {{cyan}}Stopping the Jetty Server...{{off}}
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
