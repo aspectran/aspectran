@@ -16,7 +16,6 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.embed.service.EmbeddedService;
 import org.junit.After;
 import org.junit.Before;
