@@ -2,8 +2,6 @@ context: {
     root: /config/app-root-config.xml
     resources: [
         /lib
-        /classes
-        /resources
         /config
     ]
     scan: [

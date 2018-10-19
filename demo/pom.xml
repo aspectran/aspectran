@@ -26,52 +26,20 @@
     </properties>
 
     <build>
-        <outputDirectory>target/classes</outputDirectory>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <optimize>true</optimize>
-                    <!-- Slightly faster builds, see https://issues.apache.org/jira/browse/MCOMPILER-209 -->
-                    <useIncrementalCompilation>false</useIncrementalCompilation>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                    <filesets>
-                        <fileset>
-                            <directory>target/</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>app/classes</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <excludes>
-                                <exclude>.gitignore</exclude>
-                            </excludes>
-                        </fileset>
-                        <fileset>
-                            <directory>app/lib</directory>
-                            <includes>
-                                <include>*</include>
-                            </includes>
-                            <excludes>
-                                <exclude>.gitignore</exclude>
-                            </excludes>
-                        </fileset>
-                    </filesets>
+                    <outputDirectory>app/lib</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
-                        <id>copy-1</id>
+                        <id>copy-dependencies-1</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
@@ -84,43 +52,25 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources-1</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>app/classes</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>target/classes</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-resources-2</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>app/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                    <filesets>
+                        <fileset>
+                            <directory>target/</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>app/lib</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>.gitignore</exclude>
+                            </excludes>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
