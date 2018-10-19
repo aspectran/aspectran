@@ -25,7 +25,18 @@ import java.io.Writer;
  */
 public abstract class AbstractConsole implements Console {
 
+    private final String defaultPath;
+
     private String commandPrompt = DEFAULT_COMMAND_PROMPT;
+
+    public AbstractConsole(String defaultPath) {
+        this.defaultPath = defaultPath;
+    }
+
+    @Override
+    public String getDefaultPath() {
+        return defaultPath;
+    }
 
     @Override
     public String getCommandPrompt() {

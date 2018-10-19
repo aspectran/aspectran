@@ -62,8 +62,13 @@ public class JLineConsole extends AbstractConsole {
     private AttributedStyle style;
 
     public JLineConsole() throws IOException {
-        DefaultParser parser = new DefaultParser();
+        this(null);
+    }
 
+    public JLineConsole(String defaultPath) throws IOException {
+        super(defaultPath);
+
+        DefaultParser parser = new DefaultParser();
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
         this.reader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();
         this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();

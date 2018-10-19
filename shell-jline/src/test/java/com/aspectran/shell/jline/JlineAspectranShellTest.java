@@ -26,7 +26,6 @@ public class JlineAspectranShellTest {
 
     public static void main(String[] args) {
         String aspectranConfigFile = "classpath:config/shell/jline/aspectran-config.apon";
-
         int exitStatus = 0;
 
         try {

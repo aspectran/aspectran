@@ -47,7 +47,7 @@ class AspectranShellService extends AbstractShellService {
 
     private static final Log log = LogFactory.getLog(AspectranShellService.class);
 
-    private static final String DEFAULT_ROOT_CONTEXT = "/config/aspectran/root-config.xml";
+    private static final String DEFAULT_APP_ROOT_CONFIG = "/config/app-root-config.xml";
 
     private long pauseTimeout = -1L;
 
@@ -201,10 +201,13 @@ class AspectranShellService extends AbstractShellService {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootConfigLocation = contextConfig.getString(ContextConfig.root);
         if (rootConfigLocation == null || rootConfigLocation.length() == 0) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
+            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_ROOT_CONFIG);
         }
 
         AspectranShellService service = new AspectranShellService();
+        if (console != null && console.getDefaultPath() != null) {
+            service.setBasePath(console.getDefaultPath());
+        }
         service.prepare(aspectranConfig);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {

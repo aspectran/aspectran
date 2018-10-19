@@ -18,6 +18,7 @@ package com.aspectran.demo;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.console.Console;
 import com.aspectran.shell.jline.console.JLineConsole;
 import com.aspectran.shell.service.ShellService;
 
@@ -25,8 +26,6 @@ import java.io.File;
 
 /**
  * Test for Aspectran Demo.
- *
- * <p>Note: To avoid resource duplication, run "mvn clean" before testing.</p>
  *
  * <p>Created: 2017. 11. 19.</p>
  */
@@ -40,11 +39,8 @@ public class AspectranDemoTest {
             File root = new File(current, "../../app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
 
-            String baseDir = root.getCanonicalPath();
-            System.setProperty("user.dir", root.getCanonicalPath());
-            System.setProperty(ActivityContext.BASE_DIR_PROPERTY_NAME, baseDir);
-
-            ShellService service = ShellService.create(aspectranConfigFile, new JLineConsole());
+            Console console = new JLineConsole(root.getCanonicalPath());
+            ShellService service = ShellService.create(aspectranConfigFile, console);
             service.start();
             ShellCommander commander = new ShellCommander(service);
             commander.perform();

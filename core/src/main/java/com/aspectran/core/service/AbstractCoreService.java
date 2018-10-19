@@ -82,6 +82,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         this.aspectranConfig = rootService.getAspectranConfig();
     }
 
+    @Override
     public String getBasePath() {
         return basePath;
     }

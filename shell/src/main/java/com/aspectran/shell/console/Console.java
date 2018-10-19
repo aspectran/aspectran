@@ -30,6 +30,8 @@ public interface Console {
 
     String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
 
+    String getDefaultPath();
+
     String getCommandPrompt();
 
     void setCommandPrompt(String commandPrompt);

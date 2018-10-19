@@ -39,6 +39,14 @@ public class DefaultConsole extends AbstractConsole {
 
     private volatile boolean reading;
 
+    public DefaultConsole() {
+        super(null);
+    }
+
+    public DefaultConsole(String defaultPath) {
+        super(defaultPath);
+    }
+
     @Override
     public String readCommandLine() {
         String prompt = getCommandPrompt();

@@ -25,6 +25,8 @@ import com.aspectran.core.context.resource.AspectranClassLoader;
  */
 public interface CoreService extends ServiceController {
 
+    String getBasePath();
+
     /**
      * Gets the application adapter.
      *
