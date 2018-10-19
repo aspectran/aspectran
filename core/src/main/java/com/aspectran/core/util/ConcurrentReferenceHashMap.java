@@ -280,7 +280,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         return put(key, value, false);
     }
 
-    private V put(final K key, final V value, final boolean overwriteExisting) {
+    private V put(K key, V value, boolean overwriteExisting) {
         return doTask(key, new PutTask(value, overwriteExisting));
     }
 
@@ -290,19 +290,19 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
-    public boolean remove(Object key, final Object value) {
+    public boolean remove(Object key, Object value) {
         Boolean result = doTask(key, new RemoveValueTask(value));
         return (result == Boolean.TRUE);
     }
 
     @Override
-    public boolean replace(K key, final V oldValue, final V newValue) {
+    public boolean replace(K key, V oldValue, V newValue) {
         Boolean result = doTask(key, new ReplaceTask(oldValue, newValue));
         return (result == Boolean.TRUE);
     }
 
     @Override
-    public V replace(K key, final V value) {
+    public V replace(K key, V value) {
         return doTask(key, new ReplaceForceTask(value));
     }
 
