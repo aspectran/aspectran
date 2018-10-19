@@ -15,7 +15,6 @@
  */
 package com.aspectran.demo;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.console.Console;
