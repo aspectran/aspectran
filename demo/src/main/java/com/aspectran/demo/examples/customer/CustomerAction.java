@@ -26,10 +26,10 @@ import java.util.List;
 @Component
 @Bean
 public class CustomerAction {
-    
+
     @Autowired
     private CustomerDao dao;
-    
+
     public List<Customer> getCustomerList(Translet translet) {
         return dao.getCustomerList();
     }
@@ -38,7 +38,7 @@ public class CustomerAction {
         int id = Integer.parseInt(translet.getParameter("id"));
 
         Customer customer = dao.getCustomer(id);
-        
+
         if(customer == null) {
             HttpStatusSetter.notFound(translet);
             return null;
@@ -46,25 +46,25 @@ public class CustomerAction {
 
         return customer;
     }
-    
+
     public Customer insertCustomer(Translet translet) {
         String name = translet.getParameter("name");
         int age = Integer.valueOf(translet.getParameter("age"));
         boolean approved = "Y".equals(translet.getParameter("approved"));
-        
+
         Customer customer = new Customer();
         customer.putValue(Customer.name, name);
         customer.putValue(Customer.age, age);
         customer.putValue(Customer.approved, approved);
-        
+
         int id = dao.insertCustomer(customer);
-        
+
         String resourceUri = translet.getName() + "/" + id;
         HttpStatusSetter.created(translet, resourceUri);
 
         return customer;
     }
-    
+
     public Customer updateCustomer(Translet translet) {
         int id = Integer.parseInt(translet.getParameter("id"));
         String name = translet.getParameter("name");
@@ -100,7 +100,7 @@ public class CustomerAction {
         return true;
     }
 
-    public boolean approve(Translet translet) {
+    public boolean updateAttributes(Translet translet) {
         int id = Integer.parseInt(translet.getParameter("id"));
         boolean approved = Boolean.parseBoolean(translet.getParameter("approved"));
 
@@ -112,11 +112,6 @@ public class CustomerAction {
         }
 
         return true;
-    }
-    
-    public boolean isApproved(Translet translet) {
-        int id = Integer.parseInt(translet.getParameter("id"));
-        return dao.isApproved(id);
     }
 
 }
