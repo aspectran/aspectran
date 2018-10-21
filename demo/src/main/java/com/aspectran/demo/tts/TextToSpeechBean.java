@@ -43,11 +43,11 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     private Voice voice;
 
-    private Float rate = 150.0F;
+    private float rate = 150.0f;
 
-    private Float pitch = 100.0F;
+    private float pitch = 100.0f;
 
-    private Float pitchRange = 12.0F;
+    private float pitchRange = 10.0f;
 
     public void setVoicePackage(String voicePackage) {
         this.voicePackage = voicePackage;
@@ -141,7 +141,11 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
         textToSpeechBean.setVoiceName("kevin16");
         textToSpeechBean.initialize();
-        textToSpeechBean.speak("test");
+        textToSpeechBean.speak("a h");
+        textToSpeechBean.speak("Something there is that doesn't love a wall, " +
+                "That sends the frozen-ground-swell under it, " +
+                "And spills the upper boulders in the sun; " +
+                "And makes gaps even two can pass abreast.");
         textToSpeechBean.destroy();
     }
 
