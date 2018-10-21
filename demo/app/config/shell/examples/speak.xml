@@ -19,6 +19,7 @@
     <translet name="speak">
         <description style="apon">
             |
+            |   Converts any written text into spoken words.
             |   If your system's audio works well, it will speak the text you type.
             |
         </description>

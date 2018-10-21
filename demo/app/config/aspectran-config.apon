@@ -44,6 +44,11 @@ daemon: {
 shell: {
     prompt: "{{GREEN}}aspectran-demo>{{off}} "
     commands: [
+        com.aspectran.shell.command.builtin.JettyCommand
+        com.aspectran.shell.command.builtin.TransletCommand
+        com.aspectran.shell.command.builtin.SysInfoCommand
+        com.aspectran.shell.command.builtin.PBEncryptCommand
+        com.aspectran.shell.command.builtin.PBDecryptCommand
         com.aspectran.shell.command.builtin.HelpCommand
         com.aspectran.shell.command.builtin.VerboseCommand
         com.aspectran.shell.command.builtin.RestartCommand
@@ -51,10 +56,6 @@ shell: {
         com.aspectran.shell.command.builtin.ResumeCommand
         com.aspectran.shell.command.builtin.ClearCommand
         com.aspectran.shell.command.builtin.QuitCommand
-        com.aspectran.shell.command.builtin.SysInfoCommand
-        com.aspectran.shell.command.builtin.TransletCommand
-        com.aspectran.shell.command.builtin.PBEncryptCommand
-        com.aspectran.shell.command.builtin.PBDecryptCommand
     ]
     greetings: (
         |
@@ -65,12 +66,12 @@ shell: {
         |{{158}} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
         |{{159}}=========== /_/ ==========================================================
         |{{off}}
-        |{{OrangeRed1}}Welcome To Aspectran Demo #{class:com.aspectran.core.util.Aspectran^version}{{off}}
+        |{{OrangeRed1}}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
-        |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
         |To get help on a specific command, type '{{GREEN}}command_name --help{{off}}'.
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
+        |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.
     )
     verbose: true

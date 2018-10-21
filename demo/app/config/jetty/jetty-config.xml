@@ -103,6 +103,4 @@
         </properties>
     </bean>
 
-    <append file="/config/jetty/jetty-controller.xml"/>
-
 </aspectran>

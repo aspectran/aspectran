@@ -1,0 +1,28 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        A simple example of accessing resources
+    </description>
+
+    <bean id="sampleResources" class="com.aspectran.demo.examples.SampleResource"/>
+
+    <translet name="resource-file?">
+        <parameters>
+            <item name="resourceName" mandatory="true">${resourceName:sample_resource.txt}</item>
+        </parameters>
+        <transform type="transform/text">
+            <action id="sampleResourceFile" bean="sampleResources" method="getResourceFile"/>
+        </transform>
+    </translet>
+
+    <translet name="print-resource!">
+        <description>Prints the contents of the resource sample_resource.txt</description>
+        <transform type="transform/text">
+            <template resource="sample_resource.txt"/>
+        </transform>
+    </translet>
+
+</aspectran>

@@ -13,7 +13,7 @@
                 <attributes>
                     <item name="headline">Welcome to Aspectran Demo</item>
                     <item name="teaser">The "Aspectran Demo" is a reference application created to show how to develop Aspectran applications following the recommended best practices.</item>
-                    <item name="include">pages/main</item>
+                    <item name="include">home/main</item>
                 </attributes>
             </echo>
         </dispatch>

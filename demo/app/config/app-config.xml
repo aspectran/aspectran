@@ -9,16 +9,11 @@
         |   {{CYAN}}hello2{{fg:off}}     Prints "Hello, World!" in your console using ANSI escape sequences
         |   {{CYAN}}echo{{fg:off}}       It accepts parameters and print as is
         |   {{CYAN}}echo2{{fg:off}}      It accepts parameters and attributes, and print them as is
-        |   {{CYAN}}login{{fg:off}}      It accepts parameters required for login and prints them
-        |   {{CYAN}}chpw{{fg:off}}       It accepts parameters required for changing password and prints them
-        |   {{CYAN}}speak{{fg:off}}      Converts any written text into spoken words
+        |   (for more examples, type '{{GREEN}}translet -l{{off}}')
         |
-        |{{bold}}To control Jetty, try one of the following commands:{{bold:off}}
-        |   {{MAGENTA}}jetty{{fg:off}}        Displays commands required to control Jetty server
-        |   {{MAGENTA}}jetty start{{fg:off}}  Runs a Jetty server
-        |   {{MAGENTA}}jetty stop{{fg:off}}   Stops the currently running Jetty server
-        |
-        |{{bold}}Once a Jetty server is running, point your web browser to:{{bold:off}}
+        |{{bold}}The Jetty Server is currently running.{{bold:off}}
+        |Use the command '{{GREEN}}jetty{{off}}' to control the Jetty Server.
+        |When your Jetty Server is running, point your web browser to:
         |   {{81}}http://localhost:8088/{{fg:off}}
         |
     </description>

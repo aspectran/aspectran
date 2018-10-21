@@ -19,13 +19,17 @@ import com.aspectran.core.activity.Translet;
 
 import java.net.URL;
 
-public class SampleResources {
+public class SampleResource {
 
-    public String getSampleResourceFile(Translet translet) {
+    public String getResourceFile(Translet translet) {
+        String resourceName = translet.getParameter("resourceName");
         ClassLoader classLoader = translet.getEnvironment().getClassLoader();
-        URL url = classLoader.getResource("sample_resource.txt");
-        String file = url.getFile();
-        return file;
+        URL url = classLoader.getResource(resourceName);
+        if (url == null) {
+            return null;
+        } else {
+            return url.getFile();
+        }
     }
 
 }

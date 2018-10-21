@@ -1,0 +1,63 @@
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+
+<aspectran>
+
+    <description>
+        Try entering the parameters you need to log in.
+    </description>
+
+    <translet name="login">
+        <description style="apon">
+            |
+            |   It accepts parameters required for login and prints them.
+            |
+        </description>
+        <parameters>
+            <item name="id" mandatory="true"/>
+            <item name="email" mandatory="true">${id}@${domain}</item>
+            <item name="password" security="true" defaultValue="(none)"/>
+        </parameters>
+        <attributes>
+            <item name="attr1" mandatory="true">${id}@${domain}</item>
+            <item name="attr2" mandatory="true" security="true">${password}</item>
+        </attributes>
+        <transform type="transform/text">
+            <template style="apon">
+                |-------------------------------------------------------------------------
+                |You have entered the following parameters for login:
+                |   email: ${email}
+                |   password: ${password}
+                |The attributes you entered are:
+                |   attr1: @{attr1}
+                |   attr2: @{attr2}
+                |-------------------------------------------------------------------------
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="chpw">
+        <description style="apon">
+            |
+            |   It accepts parameters required for changing password
+            |   and prints them.
+            |
+        </description>
+        <parameters>
+            <item name="email">${emailId}@${emailDomain}</item>
+            <item name="password" security="true"/>
+            <item name="confirmPassword" security="true"/>
+        </parameters>
+        <transform type="transform/text">
+            <template style="apon">
+                |------------------------------------------------------------------------------------
+                |You have entered the following parameters for changing the password:
+                |   email: ${email}
+                |   password: ${password}
+                |   confirm password: ${confirmPassword}
+                |------------------------------------------------------------------------------------
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>

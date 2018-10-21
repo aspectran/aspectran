@@ -211,7 +211,10 @@ function updateApproval(approved) {
   }
   $.ajax({
     type: "PUT",
-    url: backend + "/gs-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
+    url: backend + "/gs-rest-service/customers/" + id + "/attributes",
+      data: {
+          approved: approved
+      },
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);

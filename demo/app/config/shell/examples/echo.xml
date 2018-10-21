@@ -4,7 +4,8 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for printing request parameters and attributes directly to the console.
+        An Aspectran configuration for printing request parameters
+        and attributes directly to the console.
     </description>
 
     <translet name="echo">
@@ -59,72 +60,6 @@
                 |   input-4: @{input-4} - This is an attribute.
                 |----------------------------------------------------------
             </template>
-        </transform>
-    </translet>
-
-    <translet name="login">
-        <description style="apon">
-            |
-            |   It accepts parameters used for login and print them to the console.
-            |
-        </description>
-        <parameters>
-            <item name="id" mandatory="true"/>
-            <item name="email" mandatory="true">${id}@${domain}</item>
-            <item name="password" security="true" defaultValue="(none)"/>
-        </parameters>
-        <attributes>
-            <item name="attr1" mandatory="true">${id}@${domain}</item>
-            <item name="attr2" mandatory="true" security="true">${password}</item>
-        </attributes>
-        <transform type="transform/text">
-            <template style="apon">
-                |-------------------------------------------------------------------------
-                |You have entered the following parameters for login:
-                |   email: ${email}
-                |   password: ${password}
-                |The attributes you entered are:
-                |   attr1: @{attr1}
-                |   attr2: @{attr2}
-                |-------------------------------------------------------------------------
-            </template>
-        </transform>
-    </translet>
-
-    <translet name="chpw">
-        <description style="apon">
-            |
-            |   It accepts parameters for changing the password and print them to the console.
-            |
-        </description>
-        <parameters>
-            <item name="email">${emailId}@${emailDomain}</item>
-            <item name="password" security="true"/>
-            <item name="confirmPassword" security="true"/>
-        </parameters>
-        <transform type="transform/text">
-            <template style="apon">
-                |------------------------------------------------------------------------------------
-                |You have entered the following parameters for changing the password:
-                |   email: ${email}
-                |   password: ${password}
-                |   confirm password: ${confirmPassword}
-                |------------------------------------------------------------------------------------
-            </template>
-        </transform>
-    </translet>
-
-    <bean id="sampleResources" class="com.aspectran.demo.examples.SampleResources"/>
-
-    <translet name="getSampleResourceFile">
-        <transform type="transform/text">
-            <action id="sampleResourceFile" bean="sampleResources" method="getSampleResourceFile"/>
-        </transform>
-    </translet>
-
-    <translet name="printSampleResource">
-        <transform type="transform/text">
-            <template resource="sample_resource.txt"/>
         </transform>
     </translet>
 
