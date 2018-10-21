@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
+import org.jasypt.properties.PropertyValueEncryptionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,8 @@ import java.util.Properties;
 public class PropertiesLoaderUtils {
 
     private static final String XML_FILE_EXTENSION = ".xml";
+
+    private static final String ENCRYPTED_RESOURCE_NAME_SUFFIX = "encrypted.properties";
 
     private static final Map<String, Properties> cache = new ConcurrentReferenceHashMap<>(32);
 
@@ -108,6 +111,19 @@ public class PropertiesLoaderUtils {
                     props.loadFromXML(is);
                 } else {
                     props.load(is);
+                }
+            }
+        }
+        if (resourceName.endsWith(ENCRYPTED_RESOURCE_NAME_SUFFIX)) {
+            for (Map.Entry<?, ?> entry: props.entrySet()) {
+                Object key = entry.getKey();
+                Object val = entry.getValue();
+                if (val instanceof String) {
+                    String value = (String)val;
+                    if (PropertyValueEncryptionUtils.isEncryptedValue(value)) {
+                        value = PropertyValueEncryptionUtils.decrypt(value, PBEncryptionUtils.getEncryptor());
+                        props.put(key, value);
+                    }
                 }
             }
         }
