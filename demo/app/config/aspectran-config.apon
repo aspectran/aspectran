@@ -53,6 +53,8 @@ shell: {
         com.aspectran.shell.command.builtin.QuitCommand
         com.aspectran.shell.command.builtin.SysInfoCommand
         com.aspectran.shell.command.builtin.TransletCommand
+        com.aspectran.shell.command.builtin.PBEncryptCommand
+        com.aspectran.shell.command.builtin.PBDecryptCommand
     ]
     greetings: (
         |

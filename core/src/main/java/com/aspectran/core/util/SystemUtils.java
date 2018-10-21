@@ -27,22 +27,18 @@ public class SystemUtils {
 
     private static final Log log = LogFactory.getLog(SystemUtils.class);
 
+    /**
+     * <p>Gets a System property, defaulting to <code>null</code> if the property
+     * cannot be read.</p>
+     *
+     * <p>If a <code>SecurityException</code> is caught, the return value is <code>null</code>.</p>
+     *
+     * @param name the system property name
+     * @return the system property value or <code>null</code> if a security problem occurs
+     */
     public static String getProperty(String name) {
         try {
             return System.getProperty(name);
-        } catch (AccessControlException ex) {
-            log.info(String.format(
-                    "Caught AccessControlException when accessing system property [%s]; " +
-                            "its value will be returned [null]. Reason: %s",
-                    name, ex.getMessage()));
-        }
-        return null;
-    }
-
-    public static String getProperty(String name, String defVal) {
-        String val = null;
-        try {
-            val = System.getProperty(name);
         } catch (AccessControlException ex) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format(
@@ -51,6 +47,11 @@ public class SystemUtils {
                         name, ex.getMessage()));
             }
         }
+        return null;
+    }
+
+    public static String getProperty(String name, String defVal) {
+        String val = getProperty(name);
         return (val != null ? val : defVal);
     }
 
