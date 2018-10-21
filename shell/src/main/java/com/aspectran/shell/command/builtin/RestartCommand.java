@@ -61,7 +61,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart this application to reload all resources";
+            return "Restarts the Aspectran Shell";
         }
 
         @Override

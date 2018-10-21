@@ -78,7 +78,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Encrypts the inputString using the encryption password";
+            return "Encrypts the input string using the encryption password";
         }
 
         @Override

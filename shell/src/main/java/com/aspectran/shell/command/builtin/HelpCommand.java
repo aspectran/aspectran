@@ -47,6 +47,7 @@ public class HelpCommand extends AbstractCommand {
             filteredCommands = options.getArgs();
         }
         if (filteredCommands == null) {
+            printHelp(null);
             getService().printHelp();
         } else if (filteredCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(filteredCommands[0]);

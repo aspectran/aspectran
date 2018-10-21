@@ -77,7 +77,7 @@ public class HelpFormatter {
     public static final int DEFAULT_DESC_PAD = 3;
 
     /** the string to display at the beginning of the usage statement */
-    private static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    private static final String DEFAULT_SYNTAX_PREFIX = "Usage: ";
 
     /** Default prefix for shortOpts */
     private static final String DEFAULT_OPT_PREFIX = "-";

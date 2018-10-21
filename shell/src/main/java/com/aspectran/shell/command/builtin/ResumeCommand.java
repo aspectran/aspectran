@@ -58,7 +58,7 @@ public class ResumeCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Resume the Aspectran Shell Service";
+            return "Resume the Aspectran Shell";
         }
 
         @Override

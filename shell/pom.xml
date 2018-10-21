@@ -30,6 +30,11 @@
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-jetty</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.javassist</groupId>

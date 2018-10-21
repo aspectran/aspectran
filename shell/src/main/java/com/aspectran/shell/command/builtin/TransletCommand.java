@@ -17,7 +17,9 @@ package com.aspectran.shell.command.builtin;
 
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -63,8 +65,12 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
+        getConsole().writeLine("+ %-20s + %-80s +", "--------------------", "--------------------------------------------------------------------------------");
+        getConsole().writeLine("| %-20s | %-80s |", "Translet Name", "Description");
+        getConsole().writeLine("+ %-20s + %-80s +", "--------------------", "--------------------------------------------------------------------------------");
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
+            String desc = StringUtils.trimWhitespace(transletRule.getDescription());
             if (getService().isExposable(name)) {
                 if (keywords != null) {
                     boolean exists = false;
@@ -87,7 +93,15 @@ public class TransletCommand extends AbstractCommand {
                     }
                     getConsole().writeLine("] ");
                 }
-                getConsole().writeLine(name);
+                if (desc != null && desc.contains(ActivityContext.LINE_SEPARATOR)) {
+                    String[] arr = StringUtils.split(desc, ActivityContext.LINE_SEPARATOR);
+                    for (int i = 0; i < arr.length; i++) {
+                        getConsole().writeLine("| %-20s | %-80s |", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
+                    }
+                } else {
+                    getConsole().writeLine("| %-20s | %-80s |", name, StringUtils.nullToEmpty(desc));
+                }
+                getConsole().writeLine("+ %-20s + %-80s +", "--------------------", "--------------------------------------------------------------------------------");
             }
         }
     }
