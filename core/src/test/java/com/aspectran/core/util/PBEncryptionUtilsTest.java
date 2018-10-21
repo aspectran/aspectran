@@ -58,13 +58,4 @@ public class PBEncryptionUtilsTest {
         assertEquals(original, decrypted);
     }
 
-    @Test
-    public void testEncryptTriple() {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, "PBEWithMD5AndTripleDES");
-        String original = "1234"; // X/GeIRH83RB8SX31cMM4jA==
-        String encrypted = PBEncryptionUtils.encrypt(original);
-        String decrypted = PBEncryptionUtils.decrypt(encrypted);
-        assertEquals(original, decrypted);
-    }
-
 }
