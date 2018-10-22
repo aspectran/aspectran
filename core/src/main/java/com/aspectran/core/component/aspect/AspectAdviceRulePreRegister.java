@@ -96,7 +96,7 @@ public class AspectAdviceRulePreRegister {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
-                if (pointcut != null && pointcut.isExistsBeanMethodNamePattern()) {
+                if (pointcut != null && pointcut.hasBeanMethodNamePattern()) {
                     if (existsMatchedBean(pointcut, beanRule)) {
                         beanRule.setProxied(true);
 
@@ -161,11 +161,11 @@ public class AspectAdviceRulePreRegister {
     private boolean existsMatchedBean(Pointcut pointcut, BeanRule beanRule) {
         List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
         if (pointcutPatternRuleList != null) {
-            BeanDescriptor cd = BeanDescriptor.getInstance(beanRule.getTargetBeanClass());
+            BeanDescriptor bd = BeanDescriptor.getInstance(beanRule.getTargetBeanClass());
 
             String beanId = beanRule.getId();
             String className = beanRule.getTargetBeanClassName();
-            String[] methodNames = cd.getDistinctMethodNames();
+            String[] methodNames = bd.getDistinctMethodNames();
 
             for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                 if (existsBean(pointcut, ppr, beanId, className, methodNames)) {

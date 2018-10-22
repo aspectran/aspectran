@@ -52,7 +52,7 @@ public abstract class AbstractPointcut implements Pointcut {
     }
 
     @Override
-    public boolean isExistsBeanMethodNamePattern() {
+    public boolean hasBeanMethodNamePattern() {
         return existsBeanMethodNamePattern;
     }
 

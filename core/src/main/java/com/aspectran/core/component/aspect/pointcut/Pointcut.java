@@ -26,7 +26,7 @@ public interface Pointcut {
 
     List<PointcutPatternRule> getPointcutPatternRuleList();
 
-    boolean isExistsBeanMethodNamePattern();
+    boolean hasBeanMethodNamePattern();
 
     boolean matches(String transletName);
 
