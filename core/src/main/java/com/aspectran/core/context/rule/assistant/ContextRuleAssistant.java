@@ -352,7 +352,7 @@ public class ContextRuleAssistant {
      */
     public boolean isPointcutPatternVerifiable() {
         DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-        return (defaultSettings == null || defaultSettings.isPointcutPatternVerifiable());
+        return (defaultSettings != null && defaultSettings.isPointcutPatternVerifiable());
     }
 
     /**

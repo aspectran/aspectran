@@ -87,7 +87,8 @@ public class DefaultSettings {
     }
 
     public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
-        this.transletNamePattern = transletNamePrefix + PrefixSuffixPattern.PREFIX_SUFFIX_PATTERN_SEPARATOR + transletNameSuffix;
+        this.transletNamePattern = transletNamePrefix + PrefixSuffixPattern.PREFIX_SUFFIX_PATTERN_SEPARATOR +
+                transletNameSuffix;
         this.transletNamePrefix = transletNamePrefix;
         this.transletNameSuffix = transletNameSuffix;
     }
@@ -157,7 +158,7 @@ public class DefaultSettings {
     }
 
     public boolean isPointcutPatternVerifiable() {
-        return BooleanUtils.toBoolean(pointcutPatternVerifiable, true);
+        return BooleanUtils.toBoolean(pointcutPatternVerifiable, false);
     }
 
     public Boolean getPointcutPatternVerifiable() {
@@ -184,7 +185,7 @@ public class DefaultSettings {
         this.defaultSchedulerBean = defaultSchedulerBean;
     }
 
-    public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
+    public void apply(Map<DefaultSettingType, String> settings) {
         if (settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null) {
             setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
         }
