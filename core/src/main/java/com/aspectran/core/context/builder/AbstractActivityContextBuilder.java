@@ -446,8 +446,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                         if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for bean id '" + ppr.getBeanIdPattern() +
-                                    "' : aspectRule " + aspectRule;
+                            String msg = "No beans matching to '" + ppr.getBeanIdPattern() +
+                                    "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {
@@ -456,8 +456,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                         }
                         if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for class name '" + ppr.getClassNamePattern() +
-                                    "' : aspectRule " + aspectRule;
+                            String msg = "No beans matching to '" + ppr.getClassNamePattern() +
+                                    "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {
@@ -466,8 +466,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                         }
                         if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
                             offendingPointcutPatterns++;
-                            String msg = "Incorrect pointcut pattern for bean's method name '" + ppr.getMethodNamePattern() +
-                                    "' : aspectRule " + aspectRule;
+                            String msg = "No beans have methods matching to '" + ppr.getMethodNamePattern() +
+                                    "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
                             } else {
@@ -480,7 +480,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
 
         if (offendingPointcutPatterns > 0) {
-            String msg = offendingPointcutPatterns + " Offending pointcut patterns; Please check the logs for more information";
+            String msg = "Invalid pointcut detected: " + offendingPointcutPatterns + "; Please check the logs for more information";
             if (pointcutPatternVerifiable) {
                 log.error(msg);
                 throw new InvalidPointcutPatternException(msg);

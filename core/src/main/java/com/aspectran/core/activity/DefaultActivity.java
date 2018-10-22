@@ -93,7 +93,7 @@ public class DefaultActivity extends BasicActivity {
 
     @Override
     public Translet getTranslet() {
-        return null;
+        throw new UnsupportedOperationException("Default Activity does not have a Translet");
     }
 
     @Override
