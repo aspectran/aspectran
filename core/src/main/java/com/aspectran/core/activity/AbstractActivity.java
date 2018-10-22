@@ -40,7 +40,9 @@ import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The Class AbstractActivity.
@@ -68,6 +70,8 @@ public abstract class AbstractActivity implements Activity {
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
     private AspectAdviceResult aspectAdviceResult;
+
+    private Set<AspectRule> relevantAspectRules;
 
     /**
      * Instantiates a new abstract activity.
@@ -414,8 +418,12 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public void registerAspectRule(AspectRule aspectRule) {
-        if (!isAcceptable(aspectRule)) {
+        if (relevantAspectRules != null && relevantAspectRules.contains(aspectRule)) {
             return;
+        } else if (!isAcceptable(aspectRule)) {
+            return;
+        } else {
+            touchRelevantAspectRules().add(aspectRule);
         }
 
         if (log.isDebugEnabled()) {
@@ -439,6 +447,11 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        if (relevantAspectRules != null && relevantAspectRules.contains(settingsAdviceRule.getAspectRule())) {
+            return;
+        } else {
+            touchRelevantAspectRules().add(settingsAdviceRule.getAspectRule());
+        }
         touchAspectAdviceRuleRegistry().addAspectAdviceRule(settingsAdviceRule);
     }
 
@@ -484,6 +497,13 @@ public abstract class AbstractActivity implements Activity {
             }
         }
         return true;
+    }
+
+    private Set<AspectRule> touchRelevantAspectRules() {
+        if (relevantAspectRules == null) {
+            relevantAspectRules = new HashSet<>();
+        }
+        return relevantAspectRules;
     }
 
 }
