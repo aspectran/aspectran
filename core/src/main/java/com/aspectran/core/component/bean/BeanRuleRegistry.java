@@ -15,11 +15,18 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.component.bean.aware.CurrentActivityAware;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.AspectranRuntimeException;
@@ -72,6 +79,13 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(FactoryBean.class);
         ignoreDependencyInterface(InitializableBean.class);
         ignoreDependencyInterface(InitializableTransletBean.class);
+        ignoreDependencyInterface(ActivityContextAware.class);
+        ignoreDependencyInterface(ApplicationAdapterAware.class);
+        ignoreDependencyInterface(ClassLoaderAware.class);
+        ignoreDependencyInterface(CurrentActivityAware.class);
+        ignoreDependencyInterface(EnvironmentAware.class);
+        ignoreDependencyInterface(Activity.class);
+        ignoreDependencyInterface(Translet.class);
     }
 
     public BeanRule getBeanRule(Object idOrRequiredType) {
@@ -236,11 +250,7 @@ public class BeanRuleRegistry {
                     saveConfigBeanRule(beanRule);
                 } else {
                     saveBeanRule(targetBeanClass, beanRule);
-                    for (Class<?> ifc : targetBeanClass.getInterfaces()) {
-                        if (!ignoredDependencyInterfaces.contains(ifc)) {
-                            saveBeanRule(ifc, beanRule);
-                        }
-                    }
+                    saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
                 }
             }
             if (log.isTraceEnabled()) {
@@ -270,6 +280,14 @@ public class BeanRuleRegistry {
         list.add(beanRule);
     }
 
+    private void saveBeanRule(Class<?>[] interfaces, BeanRule beanRule) {
+        for (Class<?> ifc : interfaces) {
+            if (!ignoredDependencyInterfaces.contains(ifc)) {
+                saveBeanRule(ifc, beanRule);
+            }
+        }
+    }
+
     private void saveConfigBeanRule(BeanRule beanRule) {
         if (beanRule.getBeanClass() == null) {
             throw new AspectranRuntimeException("Illegal Bean Rule " + beanRule);
@@ -294,11 +312,7 @@ public class BeanRuleRegistry {
                         BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
                     }
                     saveBeanRule(targetBeanClass, beanRule);
-                    for (Class<?> ifc : targetBeanClass.getInterfaces()) {
-                        if (!ignoredDependencyInterfaces.contains(ifc)) {
-                            saveBeanRule(ifc, beanRule);
-                        }
-                    }
+                    saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
                 }
             }
             postProcessBeanRuleMap.clear();
@@ -316,11 +330,7 @@ public class BeanRuleRegistry {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
                 saveBeanRule(targetBeanClass, beanRule);
-                for (Class<?> ifc : targetBeanClass.getInterfaces()) {
-                    if (!ignoredDependencyInterfaces.contains(ifc)) {
-                        saveBeanRule(ifc, beanRule);
-                    }
-                }
+                saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
             }
 
             @Override

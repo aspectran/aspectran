@@ -285,7 +285,7 @@ public class AspectRule implements BeanReferenceInspectable {
         tsb.append("settingsAdvice", settingsAdviceRule);
         tsb.append("aspectAdvices", aspectAdviceRuleList);
         tsb.append("exception", exceptionRule);
-        tsb.append("beanRelevant", beanRelevant);
+        tsb.appendForce("beanRelevant", beanRelevant);
         return tsb.toString();
     }
 

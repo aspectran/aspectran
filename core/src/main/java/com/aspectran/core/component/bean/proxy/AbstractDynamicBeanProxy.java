@@ -82,7 +82,7 @@ public abstract class AbstractDynamicBeanProxy {
                 holder = holder2;
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("caching relevantAspectRuleHolder [" + pattern + "] " + holder);
+                    log.debug("Caching RelevantAspectRuleHolder[" + pattern + "] " + holder);
                 }
             }
         }

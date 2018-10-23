@@ -101,17 +101,18 @@ public class AspectAdviceRulePreRegister {
                         beanRule.setProxied(true);
 
                         if (log.isTraceEnabled()) {
-                            log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
+                            log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
                         }
 
                         break;
                     }
                 } else {
-                    if (pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
+                    if (pointcut == null ||
+                            existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
                         beanRule.setProxied(true);
 
                         if (log.isTraceEnabled()) {
-                            log.trace("applied aspectRule " + aspectRule + " to beanRule " + beanRule);
+                            log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
                         }
 
                         break;
@@ -139,7 +140,7 @@ public class AspectAdviceRulePreRegister {
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
 
                     if (log.isTraceEnabled()) {
-                        log.trace("applied aspectRule " + aspectRule + " to transletRule " + transletRule);
+                        log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule);
                     }
                 }
             }
@@ -176,7 +177,8 @@ public class AspectAdviceRulePreRegister {
         return false;
     }
 
-    private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule, String beanId, String className, String[] methodNames) {
+    private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule,
+                               String beanId, String className, String[] methodNames) {
         boolean matched = true;
         if (beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
             matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);

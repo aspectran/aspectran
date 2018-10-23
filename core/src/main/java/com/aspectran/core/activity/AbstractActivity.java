@@ -427,7 +427,7 @@ public abstract class AbstractActivity implements Activity {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("apply AspectRule " + aspectRule);
+            log.debug("Apply AspectRule " + aspectRule);
         }
 
         List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
@@ -465,7 +465,7 @@ public abstract class AbstractActivity implements Activity {
                         Pointcut pointcut = aspectRule.getPointcut();
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {
                             if (log.isDebugEnabled()) {
-                                log.debug("apply AspectRule " + aspectRule);
+                                log.debug("Apply AspectRule " + aspectRule);
                             }
                             aarPostRegister.register(aspectRule);
                         }

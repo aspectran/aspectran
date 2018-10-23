@@ -450,8 +450,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
-                            } else {
-                                log.warn(msg);
+                            } else if (log.isDebugEnabled()) {
+                                log.debug(msg);
                             }
                         }
                         if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
@@ -460,8 +460,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
-                            } else {
-                                log.warn(msg);
+                            } else if (log.isDebugEnabled()) {
+                                log.debug(msg);
                             }
                         }
                         if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
@@ -470,8 +470,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     "'; aspectRule " + aspectRule;
                             if (pointcutPatternVerifiable) {
                                 log.error(msg);
-                            } else {
-                                log.warn(msg);
+                            } else if (log.isDebugEnabled()) {
+                                log.debug(msg);
                             }
                         }
                     }
@@ -484,8 +484,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             if (pointcutPatternVerifiable) {
                 log.error(msg);
                 throw new InvalidPointcutPatternException(msg);
-            } else {
-                log.warn(msg);
+            } else if (log.isDebugEnabled()) {
+                log.debug(msg);
             }
         }
 
