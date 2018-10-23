@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class PointcutRule.
+ * Pointcut are expressions that is matched with join points to determine whether
+ * advice needs to be executed or not. Pointcut uses different kinds of expressions
+ * that are matched with the join points and Aspectran uses the Wildcard pattern
+ * matching expression.
  */
 public class PointcutRule {
 

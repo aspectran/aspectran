@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class AspectRule.
+ * An aspect is a class that implements enterprise application concerns that
+ * cut across multiple classes, such as transaction management. Aspects can be
+ * a bean configured through Aspectran configuration.
  * 
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;

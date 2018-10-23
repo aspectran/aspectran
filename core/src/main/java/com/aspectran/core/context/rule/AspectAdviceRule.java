@@ -26,7 +26,10 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class AspectAdviceRule.
+ * Advices are actions taken for a particular join point.
+ * In terms of programming, they are methods that gets executed
+ * when a certain join point with matching pointcut is reached
+ * in the application.
  * 
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */

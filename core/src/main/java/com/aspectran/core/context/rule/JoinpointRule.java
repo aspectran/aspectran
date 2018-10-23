@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class JoinpointRule.
+ * A join point is the specific point in the application such as method execution,
+ * exception handling, injecting settings values etc. In Aspectran AOP a join points
+ * is always the execution of a method.
  * 
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;

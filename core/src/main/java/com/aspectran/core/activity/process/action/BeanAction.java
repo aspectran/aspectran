@@ -130,7 +130,7 @@ public class BeanAction extends AbstractAction {
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (log.isDebugEnabled()) {
-                                log.debug("No have a Translet argument; beanActionRule " + beanActionRule);
+                                log.debug("No have a Translet argument on bean action method " + beanActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
@@ -144,7 +144,7 @@ public class BeanAction extends AbstractAction {
                 return result;
             }
         } catch (Exception e) {
-            log.error("Failed to execute an action that invokes the bean's method " + beanActionRule);
+            log.error("Failed to execute a bean action method " + beanActionRule);
             throw e;
         }
     }
