@@ -24,6 +24,9 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
+/**
+ * Turns verbose mode on or off.
+ */
 public class VerboseCommand extends AbstractCommand {
 
     private static final Log log = LogFactory.getLog(VerboseCommand.class);

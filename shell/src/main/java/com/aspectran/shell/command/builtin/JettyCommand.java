@@ -25,6 +25,9 @@ import com.aspectran.with.jetty.JettyServer;
 import java.net.BindException;
 import java.util.Collection;
 
+/**
+ * Use the command 'jetty' to control the Jetty Server.
+ */
 public class JettyCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
@@ -109,7 +112,7 @@ public class JettyCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "To control Jetty, try one of the following commands:";
+            return "Use the command 'jetty' to control the Jetty Server";
         }
 
         @Override

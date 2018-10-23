@@ -24,6 +24,9 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
+/**
+ * Encrypts the input string using the encryption password.
+ */
 public class PBEncryptCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
@@ -50,12 +53,12 @@ public class PBEncryptCommand extends AbstractCommand {
         }
         String output = PBEncryptionUtils.encrypt(input, password);
 
-        getConsole().writeLine("---------------------------------------------");
-        getConsole().writeLine("   %1$-11s: %2$s", "input", input);
-        getConsole().writeLine("   %1$-11s: %2$s", "password", password);
-        getConsole().writeLine("   %1$-11s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-        getConsole().writeLine("   %1$-11s: %2$s", "output", output);
-        getConsole().writeLine("---------------------------------------------");
+        getConsole().writeLine("--------------------------------------------------");
+        getConsole().writeLine("   %1$-10s: %2$s", "input", input);
+        getConsole().writeLine("   %1$-10s: %2$s", "password", password);
+        getConsole().writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+        getConsole().writeLine("   %1$-10s: %2$s", "output", output);
+        getConsole().writeLine("--------------------------------------------------");
         return null;
     }
 

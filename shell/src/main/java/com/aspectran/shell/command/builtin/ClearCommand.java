@@ -21,6 +21,9 @@ import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
+/**
+ * Clear the terminal screen.
+ */
 public class ClearCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
@@ -58,7 +61,7 @@ public class ClearCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Clear the screen";
+            return "Clear the terminal screen";
         }
 
         @Override

@@ -24,6 +24,9 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
+/**
+ * Decrypts the input string using the encryption password.
+ */
 public class PBDecryptCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";

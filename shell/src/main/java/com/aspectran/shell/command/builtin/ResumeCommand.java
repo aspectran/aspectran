@@ -21,6 +21,9 @@ import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
+/**
+ * Resume the Aspectran Shell.
+ */
 public class ResumeCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";

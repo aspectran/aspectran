@@ -25,6 +25,9 @@ import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
+/**
+ * Display information about builtin commands.
+ */
 public class HelpCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";

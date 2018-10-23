@@ -22,6 +22,9 @@ import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
+/**
+ * Releases all resources and exits this application.
+ */
 public class QuitCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";

@@ -21,6 +21,9 @@ import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
+/**
+ * Pause the Aspectran Shell.
+ */
 public class PauseCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
@@ -58,7 +61,7 @@ public class PauseCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Pause the Aspectran Shell Service";
+            return "Pause the Aspectran Shell";
         }
 
         @Override

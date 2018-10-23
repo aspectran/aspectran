@@ -27,6 +27,9 @@ import java.lang.management.RuntimeMXBean;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Displays current JVM runtime information.
+ */
 public class SysInfoCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtin";
