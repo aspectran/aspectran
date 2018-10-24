@@ -28,16 +28,16 @@ import java.util.List;
 public class CustomerAction {
 
     @Autowired
-    private CustomerDao dao;
+    private CustomerRepository repository;
 
-    public List<Customer> getCustomerList(Translet translet) {
-        return dao.getCustomerList();
+    public List<Customer> getCustomerList() {
+        return repository.getCustomerList();
     }
 
     public Customer getCustomer(Translet translet) {
         int id = Integer.parseInt(translet.getParameter("id"));
 
-        Customer customer = dao.getCustomer(id);
+        Customer customer = repository.getCustomer(id);
 
         if(customer == null) {
             HttpStatusSetter.notFound(translet);
@@ -57,7 +57,7 @@ public class CustomerAction {
         customer.putValue(Customer.age, age);
         customer.putValue(Customer.approved, approved);
 
-        int id = dao.insertCustomer(customer);
+        int id = repository.insertCustomer(customer);
 
         String resourceUri = translet.getName() + "/" + id;
         HttpStatusSetter.created(translet, resourceUri);
@@ -77,7 +77,7 @@ public class CustomerAction {
         customer.putValue(Customer.age, age);
         customer.putValue(Customer.approved, approved);
 
-        boolean updated = dao.updateCustomer(customer);
+        boolean updated = repository.updateCustomer(customer);
 
         if(!updated) {
             HttpStatusSetter.notFound(translet);
@@ -90,7 +90,7 @@ public class CustomerAction {
     public boolean deleteCustomer(Translet translet) {
         int id = Integer.parseInt(translet.getParameter("id"));
 
-        boolean deleted = dao.deleteCustomer(id);
+        boolean deleted = repository.deleteCustomer(id);
 
         if(!deleted) {
             HttpStatusSetter.notFound(translet);
@@ -104,7 +104,7 @@ public class CustomerAction {
         int id = Integer.parseInt(translet.getParameter("id"));
         boolean approved = Boolean.parseBoolean(translet.getParameter("approved"));
 
-        boolean updated = dao.approve(id, approved);
+        boolean updated = repository.approve(id, approved);
 
         if(!updated) {
             HttpStatusSetter.notFound(translet);

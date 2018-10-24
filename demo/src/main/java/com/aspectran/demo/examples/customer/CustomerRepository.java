@@ -31,15 +31,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Component
 @Bean
-public class CustomerDao {
+public class CustomerRepository {
     
-    private final Log log = LogFactory.getLog(CustomerDao.class);
+    private final Log log = LogFactory.getLog(CustomerRepository.class);
 
     private final Map<Integer, Customer> customerMap;
 
     private static final AtomicInteger counter = new AtomicInteger();
     
-    public CustomerDao() {
+    public CustomerRepository() {
         // Pre-create 10 customers whose names begin with "Guest"
         customerMap = new ConcurrentSkipListMap<>();
         
