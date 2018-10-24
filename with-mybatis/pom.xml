@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.aspectran</groupId>
+        <artifactId>aspectran</artifactId>
+        <version>5.4.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aspectran-with-mybatis</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Aspectran with MyBatis</name>
+    <description>Add-on package for integrating MyBatis</description>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <inceptionYear>2008</inceptionYear>
+
+    <properties>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+        <mybatis.version>3.4.6</mybatis.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-core</artifactId>
+        </dependency>
+        <!-- MyBatis dependencies -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-embed</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

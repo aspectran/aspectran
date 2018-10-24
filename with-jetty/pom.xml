@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with Jetty</name>
-    <description>Add-on package for using embedded Jetty 9 server</description>
+    <description>Add-on package for integrating embedded Jetty 9 server</description>
 
     <licenses>
         <license>

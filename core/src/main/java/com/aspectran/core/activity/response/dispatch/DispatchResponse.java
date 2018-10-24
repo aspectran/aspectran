@@ -128,13 +128,11 @@ public class DispatchResponse implements Response {
                     if (viewDispatcher == null) {
                         throw new IllegalArgumentException("No bean named '" + viewDispatcherName + "' is defined");
                     }
-
                     if (viewDispatcher.isSingleton()) {
-                        viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
-
                         if (log.isDebugEnabled()) {
-                            log.debug("cached ViewDispatcher: " + viewDispatcher);
+                            log.debug("Caching ViewDispatcher: " + viewDispatcher);
                         }
+                        viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
                     }
                 }
             }

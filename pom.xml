@@ -75,6 +75,7 @@
         <module>shell-jline</module>
         <module>web</module>
         <module>with-jetty</module>
+        <module>with-mybatis</module>
         <module>demo</module>
     </modules>
 
