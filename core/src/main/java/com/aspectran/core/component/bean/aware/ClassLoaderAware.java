@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.aware;
 
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+
 /**
  * The ClassLoaderAware interface provides the ability to configure a {@code ClassLoader}
  * to be used by the implementing object when loading classes or resources.
@@ -32,6 +34,7 @@ public interface ClassLoaderAware extends Aware {
      *
      * @param classLoader the {@code ClassLoader} to provide
      */
+    @AvoidAdvice
     void setClassLoader(ClassLoader classLoader);
 
 }

@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.aware;
+package com.aspectran.core.component.bean.annotation;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.context.env.Environment;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link Environment}.
- *
- * <p>Created: 2017. 11. 9.</p>
- *
- * @since 5.0.0
- */
-public interface EnvironmentAware extends Aware {
-
-    @AvoidAdvice
-    void setEnvironment(Environment environment);
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface AvoidAdvice {
 
 }

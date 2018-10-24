@@ -52,13 +52,15 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Activity activity = context.getCurrentActivity();
+        if (isAvoidAdvice(method)) {
+            return method.invoke(bean, args);
+        }
 
+        Activity activity = context.getCurrentActivity();
         String transletName = activity.getTransletName();
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();
-
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
             return method.invoke(bean, args);

@@ -51,13 +51,15 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 
     @Override
     public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Throwable {
-        Activity activity = context.getCurrentActivity();
+        if (isAvoidAdvice(overridden)) {
+            return proceed.invoke(self, args);
+        }
 
+        Activity activity = context.getCurrentActivity();
         String transletName = activity.getTransletName();
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
-
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
             return proceed.invoke(self, args);
@@ -127,7 +129,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
             MethodHandler methodHandler = new JavassistDynamicBeanProxy(context, beanRule);
             return proxyFactory.create(constructorArgTypes, constructorArgs, methodHandler);
         } catch (Exception e) {
-            throw new ProxyBeanInstantiationException(beanRule.getBeanClass(), e);
+            throw new ProxyBeanInstantiationException(beanRule, e);
         }
     }
 

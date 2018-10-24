@@ -86,6 +86,9 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(EnvironmentAware.class);
         ignoreDependencyInterface(Activity.class);
         ignoreDependencyInterface(Translet.class);
+        ignoreDependencyInterface(java.io.Serializable.class);
+        ignoreDependencyInterface(java.lang.Comparable.class);
+        ignoreDependencyInterface(java.lang.CharSequence.class);
     }
 
     public BeanRule getBeanRule(Object idOrRequiredType) {

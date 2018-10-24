@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.ablility;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface InitializableTransletBean.
@@ -30,6 +31,7 @@ public interface InitializableTransletBean {
      * @param translet the translet
      * @throws Exception if initialization fails
      */
+    @AvoidAdvice
     void initialize(Translet translet) throws Exception;
 
 }

@@ -20,6 +20,7 @@ import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -30,6 +31,7 @@ import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,12 @@ public abstract class AbstractDynamicBeanProxy {
 
     public AbstractDynamicBeanProxy(AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
+    }
+
+    protected boolean isAvoidAdvice(Method method) {
+        return (Object.class == method.getDeclaringClass() ||
+                method.getDeclaringClass().isAnnotationPresent(AvoidAdvice.class) ||
+                method.isAnnotationPresent(AvoidAdvice.class));
     }
 
     protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity,
@@ -72,8 +80,6 @@ public abstract class AbstractDynamicBeanProxy {
     private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
             String transletName, String beanId, String className, String methodName) {
         String pattern = PointcutPatternRule.combinePattern(transletName, beanId, className, methodName);
-
-        // Check the cache first
         RelevantAspectRuleHolder holder = cache.get(pattern);
         if (holder == null) {
             holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);

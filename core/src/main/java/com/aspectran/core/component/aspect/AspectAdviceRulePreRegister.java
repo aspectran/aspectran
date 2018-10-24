@@ -17,6 +17,7 @@ package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
@@ -96,25 +97,31 @@ public class AspectAdviceRulePreRegister {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
-                if (pointcut != null && pointcut.hasBeanMethodNamePattern()) {
-                    if (existsMatchedBean(pointcut, beanRule)) {
-                        beanRule.setProxied(true);
-
-                        if (log.isTraceEnabled()) {
-                            log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+                if (pointcut != null) {
+                    if (pointcut.hasBeanMethodNamePattern()) {
+                        if (existsMatchedBean(pointcut, beanRule)) {
+                            beanRule.setProxied(true);
+                            if (log.isTraceEnabled()) {
+                                log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+                            }
+                            break;
                         }
-
-                        break;
+                    } else {
+                        if (existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
+                            beanRule.setProxied(true);
+                            if (log.isTraceEnabled()) {
+                                log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+                            }
+                            break;
+                        }
                     }
                 } else {
-                    if (pointcut == null ||
-                            existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
+                    Class<?> beanClass = beanRule.getTargetBeanClass();
+                    if (!beanClass.isAnnotationPresent(AvoidAdvice.class)) {
                         beanRule.setProxied(true);
-
                         if (log.isTraceEnabled()) {
                             log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
                         }
-
                         break;
                     }
                 }

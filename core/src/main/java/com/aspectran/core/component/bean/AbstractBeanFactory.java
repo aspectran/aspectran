@@ -351,7 +351,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
             MethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing an initialization method of the bean", beanRule, e);
+            throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
+                    beanRule, e);
         }
     }
 
@@ -361,7 +362,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
             return MethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing a factory method of the bean", beanRule, e);
+            throw new BeanCreationException("An exception occurred while executing a factory method of the bean",
+                    beanRule, e);
         }
     }
 
@@ -462,7 +464,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return failedCount;
     }
 
-    private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) throws BeanInstantiationException {
+    private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes)
+            throws BeanInstantiationException {
         if (beanClass.isInterface()) {
             throw new BeanInstantiationException(beanClass, "Specified class is an interface");
         }

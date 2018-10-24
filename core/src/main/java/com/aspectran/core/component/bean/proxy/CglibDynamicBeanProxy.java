@@ -50,13 +50,15 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 
     @Override
     public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        Activity activity = context.getCurrentActivity();
+        if (isAvoidAdvice(method)) {
+            return methodProxy.invokeSuper(proxy, args);
+        }
 
+        Activity activity = context.getCurrentActivity();
         String transletName = activity.getTransletName();
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();
-
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
             return methodProxy.invokeSuper(proxy, args);

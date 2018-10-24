@@ -31,6 +31,7 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.component.bean.BeanException;
+import com.aspectran.core.context.rule.BeanRule;
 
 /**
  * Exception thrown when instantiation of a proxy bean failed.
@@ -40,48 +41,26 @@ public class ProxyBeanInstantiationException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = -3560168431550039638L;
 
-    private Class<?> beanClass;
+    private BeanRule beanRule;
 
     /**
      * Create a new ProxyBeanInstantiationException.
      *
-     * @param beanClass the offending bean class
+     * @param beanRule the offending bean rule
      * @param cause the root cause
      */
-    public ProxyBeanInstantiationException(Class<?> beanClass, Throwable cause) {
-        this(beanClass, cause.getMessage(), cause);
+    public ProxyBeanInstantiationException(BeanRule beanRule, Throwable cause) {
+        super("Could not instantiate proxy bean " + beanRule, cause);
+        this.beanRule = beanRule;
     }
 
     /**
-     * Create a new ProxyBeanInstantiationException.
+     * Return the offending bean rule.
      *
-     * @param beanClass the offending bean class
-     * @param msg the detail message
+     * @return the bean rule
      */
-    public ProxyBeanInstantiationException(Class<?> beanClass, String msg) {
-        super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg);
-        this.beanClass = beanClass;
-    }
-
-    /**
-     * Create a new ProxyBeanInstantiationException.
-     *
-     * @param beanClass the offending bean class
-     * @param msg the detail message
-     * @param cause the root cause
-     */
-    public ProxyBeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
-        super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg, cause);
-        this.beanClass = beanClass;
-    }
-
-    /**
-     * Return the offending bean class.
-     *
-     * @return the bean class
-     */
-    public Class<?> getBeanClass() {
-        return beanClass;
+    public BeanRule getBeanRule() {
+        return beanRule;
     }
 
 }
