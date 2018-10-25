@@ -257,8 +257,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                         if (fileLocker != null) {
                             try {
                                 fileLocker.release();
+                                fileLocker = null;
                             } catch (Exception e) {
-                                log.warn("Unable to release Singleton lock", e);
+                                log.warn("Unable to release Singleton lock: " + e);
                             }
                         }
                     });

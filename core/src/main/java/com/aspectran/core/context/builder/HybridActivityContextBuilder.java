@@ -142,8 +142,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             log.info("ActivityContext build completed in " + elapsedTime + " ms");
 
-            registerDestroyTask();
-            startReloadingTimer();
+            if (coreService == null) {
+                // If it is driven by a builder without a service
+                registerDestroyTask();
+            } else {
+                // Timer starts only if it is driven by a service
+                startReloadingTimer();
+            }
 
             this.active.set(true);
 
@@ -181,7 +186,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
      * on JVM shutdown unless it has already been closed at that time.
      */
     private void registerDestroyTask() {
-        if (this.coreService == null && this.shutdownTask == null) {
+        if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
             this.shutdownTask = ShutdownHooks.add(() -> {
                 synchronized (this.buildDestroyMonitor) {
