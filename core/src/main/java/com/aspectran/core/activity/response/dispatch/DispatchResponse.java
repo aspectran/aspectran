@@ -24,8 +24,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JSP or other web resource integration.
@@ -36,9 +36,7 @@ public class DispatchResponse implements Response {
 
     private final Log log = LogFactory.getLog(DispatchResponse.class);
 
-    private final boolean debugEnabled = log.isDebugEnabled();
-
-    private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<>();
+    private final static Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
     private final DispatchResponseRule dispatchResponseRule;
 
@@ -54,7 +52,7 @@ public class DispatchResponse implements Response {
     @Override
     public void commit(Activity activity) {
         try {
-            if (debugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug("response " + dispatchResponseRule);
             }
 
@@ -103,36 +101,37 @@ public class DispatchResponse implements Response {
      */
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
         try {
-            String viewDispatcherName;
+            String dispatcherName;
             if (dispatchResponseRule.getDispatcher() != null) {
-                viewDispatcherName = dispatchResponseRule.getDispatcher();
+                dispatcherName = dispatchResponseRule.getDispatcher();
             } else {
-                viewDispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-                if (viewDispatcherName == null) {
+                dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
+                if (dispatcherName == null) {
                     throw new IllegalArgumentException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
                             "' has not been specified in the default response rule");
                 }
             }
 
-            ViewDispatcher viewDispatcher;
-            synchronized (viewDispatcherCache) {
-                viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
+            ViewDispatcher viewDispatcher = cache.get(dispatcherName);
+            if (viewDispatcher == null) {
+                if (dispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+                    String dispatcherClassName = dispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                    Class<?> dispatcherClass = activity.getEnvironment().getClassLoader().loadClass(dispatcherClassName);
+                    viewDispatcher = (ViewDispatcher)activity.getBean(dispatcherClass);
+                } else {
+                    viewDispatcher = activity.getBean(dispatcherName);
+                }
                 if (viewDispatcher == null) {
-                    if (viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                        String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                        Class<?> viewDispatcherClass = activity.getEnvironment().getClassLoader().loadClass(viewDispatcherClassName);
-                        viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
+                    throw new IllegalArgumentException("No bean named '" + dispatcherName + "' is defined");
+                }
+                if (viewDispatcher.isSingleton()) {
+                    ViewDispatcher existing = cache.putIfAbsent(dispatcherName, viewDispatcher);
+                    if (existing != null) {
+                        viewDispatcher = existing;
                     } else {
-                        viewDispatcher = activity.getBean(viewDispatcherName);
-                    }
-                    if (viewDispatcher == null) {
-                        throw new IllegalArgumentException("No bean named '" + viewDispatcherName + "' is defined");
-                    }
-                    if (viewDispatcher.isSingleton()) {
                         if (log.isDebugEnabled()) {
                             log.debug("Caching ViewDispatcher: " + viewDispatcher);
                         }
-                        viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
                     }
                 }
             }

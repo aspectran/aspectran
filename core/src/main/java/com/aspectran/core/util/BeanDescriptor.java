@@ -359,9 +359,9 @@ public class BeanDescriptor {
         BeanDescriptor bd = cache.get(clazz);
         if (bd == null) {
             bd = new BeanDescriptor(clazz);
-            BeanDescriptor bd2 = cache.putIfAbsent(clazz, bd);
-            if (bd2 != null) {
-                bd = bd2;
+            BeanDescriptor existing = cache.putIfAbsent(clazz, bd);
+            if (existing != null) {
+                bd = existing;
             }
         }
         return bd;

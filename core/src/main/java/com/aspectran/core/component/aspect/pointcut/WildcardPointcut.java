@@ -76,9 +76,9 @@ public class WildcardPointcut extends AbstractPointcut {
         WildcardPattern wildcardPattern = cache.get(pattern);
         if (wildcardPattern == null) {
             wildcardPattern = new WildcardPattern(pattern);
-            WildcardPattern wildcardPattern2 = cache.putIfAbsent(pattern, wildcardPattern);
-            if (wildcardPattern2 != null) {
-                wildcardPattern = wildcardPattern2;
+            WildcardPattern existing = cache.putIfAbsent(pattern, wildcardPattern);
+            if (existing != null) {
+                wildcardPattern = existing;
             }
         }
         return wildcardPattern.matches(compareString);
@@ -89,9 +89,9 @@ public class WildcardPointcut extends AbstractPointcut {
         WildcardPattern wildcardPattern = cache.get(patternKey);
         if (wildcardPattern == null) {
             wildcardPattern = new WildcardPattern(pattern, separator);
-            WildcardPattern wildcardPattern2 = cache.putIfAbsent(patternKey, wildcardPattern);
-            if (wildcardPattern2 != null) {
-                wildcardPattern = wildcardPattern2;
+            WildcardPattern existing = cache.putIfAbsent(patternKey, wildcardPattern);
+            if (existing != null) {
+                wildcardPattern = existing;
             }
         }
         return wildcardPattern.matches(compareString);

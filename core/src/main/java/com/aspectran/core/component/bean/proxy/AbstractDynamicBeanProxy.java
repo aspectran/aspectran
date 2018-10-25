@@ -83,9 +83,9 @@ public abstract class AbstractDynamicBeanProxy {
         RelevantAspectRuleHolder holder = cache.get(pattern);
         if (holder == null) {
             holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);
-            RelevantAspectRuleHolder holder2 = cache.putIfAbsent(pattern, holder);
-            if (holder2 != null) {
-                holder = holder2;
+            RelevantAspectRuleHolder existing = cache.putIfAbsent(pattern, holder);
+            if (existing != null) {
+                holder = existing;
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("Caching RelevantAspectRuleHolder[" + pattern + "] " + holder);
