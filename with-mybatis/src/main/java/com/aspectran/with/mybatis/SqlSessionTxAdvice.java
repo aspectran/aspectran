@@ -43,6 +43,10 @@ public class SqlSessionTxAdvice {
         this.autoCommit = autoCommit;
     }
 
+    public void setExecutorType(String executorType) {
+        this.executorType = ExecutorType.valueOf(executorType);
+    }
+
     /**
      * Returns an open SqlSession.
      * If no SqlSession is open then return null.
@@ -54,13 +58,9 @@ public class SqlSessionTxAdvice {
     }
 
     /**
-     * Return a new SqlSession instance.
-     * <ul>
-     *     <li>A transaction scope will be started (i.e. NOT auto-commit).</li>
-     *     <li>A Connection object will be acquired from the DataSource instance configured by the active environment.</li>
-     *     <li>The transaction isolation level will be the default used by the driver or data source.</li>
-     *     <li>No PreparedStatements will be reused, and no updates will be batched.</li>
-     * </ul>
+     * Opens a new SqlSession and store its instance inside. Therefore, whenever
+     * there is a request for a SqlSessionTxAdvice bean, a new bean instance of
+     * the object must be created.
      */
     public void open() {
         if(sqlSession == null) {
@@ -72,18 +72,18 @@ public class SqlSessionTxAdvice {
     }
 
     public void open(boolean autoCommit) {
-        this.autoCommit = autoCommit;
+        setAutoCommit(autoCommit);
         open();
     }
 
     public void open(String executorType) {
-        this.executorType = ExecutorType.valueOf(executorType);
+        setExecutorType(executorType);
         open();
     }
 
     public void open(String executorType, boolean autoCommit) {
-        this.executorType = ExecutorType.valueOf(executorType);
-        this.autoCommit = autoCommit;
+        setExecutorType(executorType);
+        setAutoCommit(autoCommit);
         open();
     }
 
@@ -137,6 +137,9 @@ public class SqlSessionTxAdvice {
         sqlSession = null;
     }
 
+    /**
+     * Checks if the SqlSession is open.
+     */
     private void checkSession() {
         if(sqlSession == null) {
             throw new IllegalStateException("SqlSession is not open");

@@ -29,10 +29,12 @@ import java.io.Reader;
 import java.util.Properties;
 
 /**
- * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory} using default MyBatis Configuration.
+ * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory}
+ * using default MyBatis Configuration.
  */
 @AvoidAdvice
-public class SqlSessionFactoryBean implements ActivityContextAware, InitializableBean, FactoryBean<SqlSessionFactory> {
+public class SqlSessionFactoryBean implements ActivityContextAware, InitializableBean,
+        FactoryBean<SqlSessionFactory> {
 
     private ActivityContext context;
 
@@ -73,7 +75,8 @@ public class SqlSessionFactoryBean implements ActivityContextAware, Initializabl
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
             return sqlSessionFactoryBuilder.build(reader, environment, properties);
         } catch(Exception ex) {
-            throw new IllegalArgumentException("Failed to parse mybatis config resource: " + configLocation, ex);
+            throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
+                    configLocation, ex);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
