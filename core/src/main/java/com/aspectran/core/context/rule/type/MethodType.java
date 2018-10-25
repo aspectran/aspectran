@@ -76,9 +76,11 @@ public enum MethodType {
     }
 
     public boolean containsTo(MethodType[] types) {
-        for (MethodType type : types) {
-            if (equals(type)) {
-                return true;
+        if (types != null) {
+            for (MethodType type : types) {
+                if (equals(type)) {
+                    return true;
+                }
             }
         }
         return false;
