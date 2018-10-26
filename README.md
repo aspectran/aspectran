@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v5.4.1)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v5.5.0-S)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
@@ -34,11 +34,13 @@ The main features of Aspectran are as follows:
 
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
-* `com.aspectran.daemon`: Supports running Aspectran in the background on Unix-based or Windows operating systems
-* `com.aspectran.shell`: Provides an interactive shell for providing Aspectran services on the command line
-* `com.aspectran.embed`: Provides the ability to embed Aspectran in other Java applications
+* `com.aspectran.daemon`: Provides a daemon that runs Aspectran as a service in the background on Unix-based or Windows operating systems
+* `com.aspectran.embed`: Provides an interface that can be used by embedding Aspectran in Java applications
+* `com.aspectran.shell`: Provides an interactive shell that lets you use or control Aspectran directly from the command line
+* `com.aspectran.shell-jline`: Provides an interactive shell using the feature-rich JLine
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
-* `com.aspectran.with.jetty`: Supports for building standalone Web application that is built-in Jetty server
+* `com.aspectran.with.jetty`: Add-on package for integrating Embedded Jetty
+* `com.aspectran.with.mybatis`: Add-on package for integrating MyBatis
 
 ## Maven dependencies
 
@@ -47,34 +49,52 @@ Use the following definition to use Aspectran in your maven project:
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-all</artifactId>
-      <version>5.4.1</version>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
 Aspectran can also be used with more low-level jars:
 
-    <!-- You can use this to build a command line application. -->
+    <!-- This can be used to build a daemon application that runs in the background. -->
+    <dependency>
+      <groupId>com.aspectran</groupId>
+      <artifactId>aspectran-daemon</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency>
+    <!-- This can be used to build command-line based applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-shell</artifactId>
-      <version>5.4.1</version>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
-    <!-- You can use this as a library for building other applications. -->
+    <!-- This can be used to build command-line based applications that use the feature-rich JLine. -->
     <dependency>
       <groupId>com.aspectran</groupId>
-      <artifactId>aspectran-embed</artifactId>
-      <version>5.4.1</version>
+      <artifactId>aspectran-shell-jline</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
-    <!-- You can use it to build a web application. -->
+    <!-- This can be used to build web applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-web</artifactId>
-      <version>5.4.1</version>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
-    <!-- You can use it to build a web application with built-in Jetty 9. -->
+    <!-- This can be used to embed Aspectran in your application. -->
+    <dependency>
+      <groupId>com.aspectran</groupId>
+      <artifactId>aspectran-embed</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency>
+    <!-- This can be used to build a web application server with built-in Jetty. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-with-jetty</artifactId>
-      <version>5.4.1</version>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency>
+    <!-- This can be used to build applications that use MyBatis. -->
+    <dependency>
+      <groupId>com.aspectran</groupId>
+      <artifactId>aspectran-with-jetty</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
 ## Building
