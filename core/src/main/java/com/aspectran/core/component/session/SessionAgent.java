@@ -102,7 +102,8 @@ public class SessionAgent {
     }
 
     /**
-     * Called by the {@link com.aspectran.core.activity.CoreActivity} when a session is first accessed by a request.
+     * Called by the {@link com.aspectran.core.activity.CoreActivity}
+     * when a session is first accessed by a request.
      */
     public void access() {
         Session session = getSession(false);
@@ -113,7 +114,8 @@ public class SessionAgent {
     }
 
     /**
-     * Called by the {@link com.aspectran.core.activity.CoreActivity} when a session is last accessed by a request.
+     * Called by the {@link com.aspectran.core.activity.CoreActivity}
+     * when a session is last accessed by a request.
      */
     public void complete() {
         Session session = getSession(false);

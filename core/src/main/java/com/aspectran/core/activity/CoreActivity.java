@@ -28,7 +28,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
-import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.translet.TransletInstantiationException;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
@@ -199,8 +198,7 @@ public class CoreActivity extends BasicActivity {
         SessionAdapter sessionAdapter = getSessionAdapter();
         if (sessionAdapter != null) {
             if (sessionAdapter instanceof BasicSessionAdapter) {
-                SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
-                agent.access();
+                ((BasicSessionAdapter)sessionAdapter).sessionAccess();
             }
         }
     }
@@ -209,8 +207,7 @@ public class CoreActivity extends BasicActivity {
         SessionAdapter sessionAdapter = getSessionAdapter();
         if (sessionAdapter != null) {
             if (sessionAdapter instanceof BasicSessionAdapter) {
-                SessionAgent agent = ((BasicSessionAdapter)sessionAdapter).getSessionAgent();
-                agent.complete();
+                ((BasicSessionAdapter)sessionAdapter).sessionComplete();
             }
         }
     }

@@ -32,13 +32,13 @@ import java.util.Map;
 /**
  * The Aspectran managed SqlSession.
  */
-public class SqlSessionTemplate implements SqlSession, ActivityContextAware {
+public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     private final String relevantAspectId;
 
     private ActivityContext context;
 
-    public SqlSessionTemplate(String relevantAspectId) {
+    public SqlSessionAgent(String relevantAspectId) {
         if (relevantAspectId == null) {
             throw new IllegalArgumentException("relevantAspectId can not be null");
         }

@@ -7,14 +7,14 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran</artifactId>
-        <version>5.4.3-SNAPSHOT</version>
+        <version>5.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-with-jetty</artifactId>
     <packaging>jar</packaging>
 
     <name>Aspectran with Jetty</name>
-    <description>Add-on package for integrating embedded Jetty 9 server</description>
+    <description>Add-on package for integrating Embedded Jetty</description>
 
     <licenses>
         <license>

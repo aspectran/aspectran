@@ -40,71 +40,79 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public Session getAdaptee() {
-        return ((SessionAgent)adaptee).getSession(true);
+        return getSessionAgent().getSession(true);
     }
 
     @Override
     public String getId() {
-        return ((SessionAgent)adaptee).getId();
+        return getSessionAgent().getId();
     }
 
     @Override
     public boolean isNew() {
-        return ((SessionAgent)adaptee).isNew();
+        return getSessionAgent().isNew();
     }
 
     @Override
     public long getCreationTime() {
-        return ((SessionAgent)adaptee).getCreationTime();
+        return getSessionAgent().getCreationTime();
     }
 
     @Override
     public long getLastAccessedTime() {
-        return ((SessionAgent)adaptee).getLastAccessedTime();
+        return getSessionAgent().getLastAccessedTime();
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        return ((SessionAgent)adaptee).getMaxInactiveInterval();
+        return getSessionAgent().getMaxInactiveInterval();
     }
 
     public void setMaxInactiveInterval(int secs) {
-        ((SessionAgent)adaptee).setMaxInactiveInterval(secs);
+        getSessionAgent().setMaxInactiveInterval(secs);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return ((SessionAgent)adaptee).getAttributeNames();
+        return getSessionAgent().getAttributeNames();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return ((SessionAgent)adaptee).getAttribute(name);
+        return getSessionAgent().getAttribute(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        ((SessionAgent)adaptee).setAttribute(name, value);
+        getSessionAgent().setAttribute(name, value);
     }
 
     @Override
     public void removeAttribute(String name) {
-        ((SessionAgent)adaptee).removeAttribute(name);
+        getSessionAgent().removeAttribute(name);
     }
 
     @Override
     public void invalidate() {
-        ((SessionAgent)adaptee).invalidate();
+        getSessionAgent().invalidate();
     }
 
     @Override
     public SessionScope getSessionScope() {
-        return ((SessionAgent)adaptee).getSessionScope();
+        return getSessionAgent().getSessionScope();
     }
 
     public SessionAgent getSessionAgent() {
         return (SessionAgent)adaptee;
+    }
+
+    public void sessionAccess() {
+        getSessionAgent().access();
+    }
+
+    public void sessionComplete() {
+        getSessionAgent().complete();
     }
 
 }

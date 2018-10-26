@@ -353,6 +353,31 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
+    private boolean hasPathVariables(String transletName) {
+        return ((transletName.contains("${") || transletName.contains("@{")) && transletName.contains("}"));
+    }
+
+    private String assembleTransletName(String transletName, MethodType[] allowedMethods) {
+        if (allowedMethods != null) {
+            if (allowedMethods.length > 1) {
+                int len = transletName.length() + (allowedMethods.length * 8);
+                StringBuilder sb = new StringBuilder(len);
+                for (MethodType type : allowedMethods) {
+                    sb.append(type).append(" ");
+                }
+                sb.append(transletName);
+                return sb.toString();
+            } else if (allowedMethods.length == 1) {
+                return assembleRestfulTransletName(transletName, allowedMethods[0]);
+            }
+        }
+        return assembleRestfulTransletName(transletName, MethodType.GET);
+    }
+
+    private String assembleRestfulTransletName(String transletName, MethodType requestMethod) {
+        return (requestMethod + " " + transletName);
+    }
+
     /**
      * Returns the translet name of the prefix and suffix are combined.
      *
@@ -417,31 +442,6 @@ public class TransletRuleRegistry extends AbstractComponent {
         wildPatchTransletRuleSet.clear();
         wildDeleteTransletRuleSet.clear();
         wildEtcTransletRuleSet.clear();
-    }
-
-    private boolean hasPathVariables(String transletName) {
-        return ((transletName.contains("${") || transletName.contains("@{")) && transletName.contains("}"));
-    }
-
-    private String assembleTransletName(String transletName, MethodType[] allowedMethods) {
-        if (allowedMethods != null) {
-            if (allowedMethods.length > 1) {
-                int len = transletName.length() + (allowedMethods.length * 8);
-                StringBuilder sb = new StringBuilder(len);
-                for (MethodType type : allowedMethods) {
-                    sb.append(type).append(" ");
-                }
-                sb.append(transletName);
-                return sb.toString();
-            } else if (allowedMethods.length == 1) {
-                return makeRestfulTransletName(transletName, allowedMethods[0]);
-            }
-        }
-        return makeRestfulTransletName(transletName, MethodType.GET);
-    }
-
-    private String makeRestfulTransletName(String transletName, MethodType requestMethod) {
-        return (requestMethod + " " + transletName);
     }
 
 }

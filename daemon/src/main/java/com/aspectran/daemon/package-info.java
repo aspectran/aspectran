@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Packages that contain the core functionality of Aspectran
- * and are the basis of other implementations.
+ * Provides a daemon that runs Aspectran as a service in the
+ * background on Unix-based or Windows operating systems.
  */
-package com.aspectran;
+package com.aspectran.daemon;

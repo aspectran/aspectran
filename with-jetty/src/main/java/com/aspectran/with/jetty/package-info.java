@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating embedded Jetty 9 server.
+ * Add-on package for integrating Embedded Jetty.
  */
 package com.aspectran.with.jetty;
