@@ -16,22 +16,25 @@
 package com.aspectran.core.support;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.context.env.Environment;
 
 /**
  * {@code BasePathFactoryBean} that returns the base path under which the application is running.
- * This can be used to reference the base path by declaring it as a bean in the Aspectran configuration metadata.
+ * This can be used to reference the base path by declaring it as a bean in the Aspectran
+ * configuration metadata.
  *
  * <p>Created: 2017. 1. 29.</p>
  */
-public class BasePathFactoryBean implements ActivityContextAware, FactoryBean<String> {
+@AvoidAdvice
+public class BasePathFactoryBean implements EnvironmentAware, FactoryBean<String> {
 
     private String basePath;
 
     @Override
-    public void setActivityContext(ActivityContext context) {
-        this.basePath = context.getEnvironment().getBasePath();
+    public void setEnvironment(Environment environment) {
+        this.basePath = environment.getBasePath();
     }
 
     @Override

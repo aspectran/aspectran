@@ -18,6 +18,7 @@ package com.aspectran.core.support;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 
 /**
@@ -27,6 +28,7 @@ import com.aspectran.core.component.bean.aware.CurrentActivityAware;
  *
  * <p>Created: 2017. 10. 22.</p>
  */
+@AvoidAdvice
 public class CurrentTransletFactoryBean implements CurrentActivityAware, FactoryBean<Translet> {
 
     private String attributeName;
@@ -68,7 +70,6 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     @Override
     public void setCurrentActivity(Activity activity) {
         translet = activity.getTranslet();
-
         if (attributeName != null) {
             translet.setAttribute(attributeName, translet);
         }

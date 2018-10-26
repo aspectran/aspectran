@@ -19,15 +19,18 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 
 /**
- * {@code CurrentActivityDataFactoryBean} that returns the {@code ActivityDataMap} for the current request.
- * It should be declared as a {@code request} or {@code prototype} bean because it is intended
- * to use the value that the current Translet has.
+ * {@code CurrentActivityDataFactoryBean} that returns the {@code ActivityDataMap} for
+ * the current request.
+ * It should be declared as a {@code request} or {@code prototype} bean because it is
+ * intended to use the value that the current Translet has.
  *
  * <p>Created: 2017. 10. 24.</p>
  */
+@AvoidAdvice
 public class CurrentActivityDataFactoryBean implements CurrentActivityAware, FactoryBean<ActivityDataMap> {
 
     private String attributeName;
@@ -56,11 +59,11 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
     }
 
     /**
-     * Specifies the attribute name for registering the current {@code ActivityDataMap} as an attribute
-     * in the request scope.
+     * Specifies the attribute name for registering the current {@code ActivityDataMap} as an
+     * attribute in the request scope.
      *
-     * @param attributeName the attribute name of the current {@code ActivityDataMap} to be registered
-     *                      in the request scope.
+     * @param attributeName the attribute name of the current {@code ActivityDataMap} to be
+     *                      registered in the request scope.
      */
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
@@ -69,7 +72,6 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
     @Override
     public void setCurrentActivity(Activity activity) {
         translet = activity.getTranslet();
-
         if (attributeName != null) {
             translet.setAttribute(attributeName, translet.getActivityDataMap());
         }
