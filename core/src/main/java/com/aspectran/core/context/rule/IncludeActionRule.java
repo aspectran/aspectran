@@ -227,7 +227,7 @@ public class IncludeActionRule {
         }
 
         MethodType methodType = MethodType.resolve(method);
-        if (methodType == null) {
+        if (method != null && methodType == null) {
             throw new IllegalRuleException("No request method type for '" + method + "'");
         }
 
