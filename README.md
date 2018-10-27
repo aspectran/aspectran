@@ -1,4 +1,4 @@
-# Aspectran - a light-weight Java application framework
+# Aspectran - Java application framework
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
@@ -60,36 +60,42 @@ Aspectran can also be used with more low-level jars:
       <artifactId>aspectran-daemon</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to build command-line based applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-shell</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to build command-line based applications that use the feature-rich JLine. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-shell-jline</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to build web applications. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-web</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to embed Aspectran in your application. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-embed</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to build a web application server with built-in Jetty. -->
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran-with-jetty</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </dependency>
+    
     <!-- This can be used to build applications that use MyBatis. -->
     <dependency>
       <groupId>com.aspectran</groupId>
