@@ -19,7 +19,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -64,17 +63,14 @@ public class AspectranDtdResolver implements EntityResolver {
         if (validating) {
             try {
                 InputSource source = null;
-
                 if (publicId != null) {
                     String path = doctypeMap.get(publicId.toUpperCase());
                     source = getInputSource(path);
                 }
-
                 if (source == null && systemId != null) {
                     String path = doctypeMap.get(systemId.toUpperCase());
                     source = getInputSource(path);
                 }
-
                 return source;
             } catch (Exception e) {
                 throw new SAXException(e.toString());
@@ -84,21 +80,12 @@ public class AspectranDtdResolver implements EntityResolver {
         }
     }
 
-    /**
-     * Gets the input source.
-     *
-     * @param path the path
-     * @return the input source
-     * @throws IOException if an I/O error has occurred
-     */
-    private InputSource getInputSource(String path) throws IOException {
+    private InputSource getInputSource(String path) {
         InputSource source = null;
-
         if (path != null) {
             InputStream in = getClass().getResourceAsStream(path);
             source = new InputSource(in);
         }
-
         return source;
     }
 

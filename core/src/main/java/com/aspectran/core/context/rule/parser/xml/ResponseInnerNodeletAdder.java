@@ -30,7 +30,7 @@ import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
- * The Class ResponseRuleNodeletAdder.
+ * The Class ResponseInnerNodeletAdder.
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
