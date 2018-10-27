@@ -573,30 +573,15 @@ public class ParamsToRuleConverter {
 
     private void convertAsActionRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
-        String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
+        String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
         String include = actionParameters.getString(ActionParameters.include);
         ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
         ItemHolderParameters headersItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
         Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 
-        if (methodName != null) {
-            String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
-            ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
-            ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
-            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-            if (argumentItemHolderParameters != null) {
-                ItemRuleMap argumentItemRuleMap = convertAsItemRuleMap(argumentItemHolderParameters);
-                beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
-            }
-            if (propertyItemHolderParameters != null) {
-                ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
-                beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
-            }
-            assistant.resolveActionBeanClass(beanActionRule);
-            actionRuleApplicable.applyActionRule(beanActionRule);
-        } else if (include != null) {
+        if (include != null) {
             include = assistant.applyTransletNamePattern(include);
-            IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
+            IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, method, hidden);
             ItemHolderParameters parameterItemHolderParameters = actionParameters.getParameters(ActionParameters.parameters);
             if (parameterItemHolderParameters != null) {
                 ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParameters);
@@ -608,6 +593,21 @@ public class ParamsToRuleConverter {
                 includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
             }
             actionRuleApplicable.applyActionRule(includeActionRule);
+        } else if (method != null) {
+            String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
+            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, method, hidden);
+            ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
+            if (argumentItemHolderParameters != null) {
+                ItemRuleMap argumentItemRuleMap = convertAsItemRuleMap(argumentItemHolderParameters);
+                beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+            }
+            ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
+            if (propertyItemHolderParameters != null) {
+                ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
+                beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+            }
+            assistant.resolveActionBeanClass(beanActionRule);
+            actionRuleApplicable.applyActionRule(beanActionRule);
         } else if (echoItemHolderParameters != null) {
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(echoItemHolderParameters);

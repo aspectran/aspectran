@@ -694,7 +694,7 @@ public class RuleToParamsConverter {
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, beanActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.bean, beanActionRule.getBeanId());
-        actionParameters.putValueNonNull(ActionParameters.methodName, beanActionRule.getMethodName());
+        actionParameters.putValueNonNull(ActionParameters.method, beanActionRule.getMethodName());
         actionParameters.putValueNonNull(ActionParameters.hidden, beanActionRule.getHidden());
 
         ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
@@ -716,6 +716,7 @@ public class RuleToParamsConverter {
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, includeActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
+        actionParameters.putValueNonNull(ActionParameters.method, includeActionRule.getMethodType());
         actionParameters.putValueNonNull(ActionParameters.hidden, includeActionRule.getHidden());
 
         ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();

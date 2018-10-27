@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -28,6 +29,8 @@ public class IncludeActionRule {
     private String actionId;
 
     private String transletName;
+
+    private MethodType methodType;
 
     private ItemRuleMap parameterItemRuleMap;
 
@@ -69,6 +72,14 @@ public class IncludeActionRule {
      */
     public void setTransletName(String transletName) {
         this.transletName = transletName;
+    }
+
+    public MethodType getMethodType() {
+        return methodType;
+    }
+
+    public void setMethodType(MethodType methodType) {
+        this.methodType = methodType;
     }
 
     /**
@@ -189,6 +200,7 @@ public class IncludeActionRule {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", actionId);
         tsb.append("translet", transletName);
+        tsb.append("method", methodType);
         if (parameterItemRuleMap != null) {
             tsb.append("parameters", parameterItemRuleMap.keySet());
         }
@@ -203,19 +215,26 @@ public class IncludeActionRule {
      *
      * @param id the action id
      * @param transletName the translet name
+     * @param method the request method type
      * @param hidden whether to hide result of the action
      * @return the include action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden)
+    public static IncludeActionRule newInstance(String id, String transletName, String method, Boolean hidden)
             throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'include' element requires a 'translet' attribute");
         }
 
+        MethodType methodType = MethodType.resolve(method);
+        if (methodType == null) {
+            throw new IllegalRuleException("No request method type for '" + method + "'");
+        }
+
         IncludeActionRule includeActionRule = new IncludeActionRule();
         includeActionRule.setActionId(id);
         includeActionRule.setTransletName(transletName);
+        includeActionRule.setMethodType(methodType);
         includeActionRule.setHidden(hidden);
         return includeActionRule;
     }

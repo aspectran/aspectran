@@ -37,9 +37,9 @@ class ActionNodeletAdder implements NodeletAdder {
     protected final ContextRuleAssistant assistant;
 
     /**
-     * Instantiates a new ActionRuleNodeletAdder.
+     * Instantiates a new ActionNodeletAdder.
      *
-     * @param assistant the ContextBuilderAssistant
+     * @param assistant the ContextRuleAssistant
      */
     ActionNodeletAdder(ContextRuleAssistant assistant) {
         this.assistant = assistant;
@@ -93,11 +93,12 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));
             String transletName = StringUtils.emptyToNull(attrs.get("translet"));
+            String methodType = StringUtils.emptyToNull(attrs.get("method"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
             transletName = assistant.applyTransletNamePattern(transletName);
 
-            IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
+            IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
             parser.pushObject(includeActionRule);
         });
         parser.addNodeEndlet(text -> {
