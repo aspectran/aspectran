@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -80,6 +82,33 @@ public class ContentResult extends ArrayList<ActionResult> {
      */
     public void addActionResult(ActionResult actionResult) {
         add(actionResult);
+    }
+
+    public void addActionResult(Executable action, Object resultValue) {
+        ActionResult actionResult = new ActionResult(this);
+        actionResult.setActionId(action.getActionId());
+        actionResult.setResultValue(resultValue);
+        actionResult.setHidden(action.isHidden());
+    }
+
+    public void addActionResult(Executable parentAction, ProcessResult processResult) {
+        for (ContentResult contentResult : processResult) {
+            for (ActionResult actionResult : contentResult) {
+                if (actionResult.getActionId() != null) {
+                    String actionId;
+                    if (parentAction.getActionId() != null) {
+                        actionId = parentAction.getActionId() + ActivityContext.ID_SEPARATOR +
+                                actionResult.getActionId();
+                    } else {
+                        actionId = actionResult.getActionId();
+                    }
+                    ActionResult newActionResult = new ActionResult(this);
+                    newActionResult.setActionId(actionId);
+                    newActionResult.setResultValue(actionResult.getResultValue());
+                    newActionResult.setHidden(parentAction.isHidden());
+                }
+            }
+        }
     }
 
     @Override

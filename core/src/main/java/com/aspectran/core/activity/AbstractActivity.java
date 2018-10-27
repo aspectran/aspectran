@@ -113,7 +113,6 @@ public abstract class AbstractActivity implements Activity {
      */
     protected void backupCurrentActivity() {
         outerActivity = getCurrentActivity();
-        saveCurrentActivity();
     }
 
     /**

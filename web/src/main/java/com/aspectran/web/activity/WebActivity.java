@@ -92,7 +92,8 @@ public class WebActivity extends CoreActivity {
         try {
             super.prepare(transletName, requestMethod);
         } catch (TransletNotFoundException e) {
-            if (!StringUtils.endsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+            if (StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
                 String transletName2 = transletName + ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
                     response.setStatus(301);

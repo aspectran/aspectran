@@ -75,8 +75,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
         pendingList.add(appender);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Pending appender " + appender);
+        if (log.isTraceEnabled()) {
+            log.trace("pending RuleAppender " + appender);
         }
     }
 
@@ -89,7 +89,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
                 for (RuleAppender appender : pendedList) {
                     if (environment.acceptsProfiles(appender.getProfiles())) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Appending " + appender);
+                            log.debug("Append rules " + appender);
                         }
                         handle(appender);
                     }
@@ -97,7 +97,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
             } else {
                 for (RuleAppender appender : pendedList) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Appending " + appender);
+                        log.debug("Append rules " + appender);
                     }
                     handle(appender);
                 }

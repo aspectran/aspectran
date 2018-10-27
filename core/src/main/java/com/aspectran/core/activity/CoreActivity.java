@@ -174,6 +174,7 @@ public class CoreActivity extends BasicActivity {
             if (forwardTransletName == null) {
                 if (isIncluded()) {
                     backupCurrentActivity();
+                    saveCurrentActivity();
                 } else {
                     saveCurrentActivity();
                 }
@@ -549,10 +550,11 @@ public class CoreActivity extends BasicActivity {
         try {
             Object resultValue = action.execute(this);
             if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
-                ActionResult actionResult = new ActionResult(contentResult);
-                actionResult.setActionId(action.getActionId());
-                actionResult.setResultValue(resultValue);
-                actionResult.setHidden(action.isHidden());
+                if (resultValue instanceof ProcessResult) {
+                    contentResult.addActionResult(action, (ProcessResult)resultValue);
+                } else {
+                    contentResult.addActionResult(action, resultValue);
+                }
             }
 
             if (log.isTraceEnabled()) {

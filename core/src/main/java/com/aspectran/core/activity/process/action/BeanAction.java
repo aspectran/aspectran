@@ -86,7 +86,7 @@ public class BeanAction extends AbstractAction {
             if (aspectAdviceRule != null) {
                 bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
                 if (bean == null) {
-                    throw new ActionExecutionException("No such bean; Invalid BeanActionRule" + aspectAdviceRule);
+                    throw new ActionExecutionException("No such bean; Invalid AspectAdviceRule" + aspectAdviceRule);
                 }
             } else {
                 if (beanActionRule.getBeanClass() != null) {
@@ -144,7 +144,11 @@ public class BeanAction extends AbstractAction {
                 return result;
             }
         } catch (Exception e) {
-            log.error("Failed to execute a bean action method " + beanActionRule);
+            if (aspectAdviceRule != null) {
+                log.error("Failed to execute an advice action method " + aspectAdviceRule);
+            } else {
+                log.error("Failed to execute a bean action method " + beanActionRule);
+            }
             throw e;
         }
     }
