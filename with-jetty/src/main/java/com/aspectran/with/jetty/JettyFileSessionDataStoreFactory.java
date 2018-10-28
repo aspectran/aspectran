@@ -15,6 +15,7 @@
  */
 package com.aspectran.with.jetty;
 
+import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.AspectranCheckedException;
 import com.aspectran.core.util.StringUtils;
@@ -23,16 +24,12 @@ import org.eclipse.jetty.server.session.FileSessionDataStoreFactory;
 import java.io.File;
 
 /**
- * A session handler that stores session data in the file system.
- * The simplest way to persist a Session is to store the Sessions as files on the file system.
- *
- * <p>Created: 2016. 12. 22.</p>
+ * The Factory to create FileSessionDataStore.
  */
-public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactory implements InitializableBean {
+public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactory
+        implements InitializableBean, DisposableBean {
 
     private String sessionDataStoreDir;
-
-    private boolean deleteUnrestorableFiles;
 
     private boolean deleteOnExit;
 
@@ -77,6 +74,23 @@ public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactor
             setStoreDir(resolveSessionDataStoreDir());
         } catch (Exception e) {
             throw new AspectranCheckedException("Failed to initialize FileSessionHandler", e);
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (deleteOnExit) {
+            try {
+                File storeDir = getStoreDir();
+                if (storeDir != null && storeDir.exists()) {
+                    storeDir.listFiles(file -> {
+                        file.deleteOnExit();
+                        return false;
+                    });
+                }
+            } catch (Exception e) {
+                throw new AspectranCheckedException("Failed to destroy FileSessionHandler", e);
+            }
         }
     }
 

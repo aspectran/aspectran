@@ -46,6 +46,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     public <T> T getBean(BeanRule beanRule) {
         if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
             // Does not manage the complete lifecycle of a prototype bean.
+            // In particular, Aspectran does not manage destruction phase of prototype-scoped beans.
             return (T)getPrototypeScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.SINGLETON) {
             return (T)getSingletonScopeBean(beanRule);

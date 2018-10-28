@@ -81,6 +81,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         synchronized (this) {
             try {
                 stop();
+                if (sessionDataStoreFactory instanceof DisposableBean) {
+                    ((DisposableBean)sessionDataStoreFactory).destroy();
+                }
             } catch (Exception e) {
                 log.error("JettyServer shutdown failed", e);
             }
