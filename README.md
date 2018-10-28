@@ -99,7 +99,7 @@ Aspectran can also be used with more low-level jars:
     <!-- This can be used to build applications that use MyBatis. -->
     <dependency>
       <groupId>com.aspectran</groupId>
-      <artifactId>aspectran-with-jetty</artifactId>
+      <artifactId>aspectran-with-mybatis</artifactId>
       <version>5.5.0</version>
     </dependency>
 
