@@ -184,17 +184,18 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
                     name = entry.getKey();
                     value = entry.getValue();
-                    String string = (value != null ? value.toString() : null);
-                    if (redirectResponseRule.isExcludeEmptyParameter() && string != null && !string.isEmpty()) {
+                    String stringValue = (value != null ? value.toString() : null);
+                    if (redirectResponseRule.isExcludeEmptyParameter() &&
+                            stringValue != null && !stringValue.isEmpty()) {
                         sb.append(name).append(EQUAL_CHAR);
-                    } else if (redirectResponseRule.isExcludeNullParameter() && string != null) {
+                    } else if (redirectResponseRule.isExcludeNullParameter() && stringValue != null) {
                         sb.append(name).append(EQUAL_CHAR);
                     } else {
                         sb.append(name).append(EQUAL_CHAR);
                     }
-                    if (string != null) {
-                        string = URLEncoder.encode(string, encoding);
-                        sb.append(string);
+                    if (stringValue != null) {
+                        stringValue = URLEncoder.encode(stringValue, encoding);
+                        sb.append(stringValue);
                     }
                 }
             }

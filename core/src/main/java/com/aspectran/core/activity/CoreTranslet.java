@@ -372,7 +372,7 @@ public class CoreTranslet implements Translet {
     public void redirect(String path, Map<String, String> parameters) {
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setPath(path, null);
-        rrr.setParameterMap(parameters);
+        rrr.setParameters(parameters);
         redirect(rrr);
     }
 
