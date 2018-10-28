@@ -20,6 +20,7 @@ import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
 import org.jline.builtins.Options;
+import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -90,6 +91,8 @@ public class JLineConsole extends AbstractConsole {
             } else {
                 return line;
             }
+        } catch (EndOfFileException e) {
+            throw new ConsoleTerminatedException();
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
                 throw new ConsoleTerminatedException();
@@ -145,7 +148,7 @@ public class JLineConsole extends AbstractConsole {
         try {
             String line = reader.readLine(prompt);
             return readMultiLine(line);
-        } catch (UserInterruptException e) {
+        } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
     }
@@ -175,7 +178,7 @@ public class JLineConsole extends AbstractConsole {
     public String readPassword(String prompt) {
         try {
             return reader.readLine(prompt, MASK_CHAR);
-        } catch (UserInterruptException e) {
+        } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
     }
