@@ -24,6 +24,7 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -34,14 +35,14 @@ import java.io.FileNotFoundException;
 
 /**
  * JSP or other web resource integration.
+ * Sends the model produced by Aspectran's internal activity
+ * to the JSP to render the final view page.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class JspViewDispatcher implements ViewDispatcher {
 
     private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
-
-    private static final boolean debugEnabled = log.isDebugEnabled();
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
@@ -113,7 +114,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
 
-            if (debugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug("Dispatch to JSP [" + dispatchName + "]");
             }
 
@@ -154,6 +155,15 @@ public class JspViewDispatcher implements ViewDispatcher {
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", super.toString());
+        tsb.append("prefix", prefix);
+        tsb.append("suffix", suffix);
+        return tsb.toString();
     }
 
 }
