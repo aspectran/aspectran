@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Aspectran managed SqlSession.
+ * The SqlSession Agent.
  */
 public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
