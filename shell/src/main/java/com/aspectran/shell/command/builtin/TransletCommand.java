@@ -65,9 +65,9 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        getConsole().writeLine("+-%-20s-+-%-70s-+", "--------------------", "----------------------------------------------------------------------");
-        getConsole().writeLine("| %-20s | %-70s |", "Translet Name", "Description");
-        getConsole().writeLine("+-%-20s-+-%-70s-+", "--------------------", "----------------------------------------------------------------------");
+        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
+        getConsole().writeLine("| %-24s | %-70s |", "Translet Name", "Description");
+        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
             String desc = StringUtils.trimWhitespace(transletRule.getDescription());
@@ -84,24 +84,26 @@ public class TransletCommand extends AbstractCommand {
                     }
                 }
                 if (transletRule.getAllowedMethods() != null) {
-                    getConsole().write("[");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("[");
                     for (int i = 0; i < transletRule.getAllowedMethods().length; i++) {
                         if (i > 0) {
-                            getConsole().write(", ");
+                            sb.append(",");
                         }
-                        getConsole().write(transletRule.getAllowedMethods()[i].toString());
+                        sb.append(transletRule.getAllowedMethods()[i].toString());
                     }
-                    getConsole().writeLine("] ");
+                    sb.append("] ");
+                    getConsole().writeLine("| %-24s | %-70s |", sb, StringUtils.EMPTY);
                 }
                 if (desc != null && desc.contains(ActivityContext.LINE_SEPARATOR)) {
                     String[] arr = StringUtils.split(desc, ActivityContext.LINE_SEPARATOR);
                     for (int i = 0; i < arr.length; i++) {
-                        getConsole().writeLine("| %-20s | %-70s |", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
+                        getConsole().writeLine("| %-24s | %-70s |", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
                     }
                 } else {
-                    getConsole().writeLine("| %-20s | %-70s |", name, StringUtils.nullToEmpty(desc));
+                    getConsole().writeLine("| %-24s | %-70s |", name, StringUtils.nullToEmpty(desc));
                 }
-                getConsole().writeLine("+-%-20s-+-%-70s-+", "--------------------", "----------------------------------------------------------------------");
+                getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
             }
         }
     }

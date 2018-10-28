@@ -86,7 +86,7 @@ public class TemplateCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Executes a template";
         }
 
     }
