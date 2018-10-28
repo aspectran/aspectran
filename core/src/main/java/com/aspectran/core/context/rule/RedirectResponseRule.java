@@ -251,22 +251,22 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
     /**
      * Sets the parameter map.
      *
-     * @param parameterMap the parameter map
+     * @param parameters the parameter map
      */
-    public void setParameterMap(Map<String, String> parameterMap) {
-        if (parameterMap == null) {
+    public void setParameters(Map<String, String> parameters) {
+        if (parameters == null || parameters.isEmpty()) {
             this.parameterItemRuleMap = null;
-            return;
+        } else {
+            ItemRuleMap itemRuleMap = new ItemRuleMap();
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                ItemRule ir = new ItemRule();
+                ir.setTokenize(false);
+                ir.setName(entry.getKey());
+                ir.setValue(entry.getValue());
+                itemRuleMap.putItemRule(ir);
+            }
+            this.parameterItemRuleMap = itemRuleMap;
         }
-
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
-            ItemRule ir = new ItemRule();
-            ir.setTokenize(false);
-            ir.setName(entry.getKey());
-            ir.setValue(entry.getValue());
-        }
-        this.parameterItemRuleMap = itemRuleMap;
     }
 
     /**
@@ -307,6 +307,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("contentType", contentType);
         tsb.append("path", path);
+        tsb.append("parameters", parameterItemRuleMap);
         tsb.append("encoding", encoding);
         tsb.append("excludeNullParameter", excludeNullParameter);
         tsb.append("excludeEmptyParameter", excludeEmptyParameter);
