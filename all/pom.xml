@@ -41,6 +41,12 @@
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-daemon</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-embed</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
@@ -71,7 +77,7 @@
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-daemon</artifactId>
+            <artifactId>aspectran-with-mybatis</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -345,8 +351,12 @@
                             <packages>com.aspectran.web*</packages>
                         </group>
                         <group>
-                            <title>Aspectran With Jetty</title>
+                            <title>Aspectran with Jetty</title>
                             <packages>com.aspectran.with.jetty*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran with MyBatis</title>
+                            <packages>com.aspectran.with.mybatis*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
