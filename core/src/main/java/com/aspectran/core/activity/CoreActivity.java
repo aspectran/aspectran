@@ -80,9 +80,11 @@ public class CoreActivity extends BasicActivity {
 
     private String forwardTransletName;
 
+    private Response reservedResponse;
+
     private boolean withoutResponse;
 
-    private Response reservedResponse;
+    private boolean finalStage;
 
     private volatile boolean committed;
 
@@ -328,9 +330,7 @@ public class CoreActivity extends BasicActivity {
         try {
             try {
                 // execute the Before Advice Action for Translet Joinpoint
-                if (getBeforeAdviceRuleList() != null) {
-                    executeAdvice(getBeforeAdviceRuleList());
-                }
+                executeAdvice(getBeforeAdviceRuleList(), true);
 
                 if (!isResponseReserved()) {
                     if (transletRule.getContentList() != null) {
@@ -339,15 +339,12 @@ public class CoreActivity extends BasicActivity {
                 }
 
                 // execute the After Advice Action for Translet Joinpoint
-                if (getAfterAdviceRuleList() != null) {
-                    executeAdvice(getAfterAdviceRuleList());
-                }
+                executeAdvice(getAfterAdviceRuleList(), true);
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
-                if (getFinallyAdviceRuleList() != null) {
-                    executeAdviceWithoutThrow(getFinallyAdviceRuleList());
-                }
+                finalStage = true;
+                executeAdvice(getFinallyAdviceRuleList(), false);
             }
 
             if (isExceptionRaised()) {
@@ -373,6 +370,11 @@ public class CoreActivity extends BasicActivity {
                 requestScope.destroy();
             }
         }
+    }
+
+    @Override
+    public boolean isFinalStage() {
+        return finalStage;
     }
 
     /**

@@ -121,4 +121,9 @@ public class DefaultActivity extends BasicActivity {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    protected boolean isFinalStage() {
+        return false;
+    }
+
 }

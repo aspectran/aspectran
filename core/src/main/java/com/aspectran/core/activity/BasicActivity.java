@@ -27,8 +27,10 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The Class BasicActivity.
@@ -38,6 +40,10 @@ import java.util.Map;
 public abstract class BasicActivity extends AbstractActivity {
 
     private static final Log log = LogFactory.getLog(BasicActivity.class);
+
+    private AspectAdviceRule currentAspectAdviceRule;
+
+    private Set<AspectAdviceRule> executedAspectAdviceRules;
 
     /**
      * Instantiates a new BasicActivity.
@@ -71,16 +77,26 @@ public abstract class BasicActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList) {
-        for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-            executeAdvice(aspectAdviceRule, false);
-        }
-    }
-
-    @Override
-    public void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList) {
-        for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-            executeAdvice(aspectAdviceRule, true);
+    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
+        if (aspectAdviceRuleList != null && !aspectAdviceRuleList.isEmpty()) {
+            while (true) {
+                AspectAdviceRule target = null;
+                if (executedAspectAdviceRules == null) {
+                    target = aspectAdviceRuleList.get(0);
+                } else {
+                    for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+                        if (!executedAspectAdviceRules.contains(aspectAdviceRule)) {
+                            target = aspectAdviceRule;
+                            break;
+                        }
+                    }
+                }
+                if (target != null) {
+                    executeAdvice(target, throwable);
+                } else {
+                    break;
+                }
+            }
         }
     }
 
@@ -98,9 +114,9 @@ public abstract class BasicActivity extends AbstractActivity {
      * Executes advice action.
      *
      * @param aspectAdviceRule the aspect advice rule
-     * @param noThrow whether or not throw exception
+     * @param throwable whether or not throw exception
      */
-    private void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
+    private void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) {
         if (isExceptionRaised() && aspectAdviceRule.getExceptionRule() != null) {
             try {
                 handleException(aspectAdviceRule.getExceptionRule());
@@ -108,17 +124,22 @@ public abstract class BasicActivity extends AbstractActivity {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
                     log.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
                 } else {
-                    if (noThrow) {
-                        log.error("Failed to execute advice action " + aspectAdviceRule, e);
-                    } else {
+                    if (throwable) {
                         throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
+                    } else {
+                        log.error("Failed to execute advice action " + aspectAdviceRule, e);
                     }
                 }
             }
         }
 
+        currentAspectAdviceRule = aspectAdviceRule;
         Executable action = aspectAdviceRule.getExecutableAction();
+        currentAspectAdviceRule = null;
+
+        touchExecutedAspectAdviceRules().add(aspectAdviceRule);
+
         if (action != null) {
             try {
                 if (action.getActionType() == ActionType.BEAN) {
@@ -163,7 +184,7 @@ public abstract class BasicActivity extends AbstractActivity {
                     log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
                 } else {
                     setRaisedException(e);
-                    if (noThrow) {
+                    if (throwable) {
                         log.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     } else {
                         throw new AspectAdviceException("Failed to execute an advice action " +
@@ -172,6 +193,11 @@ public abstract class BasicActivity extends AbstractActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public AspectAdviceRule getCurrentAspectAdviceRule() {
+        return currentAspectAdviceRule;
     }
 
     @Override
@@ -193,6 +219,13 @@ public abstract class BasicActivity extends AbstractActivity {
                 executeAdvice(action);
             }
         }
+    }
+
+    private Set<AspectAdviceRule> touchExecutedAspectAdviceRules() {
+        if (executedAspectAdviceRules == null) {
+            executedAspectAdviceRules = new HashSet<>();
+        }
+        return executedAspectAdviceRules;
     }
 
 }

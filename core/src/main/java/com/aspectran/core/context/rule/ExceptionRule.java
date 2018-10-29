@@ -61,7 +61,6 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
     public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
         ExceptionThrownRule exceptionThrownRule = null;
         int deepest = Integer.MAX_VALUE;
-
         for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
             int depth = getMatchedDepth(entry.getKey(), ex);
             if (depth >= 0 && depth < deepest) {
@@ -69,7 +68,6 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
                 exceptionThrownRule = entry.getValue();
             }
         }
-
         return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
     }
 

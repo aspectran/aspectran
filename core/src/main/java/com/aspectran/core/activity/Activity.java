@@ -151,15 +151,9 @@ public interface Activity extends BeanRegistry {
      * Execute aspect advices with given rules.
      *
      * @param aspectAdviceRuleList the aspect advice rules
+     * @param throwable whether to raise an exception
      */
-    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList);
-
-    /**
-     * Execute aspect advices with given rules, and does not raise exceptions.
-     *
-     * @param aspectAdviceRuleList the aspect advice rules
-     */
-    void executeAdviceWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
+    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable);
 
     /**
      * Executes an aspect advice with a given rule.

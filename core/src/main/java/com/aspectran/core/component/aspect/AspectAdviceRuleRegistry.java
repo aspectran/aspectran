@@ -69,9 +69,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         }
         if (aspectRule.getAspectAdviceRuleList() != null) {
             for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
-                if (aspectAdviceRule.getAspectAdviceType() != AspectAdviceType.BEFORE) {
-                    addAspectAdviceRule(aspectAdviceRule);
-                }
+                addAspectAdviceRule(aspectAdviceRule);
             }
         }
         if (aspectRule.getExceptionRule() != null) {
