@@ -5,7 +5,7 @@ commit_message=$(git log --format=%B -n 1)
 echo "Current commit detected: ${commit_message}"
 
 if [ $TRAVIS_REPO_SLUG == "aspectran/aspectran" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
-  if [ $TRAVIS_JDK_VERSION == "openjdk8" ]; then
+  if [ $TRAVIS_JDK_VERSION == "openjdk11" ]; then
 
     # Deploy to sonatype
     ./mvnw clean deploy -Dmaven.test.skip=true -q --settings ./.travis/settings.xml
