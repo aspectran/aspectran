@@ -271,14 +271,14 @@ public class DefaultConsole extends AbstractConsole {
         if (message != null) {
             writeLine(message);
         }
-        String confirm = "Would you like to restart this shell [Y/n]?";
+        String confirm = "Would you like to restart this shell [Y/n]? ";
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
     public boolean confirmQuit() {
-        String confirm = "Are you sure you want to quit [Y/n]?";
+        String confirm = "Are you sure you want to quit [Y/n]? ";
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }

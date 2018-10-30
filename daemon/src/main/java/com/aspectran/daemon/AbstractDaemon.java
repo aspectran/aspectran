@@ -88,7 +88,6 @@ public class AbstractDaemon implements Daemon, Runnable {
     protected void init(AspectranConfig aspectranConfig) throws Exception {
         try {
             this.service = DaemonService.create(aspectranConfig);
-            this.service.start();
 
             DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
             DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();

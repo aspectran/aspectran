@@ -68,6 +68,7 @@ public class AspectranCoreService extends AbstractCoreService {
         log.info("Welcome to Aspectran " + Aspectran.VERSION);
 
         startAspectranService();
+
         if (!isDerived()) {
             registerShutdownTask();
         }
@@ -81,17 +82,14 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     public void doPause() throws Exception {
-        pauseSchedulerService();
     }
 
     @Override
     public void doPause(long timeout) throws Exception {
-        pauseSchedulerService(timeout);
     }
 
     @Override
     public void doResume() throws Exception {
-        resumeSchedulerService();
     }
 
     @Override
@@ -103,11 +101,7 @@ public class AspectranCoreService extends AbstractCoreService {
     private void startAspectranService() throws Exception {
         loadActivityContext();
         afterContextLoaded();
-        startSchedulerService();
-
-        if (isDerived()) {
-            log.info(getServiceName() + " derived from " + rootService);
-        }
+        createSchedulerService();
     }
 
     /**
@@ -117,7 +111,6 @@ public class AspectranCoreService extends AbstractCoreService {
     private void stopAspectranService() {
         log.info("Destroying all cached resources...");
 
-        stopSchedulerService();
         beforeContextDestroy();
         destroyActivityContext();
     }

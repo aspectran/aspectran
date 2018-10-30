@@ -57,8 +57,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private ActivityContext activityContext;
 
-    private SchedulerService schedulerService;
-
     private FileLocker fileLocker;
 
     public AbstractCoreService(ApplicationAdapter applicationAdapter) {
@@ -76,6 +74,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         if (rootService.getActivityContext() == null) {
             throw new IllegalStateException("Oops! rootService's ActivityContext is not yet created");
         }
+
+        rootService.addDerivedService(this);
 
         this.applicationAdapter = rootService.getApplicationAdapter();
         this.activityContext = rootService.getActivityContext();
@@ -186,7 +186,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         activityContextBuilder.destroy();
     }
 
-    protected void startSchedulerService() throws Exception {
+    protected void createSchedulerService() throws Exception {
         if (this.schedulerConfig == null) {
             return;
         }
@@ -202,42 +202,18 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 startDelaySeconds = 5;
             }
 
-            SchedulerService newSchedulerService = new QuartzSchedulerService(activityContext);
+            SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
             if (waitOnShutdown) {
-                newSchedulerService.setWaitOnShutdown(true);
+                schedulerService.setWaitOnShutdown(true);
             }
-            newSchedulerService.setStartDelaySeconds(startDelaySeconds);
+            schedulerService.setStartDelaySeconds(startDelaySeconds);
             if (exposalsConfig != null) {
                 String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
                 String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
-                newSchedulerService.setExposals(includePatterns, excludePatterns);
+                schedulerService.setExposals(includePatterns, excludePatterns);
             }
-            newSchedulerService.start();
 
-            this.schedulerService = newSchedulerService;
-        }
-    }
-
-    protected void stopSchedulerService() {
-        if (schedulerService != null) {
-            schedulerService.stop();
-            schedulerService = null;
-        }
-    }
-
-    protected void pauseSchedulerService() throws Exception {
-        if (schedulerService != null) {
-            schedulerService.pause();
-        }
-    }
-
-    protected void pauseSchedulerService(long timeout) {
-        log.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time");
-    }
-
-    protected void resumeSchedulerService() throws Exception {
-        if (schedulerService != null) {
-            schedulerService.resume();
+            addDerivedService(schedulerService);
         }
     }
 

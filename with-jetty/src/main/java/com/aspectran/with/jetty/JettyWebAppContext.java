@@ -94,7 +94,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         if (!standalone) {
             CoreService rootService = context.getRootService();
             WebService webService = WebService.create(getServletContext(), rootService);
-            webService.start();
 
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
         }

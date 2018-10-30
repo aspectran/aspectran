@@ -51,17 +51,17 @@ import java.util.Set;
  */
 public class QuartzSchedulerService extends AbstractServiceController implements SchedulerService {
 
-    public final static String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
+    public static final String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
 
-    public final static String ACTIVITY_DATA_KEY = "ACTIVITY";
+    public static final String ACTIVITY_DATA_KEY = "ACTIVITY";
 
-    private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
+    private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
-    private ActivityContext context;
+    private final ActivityContext context;
 
     private final Set<Scheduler> schedulerSet = new HashSet<>();
 
-    private Map<String, Scheduler> schedulerMap = new HashMap<>();
+    private final Map<String, Scheduler> schedulerMap = new HashMap<>();
 
     private int startDelaySeconds = 0;
 
@@ -108,7 +108,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     @Override
     public boolean isDerived() {
-        return false;
+        return true;
     }
 
     @Override
@@ -135,7 +135,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     @Override
     protected void doPause(long timeout) throws Exception {
-        throw new UnsupportedOperationException();
+        log.warn(getServiceName() + " does not support pausing for a certain period of time");
     }
 
     @Override

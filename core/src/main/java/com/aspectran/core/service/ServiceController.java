@@ -29,6 +29,8 @@ public interface ServiceController {
      */
     void setServiceStateListener(ServiceStateListener serviceStateListener);
 
+    void addDerivedService(ServiceController serviceController);
+
     /**
      * Returns whether this service is derived from another root service.
      *
