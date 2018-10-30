@@ -42,6 +42,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -52,13 +53,14 @@ import com.aspectran.core.util.logging.LogFactory;
 import java.lang.reflect.Constructor;
 
 /**
- * The Class CoreActivity.
+ * Core activity that handles all external requests.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.</p>
+ * <p>This class is generally not thread-safe. It is primarily designed
+ * for use in a single thread only.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class CoreActivity extends BasicActivity {
+public class CoreActivity extends AdviceActivity {
 
     private static final Log log = LogFactory.getLog(CoreActivity.class);
 
@@ -84,8 +86,6 @@ public class CoreActivity extends BasicActivity {
 
     private boolean withoutResponse;
 
-    private boolean finalStage;
-
     private volatile boolean committed;
 
     /**
@@ -102,7 +102,7 @@ public class CoreActivity extends BasicActivity {
         this.transletName = transletName;
         this.requestMethod = MethodType.GET;
 
-        TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
+        TransletRule transletRule = getTransletRule(transletName);
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName);
         }
@@ -117,7 +117,6 @@ public class CoreActivity extends BasicActivity {
 
         prepare(transletRule, null);
     }
-
 
     @Override
     public void prepare(String transletName, TransletRule transletRule) {
@@ -141,7 +140,7 @@ public class CoreActivity extends BasicActivity {
         this.transletName = transletName;
         this.requestMethod = (requestMethod == null ? MethodType.GET : requestMethod);
 
-        TransletRule transletRule = getTransletRuleRegistry().getTransletRule(this.transletName, this.requestMethod);
+        TransletRule transletRule = getTransletRule(this.transletName, this.requestMethod);
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName);
         }
@@ -150,10 +149,11 @@ public class CoreActivity extends BasicActivity {
     }
 
     /**
-     * Prepare activity for Translet with process result.
+     * Prepares a new activity for the Translet Rule by taking
+     * the results of the process that was created earlier.
      *
      * @param transletRule the translet rule
-     * @param processResult the process result
+     * @param processResult the process result that was created earlier
      */
     private void prepare(TransletRule transletRule, ProcessResult processResult) {
         try {
@@ -329,7 +329,7 @@ public class CoreActivity extends BasicActivity {
     private void performActivity() {
         try {
             try {
-                // execute the Before Advice Action for Translet Joinpoint
+                setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList(), true);
 
                 if (!isResponseReserved()) {
@@ -338,16 +338,18 @@ public class CoreActivity extends BasicActivity {
                     }
                 }
 
-                // execute the After Advice Action for Translet Joinpoint
+                setCurrentAspectAdviceType(AspectAdviceType.AFTER);
                 executeAdvice(getAfterAdviceRuleList(), true);
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
-                finalStage = true;
+                setCurrentAspectAdviceType(AspectAdviceType.FINALLY);
                 executeAdvice(getFinallyAdviceRuleList(), false);
             }
 
             if (isExceptionRaised()) {
+                setCurrentAspectAdviceType(AspectAdviceType.THROWN);
+
                 reserveResponse(null);
                 committed = false;
 
@@ -358,6 +360,8 @@ public class CoreActivity extends BasicActivity {
                     handleException(getExceptionRuleList());
                 }
             }
+
+            setCurrentAspectAdviceType(null);
 
             if (!withoutResponse) {
                 response();
@@ -370,11 +374,6 @@ public class CoreActivity extends BasicActivity {
                 requestScope.destroy();
             }
         }
-    }
-
-    @Override
-    public boolean isFinalStage() {
-        return finalStage;
     }
 
     /**
@@ -635,6 +634,14 @@ public class CoreActivity extends BasicActivity {
      */
     protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
         this.transletImplementationClass = transletImplementationClass;
+    }
+
+    private TransletRule getTransletRule(String transletName) {
+        return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);
+    }
+
+    private TransletRule getTransletRule(String transletName, MethodType requestMethod) {
+        return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
     }
 
     /**

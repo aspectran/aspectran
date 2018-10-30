@@ -16,9 +16,11 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -55,6 +57,15 @@ public class TokenExpressionParser implements TokenEvaluator {
      */
     public TokenExpressionParser(Activity activity) {
         this.activity = activity;
+    }
+
+    /**
+     * Instantiates a new token expression parser.
+     *
+     * @param context the activity context
+     */
+    public TokenExpressionParser(ActivityContext context) {
+        this(new DefaultActivity(context));
     }
 
     @Override
@@ -441,7 +452,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      * @return the generated output as {@code String}
      */
     protected String getTemplate(Token token) {
-        TemplateProcessor templateProcessor = activity.getTemplateProcessor();
+        TemplateProcessor templateProcessor = activity.getActivityContext().getTemplateProcessor();
 
         StringWriter writer = new StringWriter();
         templateProcessor.process(token.getName(), activity, writer);

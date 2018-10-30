@@ -15,22 +15,26 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringOutputWriter;
 
 import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Class InstantActivity
+ * The activity that handles the temporary request.
  *
  * @since 3.0.0
  */
-public class InstantActivity extends DefaultActivity {
+public class InstantActivity extends AdviceActivity {
 
     /**
      * Instantiates a new InstantActivity.
@@ -72,6 +76,86 @@ public class InstantActivity extends DefaultActivity {
     @Override
     public void setSessionAdapter(SessionAdapter sessionAdapter) {
         super.setSessionAdapter(sessionAdapter);
+    }
+
+    @Override
+    public void prepare(String transletName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(TransletRule transletRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, TransletRule transletRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, String requestMethod) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, MethodType requestMethod) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void perform() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void performWithoutResponse() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void finish() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public MethodType getRequestMethod() {
+        return null;
+    }
+
+    @Override
+    public String getTransletName() {
+        return null;
+    }
+
+    @Override
+    public Translet getTranslet() {
+        return null;
+    }
+
+    @Override
+    public ProcessResult getProcessResult() {
+        return null;
+    }
+
+    @Override
+    public Object getProcessResult(String actionId) {
+        return null;
+    }
+
+    @Override
+    public Response getDeclaredResponse() {
+        return null;
+    }
+
+    @Override
+    public boolean isResponseReserved() {
+        return false;
+    }
+
+    @Override
+    public <T extends Activity> T newActivity() {
+        throw new UnsupportedOperationException();
     }
 
 }

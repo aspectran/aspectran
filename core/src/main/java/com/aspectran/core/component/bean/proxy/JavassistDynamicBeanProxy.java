@@ -70,7 +70,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                 if (aarr.getBeforeAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getBeforeAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, true);
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, true);
                         }
                     }
                 }
@@ -92,7 +92,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                 if (aarr.getFinallyAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getFinallyAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdviceWithoutThrow(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, false);
                         }
                     }
                 }

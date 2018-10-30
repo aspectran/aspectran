@@ -63,21 +63,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         increaseAspectRuleCount();
     }
 
-    public void registerDynamically(AspectRule aspectRule) {
-        if (aspectRule.getSettingsAdviceRule() != null) {
-            addAspectAdviceRule(aspectRule.getSettingsAdviceRule());
-        }
-        if (aspectRule.getAspectAdviceRuleList() != null) {
-            for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
-                addAspectAdviceRule(aspectAdviceRule);
-            }
-        }
-        if (aspectRule.getExceptionRule() != null) {
-            addExceptionRule(aspectRule.getExceptionRule());
-        }
-        increaseAspectRuleCount();
-    }
-
     @Override
     public AspectAdviceRuleRegistry replicate() {
         AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();

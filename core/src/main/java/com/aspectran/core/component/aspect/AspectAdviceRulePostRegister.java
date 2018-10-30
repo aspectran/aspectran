@@ -24,12 +24,11 @@ public class AspectAdviceRulePostRegister {
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-    public AspectAdviceRuleRegistry register(AspectRule aspectRule) {
+    public void register(AspectRule aspectRule) {
         if (aspectAdviceRuleRegistry == null) {
             aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
         }
         aspectAdviceRuleRegistry.register(aspectRule);
-        return aspectAdviceRuleRegistry;
     }
 
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

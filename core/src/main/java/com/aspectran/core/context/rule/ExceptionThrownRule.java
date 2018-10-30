@@ -55,6 +55,10 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         this.aspectAdviceRule = aspectAdviceRule;
     }
 
+    public AspectAdviceRule getAspectAdviceRule() {
+        return aspectAdviceRule;
+    }
+
     public String[] getExceptionTypes() {
         return exceptionTypes;
     }

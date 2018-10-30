@@ -18,14 +18,20 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 
+import java.util.List;
+
 /**
- * The Class DefaultActivity
+ * An activity that handles requests related to the session lifecycle.
+ * It is an activity that has nothing to do with advice.
  */
-public class DefaultActivity extends BasicActivity {
+public class DefaultActivity extends AbstractActivity {
 
     /**
      * Instantiates a new DefaultActivity.
@@ -34,11 +40,6 @@ public class DefaultActivity extends BasicActivity {
      */
     public DefaultActivity(ActivityContext context) {
         super(context);
-    }
-
-    @Override
-    public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -117,13 +118,43 @@ public class DefaultActivity extends BasicActivity {
     }
 
     @Override
+    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void handleException(List<ExceptionRule> exceptionRuleList) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void registerAspectRule(AspectRule aspectRule) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected boolean isFinalStage() {
-        return false;
+    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T getSetting(String settingName) {
+        return null;
+    }
+
+    @Override
+    public <T> T getAspectAdviceBean(String aspectId) {
+        return null;
+    }
+
+    @Override
+    public <T extends Activity> T newActivity() {
+        throw new UnsupportedOperationException();
     }
 
 }

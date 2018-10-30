@@ -22,7 +22,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
@@ -106,7 +105,7 @@ public interface Activity extends BeanRegistry {
      * Throws an ActivityTerminatedException with the reason for terminating the current activity.
      *
      * @param cause the termination cause
-         * @throws ActivityTerminatedException the exception to terminate activity
+     * @throws ActivityTerminatedException the exception to terminate activity
      */
     void terminate(String cause);
 
@@ -148,28 +147,6 @@ public interface Activity extends BeanRegistry {
     Object getProcessResult(String actionId);
 
     /**
-     * Execute aspect advices with given rules.
-     *
-     * @param aspectAdviceRuleList the aspect advice rules
-     * @param throwable whether to raise an exception
-     */
-    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable);
-
-    /**
-     * Executes an aspect advice with a given rule.
-     *
-     * @param aspectAdviceRule the aspect advice rule
-     */
-    void executeAdvice(AspectAdviceRule aspectAdviceRule);
-
-    /**
-     * Executes an aspect advice with a given rule and does not raise an exception.
-     *
-     * @param aspectAdviceRule the aspect advice rule
-     */
-    void executeAdviceWithoutThrow(AspectAdviceRule aspectAdviceRule);
-
-    /**
      * Returns the originally declared response.
      *
      * @return the declared response
@@ -190,13 +167,6 @@ public interface Activity extends BeanRegistry {
      * @return true, if this activity is included in the other activity
      */
     boolean isIncluded();
-
-    /**
-     * Exception handling.
-     *
-     * @param exceptionRuleList the exception rule list
-     */
-    void handleException(List<ExceptionRule> exceptionRuleList);
 
     /**
      * Returns whether the exception was thrown.
@@ -227,6 +197,56 @@ public interface Activity extends BeanRegistry {
     void setRaisedException(Throwable raisedException);
 
     /**
+     * Register an aspect rule dynamically.
+     *
+     * @param aspectRule the aspect rule
+     */
+    void registerAspectRule(AspectRule aspectRule);
+
+    void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
+
+    /**
+     * Execute aspect advices with given rules.
+     *
+     * @param aspectAdviceRuleList the aspect advice rules
+     * @param throwable whether to raise an exception
+     */
+    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable);
+
+    /**
+     * Executes an aspect advice with a given rule.
+     *
+     * @param aspectAdviceRule the aspect advice rule
+     * @param throwable whether to raise an exception
+     */
+    void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable);
+
+    /**
+     * Exception handling.
+     *
+     * @param exceptionRuleList the exception rule list
+     */
+    void handleException(List<ExceptionRule> exceptionRuleList);
+
+    /**
+     * Gets the setting value in the translet scope.
+     *
+     * @param <T> the type of the value
+     * @param settingName the setting name
+     * @return the setting value
+     */
+    <T> T getSetting(String settingName);
+
+    /**
+     * Gets the aspect advice bean.
+     *
+     * @param <T> the type of the bean
+     * @param aspectId the aspect id
+     * @return the aspect advice bean object
+     */
+    <T> T getAspectAdviceBean(String aspectId);
+
+    /**
      * Gets the activity context.
      *
      * @return the activity context
@@ -239,14 +259,6 @@ public interface Activity extends BeanRegistry {
      * @return the environment
      */
     Environment getEnvironment();
-
-    /**
-     * Create a new inner activity.
-     *
-     * @param <T> the type of the activity
-     * @return the activity object
-     */
-    <T extends Activity> T newActivity();
 
     /**
      * Gets the application adapter.
@@ -277,44 +289,11 @@ public interface Activity extends BeanRegistry {
     ResponseAdapter getResponseAdapter();
 
     /**
-     * Gets the bean registry.
+     * Create a new inner activity.
      *
-     * @return the bean registry
+     * @param <T> the type of the activity
+     * @return the activity object
      */
-    BeanRegistry getBeanRegistry();
-
-    /**
-     * Gets the template processor.
-     *
-     * @return the template processor
-     */
-    TemplateProcessor getTemplateProcessor();
-
-    /**
-     * Gets the setting value in the translet scope.
-     *
-     * @param <T> the type of the value
-     * @param settingName the setting name
-     * @return the setting value
-     */
-    <T> T getSetting(String settingName);
-
-    /**
-     * Register an aspect rule dynamically.
-     *
-     * @param aspectRule the aspect rule
-     */
-    void registerAspectRule(AspectRule aspectRule);
-
-    void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
-
-    /**
-     * Gets the aspect advice bean.
-     *
-     * @param <T> the type of the bean
-     * @param aspectId the aspect id
-     * @return the aspect advice bean object
-     */
-    <T> T getAspectAdviceBean(String aspectId);
+    <T extends Activity> T newActivity();
 
 }

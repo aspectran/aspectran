@@ -87,9 +87,9 @@ public class TextTransformResponse extends TransformResponse {
 
             Writer writer = responseAdapter.getWriter();
             if (templateId != null) {
-                activity.getTemplateProcessor().process(templateId, activity);
+                activity.getActivityContext().getTemplateProcessor().process(templateId, activity);
             } else if (templateRule != null) {
-                activity.getTemplateProcessor().process(templateRule, activity);
+                activity.getActivityContext().getTemplateProcessor().process(templateRule, activity);
             } else {
                 ProcessResult processResult = activity.getProcessResult();
                 if (processResult != null) {

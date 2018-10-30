@@ -16,17 +16,49 @@
 package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.component.aspect.AspectException;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Exception thrown when registering BEFORE or AFTER advice at the finally block of the activity.
+ * Exception thrown when an Advice Constraint Violation occurs.
  */
 public class AdviceConstraintViolationException extends AspectException {
 
     /** @serial */
     private static final long serialVersionUID = -5175491727350661063L;
 
+    private Set<AspectRule> relevantAspectRules = new LinkedHashSet<>();
+
+    private List<String> violations = new ArrayList<>();
+
     public AdviceConstraintViolationException() {
-        super("BEFORE or AFTER advice should never be registered after the finally block");
+        super("Advice constraint violation has occurred");
+    }
+
+    public String addViolation(AspectRule aspectRule, String msg) {
+        if (!relevantAspectRules.contains(aspectRule)) {
+            relevantAspectRules.add(aspectRule);
+            msg = msg + "; Please check the Aspect Rule " + aspectRule;
+            violations.add(msg);
+            return msg;
+        } else {
+            return null;
+        }
+    }
+
+    public Set<AspectRule> getRelevantAspectRules() {
+        return relevantAspectRules;
+    }
+
+    @Override
+    public String getMessage() {
+        return StringUtils.toDelimitedString(violations, ActivityContext.LINE_SEPARATOR);
     }
 
 }

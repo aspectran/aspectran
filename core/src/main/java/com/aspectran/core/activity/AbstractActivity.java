@@ -15,35 +15,15 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
-import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.component.aspect.AspectRuleRegistry;
-import com.aspectran.core.component.aspect.pointcut.Pointcut;
-import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.template.TemplateProcessor;
-import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The Class AbstractActivity.
@@ -65,12 +45,6 @@ public abstract class AbstractActivity implements Activity {
     private RequestAdapter requestAdapter;
 
     private ResponseAdapter responseAdapter;
-
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-
-    private AspectAdviceResult aspectAdviceResult;
-
-    private Set<AspectRule> relevantAspectRules;
 
     private Throwable raisedException;
 
@@ -188,263 +162,6 @@ public abstract class AbstractActivity implements Activity {
         this.responseAdapter = responseAdapter;
     }
 
-    protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-        if (aspectAdviceRuleRegistry == null) {
-            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-        }
-        return aspectAdviceRuleRegistry;
-    }
-
-    protected List<AspectAdviceRule> getBeforeAdviceRuleList() {
-        if (aspectAdviceRuleRegistry != null) {
-            return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-        } else {
-            return null;
-        }
-    }
-
-    protected List<AspectAdviceRule> getAfterAdviceRuleList() {
-        if (aspectAdviceRuleRegistry != null) {
-            return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-        } else {
-            return null;
-        }
-    }
-
-    protected List<AspectAdviceRule> getFinallyAdviceRuleList() {
-        if (aspectAdviceRuleRegistry != null) {
-            return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-        } else {
-            return null;
-        }
-    }
-
-    protected List<ExceptionRule> getExceptionRuleList() {
-        if (aspectAdviceRuleRegistry != null) {
-            return aspectAdviceRuleRegistry.getExceptionRuleList();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Gets the aspect advice bean.
-     *
-     * @param <T> the generic type
-     * @param aspectId the aspect id
-     * @return the aspect advice bean
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getAspectAdviceBean(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
-    }
-
-    /**
-     * Puts the aspect advice bean.
-     *
-     * @param aspectId the aspect id
-     * @param adviceBean the advice bean
-     */
-    protected void putAspectAdviceBean(String aspectId, Object adviceBean) {
-        if (aspectAdviceResult == null) {
-            aspectAdviceResult = new AspectAdviceResult();
-        }
-        aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
-    }
-
-    /**
-     * Gets the before advice result.
-     *
-     * @param <T> the generic type
-     * @param aspectId the aspect id
-     * @return the before advice result
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getBeforeAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
-    }
-
-    /**
-     * Gets the after advice result.
-     *
-     * @param <T> the generic type
-     * @param aspectId the aspect id
-     * @return the after advice result
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getAfterAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
-    }
-
-    /**
-     * Gets the around advice result.
-     *
-     * @param <T> the generic type
-     * @param aspectId the aspect id
-     * @return the around advice result
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getAroundAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAroundAdviceResult(aspectId) : null);
-    }
-
-    /**
-     * Gets the finally advice result.
-     *
-     * @param <T> the generic type
-     * @param aspectId the aspect id
-     * @return the finally advice result
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getFinallyAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
-    }
-
-    /**
-     * Puts the result of the advice.
-     *
-     * @param aspectAdviceRule the aspect advice rule
-     * @param adviceActionResult the advice action result
-     */
-    protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-        if (aspectAdviceResult == null) {
-            aspectAdviceResult = new AspectAdviceResult();
-        }
-        aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
-    }
-
-    protected abstract boolean isFinalStage();
-
-    public abstract AspectAdviceRule getCurrentAspectAdviceRule();
-
-    @Override
-    public void registerAspectRule(AspectRule aspectRule) {
-        if (relevantAspectRules != null && relevantAspectRules.contains(aspectRule)) {
-            return;
-        } else if (!isAcceptable(aspectRule)) {
-            return;
-        } else {
-            touchRelevantAspectRules().add(aspectRule);
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Apply AspectRule " + aspectRule);
-        }
-
-        List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-        if (aspectAdviceRuleList != null) {
-            if (isFinalStage()) {
-                AdviceConstraintViolationException ex = null;
-                for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-                    AspectAdviceType aspectAdviceType = aspectAdviceRule.getAspectAdviceType();
-                    if (aspectAdviceType == AspectAdviceType.BEFORE ||
-                            aspectAdviceType == AspectAdviceType.AFTER) {
-                        if (ex == null) {
-                            ex = new AdviceConstraintViolationException();
-                        }
-                        log.error("You must ensure that the BEFORE or AFTER advice is not registered " +
-                                "in the finally block; Target AspectRule " + aspectRule);
-                    }
-                }
-                if (ex != null) {
-                    throw ex;
-                }
-            }
-
-            touchAspectAdviceRuleRegistry().registerDynamically(aspectRule);
-
-            if (getCurrentAspectAdviceRule() != null) {
-                AspectAdviceRule aspectAdviceRule1 = getCurrentAspectAdviceRule();
-                AspectAdviceType aspectAdviceType1 = aspectAdviceRule1.getAspectAdviceType();
-                for (AspectAdviceRule aspectAdviceRule2 : aspectAdviceRuleList) {
-                    AspectAdviceType aspectAdviceType2 = aspectAdviceRule2.getAspectAdviceType();
-                    int order1 = aspectAdviceRule1.getAspectRule().getOrder();
-                    int order2 = aspectAdviceRule2.getAspectRule().getOrder();
-                    if (aspectAdviceType1 == aspectAdviceType2) {
-                        if (aspectAdviceType1 == AspectAdviceType.BEFORE) {
-                            if (order2 < order1) {
-                                executeAdvice(aspectAdviceRule2);
-                            }
-                        } else {
-                            if (order2 > order1) {
-                                executeAdvice(aspectAdviceRule2);
-                            }
-                        }
-                    } else if (aspectAdviceType2 == AspectAdviceType.BEFORE) {
-                        executeAdvice(aspectAdviceRule2);
-                    }
-                }
-            } else {
-                for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-                    if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-                        executeAdvice(aspectAdviceRule);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
-        if (relevantAspectRules != null && relevantAspectRules.contains(settingsAdviceRule.getAspectRule())) {
-            return;
-        } else {
-            touchRelevantAspectRules().add(settingsAdviceRule.getAspectRule());
-        }
-        touchAspectAdviceRuleRegistry().addAspectAdviceRule(settingsAdviceRule);
-    }
-
-    protected void prepareAspectAdviceRule(TransletRule transletRule) {
-        if (transletRule.hasPathVariable()) {
-            AspectAdviceRulePostRegister aarPostRegister = new AspectAdviceRulePostRegister();
-            for (AspectRule aspectRule : getAspectRuleRegistry().getAspectRules()) {
-                JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
-                if (!aspectRule.isBeanRelevant() && joinpointTargetType == JoinpointTargetType.TRANSLET) {
-                    if (isAcceptable(aspectRule)) {
-                        Pointcut pointcut = aspectRule.getPointcut();
-                        if (pointcut == null || pointcut.matches(transletRule.getName())) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Apply AspectRule " + aspectRule);
-                            }
-                            aarPostRegister.register(aspectRule);
-                        }
-                    }
-                }
-            }
-            this.aspectAdviceRuleRegistry = aarPostRegister.getAspectAdviceRuleRegistry();
-        } else {
-            this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
-        }
-    }
-
-    private boolean isAcceptable(AspectRule aspectRule) {
-        if (aspectRule.getMethods() != null) {
-            if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getMethods())) {
-                return false;
-            }
-        }
-        if (aspectRule.getHeaders() != null) {
-            boolean contained = false;
-            for (String header : aspectRule.getHeaders()) {
-                if (getRequestAdapter().containsHeader(header)) {
-                    contained = true;
-                    break;
-                }
-            }
-            if (!contained) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private Set<AspectRule> touchRelevantAspectRules() {
-        if (relevantAspectRules == null) {
-            relevantAspectRules = new HashSet<>();
-        }
-        return relevantAspectRules;
-    }
-
     @Override
     public Throwable getRaisedException() {
         return raisedException;
@@ -468,39 +185,6 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public Throwable getRootCauseOfRaisedException() {
         return ExceptionUtils.getRootCause(raisedException);
-    }
-
-    @Override
-    public <T> T getSetting(String settingName) {
-        return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
-    }
-
-    /**
-     * Gets the aspect rule registry.
-     *
-     * @return the aspect rule registry
-     */
-    protected AspectRuleRegistry getAspectRuleRegistry() {
-        return context.getAspectRuleRegistry();
-    }
-
-    /**
-     * Gets the translet rule registry.
-     *
-     * @return the translet rule registry
-     */
-    protected TransletRuleRegistry getTransletRuleRegistry() {
-        return context.getTransletRuleRegistry();
-    }
-
-    @Override
-    public TemplateProcessor getTemplateProcessor() {
-        return context.getTemplateProcessor();
-    }
-
-    @Override
-    public BeanRegistry getBeanRegistry() {
-        return context.getBeanRegistry();
     }
 
     @Override

@@ -71,7 +71,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
                 if (aarr.getBeforeAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getBeforeAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, true);
                         }
                     }
                 }
@@ -84,7 +84,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, true);
                         }
                     }
                 }
@@ -93,7 +93,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
                 if (aarr.getFinallyAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getFinallyAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdviceWithoutThrow(aspectAdviceRule);
+                            activity.executeAdvice(aspectAdviceRule, false);
                         }
                     }
                 }

@@ -638,7 +638,7 @@ public class StringUtils {
      * @param delim the delimiter to use (typically a ",")
      * @return the delimited {@code String}
      */
-    public static String arrayToDelimitedString(Object[] arr, String delim) {
+    public static String toDelimitedString(Object[] arr, String delim) {
         if (arr == null || arr.length == 0) {
             return EMPTY;
         }
@@ -651,6 +651,30 @@ public class StringUtils {
                 sb.append(delim);
             }
             sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
+     * <p>Useful for {@code toString()} implementations.
+     *
+     * @param list the collection
+     * @param delim the delimiter to use (typically a ",")
+     * @return the delimited {@code String}
+     */
+    public static String toDelimitedString(Collection<?> list, String delim) {
+        if (list == null || list.isEmpty()) {
+            return EMPTY;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Object o : list) {
+            if (!first) {
+                sb.append(delim);
+            }
+            sb.append(o);
+            first = false;
         }
         return sb.toString();
     }
@@ -674,7 +698,7 @@ public class StringUtils {
      * @return the delimited {@code String}
      */
     public static String joinCommaDelimitedList(String[] arr) {
-        return arrayToDelimitedString(arr, ", ");
+        return toDelimitedString(arr, ", ");
     }
 
     /**
@@ -685,19 +709,7 @@ public class StringUtils {
      * @return the delimited {@code String}
      */
     public static String joinCommaDelimitedList(Collection<?> list) {
-        if (list == null || list.isEmpty()) {
-            return EMPTY;
-        }
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Object o : list) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(o);
-            first = false;
-        }
-        return sb.toString();
+        return toDelimitedString(list, ", ");
     }
 
     /**
@@ -795,7 +807,7 @@ public class StringUtils {
             d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", ""));
         } catch (NumberFormatException e)  {
             String msg = "Size must be specified as bytes (B), " +
-                    "kibibytes (KB), mebibytes (MB), gibibytes (GB). " +
+                    "kilobytes (KB), megabytes (MB), gigabytes (GB). " +
                     "E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB";
             throw new NumberFormatException(msg + " " + e.getMessage());
         }

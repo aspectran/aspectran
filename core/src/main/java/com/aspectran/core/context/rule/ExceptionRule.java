@@ -32,6 +32,14 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
     private String description;
 
+    public Map<String, ExceptionThrownRule> getExceptionThrownRuleMap() {
+        return exceptionThrownRuleMap;
+    }
+
+    public ExceptionThrownRule getDefaultExceptionThrownRule() {
+        return defaultExceptionThrownRule;
+    }
+
     /**
      * Puts the exception thrown rule.
      *
