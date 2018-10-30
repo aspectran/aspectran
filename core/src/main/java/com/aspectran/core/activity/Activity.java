@@ -84,11 +84,6 @@ public interface Activity extends BeanRegistry {
     void perform();
 
     /**
-     * Performs the prepared activity but does not respond to the client.
-     */
-    void performWithoutResponse();
-
-    /**
      * Finish the current activity.
      * It must be called to finish the activity.
      */

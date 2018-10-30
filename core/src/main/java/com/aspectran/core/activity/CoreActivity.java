@@ -84,8 +84,6 @@ public class CoreActivity extends AdviceActivity {
 
     private Response reservedResponse;
 
-    private boolean withoutResponse;
-
     private volatile boolean committed;
 
     /**
@@ -93,7 +91,7 @@ public class CoreActivity extends AdviceActivity {
      *
      * @param context the activity context
      */
-    public CoreActivity(ActivityContext context) {
+    protected CoreActivity(ActivityContext context) {
         super(context);
     }
 
@@ -237,12 +235,6 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public void performWithoutResponse() {
-        withoutResponse = true;
-        performActivity();
-    }
-
-    @Override
     public void finish() {
         try {
             release();
@@ -362,10 +354,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             setCurrentAspectAdviceType(null);
-
-            if (!withoutResponse) {
-                response();
-            }
+            response();
         } catch (Exception e) {
             throw new ActivityException("An error occurred while performing the activity", e);
         } finally {

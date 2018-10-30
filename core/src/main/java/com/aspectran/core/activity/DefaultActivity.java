@@ -73,11 +73,6 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void performWithoutResponse() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void finish() {
         throw new UnsupportedOperationException();
     }

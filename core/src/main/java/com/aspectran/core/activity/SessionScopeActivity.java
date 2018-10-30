@@ -74,11 +74,6 @@ public final class SessionScopeActivity extends AdviceActivity {
     }
 
     @Override
-    public void performWithoutResponse() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void finish() {
         throw new UnsupportedOperationException();
     }
