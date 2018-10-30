@@ -1,6 +1,5 @@
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
-
+        "http://aspectran.github.io/dtd/aspectran-5.dtd">
 <aspectran>
 
     <description>
@@ -57,9 +56,6 @@
         <properties>
             <item name="handlers" type="array">
                 <value><call bean="jetty.contexts"/></value>
-                <value><call bean="jetty.resourceHandler"/></value>
-                <value><call bean="jetty.defaultHandler"/></value>
-                <value><call bean="jetty.requestLog"/></value>
             </item>
         </properties>
     </bean>
@@ -77,28 +73,6 @@
             <item name="contextPath" value="/"/>
             <item name="war" value="#{basePath}/webapps/root"/>
             <item name="persistTempDirectory" value="true" valueType="boolean"/>
-        </properties>
-    </bean>
-
-    <bean id="jetty.resourceHandler" class="org.eclipse.jetty.server.handler.ResourceHandler" scope="prototype"/>
-
-    <bean id="jetty.defaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler" scope="prototype"/>
-
-    <bean id="jetty.requestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">
-        <properties>
-            <item name="requestLog">#{jetty.ncsaRequestLog}</item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.ncsaRequestLog" class="org.eclipse.jetty.server.NCSARequestLog" scope="prototype">
-        <properties>
-            <item name="filename">#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
-            <item name="filenameDateFormat">yyyy_MM_dd</item>
-            <item name="logDateFormat">yyyy-MM-dd HH:mm:ss Z</item>
-            <item name="logTimeZone">GMT+9</item>
-            <item name="retainDays" valueType="int">90</item>
-            <item name="append" valueType="boolean">true</item>
-            <item name="logLatency" valueType="boolean">true</item>
         </properties>
     </bean>
 

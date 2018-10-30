@@ -1,5 +1,5 @@
 context: {
-    root: classpath:config/aspectran/root-config.xml
+    root: classpath:config/root-config.xml
     resources: [
     ]
     profiles: {
@@ -10,7 +10,7 @@ context: {
         scanIntervalSeconds: 5
         startup: false
     }
-    singleton: true
+    singleton: false
 }
 scheduler: {
     startDelaySeconds: 3

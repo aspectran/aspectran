@@ -1,5 +1,5 @@
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+        "http://aspectran.github.io/dtd/aspectran-5.dtd">
 <aspectran>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
@@ -67,8 +67,8 @@
         </settings>
     </aspect>
 
-    <append resource="config/aspectran/jetty-config.xml"/>
-    <append resource="config/aspectran/jetty-controller.xml"/>
+    <append resource="config/jetty-config.xml"/>
+    <append resource="config/jetty-controller.xml"/>
 
     <translet name="/hello">
         <transform type="transform/text">
