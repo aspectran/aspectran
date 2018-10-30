@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.service;
 
-import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -177,7 +176,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void printGreetings() {
         if (greetingsTokens != null) {
-            TokenEvaluator evaluator = new TokenExpressionParser(new InstantActivity(getActivityContext()));
+            TokenEvaluator evaluator = new TokenExpressionParser(getActivityContext());
             String message = evaluator.evaluateAsString(greetingsTokens);
             console.writeLine(message);
             console.flush();
