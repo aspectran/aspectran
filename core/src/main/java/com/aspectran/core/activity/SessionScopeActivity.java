@@ -15,19 +15,20 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * The Class SessionScopeActivity.
+ * An activity that handles requests related to the session lifecycle.
+ *
+ * <p>Note that this is an activity that has nothing to do with
+ * advice. This does not execute any advice at all, and if you
+ * attempt to register the advice dynamically, you will get an
+ * exception of the advice constraint violation.</p>
  *
  * @since 1.5.0
  */
-public final class SessionScopeActivity extends AdviceActivity {
+public final class SessionScopeActivity extends DefaultActivity {
 
     /**
      * Instantiates a new session scope activity.
@@ -41,81 +42,6 @@ public final class SessionScopeActivity extends AdviceActivity {
     @Override
     public void setSessionAdapter(SessionAdapter sessionAdapter) {
         super.setSessionAdapter(sessionAdapter);
-    }
-
-    @Override
-    public void prepare(String transletName) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, String requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, MethodType requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void perform() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void finish() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public MethodType getRequestMethod() {
-        return null;
-    }
-
-    @Override
-    public String getTransletName() {
-        return null;
-    }
-
-    @Override
-    public Translet getTranslet() {
-        return null;
-    }
-
-    @Override
-    public ProcessResult getProcessResult() {
-        return null;
-    }
-
-    @Override
-    public Object getProcessResult(String actionId) {
-        return null;
-    }
-
-    @Override
-    public Response getDeclaredResponse() {
-        return null;
-    }
-
-    @Override
-    public boolean isResponseReserved() {
-        return false;
-    }
-
-    @Override
-    public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException();
     }
 
 }

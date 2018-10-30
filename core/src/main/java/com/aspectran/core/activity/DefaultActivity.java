@@ -28,8 +28,12 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.util.List;
 
 /**
- * An activity that handles requests related to the session lifecycle.
- * It is an activity that has nothing to do with advice.
+ * Default activity to handle all internal requests.
+ *
+ * <p>Note that this is an activity that has nothing to do with
+ * advice. This does not execute any advice at all, and if you
+ * attempt to register the advice dynamically, you will get an
+ * exception of the advice constraint violation.</p>
  */
 public class DefaultActivity extends AbstractActivity {
 
