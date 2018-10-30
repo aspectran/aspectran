@@ -183,6 +183,9 @@ public class AnnotatedConfigParser {
                 }
             }
             String[] nameArray = splitNamespace(componentAnno.namespace());
+            if (beanClass.isAnnotationPresent(Aspect.class)) {
+                parseAspectRule(beanClass, nameArray);
+            }
             if (beanClass.isAnnotationPresent(Bean.class)) {
                 parseBeanRule(beanRule, nameArray);
             }
@@ -203,9 +206,6 @@ public class AnnotatedConfigParser {
                         method.isAnnotationPresent(RequestAsDelete.class)) {
                     parseTransletRule(beanClass, method, nameArray);
                 }
-            }
-            if (beanClass.isAnnotationPresent(Aspect.class)) {
-                parseAspectRule(beanClass, nameArray);
             }
         }
     }
