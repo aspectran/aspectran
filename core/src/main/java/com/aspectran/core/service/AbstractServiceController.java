@@ -116,7 +116,9 @@ public abstract class AbstractServiceController implements ServiceController {
 
             if (!isDerived()) {
                 derivedServices.clear();
+                active = false;
                 doRestart();
+                active = true;
 
                 for (ServiceController serviceController : derivedServices) {
                     serviceController.restart();
