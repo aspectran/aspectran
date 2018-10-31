@@ -38,7 +38,7 @@ public class PauseCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().pause();
+        getService().getServiceController().pause();
         return null;
     }
 

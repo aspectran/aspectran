@@ -15,9 +15,12 @@
  */
 package com.aspectran.shell.jline;
 
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.jline.console.JLineConsole;
 import com.aspectran.shell.service.ShellService;
+
+import java.io.File;
 
 /**
  * <p>Created: 2017. 3. 26.</p>
@@ -25,12 +28,11 @@ import com.aspectran.shell.service.ShellService;
 public class JlineAspectranShellTest {
 
     public static void main(String[] args) {
-        String aspectranConfigFile = "classpath:config/shell/jline/aspectran-config.apon";
         int exitStatus = 0;
 
         try {
-            ShellService service = ShellService.create(aspectranConfigFile, new JLineConsole());
-            service.start();
+            File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
+            ShellService service = ShellService.run(aspectranConfigFile, new JLineConsole());
             ShellCommander commander = new ShellCommander(service);
             commander.perform();
         } catch (Exception e) {

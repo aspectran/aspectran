@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.core.context.config.AspectranConfig;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -39,9 +39,9 @@ public class JsvcDaemon implements Daemon {
             String[] args = daemonContext.getArguments();
             File aspectranConfigFile;
             if (args != null && args.length > 0) {
-                aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+                aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
             } else {
-                aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+                aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
             }
 
             try {
@@ -49,7 +49,7 @@ public class JsvcDaemon implements Daemon {
                 defaultDaemon.init(aspectranConfigFile);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new DaemonInitException("Aspectran Daemon failed to initialize", e);
+                throw new DaemonInitException("Failed to initialize daemon", e);
             }
         }
     }

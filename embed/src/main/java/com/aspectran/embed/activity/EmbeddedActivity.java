@@ -21,7 +21,7 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
 import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.embed.service.EmbeddedAspectran;
 
 import java.io.Writer;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class EmbeddedActivity extends CoreActivity {
 
-    private final EmbeddedService service;
+    private final EmbeddedAspectran service;
 
     private final Writer outputWriter;
 
@@ -45,7 +45,7 @@ public class EmbeddedActivity extends CoreActivity {
      * @param service the embedded service
      * @param outputWriter the output writer
      */
-    public EmbeddedActivity(EmbeddedService service, Writer outputWriter) {
+    public EmbeddedActivity(EmbeddedAspectran service, Writer outputWriter) {
         super(service.getActivityContext());
 
         this.service = service;

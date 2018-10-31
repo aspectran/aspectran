@@ -23,7 +23,7 @@ import com.aspectran.core.context.resource.AspectranClassLoader;
 /**
  * The Interface CoreService.
  */
-public interface CoreService extends ServiceController {
+public interface CoreService {
 
     String getBasePath();
 
@@ -33,6 +33,8 @@ public interface CoreService extends ServiceController {
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
+
+    boolean isLateStart();
 
     /**
      * Gets the activity context.
@@ -49,18 +51,35 @@ public interface CoreService extends ServiceController {
     AspectranClassLoader getAspectranClassLoader();
 
     /**
-     * Returns the Aspectran configuration parameters used to generate the AspectranService.
+     * Returns the Aspectran configuration parameters used to
+     * generate the AspectranService.
      *
      * @return the Aspectran Configuration Parameters
      */
     AspectranConfig getAspectranConfig();
 
     /**
-     * Returns whether to reload both the Java class and the activity context.
+     * Returns whether to reload all Java classes, resources,
+     * and activity context configurations.
      *
-     * @return true if the Java classes and the activity context are reloaded both;
-     *      false if only the activity context is reloaded
+     * @return false if only the activity context configuration
+     *      is reloaded; true if all are reloaded
      */
     boolean isHardReload();
+
+    /**
+     * Returns the service controller for this service.
+     *
+     * @return the service controller
+     */
+    ServiceController getServiceController();
+
+    /**
+     * Add a derived core service.
+     * Derived services follow the life cycle of the root service.
+     *
+     * @param coreService the core service
+     */
+    void joinDerivedService(CoreService coreService);
 
 }

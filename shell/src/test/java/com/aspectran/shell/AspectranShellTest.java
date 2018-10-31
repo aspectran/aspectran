@@ -15,8 +15,11 @@
  */
 package com.aspectran.shell;
 
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.service.ShellService;
+
+import java.io.File;
 
 /**
  * Testcase for Aspectran Shell.
@@ -26,12 +29,11 @@ import com.aspectran.shell.service.ShellService;
 public class AspectranShellTest {
 
     public static void main(String[] args) {
-        String aspectranConfigFile = "classpath:config/shell/aspectran-config.apon";
         int exitStatus = 0;
 
         try {
-            ShellService service = ShellService.create(aspectranConfigFile);
-            service.start();
+            File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config.apon");
+            ShellService service = ShellService.run(aspectranConfigFile);
             ShellCommander commander = new ShellCommander(service);
             commander.perform();
         } catch (Exception e) {

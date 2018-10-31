@@ -26,14 +26,17 @@ import com.aspectran.core.service.CoreService;
 import java.util.Map;
 
 /**
- * The Interface EmbeddedService.
+ * The Interface EmbeddedAspectran.
  *
  * <p>Created: 2017. 10. 28.</p>
  */
-public interface EmbeddedService extends CoreService {
+public interface EmbeddedAspectran extends CoreService {
 
-    String DEFAULT_ROOT_CONTEXT = "classpath:root-config.xml";
-
+    /**
+     * Creates a new session adapter for the embedded aspectran and returns.
+     *
+     * @return the session adapter
+     */
     SessionAdapter newSessionAdapter();
 
     /**
@@ -42,7 +45,7 @@ public interface EmbeddedService extends CoreService {
      * @param name the translet name
      * @return the {@code Translet} object
      */
-    Translet translet(String name);
+    Translet translate(String name);
 
     /**
      * Execute the translet.
@@ -51,7 +54,7 @@ public interface EmbeddedService extends CoreService {
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, ParameterMap parameterMap);
+    Translet translate(String name, ParameterMap parameterMap);
 
     /**
      * Execute the translet.
@@ -61,7 +64,7 @@ public interface EmbeddedService extends CoreService {
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
      * Execute the translet.
@@ -70,7 +73,7 @@ public interface EmbeddedService extends CoreService {
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, Map<String, Object> attributeMap);
+    Translet translate(String name, Map<String, Object> attributeMap);
 
     /**
      * Execute the translet.
@@ -79,7 +82,7 @@ public interface EmbeddedService extends CoreService {
      * @param method the request method
      * @return the {@code Translet} object
      */
-    Translet translet(String name, MethodType method);
+    Translet translate(String name, MethodType method);
 
     /**
      * Execute the translet.
@@ -89,7 +92,7 @@ public interface EmbeddedService extends CoreService {
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, MethodType method, ParameterMap parameterMap);
+    Translet translate(String name, MethodType method, ParameterMap parameterMap);
 
     /**
      * Execute the translet.
@@ -99,7 +102,7 @@ public interface EmbeddedService extends CoreService {
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, MethodType method, Map<String, Object> attributeMap);
+    Translet translate(String name, MethodType method, Map<String, Object> attributeMap);
 
     /**
      * Execute the translet.
@@ -110,7 +113,7 @@ public interface EmbeddedService extends CoreService {
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
-    Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
      * Evaluate the template without any provided variables.
@@ -149,25 +152,43 @@ public interface EmbeddedService extends CoreService {
     String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
-     * Returns a new instance of EmbeddedService.
-     *
-     * @param rootConfigLocation the root configuration location
-     * @return the instance of EmbeddedService
-     * @throws AspectranServiceException the aspectran service exception
+     * Stop the service and release all allocated resources.
      */
-    static EmbeddedService create(String rootConfigLocation) throws AspectranServiceException {
-        return AspectranEmbeddedService.create(rootConfigLocation);
+    void release();
+
+    /**
+     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
+     *
+     * @param rootConfigFile the root configuration file
+     * @return the instance of {@code EmbeddedService}
+     */
+    static EmbeddedAspectran run(String rootConfigFile) {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        aspectranConfig.updateRootConfigFile(rootConfigFile);
+        return run(aspectranConfig);
     }
 
     /**
-     * Returns a new instance of EmbeddedService.
+     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of EmbeddedService
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code EmbeddedService}
      */
-    static EmbeddedService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        return AspectranEmbeddedService.create(aspectranConfig);
+    static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
+        if (aspectranConfig == null) {
+            throw new IllegalArgumentException("aspectranConfig can not be null");
+        }
+        try {
+            AspectranEmbeddedService aspectran = AspectranEmbeddedService.create(aspectranConfig);
+            aspectran.start();
+            return aspectran;
+        } catch (AspectranServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            String rootConfigFile = aspectranConfig.getRootConfigFile();
+            throw new AspectranServiceException("EmbeddedAspectran run failed with " +
+                    (rootConfigFile != null ? rootConfigFile : aspectranConfig), e);
+        }
     }
 
 }

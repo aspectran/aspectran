@@ -17,6 +17,7 @@ package com.aspectran.web.startup.servlet;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.web.service.AspectranWebService;
 import com.aspectran.web.service.WebService;
 
 import javax.servlet.Servlet;
@@ -38,7 +39,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 
-    private WebService webService;
+    private AspectranWebService webService;
 
     private boolean standalone;
 
@@ -56,16 +57,16 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         try {
             ServletContext servletContext = getServletContext();
             Object object = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
-            WebService rootService = null;
+            AspectranWebService rootService = null;
             if (object != null) {
-                if (!(object instanceof WebService)) {
+                if (!(object instanceof AspectranWebService)) {
                     throw new IllegalStateException("Context attribute [" + object + "] is not of type [" +
                             WebService.class.getName() + "]");
                 }
-                rootService = (WebService)object;
-                webService = WebService.create(this, rootService);
+                rootService = (AspectranWebService)object;
+                webService = AspectranWebService.create(this, rootService);
             } else {
-                webService = WebService.create(this);
+                webService = AspectranWebService.create(this);
             }
             standalone = (rootService != webService);
             if (standalone) {

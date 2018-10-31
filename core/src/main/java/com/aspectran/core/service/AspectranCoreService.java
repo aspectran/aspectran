@@ -17,6 +17,8 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.util.Aspectran;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 /**
@@ -24,7 +26,7 @@ import com.aspectran.core.util.thread.ShutdownHooks;
  */
 public class AspectranCoreService extends AbstractCoreService {
 
-    private final CoreService rootService;
+    private final static Log log = LogFactory.getLog(AspectranCoreService.class);
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;
@@ -36,17 +38,10 @@ public class AspectranCoreService extends AbstractCoreService {
      */
     public AspectranCoreService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
-        this.rootService = null;
     }
 
     public AspectranCoreService(CoreService rootService) {
         super(rootService);
-        this.rootService = rootService;
-    }
-
-    @Override
-    public boolean isDerived() {
-        return (rootService != null);
     }
 
     /**
@@ -64,7 +59,7 @@ public class AspectranCoreService extends AbstractCoreService {
     }
 
     @Override
-    public void doStart() throws Exception {
+    protected void doStart() throws Exception {
         log.info("Welcome to Aspectran " + Aspectran.VERSION);
 
         startAspectranService();
@@ -75,25 +70,25 @@ public class AspectranCoreService extends AbstractCoreService {
     }
 
     @Override
-    public void doRestart() throws Exception {
+    protected void doRestart() throws Exception {
         stopAspectranService();
         startAspectranService();
     }
 
     @Override
-    public void doPause() throws Exception {
+    protected void doPause() throws Exception {
     }
 
     @Override
-    public void doPause(long timeout) throws Exception {
+    protected void doPause(long timeout) throws Exception {
     }
 
     @Override
-    public void doResume() throws Exception {
+    protected void doResume() throws Exception {
     }
 
     @Override
-    public void doStop() {
+    protected void doStop() {
         stopAspectranService();
         removeShutdownTask();
     }

@@ -35,15 +35,22 @@ import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
 
 import java.io.File;
+import java.io.IOException;
+
+import static com.aspectran.core.context.config.AspectranConfig.BASE_DIR_PROPERTY_NAME;
 
 /**
  * The Class AbstractCoreService.
  */
 public abstract class AbstractCoreService extends AbstractServiceController implements CoreService {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    private final static Log log = LogFactory.getLog(AbstractCoreService.class);
+
+    private final CoreService rootService;
 
     private final ApplicationAdapter applicationAdapter;
+
+    private final boolean lateStart;
 
     private String basePath;
 
@@ -64,7 +71,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
         }
 
+        this.rootService = null;
         this.applicationAdapter = applicationAdapter;
+        this.lateStart = false;
     }
 
     public AbstractCoreService(CoreService rootService) {
@@ -75,11 +84,18 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             throw new IllegalStateException("Oops! rootService's ActivityContext is not yet created");
         }
 
-        rootService.addDerivedService(this);
+        rootService.joinDerivedService(this);
+        this.lateStart = rootService.getServiceController().isActive();
 
+        this.rootService = rootService;
         this.applicationAdapter = rootService.getApplicationAdapter();
         this.activityContext = rootService.getActivityContext();
         this.aspectranConfig = rootService.getAspectranConfig();
+    }
+
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
     }
 
     @Override
@@ -92,8 +108,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return applicationAdapter;
+    public boolean isLateStart() {
+        return lateStart;
     }
 
     @Override
@@ -126,6 +142,21 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return activityContextBuilder.isHardReload();
     }
 
+    @Override
+    public ServiceController getServiceController() {
+        return this;
+    }
+
+    @Override
+    public void joinDerivedService(CoreService coreService) {
+        super.joinDerivedService(coreService.getServiceController());
+    }
+
+    @Override
+    public boolean isDerived() {
+        return (rootService != null);
+    }
+
     protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
             throw new IllegalStateException("ActivityContext has already been loaded");
@@ -137,6 +168,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
+                String basePath = contextConfig.getString(ContextConfig.base);
+                if (basePath != null) {
+                    setBasePath(basePath);
+                }
+
                 Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
                 if (Boolean.TRUE.equals(singleton)) {
                     if (!checkSingletonLock()) {
@@ -146,7 +182,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             }
 
             activityContextBuilder = new HybridActivityContextBuilder(this);
-            activityContextBuilder.setBasePath(basePath);
+            activityContextBuilder.setBasePath(getBasePath());
             activityContextBuilder.setContextConfig(contextConfig);
             activityContextBuilder.setServiceController(this);
         } catch (Exception e) {
@@ -186,7 +222,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         activityContextBuilder.destroy();
     }
 
-    protected void createSchedulerService() throws Exception {
+    protected void createSchedulerService() {
         if (this.schedulerConfig == null) {
             return;
         }
@@ -213,7 +249,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 schedulerService.setExposals(includePatterns, excludePatterns);
             }
 
-            addDerivedService(schedulerService);
+            joinDerivedService(schedulerService);
         }
     }
 
@@ -248,6 +284,24 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             }
         } catch (Exception e) {
             throw new Exception("Unable to acquire Singleton lock", e);
+        }
+    }
+
+    protected void determineBasePath() {
+        try {
+            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            if (baseDir != null) {
+                File dir = new File(baseDir);
+                if (!dir.isDirectory()) {
+                    throw new IOException("Make sure it is a valid base directory; " +
+                            BASE_DIR_PROPERTY_NAME + "=" + baseDir);
+                }
+            } else {
+                baseDir = new File("").getCanonicalPath();
+            }
+            setBasePath(baseDir);
+        } catch (IOException e) {
+            throw new AspectranServiceException("Can not verify base directory");
         }
     }
 

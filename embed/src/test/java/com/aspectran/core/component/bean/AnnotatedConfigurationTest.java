@@ -15,16 +15,13 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.embed.sample.anno.ThirdResult;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import java.io.IOException;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -36,24 +33,25 @@ import static junit.framework.TestCase.assertEquals;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AnnotatedConfigurationTest {
 
-    private EmbeddedService service;
+    private EmbeddedAspectran aspectran;
 
     @Before
-    public void ready() throws Exception {
-        String rootConfigLocation = "classpath:config/anno/annotated-configuration-test-config.xml";
-        service = EmbeddedService.create(rootConfigLocation);
-        service.start();
+    public void ready() {
+        String rootConfigFile = "classpath:config/anno/annotated-configuration-test-config.xml";
+        aspectran = EmbeddedAspectran.run(rootConfigFile);
     }
 
     @Test
-    public void firstTest() throws AspectranServiceException, IOException {
-        ThirdResult thirdResult = service.getActivityContext().getBeanRegistry().getBean("thirdResult");
+    public void firstTest() {
+        ThirdResult thirdResult = aspectran.getActivityContext().getBeanRegistry().getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
     }
 
     @After
     public void finish() {
-        service.stop();
+        if (aspectran != null) {
+            aspectran.release();
+        }
     }
 
 }

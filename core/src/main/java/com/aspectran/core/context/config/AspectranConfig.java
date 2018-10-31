@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterDefinition;
@@ -24,7 +26,9 @@ import java.io.File;
 
 public class AspectranConfig extends AbstractParameters {
 
+    public static final String BASE_DIR_PROPERTY_NAME = "aspectran.baseDir";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
+    public static final String DEFAULT_ROOT_CONFIG_FILE = "classpath:aspectran-config.xml";
 
     public static final ParameterDefinition context;
     public static final ParameterDefinition session;
@@ -168,9 +172,9 @@ public class AspectranConfig extends AbstractParameters {
         contextParameters.putValue(ContextConfig.base, basePath);
     }
 
-    public void updateRootConfigLocation(String rootConfigLocation) {
+    public void updateRootConfigFile(String rootConfigFile) {
         Parameters contextParameters = touchParameters(context);
-        contextParameters.putValue(ContextConfig.root, rootConfigLocation);
+        contextParameters.putValue(ContextConfig.root, rootConfigFile);
     }
 
     public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
@@ -178,6 +182,30 @@ public class AspectranConfig extends AbstractParameters {
         schedulerParameters.putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
         schedulerParameters.putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
         schedulerParameters.putValue(SchedulerConfig.startup, startup);
+    }
+
+    public String getRootConfigFile() {
+        Parameters contextParameters = getContextConfig();
+        if (contextParameters != null) {
+            return contextParameters.getString(ContextConfig.root);
+        } else {
+            return null;
+        }
+    }
+
+    public static File determineAspectranConfigFile(String arg) {
+        File file;
+        if (!StringUtils.isEmpty(arg)) {
+            file = new File(arg);
+        } else {
+            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            if (baseDir != null) {
+                file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
+            } else {
+                file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
+            }
+        }
+        return file;
     }
 
 }

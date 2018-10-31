@@ -20,6 +20,11 @@ package com.aspectran.core.service;
  */
 public interface ServiceController {
 
+    /**
+     * Returns the name of this service.
+     *
+     * @return the name of this service
+     */
     String getServiceName();
 
     /**
@@ -28,8 +33,6 @@ public interface ServiceController {
      * @param serviceStateListener the new service state listener
      */
     void setServiceStateListener(ServiceStateListener serviceStateListener);
-
-    void addDerivedService(ServiceController serviceController);
 
     /**
      * Returns whether this service is derived from another root service.

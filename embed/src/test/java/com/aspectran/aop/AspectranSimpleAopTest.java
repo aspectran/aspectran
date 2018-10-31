@@ -16,7 +16,7 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,18 +28,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class AspectranSimpleAopTest {
 
-    private EmbeddedService service;
+    private EmbeddedAspectran aspectran;
 
     @Before
-    public void ready() throws Exception {
-        String rootConfigLocation = "classpath:config/aop/simple-aop-test-config.xml";
-        service = EmbeddedService.create(rootConfigLocation);
-        service.start();
+    public void ready() {
+        String rootConfigFile = "classpath:config/aop/simple-aop-test-config.xml";
+        aspectran = EmbeddedAspectran.run(rootConfigFile);
     }
 
     @Test
     public void test1() {
-        Translet translet = service.translet("aop/test/action1");
+        Translet translet = aspectran.translate("aop/test/action1");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         assertEquals(sampleAnnotatedAspect.foo(), "foo");
         assertEquals(translet.getSetting("setting1"), "value1");
@@ -49,12 +48,14 @@ public class AspectranSimpleAopTest {
 
     @Test
     public void test2() {
-        service.translet("aop/test/action2");
+        aspectran.translate("aop/test/action2");
     }
 
     @After
     public void finish() {
-        service.stop();
+        if (aspectran != null) {
+            aspectran.release();
+        }
     }
 
 }

@@ -26,11 +26,15 @@ import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
+
+    private final static Log log = LogFactory.getLog(HybridActivityContextBuilder.class);
 
     private final AbstractCoreService coreService;
 
@@ -65,9 +69,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String rootConfigLocation) throws ActivityContextBuilderException {
+    public ActivityContext build(String rootConfigFile) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setRootConfigLocation(rootConfigLocation);
+            setRootConfigFile(rootConfigFile);
             return doBuild();
         }
     }
@@ -85,15 +89,15 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 throw new IllegalStateException("An ActivityContext already activated");
             }
 
-            String rootConfigLocation = getRootConfigLocation();
+            String rootConfigFile = getRootConfigFile();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (rootConfigLocation != null) {
-                log.info("Building an ActivityContext with " + rootConfigLocation);
+            if (rootConfigFile != null) {
+                log.info("Building an ActivityContext with " + rootConfigFile);
             } else if (aspectranParameters != null) {
                 log.info("Building an ActivityContext with AspectranParameters");
             } else {
-                log.info("No rootConfigLocation or aspectranParameters have been specified");
+                log.info("No rootConfigFile or aspectranParameters have been specified");
             }
 
             if (getActiveProfiles() != null) {
@@ -115,12 +119,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 beanRuleRegistry.scanConfigBeans(getScanBasePackages());
             }
 
-            if (rootConfigLocation != null || aspectranParameters != null) {
+            if (rootConfigFile != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);
                 parser.setEncoding(getEncoding());
                 parser.setHybridLoad(isHybridLoad());
-                if (rootConfigLocation != null) {
-                    parser.parse(rootConfigLocation);
+                if (rootConfigFile != null) {
+                    parser.parse(rootConfigFile);
                 } else {
                     parser.parse(aspectranParameters);
                 }

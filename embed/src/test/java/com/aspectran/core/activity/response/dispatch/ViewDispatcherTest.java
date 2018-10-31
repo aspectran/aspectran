@@ -34,7 +34,7 @@ import com.aspectran.core.support.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.core.support.pebble.PebbleEngineFactoryBean;
 import com.aspectran.core.support.pebble.PebbleTemplateEngine;
 import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -57,7 +57,7 @@ import static junit.framework.TestCase.assertEquals;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ViewDispatcherTest {
 
-    private EmbeddedService service;
+    private EmbeddedAspectran aspectran;
 
     @Before
     public void ready() throws Exception {
@@ -162,14 +162,13 @@ public class ViewDispatcherTest {
 
         parameters.addRule(aspectran1);
 
-        service = EmbeddedService.create(aspectranConfig);
-        service.start();
+        aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
     @After
     public void finish() {
-        if (service != null) {
-            service.stop();
+        if (aspectran != null) {
+            aspectran.release();
         }
     }
 
@@ -179,7 +178,7 @@ public class ViewDispatcherTest {
         params.setParameter("param1", "hello");
         params.setParameter("param2", "world");
 
-        Translet translet = service.translet("test/freemarker", params);
+        Translet translet = aspectran.translate("test/freemarker", params);
         String result = translet.getResponseAdapter().getWriter().toString();
 
         assertEquals("hello world", result);
@@ -192,7 +191,7 @@ public class ViewDispatcherTest {
         params.setParameter("param1", "hello2");
         params.setParameter("param2", "world2");
 
-        Translet translet = service.translet("test/appended/echo", params);
+        Translet translet = aspectran.translate("test/appended/echo", params);
         String result = translet.getResponseAdapter().getWriter().toString();
 
         assertEquals("hello2 world2", result);
@@ -210,7 +209,7 @@ public class ViewDispatcherTest {
         Map<String, Object> attrs = new HashMap<>();
         attrs.put("fruits", fruits);
 
-        Translet translet = service.translet("test/appended/freemarker/template1", attrs);
+        Translet translet = aspectran.translate("test/appended/freemarker/template1", attrs);
         String result = translet.getResponseAdapter().getWriter().toString();
 
         System.out.println(result);
@@ -222,7 +221,7 @@ public class ViewDispatcherTest {
         params.setParameter("param1", "hello");
         params.setParameter("param2", "pebble");
 
-        Translet translet = service.translet("test/pebble", params);
+        Translet translet = aspectran.translate("test/pebble", params);
         String result = translet.getResponseAdapter().getWriter().toString();
 
         assertEquals("hello pebble", result);

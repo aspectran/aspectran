@@ -71,7 +71,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String basePath;
 
-    private String rootConfigLocation;
+    private String rootConfigFile;
 
     private String encoding;
 
@@ -124,7 +124,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
-        this.rootConfigLocation = null;
+        this.rootConfigFile = null;
     }
 
     @Override
@@ -138,13 +138,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public String getRootConfigLocation() {
-        return rootConfigLocation;
+    public String getRootConfigFile() {
+        return rootConfigFile;
     }
 
     @Override
-    public void setRootConfigLocation(String rootConfigLocation) {
-        this.rootConfigLocation = rootConfigLocation;
+    public void setRootConfigFile(String rootConfigFile) {
+        this.rootConfigFile = rootConfigFile;
         this.aspectranParameters = null;
     }
 
@@ -260,12 +260,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         this.contextConfig = contextConfig;
 
-        String basePath = contextConfig.getString(ContextConfig.base);
-        if (basePath != null) {
-            setBasePath(basePath);
+        if (getBasePath() == null) {
+            setBasePath(contextConfig.getString(ContextConfig.base));
         }
 
-        this.rootConfigLocation = contextConfig.getString(ContextConfig.root);
+        this.rootConfigFile = contextConfig.getString(ContextConfig.root);
 
         AspectranParameters aspectranParameters = contextConfig.getParameters(ContextConfig.parameters);
         if (aspectranParameters != null) {

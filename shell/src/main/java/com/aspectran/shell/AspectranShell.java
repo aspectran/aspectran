@@ -15,8 +15,9 @@
  */
 package com.aspectran.shell;
 
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.shell.command.ShellCommander;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.shell.service.AspectranShellService;
 
 import java.io.File;
 
@@ -30,16 +31,16 @@ public class AspectranShell {
     public static void main(String[] args) {
         File aspectranConfigFile;
         if (args.length > 0) {
-            aspectranConfigFile = ShellService.determineAspectranConfigFile(args[0]);
+            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
         } else {
-            aspectranConfigFile = ShellService.determineAspectranConfigFile(null);
+            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
         }
 
-        ShellService service = null;
+        AspectranShellService service = null;
         int exitStatus = 0;
 
         try {
-            service = ShellService.create(aspectranConfigFile);
+            service = AspectranShellService.create(aspectranConfigFile);
             service.start();
 
             ShellCommander commander = new ShellCommander(service);

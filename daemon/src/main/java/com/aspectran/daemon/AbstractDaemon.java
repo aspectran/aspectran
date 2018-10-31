@@ -22,11 +22,13 @@ import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandPoller;
 import com.aspectran.daemon.command.polling.FileCommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.daemon.service.AspectranDaemonService;
 
 import java.io.File;
 
 /**
+ * The Abstract Daemon.
+ *
  * <p>Created: 2017. 12. 11.</p>
  *
  * @since 5.1.0
@@ -35,13 +37,13 @@ public class AbstractDaemon implements Daemon, Runnable {
 
     private String name;
 
-    private DaemonService service;
+    private AspectranDaemonService service;
 
     private CommandPoller commandPoller;
 
     private CommandRegistry commandRegistry;
 
-    private boolean active;
+    private volatile boolean active;
 
     @Override
     public String getName() {
@@ -54,7 +56,7 @@ public class AbstractDaemon implements Daemon, Runnable {
     }
 
     @Override
-    public DaemonService getService() {
+    public AspectranDaemonService getService() {
         return service;
     }
 
@@ -87,7 +89,8 @@ public class AbstractDaemon implements Daemon, Runnable {
 
     protected void init(AspectranConfig aspectranConfig) throws Exception {
         try {
-            this.service = DaemonService.create(aspectranConfig);
+            this.service = AspectranDaemonService.create(aspectranConfig);
+            this.service.start();
 
             DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
             DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();

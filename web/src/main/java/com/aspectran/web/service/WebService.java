@@ -15,11 +15,8 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.web.startup.servlet.WebActivityServlet;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,53 +46,5 @@ public interface WebService extends CoreService {
      * @throws IOException If an error occurs during Activity execution
      */
     void execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
-
-    /**
-     * Returns a new instance of WebService.
-     *
-     * @param servletContext the servlet context
-     * @return the instance of WebService
-     * @throws AspectranServiceException the aspectran service exception
-     */
-    static WebService create(ServletContext servletContext) throws AspectranServiceException {
-        return AspectranWebService.create(servletContext);
-    }
-
-    /**
-     * Returns a new instance of WebService.
-     *
-     * @param servletContext the servlet context
-     * @param rootService the root service
-     * @return the instance of WebService
-     * @throws AspectranServiceException the aspectran service exception
-     */
-    static WebService create(ServletContext servletContext, CoreService rootService)
-            throws AspectranServiceException {
-        return AspectranWebService.create(servletContext, rootService);
-    }
-
-    /**
-     * Returns a new instance of WebService.
-     *
-     * @param servlet the web activity servlet
-     * @return the instance of WebService
-     * @throws AspectranServiceException the aspectran service exception
-     */
-    static WebService create(WebActivityServlet servlet) throws AspectranServiceException {
-        return AspectranWebService.create(servlet);
-    }
-
-    /**
-     * Returns a new instance of WebService.
-     *
-     * @param servlet the servlet
-     * @param rootService the root service
-     * @return the instance of WebService
-     * @throws AspectranServiceException the aspectran service exception
-     */
-    static WebService create(WebActivityServlet servlet, WebService rootService)
-            throws AspectranServiceException {
-        return AspectranWebService.create(servlet, rootService);
-    }
 
 }

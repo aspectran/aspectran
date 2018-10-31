@@ -21,11 +21,10 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -43,15 +42,15 @@ import java.io.Writer;
  *
  * @since 2016. 1. 18.
  */
-class AspectranShellService extends AbstractShellService {
+public class AspectranShellService extends AbstractShellService {
 
     private static final Log log = LogFactory.getLog(AspectranShellService.class);
 
-    private static final String DEFAULT_APP_CONFIG_XML = "/config/app-config.xml";
+    private static final String DEFAULT_ROOT_CONFIG_FILE = "/config/app-config.xml";
 
     private long pauseTimeout = -1L;
 
-    private AspectranShellService() throws IOException {
+    private AspectranShellService() {
         super();
     }
 
@@ -136,58 +135,29 @@ class AspectranShellService extends AbstractShellService {
         }
     }
 
+    @Override
+    public void release() {
+        stop();
+    }
+
     /**
-     * Returns a new instance of {@code ShellService}.
+     * Returns a new instance of {@code AspectranShellService}.
      *
      * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code ShellService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
+     * @return the instance of {@code AspectranShellService}
      */
-    protected static ShellService create(String aspectranConfigFile)
-            throws AspectranServiceException, IOException {
+    public static AspectranShellService create(File aspectranConfigFile) {
         return create(aspectranConfigFile, null);
     }
 
     /**
-     * Returns a new instance of {@code ShellService}.
+     * Returns a new instance of {@code AspectranShellService}.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @param console the console
-     * @return the instance of {@code ShellService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
+     * @return the instance of {@code AspectranShellService}
      */
-    protected static ShellService create(String aspectranConfigFile, Console console)
-            throws AspectranServiceException, IOException {
-        File file = ResourceUtils.getFile(aspectranConfigFile, AspectranClassLoader.getDefaultClassLoader());
-        return create(file, console);
-    }
-
-    /**
-     * Returns a new instance of {@code ShellService}.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code ShellService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
-     */
-    protected static ShellService create(File aspectranConfigFile)
-            throws AspectranServiceException, IOException {
-        return create(aspectranConfigFile, null);
-    }
-
-    /**
-     * Returns a new instance of {@code ShellService}.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @param console the console
-     * @return the instance of {@code ShellService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
-     */
-    protected static ShellService create(File aspectranConfigFile, Console console)
-            throws AspectranServiceException, IOException {
+    public static AspectranShellService create(File aspectranConfigFile, Console console) {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {
             try {
@@ -199,9 +169,9 @@ class AspectranShellService extends AbstractShellService {
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
-        if (rootConfigLocation == null || rootConfigLocation.length() == 0) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_XML);
+        String rootConfigFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(rootConfigFile)) {
+            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
         }
 
         AspectranShellService service = new AspectranShellService();

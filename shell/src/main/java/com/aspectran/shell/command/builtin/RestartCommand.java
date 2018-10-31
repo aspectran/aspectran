@@ -40,7 +40,7 @@ public class RestartCommand extends AbstractCommand {
     public String execute(String[] args) throws Exception {
         if (getService().getConsole().confirmRestart()) {
             getService().getConsole().clearScreen();
-            getService().restart();
+            getService().getServiceController().restart();
         }
         return null;
     }

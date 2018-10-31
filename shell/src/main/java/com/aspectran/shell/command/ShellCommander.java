@@ -99,7 +99,7 @@ public class ShellCommander {
         } catch (Exception e) {
             log.error("Error occurred while processing shell command", e);
         } finally {
-            if (service.isActive()) {
+            if (service.getServiceController().isActive()) {
                 if (log.isDebugEnabled()) {
                     log.debug("Do not terminate this application while releasing all resources");
                 }

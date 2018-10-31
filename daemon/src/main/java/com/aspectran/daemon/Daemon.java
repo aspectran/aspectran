@@ -17,15 +17,18 @@ package com.aspectran.daemon;
 
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.daemon.service.AspectranDaemonService;
 
+/**
+ * The Interface Daemon.
+ */
 public interface Daemon {
 
     String getName();
 
     void setName(String name);
 
-    DaemonService getService();
+    AspectranDaemonService getService();
 
     CommandPoller getCommandPoller();
 

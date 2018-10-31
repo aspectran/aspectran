@@ -44,8 +44,6 @@ public interface ActivityContext {
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
-    String BASE_DIR_PROPERTY_NAME = "aspectran.baseDir";
-
     /**
      * Gets the description of this ActivityContext.
      *

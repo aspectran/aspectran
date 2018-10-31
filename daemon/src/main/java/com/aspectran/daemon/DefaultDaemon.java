@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.core.context.config.AspectranConfig;
 
 import java.io.File;
 
@@ -31,9 +31,9 @@ public class DefaultDaemon extends AbstractDaemon {
     public static void main(String[] args) {
         File aspectranConfigFile;
         if (args.length > 0) {
-            aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
         } else {
-            aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
         }
 
         DefaultDaemon defaultDaemon = new DefaultDaemon();

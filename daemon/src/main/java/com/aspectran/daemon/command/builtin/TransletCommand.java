@@ -61,7 +61,7 @@ public class TransletCommand extends AbstractCommand {
             }
         }
 
-        Translet translet = getService().translet(transletName, parameterMap, attributeMap);
+        Translet translet = getService().translate(transletName, parameterMap, attributeMap);
         return translet.getResponseAdapter().getWriter().toString();
     }
 

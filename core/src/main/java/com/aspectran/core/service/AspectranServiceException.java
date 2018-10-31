@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.context.AspectranCheckedException;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
  * The Class AspectranServiceException.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class AspectranServiceException extends AspectranCheckedException {
+public class AspectranServiceException extends AspectranRuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -7460804495296696284L;

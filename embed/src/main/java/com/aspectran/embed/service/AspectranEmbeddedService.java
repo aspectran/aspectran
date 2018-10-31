@@ -29,10 +29,9 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embed.activity.EmbeddedActivity;
@@ -41,14 +40,14 @@ import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
 
 import java.util.Map;
 
-import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ROOT_CONFIG_FILE;
 
 /**
  * The Class AspectranEmbeddedService.
  *
  * @since 3.0.0
  */
-class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedService {
+class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedAspectran {
 
     private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
 
@@ -59,10 +58,7 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
     public AspectranEmbeddedService() {
         super(new EmbeddedApplicationAdapter());
 
-        String basePath = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-        if (basePath != null) {
-            setBasePath(basePath);
-        }
+        determineBasePath();
     }
 
     @Override
@@ -96,8 +92,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @param name the translet name
      * @return the {@code Translet} object
      */
-    public Translet translet(String name) {
-        return translet(name, null, null, null);
+    public Translet translate(String name) {
+        return translate(name, null, null, null);
     }
 
     /**
@@ -108,8 +104,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, ParameterMap parameterMap) {
-        return translet(name, null, parameterMap, null);
+    public Translet translate(String name, ParameterMap parameterMap) {
+        return translate(name, null, parameterMap, null);
     }
 
     /**
@@ -121,8 +117,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        return translet(name, null, parameterMap, attributeMap);
+    public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        return translate(name, null, parameterMap, attributeMap);
     }
 
     /**
@@ -133,8 +129,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, Map<String, Object> attributeMap) {
-        return translet(name, null, null, attributeMap);
+    public Translet translate(String name, Map<String, Object> attributeMap) {
+        return translate(name, null, null, attributeMap);
     }
 
     /**
@@ -145,8 +141,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, MethodType method) {
-        return translet(name, method, null, null);
+    public Translet translate(String name, MethodType method) {
+        return translate(name, method, null, null);
     }
 
     /**
@@ -158,8 +154,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, MethodType method, ParameterMap parameterMap) {
-        return translet(name, method, parameterMap, null);
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap) {
+        return translate(name, method, parameterMap, null);
     }
 
     /**
@@ -171,8 +167,8 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, MethodType method, Map<String, Object> attributeMap) {
-        return translet(name, method, null, attributeMap);
+    public Translet translate(String name, MethodType method, Map<String, Object> attributeMap) {
+        return translate(name, method, null, attributeMap);
     }
 
     /**
@@ -185,7 +181,7 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
@@ -278,36 +274,27 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedS
         }
     }
 
-    /**
-     * Returns a new instance of {@code EmbeddedService}.
-     *
-     * @param rootConfigLocation the root configuration location
-     * @return the instance of {@code EmbeddedService}
-     * @throws AspectranServiceException the aspectran service exception
-     */
-    protected static EmbeddedService create(String rootConfigLocation) throws AspectranServiceException {
-        AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootConfigLocation(rootConfigLocation);
-        return create(aspectranConfig);
+    @Override
+    public void release() {
+        stop();
     }
 
     /**
-     * Returns a new instance of {@code EmbeddedService}.
+     * Returns a new instance of {@code AspectranEmbeddedService}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code EmbeddedService}
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code AspectranEmbeddedService}
      */
-    protected static EmbeddedService create(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected static AspectranEmbeddedService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.getContextConfig();
         if (contextConfig == null) {
             contextConfig = aspectranConfig.newContextConfig();
         }
 
-        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
-        if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
+        String rootConfigFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(rootConfigFile)) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
+                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
             }
         }
 

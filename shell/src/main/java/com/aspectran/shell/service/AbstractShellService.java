@@ -29,18 +29,12 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.adapter.ShellApplicationAdapter;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
-
-import java.io.File;
-import java.io.IOException;
-
-import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
 
 /**
  * Abstract base class for {@link ShellService} implementations.
@@ -66,14 +60,10 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private Token[] greetingsTokens;
 
-    protected AbstractShellService() throws IOException {
+    protected AbstractShellService() {
         super(new ShellApplicationAdapter());
 
-        String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-        if (baseDir == null) {
-            baseDir = new File("").getCanonicalPath();
-        }
-        setBasePath(baseDir);
+        determineBasePath();
     }
 
     @Override

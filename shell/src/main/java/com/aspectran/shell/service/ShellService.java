@@ -18,17 +18,11 @@ package com.aspectran.shell.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
 import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
 
 import java.io.File;
-import java.io.IOException;
-
-import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
-import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ASPECTRAN_CONFIG_FILE;
 
 /**
  * The Interface ShellService.
@@ -37,8 +31,18 @@ import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ASPECTRA
  */
 public interface ShellService extends CoreService {
 
+    /**
+     * Creates a new session adapter for the shell service and returns.
+     *
+     * @return the session adapter
+     */
     SessionAdapter newSessionAdapter();
 
+    /**
+     * Returns the console.
+     *
+     * @return the console
+     */
     Console getConsole();
 
     String[] getCommands();
@@ -100,72 +104,37 @@ public interface ShellService extends CoreService {
     void execute(CommandLineParser commandLineParser);
 
     /**
-     * Returns a new instance of ShellService.
+     * Stop the service and release all allocated resources.
+     */
+    void release();
+
+    /**
+     * Run the Shell Service, creating and starting a new {@code ShellService}.
      *
      * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of ShellService
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
+     * @return the instance of {@code ShellService}
      */
-    static ShellService create(String aspectranConfigFile)
-            throws AspectranServiceException, IOException {
-        return AspectranShellService.create(aspectranConfigFile);
+    static ShellService run(File aspectranConfigFile) {
+        return run(aspectranConfigFile, null);
     }
 
     /**
-     * Returns a new instance of ShellService.
+     * Run the Shell Service, creating and starting a new {@code ShellService}.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @param console the console
-     * @return the instance of ShellService
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
+     * @return the instance of {@code ShellService}
      */
-    static ShellService create(String aspectranConfigFile, Console console)
-            throws AspectranServiceException, IOException {
-        return AspectranShellService.create(aspectranConfigFile, console);
-    }
-
-    /**
-     * Returns a new instance of ShellService.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of ShellService
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
-     */
-     static ShellService create(File aspectranConfigFile)
-            throws AspectranServiceException, IOException {
-        return AspectranShellService.create(aspectranConfigFile);
-    }
-
-    /**
-     * Returns a new instance of ShellService.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @param console the console
-     * @return the instance of ShellService
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
-     */
-    static ShellService create(File aspectranConfigFile, Console console)
-            throws AspectranServiceException, IOException {
-        return AspectranShellService.create(aspectranConfigFile, console);
-    }
-
-    static File determineAspectranConfigFile(String arg) {
-        File file;
-        if (!StringUtils.isEmpty(arg)) {
-            file = new File(arg);
-        } else {
-            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-            if (baseDir != null) {
-                file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
-            } else {
-                file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
-            }
+    static ShellService run(File aspectranConfigFile, Console console) {
+        try {
+            AspectranShellService shellService = AspectranShellService.create(aspectranConfigFile, console);
+            shellService.start();
+            return shellService;
+        } catch (AspectranServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AspectranServiceException("ShellService run failed with " + aspectranConfigFile, e);
         }
-        return file;
     }
 
 }

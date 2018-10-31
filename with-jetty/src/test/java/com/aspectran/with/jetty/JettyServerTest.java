@@ -18,7 +18,7 @@ package com.aspectran.with.jetty;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.embed.service.EmbeddedService;
+import com.aspectran.embed.service.EmbeddedAspectran;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,10 +35,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 
+import static junit.framework.TestCase.assertEquals;
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JettyServerTest {
 
-    private EmbeddedService service;
+    private EmbeddedAspectran aspectran;
 
     @Before
     public void ready() throws Exception {
@@ -50,22 +52,21 @@ public class JettyServerTest {
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.updateBasePath(basePath);
 
-        service = EmbeddedService.create(aspectranConfig);
-        service.start();
-        service.translet("jetty start");
+        aspectran = EmbeddedAspectran.run(aspectranConfig);
+        aspectran.translate("jetty start");
     }
 
     @After
     public void finish() {
-        if (service != null) {
-            service.translet("jetty stop");
-            service.stop();
+        if (aspectran != null) {
+            aspectran.translate("jetty stop");
+            aspectran.release();
         }
     }
 
     @Test
     public void testHello() throws IOException {
-        Translet translet = service.translet("/hello");
+        Translet translet = aspectran.translate("/hello");
         String result1 = translet.getResponseAdapter().getWriter().toString();
         String result2;
 
@@ -79,7 +80,7 @@ public class JettyServerTest {
             return;
         }
 
-        //assertEquals(result1, result2);
+        assertEquals(result1, result2);
     }
 
 }

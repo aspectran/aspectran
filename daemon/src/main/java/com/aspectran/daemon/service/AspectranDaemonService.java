@@ -29,28 +29,25 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringOutputWriter;
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.daemon.adapter.DaemonApplicationAdapter;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
-import static com.aspectran.core.context.ActivityContext.BASE_DIR_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ROOT_CONFIG_FILE;
 
 /**
  * The Class AspectranDaemonService.
  *
  * @since 5.1.0
  */
-class AspectranDaemonService extends AspectranCoreService implements DaemonService {
+public class AspectranDaemonService extends AspectranCoreService implements DaemonService {
 
     private static final Log log = LogFactory.getLog(AspectranDaemonService.class);
 
@@ -58,14 +55,10 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
 
     private long pauseTimeout = -1L;
 
-    public AspectranDaemonService() throws IOException {
+    public AspectranDaemonService() {
         super(new DaemonApplicationAdapter());
 
-        String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-        if (baseDir == null) {
-            baseDir = new File("").getCanonicalPath();
-        }
-        setBasePath(baseDir);
+        determineBasePath();
     }
 
     @Override
@@ -102,8 +95,8 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        return translet(name, null, parameterMap, attributeMap);
+    public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        return translate(name, null, parameterMap, attributeMap);
     }
 
     /**
@@ -116,7 +109,7 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
      * @return the {@code Translet} object
      */
     @Override
-    public Translet translet(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
@@ -177,33 +170,27 @@ class AspectranDaemonService extends AspectranCoreService implements DaemonServi
     /**
      * Returns a new instance of {@code DaemonService}.
      *
-     * @param rootConfigLocation the root configuration location
+     * @param rootConfigFile the root configuration file
      * @return the instance of {@code DaemonService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
      */
-    protected static DaemonService create(String rootConfigLocation)
-            throws AspectranServiceException, IOException {
+    public static DaemonService create(String rootConfigFile) {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootConfigLocation(rootConfigLocation);
+        aspectranConfig.updateRootConfigFile(rootConfigFile);
         return create(aspectranConfig);
     }
 
     /**
-     * Returns a new instance of {@code DaemonService}.
+     * Returns a new instance of {@code AspectranDaemonService}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code DaemonService}
-     * @throws AspectranServiceException the aspectran service exception
-     * @throws IOException if an I/O error has occurred
+     * @return the instance of {@code AspectranDaemonService}
      */
-    protected static DaemonService create(AspectranConfig aspectranConfig)
-            throws AspectranServiceException, IOException {
+    public static AspectranDaemonService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
-        if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
+        String rootConfigFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(rootConfigFile)) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
+                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
             }
         }
 

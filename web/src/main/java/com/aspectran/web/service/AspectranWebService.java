@@ -45,13 +45,13 @@ import java.net.URLDecoder;
 /**
  * The Class AspectranWebService.
  */
-class AspectranWebService extends AspectranCoreService implements WebService {
+public class AspectranWebService extends AspectranCoreService implements WebService {
 
     private static final Log log = LogFactory.getLog(AspectranWebService.class);
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/root-config.xml";
+    private static final String DEFAULT_ROOT_CONFIG_FILE = "/WEB-INF/aspectran/config/root-config.xml";
 
     private String uriDecoding;
 
@@ -157,19 +157,18 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     }
 
     /**
-     * Returns a new instance of {@code WebService}.
+     * Returns a new instance of {@code AspectranWebService}.
      *
      * @param servletContext the servlet context
-     * @return the instance of {@code WebService}
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code AspectranWebService}
      */
-    public static WebService create(ServletContext servletContext) throws AspectranServiceException {
+    public static AspectranWebService create(ServletContext servletContext) {
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam == null) {
             log.warn("No specified servlet context initialization parameter for instantiating WebService");
         }
 
-        WebService service = create(servletContext, aspectranConfigParam);
+        AspectranWebService service = create(servletContext, aspectranConfigParam);
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, service);
 
         if (log.isDebugEnabled()) {
@@ -181,13 +180,13 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     }
 
     /**
-     * Returns a new instance of {@code WebService}.
+     * Returns a new instance of {@code AspectranWebService}.
      *
      * @param servletContext the servlet context
      * @param rootService the root service
-     * @return the instance of {@code WebService}
+     * @return the instance of {@code AspectranWebService}
      */
-    public static WebService create(ServletContext servletContext, CoreService rootService) {
+    public static AspectranWebService create(ServletContext servletContext, CoreService rootService) {
         AspectranWebService service = new AspectranWebService(rootService);
         service.setDefaultServletHttpRequestHandler(servletContext);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
@@ -198,17 +197,23 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             }
         }
         setServiceStateListener(service);
+        if (service.isLateStart()) {
+            try {
+                service.getServiceController().start();
+            } catch (Exception e) {
+                throw new AspectranServiceException("Failed to start the AspectranWebService");
+            }
+        }
         return service;
     }
 
     /**
-     * Returns a new instance of {@code WebService}.
+     * Returns a new instance of {@code AspectranWebService}.
      *
      * @param servlet the web activity servlet
-     * @return the instance of {@code WebService}
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code AspectranWebService}
      */
-    public static WebService create(WebActivityServlet servlet) throws AspectranServiceException {
+    public static AspectranWebService create(WebActivityServlet servlet) {
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
@@ -216,7 +221,7 @@ class AspectranWebService extends AspectranCoreService implements WebService {
             log.warn("No specified servlet initialization parameter for instantiating AspectranWebService");
         }
 
-        WebService service = create(servletContext, aspectranConfigParam);
+        AspectranWebService service = create(servletContext, aspectranConfigParam);
         String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
         servletContext.setAttribute(attrName, service);
 
@@ -229,20 +234,18 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     }
 
     /**
-     * Returns a new instance of {@code WebService}.
+     * Returns a new instance of {@code AspectranWebService}.
      *
      * @param servlet the servlet
      * @param rootService the root service
-     * @return the instance of {@code WebService}
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code AspectranWebService}
      */
-    public static WebService create(WebActivityServlet servlet, WebService rootService)
-            throws AspectranServiceException {
+    public static AspectranWebService create(WebActivityServlet servlet, AspectranWebService rootService) {
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam != null) {
-            WebService service = create(servletContext, aspectranConfigParam);
+            AspectranWebService service = create(servletContext, aspectranConfigParam);
             servletContext.setAttribute(STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX +
                     servlet.getServletName(), service);
             return service;
@@ -252,15 +255,13 @@ class AspectranWebService extends AspectranCoreService implements WebService {
     }
 
     /**
-     * Returns a new instance of {@code WebService}.
+     * Returns a new instance of {@code AspectranWebService}.
      *
      * @param servletContext the servlet context
      * @param aspectranConfigParam the parameter for aspectran configuration
-     * @return the instance of {@code WebService}
-     * @throws AspectranServiceException the aspectran service exception
+     * @return the instance of {@code AspectranWebService}
      */
-    private static WebService create(ServletContext servletContext, String aspectranConfigParam)
-            throws AspectranServiceException {
+    private static AspectranWebService create(ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
             aspectranConfig = new AspectranConfig(aspectranConfigParam);
@@ -269,9 +270,9 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigLocation = contextConfig.getString(ContextConfig.root);
-        if (rootConfigLocation == null || rootConfigLocation.isEmpty()) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONTEXT);
+        String rootConfigFile = contextConfig.getString(ContextConfig.root);
+        if (rootConfigFile == null || rootConfigFile.isEmpty()) {
+            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
         }
 
         AspectranWebService service = new AspectranWebService(servletContext);
@@ -303,11 +304,11 @@ class AspectranWebService extends AspectranCoreService implements WebService {
         }
     }
 
-    private static void setServiceStateListener(final AspectranWebService AspectranWebService) {
-        AspectranWebService.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final AspectranWebService service) {
+        service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                AspectranWebService.pauseTimeout = 0L;
+                service.pauseTimeout = 0L;
             }
 
             @Override
@@ -321,12 +322,12 @@ class AspectranWebService extends AspectranCoreService implements WebService {
                     throw new IllegalArgumentException("Pause timeout in milliseconds " +
                             "needs to be set to a value of greater than 0");
                 }
-                AspectranWebService.pauseTimeout = System.currentTimeMillis() + millis;
+                service.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
             public void paused() {
-                AspectranWebService.pauseTimeout = -1L;
+                service.pauseTimeout = -1L;
             }
 
             @Override

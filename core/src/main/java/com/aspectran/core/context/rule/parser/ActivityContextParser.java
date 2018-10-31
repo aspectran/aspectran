@@ -31,7 +31,7 @@ public interface ActivityContextParser {
 
     void setHybridLoad(boolean hybridLoad);
 
-    ContextRuleAssistant parse(String rootConfigLocation) throws ActivityContextParserException;
+    ContextRuleAssistant parse(String rootConfigFile) throws ActivityContextParserException;
 
     ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 

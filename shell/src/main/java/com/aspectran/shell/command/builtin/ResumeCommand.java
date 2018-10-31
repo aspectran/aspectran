@@ -38,7 +38,7 @@ public class ResumeCommand extends AbstractCommand {
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().resume();
+        getService().getServiceController().resume();
         return null;
     }
 

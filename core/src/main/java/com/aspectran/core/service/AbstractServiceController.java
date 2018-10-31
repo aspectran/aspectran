@@ -38,16 +38,6 @@ public abstract class AbstractServiceController implements ServiceController {
     private ServiceStateListener serviceStateListener;
 
     @Override
-    public void addDerivedService(ServiceController serviceController) {
-        derivedServices.add(serviceController);
-    }
-
-    @Override
-    public boolean isDerived() {
-        return false;
-    }
-
-    @Override
     public String getServiceName() {
         return getClass().getSimpleName();
     }
@@ -55,6 +45,10 @@ public abstract class AbstractServiceController implements ServiceController {
     @Override
     public void setServiceStateListener(ServiceStateListener serviceStateListener) {
         this.serviceStateListener = serviceStateListener;
+    }
+
+    protected void joinDerivedService(ServiceController serviceController) {
+        derivedServices.add(serviceController);
     }
 
     protected abstract void doStart() throws Exception;

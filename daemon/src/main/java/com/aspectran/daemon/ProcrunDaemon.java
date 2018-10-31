@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.core.context.config.AspectranConfig;
 
 import java.io.File;
 import java.util.Arrays;
@@ -36,9 +36,9 @@ public class ProcrunDaemon {
             try {
                 File aspectranConfigFile;
                 if (args != null && args.length > 0) {
-                    aspectranConfigFile = DaemonService.determineAspectranConfigFile(args[0]);
+                    aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
                 } else {
-                    aspectranConfigFile = DaemonService.determineAspectranConfigFile(null);
+                    aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
                 }
 
                 defaultDaemon = new DefaultDaemon();
