@@ -31,7 +31,7 @@ public class QuitCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "quit";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public QuitCommand(CommandRegistry registry) {
         super(registry);

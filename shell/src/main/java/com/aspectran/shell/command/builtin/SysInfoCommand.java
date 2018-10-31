@@ -36,7 +36,7 @@ public class SysInfoCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "sysinfo";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public SysInfoCommand(CommandRegistry registry) {
         super(registry);

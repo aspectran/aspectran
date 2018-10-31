@@ -33,7 +33,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "encrypt";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public PBEncryptCommand(CommandRegistry registry) {
         super(registry);

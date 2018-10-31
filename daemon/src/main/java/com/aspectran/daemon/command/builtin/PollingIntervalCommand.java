@@ -30,7 +30,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "pollingInterval";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public PollingIntervalCommand(CommandRegistry registry) {
         super(registry);

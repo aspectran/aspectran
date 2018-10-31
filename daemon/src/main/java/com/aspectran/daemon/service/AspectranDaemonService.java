@@ -168,12 +168,12 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
     }
 
     /**
-     * Returns a new instance of {@code DaemonService}.
+     * Returns a new instance of {@code AspectranDaemonService}.
      *
      * @param rootConfigFile the root configuration file
-     * @return the instance of {@code DaemonService}
+     * @return the instance of {@code AspectranDaemonService}
      */
-    public static DaemonService create(String rootConfigFile) {
+    public static AspectranDaemonService create(String rootConfigFile) {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootConfigFile(rootConfigFile);
         return create(aspectranConfig);

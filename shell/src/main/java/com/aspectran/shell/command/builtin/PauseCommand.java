@@ -30,7 +30,7 @@ public class PauseCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "pause";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public PauseCommand(CommandRegistry registry) {
         super(registry);

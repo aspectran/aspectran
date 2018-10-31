@@ -36,7 +36,7 @@ public class HelpCommand extends AbstractCommand {
 
     private String newLine = System.getProperty("line.separator");
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public HelpCommand(CommandRegistry registry) {
         super(registry);

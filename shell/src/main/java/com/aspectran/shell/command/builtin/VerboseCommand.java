@@ -35,7 +35,7 @@ public class VerboseCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "verbose";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public VerboseCommand(CommandRegistry registry) {
         super(registry);

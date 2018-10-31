@@ -33,7 +33,7 @@ public class TransletCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "translet";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public TransletCommand(CommandRegistry registry) {
         super(registry);

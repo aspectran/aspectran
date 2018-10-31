@@ -30,7 +30,7 @@ public class RestartCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "restart";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public RestartCommand(CommandRegistry registry) {
         super(registry);

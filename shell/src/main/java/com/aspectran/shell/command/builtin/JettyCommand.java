@@ -34,7 +34,7 @@ public class JettyCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "jetty";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public JettyCommand(CommandRegistry registry) {
         super(registry);

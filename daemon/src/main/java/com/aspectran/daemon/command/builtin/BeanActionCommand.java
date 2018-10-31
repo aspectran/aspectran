@@ -32,7 +32,7 @@ public class BeanActionCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "beanAction";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public BeanActionCommand(CommandRegistry registry) {
         super(registry);

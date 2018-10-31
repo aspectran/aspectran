@@ -23,6 +23,7 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandPoller;
 import com.aspectran.daemon.command.polling.FileCommandPoller;
 import com.aspectran.daemon.service.AspectranDaemonService;
+import com.aspectran.daemon.service.DaemonService;
 
 import java.io.File;
 
@@ -56,7 +57,7 @@ public class AbstractDaemon implements Daemon, Runnable {
     }
 
     @Override
-    public AspectranDaemonService getService() {
+    public DaemonService getService() {
         return service;
     }
 

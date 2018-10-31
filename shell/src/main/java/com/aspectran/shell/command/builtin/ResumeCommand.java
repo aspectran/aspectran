@@ -30,7 +30,7 @@ public class ResumeCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "resume";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public ResumeCommand(CommandRegistry registry) {
         super(registry);

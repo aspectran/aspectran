@@ -25,7 +25,7 @@ public class RestartCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "restart";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public RestartCommand(CommandRegistry registry) {
         super(registry);
@@ -33,7 +33,7 @@ public class RestartCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        getCommandRegistry().getDaemon().getService().restart();
+        getCommandRegistry().getDaemon().getService().getServiceController().restart();
         return null;
     }
 

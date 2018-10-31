@@ -30,7 +30,7 @@ public class ClearCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "clear";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public ClearCommand(CommandRegistry registry) {
         super(registry);

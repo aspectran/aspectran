@@ -34,7 +34,7 @@ public class TemplateCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "template";
 
-    private CommandDescriptor descriptor = new CommandDescriptor();
+    private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public TemplateCommand(CommandRegistry registry) {
         super(registry);
