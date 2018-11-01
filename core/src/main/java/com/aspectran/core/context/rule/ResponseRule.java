@@ -34,8 +34,6 @@ import java.nio.charset.Charset;
  */
 public class ResponseRule implements ResponseRuleApplicable, Replicable<ResponseRule> {
 
-    public static final String CONTENT_ENCODING_SETTING_NAME = "contentEncoding";
-
     private String name;
 
     /**

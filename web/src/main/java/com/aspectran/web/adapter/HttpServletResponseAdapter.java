@@ -22,11 +22,8 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.web.activity.response.GZipServletResponseWrapper;
-import com.aspectran.web.support.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,8 +49,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     private final Activity activity;
 
-    private volatile HttpServletResponse response;
-
     /**
      * Instantiates a new HttpServletResponseAdapter.
      *
@@ -65,99 +60,86 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         this.activity = activity;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public HttpServletResponse getAdaptee() {
-        if (response == null) {
-            if (!activity.isIncluded() && isGzipAccepted()) {
-                response = new GZipServletResponseWrapper(super.getAdaptee(), () -> {
-                    ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
-                    // indicate to the client that the servlet varies it's
-                    // output depending on the "Accept-Encoding" header
-                    ((HttpServletResponse)super.getAdaptee()).setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
-                });
-            } else {
-                response = super.getAdaptee();
-            }
-        }
-        return response;
-    }
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public HttpServletResponse getAdaptee() {
+//        return super.getAdaptee();
+//    }
 
     @Override
     public String getHeader(String name) {
-        return getAdaptee().getHeader(name);
+        return ((HttpServletResponse)getAdaptee()).getHeader(name);
     }
 
     @Override
     public Collection<String> getHeaders(String name) {
-        return getAdaptee().getHeaders(name);
+        return ((HttpServletResponse)getAdaptee()).getHeaders(name);
     }
 
     @Override
     public Collection<String> getHeaderNames() {
-        return getAdaptee().getHeaderNames();
+        return ((HttpServletResponse)getAdaptee()).getHeaderNames();
     }
 
     @Override
     public boolean containsHeader(String name) {
-        return getAdaptee().containsHeader(name);
+        return ((HttpServletResponse)getAdaptee()).containsHeader(name);
     }
 
     @Override
     public void setHeader(String name, String value) {
-        getAdaptee().setHeader(name, value);
+        ((HttpServletResponse)getAdaptee()).setHeader(name, value);
     }
 
     @Override
     public void addHeader(String name, String value) {
-        getAdaptee().addHeader(name, value);
+        ((HttpServletResponse)getAdaptee()).addHeader(name, value);
     }
 
     @Override
     public String getEncoding() {
-        return getAdaptee().getCharacterEncoding();
+        return ((HttpServletResponse)getAdaptee()).getCharacterEncoding();
     }
 
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
-        getAdaptee().setCharacterEncoding(encoding);
+        ((HttpServletResponse)getAdaptee()).setCharacterEncoding(encoding);
     }
 
     @Override
     public String getContentType() {
-        return getAdaptee().getContentType();
+        return ((HttpServletResponse)getAdaptee()).getContentType();
     }
 
     @Override
     public void setContentType(String contentType) {
-        getAdaptee().setContentType(contentType);
+        ((HttpServletResponse)getAdaptee()).setContentType(contentType);
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
         precommit();
-        return getAdaptee().getOutputStream();
+        return ((HttpServletResponse)getAdaptee()).getOutputStream();
     }
 
     @Override
     public Writer getWriter() throws IOException {
         precommit();
-        return getAdaptee().getWriter();
+        return ((HttpServletResponse)getAdaptee()).getWriter();
     }
 
     @Override
     public void flush() throws IOException {
-        getAdaptee().flushBuffer();
+        ((HttpServletResponse)getAdaptee()).flushBuffer();
     }
 
     @Override
     public void redirect(String path) throws IOException {
-        getAdaptee().sendRedirect(path);
+        ((HttpServletResponse)getAdaptee()).sendRedirect(path);
     }
 
     @Override
     public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
-        String encoding = getAdaptee().getCharacterEncoding();
         String path = redirectResponseRule.getPath(activity);
         int questionPos = -1;
 
@@ -194,7 +176,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                         sb.append(name).append(EQUAL_CHAR);
                     }
                     if (stringValue != null) {
-                        stringValue = URLEncoder.encode(stringValue, encoding);
+                        stringValue = URLEncoder.encode(stringValue, getEncoding());
                         sb.append(stringValue);
                     }
                 }
@@ -208,12 +190,12 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public int getStatus() {
-        return getAdaptee().getStatus();
+        return ((HttpServletResponse)getAdaptee()).getStatus();
     }
 
     @Override
     public void setStatus(int status) {
-        getAdaptee().setStatus(status);
+        ((HttpServletResponse)getAdaptee()).setStatus(status);
     }
 
     private void precommit() {
@@ -224,17 +206,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                 response.commit(activity);
             }
         }
-    }
-
-    private boolean isGzipAccepted() {
-        String contentEncoding = activity.getSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-        if (contentEncoding != null) {
-            String acceptEncoding = activity.getRequestAdapter().getHeader(HttpHeaders.ACCEPT_ENCODING);
-            if (acceptEncoding != null) {
-                return acceptEncoding.contains(contentEncoding);
-            }
-        }
-        return false;
     }
 
 }
