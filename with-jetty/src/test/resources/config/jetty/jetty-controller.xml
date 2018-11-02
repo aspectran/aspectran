@@ -3,7 +3,7 @@
 <aspectran>
 
     <description>
-        A collection of commands for controlling the Jetty Server.
+        A collection of commands for controlling the Embedded Jetty Server.
     </description>
 
     <translet name="jetty">

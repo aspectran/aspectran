@@ -41,6 +41,7 @@ public class JettyCommand extends AbstractCommand {
 
         addOption(new Option("status", "Displays a brief status report"));
         addOption(new Option("start", "Start the Jetty Server"));
+        addOption(new Option("restart", "Restart the Jetty Server"));
         addOption(new Option("stop", "Stops the Jetty Server"));
     }
 
@@ -64,6 +65,16 @@ public class JettyCommand extends AbstractCommand {
                 return null;
             }
             try {
+                jettyServer.start();
+                printStatus(jettyServer);
+            } catch (BindException e) {
+                getConsole().writeLine("Jetty Server Error - Port already in use");
+            }
+        } else if (options.hasOption("restart")) {
+            try {
+                if (jettyServer.isRunning()) {
+                    jettyServer.stop();
+                }
                 jettyServer.start();
                 printStatus(jettyServer);
             } catch (BindException e) {

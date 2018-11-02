@@ -19,7 +19,7 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.jline.console.JLineConsole;
-import com.aspectran.shell.service.AspectranShellService;
+import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
 
@@ -32,22 +32,24 @@ public class AspectranDemoTest {
 
     public static void main(String[] args) {
         int exitStatus = 0;
-
+        ShellService service = null;
         try {
             File current = ResourceUtils.getResourceAsFile("");
             File root = new File(current, "../../app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
 
             Console console = new JLineConsole(root.getCanonicalPath());
-            AspectranShellService service = AspectranShellService.create(aspectranConfigFile, console);
-            service.start();
+            service = ShellService.run(aspectranConfigFile, console);
             ShellCommander commander = new ShellCommander(service);
             commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
+        } finally {
+            if (service != null) {
+                service.release();
+            }
         }
-
         System.exit(exitStatus);
     }
 

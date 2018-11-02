@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
         "http://aspectran.github.io/dtd/aspectran-5.dtd">
 <aspectran>
@@ -9,10 +8,17 @@
 
     <environment>
         <properties>
-            <item name="jetty.startup" value="true" valueType="boolean"/>
-            <item name="jetty.server.port" value="8088" valueType="int"/>
-            <item name="jetty.server.minThreads" value="5" valueType="int"/>
-            <item name="jetty.server.maxThreads" value="10" valueType="int"/>
+            <item name="jetty.startup" value="false" valueType="boolean"/>
+            <item name="jetty.server.port" value="8099" valueType="int"/>
+            <item name="jetty.server.minThreads" value="1" valueType="int"/>
+            <item name="jetty.server.maxThreads" value="5" valueType="int"/>
+            <item name="jetty.session.dataStoreDir" value="#{basePath}/temp/sessions"/>
+            <item name="jetty.gzip.minGzipSize" value="2048" valueType="int"/>
+            <item name="jetty.gzip.inflateBufferSize" value="0" valueType="int"/>
+            <item name="jetty.gzip.deflaterPoolCapacity" value="-1" valueType="int"/>
+            <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
+            <item name="jetty.gzip.includedMethodList" value="GET"/>
+            <item name="jetty.gzip.excludedMethodList" value=""/>
         </properties>
     </environment>
 
@@ -30,7 +36,7 @@
                 <value><call bean="jetty.connector"/></value>
             </item>
             <item name="handler">
-                <call bean="jetty.handler"/>
+                <call bean="jetty.mainHandler"/>
             </item>
         </properties>
     </bean>
@@ -53,13 +59,32 @@
         </properties>
     </bean>
 
-    <bean id="jetty.handler" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
+    <bean id="jetty.mainHandler" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
+        <properties>
+            <item name="handlers" type="array">
+                <value><call bean="jetty.gzipHandler"/></value>
+                <!--<value><call bean="jetty.requestLog"/></value>-->
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
+        <properties>
+            <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
+            <item name="inflateBufferSize" valueType="int">%{jetty.gzip.inflateBufferSize}</item>
+            <item name="deflaterPoolCapacity" valueType="int">%{jetty.gzip.deflaterPoolCapacity}</item>
+            <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
+            <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
+            <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
+            <item name="handler"><call bean="jetty.handlerCollection"/></item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
         <properties>
             <item name="handlers" type="array">
                 <value><call bean="jetty.contexts"/></value>
-                <value><call bean="jetty.resourceHandler"/></value>
                 <value><call bean="jetty.defaultHandler"/></value>
-                <!--<value><call bean="jetty.requestLog"/></value>-->
             </item>
         </properties>
     </bean>
@@ -77,11 +102,24 @@
             <item name="contextPath" value="/"/>
             <item name="war" value="#{basePath}/webapps/root"/>
             <item name="persistTempDirectory" value="true" valueType="boolean"/>
-            <item name="defaultsDescriptor" value="#{basePath}/config/jetty/webdefault.xml"/>
+            <item name="defaultsDescriptor" value="config/jetty/webdefault.xml"/>
+            <item name="sessionHandler"><call bean="jetty.sessionHandler"/></item>
         </properties>
     </bean>
 
-    <bean id="jetty.resourceHandler" class="org.eclipse.jetty.server.handler.ResourceHandler" scope="prototype"/>
+    <bean id="jetty.sessionHandler" class="com.aspectran.with.jetty.JettySessionHandler" scope="prototype">
+        <properties>
+            <item name="sessionDataStore"><call bean="jetty.sessionDataStoreFactory"/></item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.sessionDataStoreFactory" class="com.aspectran.with.jetty.JettyFileSessionDataStoreFactory" scope="prototype">
+        <properties>
+            <item name="storeDir">%{jetty.session.dataStoreDir}</item>
+            <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
+            <item name="deleteOnExit" valueType="boolean">false</item>
+        </properties>
+    </bean>
 
     <bean id="jetty.defaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler" scope="prototype"/>
 

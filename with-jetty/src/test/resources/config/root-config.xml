@@ -66,8 +66,8 @@
         </settings>
     </aspect>
 
-    <append resource="config/jetty-config.xml"/>
-    <append resource="config/jetty-controller.xml"/>
+    <append resource="config/jetty/jetty-config.xml"/>
+    <append resource="config/jetty/jetty-controller.xml"/>
 
     <translet name="/hello">
         <transform type="transform/text">
