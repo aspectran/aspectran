@@ -60,12 +60,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         this.activity = activity;
     }
 
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public HttpServletResponse getAdaptee() {
-//        return super.getAdaptee();
-//    }
-
     @Override
     public String getHeader(String name) {
         return ((HttpServletResponse)getAdaptee()).getHeader(name);
