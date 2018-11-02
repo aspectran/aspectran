@@ -29,7 +29,7 @@ import java.io.File;
 public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactory
         implements InitializableBean, DisposableBean {
 
-    private String sessionDataStoreDir;
+    private String storeDir;
 
     private boolean deleteOnExit;
 
@@ -37,12 +37,8 @@ public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactor
         super();
     }
 
-    public String getSessionDataStoreDir() {
-        return sessionDataStoreDir;
-    }
-
-    public void setSessionDataStoreDir(String sessionDataStoreDir) {
-        this.sessionDataStoreDir = sessionDataStoreDir;
+    public void setStoreDir(String storeDir) {
+        this.storeDir = storeDir;
     }
 
     public boolean isDeleteOnExit() {
@@ -53,27 +49,27 @@ public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactor
         this.deleteOnExit = deleteOnExit;
     }
 
-    private File resolveSessionDataStoreDir() {
-        File storeDir;
-        if (StringUtils.hasLength(sessionDataStoreDir)) {
-            storeDir = new File(sessionDataStoreDir);
+    private File resolveStoreDir() {
+        File dir;
+        if (StringUtils.hasLength(storeDir)) {
+            dir = new File(storeDir);
         } else {
             File baseDir = new File(System.getProperty("java.io.tmpdir"));
-            storeDir = new File(baseDir, "jetty-sessions");
+            dir = new File(baseDir, "jetty-sessions");
         }
-        storeDir.mkdirs();
+        dir.mkdirs();
         if (deleteOnExit) {
-            storeDir.deleteOnExit();
+            dir.deleteOnExit();
         }
-        return storeDir;
+        return dir;
     }
 
     @Override
     public void initialize() throws Exception {
         try {
-            setStoreDir(resolveSessionDataStoreDir());
+            setStoreDir(resolveStoreDir());
         } catch (Exception e) {
-            throw new AspectranCheckedException("Failed to initialize FileSessionHandler", e);
+            throw new AspectranCheckedException("Failed to initialize JettyFileSessionDataStoreFactory", e);
         }
     }
 
