@@ -5,7 +5,7 @@
     <parent>
         <artifactId>aspectran</artifactId>
         <groupId>com.aspectran</groupId>
-        <version>5.6.3-SNAPSHOT</version>
+        <version>5.6.3</version>
     </parent>
 
     <artifactId>aspectran-all</artifactId>
