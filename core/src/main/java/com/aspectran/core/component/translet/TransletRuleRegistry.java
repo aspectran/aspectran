@@ -134,6 +134,12 @@ public class TransletRuleRegistry extends AbstractComponent {
             default:
                 transletRule = lookupEtcTransletRule(transletName, requestMethod);
         }
+        if (transletRule == null && requestMethod != MethodType.GET) {
+            transletRule = transletRuleMap.get(transletName);
+            if (transletRule == null) {
+                transletRule = lookupTransletRule(wildGetTransletRuleSet, transletName);
+            }
+        }
         return transletRule;
     }
 
