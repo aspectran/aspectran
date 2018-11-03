@@ -113,11 +113,10 @@
         </properties>
     </bean>
 
-    <bean id="jetty.sessionDataStoreFactory" class="com.aspectran.with.jetty.JettyFileSessionDataStoreFactory" scope="prototype">
+    <bean id="jetty.sessionDataStoreFactory" class="org.eclipse.jetty.server.session.FileSessionDataStoreFactory" scope="prototype">
         <properties>
-            <item name="storeDir">%{jetty.session.dataStoreDir}</item>
+            <item name="storeDir" valueType="file">%{jetty.session.dataStoreDir}</item>
             <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
-            <item name="deleteOnExit" valueType="boolean">false</item>
         </properties>
     </bean>
 

@@ -20,7 +20,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.session.SessionDataStoreFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 /**
@@ -33,8 +32,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     private static final Log log = LogFactory.getLog(JettyServer.class);
 
     private boolean autoStart;
-
-    private SessionDataStoreFactory sessionDataStoreFactory;
 
     public JettyServer() {
         super();
@@ -52,14 +49,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         this.autoStart = autoStart;
     }
 
-    public SessionDataStoreFactory getSessionDataStoreFactory() {
-        return sessionDataStoreFactory;
-    }
-
-    public void setSessionDataStoreFactory(SessionDataStoreFactory sessionDataStoreFactory) {
-        this.sessionDataStoreFactory = sessionDataStoreFactory;
-    }
-
     public void setSystemProperty(String key, String value) {
         System.setProperty(key, value);
     }
@@ -67,9 +56,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     @Override
     public void initialize() throws Exception {
         synchronized (this) {
-            if (sessionDataStoreFactory != null) {
-                addBean(sessionDataStoreFactory);
-            }
             if (autoStart) {
                 start();
             }
@@ -81,9 +67,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         synchronized (this) {
             try {
                 stop();
-                if (sessionDataStoreFactory instanceof DisposableBean) {
-                    ((DisposableBean)sessionDataStoreFactory).destroy();
-                }
             } catch (Exception e) {
                 log.error("JettyServer shutdown failed", e);
             }
