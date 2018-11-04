@@ -41,6 +41,8 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 
     private final PebbleEngine pebbleEngine;
 
+    private String contentType;
+
     private String templateNamePrefix;
 
     private String templateNameSuffix;
@@ -48,6 +50,16 @@ public class PebbleViewDispatcher implements ViewDispatcher {
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
         this.pebbleEngine = pebbleEngine;
     }
+
+    @Override
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     /**
      * Sets the prefix for the template name.
      *
