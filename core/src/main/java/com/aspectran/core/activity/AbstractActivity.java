@@ -163,8 +163,19 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public boolean isExceptionRaised() {
+        return (this.raisedException != null);
+    }
+
+    @Override
     public Throwable getRaisedException() {
         return raisedException;
+    }
+
+
+    @Override
+    public Throwable getRootCauseOfRaisedException() {
+        return ExceptionUtils.getRootCause(raisedException);
     }
 
     @Override
@@ -178,13 +189,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public boolean isExceptionRaised() {
-        return (this.raisedException != null);
-    }
-
-    @Override
-    public Throwable getRootCauseOfRaisedException() {
-        return ExceptionUtils.getRootCause(raisedException);
+    public void clearRaisedException() {
+        raisedException = null;
     }
 
     @Override

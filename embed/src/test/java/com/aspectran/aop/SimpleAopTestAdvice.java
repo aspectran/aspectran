@@ -40,6 +40,7 @@ public class SimpleAopTestAdvice {
 
     public void globalExceptionHandling(Translet translet) {
         System.out.println("===[SimpleAopTest]=== globalExceptionHandling");
+        translet.clearRaisedException();
     }
 
 }

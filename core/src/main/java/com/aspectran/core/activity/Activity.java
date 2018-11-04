@@ -177,6 +177,8 @@ public interface Activity extends BeanRegistry {
      */
     void setRaisedException(Throwable raisedException);
 
+    void clearRaisedException();
+
     /**
      * Register an aspect rule dynamically.
      *

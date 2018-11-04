@@ -217,7 +217,7 @@ public class CoreActivity extends AdviceActivity {
                 exception();
                 response();
 
-                if (!isResponseReserved()) {
+                if (isExceptionRaised()) {
                     throw getRootCauseOfRaisedException();
                 }
             }
@@ -271,6 +271,10 @@ public class CoreActivity extends AdviceActivity {
         }
         if (res != null) {
             res.commit(this);
+
+            if (isExceptionRaised()) {
+                clearRaisedException();
+            }
 
             if (res.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)res;

@@ -513,6 +513,8 @@ public interface Translet extends BeanRegistry, MessageSource {
      */
     Throwable getRootCauseOfRaisedException();
 
+    void clearRaisedException();
+
     /**
      * Return whether the given profile is active.
      * If active profiles are empty whether the profile should be active by default.

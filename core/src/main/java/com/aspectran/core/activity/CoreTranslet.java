@@ -361,6 +361,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public void clearRaisedException() {
+        activity.clearRaisedException();
+    }
+
+    @Override
     public Throwable getRootCauseOfRaisedException() {
         return activity.getRootCauseOfRaisedException();
     }
