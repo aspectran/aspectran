@@ -43,18 +43,11 @@ import java.util.Map;
 public interface Translet extends BeanRegistry, MessageSource {
 
     /**
-     * Returns the name of this {@code Translet}.
+     * Returns the request name for this {@code Translet}.
      *
-     * @return the translet name
+     * @return the request name
      */
-    String getName();
-
-    /**
-     * Returns a description of this {@code Translet}.
-     *
-     * @return a description of this {@code Translet}
-     */
-    String getDescription();
+    String getRequestName();
 
     /**
      * Gets the request http method.
@@ -62,6 +55,13 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @return the request method
      */
     MethodType getRequestMethod();
+
+    /**
+     * Returns a description of this {@code Translet}.
+     *
+     * @return a description of this {@code Translet}
+     */
+    String getDescription();
 
     /**
      * Returns the environment of the current activity context.
@@ -434,13 +434,6 @@ public interface Translet extends BeanRegistry, MessageSource {
     void transform(TransformRule transformRule);
 
     /**
-     * Dispatch to other resources as the given rule.
-     *
-     * @param dispatchResponseRule the dispatch response rule
-     */
-    void dispatch(DispatchResponseRule dispatchResponseRule);
-
-    /**
      * Dispatch to other resources as the given name.
      *
      * @param name the dispatch name
@@ -451,16 +444,30 @@ public interface Translet extends BeanRegistry, MessageSource {
      * Dispatch to other resources as the given name.
      *
      * @param name the dispatch name
-     * @param immediately whether to override the intended dispatch response rule
+     * @param dispatcherName the id or class name of the view dispatcher bean
      */
-    void dispatch(String name, boolean immediately);
+    void dispatch(String name, String dispatcherName);
 
     /**
-     * Redirect a client according to the given rule.
+     * Dispatch to other resources as the given rule.
      *
-     * @param redirectResponseRule the redirect response rule
+     * @param dispatchResponseRule the dispatch response rule
      */
-    void redirect(RedirectResponseRule redirectResponseRule);
+    void dispatch(DispatchResponseRule dispatchResponseRule);
+
+    /**
+     * Forward to the specified translet immediately.
+     *
+     * @param transletName the translet name of the target to be forwarded
+     */
+    void forward(String transletName);
+
+    /**
+     * Forward according to a given rule.
+     *
+     * @param forwardResponseRule the forward response rule
+     */
+    void forward(ForwardResponseRule forwardResponseRule);
 
     /**
      * Redirect a client to a new target resource.
@@ -471,16 +478,6 @@ public interface Translet extends BeanRegistry, MessageSource {
     void redirect(String path);
 
     /**
-     * Redirect a client to a new target resource.
-     * If {@code immediately} is true, create a new redirect response rule
-     * and override the intended redirect response rule.
-     *
-     * @param path the redirect path
-     * @param immediately whether to override the intended redirect response rule
-     */
-    void redirect(String path, boolean immediately);
-
-    /**
      * Redirect to the other target resource.
      *
      * @param path the redirect path
@@ -489,26 +486,11 @@ public interface Translet extends BeanRegistry, MessageSource {
     void redirect(String path, Map<String, String> parameters);
 
     /**
-     * Forward according to a given rule.
+     * Redirect a client according to the given rule.
      *
-     * @param forwardResponseRule the forward response rule
+     * @param redirectResponseRule the redirect response rule
      */
-    void forward(ForwardResponseRule forwardResponseRule);
-
-    /**
-     * Forward to the specified translet immediately.
-     *
-     * @param transletName the translet name of the target to be forwarded
-     */
-    void forward(String transletName);
-
-    /**
-     * Forward to the specified translet.
-     *
-     * @param transletName the translet name
-     * @param immediately whether forwarding immediately
-     */
-    void forward(String transletName, boolean immediately);
+    void redirect(RedirectResponseRule redirectResponseRule);
 
     /**
      * Returns whether the exception was thrown.
@@ -530,20 +512,6 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @return the innermost one of the chained (wrapped) exceptions
      */
     Throwable getRootCauseOfRaisedException();
-
-    /**
-     * Returns an interface class for the {@code Translet}.
-     *
-     * @return the interface class for the translet
-     */
-    Class<? extends Translet> getTransletInterfaceClass();
-
-    /**
-     * Returns an implementation class for the {@code Translet}.
-     *
-     * @return the implementation class for the translet
-     */
-    Class<? extends CoreTranslet> getTransletImplementationClass();
 
     /**
      * Return whether the given profile is active.

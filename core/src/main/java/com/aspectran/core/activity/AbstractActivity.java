@@ -170,10 +170,10 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void setRaisedException(Throwable raisedException) {
         if (this.raisedException == null) {
-            if (log.isDebugEnabled()) {
-                log.error("Raised exception: ", ExceptionUtils.getRootCause(raisedException));
-            }
             this.raisedException = raisedException;
+            if (log.isDebugEnabled()) {
+                log.error("Raised exception: ", getRootCauseOfRaisedException());
+            }
         }
     }
 

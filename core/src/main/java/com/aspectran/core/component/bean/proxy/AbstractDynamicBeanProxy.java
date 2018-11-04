@@ -113,7 +113,7 @@ public abstract class AbstractDynamicBeanProxy {
         }
 
         AspectAdviceRuleRegistry registry = postRegister.getAspectAdviceRuleRegistry();
-        if (!dynamicAspectRuleList.isEmpty() || (registry != null && registry.getAspectRuleCount() > 0)) {
+        if (!dynamicAspectRuleList.isEmpty() || registry != null) {
             RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
             holder.setAspectAdviceRuleRegistry(registry);
             if (!dynamicAspectRuleList.isEmpty()) {

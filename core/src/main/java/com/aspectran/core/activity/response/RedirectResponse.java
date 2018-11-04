@@ -30,9 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class RedirectResponse implements Response {
 
-    private final Log log = LogFactory.getLog(RedirectResponse.class);
-
-    private final boolean debugEnabled = log.isDebugEnabled();
+    private static final Log log = LogFactory.getLog(RedirectResponse.class);
 
     private final RedirectResponseRule redirectResponseRule;
 
@@ -55,7 +53,7 @@ public class RedirectResponse implements Response {
             return;
         }
 
-        if (debugEnabled) {
+        if (log.isDebugEnabled()) {
             log.debug("response " + redirectResponseRule);
         }
 
@@ -86,6 +84,11 @@ public class RedirectResponse implements Response {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String getContentType(Activity activity) {
+        return getContentType();
     }
 
     @Override

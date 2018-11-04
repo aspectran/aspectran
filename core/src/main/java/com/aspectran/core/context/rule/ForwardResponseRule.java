@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -33,6 +34,8 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
     private String contentType;
 
     private String transletName;
+
+    private MethodType requestMethod;
 
     private ItemRuleMap attributeItemRuleMap;
 
@@ -72,6 +75,14 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
      */
     public void setTransletName(String transletName) {
         this.transletName = transletName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
     }
 
     /**
@@ -154,6 +165,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("responseType", RESPONSE_TYPE);
         tsb.append("translet", transletName);
+        tsb.append("method", requestMethod);
         tsb.append("contentType", contentType);
         tsb.append("defaultResponse", defaultResponse);
         return tsb.toString();
@@ -168,15 +180,24 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
      * @return an instance of ForwardResponseRule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse)
+    public static ForwardResponseRule newInstance(String contentType, String transletName, String method, Boolean defaultResponse)
             throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'forward' element requires a 'translet' attribute");
         }
 
+        MethodType requestMethod = null;
+        if (method != null) {
+            requestMethod = MethodType.resolve(method);
+            if (requestMethod == null) {
+                throw new IllegalRuleException("No request method type for '" + method + "'");
+            }
+        }
+
         ForwardResponseRule frr = new ForwardResponseRule();
         frr.setContentType(contentType);
         frr.setTransletName(transletName);
+        frr.setRequestMethod(requestMethod);
         frr.setDefaultResponse(defaultResponse);
         return frr;
     }

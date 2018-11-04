@@ -591,7 +591,7 @@ public class RuleToParamsConverter {
     public static DispatchParameters toDispatchParameters(DispatchResponseRule dispatchResponseRule) {
         DispatchParameters dispatchParameters = new DispatchParameters();
         dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchResponseRule.getName());
-        dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchResponseRule.getDispatcher());
+        dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchResponseRule.getDispatcherName());
         dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchResponseRule.getContentType());
         dispatchParameters.putValueNonNull(DispatchParameters.encoding, dispatchResponseRule.getEncoding());
         dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());

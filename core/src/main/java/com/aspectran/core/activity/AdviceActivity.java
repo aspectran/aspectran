@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -72,7 +73,8 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
-    protected void prepareAspectAdviceRule(TransletRule transletRule) {
+    protected void prepareAspectAdviceRule(TransletRule transletRule, boolean merge) {
+        AspectAdviceRuleRegistry aarr;
         if (transletRule.hasPathVariable()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
@@ -89,9 +91,15 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                 }
             }
-            this.aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
+            aarr = postRegister.getAspectAdviceRuleRegistry();
         } else {
-            this.aspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
+            aarr = transletRule.replicateAspectAdviceRuleRegistry();
+        }
+
+        if (merge && aarr != null && this.aspectAdviceRuleRegistry != null) {
+            this.aspectAdviceRuleRegistry.merge(aarr);
+        } else {
+            this.aspectAdviceRuleRegistry = aarr;
         }
     }
 
@@ -194,7 +202,8 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     private boolean isAcceptable(AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
-            if (getRequestMethod() == null || !getRequestMethod().containsTo(aspectRule.getMethods())) {
+            MethodType requestMethod = getTranslet().getRequestMethod();
+            if (requestMethod == null || !requestMethod.containsTo(aspectRule.getMethods())) {
                 return false;
             }
         }
@@ -365,10 +374,6 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     protected void handleException(ExceptionRule exceptionRule) {
-        if (log.isDebugEnabled()) {
-            log.debug("Handling the Exception Raised: " + getRootCauseOfRaisedException());
-        }
-
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
         if (exceptionThrownRule != null) {
             Executable action = exceptionThrownRule.getExecutableAction();

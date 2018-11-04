@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DispatchResponse implements Response {
 
-    private final Log log = LogFactory.getLog(DispatchResponse.class);
+    private final static Log log = LogFactory.getLog(DispatchResponse.class);
 
     private final static Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
@@ -73,13 +73,27 @@ public class DispatchResponse implements Response {
     }
 
     @Override
+    public ResponseType getResponseType() {
+        return DispatchResponseRule.RESPONSE_TYPE;
+    }
+
+    @Override
     public String getContentType() {
         return dispatchResponseRule.getContentType();
     }
 
     @Override
-    public ResponseType getResponseType() {
-        return DispatchResponseRule.RESPONSE_TYPE;
+    public String getContentType(Activity activity) {
+        if (dispatchResponseRule.getContentType() != null) {
+            return dispatchResponseRule.getContentType();
+        } else {
+            try {
+                ViewDispatcher viewDispatcher = getViewDispatcher(activity);
+                return viewDispatcher.getContentType();
+            } catch (ViewDispatcherException e) {
+                throw new DispatchResponseException(dispatchResponseRule, e);
+            }
+        }
     }
 
     @Override
@@ -100,10 +114,14 @@ public class DispatchResponse implements Response {
      * @throws ViewDispatcherException if ViewDispatcher can not be determined
      */
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
+        if (dispatchResponseRule.getViewDispatcher() != null) {
+            return dispatchResponseRule.getViewDispatcher();
+        }
+
         try {
             String dispatcherName;
-            if (dispatchResponseRule.getDispatcher() != null) {
-                dispatcherName = dispatchResponseRule.getDispatcher();
+            if (dispatchResponseRule.getDispatcherName() != null) {
+                dispatcherName = dispatchResponseRule.getDispatcherName();
             } else {
                 dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
                 if (dispatcherName == null) {

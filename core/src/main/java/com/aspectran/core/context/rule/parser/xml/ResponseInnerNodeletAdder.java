@@ -181,11 +181,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
             String transletName = attrs.get("translet");
+            String method = attrs.get("method");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
             transletName = assistant.applyTransletNamePattern(transletName);
 
-            ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);
+            ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, method, defaultResponse);
             parser.pushObject(frr);
 
             ActionList actionList = new ActionList();

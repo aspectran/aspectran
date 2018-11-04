@@ -82,16 +82,6 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public MethodType getRequestMethod() {
-        return null;
-    }
-
-    @Override
-    public String getTransletName() {
-        return null;
-    }
-
-    @Override
     public Translet getTranslet() {
         return null;
     }

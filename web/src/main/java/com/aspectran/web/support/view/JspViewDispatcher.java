@@ -46,9 +46,20 @@ public class JspViewDispatcher implements ViewDispatcher {
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
+    private String contentType;
+
     private String prefix;
 
     private String suffix;
+
+    @Override
+    public String getContentType() {
+        return (contentType != null ? contentType : "text/html");
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
     /**
      * Sets the prefix for the template name.
@@ -161,6 +172,7 @@ public class JspViewDispatcher implements ViewDispatcher {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", super.toString());
+        tsb.append("defaultContentType", contentType);
         tsb.append("prefix", prefix);
         tsb.append("suffix", suffix);
         return tsb.toString();

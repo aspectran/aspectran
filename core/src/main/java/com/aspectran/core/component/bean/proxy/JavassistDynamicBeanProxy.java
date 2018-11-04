@@ -56,7 +56,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
         }
 
         Activity activity = context.getCurrentActivity();
-        String transletName = activity.getTransletName();
+        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : null);
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
@@ -80,6 +80,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                 }
 
                 Object result = proceed.invoke(self, args);
+
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
                         if (!isSameBean(beanRule, aspectAdviceRule)) {
@@ -87,6 +88,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                         }
                     }
                 }
+
                 return result;
             } finally {
                 if (aarr.getFinallyAdviceRuleList() != null) {

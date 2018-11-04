@@ -27,6 +27,8 @@ public interface ViewDispatcher {
 
     String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 
+    String getContentType();
+
     /**
      * Dispatch to other resources as the given rule.
      *

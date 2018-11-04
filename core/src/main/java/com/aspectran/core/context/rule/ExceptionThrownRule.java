@@ -41,7 +41,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     private String[] exceptionTypes;
 
-    private ResponseMap responseMap = new ResponseMap();
+    private ResponseMap responseMap;
 
     private Response defaultResponse;
 
@@ -68,7 +68,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     public Response getResponse(String contentType) {
-        if (contentType != null) {
+        if (contentType != null && responseMap != null) {
             Response response = responseMap.get(contentType);
             if (response != null) {
                 return response;
@@ -85,19 +85,17 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public ResponseMap getResponseMap() {
         return responseMap;
     }
-
-    /**
-     * Sets the response map.
-     *
-     * @param responseMap the new response map
-     */
-    public void setResponseMap(ResponseMap responseMap) {
-        this.responseMap = responseMap;
+    
+    private ResponseMap touchResponseMap() {
+        if (responseMap == null) {
+            responseMap = new ResponseMap();
+        }
+        return responseMap;
     }
 
     public Response getDefaultResponse() {
-        if (defaultResponse == null && responseMap.size() == 1) {
-            return responseMap.getFirst();
+        if (defaultResponse == null && touchResponseMap().size() == 1) {
+            return touchResponseMap().getFirst();
         } else {
             return defaultResponse;
         }
@@ -111,7 +109,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public Response applyResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.createTransformResponse(transformRule);
         if (transformRule.getContentType() != null) {
-            responseMap.put(transformRule.getContentType(), response);
+            touchResponseMap().put(transformRule.getContentType(), response);
         }
         if (transformRule.isDefaultResponse()) {
             defaultResponse = response;
@@ -126,7 +124,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
         Response response = new DispatchResponse(dispatchResponseRule);
         if (dispatchResponseRule.getContentType() != null) {
-            responseMap.put(dispatchResponseRule.getContentType(), response);
+            touchResponseMap().put(dispatchResponseRule.getContentType(), response);
         }
         if (dispatchResponseRule.isDefaultResponse()) {
             defaultResponse = response;
@@ -141,7 +139,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
         Response response = new RedirectResponse(redirectResponseRule);
         if (redirectResponseRule.getContentType() != null) {
-            responseMap.put(redirectResponseRule.getContentType(), response);
+            touchResponseMap().put(redirectResponseRule.getContentType(), response);
         }
         if (redirectResponseRule.isDefaultResponse()) {
             defaultResponse = response;
@@ -156,7 +154,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
         Response response = new ForwardResponse(forwardResponseRule);
         if (forwardResponseRule.getContentType() != null) {
-            responseMap.put(forwardResponseRule.getContentType(), response);
+            touchResponseMap().put(forwardResponseRule.getContentType(), response);
         }
         if (forwardResponseRule.isDefaultResponse()) {
             defaultResponse = response;

@@ -714,13 +714,13 @@ public class ParamsToRuleConverter {
 
     private DispatchResponseRule convertAsDispatchResponseRule(DispatchParameters dispatchParameters) throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
-        String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
+        String dispatcherName = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
         String encoding = dispatchParameters.getString(DispatchParameters.encoding);
         List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
-        DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
+        DispatchResponseRule drr = DispatchResponseRule.newInstance(name, dispatcherName, contentType, encoding, defaultResponse);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
             for (ActionParameters actionParameters : actionParametersList) {
@@ -775,13 +775,14 @@ public class ParamsToRuleConverter {
     private ForwardResponseRule convertAsForwardResponseRule(ForwardParameters forwardParameters) throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
+        String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
         ItemHolderParameters attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
         List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
         Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 
         translet = assistant.applyTransletNamePattern(translet);
 
-        ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
+        ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, translet, method, defaultResponse);
         if (attributeItemHolderParametersList != null) {
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributeItemHolderParametersList);
             frr.setAttributeItemRuleMap(attributeItemRuleMap);

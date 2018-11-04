@@ -59,7 +59,7 @@ public class CustomerAction {
 
         int id = repository.insertCustomer(customer);
 
-        String resourceUri = translet.getName() + "/" + id;
+        String resourceUri = translet.getRequestName() + "/" + id;
         HttpStatusSetter.created(translet, resourceUri);
 
         return customer;

@@ -226,7 +226,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("responseType", RESPONSE_TYPE);
-        tsb.append("transformType", transformType);
+        tsb.appendForce("transformType", transformType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("defaultResponse", defaultResponse);

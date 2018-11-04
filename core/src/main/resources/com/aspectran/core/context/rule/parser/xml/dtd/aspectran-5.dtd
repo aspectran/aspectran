@@ -241,6 +241,7 @@
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED
+  method      CDATA #IMPLIED
   default     (true | false) #IMPLIED
 >
 

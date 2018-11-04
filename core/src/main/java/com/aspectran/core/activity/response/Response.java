@@ -50,6 +50,8 @@ public interface Response extends Replicable<Response> {
      */
     String getContentType();
 
+    String getContentType(Activity activity);
+
     /**
      * Gets the action list.
      *

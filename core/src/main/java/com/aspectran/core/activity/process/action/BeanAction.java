@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
@@ -205,7 +206,7 @@ public class BeanAction extends AbstractAction {
                 argIndex = 1;
                 argsTypes = new Class<?>[argSize + argIndex];
                 argsObjects = new Object[argsTypes.length];
-                argsTypes[0] = activity.getTranslet().getTransletInterfaceClass();
+                argsTypes[0] = Translet.class;
                 argsObjects[0] = activity.getTranslet();
             } else {
                 argIndex = 0;
@@ -220,7 +221,7 @@ public class BeanAction extends AbstractAction {
                 argIndex++;
             }
         } else if (requiresTranslet) {
-            argsTypes = new Class<?>[] { activity.getTranslet().getTransletInterfaceClass() };
+            argsTypes = new Class<?>[] { Translet.class };
             argsObjects = new Object[] { activity.getTranslet() };
         }
 

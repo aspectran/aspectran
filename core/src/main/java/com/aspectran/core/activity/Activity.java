@@ -105,20 +105,6 @@ public interface Activity extends BeanRegistry {
     void terminate(String cause);
 
     /**
-     * Returns the request method.
-     *
-     * @return the request method
-     */
-    MethodType getRequestMethod();
-
-    /**
-     * Returns the name of the current translet.
-     *
-     * @return the translet name
-     */
-    String getTransletName();
-
-    /**
      * Returns an instance of the current translet.
      *
      * @return an instance of the current translet

@@ -20,7 +20,6 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -30,12 +29,11 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.core.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -46,7 +44,7 @@ import java.util.Map;
  *
  * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.</p>
  */
-public class CoreTranslet implements Translet {
+public class CoreTranslet extends AbstractTranslet {
 
     private final CoreActivity activity;
 
@@ -57,25 +55,17 @@ public class CoreTranslet implements Translet {
     /**
      * Instantiates a new CoreTranslet.
      *
+     * @param transletRule the translet rule
      * @param activity the current Activity
      */
-    public CoreTranslet(CoreActivity activity) {
+    public CoreTranslet(TransletRule transletRule, CoreActivity activity) {
+        super(transletRule);
         this.activity = activity;
-    }
-
-    @Override
-    public String getName() {
-        return activity.getTransletName();
     }
 
     @Override
     public String getDescription() {
         return activity.getTransletRule().getDescription();
-    }
-
-    @Override
-    public MethodType getRequestMethod() {
-        return activity.getRequestMethod();
     }
 
     @Override
@@ -307,65 +297,43 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
+    public void dispatch(String name) {
+        dispatch(name, null);
+    }
+
+    @Override
+    public void dispatch(String name, String dispatcherName) {
+        DispatchResponseRule drr = new DispatchResponseRule();
+        drr.setName(name, null);
+        drr.setDispatcherName(dispatcherName);
+        dispatch(drr);
+    }
+
+    @Override
     public void dispatch(DispatchResponseRule dispatchResponseRule) {
         Response res = new DispatchResponse(dispatchResponseRule);
         response(res);
     }
 
     @Override
-    public void dispatch(String name) {
-        dispatch(name, false);
+    public void forward(String transletName) {
+        ForwardResponseRule frr = new ForwardResponseRule();
+        frr.setTransletName(transletName);
+        forward(frr);
     }
 
     @Override
-    public void dispatch(String name, boolean immediately) {
-        if (!immediately && activity.getDeclaredResponse() != null) {
-            Response res = activity.getDeclaredResponse();
-            if (res.getResponseType() == ResponseType.DISPATCH) {
-                Response r = res.replicate();
-                DispatchResponseRule drr = ((DispatchResponse)r).getDispatchResponseRule();
-                drr.setName(name);
-                dispatch(drr);
-                return;
-            }
+    public void forward(ForwardResponseRule forwardResponseRule) {
+        if (forwardResponseRule.getTransletName() == null) {
+            forwardResponseRule.setTransletName(StringUtils.EMPTY);
         }
-        try {
-            DispatchResponseRule drr = DispatchResponseRule.newInstance(name);
-            dispatch(drr);
-        } catch (IllegalRuleException e) {
-            throw new ResponseException("Failed to dispatch for [" + name + "]", e);
-        }
-    }
-
-    @Override
-    public void redirect(RedirectResponseRule redirectResponseRule) {
-        Response res = new RedirectResponse(redirectResponseRule);
+        Response res = new ForwardResponse(forwardResponseRule);
         response(res);
     }
 
     @Override
     public void redirect(String path) {
-        redirect(path, false);
-    }
-
-    @Override
-    public void redirect(String path, boolean immediately) {
-        if (!immediately && activity.getDeclaredResponse() != null) {
-            Response res = activity.getDeclaredResponse();
-            if (res.getResponseType() == ResponseType.REDIRECT) {
-                Response r = res.replicate();
-                RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
-                rrr.setPath(path);
-                redirect(rrr);
-                return;
-            }
-        }
-        try {
-            RedirectResponseRule rrr = RedirectResponseRule.newInstance(path);
-            redirect(rrr);
-        } catch (IllegalRuleException e) {
-            throw new ResponseException("Failed to redirect to [" + path + "]", e);
-        }
+        redirect(path, null);
     }
 
     @Override
@@ -377,34 +345,9 @@ public class CoreTranslet implements Translet {
     }
 
     @Override
-    public void forward(ForwardResponseRule forwardResponseRule) {
-        Response res = new ForwardResponse(forwardResponseRule);
+    public void redirect(RedirectResponseRule redirectResponseRule) {
+        Response res = new RedirectResponse(redirectResponseRule);
         response(res);
-    }
-
-    @Override
-    public void forward(String transletName) {
-        forward(transletName, false);
-    }
-
-    @Override
-    public void forward(String transletName, boolean immediately) {
-        if (!immediately && activity.getDeclaredResponse() != null) {
-            Response res = activity.getDeclaredResponse();
-            if (res.getResponseType() == ResponseType.FORWARD) {
-                Response fr = res.replicate();
-                ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();
-                frr.setTransletName(transletName);
-                forward(frr);
-                return;
-            }
-        }
-        try {
-            ForwardResponseRule frr = ForwardResponseRule.newInstance(transletName);
-            forward(frr);
-        } catch (IllegalRuleException e) {
-            throw new ResponseException("Failed to forward to [" + transletName + "]", e);
-        }
     }
 
     @Override
@@ -450,16 +393,6 @@ public class CoreTranslet implements Translet {
     @Override
     public <T> T getFinallyAdviceResult(String aspectId) {
         return activity.getFinallyAdviceResult(aspectId);
-    }
-
-    @Override
-    public Class<? extends Translet> getTransletInterfaceClass() {
-        return activity.getTransletInterfaceClass();
-    }
-
-    @Override
-    public Class<? extends CoreTranslet> getTransletImplementationClass() {
-        return activity.getTransletImplementationClass();
     }
 
     @Override

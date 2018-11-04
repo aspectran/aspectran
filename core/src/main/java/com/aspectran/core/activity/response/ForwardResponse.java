@@ -34,9 +34,7 @@ import java.util.Map;
  */
 public class ForwardResponse implements Response {
 
-    private final Log log = LogFactory.getLog(ForwardResponse.class);
-
-    private final boolean debugEnabled = log.isDebugEnabled();
+    private static final Log log = LogFactory.getLog(ForwardResponse.class);
 
     private final ForwardResponseRule forwardResponseRule;
 
@@ -56,7 +54,7 @@ public class ForwardResponse implements Response {
             return;
         }
 
-        if (debugEnabled) {
+        if (log.isDebugEnabled()) {
             log.debug("response " + forwardResponseRule);
         }
 
@@ -79,6 +77,11 @@ public class ForwardResponse implements Response {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String getContentType(Activity activity) {
+        return getContentType();
     }
 
     @Override

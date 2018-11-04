@@ -24,6 +24,7 @@ public class ForwardParameters extends AbstractParameters {
     public static final ParameterDefinition action;
     public static final ParameterDefinition contentType;
     public static final ParameterDefinition translet;
+    public static final ParameterDefinition method;
     public static final ParameterDefinition defaultResponse;
     public static final ParameterDefinition attributes;
 
@@ -33,6 +34,7 @@ public class ForwardParameters extends AbstractParameters {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
         contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
         translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+        method = new ParameterDefinition("method", ParameterValueType.STRING);
         defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
 
@@ -40,6 +42,7 @@ public class ForwardParameters extends AbstractParameters {
                 action,
                 contentType,
                 translet,
+                method,
                 defaultResponse,
                 attributes
         };
