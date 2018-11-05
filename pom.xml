@@ -3,7 +3,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>5.7.0-SNAPSHOT</version>
+    <version>5.7.0</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -45,7 +45,7 @@
         <url>https://github.com/aspectran/aspectran</url>
         <connection>scm:git:ssh://git@github.com/aspectran/aspectran.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v5.7.0</tag>
     </scm>
     <issueManagement>
         <system>GitHub Issue Management</system>
@@ -95,7 +95,7 @@
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
         <!-- Default to html4 for JDK 8 but html5 on jdk9+ -->
-        <javadoc.additionalOptions/>
+        <javadoc.additionalOptions />
 
         <!-- Animal Sniffer Signature -->
         <signature.group>org.codehaus.mojo.signature</signature.group>
