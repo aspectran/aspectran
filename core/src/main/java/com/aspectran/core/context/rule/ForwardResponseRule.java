@@ -176,6 +176,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
      *
      * @param contentType the content type
      * @param transletName the translet name
+     * @param method the request method
      * @param defaultResponse whether the default response
      * @return an instance of ForwardResponseRule
      * @throws IllegalRuleException if an illegal rule is found
