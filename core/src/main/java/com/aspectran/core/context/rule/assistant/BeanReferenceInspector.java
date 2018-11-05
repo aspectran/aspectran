@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class BeanReferenceInspector {
 
-    private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
+    private static final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 
     private final Map<RefererKey, Set<RefererInfo>> refererInfoMap = new LinkedHashMap<>();
 

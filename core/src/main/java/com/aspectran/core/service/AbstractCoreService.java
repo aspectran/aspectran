@@ -44,7 +44,7 @@ import static com.aspectran.core.context.config.AspectranConfig.BASE_DIR_PROPERT
  */
 public abstract class AbstractCoreService extends AbstractServiceController implements CoreService {
 
-    private final static Log log = LogFactory.getLog(AbstractCoreService.class);
+    private static final Log log = LogFactory.getLog(AbstractCoreService.class);
 
     private final CoreService rootService;
 

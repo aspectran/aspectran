@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class BeanAction extends AbstractAction {
 
-    private final Log log = LogFactory.getLog(BeanAction.class);
+    private static final Log log = LogFactory.getLog(BeanAction.class);
 
     private final BeanActionRule beanActionRule;
 

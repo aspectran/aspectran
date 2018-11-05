@@ -47,23 +47,21 @@ import java.util.Map;
  */
 public class NodeletParser {
 
-    private final Log log = LogFactory.getLog(NodeletParser.class);
+    private static final Log log = LogFactory.getLog(NodeletParser.class);
 
-    private final static Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>());
+    private final Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>(0));
 
-    private final Map<String, Nodelet> nodeletMap = new HashMap<>();
+    private final Map<String, Nodelet> nodeletMap = new HashMap<>(2048);
 
-    private final Map<String, NodeEndlet> endletMap = new HashMap<>();
+    private final Map<String, NodeEndlet> endletMap = new HashMap<>(1024);
 
-    private boolean validating;
+    private final ArrayStack objectStack = new ArrayStack();    private boolean validating;
 
     private EntityResolver entityResolver;
 
     private NodeTracker nodeTracker;
 
     private String xpath;
-
-    private ArrayStack objectStack = new ArrayStack();
 
     public void setValidating(boolean validating) {
         this.validating = validating;

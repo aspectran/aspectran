@@ -40,7 +40,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class AspectranActivityContext extends AbstractComponent implements ActivityContext {
 
-    private final Log log = LogFactory.getLog(AspectranActivityContext.class);
+    private static final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 

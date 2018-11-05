@@ -44,7 +44,7 @@ public interface Component {
     /**
      * Returns whether or not the component has been initialized.
      *
-     * @return ㅑf true, the component has been initialized
+     * @return if true, the component has been initialized
      */
     boolean isInitialized();
 

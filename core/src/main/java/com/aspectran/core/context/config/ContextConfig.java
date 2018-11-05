@@ -33,7 +33,7 @@ public class ContextConfig extends AbstractParameters {
     public static final ParameterDefinition singleton;
     public static final ParameterDefinition parameters;
 
-    private final static ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
     static {
         base = new ParameterDefinition("base", ParameterValueType.STRING);

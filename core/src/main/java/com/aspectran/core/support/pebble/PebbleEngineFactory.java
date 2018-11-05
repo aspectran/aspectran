@@ -41,7 +41,7 @@ import java.util.Locale;
  */
 public class PebbleEngineFactory implements EnvironmentAware {
 
-    private final Log log = LogFactory.getLog(PebbleEngineFactory.class);
+    private static final Log log = LogFactory.getLog(PebbleEngineFactory.class);
 
     private Environment environment;
 

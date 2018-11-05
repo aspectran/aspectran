@@ -26,7 +26,7 @@ import com.aspectran.core.util.thread.ShutdownHooks;
  */
 public class AspectranCoreService extends AbstractCoreService {
 
-    private final static Log log = LogFactory.getLog(AspectranCoreService.class);
+    private static final Log log = LogFactory.getLog(AspectranCoreService.class);
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;

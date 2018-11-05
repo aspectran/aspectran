@@ -27,7 +27,7 @@ import com.aspectran.core.util.logging.LogFactory;
 @Description("Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.")
 public class HelloAdvice {
 
-    private final Log log = LogFactory.getLog(HelloAdvice.class);
+    private static final Log log = LogFactory.getLog(HelloAdvice.class);
 
     public String welcome(Translet translet) {
         String msg = "Welcome to Aspectran!";

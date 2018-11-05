@@ -19,11 +19,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Abstract Component.
+ *
  * <p>Created: 2017. 7. 4.</p>
  */
 public abstract class AbstractComponent implements Component {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(AbstractComponent.class);
 
     private final Object lock = new Object();
 

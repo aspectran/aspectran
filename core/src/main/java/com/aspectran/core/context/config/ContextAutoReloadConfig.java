@@ -37,7 +37,7 @@ public class ContextAutoReloadConfig extends AbstractParameters {
      */
     public static final ParameterDefinition startup;
 
-    private final static ParameterDefinition[] parameterDefinitions;
+    private static final ParameterDefinition[] parameterDefinitions;
 
     static {
         reloadMode = new ParameterDefinition("reloadMode", ParameterValueType.STRING);

@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
-    private final static Log log = LogFactory.getLog(HybridActivityContextBuilder.class);
+    private static final Log log = LogFactory.getLog(HybridActivityContextBuilder.class);
 
     private final AbstractCoreService coreService;
 

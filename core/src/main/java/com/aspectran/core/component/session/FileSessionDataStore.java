@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FileSessionDataStore extends AbstractSessionDataStore {
 
-    private final static Log log = LogFactory.getLog(FileSessionDataStore.class);
+    private static final Log log = LogFactory.getLog(FileSessionDataStore.class);
 
     private final Map<String, String> sessionFileMap = new ConcurrentHashMap<>();
 

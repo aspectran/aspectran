@@ -34,9 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DispatchResponse implements Response {
 
-    private final static Log log = LogFactory.getLog(DispatchResponse.class);
+    private static final Log log = LogFactory.getLog(DispatchResponse.class);
 
-    private final static Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
+    private static final Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
     private final DispatchResponseRule dispatchResponseRule;
 

@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class AspectAdviceRulePreRegister {
 
-    private final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);
+    private static final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);
 
     private AspectRuleRegistry aspectRuleRegistry;
 

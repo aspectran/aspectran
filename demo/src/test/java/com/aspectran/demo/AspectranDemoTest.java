@@ -31,8 +31,9 @@ import java.io.File;
 public class AspectranDemoTest {
 
     public static void main(String[] args) {
-        int exitStatus = 0;
         ShellService service = null;
+        int exitStatus = 0;
+
         try {
             File current = ResourceUtils.getResourceAsFile("");
             File root = new File(current, "../../app");
@@ -50,6 +51,7 @@ public class AspectranDemoTest {
                 service.release();
             }
         }
+
         System.exit(exitStatus);
     }
 

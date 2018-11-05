@@ -102,7 +102,8 @@ public class AspectAdviceResult {
         } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
             putFinallyAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
         } else {
-            throw new UnsupportedOperationException("Unrecognized aspect advice type: " + aspectAdviceRule.getAspectAdviceType());
+            throw new UnsupportedOperationException("Unrecognized aspect advice type: " +
+                    aspectAdviceRule.getAspectAdviceType());
         }
     }
 

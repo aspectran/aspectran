@@ -28,7 +28,7 @@ import java.util.Timer;
  */
 public class ActivityContextReloadingTimer {
 
-    private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
+    private static final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
     private final ServiceController serviceController;
 

@@ -50,6 +50,12 @@ public interface Response extends Replicable<Response> {
      */
     String getContentType();
 
+    /**
+     * Gets the content type.
+     *
+     * @param activity the current activity
+     * @return the content type
+     */
     String getContentType(Activity activity);
 
     /**

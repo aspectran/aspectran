@@ -61,7 +61,7 @@ import java.util.List;
 
 public abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
 
     private final ApplicationAdapter applicationAdapter;
 

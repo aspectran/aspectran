@@ -41,6 +41,7 @@ public class JLineAspectranShell {
 
         ShellService shellService = null;
         int exitStatus = 0;
+
         try {
             shellService = ShellService.run(aspectranConfigFile, new JLineConsole());
             ShellCommander commander = new ShellCommander(shellService);
@@ -52,8 +53,8 @@ public class JLineAspectranShell {
             if (shellService != null) {
                 shellService.release();
             }
-
         }
+
         System.exit(exitStatus);
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.sample;
+package com.aspectran.shell.jline.sample;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

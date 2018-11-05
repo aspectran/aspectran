@@ -1,5 +1,5 @@
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
+        "http://aspectran.github.io/dtd/aspectran-5.dtd">
 
 <aspectran>
 
@@ -15,13 +15,13 @@
         |
     </description>
 
-    <bean id="sampleAction" class="com.aspectran.shell.sample.SampleAction">
+    <bean id="sampleAction" class="com.aspectran.shell.jline.sample.SampleAction">
         <description>
             Defines one sample action that contains the helloWorld method.
         </description>
     </bean>
 
-    <bean id="sampleAdvice" class="com.aspectran.shell.sample.SampleAdvice">
+    <bean id="sampleAdvice" class="com.aspectran.shell.jline.sample.SampleAdvice">
         <description>
             Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
             singleton 스코프를 가지는 Bean을 정의합니다.

@@ -26,7 +26,7 @@ import com.aspectran.core.util.logging.LogFactory;
 @Description("Defines a Hello Action Bean that contains the helloWorld() method.")
 public class HelloAction {
 
-    private final Log log = LogFactory.getLog(HelloAction.class);
+    private static final Log log = LogFactory.getLog(HelloAction.class);
 
     public String helloWorld() {
         String msg = "Hello, World!";

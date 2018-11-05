@@ -36,7 +36,7 @@ import java.io.Writer;
  */
 public class JobActivityReport {
 
-    private final Log log = LogFactory.getLog(JobActivityReport.class);
+    private static final Log log = LogFactory.getLog(JobActivityReport.class);
 
     private final JobExecutionContext jobExecutionContext;
 

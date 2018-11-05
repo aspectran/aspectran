@@ -34,7 +34,7 @@ import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
 public class ActivityContextReloadingTimerTask extends TimerTask {
 
-    private final Log log = LogFactory.getLog(ActivityContextReloadingTimerTask.class);
+    private static final Log log = LogFactory.getLog(ActivityContextReloadingTimerTask.class);
 
     private final boolean debugEnabled = log.isDebugEnabled();
 

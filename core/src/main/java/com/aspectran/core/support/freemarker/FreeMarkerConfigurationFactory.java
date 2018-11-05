@@ -47,7 +47,7 @@ import java.util.Properties;
  */
 public class FreeMarkerConfigurationFactory implements EnvironmentAware {
 
-    private final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
+    private static final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 

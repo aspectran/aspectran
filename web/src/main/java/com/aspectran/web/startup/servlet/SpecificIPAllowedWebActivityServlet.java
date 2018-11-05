@@ -34,9 +34,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     /** @serial */
     private static final long serialVersionUID = -2369788867122156319L;
 
-    private final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
-
-    private boolean debugEnabled = log.isDebugEnabled();
+    private static final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
 
     private static final String DELIMITERS = " ,;\t\n\r\f";
 
@@ -68,7 +66,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String remoteAddr = req.getRemoteAddr();
         if (!isAllowedAddress(remoteAddr)) {
-            if (debugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug("Access Denied: " + remoteAddr);
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN);

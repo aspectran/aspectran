@@ -28,16 +28,21 @@ import java.io.File;
 public class JlineAspectranShellTest {
 
     public static void main(String[] args) {
+        ShellService service = null;
         int exitStatus = 0;
 
         try {
             File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
-            ShellService service = ShellService.run(aspectranConfigFile, new JLineConsole());
+            service = ShellService.run(aspectranConfigFile, new JLineConsole());
             ShellCommander commander = new ShellCommander(service);
             commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
             exitStatus = 1;
+        } finally {
+            if (service != null) {
+                service.release();
+            }
         }
 
         System.exit(exitStatus);
