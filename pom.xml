@@ -94,6 +94,8 @@
         <findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
+        <!-- Default to html4 for JDK 8 but html5 on jdk9+ -->
+        <javadoc.additionalOptions/>
 
         <!-- Animal Sniffer Signature -->
         <signature.group>org.codehaus.mojo.signature</signature.group>
@@ -354,7 +356,7 @@
                         <detectLinks>false</detectLinks>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <detectJavaApiLink>false</detectJavaApiLink>
-                        <additionalOptions>-html5</additionalOptions>
+                        <additionalOptions>${javadoc.additionalOptions}</additionalOptions>
                     </configuration>
                 </plugin>
 
@@ -676,6 +678,16 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>java9+</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.additionalOptions>-html5</javadoc.additionalOptions>
+            </properties>
         </profile>
 
         <profile>
