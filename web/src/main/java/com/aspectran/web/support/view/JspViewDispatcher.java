@@ -27,6 +27,8 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.web.activity.request.ActivityRequestWrapper;
+import com.aspectran.web.adapter.HttpServletRequestAdapter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -122,7 +124,7 @@ public class JspViewDispatcher implements ViewDispatcher {
                 setAttribute(requestAdapter, processResult);
             }
 
-            HttpServletRequest request = requestAdapter.getAdaptee();
+            HttpServletRequest request = new ActivityRequestWrapper((HttpServletRequestAdapter)requestAdapter);
             HttpServletResponse response = responseAdapter.getAdaptee();
 
             if (log.isDebugEnabled()) {
