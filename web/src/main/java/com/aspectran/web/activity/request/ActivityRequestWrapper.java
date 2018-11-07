@@ -15,8 +15,10 @@
  */
 package com.aspectran.web.activity.request;
 
+import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -25,12 +27,15 @@ import java.util.Map;
 
 public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
+    private final WebActivity activity;
+
     private final HttpServletRequestAdapter requestAdapter;
 
-    public ActivityRequestWrapper(HttpServletRequestAdapter requestAdapter) {
-        super(requestAdapter.getAdaptee());
+    public ActivityRequestWrapper(WebActivity activity, HttpServletRequest request) {
+        super(request);
 
-        this.requestAdapter = requestAdapter;
+        this.activity = activity;
+        this.requestAdapter = (HttpServletRequestAdapter)activity.getRequestAdapter();
     }
 
     @Override
@@ -70,7 +75,12 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Object getAttribute(String name) {
-        return requestAdapter.getAttribute(name);
+        Object value = requestAdapter.getAttribute(name);
+        if (value != null) {
+            return value;
+        } else {
+            return activity.getTranslet().getProcessResult(name);
+        }
     }
 
     @Override
