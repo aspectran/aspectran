@@ -57,9 +57,9 @@ public class WebActivity extends CoreActivity {
 
     private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
-    private HttpServletResponse response;
+    private final HttpServletResponse response;
 
     /**
      * Instantiates a new WebActivity.
@@ -111,12 +111,12 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            HttpServletRequest activityRequest = new ActivityRequestWrapper(this, request);
+            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(this, request);
 
-            SessionAdapter sessionAdapter = new HttpSessionAdapter(activityRequest, getActivityContext());
+            SessionAdapter sessionAdapter = new HttpSessionAdapter(requestWrapper, getActivityContext());
             setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new HttpServletRequestAdapter(activityRequest);
+            RequestAdapter requestAdapter = new HttpServletRequestAdapter(requestWrapper);
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);

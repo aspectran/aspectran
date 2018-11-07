@@ -37,8 +37,6 @@ import java.util.TimeZone;
  */
 public abstract class AbstractRequest {
 
-    private final boolean touchFirst;
-
     private MethodType requestMethod;
 
     private MultiValueMap<String, String> headers;
@@ -57,8 +55,7 @@ public abstract class AbstractRequest {
 
     private boolean maxLengthExceeded;
 
-    public AbstractRequest(boolean touchFirst) {
-        this.touchFirst = touchFirst;
+    public AbstractRequest() {
     }
 
     public MethodType getRequestMethod() {
@@ -81,11 +78,7 @@ public abstract class AbstractRequest {
      *         on this response
      */
     public String getHeader(String name) {
-        if (touchFirst) {
-            return touchHeaders().getFirst(name);
-        } else {
-            return (headers != null ? headers.getFirst(name) : null);
-        }
+        return getHeaderMap().getFirst(name);
     }
 
     /**
@@ -96,11 +89,7 @@ public abstract class AbstractRequest {
      *         of the response header with the given name
      */
     public Collection<String> getHeaders(String name) {
-        if (touchFirst) {
-            return touchHeaders().get(name);
-        } else {
-            return (headers != null ? headers.get(name) : null);
-        }
+        return getHeaderMap().get(name);
     }
 
     /**
@@ -110,11 +99,7 @@ public abstract class AbstractRequest {
      *         of the headers of this response
      */
     public Collection<String> getHeaderNames() {
-        if (touchFirst) {
-            return touchHeaders().keySet();
-        } else {
-            return (headers != null ? headers.keySet() : null);
-        }
+        return getHeaderMap().keySet();
     }
 
     /**
@@ -126,17 +111,8 @@ public abstract class AbstractRequest {
      *         has already been set; {@code false} otherwise
      */
     public boolean containsHeader(String name) {
-        if (touchFirst) {
-            List<String> values = touchHeaders().get(name);
-            return (values != null && !values.isEmpty());
-        } else {
-            if (headers != null) {
-                List<String> values = headers.get(name);
-                return (values != null && !values.isEmpty());
-            } else {
-                return false;
-            }
-        }
+        List<String> values = getHeaderMap().get(name);
+        return (values != null && !values.isEmpty());
     }
 
     /**
@@ -146,7 +122,7 @@ public abstract class AbstractRequest {
      * @param value the header value to set
      */
     public void setHeader(String name, String value) {
-        touchHeaders().set(name, value);
+        getHeaderMap().set(name, value);
     }
 
     /**
@@ -157,16 +133,7 @@ public abstract class AbstractRequest {
      * @param value the header value to be added
      */
     public void addHeader(String name, String value) {
-        touchHeaders().add(name, value);
-    }
-
-    /**
-     * Returns a map of the request headers that can be modified.
-     *
-     * @return an {@code MultiValueMap} object, must not be {@code null}
-     */
-    public MultiValueMap<String, String> getAllHeaders() {
-        return touchHeaders();
+        getHeaderMap().add(name, value);
     }
 
     /**
@@ -176,51 +143,39 @@ public abstract class AbstractRequest {
      *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
-    public MultiValueMap<String, String> touchHeaders() {
+    public MultiValueMap<String, String> getHeaderMap() {
         if (headers == null) {
             headers = new LinkedCaseInsensitiveMultiValueMap<>();
         }
         return headers;
     }
 
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(MultiValueMap<String, String> headers) {
+    public void setHeaderMap(MultiValueMap<String, String> headers) {
         this.headers = headers;
     }
 
+    public boolean hasHeaders() {
+        return (headers != null && !headers.isEmpty());
+    }
+
     public String getParameter(String name) {
-        if (touchFirst) {
-            return touchParameterMap().getParameter(name);
-        } else {
-            return (parameterMap != null ? parameterMap.getParameter(name) : null);
-        }
+        return getParameterMap().getParameter(name);
     }
 
     public String[] getParameterValues(String name) {
-        if (touchFirst) {
-            return touchParameterMap().getParameterValues(name);
-        } else {
-            return (parameterMap != null ? parameterMap.getParameterValues(name) : null);
-        }
+        return getParameterMap().getParameterValues(name);
     }
 
     public Collection<String> getParameterNames() {
-        if (touchFirst) {
-            return touchParameterMap().getParameterNames();
-        } else {
-            return (parameterMap != null ? parameterMap.getParameterNames() : null);
-        }
+        return getParameterMap().getParameterNames();
     }
 
     public void setParameter(String name, String value) {
-        touchParameterMap().setParameter(name, value);
+        getParameterMap().setParameter(name, value);
     }
 
     public void setParameter(String name, String[] values) {
-        touchParameterMap().put(name, values);
+        getParameterMap().put(name, values);
     }
 
     /**
@@ -229,35 +184,25 @@ public abstract class AbstractRequest {
      * @return an {@code Map<String, Object>} object, must not be {@code null}
      */
     public Map<String, Object> getAllParameters() {
-        return touchParameterMap().extractParameters();
+        return getParameterMap().extractParameters();
     }
 
     public void putAllParameters(ParameterMap parameterMap) {
-        touchParameterMap().putAll(parameterMap);
+        getParameterMap().putAll(parameterMap);
     }
 
     public void extractParameters(Map<String, Object> targetParameters) {
-        if (touchFirst) {
-            touchParameterMap().extractParameters(targetParameters);
-        } else {
-            if (parameterMap != null) {
-                parameterMap.extractParameters(targetParameters);
-            }
-        }
+        getParameterMap().extractParameters(targetParameters);
     }
 
     /**
      * Must be touch first, because it is lazy initialization.
      * @return the parameter map
      */
-    public ParameterMap touchParameterMap() {
+    public ParameterMap getParameterMap() {
         if (parameterMap == null) {
             parameterMap = new ParameterMap();
         }
-        return parameterMap;
-    }
-
-    public ParameterMap getParameterMap() {
         return parameterMap;
     }
 
@@ -265,71 +210,48 @@ public abstract class AbstractRequest {
         this.parameterMap = parameterMap;
     }
 
+    public boolean hasParameters() {
+        return (parameterMap != null && !parameterMap.isEmpty());
+    }
+
     public FileParameter getFileParameter(String name) {
-        if (touchFirst) {
-            return touchFileParameterMap().getFileParameter(name);
-        } else {
-            return (fileParameterMap != null ? fileParameterMap.getFileParameter(name) : null);
-        }
+        return getFileParameterMap().getFileParameter(name);
     }
 
     public FileParameter[] getFileParameterValues(String name) {
-        if (touchFirst) {
-            return touchFileParameterMap().getFileParameterValues(name);
-        } else {
-            return (fileParameterMap != null ? fileParameterMap.getFileParameterValues(name) : null);
-        }
-    }
-
-    public void removeFileParameter(String name) {
-        if (touchFirst) {
-            touchFileParameterMap().remove(name);
-        } else {
-            if (fileParameterMap != null) {
-                fileParameterMap.remove(name);
-            }
-        }
-    }
-
-    public void setFileParameter(String name, FileParameter fileParameter) {
-        touchFileParameterMap().setFileParameter(name, fileParameter);
-    }
-
-    public void setFileParameter(String name, FileParameter[] fileParameters) {
-        touchFileParameterMap().setFileParameter(name, fileParameters);
+        return getFileParameterMap().getFileParameterValues(name);
     }
 
     public Collection<String> getFileParameterNames() {
-        if (touchFirst) {
-            return touchFileParameterMap().keySet();
-        } else {
-            return (fileParameterMap != null ? fileParameterMap.keySet() : null);
-        }
+        return getFileParameterMap().keySet();
     }
 
-    /**
-     * Must be touch first, because it is lazy initialization.
-     *
-     * @return the file parameter map
-     */
-    public FileParameterMap touchFileParameterMap() {
+    public void setFileParameter(String name, FileParameter fileParameter) {
+        getFileParameterMap().setFileParameter(name, fileParameter);
+    }
+
+    public void setFileParameter(String name, FileParameter[] fileParameters) {
+        getFileParameterMap().setFileParameter(name, fileParameters);
+    }
+
+    public void removeFileParameter(String name) {
+        getFileParameterMap().remove(name);
+    }
+
+    public FileParameterMap getFileParameterMap() {
         if (fileParameterMap == null) {
             fileParameterMap = new FileParameterMap();
         }
         return fileParameterMap;
     }
 
-    public FileParameterMap getFileParameterMap() {
-        return fileParameterMap;
+    public boolean hasFileParameters() {
+        return (fileParameterMap != null && !fileParameterMap.isEmpty());
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        if (touchFirst) {
-            return (T) touchAttributes().get(name);
-        } else {
-            return (attributes != null ? (T)attributes.get(name) : null);
-        }
+        return (T)getAttributeMap().get(name);
     }
 
     public void setAttribute(String name, Object value) {
@@ -337,67 +259,42 @@ public abstract class AbstractRequest {
             // If the object passed in is null, the effect is the same as calling removeAttribute(java.lang.String).
             removeAttribute(name);
         } else {
-            touchAttributes().put(name, value);
+            getAttributeMap().put(name, value);
         }
     }
 
     public Collection<String> getAttributeNames() {
-        if (touchFirst) {
-            return touchAttributes().keySet();
-        } else {
-            return (attributes != null ? attributes.keySet() : null);
-        }
+        return getAttributeMap().keySet();
     }
 
     public void removeAttribute(String name) {
-        if (touchFirst) {
-            touchAttributes().remove(name);
-        } else {
-            if (attributes != null) {
-                attributes.remove(name);
-            }
-        }
-    }
-
-    public Map<String, Object> getAllAttributes() {
-        return touchAttributes();
+        getAttributeMap().remove(name);
     }
 
     public void putAllAttributes(Map<String, Object> attributes) {
-        touchAttributes().putAll(attributes);
+        getAttributeMap().putAll(attributes);
     }
 
     public void extractAttributes(Map<String, Object> targetAttributes) {
         if (targetAttributes == null) {
             throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
         }
-        if (touchFirst) {
-            targetAttributes.putAll(touchAttributes());
-        } else {
-            if (attributes != null) {
-                targetAttributes.putAll(attributes);
-            }
-        }
+        targetAttributes.putAll(getAttributeMap());
     }
 
-    /**
-     * Must be touch first, because it is lazy initialization.
-     *
-     * @return the attribute map
-     */
-    public Map<String, Object> touchAttributes() {
+    public Map<String, Object> getAttributeMap() {
         if (attributes == null) {
             attributes = new HashMap<>();
         }
         return attributes;
     }
 
-    public Map<String, Object> getAttributeMap() {
-        return attributes;
-    }
-
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributes = attributeMap;
+    }
+
+    public boolean hasAttributes() {
+        return (attributes != null && !attributes.isEmpty());
     }
 
     public String getEncoding() {

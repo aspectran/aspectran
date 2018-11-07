@@ -96,7 +96,7 @@ public class RequestAttributeMap implements Map<String, Object> {
     @Override
     public void putAll(Map<? extends String, ?> map) {
         if (map != null) {
-            for (Entry<? extends String, ? extends Object> entry : map.entrySet()) {
+            for (Entry<? extends String, ?> entry : map.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
         }

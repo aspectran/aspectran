@@ -66,13 +66,6 @@ public interface RequestAdapter {
     MethodType getRequestMethod();
 
     /**
-     * Returns a map of the request headers that can be modified.
-     *
-     * @return an {@code MultiValueMap} object, may be {@code null}
-     */
-    MultiValueMap<String, String> getAllHeaders();
-
-    /**
      * Returns the value of the response header with the given name.
      *
      * <p>If a response header with the given name exists and contains
@@ -130,6 +123,15 @@ public interface RequestAdapter {
     void addHeader(String name, String value);
 
     /**
+     * Returns a map of the request headers that can be modified.
+     *
+     * @return an {@code MultiValueMap} object, may be {@code null}
+     */
+    MultiValueMap<String, String> getHeaderMap();
+
+    boolean hasHeaders();
+
+    /**
      * Returns the value of a request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
      *
@@ -183,15 +185,6 @@ public interface RequestAdapter {
      */
     void setParameter(String name, String[] values);
 
-    /**
-     * Return an mutable Map of the request parameters,
-     * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
-     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
-     *
-     * @return the mutable parameter map
-     * @since 1.4.0
-     */
     Map<String, Object> getAllParameters();
 
     /**
@@ -209,6 +202,19 @@ public interface RequestAdapter {
      * @since 2.0.0
      */
     void extractParameters(Map<String, Object> targetParameters);
+
+    /**
+     * Return an mutable Map of the request parameters,
+     * with parameter names as map keys and parameter values as map values.
+     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
+     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
+     *
+     * @return the mutable parameter map
+     * @since 1.4.0
+     */
+    ParameterMap getParameterMap();
+
+    boolean hasParameters();
 
     /**
      * Returns a {@code FileParameter} object as a given request parameter name,
@@ -271,6 +277,8 @@ public interface RequestAdapter {
      */
     void removeFileParameter(String name);
 
+    boolean hasFileParameters();
+
     /**
      * Returns the value of the named attribute as a given type,
      * or {@code null} if no attribute of the given name exists.
@@ -308,14 +316,6 @@ public interface RequestAdapter {
     void removeAttribute(String name);
 
     /**
-     * Returns an immutable map of the attributes,
-     * with attribute names as map keys and attribute value as map value.
-     *
-     * @return an unmodifiable map of the attributes
-     */
-    Map<String, Object> getAllAttributes();
-
-    /**
      * Copies all of the mappings from the specified attributes.
      *
      * @param attributes the specified attributes
@@ -329,6 +329,16 @@ public interface RequestAdapter {
      * @since 2.0.0
      */
     void extractAttributes(Map<String, Object> targetAttributes);
+
+    /**
+     * Returns an mutable map of the attributes,
+     * with attribute names as map keys and attribute value as map value.
+     *
+     * @return an modifiable map of the attributes
+     */
+    Map<String, Object> getAttributeMap();
+
+    boolean hasAttributes();
 
     /**
      * Returns the name of the character encoding used in the body of this request.

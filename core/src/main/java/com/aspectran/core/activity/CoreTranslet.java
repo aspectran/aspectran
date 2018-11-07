@@ -266,16 +266,6 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public Map<String, Object> getAllAttributes() {
-        return getRequestAdapter().getAllAttributes();
-    }
-
-    @Override
-    public void extractAttributes(Map<String, Object> targetAttributes) {
-        getRequestAdapter().extractAttributes(targetAttributes);
-    }
-
-    @Override
     public Response getDeclaredResponse() {
         return activity.getDeclaredResponse();
     }

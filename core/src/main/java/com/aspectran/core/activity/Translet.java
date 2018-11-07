@@ -389,24 +389,6 @@ public interface Translet extends BeanRegistry, MessageSource {
     void removeAttribute(String name);
 
     /**
-     * Return a mutable {@code Map} of the request attributes,
-     * with attribute names as map keys and attribute value as map value.
-     *
-     * @return the attribute map
-     * @since 2.0.0
-     */
-    Map<String, Object> getAllAttributes();
-
-    /**
-     * Extracts all the attributes and fills in the specified map.
-     *
-     * @param attributes the attribute map
-     * @since 2.0.0
-     */
-    void extractAttributes(Map<String, Object> attributes);
-
-
-    /**
      * Returns the originally declared response.
      *
      * @return the declared response

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,22 +35,30 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
+    private final HttpServletRequest request;
+
+    private boolean touchHeaders;
+
+    private boolean touchParameters;
+
+    private boolean touchAttributes;
+
     /**
      * Instantiates a new HttpServletRequestAdapter.
      *
-     * @param request the HTTP request
+     * @param requestWrapper the activity request wrapper
      */
-    public HttpServletRequestAdapter(HttpServletRequest request) {
-        super(request, true);
+    public HttpServletRequestAdapter(ActivityRequestWrapper requestWrapper) {
+        super(requestWrapper);
+        this.request = requestWrapper.getRequest();
         setRequestMethod(MethodType.resolve(request.getMethod()));
     }
 
     @Override
-    public MultiValueMap<String, String> touchHeaders() {
-        MultiValueMap<String, String> headers = getHeaders();
-        if (headers == null) {
-            headers = super.touchHeaders();
-            HttpServletRequest request = ((HttpServletRequest)adaptee);
+    public MultiValueMap<String, String> getHeaderMap() {
+        if (!touchHeaders) {
+            touchHeaders = true;
+            MultiValueMap<String, String> headers = super.getHeaderMap();
             for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements(); ) {
                 String name = names.nextElement();
                 for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements(); ) {
@@ -57,40 +66,41 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
                     headers.add(name, value);
                 }
             }
+            return headers;
+        } else {
+            return super.getHeaderMap();
         }
-        return headers;
     }
 
     @Override
-    public ParameterMap touchParameterMap() {
-        ParameterMap parameterMap = getParameterMap();
-        if (parameterMap == null) {
-            parameterMap = super.touchParameterMap();
-            parameterMap.putAll(((HttpServletRequest)getAdaptee()).getParameterMap());
+    public ParameterMap getParameterMap() {
+        if (!touchParameters) {
+            touchParameters = true;
+            ParameterMap parameterMap = super.getParameterMap();
+            parameterMap.putAll(request.getParameterMap());
         }
-        return parameterMap;
+        return super.getParameterMap();
     }
 
     @Override
-    public Map<String, Object> touchAttributes() {
-        Map<String, Object> attributeMap = getAttributeMap();
-        if (attributeMap == null) {
-            attributeMap = new RequestAttributeMap((HttpServletRequest)adaptee);
-            setAttributeMap(attributeMap);
+    public Map<String, Object> getAttributeMap() {
+        if (!touchAttributes) {
+            touchAttributes = true;
+            setAttributeMap(new RequestAttributeMap(request));
         }
-        return attributeMap;
+        return super.getAttributeMap();
     }
 
     @Override
     public String getEncoding() {
-        return ((HttpServletRequest)adaptee).getCharacterEncoding();
+        return request.getCharacterEncoding();
     }
 
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         if (encoding != null) {
             super.setEncoding(encoding);
-            ((HttpServletRequest)adaptee).setCharacterEncoding(encoding);
+            request.setCharacterEncoding(encoding);
         }
     }
 
@@ -99,7 +109,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         if (super.getLocale() != null) {
             return super.getLocale();
         }
-        return ((HttpServletRequest)adaptee).getLocale();
+        return request.getLocale();
     }
 
 }

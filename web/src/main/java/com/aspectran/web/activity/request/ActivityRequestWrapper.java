@@ -29,53 +29,54 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     private final WebActivity activity;
 
-    private final HttpServletRequestAdapter requestAdapter;
-
     public ActivityRequestWrapper(WebActivity activity, HttpServletRequest request) {
         super(request);
-
         this.activity = activity;
-        this.requestAdapter = (HttpServletRequestAdapter)activity.getRequestAdapter();
+    }
+
+    @Override
+    public HttpServletRequest getRequest() {
+        return (HttpServletRequest)super.getRequest();
     }
 
     @Override
     public String getHeader(String name) {
-        return requestAdapter.getHeader(name);
+        return getRequestAdapter().getHeader(name);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return Collections.enumeration(requestAdapter.getHeaders(name));
+        return Collections.enumeration(getRequestAdapter().getHeaders(name));
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return Collections.enumeration(requestAdapter.getHeaderNames());
+        return Collections.enumeration(getRequestAdapter().getHeaderNames());
     }
 
     @Override
     public String getParameter(String name) {
-        return requestAdapter.getParameter(name);
+        return getRequestAdapter().getParameter(name);
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return requestAdapter.getParameterMap();
+        return getRequestAdapter().getParameterMap();
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return Collections.enumeration(requestAdapter.getParameterNames());
+        return Collections.enumeration(getRequestAdapter().getParameterNames());
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return requestAdapter.getParameterValues(name);
+        return getRequestAdapter().getParameterValues(name);
     }
 
     @Override
     public Object getAttribute(String name) {
-        Object value = requestAdapter.getAttribute(name);
+        Object value = getRequestAdapter().getAttribute(name);
         if (value != null) {
             return value;
         } else {
@@ -85,22 +86,26 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(requestAdapter.getAttributeNames());
+        return Collections.enumeration(getRequestAdapter().getAttributeNames());
     }
 
     @Override
     public void setAttribute(String name, Object o) {
-        requestAdapter.setAttribute(name, o);
+        getRequestAdapter().setAttribute(name, o);
     }
 
     @Override
     public void removeAttribute(String name) {
-        requestAdapter.removeAttribute(name);
+        getRequestAdapter().removeAttribute(name);
     }
 
     @Override
     public Locale getLocale() {
-        return requestAdapter.getLocale();
+        return getRequestAdapter().getLocale();
+    }
+
+    private HttpServletRequestAdapter getRequestAdapter() {
+        return (HttpServletRequestAdapter)activity.getRequestAdapter();
     }
 
 }

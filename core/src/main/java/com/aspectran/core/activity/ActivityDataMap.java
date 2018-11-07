@@ -35,7 +35,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
 
     protected final Activity activity;
 
-    protected RequestAdapter requestAdapter;
+    protected final RequestAdapter requestAdapter;
 
     /**
      * Instantiates a new ActivityDataMap.
