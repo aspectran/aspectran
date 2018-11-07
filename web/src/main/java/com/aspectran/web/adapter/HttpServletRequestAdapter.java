@@ -37,11 +37,11 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     private final HttpServletRequest request;
 
-    private boolean touchHeaders;
+    private boolean headersHeld;
 
-    private boolean touchParameters;
+    private boolean parametersHeld;
 
-    private boolean touchAttributes;
+    private boolean attributesHeld;
 
     /**
      * Instantiates a new HttpServletRequestAdapter.
@@ -51,41 +51,45 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     public HttpServletRequestAdapter(ActivityRequestWrapper requestWrapper) {
         super(requestWrapper);
         this.request = requestWrapper.getRequest();
-        setRequestMethod(MethodType.resolve(request.getMethod()));
+        setRequestMethod(MethodType.resolve(this.request.getMethod()));
     }
 
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
-        if (!touchHeaders) {
-            touchHeaders = true;
-            MultiValueMap<String, String> headers = super.getHeaderMap();
-            for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements(); ) {
-                String name = names.nextElement();
-                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements(); ) {
-                    String value = values.nextElement();
-                    headers.add(name, value);
+        if (!headersHeld) {
+            headersHeld = true;
+            Enumeration<String> headerNames = request.getHeaderNames();
+            if (headerNames.hasMoreElements()) {
+                MultiValueMap<String, String> headers = super.getHeaderMap();
+                for (Enumeration<String> names = headerNames; names.hasMoreElements(); ) {
+                    String name = names.nextElement();
+                    for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements(); ) {
+                        String value = values.nextElement();
+                        headers.add(name, value);
+                    }
                 }
+                return headers;
             }
-            return headers;
-        } else {
-            return super.getHeaderMap();
         }
+        return super.getHeaderMap();
     }
 
     @Override
     public ParameterMap getParameterMap() {
-        if (!touchParameters) {
-            touchParameters = true;
-            ParameterMap parameterMap = super.getParameterMap();
-            parameterMap.putAll(request.getParameterMap());
+        if (!parametersHeld) {
+            parametersHeld = true;
+            Map<String, String[]> parameters = request.getParameterMap();
+            if (!parameters.isEmpty()) {
+                super.getParameterMap().putAll(parameters);
+            }
         }
         return super.getParameterMap();
     }
 
     @Override
     public Map<String, Object> getAttributeMap() {
-        if (!touchAttributes) {
-            touchAttributes = true;
+        if (!attributesHeld) {
+            attributesHeld = true;
             setAttributeMap(new RequestAttributeMap(request));
         }
         return super.getAttributeMap();

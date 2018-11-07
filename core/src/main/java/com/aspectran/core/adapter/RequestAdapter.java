@@ -125,7 +125,7 @@ public interface RequestAdapter {
     /**
      * Returns a map of the request headers that can be modified.
      *
-     * @return an {@code MultiValueMap} object, may be {@code null}
+     * @return an {@code MultiValueMap<String, String>} object, may be {@code null}
      */
     MultiValueMap<String, String> getHeaderMap();
 
@@ -185,6 +185,11 @@ public interface RequestAdapter {
      */
     void setParameter(String name, String[] values);
 
+    /**
+     * Returns a map of the request parameters that can be modified.
+     *
+     * @return an {@code Map<String, Object>} object, must not be {@code null}
+     */
     Map<String, Object> getAllParameters();
 
     /**
@@ -214,6 +219,11 @@ public interface RequestAdapter {
      */
     ParameterMap getParameterMap();
 
+    /**
+     * Returns whether it has parameters.
+     *
+     * @return true if parameters exist, false otherwise
+     */
     boolean hasParameters();
 
     /**
@@ -277,6 +287,11 @@ public interface RequestAdapter {
      */
     void removeFileParameter(String name);
 
+    /**
+     * Returns whether it has file parameters.
+     *
+     * @return true if file parameters exist, false otherwise
+     */
     boolean hasFileParameters();
 
     /**
@@ -338,6 +353,11 @@ public interface RequestAdapter {
      */
     Map<String, Object> getAttributeMap();
 
+    /**
+     * Returns whether it has attributes.
+     *
+     * @return true if file attributes exist, false otherwise
+     */
     boolean hasAttributes();
 
     /**

@@ -139,7 +139,6 @@ public abstract class AbstractRequest {
     /**
      * Returns a map of the request headers that can be modified.
      * If not yet instantiated then create a new one.
-     * Must be touch first, because it is lazy initialization.
      *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
@@ -196,8 +195,10 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Must be touch first, because it is lazy initialization.
-     * @return the parameter map
+     * Returns a map of the request parameters that can be modified.
+     * If not yet instantiated then create a new one.
+     *
+     * @return an {@code ParameterMap} object, may not be {@code null}
      */
     public ParameterMap getParameterMap() {
         if (parameterMap == null) {
@@ -282,6 +283,12 @@ public abstract class AbstractRequest {
         targetAttributes.putAll(getAttributeMap());
     }
 
+    /**
+     * Returns a map of the request attributes that can be modified.
+     * If not yet instantiated then create a new one.
+     *
+     * @return an {@code Map<String, Object>} object, may not be {@code null}
+     */
     public Map<String, Object> getAttributeMap() {
         if (attributes == null) {
             attributes = new HashMap<>();

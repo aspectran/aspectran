@@ -25,6 +25,11 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Request Wrapper to access activity data.
+ *
+ * @since 5.7.1
+ */
 public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     private final WebActivity activity;
