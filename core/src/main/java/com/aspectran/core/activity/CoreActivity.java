@@ -340,6 +340,48 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
+     * Determines the request encoding.
+     *
+     * @return the request encoding
+     */
+    protected String resolveRequestEncoding() {
+        String encoding = getRequestRule().getEncoding();
+        if (encoding == null) {
+            encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+        }
+        return encoding;
+    }
+
+    /**
+     * Determines the response encoding.
+     *
+     * @return the response encoding
+     */
+    protected String resolveResponseEncoding() {
+        String encoding = getRequestRule().getEncoding();
+        if (encoding == null) {
+            encoding = resolveRequestEncoding();
+        }
+        return encoding;
+    }
+
+    /**
+     * Resolve the current locale.
+     *
+     * @return the current locale
+     */
+    protected LocaleResolver resolveLocale() {
+        LocaleResolver localeResolver = null;
+        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+        if (localeResolverBeanId != null) {
+            localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
+            localeResolver.resolveLocale(getTranslet());
+            localeResolver.resolveTimeZone(getTranslet());
+        }
+        return localeResolver;
+    }
+
+    /**
      * Parses the declared parameters and attributes.
      */
     protected void parseRequest() {
@@ -403,22 +445,6 @@ public class CoreActivity extends AdviceActivity {
             PathVariableMap pathVariableMap = PathVariableMap.newInstance(nameTokens, translet.getRequestName());
             pathVariableMap.apply(translet);
         }
-    }
-
-    /**
-     * Resolve the current locale.
-     *
-     * @return the current locale
-     */
-    protected LocaleResolver resolveLocale() {
-        LocaleResolver localeResolver = null;
-        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-        if (localeResolverBeanId != null) {
-            localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
-            localeResolver.resolveLocale(getTranslet());
-            localeResolver.resolveTimeZone(getTranslet());
-        }
-        return localeResolver;
     }
 
     @Override
@@ -515,6 +541,11 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    @Override
+    public <T extends Activity> T newActivity() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Create a new {@code CoreTranslet} instance.
      *
@@ -531,6 +562,21 @@ public class CoreActivity extends AdviceActivity {
         if (parentTranslet != null) {
             translet.setProcessResult(parentTranslet.getProcessResult());
         }
+    }
+
+    @Override
+    public Translet getTranslet() {
+        return translet;
+    }
+
+    @Override
+    public ProcessResult getProcessResult() {
+        return translet.getProcessResult();
+    }
+
+    @Override
+    public Object getProcessResult(String actionId) {
+        return translet.getProcessResult().getResultValue(actionId);
     }
 
     private TransletRule getTransletRule(String transletName, MethodType requestMethod) {
@@ -567,52 +613,6 @@ public class CoreActivity extends AdviceActivity {
     @Override
     public Response getDeclaredResponse() {
         return (getResponseRule() != null ? getResponseRule().getResponse() : null);
-    }
-
-    /**
-     * Determines the request encoding.
-     *
-     * @return the request encoding
-     */
-    protected String resolveRequestEncoding() {
-        String encoding = getRequestRule().getEncoding();
-        if (encoding == null) {
-            encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-        }
-        return encoding;
-    }
-
-    /**
-     * Determines the response encoding.
-     *
-     * @return the response encoding
-     */
-    protected String resolveResponseEncoding() {
-        String encoding = getRequestRule().getEncoding();
-        if (encoding == null) {
-            encoding = resolveRequestEncoding();
-        }
-        return encoding;
-    }
-
-    @Override
-    public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Translet getTranslet() {
-        return translet;
-    }
-
-    @Override
-    public ProcessResult getProcessResult() {
-        return translet.getProcessResult();
-    }
-
-    @Override
-    public Object getProcessResult(String actionId) {
-        return translet.getProcessResult().getResultValue(actionId);
     }
 
 }
