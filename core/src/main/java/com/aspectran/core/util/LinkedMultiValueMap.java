@@ -92,7 +92,9 @@ public class LinkedMultiValueMap<K, V> extends LinkedHashMap<K, List<V>> impleme
     @Override
     public void put(K key, V[] values) {
         List<V> list = new LinkedList<>();
-        Collections.addAll(list, values);
+        if (values != null) {
+            Collections.addAll(list, values);
+        }
         put(key, list);
     }
 

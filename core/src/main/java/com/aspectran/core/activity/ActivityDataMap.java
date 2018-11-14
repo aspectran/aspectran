@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -64,7 +65,11 @@ public class ActivityDataMap extends HashMap<String, Object> {
     private void prefillData() {
         if (requestAdapter != null) {
             requestAdapter.extractParameters(this);
-            requestAdapter.extractAttributes(this);
+
+            Collection<String> names = requestAdapter.getAttributeNames();
+            for (String name : names) {
+                put(name, requestAdapter.getAttribute(name));
+            }
         }
         if (activity.getProcessResult() != null) {
             for (ContentResult cr : activity.getProcessResult()) {
