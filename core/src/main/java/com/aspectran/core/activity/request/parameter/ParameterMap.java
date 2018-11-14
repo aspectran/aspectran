@@ -133,20 +133,20 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
         return extractParameters(refinedParameters);
     }
 
-    public Map<String, Object> extractParameters(Map<String, Object> targetParameters) {
-        if (targetParameters == null) {
-            throw new IllegalArgumentException("Argument 'targetParameters' must not be null");
+    public Map<String, Object> extractParameters(Map<String, Object> targetMap) {
+        if (targetMap == null) {
+            throw new IllegalArgumentException("Argument 'targetMap' must not be null");
         }
         for (Map.Entry<String, String[]> entry : this.entrySet()) {
             String name = entry.getKey();
             String[] values = entry.getValue();
             if (values.length == 1) {
-                targetParameters.put(name, values[0]);
+                targetMap.put(name, values[0]);
             } else {
-                targetParameters.put(name, values);
+                targetMap.put(name, values);
             }
         }
-        return targetParameters;
+        return targetMap;
     }
 
 }

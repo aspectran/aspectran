@@ -16,9 +16,8 @@
 package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -118,9 +117,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
 
             ProcessResult processResult = activity.getProcessResult();
-            if (processResult != null) {
-                setAttribute(requestAdapter, processResult);
-            }
+            DispatchResponse.fetchAttributes(requestAdapter, processResult);
 
             HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
@@ -138,28 +135,6 @@ public class JspViewDispatcher implements ViewDispatcher {
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch for JSP " +
                     dispatchResponseRule.toString(this, dispatchName), e);
-        }
-    }
-
-    /**
-     * Stores an attribute in request.
-     *
-     * @param requestAdapter the request adapter
-     * @param processResult the process result
-     */
-    private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
-        for (ContentResult contentResult : processResult) {
-            for (ActionResult actionResult : contentResult) {
-                Object actionResultValue = actionResult.getResultValue();
-                if (actionResultValue instanceof ProcessResult) {
-                    setAttribute(requestAdapter, (ProcessResult)actionResultValue);
-                } else {
-                    String actionId = actionResult.getActionId();
-                    if (actionId != null) {
-                        requestAdapter.setAttribute(actionId, actionResultValue);
-                    }
-                }
-            }
         }
     }
 

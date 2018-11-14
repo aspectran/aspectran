@@ -43,17 +43,12 @@ public class RequestAttributeMap implements Map<String, Object> {
 
     @Override
     public int size() {
-        Enumeration<String> names = request.getAttributeNames();
-        int count = 0;
-        while (names.hasMoreElements()) {
-            count++;
-        }
-        return count;
+        return Collections.list(request.getAttributeNames()).size();
     }
 
     @Override
     public boolean isEmpty() {
-        return (size() == 0);
+        return !request.getAttributeNames().hasMoreElements();
     }
 
     @Override
@@ -104,12 +99,7 @@ public class RequestAttributeMap implements Map<String, Object> {
 
     @Override
     public void clear() {
-        List<String> list = new ArrayList<>();
-        Enumeration<String> names = request.getAttributeNames();
-        while (names.hasMoreElements()) {
-            list.add(names.nextElement());
-        }
-        for (String name : list) {
+        for (String name : Collections.list(request.getAttributeNames())) {
             request.removeAttribute(name);
         }
     }

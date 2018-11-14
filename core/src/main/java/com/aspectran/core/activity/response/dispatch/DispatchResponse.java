@@ -17,7 +17,11 @@ package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -162,6 +166,30 @@ public class DispatchResponse implements Response {
     @Override
     public String toString() {
         return dispatchResponseRule.toString();
+    }
+
+    /**
+     * Stores an attribute in request.
+     *
+     * @param requestAdapter the request adapter
+     * @param processResult the process result
+     */
+    public static void fetchAttributes(RequestAdapter requestAdapter, ProcessResult processResult) {
+        if (processResult != null) {
+            for (ContentResult contentResult : processResult) {
+                for (ActionResult actionResult : contentResult) {
+                    Object actionResultValue = actionResult.getResultValue();
+                    if (actionResultValue instanceof ProcessResult) {
+                        fetchAttributes(requestAdapter, (ProcessResult)actionResultValue);
+                    } else {
+                        String actionId = actionResult.getActionId();
+                        if (actionId != null) {
+                            requestAdapter.setAttribute(actionId, actionResultValue);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

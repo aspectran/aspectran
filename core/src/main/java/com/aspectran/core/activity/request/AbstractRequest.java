@@ -190,8 +190,10 @@ public abstract class AbstractRequest {
         getParameterMap().putAll(parameterMap);
     }
 
-    public void extractParameters(Map<String, Object> targetParameters) {
-        getParameterMap().extractParameters(targetParameters);
+    public void extractParameters(Map<String, Object> targetMap) {
+        if (hasParameters()) {
+            getParameterMap().extractParameters(targetMap);
+        }
     }
 
     /**
@@ -276,11 +278,13 @@ public abstract class AbstractRequest {
         getAttributeMap().putAll(attributes);
     }
 
-    public void extractAttributes(Map<String, Object> targetAttributes) {
-        if (targetAttributes == null) {
-            throw new IllegalArgumentException("Argument 'targetAttributes' must not be null");
+    public void extractAttributes(Map<String, Object> targetMap) {
+        if (targetMap == null) {
+            throw new IllegalArgumentException("Argument 'targetMap' must not be null");
         }
-        targetAttributes.putAll(getAttributeMap());
+        if (hasAttributes()) {
+            targetMap.putAll(getAttributeMap());
+        }
     }
 
     /**
