@@ -167,7 +167,7 @@ public class TokenExpressionParser implements TokenEvaluator {
         if (tokensSet == null || tokensSet.isEmpty()) {
             return cast(getParameterAsSet(parameterName));
         }
-        Set<Object> valueSet = new HashSet<>(tokensSet.size());
+        Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensSet) {
             Object value = evaluate(parameterName, tokens);
             valueSet.add(value);

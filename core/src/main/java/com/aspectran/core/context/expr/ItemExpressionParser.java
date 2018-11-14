@@ -237,7 +237,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             return getParameterAsSet(parameterName, valueType);
         }
 
-        Set<Object> valueSet = new HashSet<>(tokensList.size());
+        Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
             if (value != null && valueType != null) {
