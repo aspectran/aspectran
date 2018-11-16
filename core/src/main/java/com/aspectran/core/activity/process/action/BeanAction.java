@@ -216,7 +216,7 @@ public class BeanAction extends AbstractAction {
 
             for (ItemRule ir : argumentItemRuleMap.values()) {
                 Object o = valueMap.get(ir.getName());
-                argsTypes[argIndex] = ItemRule.getClassOfValue(ir, o);
+                argsTypes[argIndex] = ItemRule.getPrototypeClass(ir, o);
                 argsObjects[argIndex] = o;
                 argIndex++;
             }

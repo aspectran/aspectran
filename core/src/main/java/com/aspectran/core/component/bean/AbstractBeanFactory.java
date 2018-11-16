@@ -40,6 +40,7 @@ import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
@@ -126,10 +127,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 argTypes = new Class<?>[parameterSize];
 
                 int i = 0;
-                for (String name : constructorArgumentItemRuleMap.keySet()) {
-                    Object o = valueMap.get(name);
-                    args[i] = o;
-                    argTypes[i] = o.getClass();
+                for (Map.Entry<String, ItemRule> entry : constructorArgumentItemRuleMap.entrySet()) {
+                    Object value = valueMap.get(entry.getKey());
+                    args[i] = value;
+                    argTypes[i] = ItemRule.getPrototypeClass(entry.getValue(), value);
                     i++;
                 }
             } else {

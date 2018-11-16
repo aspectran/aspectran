@@ -595,9 +595,8 @@ public class ItemRule {
      * @param value the value
      * @return the class of value
      */
-    public static Class<?> getClassOfValue(ItemRule ir, Object value) {
+    public static Class<?> getPrototypeClass(ItemRule ir, Object value) {
         ItemValueType valueType = ir.getValueType();
-
         if (ir.getType() == ItemType.ARRAY) {
             if (valueType == ItemValueType.STRING) {
                 return String[].class;
@@ -617,10 +616,40 @@ public class ItemRule {
                 return File[].class;
             } else if (valueType == ItemValueType.MULTIPART_FILE) {
                 return FileParameter[].class;
+            } else {
+                return (value != null ? value.getClass() : String[].class);
+            }
+        } else if (ir.getType() == ItemType.LIST) {
+            return (value != null ? value.getClass() : List.class);
+        } else if (ir.getType() == ItemType.MAP) {
+            return (value != null ? value.getClass() : Map.class);
+        } else if (ir.getType() == ItemType.SET) {
+            return (value != null ? value.getClass() : Set.class);
+        } else if (ir.getType() == ItemType.PROPERTIES) {
+            return (value != null ? value.getClass() : Properties.class);
+        } else {
+            if (valueType == ItemValueType.STRING) {
+                return String.class;
+            } else if (valueType == ItemValueType.INT) {
+                return Integer.class;
+            } else if (valueType == ItemValueType.LONG) {
+                return Long.class;
+            } else if (valueType == ItemValueType.FLOAT) {
+                return Float.class;
+            } else if (valueType == ItemValueType.DOUBLE) {
+                return Double.class;
+            } else if (valueType == ItemValueType.BOOLEAN) {
+                return Boolean.class;
+            } else if (valueType == ItemValueType.PARAMETERS) {
+                return Parameters.class;
+            } else if (valueType == ItemValueType.FILE) {
+                return File.class;
+            } else if (valueType == ItemValueType.MULTIPART_FILE) {
+                return FileParameter.class;
+            } else {
+                return (value != null ? value.getClass() : String.class);
             }
         }
-
-        return (value != null ? value.getClass() : Object.class);
     }
 
     /**
