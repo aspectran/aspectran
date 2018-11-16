@@ -113,16 +113,16 @@ public class ParamsToRuleConverter {
             convertAsDefaultSettings(defaultSettingsParameters);
         }
 
+        Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
+        if (typeAliasParameters != null) {
+            convertAsTypeAlias(typeAliasParameters);
+        }
+
         List<EnvironmentParameters> environmentParametersList = aspectranParameters.getParametersList(AspectranParameters.environment);
         if (environmentParametersList != null) {
             for (EnvironmentParameters environmentParameters : environmentParametersList) {
                 convertAsEnvironmentRule(environmentParameters);
             }
-        }
-
-        Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
-        if (typeAliasParameters != null) {
-            convertAsTypeAlias(typeAliasParameters);
         }
 
         List<AspectParameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspect);
