@@ -98,19 +98,6 @@
 
 <!ELEMENT constructor (arguments?)>
 
-<!ELEMENT template (#PCDATA)>
-<!ATTLIST template
-  id       CDATA #IMPLIED
-  engine   CDATA #IMPLIED
-  style    (apon | compact | compressed) #IMPLIED
-  name     CDATA #IMPLIED
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  encoding CDATA #IMPLIED
-  noCache  (true | false) #IMPLIED
->
-
 <!ELEMENT schedule (description?, scheduler, job*)>
 <!ATTLIST schedule
   id      ID #IMPLIED
@@ -220,12 +207,12 @@
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
-  contentType           CDATA #IMPLIED
-  path                  CDATA #REQUIRED
-  encoding              CDATA #IMPLIED
-  excludeNullParameter  (true | false) #IMPLIED
-  excludeEmptyParameter (true | false) #IMPLIED
-  default               (true | false) #IMPLIED
+  contentType            CDATA #IMPLIED
+  path                   CDATA #REQUIRED
+  encoding               CDATA #IMPLIED
+  excludeNullParameters  (true | false) #IMPLIED
+  excludeEmptyParameters (true | false) #IMPLIED
+  default                (true | false) #IMPLIED
 >
 
 <!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
@@ -269,6 +256,19 @@
 >
 
 <!ELEMENT null EMPTY>
+
+<!ELEMENT template (#PCDATA)>
+<!ATTLIST template
+  id       CDATA #IMPLIED
+  engine   CDATA #IMPLIED
+  style    (apon | compact | compressed) #IMPLIED
+  name     CDATA #IMPLIED
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  encoding CDATA #IMPLIED
+  noCache  (true | false) #IMPLIED
+>
 
 <!ELEMENT append EMPTY>
 <!ATTLIST append
