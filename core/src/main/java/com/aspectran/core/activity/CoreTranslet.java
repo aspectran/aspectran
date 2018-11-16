@@ -181,6 +181,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public <T> T getProperty(String name) {
+        return getEnvironment().getProperty(name, activity);
+    }
+
+    @Override
     public String getParameter(String name) {
         return getRequestAdapter().getParameter(name);
     }

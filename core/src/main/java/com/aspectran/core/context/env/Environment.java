@@ -59,6 +59,14 @@ public interface Environment {
      */
     boolean acceptsProfiles(String... profiles);
 
+    /**
+     * Returns the value of the property on environment.
+     *
+     * @param <T> the type of the value
+     * @param name the given property name
+     * @param activity the current activity
+     * @return the value of the property on environment
+     */
     <T> T getProperty(String name, Activity activity);
 
     /**

@@ -219,6 +219,15 @@ public interface Translet extends BeanRegistry, MessageSource {
     <T> T getSetting(String settingName);
 
     /**
+     * Returns the value of the property on environment.
+     *
+     * @param <T> the type of the value
+     * @param name the given property name
+     * @return the value of the property on environment
+     */
+    <T> T getProperty(String name);
+
+    /**
      * Returns the value of an activity's request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
      *
