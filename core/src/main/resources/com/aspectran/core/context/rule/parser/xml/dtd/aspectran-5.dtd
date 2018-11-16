@@ -18,7 +18,7 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | append*)*
+  (settings? | typeAliases* | environment* | aspect* | bean* | template* | schedule* | translet* | append*)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -33,11 +33,6 @@
   value   CDATA #IMPLIED
 >
 
-<!ELEMENT environment (#PCDATA | properties)*>
-<!ATTLIST environment
-  profile CDATA #IMPLIED
->
-
 <!ELEMENT typeAliases (typeAlias*)>
 
 <!ELEMENT typeAlias EMPTY>
@@ -46,13 +41,9 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT append EMPTY>
-<!ATTLIST append
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  format   (xml | apon) #IMPLIED
-  profile  CDATA #IMPLIED
+<!ELEMENT environment (#PCDATA | description | properties)*>
+<!ATTLIST environment
+  profile CDATA #IMPLIED
 >
 
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
@@ -278,3 +269,12 @@
 >
 
 <!ELEMENT null EMPTY>
+
+<!ELEMENT append EMPTY>
+<!ATTLIST append
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  format   (xml | apon) #IMPLIED
+  profile  CDATA #IMPLIED
+>

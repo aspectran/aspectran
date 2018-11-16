@@ -16,9 +16,6 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -73,8 +70,8 @@ public class AspectranNodeParser {
 
         addDescriptionNodelets();
         addSettingsNodelets();
-        addEnvironmentNodelets();
         addTypeAliasNodelets();
+        addEnvironmentNodelets();
         addAspectNodelets();
         addBeanNodelets();
         addScheduleNodelets();
@@ -163,39 +160,6 @@ public class AspectranNodeParser {
     }
 
     /**
-     * Adds the environment nodelets.
-     */
-    private void addEnvironmentNodelets() {
-        parser.setXpath("/aspectran/environment");
-        parser.addNodelet(attrs -> {
-            String profile = attrs.get("profile");
-
-            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
-            parser.pushObject(environmentRule);
-        });
-        parser.addNodeEndlet(text -> {
-            EnvironmentRule environmentRule = parser.popObject();
-            assistant.addEnvironmentRule(environmentRule);
-        });
-        parser.setXpath("/aspectran/environment/properties");
-        parser.addNodelet(attrs -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            parser.pushObject(irm);
-        });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
-        parser.addNodeEndlet(text -> {
-            ItemRuleMap irm = parser.popObject();
-            EnvironmentRule environmentRule = parser.peekObject();
-            if (!irm.isEmpty()) {
-                environmentRule.setPropertyItemRuleMap(irm);
-            } else if (StringUtils.hasLength(text)) {
-                ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
-                environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
-            }
-        });
-    }
-
-    /**
      * Adds the type alias nodelets.
      */
     private void addTypeAliasNodelets() {
@@ -215,6 +179,13 @@ public class AspectranNodeParser {
 
             assistant.addTypeAlias(alias, type);
         });
+    }
+
+    /**
+     * Adds the environment nodelets.
+     */
+    private void addEnvironmentNodelets() {
+        parser.addNodelet("/aspectran", new EnvironmentNodeletAdder(assistant));
     }
 
     /**

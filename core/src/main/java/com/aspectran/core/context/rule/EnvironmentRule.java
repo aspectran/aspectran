@@ -28,6 +28,8 @@ public class EnvironmentRule {
 
     private ItemRuleMap propertyItemRuleMap;
 
+    private String description;
+
     public String getProfile() {
         return profile;
     }
@@ -77,6 +79,24 @@ public class EnvironmentRule {
             propertyItemRuleMap = new ItemRuleMap();
         }
         propertyItemRuleMap.putItemRule(propertyItemRule);
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

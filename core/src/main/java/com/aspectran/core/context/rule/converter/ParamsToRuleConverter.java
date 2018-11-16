@@ -199,6 +199,7 @@ public class ParamsToRuleConverter {
 
     private void convertAsEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
         if (environmentParameters != null) {
+            String description = environmentParameters.getString(EnvironmentParameters.description);
             String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
             ItemHolderParameters propertyItemHolderParameters = environmentParameters.getParameters(EnvironmentParameters.properties);
             ItemRuleMap propertyItemRuleMap = null;
@@ -206,6 +207,9 @@ public class ParamsToRuleConverter {
                 propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
             }
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, propertyItemRuleMap);
+            if (description != null) {
+                environmentRule.setDescription(description);
+            }
             assistant.addEnvironmentRule(environmentRule);
         }
     }

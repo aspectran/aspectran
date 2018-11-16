@@ -212,6 +212,7 @@ public class RuleToParamsConverter {
 
     public static EnvironmentParameters toEnvironmentParameters(EnvironmentRule environmentRule) {
         EnvironmentParameters environmentParameters = new EnvironmentParameters();
+        environmentParameters.putValueNonNull(EnvironmentParameters.description, environmentRule.getDescription());
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
         if (environmentRule.getPropertyItemRuleMap() != null) {
             ItemHolderParameters itemHolderParameters = toItemHolderParameters(environmentRule.getPropertyItemRuleMap());

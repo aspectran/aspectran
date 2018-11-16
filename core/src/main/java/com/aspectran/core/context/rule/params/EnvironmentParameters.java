@@ -21,6 +21,8 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class EnvironmentParameters extends AbstractParameters {
 
+    public static final ParameterDefinition description;
+
     public static final ParameterDefinition profile;
 
     public static final ParameterDefinition properties;
@@ -28,10 +30,12 @@ public class EnvironmentParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
+        description = new ParameterDefinition("description", ParameterValueType.TEXT);
         profile = new ParameterDefinition("profile", ParameterValueType.STRING);
         properties = new ParameterDefinition("properties", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
+                description,
                 profile,
                 properties
         };
