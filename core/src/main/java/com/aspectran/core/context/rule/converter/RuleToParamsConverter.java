@@ -629,8 +629,8 @@ public class RuleToParamsConverter {
         redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
         redirectParameters.putValueNonNull(RedirectParameters.path, redirectResponseRule.getPath());
         redirectParameters.putValueNonNull(RedirectParameters.encoding, redirectResponseRule.getEncoding());
-        redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
-        redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameter, redirectResponseRule.getExcludeEmptyParameter());
+        redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameters, redirectResponseRule.getExcludeNullParameters());
+        redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameters, redirectResponseRule.getExcludeEmptyParameters());
         redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
 
         ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();

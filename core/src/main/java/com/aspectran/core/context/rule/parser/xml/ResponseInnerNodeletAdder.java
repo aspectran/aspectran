@@ -136,12 +136,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String contentType = attrs.get("contentType");
             String path = attrs.get("path");
             String encoding = attrs.get("encoding");
-            Boolean excludeNullParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeNullParameter"));
-            Boolean excludeEmptyParameter = BooleanUtils.toNullableBooleanObject(attrs.get("excludeEmptyParameter"));
+            Boolean excludeNullParameters = BooleanUtils.toNullableBooleanObject(attrs.get("excludeNullParameters"));
+            Boolean excludeEmptyParameters = BooleanUtils.toNullableBooleanObject(attrs.get("excludeEmptyParameters"));
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
-            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameter,
-                    excludeEmptyParameter, defaultResponse);
+            RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameters,
+                    excludeEmptyParameters, defaultResponse);
             parser.pushObject(rrr);
 
             ActionList actionList = new ActionList();

@@ -748,12 +748,12 @@ public class ParamsToRuleConverter {
         String path = redirectParameters.getString(RedirectParameters.path);
         ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);
-        Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
-        Boolean excludeEmptyParameter = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameter);
+        Boolean excludeNullParameters = redirectParameters.getBoolean(RedirectParameters.excludeNullParameters);
+        Boolean excludeEmptyParameters = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameters);
         Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
         List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
 
-        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameter, excludeEmptyParameter, defaultResponse);
+        RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
         if (parameterItemHolderParametersList != null) {
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParametersList);
             rrr.setParameterItemRuleMap(parameterItemRuleMap);
