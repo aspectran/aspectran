@@ -109,7 +109,7 @@ public class WildcardMatcher {
         return separatorIndex <= separatorCount;
     }
 
-    public boolean hasPrevious() {
+    public boolean hasPrev() {
         return separatorIndex >= 0;
     }
 

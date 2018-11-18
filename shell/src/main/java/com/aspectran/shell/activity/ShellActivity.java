@@ -26,7 +26,9 @@ import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
@@ -63,6 +65,8 @@ public class ShellActivity extends CoreActivity {
     private ParameterMap parameterMap;
 
     private Writer[] redirectionWriters;
+
+    private boolean simpleInputMode;
 
     /**
      * Instantiates a new ShellActivity.
@@ -144,6 +148,36 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
+    private boolean isSimpleItemRules(ItemRuleList itemRuleList) {
+        for (ItemRule itemRule : itemRuleList) {
+            if (itemRule.getType() != ItemType.SINGLE) {
+                return false;
+            }
+            Token[] tokens = itemRule.getAllTokens();
+            if (tokens != null && tokens.length > 0) {
+                if (tokens.length == 1) {
+                    Token t = tokens[0];
+                    if (t.getType() != TokenType.PARAMETER) {
+                        return false;
+                    }
+                    if (!itemRule.getName().equals(t.getName())) {
+                        return false;
+                    }
+                    if (itemRule.getDefaultValue() != null) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void determineSimpleMode(ItemRuleList itemRuleList) {
+        simpleInputMode = isSimpleItemRules(itemRuleList);
+    }
+
     /**
      * Receive required input parameters.
      */
@@ -151,26 +185,29 @@ public class ShellActivity extends CoreActivity {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
+            determineSimpleMode(parameterItemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required parameters:");
                 console.offStyle();
 
-                for (ItemRule itemRule : parameterItemRuleList) {
-                    Token[] tokens = itemRule.getAllTokens();
-                    if (tokens == null) {
-                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                        t.setDefaultValue(itemRule.getDefaultValue());
-                        tokens = new Token[]{t};
+                if (!simpleInputMode) {
+                    for (ItemRule itemRule : parameterItemRuleList) {
+                        Token[] tokens = itemRule.getAllTokens();
+                        if (tokens == null) {
+                            Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                            t.setDefaultValue(itemRule.getDefaultValue());
+                            tokens = new Token[] {t};
+                        }
+                        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                        console.setStyle("YELLOW");
+                        console.write(mandatoryMarker);
+                        console.offStyle();
+                        console.setStyle("bold");
+                        console.write("%s: ", itemRule.getName());
+                        console.offStyle();
+                        console.writeLine(TokenParser.toString(tokens));
                     }
-                    String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                    console.setStyle("YELLOW");
-                    console.write(mandatoryMarker);
-                    console.offStyle();
-                    console.setStyle("bold");
-                    console.write("%s: ", itemRule.getName());
-                    console.offStyle();
-                    console.writeLine(TokenParser.toString(tokens));
                 }
             }
             enterRequiredParameters(parameterItemRuleList);
@@ -180,21 +217,30 @@ public class ShellActivity extends CoreActivity {
     private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
-            missingItemRules1 = enterEachParameter(parameterItemRuleList);
+            if (simpleInputMode) {
+                missingItemRules1 = enterEachParameter(parameterItemRuleList);
+            } else {
+                missingItemRules1 = enterEachToken(parameterItemRuleList);
+            }
         } else {
-            missingItemRules1 = checkRequiredParameter(parameterItemRuleList);
+            missingItemRules1 = checkRequiredParameters(parameterItemRuleList);
         }
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required parameters are missing.");
             console.offStyle();
 
-            ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
+            ItemRuleList missingItemRules2;
+            if (simpleInputMode) {
+                missingItemRules2 = enterEachParameter(missingItemRules1);
+            } else {
+                missingItemRules2 = enterEachToken(missingItemRules1);
+            }
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
                 console.setStyle("RED");
                 console.writeLine("Missing required parameters:");
-                console.setStyle("WHITE");
+                console.setStyle("bold");
                 for (String name : itemNames) {
                     console.writeLine("   %s", name);
                 }
@@ -211,26 +257,29 @@ public class ShellActivity extends CoreActivity {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
+            determineSimpleMode(attributeItemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required attributes:");
                 console.offStyle();
 
-                for (ItemRule itemRule : attributeItemRuleList) {
-                    Token[] tokens = itemRule.getAllTokens();
-                    if (tokens == null) {
-                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                        t.setDefaultValue(itemRule.getDefaultValue());
-                        tokens = new Token[]{t};
+                if (!simpleInputMode) {
+                    for (ItemRule itemRule : attributeItemRuleList) {
+                        Token[] tokens = itemRule.getAllTokens();
+                        if (tokens == null) {
+                            Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                            t.setDefaultValue(itemRule.getDefaultValue());
+                            tokens = new Token[] {t};
+                        }
+                        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+                        console.setStyle("YELLOW");
+                        console.write(mandatoryMarker);
+                        console.offStyle();
+                        console.setStyle("bold");
+                        console.write("%s: ", itemRule.getName());
+                        console.offStyle();
+                        console.writeLine(TokenParser.toString(tokens));
                     }
-                    String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
-                    console.setStyle("YELLOW");
-                    console.write(mandatoryMarker);
-                    console.offStyle();
-                    console.setStyle("bold");
-                    console.write("%s: ", itemRule.getName());
-                    console.offStyle();
-                    console.writeLine(TokenParser.toString(tokens));
                 }
             }
             enterRequiredAttributes(attributeItemRuleList);
@@ -240,7 +289,11 @@ public class ShellActivity extends CoreActivity {
     private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
-            missingItemRules1 = enterEachParameter(attributeItemRuleList);
+            if (simpleInputMode) {
+                missingItemRules1 = enterEachAttribute(attributeItemRuleList);
+            } else {
+                missingItemRules1 = enterEachToken(attributeItemRuleList);
+            }
         } else {
             missingItemRules1 = checkRequiredAttributes(attributeItemRuleList);
         }
@@ -249,12 +302,17 @@ public class ShellActivity extends CoreActivity {
             console.writeLine("Required attributes are missing.");
             console.offStyle();
 
-            ItemRuleList missingItemRules2 = enterEachParameter(missingItemRules1);
+            ItemRuleList missingItemRules2;
+            if (simpleInputMode) {
+                missingItemRules2 = enterEachParameter(missingItemRules1);
+            } else {
+                missingItemRules2 = enterEachToken(missingItemRules1);
+            }
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
                 console.setStyle("RED");
                 console.writeLine("Missing required attributes:");
-                console.setStyle("WHITE");
+                console.setStyle("bold");
                 for (String name : itemNames) {
                     console.writeLine("   %s", name);
                 }
@@ -265,12 +323,62 @@ public class ShellActivity extends CoreActivity {
     }
 
     private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>();
+        try {
+            for (ItemRule ir : itemRuleList) {
+                String value = enterParameter(ir);
+                if (!StringUtils.isEmpty(value)) {
+                    getRequestAdapter().setParameter(ir.getName(), value);
+                } else if (ir.isMandatory()) {
+                    missingItemRules.add(ir);
+                }
+            }
+        } catch (ConsoleTerminatedException e) {
+            log.info("User interrupt occurred");
+            terminate("User interrupt occurred");
+        }
+        return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
+    private ItemRuleList enterEachAttribute(ItemRuleList itemRuleList) {
+        Set<ItemRule> missingItemRules = new LinkedHashSet<>();
+        try {
+            for (ItemRule ir : itemRuleList) {
+                String value = enterParameter(ir);
+                if (!StringUtils.isEmpty(value)) {
+                    getRequestAdapter().setAttribute(ir.getName(), value);
+                } else if (ir.isMandatory()) {
+                    missingItemRules.add(ir);
+                }
+            }
+        } catch (ConsoleTerminatedException e) {
+            log.info("User interrupt occurred");
+            terminate("User interrupt occurred");
+        }
+        return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
+    private String enterParameter(ItemRule ir) {
+        String mandatoryMarker = ir.isMandatory() ? " * " : "   ";
+        console.setStyle("YELLOW");
+        console.write(mandatoryMarker);
+        console.offStyle();
+        console.setStyle("bold");
+        console.write(ir.getName());
+        console.offStyle();
+        if (ir.isSecurity()) {
+            return console.readPassword(": ");
+        } else {
+            return console.readLine(": ");
+        }
+    }
+
+    private ItemRuleList enterEachToken(ItemRuleList itemRuleList) {
         console.setStyle("GREEN");
         console.writeLine("Enter a value for each token:");
         console.offStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
-
         try {
             Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>();
             for (ItemRule itemRule : itemRuleList) {
@@ -300,7 +408,6 @@ public class ShellActivity extends CoreActivity {
                     }
                 }
             }
-
             for (Map.Entry<Token, Set<ItemRule>> entry : inputTokens.entrySet()) {
                 Token token = entry.getKey();
                 String value = getRequestAdapter().getParameter(token.getName());
@@ -316,15 +423,16 @@ public class ShellActivity extends CoreActivity {
                         break;
                     }
                 }
+                String format = "   %s: ";
                 if (security) {
-                    value = console.readPassword("   %s: ", token.stringify());
+                    value = console.readPassword(format, token.stringify());
                 } else {
-                    value = console.readLine("   %s: ", token.stringify());
+                    value = console.readLine(format, token.stringify());
                 }
-                if (value == null || value.isEmpty()) {
+                if (StringUtils.isEmpty(value)) {
                     value = token.getDefaultValue();
                 }
-                if (value != null) {
+                if (!StringUtils.isEmpty(value)) {
                     getRequestAdapter().setParameter(token.getName(), value);
                 } else {
                     for (ItemRule ir : rules) {
@@ -338,11 +446,10 @@ public class ShellActivity extends CoreActivity {
             log.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
-
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
-    private ItemRuleList checkRequiredParameter(ItemRuleList itemRuleList) {
+    private ItemRuleList checkRequiredParameters(ItemRuleList itemRuleList) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         ItemEvaluator evaluator = new ItemExpressionParser(this);
         for (ItemRule itemRule : itemRuleList) {

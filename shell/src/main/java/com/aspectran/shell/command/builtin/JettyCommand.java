@@ -43,6 +43,7 @@ public class JettyCommand extends AbstractCommand {
         addOption(new Option("start", "Start the Jetty Server"));
         addOption(new Option("restart", "Restart the Jetty Server"));
         addOption(new Option("stop", "Stops the Jetty Server"));
+        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
     }
 
     @Override
@@ -128,12 +129,12 @@ public class JettyCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return null;
+            return "jetty [OPTION]";
         }
 
         @Override
         public Collection<Option> getOptions() {
-            return null;
+            return options.getOptions();
         }
 
     }

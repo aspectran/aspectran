@@ -203,6 +203,8 @@ public class AspectranShellService extends AbstractShellService {
                 service.setExposals(includePatterns, excludePatterns);
             }
         } else {
+            shellConfig = new ShellConfig();
+            aspectranConfig.putShellConfig(shellConfig);
             service.setConsole(new DefaultConsole());
         }
 
@@ -246,6 +248,7 @@ public class AspectranShellService extends AbstractShellService {
             @Override
             public void stopped() {
                 paused();
+                service.getConsole().setService(null);
             }
         });
     }

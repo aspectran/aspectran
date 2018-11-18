@@ -38,20 +38,27 @@ public class PBEncryptCommand extends AbstractCommand {
     public PBEncryptCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(new Option("input", true, "The string to encrypt"));
-        addOption(new Option("password", true, "The password to be used for encryption"));
+        addOption(Option.builder("i").longOpt("input").valueSeparator().desc("The string to encrypt").build());
+        addOption(Option.builder("p").longOpt("password").valueSeparator().desc("The password to be used for encryption").build());
+        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
     }
 
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
-        String input = options.getParsedValue("input");
-        String password = options.getParsedValue("password");
+        String input = options.getTypedValue("input");
+        String password = options.getTypedValue("password");
         if (!StringUtils.hasText(input) || !StringUtils.hasText(password)) {
             printUsage();
             return null;
         }
-        String output = PBEncryptionUtils.encrypt(input, password);
+
+        String output;
+        try {
+            output = PBEncryptionUtils.encrypt(input, password);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
+        }
 
         getConsole().writeLine("--------------------------------------------------");
         getConsole().writeLine("   %1$-10s: %2$s", "input", input);
@@ -86,7 +93,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return null;
+            return "encrypt -i=<INPUT_STRING> -p=<PASSWORD>";
         }
 
         @Override

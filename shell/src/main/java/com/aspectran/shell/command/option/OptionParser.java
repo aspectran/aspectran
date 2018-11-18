@@ -46,7 +46,8 @@ public interface OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, Properties properties) throws OptionParserException;
+    ParsedOptions parse(Options options, String[] arguments, Properties properties)
+            throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options.
@@ -61,7 +62,8 @@ public interface OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption) throws OptionParserException;
+    ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption)
+            throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options and

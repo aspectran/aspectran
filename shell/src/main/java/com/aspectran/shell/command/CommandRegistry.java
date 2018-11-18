@@ -52,6 +52,15 @@ public class CommandRegistry {
         return commands.get(commandName);
     }
 
+    public Command getCommand(Class<? extends Command> commandClass) {
+        for (Command command : commands.values()) {
+            if (command.getClass().equals(commandClass)) {
+                return command;
+            }
+        }
+        return null;
+    }
+
     public void addCommand(String... classNames) {
         if (classNames != null) {
             for (String className : classNames) {

@@ -19,6 +19,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
+import com.aspectran.shell.service.ShellService;
 import org.jline.builtins.Options;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -59,7 +60,9 @@ public class JLineConsole extends AbstractConsole {
     private final LineReader reader;
 
     private final LineReader commandReader;
-    
+
+    private final CommandCompleter commandCompleter = new CommandCompleter();
+
     private AttributedStyle style;
 
     public JLineConsole() throws IOException {
@@ -70,9 +73,21 @@ public class JLineConsole extends AbstractConsole {
         super(defaultPath);
 
         DefaultParser parser = new DefaultParser();
+        //It will be applied from jline 3.9.1
+        //parser.setEscapeChars(null);
+
         this.terminal = TerminalBuilder.builder().encoding(encoding).build();
-        this.reader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();
-        this.commandReader = LineReaderBuilder.builder().appName(APP_NAME).parser(parser).terminal(terminal).build();
+        this.reader = LineReaderBuilder.builder()
+                .appName(APP_NAME)
+                .parser(parser)
+                .terminal(terminal)
+                .build();
+        this.commandReader = LineReaderBuilder.builder()
+                .appName(APP_NAME)
+                .completer(commandCompleter)
+                .parser(parser)
+                .terminal(terminal)
+                .build();
     }
 
     @Override
@@ -308,6 +323,11 @@ public class JLineConsole extends AbstractConsole {
         String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{off}} ");
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    @Override
+    public void setService(ShellService service) {
+        commandCompleter.setService(service);
     }
 
 }

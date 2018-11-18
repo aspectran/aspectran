@@ -104,6 +104,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     protected void setConsole(Console console) {
         this.console = console;
+        console.setService(this);
     }
 
     @Override

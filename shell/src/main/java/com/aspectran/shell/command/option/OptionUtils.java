@@ -45,7 +45,6 @@ public final class OptionUtils {
         if (opt == null) {
             return;
         }
-
         // handle the single character opt
         if (opt.length() == 1) {
             char ch = opt.charAt(0);
@@ -168,16 +167,13 @@ public final class OptionUtils {
         if (pos != -1 && pos <= width) {
             return pos + 1;
         }
-
         pos = text.indexOf('\t', startPos);
         if (pos != -1 && pos <= width) {
             return pos + 1;
         }
-
         if (startPos + width >= text.length()) {
             return -1;
         }
-
         // look for the last whitespace character before startPos+width
         for (pos = startPos + width; pos >= startPos; --pos) {
             char c = text.charAt(pos);
@@ -185,15 +181,12 @@ public final class OptionUtils {
                 break;
             }
         }
-
         // if we found it - just return
         if (pos > startPos) {
             return pos;
         }
-
         // if we didn't find one, simply chop at startPos+width
         pos = startPos + width;
-
         return (pos == text.length() ? -1 : pos);
     }
 

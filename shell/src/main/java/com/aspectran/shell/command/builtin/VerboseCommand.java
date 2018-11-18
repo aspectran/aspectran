@@ -42,7 +42,7 @@ public class VerboseCommand extends AbstractCommand {
 
         addOption(new Option("on", "Enable verbose output"));
         addOption(new Option("off", "Disable verbose output"));
-        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
+        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "verbose [-h|--help] [-on] [-off]";
+            return "verbose [OPTION]";
         }
 
         @Override

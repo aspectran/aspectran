@@ -15,14 +15,12 @@
  */
 package com.aspectran.shell.console;
 
-import java.io.IOException;
-
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
 public class DefaultConsoleTest {
 
-    public static void main(String argv[]) throws IOException {
+    public static void main(String argv[]) {
         Console console = new DefaultConsole();
         String prompt = "> ";
         while (true) {

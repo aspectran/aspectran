@@ -16,6 +16,9 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.builtin.HelpCommand;
+import com.aspectran.shell.command.builtin.PBDecryptCommand;
+import com.aspectran.shell.command.builtin.PBEncryptCommand;
+import com.aspectran.shell.command.builtin.SysInfoCommand;
 import com.aspectran.shell.command.builtin.VerboseCommand;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
@@ -40,6 +43,41 @@ public class CommandTest {
         Command command = new HelpCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
+    }
+
+    @Test
+    public void testSysInfoCommand() {
+        Console console = new DefaultConsole();
+        Command command = new SysInfoCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+    }
+
+    @Test
+    public void testPBEncryptCommand() throws Exception {
+        Console console = new DefaultConsole();
+        PBEncryptCommand command = new PBEncryptCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+        command.execute(new String[] {"-i=aaa", "-p=bbb"});
+    }
+
+    @Test
+    public void testPBDecryptCommand() throws Exception {
+        Console console = new DefaultConsole();
+        PBDecryptCommand command = new PBDecryptCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+        command.execute(new String[] {"-i=RYr6VMzCxBuY9MoXYBV64w==", "-p=bbb"});
+    }
+
+    @Test
+    public void testTestCommand() throws Exception {
+        Console console = new DefaultConsole();
+        TestCommand command = new TestCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+        command.execute(new String[] {"-Dkey=123", "-i=aaa", "-p=bbb", "-XYZ"});
     }
 
 }

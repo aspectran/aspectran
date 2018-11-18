@@ -73,7 +73,8 @@ public class BeanClassScanner extends ClassScanner {
         try {
             beanClassScanFilter = (BeanClassScanFilter)ClassUtils.createInstance(beanClassScanFilterClass);
         } catch (Exception e) {
-            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
+            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" +
+                    beanClassScanFilterClass + "]", e);
         }
     }
 
@@ -94,7 +95,8 @@ public class BeanClassScanner extends ClassScanner {
         try {
             filterClass = getClassLoader().loadClass(classScanFilterClassName);
         } catch (ClassNotFoundException e) {
-            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + classScanFilterClassName + "]", e);
+            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" +
+                    classScanFilterClassName + "]", e);
         }
         setBeanClassScanFilter(filterClass);
     }

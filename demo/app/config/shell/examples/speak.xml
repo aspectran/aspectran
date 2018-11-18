@@ -33,6 +33,9 @@
                 <item>${text:Hello}</item>
             </arguments>
         </action>
+        <transform type="transform/text">
+            <template>${text}</template>
+        </transform>
     </translet>
 
     <translet name="speak ${text}">
@@ -47,6 +50,9 @@
                 <item>${text:Hello}</item>
             </arguments>
         </action>
+        <transform type="transform/text">
+            <template>${text}</template>
+        </transform>
     </translet>
 
 </aspectran>

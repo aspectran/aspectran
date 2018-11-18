@@ -62,20 +62,22 @@ public class DefaultOptionParserTest {
                 "-f",
                 "A.txt",
                 "B.txt",
-                "-z=C.txt D.txt",
+                "-z",
+                "C.txt",
+                "D.txt",
                 "-b"
         };
 
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
-            Assert.assertEquals(parsedOptions.getParsedValue("block-size"), Integer.valueOf(10));
-            Assert.assertEquals(parsedOptions.getValues("f")[0], "A.txt");
-            Assert.assertEquals(parsedOptions.getValues("f")[1], "B.txt");
-            Assert.assertEquals(parsedOptions.getValues("z")[0], "C.txt");
-            Assert.assertEquals(parsedOptions.getValues("z")[1], "D.txt");
+            Assert.assertEquals(parsedOptions.getTypedValue("block-size"), Integer.valueOf(10));
+            Assert.assertEquals("A.txt", parsedOptions.getValues("f")[0]);
+            Assert.assertEquals("B.txt", parsedOptions.getValues("f")[1]);
+            Assert.assertEquals("C.txt", parsedOptions.getValues("z")[0]);
+            Assert.assertEquals("D.txt", parsedOptions.getValues("z")[1]);
             Assert.assertTrue(parsedOptions.hasOption("b"));
-
+/*
             System.out.println("------------------");
             for (String s : parsedOptions.getValues("f")) {
                 System.out.println(s);
@@ -85,7 +87,7 @@ public class DefaultOptionParserTest {
                 System.out.println(s);
             }
             System.out.println("------------------");
-
+*/
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
             formatter.printHelp("ls [OPTION]... [FILE]...", options);
         } catch(OptionParserException exp) {

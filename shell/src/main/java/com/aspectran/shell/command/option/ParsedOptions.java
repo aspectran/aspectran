@@ -93,13 +93,13 @@ public class ParsedOptions implements Serializable {
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
-     * @param <T> the generic type
+     * @param <T> type to attempt to convert to
      * @param option the option
      * @return the value parsed into a particular object
      * @throws OptionParserException if there are problems turning the option value into the desired type
      */
     @SuppressWarnings("unchecked")
-    public <T> T getParsedValue(Option option) throws OptionParserException {
+    public <T> T getTypedValue(Option option) throws OptionParserException {
         if (option == null) {
             return null;
         }
@@ -150,25 +150,25 @@ public class ParsedOptions implements Serializable {
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
-     * @param <T> the generic type
+     * @param <T> type to attempt to convert to
      * @param opt the name of the option
      * @return the value parsed into a particular object
      * @throws OptionParserException if there are problems turning the option value into the desired type
      */
-    public <T> T getParsedValue(String opt) throws OptionParserException {
-        return getParsedValue(resolveOption(opt));
+    public <T> T getTypedValue(String opt) throws OptionParserException {
+        return getTypedValue(resolveOption(opt));
     }
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
      *
-     * @param <T> the generic type
+     * @param <T> type to attempt to convert to
      * @param opt the name of the option
      * @return the value parsed into a particular object
      * @throws OptionParserException if there are problems turning the option value into the desired type
      */
-    public <T> T getParsedValue(char opt) throws OptionParserException {
-        return getParsedValue(String.valueOf(opt));
+    public <T> T getTypedValue(char opt) throws OptionParserException {
+        return getTypedValue(String.valueOf(opt));
     }
 
     /**

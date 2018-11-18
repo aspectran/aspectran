@@ -45,7 +45,9 @@ public class ShellCommander {
             this.commandRegistry = service.getCommandRegistry();
         } else {
             this.commandRegistry = new CommandRegistry(service);
-            this.commandRegistry.addCommand(QuitCommand.class);
+            if (this.commandRegistry.getCommand(QuitCommand.class) == null) {
+                this.commandRegistry.addCommand(QuitCommand.class);
+            }
         }
     }
 

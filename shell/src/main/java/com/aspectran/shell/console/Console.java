@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.shell.service.ShellService;
+
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -85,6 +87,8 @@ public interface Console {
     boolean confirmRestart(String message);
 
     boolean confirmQuit();
+
+    void setService(ShellService service);
 
 }
 

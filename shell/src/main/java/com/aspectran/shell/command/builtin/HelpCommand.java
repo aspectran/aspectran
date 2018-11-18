@@ -181,7 +181,7 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "help [command [command2 [command3] ...]]";
+            return "help [COMMAND]...";
         }
 
         @Override

@@ -80,10 +80,10 @@ public class HelpFormatter {
     private static final String DEFAULT_SYNTAX_PREFIX = "Usage: ";
 
     /** Default prefix for shortOpts */
-    private static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_OPT_PREFIX = "-";
 
     /** Default prefix for long Option */
-    private static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
 
     /** Default separator displayed between a long Option and its value */
     private static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
@@ -416,7 +416,6 @@ public class HelpFormatter {
         printHelp(width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
     }
 
-
     /**
      * Print the help for {@code options} with the specified
      * command line syntax.
@@ -521,12 +520,10 @@ public class HelpFormatter {
         if (!group.isRequired()) {
             sb.append("[");
         }
-
         List<Option> optList = new ArrayList<>(group.getOptions());
         if (optList.size() > 1 && getOptionComparator() != null) {
             optList.sort(getOptionComparator());
         }
-
         // for each option in the OptionGroup
         for (Iterator<Option> it = optList.iterator(); it.hasNext();) {
             // whether the option is required or not is handled at group level
@@ -535,7 +532,6 @@ public class HelpFormatter {
                 sb.append(" | ");
             }
         }
-
         if (!group.isRequired()) {
             sb.append("]");
         }
@@ -552,19 +548,16 @@ public class HelpFormatter {
         if (!required) {
             sb.append("[");
         }
-
         if (option.getOpt() != null) {
             sb.append("-").append(option.getOpt());
         } else {
             sb.append("--").append(option.getLongOpt());
         }
-        
         // if the Option has a value and a non blank arg name
         if (option.hasArg() && (option.getArgName() == null || option.getArgName().length() != 0)) {
-            sb.append(option.getOpt() == null ? longOptSeparator : " ");
+            sb.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
             sb.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
         }
-        
         // if the Option is not a required option
         if (!required) {
             sb.append("]");
@@ -652,7 +645,6 @@ public class HelpFormatter {
                 optBuf.append(lpad).append("   ").append(getLongOptPrefix()).append(option.getLongOpt());
             } else {
                 optBuf.append(lpad).append(getOptPrefix()).append(option.getOpt());
-
                 if (option.hasLongOpt()) {
                     optBuf.append(',').append(getLongOptPrefix()).append(option.getLongOpt());
                 }
@@ -663,7 +655,7 @@ public class HelpFormatter {
                     // if the option has a blank arg name
                     optBuf.append(' ');
                 } else {
-                    optBuf.append(option.hasLongOpt() ? longOptSeparator : " ");
+                    optBuf.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
                     optBuf.append("<").append(argName != null ? option.getArgName() : getArgName()).append(">");
                 }
             }
@@ -707,14 +699,11 @@ public class HelpFormatter {
             sb.append(OptionUtils.rtrim(text));
             return sb;
         }
-
         sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(getNewLine());
-
         if (nextLineTabStop >= width) {
             // stops infinite loop happening
             nextLineTabStop = 1;
         }
-
         // all following lines must be padded with nextLineTabStop space characters
         String padding = OptionUtils.createPadding(nextLineTabStop);
         while (true) {

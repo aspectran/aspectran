@@ -82,13 +82,13 @@ public class Option implements Cloneable, Serializable {
      * @param builder builder used to create this option
      */
     private Option(Builder builder) {
+        this.opt = builder.opt;
+        this.longOpt = builder.longOpt;
         this.argName = builder.argName;
         this.description = builder.description;
-        this.longOpt = builder.longOpt;
-        this.numberOfArgs = builder.numberOfArgs;
-        this.opt = builder.opt;
-        this.optionalArg = builder.optionalArg;
         this.required = builder.required;
+        this.optionalArg = builder.optionalArg;
+        this.numberOfArgs = builder.numberOfArgs;
         this.valueType = builder.valueType;
         this.valueSeparator = builder.valueSeparator;
     }
@@ -385,50 +385,10 @@ public class Option implements Cloneable, Serializable {
      * 
      * @param value is a/the value of this Option
      */
-    void addValueForProcessing(String value) {
+    public void addValue(String value) {
         if (numberOfArgs == UNINITIALIZED) {
             throw new RuntimeException("NO_ARGS_ALLOWED");
         }
-        processValue(value);
-    }
-
-    /**
-     * Processes the value.  If this Option has a value separator
-     * the value will have to be parsed into individual tokens.  When
-     * n-1 tokens have been processed and there are more value separators
-     * in the value, parsing is ceased and the remaining characters are
-     * added as a single token.
-     *
-     * @param value the String to be processed
-     */
-    private void processValue(String value) {
-        // this Option has a separator character
-        if (hasValueSeparator()) {
-            // get the separator character
-            char sep = getValueSeparator();
-
-            // store the index for the value separator
-            int index = value.indexOf(sep);
-
-            // while there are more value separators
-            while (index != -1) {
-                // next value to be added 
-                if (values.size() == numberOfArgs - 1) {
-                    break;
-                }
-
-                // store
-                add(value.substring(0, index));
-
-                // parse
-                value = value.substring(index + 1);
-
-                // get new index
-                index = value.indexOf(sep);
-            }
-        }
-
-        // store the actual value or the last value that has been parsed
         add(value);
     }
 
@@ -822,6 +782,7 @@ public class Option implements Cloneable, Serializable {
          */
         public Builder valueSeparator(char valueSeparator) {
             this.valueSeparator = valueSeparator;
+            hasArgs();
             return this;
         }
         

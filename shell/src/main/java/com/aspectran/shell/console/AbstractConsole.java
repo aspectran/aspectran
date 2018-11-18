@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.shell.service.ShellService;
+
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
@@ -51,6 +53,11 @@ public abstract class AbstractConsole implements Console {
     @Override
     public Writer getUnclosableWriter() throws UnsupportedEncodingException {
         return new UnclosablePrintWriter(getOutput(), getEncoding());
+    }
+
+    @Override
+    public void setService(ShellService service) {
+        // Nothing to do
     }
 
 }

@@ -84,7 +84,7 @@ public class TransletCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Executes a translet";
+            return "Execute a translet";
         }
 
     }

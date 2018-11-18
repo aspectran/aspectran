@@ -10,6 +10,25 @@
 
     <translet name="echo">
         <description style="apon">
+            |It accepts parameters and print them to the console.
+        </description>
+        <parameters>
+            <item name="input-1" mandatory="false"/>
+            <item name="input-2" mandatory="true"/>
+        </parameters>
+        <transform type="transform/text">
+            <template engine="token" style="apon">
+                |----------------------------------------------------------
+                |The parameters you entered are:
+                |   input-1: ${input-1}
+                |   input-2: ${input-2}
+                |----------------------------------------------------------
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="echo1">
+        <description style="apon">
             |
             |   It accepts parameters and print them to the console.
             |
@@ -19,7 +38,7 @@
             <item name="input-2" mandatory="true">${prefix} - 2</item>
             <item name="input-3">${prefix} - 3</item>
         </parameters>
-        <transform type="transform/text" contentType="text/plain">
+        <transform type="transform/text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -50,7 +69,7 @@
         <attributes>
             <item name="input-4">ATTR ${input-4}</item>
         </attributes>
-        <transform type="transform/text" contentType="text/plain">
+        <transform type="transform/text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The input parameters and attributes are as follows:

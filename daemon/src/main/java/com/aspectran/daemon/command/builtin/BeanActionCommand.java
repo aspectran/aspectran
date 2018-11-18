@@ -89,7 +89,7 @@ public class BeanActionCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Execute a method in the bean";
         }
 
     }

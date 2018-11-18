@@ -69,7 +69,7 @@ shell: {
         |{{OrangeRed1}}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{off}}
         |
         |To run a command, type '{{GREEN}}command_name [options] [args]{{off}}'.
-        |To get help on a specific command, type '{{GREEN}}command_name --help{{off}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name -h{{off}}'.
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{off}}'.
         |To run a translet, type '{{GREEN}}translet translet_name{{off}}' or '{{GREEN}}translet_name{{off}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{off}}'.

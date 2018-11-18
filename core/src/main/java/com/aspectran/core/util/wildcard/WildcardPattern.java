@@ -41,8 +41,8 @@ public class WildcardPattern {
     private static final char ESCAPE_CHAR = '\\';
     private static final char SPACE_CHAR = ' ';
     public static final char STAR_CHAR = '*';
-    private static final char QUESTION_CHAR = '?';
-    private static final char PLUS_CHAR = '+';
+    public static final char QUESTION_CHAR = '?';
+    public static final char PLUS_CHAR = '+';
 
     static final int LITERAL_TYPE = 1;
     static final int STAR_TYPE = 2;

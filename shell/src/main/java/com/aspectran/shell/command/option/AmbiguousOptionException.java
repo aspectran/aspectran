@@ -60,7 +60,6 @@ public class AmbiguousOptionException extends UnrecognizedOptionException {
         StringBuilder buf = new StringBuilder("Ambiguous option: '");
         buf.append(option);
         buf.append("'  (could be: ");
-
         Iterator<String> it = matchingOptions.iterator();
         while (it.hasNext()) {
             buf.append("'");
@@ -71,7 +70,6 @@ public class AmbiguousOptionException extends UnrecognizedOptionException {
             }
         }
         buf.append(")");
-
         return buf.toString();
     }
 

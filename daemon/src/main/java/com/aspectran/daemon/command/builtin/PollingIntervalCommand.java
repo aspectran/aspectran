@@ -73,7 +73,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Specifies in seconds how often the daemon polls for new commands";
         }
 
     }

@@ -13,34 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.builtin;
+package com.aspectran.shell.command;
 
-import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
-/**
- * Decrypts the input string using the encryption password.
- */
-public class PBDecryptCommand extends AbstractCommand {
+public class TestCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "test";
 
-    private static final String COMMAND_NAME = "decrypt";
+    private static final String COMMAND_NAME = "test";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public PBDecryptCommand(CommandRegistry registry) {
+    public TestCommand(CommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("i").longOpt("input").hasArgs().valueSeparator().desc("The string to encrypt").build());
         addOption(Option.builder("p").longOpt("password").hasArgs().valueSeparator().desc("The password to be used for encryption").build());
-        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
+        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
+        addOption(Option.builder("D").hasArgs().desc("Dkey=value").build());
+        addOption(Option.builder("X").desc("XYZ").build());
+        addOption(Option.builder("Y").desc("XYZ").build());
+        addOption(Option.builder("Z").desc("XYZ").build());
     }
 
     @Override
@@ -48,25 +46,15 @@ public class PBDecryptCommand extends AbstractCommand {
         ParsedOptions options = parse(args);
         String input = options.getTypedValue("input");
         String password = options.getTypedValue("password");
-        if (!StringUtils.hasText(input) || !StringUtils.hasText(password)) {
-            printUsage();
-            return null;
-        }
-
-        String output;
-        try {
-            output = PBEncryptionUtils.decrypt(input, password);
-        } catch (Exception e) {
-            getConsole().writeLine("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
-            getConsole().writeLine("Please make sure that the input string is encrypted with the password you entered.");
-            return null;
-        }
+        String[] D = options.getValues("D");
 
         getConsole().writeLine("---------------------------------------------");
         getConsole().writeLine("   %1$-11s: %2$s", "input", input);
         getConsole().writeLine("   %1$-11s: %2$s", "password", password);
-        getConsole().writeLine("   %1$-11s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-        getConsole().writeLine("   %1$-11s: %2$s", "output", output);
+        getConsole().writeLine("   %1$-11s: %2$s", "D", StringUtils.joinCommaDelimitedList(D));
+        getConsole().writeLine("   %1$-11s: %2$s", "X", options.hasOption("X"));
+        getConsole().writeLine("   %1$-11s: %2$s", "Y", options.hasOption("Y"));
+        getConsole().writeLine("   %1$-11s: %2$s", "Z", options.hasOption("X"));
         getConsole().writeLine("---------------------------------------------");
         return null;
     }
@@ -90,12 +78,12 @@ public class PBDecryptCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Decrypts the input string using the encryption password";
+            return "The test command";
         }
 
         @Override
         public String getUsage() {
-            return "decrypt -i=<INPUT_STRING> -p=<PASSWORD>";
+            return null;
         }
 
         @Override

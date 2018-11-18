@@ -15,12 +15,15 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
+import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
 
 public abstract class AbstractCommand implements Command {
@@ -38,11 +41,19 @@ public abstract class AbstractCommand implements Command {
     }
 
     public Console getConsole() {
-        return getService().getConsole();
+        if (registry != null) {
+            return getService().getConsole();
+        } else {
+            return new DefaultConsole();
+        }
     }
 
     public CommandRegistry getCommandRegistry() {
         return registry;
+    }
+
+    public Options getOptions() {
+        return options;
     }
 
     protected void addOption(Option option) {
@@ -50,7 +61,15 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected ParsedOptions parse(String[] args) throws OptionParserException {
-        return registry.getParser().parse(options, args);
+        return getParser().parse(options, args);
+    }
+
+    protected OptionParser getParser() {
+        if (registry != null) {
+            return registry.getParser();
+        } else {
+            return new DefaultOptionParser();
+        }
     }
 
     @Override

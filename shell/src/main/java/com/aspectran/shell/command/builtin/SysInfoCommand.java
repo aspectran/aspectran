@@ -41,10 +41,11 @@ public class SysInfoCommand extends AbstractCommand {
     public SysInfoCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(new Option("props", "Displays the JVM's system properties"));
-        addOption(Option.builder("cp").longOpt("classpath").desc("Displays JVM classpath information").build());
-        addOption(Option.builder("mem").longOpt("memory").desc("Displays memory information about current JVM").build());
-        addOption(new Option("gc", "Performs garbage collection"));
+        addOption(Option.builder("props").longOpt("system-properties").desc("Displays the JVM's system properties").build());
+        addOption(Option.builder("cp").longOpt("class-path").desc("Displays JVM classpath information").build());
+        addOption(Option.builder("mem").longOpt("memory-usage").desc("Displays memory information about current JVM").build());
+        addOption(Option.builder("gc").longOpt("garbage-collection").desc("Performs garbage collection").build());
+        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
     }
 
     @Override
@@ -152,7 +153,7 @@ public class SysInfoCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return null;
+            return "sysinfo [OPTION]";
         }
 
         @Override
