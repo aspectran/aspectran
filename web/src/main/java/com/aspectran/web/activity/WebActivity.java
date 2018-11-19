@@ -111,16 +111,18 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(this, request);
-
-            SessionAdapter sessionAdapter = new HttpSessionAdapter(requestWrapper, getActivityContext());
+            SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
             setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new HttpServletRequestAdapter(requestWrapper);
+            RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
             setResponseAdapter(responseAdapter);
+
+            if (request instanceof ActivityRequestWrapper) {
+                ((ActivityRequestWrapper)request).setWebActivity(this);
+            }
 
             super.adapt();
         } catch (Exception e) {

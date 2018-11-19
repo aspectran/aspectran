@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.adapter;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
@@ -25,7 +24,6 @@ import com.aspectran.web.activity.request.RequestAttributeMap;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -35,85 +33,54 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
-    private final HttpServletRequest request;
-
-    private boolean headersHeld;
-
-    private boolean parametersHeld;
-
-    private boolean attributesHeld;
-
     /**
      * Instantiates a new HttpServletRequestAdapter.
      *
-     * @param requestWrapper the activity request wrapper
+     * @param request the activity request wrapper
      */
-    public HttpServletRequestAdapter(ActivityRequestWrapper requestWrapper) {
-        super(requestWrapper);
-        this.request = requestWrapper.getRequest();
-        setRequestMethod(MethodType.resolve(this.request.getMethod()));
+    public HttpServletRequestAdapter(HttpServletRequest request) {
+        super(request);
+
+        if (request instanceof ActivityRequestWrapper) {
+            init((HttpServletRequest)((ActivityRequestWrapper)request).getRequest());
+        } else {
+            init(request);
+        }
     }
 
-    @Override
-    public MultiValueMap<String, String> getHeaderMap() {
-        if (!headersHeld) {
-            headersHeld = true;
-            Enumeration<String> headerNames = request.getHeaderNames();
-            if (headerNames.hasMoreElements()) {
-                MultiValueMap<String, String> headers = super.getHeaderMap();
-                while (headerNames.hasMoreElements()) {
-                    String name = headerNames.nextElement();
-                    for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements(); ) {
-                        String value = values.nextElement();
-                        headers.add(name, value);
-                    }
+    private void init(HttpServletRequest request) {
+        setRequestMethod(MethodType.resolve(request.getMethod()));
+        setAttributeMap(new RequestAttributeMap(request));
+        setLocale((request.getLocale()));
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        if (headerNames.hasMoreElements()) {
+            MultiValueMap<String, String> headers = getHeaderMap();
+            while (headerNames.hasMoreElements()) {
+                String name = headerNames.nextElement();
+                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
+                    String value = values.nextElement();
+                    headers.add(name, value);
                 }
-                return headers;
             }
         }
-        return super.getHeaderMap();
-    }
 
-    @Override
-    public ParameterMap getParameterMap() {
-        if (!parametersHeld) {
-            parametersHeld = true;
-            Map<String, String[]> parameters = request.getParameterMap();
-            if (!parameters.isEmpty()) {
-                super.getParameterMap().putAll(parameters);
-            }
+        Map<String, String[]> parameters = request.getParameterMap();
+        if (!parameters.isEmpty()) {
+            getParameterMap().putAll(parameters);
         }
-        return super.getParameterMap();
-    }
-
-    @Override
-    public Map<String, Object> getAttributeMap() {
-        if (!attributesHeld) {
-            attributesHeld = true;
-            super.setAttributeMap(new RequestAttributeMap(request));
-        }
-        return super.getAttributeMap();
     }
 
     @Override
     public String getEncoding() {
-        return request.getCharacterEncoding();
+        return ((HttpServletRequest)getAdaptee()).getCharacterEncoding();
     }
 
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         if (encoding != null) {
-            super.setEncoding(encoding);
-            request.setCharacterEncoding(encoding);
+            ((HttpServletRequest)getAdaptee()).setCharacterEncoding(encoding);
         }
-    }
-
-    @Override
-    public Locale getLocale() {
-        if (super.getLocale() != null) {
-            return super.getLocale();
-        }
-        return request.getLocale();
     }
 
 }
