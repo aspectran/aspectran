@@ -52,7 +52,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void init() throws ServletException {
-        log.info("Initializing WebActivityServlet...");
+        log.info("Initializing " + getMyName());
 
         try {
             ServletContext servletContext = getServletContext();
@@ -93,8 +93,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
             webService.stop();
 
-            log.info("Successfully destroyed the Web Activity Servlet: " + this.getServletName());
+            log.info("Successfully destroyed " + getMyName());
         }
+    }
+
+    private String getMyName() {
+        return getClass().getSimpleName() + '@' +
+                Integer.toString(hashCode(), 16) +
+                " [" + getServletName() + "]";
     }
 
 }
