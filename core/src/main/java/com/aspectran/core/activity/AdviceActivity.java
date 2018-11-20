@@ -25,6 +25,10 @@ import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -35,6 +39,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -423,8 +428,18 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getSetting(String settingName) {
-        return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
+        Object value = (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.getSetting(settingName) : null);
+        if (value instanceof String) {
+            String str = (String)value;
+            if (StringUtils.hasText(str)) {
+                Token[] tokens = TokenParser.parse(str);
+                TokenEvaluator tokenEvaluator = new TokenExpressionParser(this);
+                return (T)tokenEvaluator.evaluate(tokens);
+            }
+        }
+        return null;
     }
 
     /**
