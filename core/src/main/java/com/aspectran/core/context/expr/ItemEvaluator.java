@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Evaluates expression for the Item Rule.
+ * Evaluates token expressions in item rules.
  *
  * @since 2010. 5. 6.
  */

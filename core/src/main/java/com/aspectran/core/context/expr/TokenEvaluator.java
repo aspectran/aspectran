@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.context.expr;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -25,7 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Evaluates Token expression.
+ * Evaluates token expressions.
  * 
  * <p>Created: 2010. 5. 6. AM 1:35:16</p>
  */
@@ -50,5 +52,15 @@ public interface TokenEvaluator {
     Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap);
 
     Properties evaluateAsProperties(String parameterName, Properties tokensProp);
+
+    static Object evaluate(String str, Activity activity) {
+        if (Token.hasToken(str)) {
+            Token[] tokens = TokenParser.parse(str);
+            TokenEvaluator tokenEvaluator = new TokenExpressionParser(activity);
+            return tokenEvaluator.evaluate(tokens);
+        } else {
+            return str;
+        }
+    }
 
 }

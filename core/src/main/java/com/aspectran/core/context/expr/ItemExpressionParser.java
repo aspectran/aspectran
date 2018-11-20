@@ -192,7 +192,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         if (list == null) {
             return null;
         }
-
         if (valueType == ItemValueType.STRING) {
             return list.toArray(new String[0]);
         } else if (valueType == ItemValueType.INT) {
@@ -220,7 +219,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         if (tokensList == null || tokensList.isEmpty()) {
             return getParameterAsList(parameterName, valueType);
         }
-
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
@@ -236,7 +234,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
         if (tokensList == null || tokensList.isEmpty()) {
             return getParameterAsSet(parameterName, valueType);
         }
-
         Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
@@ -261,7 +258,6 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
             valueMap.put(parameterName, value);
             return valueMap;
         }
-
         Map<String, Object> valueMap = new LinkedHashMap<>();
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = evaluate(entry.getKey(), entry.getValue());
