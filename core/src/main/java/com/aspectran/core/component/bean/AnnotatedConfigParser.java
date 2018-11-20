@@ -430,7 +430,7 @@ public class AnnotatedConfigParser {
 
         if (transletName == null) {
             transletName = method.getName();
-            transletName = transletName.replace('_', ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+            transletName = transletName.replace('_', ActivityContext.NAME_SEPARATOR_CHAR);
         }
         if (nameArray != null) {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
@@ -600,7 +600,7 @@ public class AnnotatedConfigParser {
             return null;
         }
 
-        namespace = namespace.replace(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
+        namespace = namespace.replace(ActivityContext.NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
 
         int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
         if (cnt == 0) {
@@ -646,7 +646,7 @@ public class AnnotatedConfigParser {
             return name;
         }
 
-        if (StringUtils.startsWith(name, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+        if (StringUtils.startsWith(name, ActivityContext.NAME_SEPARATOR_CHAR)) {
             nameArray[0] = name.substring(1);
         } else {
             nameArray[0] = name;
@@ -654,7 +654,7 @@ public class AnnotatedConfigParser {
 
         StringBuilder sb = new StringBuilder();
         for (int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+            sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
             sb.append(nameArray[i]);
         }
         return sb.toString();
