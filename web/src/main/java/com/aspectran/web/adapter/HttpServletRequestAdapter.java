@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
+    private volatile boolean headersHeld;
+
     /**
      * Instantiates a new HttpServletRequestAdapter.
      *
@@ -41,34 +43,26 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     public HttpServletRequestAdapter(HttpServletRequest request) {
         super(request);
 
-        if (request instanceof ActivityRequestWrapper) {
-            init((HttpServletRequest)((ActivityRequestWrapper)request).getRequest());
-        } else {
-            init(request);
-        }
+        preparse(getHttpServletRequest());
     }
 
-    private void init(HttpServletRequest request) {
-        setRequestMethod(MethodType.resolve(request.getMethod()));
-        setAttributeMap(new RequestAttributeMap(request));
-        setLocale((request.getLocale()));
-
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames.hasMoreElements()) {
-            MultiValueMap<String, String> headers = getHeaderMap();
-            while (headerNames.hasMoreElements()) {
-                String name = headerNames.nextElement();
-                for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
-                    String value = values.nextElement();
-                    headers.add(name, value);
+    @Override
+    public MultiValueMap<String, String> getHeaderMap() {
+        if (!headersHeld) {
+            headersHeld = true;
+            Enumeration<String> headerNames = getHttpServletRequest().getHeaderNames();
+            if (headerNames.hasMoreElements()) {
+                MultiValueMap<String, String> headers = super.getHeaderMap();
+                while (headerNames.hasMoreElements()) {
+                    String name = headerNames.nextElement();
+                    for (Enumeration<String> values = getHttpServletRequest().getHeaders(name); values.hasMoreElements(); ) {
+                        String value = values.nextElement();
+                        headers.add(name, value);
+                    }
                 }
             }
         }
-
-        Map<String, String[]> parameters = request.getParameterMap();
-        if (!parameters.isEmpty()) {
-            getParameterMap().putAll(parameters);
-        }
+        return super.getHeaderMap();
     }
 
     @Override
@@ -80,6 +74,25 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         if (encoding != null) {
             ((HttpServletRequest)getAdaptee()).setCharacterEncoding(encoding);
+        }
+    }
+
+    public HttpServletRequest getHttpServletRequest() {
+        if (getAdaptee() instanceof ActivityRequestWrapper) {
+            return (HttpServletRequest)((ActivityRequestWrapper)getAdaptee()).getRequest();
+        } else {
+            return (HttpServletRequest) getAdaptee();
+        }
+    }
+
+    private void preparse(HttpServletRequest request) {
+        setRequestMethod(MethodType.resolve(request.getMethod()));
+        setAttributeMap(new RequestAttributeMap(request));
+        setLocale((request.getLocale()));
+
+        Map<String, String[]> parameters = request.getParameterMap();
+        if (!parameters.isEmpty()) {
+            getParameterMap().putAll(parameters);
         }
     }
 

@@ -70,7 +70,6 @@ public class WebActivity extends CoreActivity {
      */
     public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
         super(context);
-
         this.request = request;
         this.response = response;
     }
@@ -93,9 +92,9 @@ public class WebActivity extends CoreActivity {
         try {
             super.prepare(transletName, requestMethod);
         } catch (TransletNotFoundException e) {
-            if (StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
-                String transletName2 = transletName + ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR;
+            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
                     response.setStatus(301);
                     response.setHeader("Location", transletName2);
@@ -204,7 +203,7 @@ public class WebActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        WebActivity activity = new WebActivity(getActivityContext(), request, getResponseAdapter().getAdaptee());
+        WebActivity activity = new WebActivity(getActivityContext(), request, response);
         activity.setIncluded(true);
         return (T)activity;
     }

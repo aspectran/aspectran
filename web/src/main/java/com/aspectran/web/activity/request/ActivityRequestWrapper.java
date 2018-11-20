@@ -20,8 +20,10 @@ import com.aspectran.web.activity.WebActivity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -148,6 +150,20 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
             return super.getLocale();
         }
         return requestAdapter.getLocale();
+    }
+
+    @Override
+    public Enumeration<Locale> getLocales() {
+        if (activity == null || requestAdapter.getLocale() == null) {
+            return super.getLocales();
+        }
+        List<Locale> list = new ArrayList<>();
+        list.add(requestAdapter.getLocale());
+        Enumeration<Locale> locales = super.getLocales();
+        while (locales.hasMoreElements()) {
+            list.add(locales.nextElement());
+        }
+        return Collections.enumeration(list);
     }
 
 }

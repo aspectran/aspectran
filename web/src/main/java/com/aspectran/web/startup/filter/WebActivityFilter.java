@@ -15,9 +15,13 @@
  */
 package com.aspectran.web.startup.filter;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
+import com.aspectran.web.service.DefaultServletHttpRequestHandler;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -28,6 +32,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class WebActivityFilter.
@@ -38,11 +44,32 @@ public class WebActivityFilter implements Filter {
 
     private FilterConfig filterConfig;
 
+    private List<WildcardPattern> bypassPatterns;
+
+    private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
+
     @Override
     public void init(FilterConfig filterConfig) {
-        log.info("Initializing WebActivityFilter...");
-
         this.filterConfig = filterConfig;
+
+        log.info("Initializing " + getMyName());
+
+        String[] bypasses = StringUtils.tokenize(filterConfig.getInitParameter("bypasses"), ",\r\n");
+        if (bypasses.length > 0) {
+            List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
+            for (String path : bypasses) {
+                bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
+            }
+            this.bypassPatterns = bypassPatterns;
+            this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
+
+            if (log.isDebugEnabled()) {
+                for (WildcardPattern pattern : bypassPatterns) {
+                    log.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
+                            this.defaultServletHttpRequestHandler.getDefaultServletName() + "]");
+                }
+            }
+        }
     }
 
     @Override
@@ -51,6 +78,17 @@ public class WebActivityFilter implements Filter {
         ActivityRequestWrapper modifiedRequest = null;
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest httpRequest = (HttpServletRequest)request;
+
+            if (bypassPatterns != null) {
+                for (WildcardPattern pattern : bypassPatterns) {
+                    if (pattern.matches(httpRequest.getRequestURI())) {
+                        if (defaultServletHttpRequestHandler.handle(httpRequest, (HttpServletResponse)response)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
             modifiedRequest = new ActivityRequestWrapper(httpRequest);
         }
         if (modifiedRequest != null) {
@@ -62,7 +100,13 @@ public class WebActivityFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("Successfully destroyed the Web Activity Filter: " + filterConfig.getFilterName());
+        log.info("Successfully destroyed " + getMyName());
+    }
+
+    private String getMyName() {
+        return getClass().getSimpleName() + '@' +
+                Integer.toString(hashCode(), 16) +
+                " [" + filterConfig.getFilterName() + "]";
     }
 
 }
