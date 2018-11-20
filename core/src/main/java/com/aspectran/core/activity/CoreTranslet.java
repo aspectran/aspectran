@@ -42,7 +42,8 @@ import java.util.Map;
 /**
  * The Class CoreTranslet.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.</p>
+ * <p>This class is generally not thread-safe.
+ * It is primarily designed for use in a single thread only.</p>
  */
 public class CoreTranslet extends AbstractTranslet {
 

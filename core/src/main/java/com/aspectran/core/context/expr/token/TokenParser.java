@@ -53,17 +53,14 @@ public class TokenParser {
             Token t = new Token(text);
             return new Token[] { t };
         }
-
         Token[] tokens = null;
         List<Token> tokenList = Tokenizer.tokenize(text, optimize);
-
         if (!tokenList.isEmpty()) {
             tokens = tokenList.toArray(new Token[0]);
             if (optimize) {
                 tokens = Tokenizer.optimize(tokens);
             }
         }
-
         return tokens;
     }
 
@@ -71,10 +68,8 @@ public class TokenParser {
         if (text == null) {
             return null;
         }
-
         List<Token> tokenList = Tokenizer.tokenize(text, true);
         List<Token[]> tokensList = null;
-
         if (!tokenList.isEmpty()) {
             tokensList = new ArrayList<>();
             for (Token t : tokenList) {
@@ -88,7 +83,6 @@ public class TokenParser {
                 }
             }
         }
-
         return (tokensList == null || tokensList.isEmpty() ? null : tokensList);
     }
 
@@ -96,10 +90,8 @@ public class TokenParser {
         if (text == null) {
             return null;
         }
-
         List<Token> tokenList = Tokenizer.tokenize(text, true);
         Map<String, Token[]> tokensMap = null;
-
         if (!tokenList.isEmpty()) {
             tokensMap = new LinkedHashMap<>();
             for (Token t : tokenList) {
@@ -110,7 +102,6 @@ public class TokenParser {
                 }
             }
         }
-
         return (tokensMap == null || tokensMap.isEmpty() ? null : tokensMap);
     }
 
