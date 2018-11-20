@@ -36,7 +36,7 @@ public interface ActivityContext {
 
     char ID_SEPARATOR_CHAR = '.';
 
-    char TRANSLET_NAME_SEPARATOR_CHAR = '/';
+    char NAME_SEPARATOR_CHAR = '/';
 
     String LINE_SEPARATOR = "\n";
 

@@ -353,7 +353,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         String wildTransletName = sb.toString();
         if (WildcardPattern.hasWildcards(wildTransletName)) {
             WildcardPattern namePattern = WildcardPattern.compile(wildTransletName,
-                    ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+                    ActivityContext.NAME_SEPARATOR_CHAR);
             transletRule.setNamePattern(namePattern);
             transletRule.setNameTokens(nameTokens);
         }
@@ -406,7 +406,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         if (defaultSettings == null) {
             return transletName;
         }
-        if (StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+        if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
             if (absolutely) {
                 return transletName;
             }

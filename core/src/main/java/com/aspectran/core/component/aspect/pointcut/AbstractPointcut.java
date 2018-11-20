@@ -144,7 +144,7 @@ public abstract class AbstractPointcut implements Pointcut {
     protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
         boolean matched = true;
         if (transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
-            matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+            matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.NAME_SEPARATOR_CHAR);
         }
         if (matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
             matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);

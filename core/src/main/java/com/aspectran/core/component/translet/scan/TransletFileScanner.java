@@ -91,7 +91,7 @@ public class TransletFileScanner extends FileScanner {
     }
 
     public void setTransletNameMaskPattern(String transletNameMaskPattern) {
-        this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+        this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, ActivityContext.NAME_SEPARATOR_CHAR);
     }
 
     public void setTemplateFileScanFilter(String templateFileScanFilterClassName) {

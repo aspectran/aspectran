@@ -194,7 +194,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         if ((includePatterns != null && includePatterns.length > 0) ||
                 excludePatterns != null && excludePatterns.length > 0) {
             exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                    ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+                    ActivityContext.NAME_SEPARATOR_CHAR);
         }
     }
 
