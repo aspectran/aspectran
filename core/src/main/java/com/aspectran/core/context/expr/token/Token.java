@@ -481,4 +481,18 @@ public class Token implements BeanReferenceInspectable, Replicable {
         return type;
     }
 
+    public static boolean hasToken(String str) {
+        char[] ca = str.toCharArray();
+        boolean open = false;
+        for (int i = 1; i < ca.length; i++) {
+            if (isTokenSymbol(ca[i - 1]) && ca[i] == START_BRACKET) {
+                i++;
+                open = true;
+            } else if (open && ca[i] == END_BRACKET) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
