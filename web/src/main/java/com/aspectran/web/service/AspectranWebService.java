@@ -51,7 +51,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_ROOT_CONFIG_FILE = "/WEB-INF/aspectran/config/root-config.xml";
+    private static final String DEFAULT_ROOT_CONFIG_FILE = "/WEB-INF/aspectran/app-config.xml";
 
     private String uriDecoding;
 

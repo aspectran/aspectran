@@ -36,7 +36,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     private static final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
 
-    private static final String DELIMITERS = " ,;\t\n\r\f";
+    private static final String DELIMITERS = " ,;\t\r\n\f";
 
     private Set<String> allowedAddresses;
 

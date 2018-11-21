@@ -52,9 +52,7 @@ public class WebActivityFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
 
-        log.info("Initializing " + getMyName());
-
-        String[] bypasses = StringUtils.tokenize(filterConfig.getInitParameter("bypasses"), ",\r\n");
+        String[] bypasses = StringUtils.tokenize(filterConfig.getInitParameter("bypasses"), ",;\t\r\n\f");
         if (bypasses.length > 0) {
             List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
             for (String path : bypasses) {
@@ -70,6 +68,8 @@ public class WebActivityFilter implements Filter {
                 }
             }
         }
+
+        log.info("Initialized " + getMyName());
     }
 
     @Override
@@ -78,7 +78,6 @@ public class WebActivityFilter implements Filter {
         ActivityRequestWrapper modifiedRequest = null;
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest httpRequest = (HttpServletRequest)request;
-
             if (bypassPatterns != null) {
                 for (WildcardPattern pattern : bypassPatterns) {
                     if (pattern.matches(httpRequest.getRequestURI())) {
@@ -88,7 +87,6 @@ public class WebActivityFilter implements Filter {
                     }
                 }
             }
-
             modifiedRequest = new ActivityRequestWrapper(httpRequest);
         }
         if (modifiedRequest != null) {
@@ -100,7 +98,7 @@ public class WebActivityFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("Successfully destroyed " + getMyName());
+        log.info("Destroyed " + getMyName());
     }
 
     private String getMyName() {

@@ -52,8 +52,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void init() throws ServletException {
-        log.info("Initializing " + getMyName());
-
         try {
             ServletContext servletContext = getServletContext();
             Object object = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
@@ -77,6 +75,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             log.error("Unable to initialize WebActivityServlet", e);
             throw new UnavailableException(e.getMessage());
         }
+
+        log.info("Initialized " + getMyName());
     }
 
     @Override
@@ -92,9 +92,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             log.info("Do not terminate the application server while destroying all scoped beans");
 
             webService.stop();
-
-            log.info("Successfully destroyed " + getMyName());
         }
+
+        log.info("Destroyed " + getMyName());
     }
 
     private String getMyName() {
