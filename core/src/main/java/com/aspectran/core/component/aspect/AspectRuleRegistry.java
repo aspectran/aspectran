@@ -17,6 +17,7 @@ package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -50,8 +51,11 @@ public class AspectRuleRegistry extends AbstractComponent {
         return aspectRuleMap.containsKey(aspectId);
     }
 
-    public void addAspectRule(AspectRule aspectRule) {
-        aspectRuleMap.put(aspectRule.getId(), aspectRule);
+    public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
+        AspectRule old = aspectRuleMap.put(aspectRule.getId(), aspectRule);
+        if (old != null) {
+            throw new IllegalRuleException("Cannot add an Aspect Rule because of Duplicate Aspect ID: " + aspectRule.getId());
+        }
 
         if (log.isTraceEnabled()) {
             log.trace("add AspectRule " + aspectRule);

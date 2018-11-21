@@ -337,7 +337,7 @@ public class BeanRuleRegistry {
             }
 
             @Override
-            public void relay(AspectRule aspectRule) {
+            public void relay(AspectRule aspectRule) throws IllegalRuleException {
                 assistant.addAspectRule(aspectRule);
             }
 

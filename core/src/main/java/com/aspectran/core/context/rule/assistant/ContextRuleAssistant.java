@@ -573,8 +573,9 @@ public class ContextRuleAssistant {
      * Adds the aspect rule.
      *
      * @param aspectRule the aspect rule to add
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public void addAspectRule(AspectRule aspectRule) {
+    public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
         aspectRuleRegistry.addAspectRule(aspectRule);
     }
 
