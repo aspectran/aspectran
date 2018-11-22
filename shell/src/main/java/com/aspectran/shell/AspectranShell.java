@@ -15,8 +15,12 @@
  */
 package com.aspectran.shell;
 
+import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
@@ -29,22 +33,27 @@ import java.io.File;
 public class AspectranShell {
 
     public static void main(String[] args) {
-        File aspectranConfigFile;
-        if (args.length > 0) {
-            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
-        } else {
-            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
-        }
+        String basePath = AspectranConfig.determineBasePath(args);
+        File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
+        Console console = new DefaultConsole(basePath);
+        bootstrap(aspectranConfigFile, console);
+    }
 
+    public static void bootstrap(File aspectranConfigFile, Console console) {
         ShellService shellService = null;
         int exitStatus = 0;
 
         try {
-            shellService = ShellService.run(aspectranConfigFile);
+            shellService = ShellService.run(aspectranConfigFile, console);
             ShellCommander commander = new ShellCommander(shellService);
             commander.perform();
         } catch (Exception e) {
-            e.printStackTrace();
+            Throwable t = ExceptionUtils.getRootCause(e);
+            if (t instanceof InsufficientEnvironmentException) {
+                System.err.println(((InsufficientEnvironmentException)t).getPrettyMessage());
+            } else {
+                e.printStackTrace(System.err);
+            }
             exitStatus = 1;
         } finally {
             if (shellService != null) {

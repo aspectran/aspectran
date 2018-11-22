@@ -34,12 +34,7 @@ public class ProcrunDaemon {
     public static void start(String[] args) {
         if (defaultDaemon == null) {
             try {
-                File aspectranConfigFile;
-                if (args != null && args.length > 0) {
-                    aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
-                } else {
-                    aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
-                }
+                File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
 
                 defaultDaemon = new DefaultDaemon();
                 defaultDaemon.init(aspectranConfigFile);

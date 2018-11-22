@@ -29,13 +29,7 @@ import java.io.File;
 public class DefaultDaemon extends AbstractDaemon {
 
     public static void main(String[] args) {
-        File aspectranConfigFile;
-        if (args.length > 0) {
-            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
-        } else {
-            aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
-        }
-
+        File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         DefaultDaemon defaultDaemon = new DefaultDaemon();
         int exitStatus = 0;
 

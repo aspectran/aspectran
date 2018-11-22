@@ -37,7 +37,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
 
 /**
- * Abstract base class for {@link ShellService} implementations.
+ * Abstract base class for {@code ShellService} implementations.
  *
  * <p>Created: 2017. 10. 30.</p>
  */

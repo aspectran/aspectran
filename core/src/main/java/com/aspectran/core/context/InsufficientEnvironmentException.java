@@ -30,6 +30,8 @@
  */
 package com.aspectran.core.context;
 
+import com.aspectran.core.util.StringUtils;
+
 /**
  * An exception is thrown when Aspectran fails to run properly due to
  * insufficient environment settings.
@@ -72,6 +74,19 @@ public class InsufficientEnvironmentException extends IllegalStateException {
      */
     public InsufficientEnvironmentException(String msg, Throwable cause) {
         super(msg, cause);
+    }
+
+    public String getPrettyMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        sb.append("An Error Occurred!\n");
+        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        String[] lines = StringUtils.split(getMessage(), ";");
+        for (String line : lines) {
+            sb.append(line.trim()).append(".").append(System.lineSeparator());
+        }
+        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        return sb.toString();
     }
 
 }

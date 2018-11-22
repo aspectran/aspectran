@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
@@ -193,17 +192,32 @@ public class AspectranConfig extends AbstractParameters {
         }
     }
 
-    public static File determineAspectranConfigFile(String arg) {
-        File file;
-        if (!StringUtils.isEmpty(arg)) {
-            file = new File(arg);
+    public static String determineBasePath(String[] args) {
+        if (args == null || args.length < 2) {
+            return SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
         } else {
+            return args[0];
+        }
+    }
+
+    public static File determineAspectranConfigFile(String[] args) {
+        File file;
+        if (args == null || args.length == 0) {
             String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
             if (baseDir != null) {
                 file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
             } else {
                 file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
             }
+        } else if (args.length == 1) {
+            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            if (baseDir != null) {
+                file = new File(baseDir, args[0]);
+            } else {
+                file = new File(args[0]);
+            }
+        } else {
+            file = new File(args[0], args[1]);
         }
         return file;
     }

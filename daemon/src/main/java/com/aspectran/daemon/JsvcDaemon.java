@@ -37,12 +37,7 @@ public class JsvcDaemon implements Daemon {
     public void init(DaemonContext daemonContext) throws DaemonInitException {
         if (defaultDaemon == null) {
             String[] args = daemonContext.getArguments();
-            File aspectranConfigFile;
-            if (args != null && args.length > 0) {
-                aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args[0]);
-            } else {
-                aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(null);
-            }
+            File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
 
             try {
                 defaultDaemon = new DefaultDaemon();
