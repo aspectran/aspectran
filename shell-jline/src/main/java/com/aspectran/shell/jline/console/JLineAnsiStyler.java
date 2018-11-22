@@ -66,7 +66,7 @@ public class JLineAnsiStyler {
     public static AttributedStyle makeStyle(AttributedStyle as, String... styles) {
         for (String style : styles) {
             switch (style) {
-                case "off":
+                case "reset":
                     as = AttributedStyle.DEFAULT;
                     break;
                 case "bold":
@@ -182,7 +182,7 @@ public class JLineAnsiStyler {
                 case "fg:white":
                     as = as.foreground(15);
                     break;
-                case "fg:off":
+                case "fg:reset":
                     as = as.foregroundOff();
                     break;
                 case "bg:black":
@@ -235,7 +235,7 @@ public class JLineAnsiStyler {
                 case "bg:white":
                     as = as.background(15);
                     break;
-                case "bg:off":
+                case "bg:reset":
                     as = as.backgroundOff();
                     break;
                 default:

@@ -26,12 +26,12 @@ public class JLineAnsiStylerTest {
 
     @Test
     public void testAnsiColor() {
-        String s0 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{off}}";
+        String s0 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{reset}}";
         System.out.println(JLineAnsiStyler.parse(s0));
-        String s1 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{off}}";
+        String s1 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{reset}}";
         System.out.println(JLineAnsiStyler.parse(s1));
-        String s2 = "{{white,bg:black}} black {{black,bg:red}} red {{white,bg:green}} green {{black,bg:yellow}} yellow {{bg:blue}} blue {{bg:magenta}} magenta {{bg:cyan}} cyan {{black,bg:gray}} gray  {{off}}\n" +
-                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{off}}";
+        String s2 = "{{white,bg:black}} black {{black,bg:red}} red {{white,bg:green}} green {{black,bg:yellow}} yellow {{bg:blue}} blue {{bg:magenta}} magenta {{bg:cyan}} cyan {{black,bg:gray}} gray  {{reset}}\n" +
+                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{reset}}";
         System.out.println(JLineAnsiStyler.parse(s2));
     }
 

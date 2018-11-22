@@ -310,17 +310,17 @@ public class JLineConsole extends AbstractConsole {
             return false;
         }
         if (message != null) {
-            String message2 = toAnsi("{{YELLOW}}" + message + "{{off}}");
+            String message2 = toAnsi("{{YELLOW}}" + message + "{{reset}}");
             reader.printAbove(message2);
         }
-        String confirm = toAnsi("{{YELLOW}}Would you like to restart this shell [Y/n]?{{off}} ");
+        String confirm = toAnsi("{{YELLOW}}Would you like to restart this shell [Y/n]?{{reset}} ");
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
     public boolean confirmQuit() {
-        String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{off}} ");
+        String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{reset}} ");
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }

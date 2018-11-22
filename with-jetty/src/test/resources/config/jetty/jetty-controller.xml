@@ -9,14 +9,14 @@
     <translet name="jetty">
         <description style="apon">
             |
-            |{{underline}}To control Jetty, try one of the following commands:{{off}}
-            |   {{CYAN}}jetty start{{fg:off}}  Runs a Jetty Server
-            |   {{CYAN}}jetty stop{{fg:off}}   Stops the currently running Jetty Server
+            |{{underline}}To control Jetty, try one of the following commands:{{reset}}
+            |   {{CYAN}}jetty start{{fg:reset}}  Runs a Jetty Server
+            |   {{CYAN}}jetty stop{{fg:reset}}   Stops the currently running Jetty Server
         </description>
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
                 |
             </template>
         </transform>
@@ -25,14 +25,14 @@
     <translet name="jetty start">
         <description style="apon">
             |
-            |   {{cyan}}Starting the Jetty Server...{{off}}
+            |   {{cyan}}Starting the Jetty Server...{{reset}}
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="start"/>
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
                 |   Web server started on localhost:%{jetty.server.port}
                 |
             </template>
@@ -42,7 +42,7 @@
                 <transform type="transform/text">
                     <template style="apon">
                         |
-                        |   {{RED}}Jetty Server Error - Port %{jetty.server.port} already in use{{off}}
+                        |   {{RED}}Jetty Server Error - Port %{jetty.server.port} already in use{{reset}}
                         |
                     </template>
                 </transform>
@@ -53,14 +53,14 @@
     <translet name="jetty stop">
         <description style="apon">
             |
-            |   {{cyan}}Stopping the Jetty Server...{{off}}
+            |   {{cyan}}Stopping the Jetty Server...{{reset}}
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{off}}
+                |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
                 |
             </template>
         </transform>

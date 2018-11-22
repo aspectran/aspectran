@@ -34,8 +34,8 @@
                 <transform type="transform/text">
                     <template style="apon">
                         |
-                        |   {{RED}}An Error Occurred!{{off}}
-                        |{{BLUE}}-----------------------------------------------------------------------------------------{{off}}
+                        |   {{RED}}An Error Occurred!{{reset}}
+                        |{{BLUE}}-----------------------------------------------------------------------------------------{{reset}}
                         |   #{currentTranslet^rootCauseOfRaisedException}
                         |
                     </template>

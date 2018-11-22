@@ -56,11 +56,11 @@
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{bg:green}}                         {{off}}
-                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
-                |   {{bg:green}}   {{magenta,bg:white}}   @{helloWorld}   {{bg:blue}}   {{off}}
-                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
-                |   {{magenta,bg:blue}}                         {{off}}
+                |   {{bg:green}}                         {{reset}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{reset}}
+                |   {{bg:green}}   {{magenta,bg:white}}   @{helloWorld}   {{bg:blue}}   {{reset}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{reset}}
+                |   {{magenta,bg:blue}}                         {{reset}}
                 |
             </template>
         </transform>

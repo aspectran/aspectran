@@ -35,11 +35,11 @@ shell: {
     verbose: true
     greetings: (
         |
-        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{off}}
+        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
         |
-        |To run a command, type {{GREEN}}`command_name [args|options]`{{off}}.
-        |To get help on a specific command, type {{GREEN}}`command_name --help`{{off}}.
-        |If you want a list of all supported built-in commands, type {{GREEN}}`help`{{off}}.
+        |To run a command, type {{GREEN}}`command_name [args|options]`{{reset}}.
+        |To get help on a specific command, type {{GREEN}}`command_name --help`{{reset}}.
+        |If you want a list of all supported built-in commands, type {{GREEN}}`help`{{reset}}.
         |
     )
 }
