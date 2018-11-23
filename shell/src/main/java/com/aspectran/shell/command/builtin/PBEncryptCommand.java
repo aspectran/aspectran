@@ -29,7 +29,7 @@ import java.util.Collection;
  */
 public class PBEncryptCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "encrypt";
 

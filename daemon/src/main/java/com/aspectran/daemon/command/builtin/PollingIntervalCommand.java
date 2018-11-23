@@ -26,7 +26,7 @@ import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class PollingIntervalCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "pollingInterval";
 

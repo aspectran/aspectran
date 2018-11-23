@@ -31,7 +31,7 @@ public class VerboseCommand extends AbstractCommand {
 
     private static final Log log = LogFactory.getLog(VerboseCommand.class);
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "verbose";
 

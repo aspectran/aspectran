@@ -26,7 +26,7 @@ import java.util.Collection;
  */
 public class ResumeCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "resume";
 

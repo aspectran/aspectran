@@ -21,7 +21,7 @@ import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class QuitCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "quit";
 

@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class SysInfoCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "sysinfo";
 

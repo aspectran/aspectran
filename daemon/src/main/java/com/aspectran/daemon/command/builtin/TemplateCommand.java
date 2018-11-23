@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class TemplateCommand extends AbstractCommand {
 
-    private static final String NAMESPACE = "builtin";
+    private static final String NAMESPACE = "builtins";
 
     private static final String COMMAND_NAME = "template";
 
