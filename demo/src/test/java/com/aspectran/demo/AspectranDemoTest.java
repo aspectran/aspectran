@@ -16,12 +16,12 @@
 package com.aspectran.demo;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.AspectranShell;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.jline.console.JLineConsole;
-import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Test for Aspectran Demo.
@@ -31,28 +31,15 @@ import java.io.File;
 public class AspectranDemoTest {
 
     public static void main(String[] args) {
-        ShellService service = null;
-        int exitStatus = 0;
-
         try {
             File current = ResourceUtils.getResourceAsFile("");
             File root = new File(current, "../../app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-
             Console console = new JLineConsole(root.getCanonicalPath());
-            service = ShellService.run(aspectranConfigFile, console);
-            ShellCommander commander = new ShellCommander(service);
-            commander.perform();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exitStatus = 1;
-        } finally {
-            if (service != null) {
-                service.release();
-            }
+            AspectranShell.bootstrap(aspectranConfigFile, console);
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
         }
-
-        System.exit(exitStatus);
     }
 
 }
