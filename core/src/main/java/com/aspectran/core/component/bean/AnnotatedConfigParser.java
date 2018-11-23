@@ -16,34 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.process.action.MethodAction;
-import com.aspectran.core.component.bean.annotation.Action;
-import com.aspectran.core.component.bean.annotation.After;
-import com.aspectran.core.component.bean.annotation.Around;
-import com.aspectran.core.component.bean.annotation.Aspect;
-import com.aspectran.core.component.bean.annotation.Autowired;
-import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Before;
-import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.Description;
-import com.aspectran.core.component.bean.annotation.Destroy;
-import com.aspectran.core.component.bean.annotation.Dispatch;
-import com.aspectran.core.component.bean.annotation.ExceptionThrown;
-import com.aspectran.core.component.bean.annotation.Forward;
-import com.aspectran.core.component.bean.annotation.Initialize;
-import com.aspectran.core.component.bean.annotation.Joinpoint;
-import com.aspectran.core.component.bean.annotation.Profile;
-import com.aspectran.core.component.bean.annotation.Qualifier;
-import com.aspectran.core.component.bean.annotation.Redirect;
-import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.component.bean.annotation.RequestAsDelete;
-import com.aspectran.core.component.bean.annotation.RequestAsGet;
-import com.aspectran.core.component.bean.annotation.RequestAsPatch;
-import com.aspectran.core.component.bean.annotation.RequestAsPost;
-import com.aspectran.core.component.bean.annotation.RequestAsPut;
-import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.core.component.bean.annotation.Settings;
-import com.aspectran.core.component.bean.annotation.Transform;
-import com.aspectran.core.component.bean.annotation.Value;
+import com.aspectran.core.component.bean.annotation.*;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
@@ -56,6 +29,7 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -77,7 +51,6 @@ import com.aspectran.core.util.logging.LogFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -273,7 +246,7 @@ public class AnnotatedConfigParser {
                     Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
                     String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
 
-                    Parameter[] params = method.getParameters();
+                    java.lang.reflect.Parameter[] params = method.getParameters();
                     Class<?>[] paramTypes = new Class<?>[params.length];
                     String[] paramQualifiers = new String[params.length];
                     for (int i = 0; i < params.length; i++) {
@@ -398,9 +371,6 @@ public class AnnotatedConfigParser {
     }
 
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
-        String transletName = null;
-        MethodType[] allowedMethods = null;
-
         Request requestAnno = method.getAnnotation(Request.class);
         RequestAsGet requestAsGetAnno = method.getAnnotation(RequestAsGet.class);
         RequestAsPost requestAsPostAnno = method.getAnnotation(RequestAsPost.class);
@@ -408,26 +378,59 @@ public class AnnotatedConfigParser {
         RequestAsPatch requestAsPatchAnno = method.getAnnotation(RequestAsPatch.class);
         RequestAsDelete requestAsDeleteAnno = method.getAnnotation(RequestAsDelete.class);
 
+        String transletName = null;
+        MethodType[] allowedMethods = null;
+        Parameter[] parameters = null;
+        Attribute[] attributes = null;
         if (requestAnno != null) {
             transletName = StringUtils.emptyToNull(requestAnno.translet());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAnno.value());
+            }
             allowedMethods = requestAnno.method();
+            parameters = requestAnno.parameters();
+            attributes = requestAnno.attributes();
         } else if (requestAsGetAnno != null) {
             transletName = StringUtils.emptyToNull(requestAsGetAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAsGetAnno.value());
+            }
             allowedMethods = new MethodType[] { MethodType.GET };
+            parameters = requestAsGetAnno.parameters();
+            attributes = requestAsGetAnno.attributes();
         } else if (requestAsPostAnno != null) {
             transletName = StringUtils.emptyToNull(requestAsPostAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAsPostAnno.value());
+            }
             allowedMethods = new MethodType[] { MethodType.POST };
+            parameters = requestAsPostAnno.parameters();
+            attributes = requestAsPostAnno.attributes();
         } else if (requestAsPutAnno != null) {
             transletName = StringUtils.emptyToNull(requestAsPutAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAsPutAnno.value());
+            }
             allowedMethods = new MethodType[] { MethodType.PUT };
+            parameters = requestAsPutAnno.parameters();
+            attributes = requestAsPutAnno.attributes();
         } else if (requestAsPatchAnno != null) {
             transletName = StringUtils.emptyToNull(requestAsPatchAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAsPatchAnno.value());
+            }
             allowedMethods = new MethodType[] { MethodType.PATCH };
+            parameters = requestAsPatchAnno.parameters();
+            attributes = requestAsPatchAnno.attributes();
         } else if (requestAsDeleteAnno != null) {
             transletName = StringUtils.emptyToNull(requestAsDeleteAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestAsDeleteAnno.value());
+            }
             allowedMethods = new MethodType[] { MethodType.DELETE };
+            parameters = requestAsDeleteAnno.parameters();
+            attributes = requestAsDeleteAnno.attributes();
         }
-
         if (transletName == null) {
             transletName = method.getName();
             transletName = transletName.replace('_', ActivityContext.NAME_SEPARATOR_CHAR);
@@ -436,10 +439,17 @@ public class AnnotatedConfigParser {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
         }
 
+        TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
+
+        if (parameters != null) {
+            transletRule.touchRequestRule(true).setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+        }
+        if (attributes != null) {
+            transletRule.touchRequestRule(true).setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+        }
+
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
-
-        TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
         MethodActionRule methodActionRule = new MethodActionRule();
         methodActionRule.setActionId(actionId);
@@ -574,7 +584,7 @@ public class AnnotatedConfigParser {
         return DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding);
     }
 
-    private TransformRule parseTransformRule(Transform transformAnno) throws IllegalRuleException {
+    private TransformRule parseTransformRule(Transform transformAnno) {
         TransformType transformType = transformAnno.type();
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
         String templateId = StringUtils.emptyToNull(transformAnno.template());
@@ -587,12 +597,28 @@ public class AnnotatedConfigParser {
 
     private ForwardResponseRule parseForwardResponseRule(Forward forwardAnno) throws IllegalRuleException {
         String translet = StringUtils.emptyToNull(forwardAnno.translet());
-        return ForwardResponseRule.newInstance(translet);
+        if (translet == null) {
+            translet = StringUtils.emptyToNull(forwardAnno.value());
+        }
+        ForwardResponseRule forwardResponseRule = ForwardResponseRule.newInstance(translet);
+        Attribute[] attributes = forwardAnno.attributes();
+        if (attributes.length > 0) {
+            forwardResponseRule.setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+        }
+        return forwardResponseRule;
     }
 
     private RedirectResponseRule parseRedirectResponseRule(Redirect redirectAnno) throws IllegalRuleException {
         String path = StringUtils.emptyToNull(redirectAnno.path());
-        return RedirectResponseRule.newInstance(path);
+        if (path == null) {
+            path = StringUtils.emptyToNull(redirectAnno.value());
+        }
+        RedirectResponseRule redirectResponseRule = RedirectResponseRule.newInstance(path);
+        Parameter[] parameters = redirectAnno.parameters();
+        if (parameters.length > 0) {
+            redirectResponseRule.setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+        }
+        return redirectResponseRule;
     }
 
     private String[] splitNamespace(String namespace) {

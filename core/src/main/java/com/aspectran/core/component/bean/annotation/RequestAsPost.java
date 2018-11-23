@@ -21,11 +21,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface RequestAsPost {
 
+    String translet() default "";
+
     String value() default "";
+
+    Parameter[] parameters() default {};
+
+    Attribute[] attributes() default {};
 
 }

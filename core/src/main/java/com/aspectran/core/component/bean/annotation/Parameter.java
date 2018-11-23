@@ -23,15 +23,19 @@ import java.lang.annotation.Target;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestAsDelete {
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Parameter {
 
-    String translet() default "";
+    String name() default "";
 
     String value() default "";
 
-    Parameter[] parameters() default {};
+    String defaultValue() default "";
 
-    Attribute[] attributes() default {};
+    boolean tokenize() default true;
+
+    boolean mandatory() default false;
+
+    boolean security() default false;
 
 }

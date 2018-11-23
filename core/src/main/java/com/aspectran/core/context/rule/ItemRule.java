@@ -16,6 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.component.bean.annotation.Attribute;
+import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.params.CallParameters;
@@ -689,11 +691,13 @@ public class ItemRule {
             itemRule.setTokenize(tokenize);
         }
 
-        ItemValueType itemValueType = ItemValueType.resolve(valueType);
-        if (valueType != null && itemValueType == null) {
-            throw new IllegalRuleException("No item value type for '" + valueType + "'");
+        if (valueType != null) {
+            ItemValueType itemValueType = ItemValueType.resolve(valueType);
+            if (itemValueType == null) {
+                throw new IllegalRuleException("No item value type for '" + valueType + "'");
+            }
+            itemRule.setValueType(itemValueType);
         }
-        itemRule.setValueType(itemValueType);
 
         if (defaultValue != null) {
             itemRule.setDefaultValue(defaultValue);
@@ -747,7 +751,6 @@ public class ItemRule {
      */
     public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
         Iterator<Token[]> iter = null;
-
         if (itemRule.isListableType()) {
             List<Token[]> list = itemRule.getTokensList();
             if (list != null) {
@@ -775,7 +778,6 @@ public class ItemRule {
                 }
             };
         }
-
         return iter;
     }
 
@@ -790,7 +792,6 @@ public class ItemRule {
         if (itemParametersList == null || itemParametersList.isEmpty()) {
             return null;
         }
-
         ItemRuleMap itemRuleMap = new ItemRuleMap();
         for (ItemParameters parameters : itemParametersList) {
             itemRuleMap.putItemRule(toItemRule(parameters));
@@ -923,6 +924,54 @@ public class ItemRule {
         Parameters holder = new ItemHolderParameters(text);
         List<ItemParameters> itemParametersList = holder.getParametersList(ItemHolderParameters.item);
         return toItemRuleMap(itemParametersList);
+    }
+
+    public static ItemRuleMap toItemRuleMap(Parameter[] parameters) throws IllegalRuleException {
+        if (parameters == null || parameters.length == 0) {
+            return null;
+        }
+        ItemRuleMap itemRuleMap = new ItemRuleMap();
+        for (Parameter parameter : parameters) {
+            itemRuleMap.putItemRule(toItemRule(parameter));
+        }
+        return itemRuleMap;
+    }
+
+    public static ItemRule toItemRule(Parameter parameter) throws IllegalRuleException {
+        String name = parameter.name();
+        String value = parameter.value();
+        String defaultValue = parameter.defaultValue();
+        boolean tokenize = parameter.tokenize();
+        boolean mandatory = parameter.mandatory();
+        boolean security = parameter.security();
+
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, security);
+        itemRule.setValue(value);
+        return itemRule;
+    }
+
+    public static ItemRuleMap toItemRuleMap(Attribute[] attributes) throws IllegalRuleException {
+        if (attributes == null || attributes.length == 0) {
+            return null;
+        }
+        ItemRuleMap itemRuleMap = new ItemRuleMap();
+        for (Attribute attribute : attributes) {
+            itemRuleMap.putItemRule(toItemRule(attribute));
+        }
+        return itemRuleMap;
+    }
+
+    public static ItemRule toItemRule(Attribute attribute) throws IllegalRuleException {
+        String name = attribute.name();
+        String value = attribute.value();
+        String defaultValue = attribute.defaultValue();
+        boolean tokenize = attribute.tokenize();
+        boolean mandatory = attribute.mandatory();
+        boolean security = attribute.security();
+
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, security);
+        itemRule.setValue(value);
+        return itemRule;
     }
 
 }
