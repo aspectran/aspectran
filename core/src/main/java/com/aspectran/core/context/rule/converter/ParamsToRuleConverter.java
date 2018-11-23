@@ -407,24 +407,14 @@ public class ParamsToRuleConverter {
 
         ItemHolderParameters parametersItemHolderParameters = transletParameters.getParameters(TransletParameters.parameters);
         if (parametersItemHolderParameters != null) {
-            RequestRule requestRule = transletRule.getRequestRule();
-            if (requestRule == null) {
-                requestRule = RequestRule.newInstance(true);
-                transletRule.setRequestRule(requestRule);
-            }
             ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
-            requestRule.setParameterItemRuleMap(parameterItemRuleMap);
+            transletRule.touchRequestRule(true).setParameterItemRuleMap(parameterItemRuleMap);
         }
 
         ItemHolderParameters attributesItemHolderParameters = transletParameters.getParameters(TransletParameters.attributes);
         if (attributesItemHolderParameters != null) {
-            RequestRule requestRule = transletRule.getRequestRule();
-            if (requestRule == null) {
-                requestRule = RequestRule.newInstance(true);
-                transletRule.setRequestRule(requestRule);
-            }
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
-            requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
+            transletRule.touchRequestRule(true).setAttributeItemRuleMap(attributeItemRuleMap);
         }
 
         ContentsParameters contentsParameters = transletParameters.getParameters(TransletParameters.contents);

@@ -228,6 +228,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.requestRule = requestRule;
     }
 
+    public RequestRule touchRequestRule(boolean implicit) {
+        if (requestRule != null) {
+            return requestRule;
+        } else {
+            requestRule = RequestRule.newInstance(implicit);
+            return requestRule;
+        }
+    }
+
     /**
      * Gets the content list.
      *

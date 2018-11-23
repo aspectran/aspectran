@@ -90,12 +90,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
                 TransletRule transletRule = parser.peekObject();
-                RequestRule requestRule = transletRule.getRequestRule();
-                if (requestRule == null) {
-                    requestRule = RequestRule.newInstance(true);
-                    transletRule.setRequestRule(requestRule);
-                }
-                requestRule.setParameterItemRuleMap(irm);
+                transletRule.touchRequestRule(true).setParameterItemRuleMap(irm);
             }
         });
         parser.setXpath(xpath + "/translet/attributes");
@@ -108,12 +103,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
                 TransletRule transletRule = parser.peekObject();
-                RequestRule requestRule = transletRule.getRequestRule();
-                if (requestRule == null) {
-                    requestRule = RequestRule.newInstance(true);
-                    transletRule.setRequestRule(requestRule);
-                }
-                requestRule.setAttributeItemRuleMap(irm);
+                transletRule.touchRequestRule(true).setAttributeItemRuleMap(irm);
             }
         });
         parser.setXpath(xpath + "/translet/request");

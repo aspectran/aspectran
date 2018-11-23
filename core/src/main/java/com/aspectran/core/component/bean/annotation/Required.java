@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
  * Marks a method (typically a JavaBean setter method) as being 'required': that is,
  * the setter method must be configured to be dependency-injected with a value.
  */
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Required {
 
 }

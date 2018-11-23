@@ -135,8 +135,8 @@ public class BeanRuleAnalyzer {
     }
 
     public static void checkRequiredProperty(BeanRule beanRule, Method method) {
-        ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         String propertyName = dropCase(method.getName());
+        ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
             if (propertyItemRuleMap.containsKey(propertyName)) {
                 return;
