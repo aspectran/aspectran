@@ -85,7 +85,7 @@ public class InsufficientEnvironmentException extends IllegalStateException {
         for (String line : lines) {
             sb.append(line.trim()).append(".").append(System.lineSeparator());
         }
-        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        sb.append("-----------------------------------------------------------------------------");
         return sb.toString();
     }
 
