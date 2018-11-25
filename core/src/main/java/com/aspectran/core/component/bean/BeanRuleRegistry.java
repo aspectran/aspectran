@@ -56,8 +56,6 @@ public class BeanRuleRegistry {
 
     private static final Log log = LogFactory.getLog(BeanRuleRegistry.class);
 
-    private final ClassLoader classLoader;
-
     private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>(256);
 
     private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>(256);
@@ -71,6 +69,8 @@ public class BeanRuleRegistry {
     private final Set<String> importantBeanIdSet = new HashSet<>();
 
     private final Set<Class<?>> importantBeanTypeSet = new HashSet<>();
+
+    private final ClassLoader classLoader;
 
     public BeanRuleRegistry(ClassLoader classLoader) {
         this.classLoader = classLoader;

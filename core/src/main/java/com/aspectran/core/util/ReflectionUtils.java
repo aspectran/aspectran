@@ -90,7 +90,8 @@ public class ReflectionUtils {
             return false;
         } catch (SecurityException se) {
             Class<?> declClass = field.getDeclaringClass();
-            throw new IllegalArgumentException("Can not access " + field + " (from class " + declClass.getName() + "; failed to set access: " + se.getMessage());
+            throw new IllegalArgumentException("Can not access " + field + " (from class " + declClass.getName() +
+                    "; failed to set access: " + se.getMessage());
         }
     }
 
@@ -115,7 +116,8 @@ public class ReflectionUtils {
             }
         } catch (SecurityException se) {
             Class<?> declClass = method.getDeclaringClass();
-            throw new IllegalArgumentException("Can not access " + method + " (from class " + declClass.getName() + "; failed to set access: " + se.getMessage());
+            throw new IllegalArgumentException("Can not access " + method + " (from class " + declClass.getName() +
+                    "; failed to set access: " + se.getMessage());
         }
         return false;
     }
@@ -135,7 +137,6 @@ public class ReflectionUtils {
         }
 
         float weight = 0.0f;
-
         for (int i = 0; i < paramTypes.length; i++) {
             Class<?> srcClass = paramTypes[i];
             Object destArg = destArgs[i];
@@ -144,7 +145,6 @@ public class ReflectionUtils {
                 break;
             }
         }
-
         return weight;
     }
 
@@ -174,7 +174,6 @@ public class ReflectionUtils {
      */
     public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Class<?>[] destArgs) {
         float weight = 0.0f;
-
         for (int i = 0; i < srcArgs.length; i++) {
             Class<?> srcClass = srcArgs[i];
             Class<?> destClass = destArgs[i];
@@ -183,7 +182,6 @@ public class ReflectionUtils {
                 break;
             }
         }
-
         return weight;
     }
 
@@ -206,7 +204,6 @@ public class ReflectionUtils {
                 srcClass = srcClass.getComponentType();
                 destClass = destClass.getComponentType();
             }
-
             if ((destClass.isPrimitive()
                     && srcClass.equals(TypeUtils.getPrimitiveWrapper(destClass)))
                     || (srcClass.isPrimitive()
@@ -216,7 +213,6 @@ public class ReflectionUtils {
         }
 
         float weight = 0.0f;
-
         while (destClass != null && !destClass.equals(srcClass)) {
             if (destClass.isInterface() && destClass.equals(srcClass)) {
                 // slight penalty for interface match.
@@ -237,7 +233,6 @@ public class ReflectionUtils {
         if (destClass == null) {
             weight += 1.5f;
         }
-
         return weight;
     }
 
