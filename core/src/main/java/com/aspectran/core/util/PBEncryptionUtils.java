@@ -109,7 +109,7 @@ public class PBEncryptionUtils {
         if (!StringUtils.hasText(encryptionPassword)) {
             throw new InsufficientEnvironmentException("A password is required to attempt password-based encryption " +
                     "or decryption; Make sure the JVM system property \"aspectran.encryption.password\" is set up; " +
-                    "Default algorithm: " + getAlgorithm());
+                    "(Default algorithm: " + getAlgorithm() + ")");
         }
     }
 

@@ -78,12 +78,20 @@ public class InsufficientEnvironmentException extends IllegalStateException {
 
     public String getPrettyMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        sb.append("-----------------------------------------------------------------------------");
+        sb.append(System.lineSeparator());
         sb.append("An Error Occurred!\n");
-        sb.append("-----------------------------------------------------------------------------").append(System.lineSeparator());
+        sb.append("-----------------------------------------------------------------------------");
+        sb.append(System.lineSeparator());
         String[] lines = StringUtils.split(getMessage(), ";");
         for (String line : lines) {
-            sb.append(line.trim()).append(".").append(System.lineSeparator());
+            line = line.trim();
+            sb.append(line);
+            if (!line.endsWith(")") && !line.endsWith("}") && !line.endsWith("]") && !line.endsWith(">") &&
+                    !line.endsWith("!") && !line.endsWith("?") && !line.endsWith("'") && !line.endsWith("\"")) {
+                sb.append(".");
+            }
+            sb.append(System.lineSeparator());
         }
         sb.append("-----------------------------------------------------------------------------");
         return sb.toString();
