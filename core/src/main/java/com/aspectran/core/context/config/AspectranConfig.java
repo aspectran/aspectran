@@ -211,7 +211,7 @@ public class AspectranConfig extends AbstractParameters {
             }
         } else if (args.length == 1) {
             String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-            if (baseDir != null) {
+            if (baseDir != null && !args[0].startsWith(baseDir)) {
                 file = new File(baseDir, args[0]);
             } else {
                 file = new File(args[0]);
