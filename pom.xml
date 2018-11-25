@@ -4,7 +4,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>5.9.0</version>
+    <version>5.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -46,7 +46,7 @@
         <url>https://github.com/aspectran/aspectran</url>
         <connection>scm:git:ssh://git@github.com/aspectran/aspectran.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
-        <tag>v5.9.0</tag>
+        <tag>v5.8.1</tag>
     </scm>
     <issueManagement>
         <system>GitHub Issue Management</system>
