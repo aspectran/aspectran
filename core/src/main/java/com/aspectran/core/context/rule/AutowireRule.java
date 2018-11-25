@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -58,6 +59,10 @@ public class AutowireRule implements BeanReferenceInspectable {
     @SuppressWarnings("unchecked")
     public <T> T getTarget() {
         return (T)target;
+    }
+
+    public void setTarget(Constructor constructor) {
+        this.target = constructor;
     }
 
     public void setTarget(Field field) {

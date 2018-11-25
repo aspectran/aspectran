@@ -25,15 +25,16 @@ public class TestFieldAutowireBean {
 
     @Autowired
     @Qualifier("bean.TestFieldValueAutowireBean")
-    private TestFieldValueAutowireBean bean1;
+    public TestFieldValueAutowireBean bean1;
 
     @Autowired(required = false)
     @Qualifier("bean.TestFieldValueAutowireBean3")
-    private TestFieldValueAutowireBean bean2;
+    public TestFieldValueAutowireBean bean2;
 
     public TestFieldValueAutowireBean getBean1() {
         return bean1;
     }
+
     public TestFieldValueAutowireBean getBean2() {
         return bean2;
     }

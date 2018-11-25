@@ -26,7 +26,8 @@ public enum AutowireTargetType {
 
     FIELD("field"),
     FIELD_VALUE("fieldValue"),
-    METHOD("method");
+    METHOD("method"),
+    CONSTRUCTOR("constructor");
 
     private final String alias;
 

@@ -481,7 +481,8 @@ public class ContextRuleAssistant {
                     reserveBeanReference(token.getName(), autowireRule);
                 }
             }
-        } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
+        } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
+                autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
             if (autowireRule.isRequired()) {
                 Class<?>[] types = autowireRule.getTypes();
                 String[] qualifiers = autowireRule.getQualifiers();

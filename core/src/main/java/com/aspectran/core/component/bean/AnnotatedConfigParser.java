@@ -16,7 +16,36 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.process.action.MethodAction;
-import com.aspectran.core.component.bean.annotation.*;
+import com.aspectran.core.component.bean.annotation.Action;
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Around;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Attribute;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Description;
+import com.aspectran.core.component.bean.annotation.Destroy;
+import com.aspectran.core.component.bean.annotation.Dispatch;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Forward;
+import com.aspectran.core.component.bean.annotation.Initialize;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import com.aspectran.core.component.bean.annotation.Parameter;
+import com.aspectran.core.component.bean.annotation.Profile;
+import com.aspectran.core.component.bean.annotation.Qualifier;
+import com.aspectran.core.component.bean.annotation.Redirect;
+import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.core.component.bean.annotation.RequestAsDelete;
+import com.aspectran.core.component.bean.annotation.RequestAsGet;
+import com.aspectran.core.component.bean.annotation.RequestAsPatch;
+import com.aspectran.core.component.bean.annotation.RequestAsPost;
+import com.aspectran.core.component.bean.annotation.RequestAsPut;
+import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.component.bean.annotation.Settings;
+import com.aspectran.core.component.bean.annotation.Transform;
+import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
@@ -49,6 +78,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -105,6 +135,7 @@ public class AnnotatedConfigParser {
                     log.trace("configBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
+                    parseConstructorAutowire(beanRule);
                     parseConfigBean(beanRule);
                     parseFieldAutowire(beanRule);
                     parseMethodAutowire(beanRule);
@@ -121,6 +152,7 @@ public class AnnotatedConfigParser {
                     log.trace("idBasedBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
+                    parseConstructorAutowire(beanRule);
                     parseFieldAutowire(beanRule);
                     parseMethodAutowire(beanRule);
                 }
@@ -137,6 +169,7 @@ public class AnnotatedConfigParser {
                         if (log.isTraceEnabled()) {
                             log.trace("typeBasedBeanRule " + beanRule);
                         }
+                        parseConstructorAutowire(beanRule);
                         parseFieldAutowire(beanRule);
                         parseMethodAutowire(beanRule);
                     }
@@ -179,6 +212,61 @@ public class AnnotatedConfigParser {
                         method.isAnnotationPresent(RequestAsDelete.class)) {
                     parseTransletRule(beanClass, method, nameArray);
                 }
+            }
+        }
+    }
+
+    private void parseConstructorAutowire(BeanRule beanRule) {
+        if (beanRule.isConstructorAutowireParsed()) {
+            return;
+        } else {
+            beanRule.setConstructorAutowireParsed(true);
+        }
+
+        Class<?> beanClass = beanRule.getBeanClass();
+        Constructor<?>[] constructors = beanClass.getDeclaredConstructors();
+        Constructor<?> candidate = null;
+        if (constructors.length == 1) {
+            candidate = constructors[0];
+        } else {
+            for (Constructor<?> ctor : constructors) {
+                if (ctor.isAnnotationPresent(Autowired.class)) {
+                    candidate = ctor;
+                    break;
+                }
+            }
+        }
+        if (candidate != null) {
+            java.lang.reflect.Parameter[] params = candidate.getParameters();
+            if (params.length > 0) {
+                Class<?>[] paramTypes = new Class<?>[params.length];
+                String[] paramQualifiers = new String[params.length];
+                for (int i = 0; i < params.length; i++) {
+                    String paramQualifier = null;
+                    Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
+                    if (paramQualifierAnno != null) {
+                        paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
+                    }
+                    paramTypes[i] = params[i].getType();
+                    paramQualifiers[i] = paramQualifier;
+                }
+
+                boolean required = false;
+                Autowired autowiredAnno = candidate.getAnnotation(Autowired.class);
+                if (autowiredAnno != null) {
+                    required = autowiredAnno.required();
+                }
+
+                AutowireRule autowireRule = new AutowireRule();
+                autowireRule.setTargetType(AutowireTargetType.CONSTRUCTOR);
+                autowireRule.setTarget(candidate);
+                autowireRule.setTypes(paramTypes);
+                autowireRule.setQualifiers(paramQualifiers);
+                autowireRule.setRequired(required);
+
+                beanRule.addAutowireRule(autowireRule);
+                beanRule.setConstructorAutowireRule(autowireRule);
+                relater.relay(autowireRule);
             }
         }
     }
@@ -257,7 +345,6 @@ public class AnnotatedConfigParser {
                         } else {
                             paramQualifier = qualifier;
                         }
-
                         paramTypes[i] = params[i].getType();
                         paramQualifiers[i] = paramQualifier;
                     }

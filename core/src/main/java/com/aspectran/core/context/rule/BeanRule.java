@@ -108,6 +108,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private List<AutowireRule> autowireRuleList;
 
+    private AutowireRule constructorAutowireRule;
+
+    private boolean constructorAutowireParsed;
+
     private boolean fieldAutowireParsed;
 
     private boolean methodAutowireParsed;
@@ -687,6 +691,22 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             autowireRuleList = new ArrayList<>();
         }
         autowireRuleList.add(autowireRule);
+    }
+
+    public AutowireRule getConstructorAutowireRule() {
+        return constructorAutowireRule;
+    }
+
+    public void setConstructorAutowireRule(AutowireRule constructorAutowireRule) {
+        this.constructorAutowireRule = constructorAutowireRule;
+    }
+
+    public boolean isConstructorAutowireParsed() {
+        return constructorAutowireParsed;
+    }
+
+    public void setConstructorAutowireParsed(boolean constructorAutowireParsed) {
+        this.constructorAutowireParsed = constructorAutowireParsed;
     }
 
     public boolean isFieldAutowireParsed() {

@@ -15,36 +15,25 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.component.bean.annotation.Value;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 
-public class TestFieldValueAutowireBean {
+/**
+ * <p>Created: 2017. 11. 29.</p>
+ */
+public class TestConstructorAutowireBean {
 
-    @Value("#{properties^property1}")
-    public String property1;
+    public TestFieldValueAutowireBean bean1;
 
-    @Value("#{properties^property2}")
-    public String property2;
+    public TestFieldValueAutowireBean bean2;
 
-    @Value("#{properties^property3}")
-    public String property3;
-
-    @Value("%{classpath:test.properties^hello}")
-    public String property4;
-
-    public String getProperty1() {
-        return property1;
-    }
-
-    public String getProperty2() {
-        return property2;
-    }
-
-    public String getProperty3() {
-        return property3;
-    }
-
-    public String getProperty4() {
-        return property4;
+    @Autowired
+    public TestConstructorAutowireBean(
+            @Qualifier("bean.TestFieldValueAutowireBean") TestFieldValueAutowireBean bean1,
+            @Qualifier("bean.TestFieldValueAutowireBean") TestFieldValueAutowireBean bean2
+    ) {
+        this.bean1 = bean1;
+        this.bean2 = bean2;
     }
 
 }

@@ -72,6 +72,27 @@ public class BeanTest {
     }
 
     @Test
+    public void testConstructorAutowire() {
+        TestConstructorAutowireBean bean = beanRegistry.getBean("bean.TestConstructorAutowireBean");
+        assertEquals("This is a Property-1", bean.bean1.getProperty1());
+        assertEquals("This is a Property-1", bean.bean2.getProperty1());
+    }
+
+    @Test
+    public void testConstructorAutowire2() {
+        TestConstructorAutowireBean2 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean2");
+        assertEquals("This is a Property-1", bean.bean1.getProperty1());
+        assertEquals("This is a Property-1", bean.bean2.getProperty1());
+    }
+
+    @Test
+    public void testConstructorAutowire3() {
+        TestConstructorAutowireBean3 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean3");
+        assertEquals("This is a Property-1", bean.bean1.getBean1().getProperty1());
+        assertNull(bean.bean2);
+    }
+
+    @Test
     public void testFieldValueAutowire() {
         TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
         assertEquals(bean.getProperty1(), "This is a Property-1");
@@ -98,7 +119,7 @@ public class BeanTest {
         assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
         assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
         assertEquals(bean.getBean1().getProperty4(), "property-4");
-        assertNull(bean.getBean2());
+        assertNull(bean.getBean2()); // No Unique Bean
     }
 
     @After

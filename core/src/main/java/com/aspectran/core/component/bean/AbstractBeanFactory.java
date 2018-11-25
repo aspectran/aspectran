@@ -122,10 +122,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 evaluator = new ItemExpressionParser(activity);
                 Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
 
-                int parameterSize = constructorArgumentItemRuleMap.size();
-                args = new Object[parameterSize];
-                argTypes = new Class<?>[parameterSize];
-
+                args = new Object[constructorArgumentItemRuleMap.size()];
+                argTypes = new Class<?>[constructorArgumentItemRuleMap.size()];
                 int i = 0;
                 for (Map.Entry<String, ItemRule> entry : constructorArgumentItemRuleMap.entrySet()) {
                     Object value = valueMap.get(entry.getKey());
@@ -134,8 +132,30 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                     i++;
                 }
             } else {
-                args = MethodUtils.EMPTY_OBJECT_ARRAY;
-                argTypes = MethodUtils.EMPTY_CLASS_PARAMETERS;
+                AutowireRule ctorAutowireRule = beanRule.getConstructorAutowireRule();
+                if (ctorAutowireRule != null) {
+                    Class<?>[] types = ctorAutowireRule.getTypes();
+                    String[] qualifiers = ctorAutowireRule.getQualifiers();
+
+                    args = new Object[types.length];
+                    argTypes = new Class<?>[types.length];
+                    for (int i = 0; i < types.length; i++) {
+                        if (ctorAutowireRule.isRequired()) {
+                            args[i] = activity.getBean(types[i], qualifiers[i]);
+                        } else {
+                            try {
+                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                                args[i] = null;
+                                log.warn(e.getMessage());
+                            }
+                        }
+                        argTypes[i] = types[i];
+                    }
+                } else {
+                    args = MethodUtils.EMPTY_OBJECT_ARRAY;
+                    argTypes = MethodUtils.EMPTY_CLASS_PARAMETERS;
+                }
             }
 
             final Object bean = createBeanInstance(beanRule, args, argTypes);
@@ -184,7 +204,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             } else {
                 bean = activity.getBean(factoryBeanId);
             }
-            
+
             bean = invokeFactoryMethod(beanRule, bean, activity);
             if (bean == null) {
                 throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
@@ -208,11 +228,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                     MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
                 }
             }
-
             if (beanRule.getInitMethod() != null) {
                 invokeInitMethod(beanRule, bean, activity);
             }
-
             return bean;
         } catch (Exception e) {
             throw new BeanCreationException(beanRule, e);

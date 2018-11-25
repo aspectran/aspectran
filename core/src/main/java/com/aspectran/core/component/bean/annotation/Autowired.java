@@ -21,11 +21,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a constructor, field, setter method as to be autowired by
+ * Aspectran's dependency injection facilities.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD})
 public @interface Autowired {
 
+    /**
+     * Declares whether the annotated dependency is required.
+     * Defaults to true.
+     *
+     * @return true if an annotated dependency is require
+     */
     boolean required() default true;
 
 }

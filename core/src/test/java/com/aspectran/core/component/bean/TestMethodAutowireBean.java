@@ -36,6 +36,7 @@ public class TestMethodAutowireBean {
     public TestFieldValueAutowireBean getBean1() {
         return bean1;
     }
+
     @Autowired(required = false)
     @Qualifier("bean.TestFieldValueAutowireBean3")
     public void setBean2(TestFieldValueAutowireBean bean) {
