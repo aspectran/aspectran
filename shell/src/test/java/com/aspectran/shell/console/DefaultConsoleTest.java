@@ -20,7 +20,7 @@ package com.aspectran.shell.console;
  */
 public class DefaultConsoleTest {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         Console console = new DefaultConsole();
         String prompt = "> ";
         while (true) {

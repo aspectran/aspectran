@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class JLineConsoleReadPasswordTest {
 
-    public static void main(String argv[]) throws IOException {
+    public static void main(String[] argv) throws IOException {
         Console console = new JLineConsole();
         String prompt = "password: ";
         while (true) {

@@ -20,32 +20,30 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EmbeddedAspectranTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
+    @BeforeAll
     public void ready() {
         String rootConfigFile = "classpath:config/embedded/embedded-aspectran-config.xml";
         aspectran = EmbeddedAspectran.run(rootConfigFile);
     }
 
-    @After
+    @AfterAll
     public void finish() {
         if (aspectran != null) {
             aspectran.release();
@@ -61,7 +59,7 @@ public class EmbeddedAspectranTest {
         //System.out.println(firstBean);
         //System.out.println(firstBean.getMessage());
 
-        Assert.assertEquals(firstBean.getMessage(), SecondBean.message);
+        assertEquals(firstBean.getMessage(), SecondBean.message);
 
         Translet translet = aspectran.translate("echo");
         System.out.println(translet.getResponseAdapter().getWriter().toString());

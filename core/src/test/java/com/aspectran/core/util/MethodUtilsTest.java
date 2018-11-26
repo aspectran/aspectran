@@ -18,15 +18,16 @@ package com.aspectran.core.util;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The Class MethodUtilsTest.
@@ -39,7 +40,7 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { Integer.valueOf(1) };
+        Object[] args = {1};
         Class<?>[] paramTypes = { Integer.class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", null, paramTypes);
@@ -53,7 +54,7 @@ public class MethodUtilsTest {
 
     @Test
     public void testGetMatchingAccessibleMethod2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object[] args = { new Object[] { Integer.valueOf(1), Integer.valueOf(2) } };
+        Object[] args = { new Object[] {1, 2} };
         Class<?>[] paramTypes = { Integer[].class };
 
         Method method = MethodUtils.getMatchingAccessibleMethod(SampleBean.class, "primitiveArray", args, paramTypes);
@@ -132,7 +133,7 @@ public class MethodUtilsTest {
 
         @SuppressWarnings("unused")
         public void primitiveArray(int[] intArray) {
-            log.debug("specified args: " + intArray);
+            log.debug("specified args: " + Arrays.toString(intArray));
         }
 
         @SuppressWarnings("unused")
@@ -153,7 +154,7 @@ public class MethodUtilsTest {
         
         @SuppressWarnings("unused")
         public void setSampleBean(SampleBean[] sampleBean) {
-            log.debug("specified args: " + sampleBean);
+            log.debug("specified args: " + Arrays.toString(sampleBean));
         }
 
         @SuppressWarnings("unused")

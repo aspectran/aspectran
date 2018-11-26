@@ -17,23 +17,32 @@ package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AspectranSimpleAopTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
+    @BeforeAll
     public void ready() {
         String rootConfigFile = "classpath:config/aop/simple-aop-test-config.xml";
         aspectran = EmbeddedAspectran.run(rootConfigFile);
+    }
+
+    @AfterAll
+    public void finish() {
+        if (aspectran != null) {
+            aspectran.release();
+        }
     }
 
     @Test
@@ -49,13 +58,6 @@ public class AspectranSimpleAopTest {
     @Test
     public void test2() {
         aspectran.translate("aop/test/action2");
-    }
-
-    @After
-    public void finish() {
-        if (aspectran != null) {
-            aspectran.release();
-        }
     }
 
 }

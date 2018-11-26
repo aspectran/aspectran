@@ -16,7 +16,7 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.Console;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

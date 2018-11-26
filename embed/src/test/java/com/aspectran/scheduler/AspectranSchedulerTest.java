@@ -17,18 +17,20 @@ package com.aspectran.scheduler;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AspectranSchedulerTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
+    @BeforeAll
     public void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateRootConfigFile("classpath:config/scheduler/scheduler-config.xml");
@@ -37,16 +39,16 @@ public class AspectranSchedulerTest {
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
-    @Test
-    public void dummyTest() throws InterruptedException {
-        Thread.sleep(3000);
-    }
-
-    @After
+    @AfterAll
     public void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
+    }
+
+    @Test
+    public void dummyTest() throws InterruptedException {
+        Thread.sleep(3000);
     }
 
 }

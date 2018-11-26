@@ -16,12 +16,12 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for scanning classes.

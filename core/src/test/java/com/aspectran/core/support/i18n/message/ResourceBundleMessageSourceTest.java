@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2016. 3. 13.</p>
@@ -27,7 +27,7 @@ import static junit.framework.TestCase.assertEquals;
 public class ResourceBundleMessageSourceTest {
 
     @Test
-    public void testMessage() throws Exception {
+    public void testMessage() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setBasename("locale.messages");

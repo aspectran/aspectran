@@ -17,41 +17,40 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.embed.sample.anno.ThirdResult;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test cases for Annotated Configuration.
  *
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AnnotatedConfigurationTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
+    @BeforeAll
     public void ready() {
         String rootConfigFile = "classpath:config/anno/annotated-configuration-test-config.xml";
         aspectran = EmbeddedAspectran.run(rootConfigFile);
+    }
+
+    @AfterAll
+    public void finish() {
+        if (aspectran != null) {
+            aspectran.release();
+        }
     }
 
     @Test
     public void firstTest() {
         ThirdResult thirdResult = aspectran.getActivityContext().getBeanRegistry().getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
-    }
-
-    @After
-    public void finish() {
-        if (aspectran != null) {
-            aspectran.release();
-        }
     }
 
 }

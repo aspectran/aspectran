@@ -17,30 +17,29 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ResourceUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for building ActivityContext.
  *
  * <p>Created: 2016. 3. 26.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ActivityContextBuilderTest {
 
     private File baseDir;
 
     private ActivityContextBuilder builder;
 
-    @Before
+    @BeforeAll
     public void ready() throws IOException {
         //baseDir = new File("./target/test-classes");
         baseDir = ResourceUtils.getResourceAsFile("");
@@ -51,6 +50,11 @@ public class ActivityContextBuilderTest {
         builder.setBasePath(baseDir.getCanonicalPath());
         builder.setHybridLoad(true);
         builder.setActiveProfiles("dev", "local");
+    }
+
+    @AfterAll
+    public void finish() {
+        builder.destroy();
     }
 
     @Test
@@ -66,7 +70,7 @@ public class ActivityContextBuilderTest {
         ActivityContext context = builder.build("/config/sample/test-config.xml");
         String result = context.getTemplateProcessor().process("echo1");
         //System.out.println(result);
-        assertEquals(result, "ECHO-1");
+        assertEquals("ECHO-1", result);
         builder.destroy();
 
         System.out.println("=============== reload ==============");
@@ -74,12 +78,8 @@ public class ActivityContextBuilderTest {
         ActivityContext context2 = builder.build();
         String result2 = context2.getTemplateProcessor().process("echo2");
         //System.out.println(result2);
-        assertEquals(result2, "ECHO-2");
+        assertEquals("ECHO-2", result2);
         builder.destroy();
-    }
-
-    @After
-    public void finish() {
     }
 
 }

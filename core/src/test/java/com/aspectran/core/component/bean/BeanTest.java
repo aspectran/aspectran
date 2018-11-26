@@ -20,24 +20,23 @@ import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.util.ResourceUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Test case for beans.
  *
  * <p>Created: 2016. 3. 26.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BeanTest {
 
     private ActivityContextBuilder builder;
@@ -46,7 +45,7 @@ public class BeanTest {
 
     private BeanRegistry beanRegistry;
 
-    @Before
+    @BeforeAll
     public void ready() throws IOException, ActivityContextBuilderException {
         File baseDir = ResourceUtils.getResourceAsFile("");
 
@@ -56,6 +55,11 @@ public class BeanTest {
         builder.setActiveProfiles("dev", "local");
         context = builder.build("/config/bean/bean-test-config.xml");
         beanRegistry = context.getBeanRegistry();
+    }
+
+    @AfterAll
+    public void finish() {
+        builder.destroy();
     }
 
     @Test
@@ -120,11 +124,6 @@ public class BeanTest {
         assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
         assertEquals(bean.getBean1().getProperty4(), "property-4");
         assertNull(bean.getBean2()); // No Unique Bean
-    }
-
-    @After
-    public void finish() {
-        builder.destroy();
     }
 
 }

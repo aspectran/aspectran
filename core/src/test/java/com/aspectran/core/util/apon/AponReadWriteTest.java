@@ -16,7 +16,7 @@
 package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.ResourceUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;

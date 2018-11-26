@@ -22,23 +22,22 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.call.NumericBean;
 import com.aspectran.core.sample.call.TotalBean;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test cases for calling beans and templates.
  *
  * <p>Created: 2017. 3. 20.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CallTest {
 
     private File baseDir = new File("./target/test-classes");
@@ -47,12 +46,17 @@ public class CallTest {
 
     private ActivityContext context;
 
-    @Before
+    @BeforeAll
     public void ready() throws IOException, ActivityContextBuilderException {
         activityContextBuilder = new HybridActivityContextBuilder();
         activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
 
         this.context = activityContextBuilder.build("/config/call/call-test-config.xml");
+    }
+
+    @AfterAll
+    public void finish() {
+        activityContextBuilder.destroy();
     }
 
     @Test
@@ -97,11 +101,6 @@ public class CallTest {
         String result7 = templateProcessor.process("aspectranVersion");
         //System.out.println("=== static method call ===");
         //System.out.println(result7);
-    }
-
-    @After
-    public void finish() {
-        activityContextBuilder.destroy();
     }
 
 }

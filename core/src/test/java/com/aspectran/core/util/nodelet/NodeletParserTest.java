@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 import java.io.IOException;

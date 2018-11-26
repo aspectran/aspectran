@@ -22,7 +22,7 @@ import com.aspectran.shell.command.builtin.SysInfoCommand;
 import com.aspectran.shell.command.builtin.VerboseCommand;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>Created: 2017. 11. 19.</p>

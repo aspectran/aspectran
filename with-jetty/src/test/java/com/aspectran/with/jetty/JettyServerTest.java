@@ -25,24 +25,23 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JettyServerTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
+    @BeforeAll
     public void ready() throws Exception {
         String basePath = new File("target").getCanonicalPath();
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
@@ -56,7 +55,7 @@ public class JettyServerTest {
         aspectran.translate("jetty start");
     }
 
-    @After
+    @AfterAll
     public void finish() {
         if (aspectran != null) {
             aspectran.translate("jetty stop");

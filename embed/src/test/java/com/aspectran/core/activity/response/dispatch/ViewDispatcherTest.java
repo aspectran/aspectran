@@ -35,11 +35,10 @@ import com.aspectran.core.support.pebble.PebbleEngineFactoryBean;
 import com.aspectran.core.support.pebble.PebbleTemplateEngine;
 import com.aspectran.core.support.view.FreeMarkerViewDispatcher;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,20 +46,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for dispatching Views.
  *
  * <p>Created: 2016. 9. 7.</p>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ViewDispatcherTest {
 
     private EmbeddedAspectran aspectran;
 
-    @Before
-    public void ready() throws Exception {
+    @BeforeAll
+    public void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         ContextConfig contextConfig = aspectranConfig.newContextConfig();
 
@@ -165,7 +164,7 @@ public class ViewDispatcherTest {
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
-    @After
+    @AfterAll
     public void finish() {
         if (aspectran != null) {
             aspectran.release();

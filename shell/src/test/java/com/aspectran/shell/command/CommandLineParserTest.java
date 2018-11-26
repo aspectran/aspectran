@@ -16,10 +16,11 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
@@ -29,32 +30,32 @@ public class CommandLineParserTest {
     @Test
     public void testExtractParameters() {
         CommandLineParser parser = CommandLineParser.parse("GET /path/work1 --param1 apple --param2=strawberry --arr=a --arr=b >> abcde.txt > 12345.txt");
-        Assert.assertEquals(parser.getRequestMethod().toString(), "GET");
-        Assert.assertEquals(parser.getCommandName(), "/path/work1");
+        assertEquals(parser.getRequestMethod().toString(), "GET");
+        assertEquals(parser.getCommandName(), "/path/work1");
         ParameterMap params = parser.extractParameters();
-        Assert.assertEquals(params.getParameter("param1"), "apple");
-        Assert.assertEquals(params.getParameter("param2"), "strawberry");
-        Assert.assertEquals("a", params.getParameterValues("arr")[0]);
-        Assert.assertEquals("b", params.getParameterValues("arr")[1]);
-        Assert.assertEquals(parser.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
+        assertEquals(params.getParameter("param1"), "apple");
+        assertEquals(params.getParameter("param2"), "strawberry");
+        assertEquals("a", params.getParameterValues("arr")[0]);
+        assertEquals("b", params.getParameterValues("arr")[1]);
+        assertEquals(parser.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
     }
 
     @Test
     public void testRedirectionOperators() {
         List<CommandLineRedirection> list = CommandLineParser.parse(">> abcde > 12345").getRedirectionList();
-        Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
-        Assert.assertEquals(list.get(0).getOperand(), "abcde");
-        Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
-        Assert.assertEquals(list.get(1).getOperand(), "12345");
+        assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
+        assertEquals(list.get(0).getOperand(), "abcde");
+        assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
+        assertEquals(list.get(1).getOperand(), "12345");
     }
 
     @Test
     public void testRedirectionOperators2() {
         List<CommandLineRedirection> list = CommandLineParser.parse("> '<abcde>' >> 12345").getRedirectionList();
-        Assert.assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
-        Assert.assertEquals(list.get(0).getOperand(), "'<abcde>'");
-        Assert.assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
-        Assert.assertEquals(list.get(1).getOperand(), "12345");
+        assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
+        assertEquals(list.get(0).getOperand(), "'<abcde>'");
+        assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
+        assertEquals(list.get(1).getOperand(), "12345");
     }
 
 }

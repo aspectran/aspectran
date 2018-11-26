@@ -16,8 +16,10 @@
 package com.aspectran.shell.command.option;
 
 import com.aspectran.shell.console.DefaultConsole;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * <p>Created: 2017. 11. 12.</p>
@@ -71,12 +73,12 @@ public class DefaultOptionParserTest {
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
-            Assert.assertEquals(parsedOptions.getTypedValue("block-size"), Integer.valueOf(10));
-            Assert.assertEquals("A.txt", parsedOptions.getValues("f")[0]);
-            Assert.assertEquals("B.txt", parsedOptions.getValues("f")[1]);
-            Assert.assertEquals("C.txt", parsedOptions.getValues("z")[0]);
-            Assert.assertEquals("D.txt", parsedOptions.getValues("z")[1]);
-            Assert.assertTrue(parsedOptions.hasOption("b"));
+            assertEquals(parsedOptions.getTypedValue("block-size"), Integer.valueOf(10));
+            assertEquals("A.txt", parsedOptions.getValues("f")[0]);
+            assertEquals("B.txt", parsedOptions.getValues("f")[1]);
+            assertEquals("C.txt", parsedOptions.getValues("z")[0]);
+            assertEquals("D.txt", parsedOptions.getValues("z")[1]);
+            assertTrue(parsedOptions.hasOption("b"));
 /*
             System.out.println("------------------");
             for (String s : parsedOptions.getValues("f")) {

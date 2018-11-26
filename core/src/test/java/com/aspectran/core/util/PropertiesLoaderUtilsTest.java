@@ -15,28 +15,30 @@
  */
 package com.aspectran.core.util;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
 import java.util.Properties;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 21/10/2018</p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PropertiesLoaderUtilsTest {
 
     private String oldPassword;
 
-    @Before
+    @BeforeAll
     public void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
     }
 
-    @After
+    @AfterAll
     public void restoreProperties() {
         if (oldPassword == null) {
             System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);

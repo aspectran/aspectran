@@ -15,9 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
-import org.junit.Test;
-
-import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>Created: 2017. 11. 19.</p>

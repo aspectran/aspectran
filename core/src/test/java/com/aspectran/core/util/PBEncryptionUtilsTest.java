@@ -15,28 +15,31 @@
  */
 package com.aspectran.core.util;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 21/10/2018</p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PBEncryptionUtilsTest {
 
     private String oldPassword;
+
     private String oldAlgorithm;
 
-    @Before
+    @BeforeAll
     public void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
         oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "abcd1234()");
     }
 
-    @After
+    @AfterAll
     public void restoreProperties() {
         if (oldPassword == null) {
             System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);

@@ -18,7 +18,7 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
