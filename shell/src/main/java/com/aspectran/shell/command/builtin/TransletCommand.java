@@ -65,9 +65,11 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
+        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------",
+                "----------------------------------------------------------------------");
         getConsole().writeLine("| %-24s | %-70s |", "Translet Name", "Description");
-        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
+        getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------",
+                "----------------------------------------------------------------------");
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
             String desc = StringUtils.trimWhitespace(transletRule.getDescription());
@@ -103,7 +105,8 @@ public class TransletCommand extends AbstractCommand {
                 } else {
                     getConsole().writeLine("| %-24s | %-70s |", name, StringUtils.nullToEmpty(desc));
                 }
-                getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------", "----------------------------------------------------------------------");
+                getConsole().writeLine("+-%-24s-+-%-70s-+", "------------------------",
+                        "----------------------------------------------------------------------");
             }
         }
     }

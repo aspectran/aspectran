@@ -99,7 +99,7 @@ public class HelpFormatter {
 
     private String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
 
-    private String defaultNewLine = System.getProperty("line.separator");
+    private String defaultNewLine = System.lineSeparator();
 
     private String defaultOptPrefix = DEFAULT_OPT_PREFIX;
 

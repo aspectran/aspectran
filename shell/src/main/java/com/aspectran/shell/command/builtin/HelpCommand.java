@@ -34,8 +34,6 @@ public class HelpCommand extends AbstractCommand {
 
     private static final String COMMAND_NAME = "help";
 
-    private String newLine = System.getProperty("line.separator");
-
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public HelpCommand(CommandRegistry registry) {
@@ -132,7 +130,7 @@ public class HelpCommand extends AbstractCommand {
             return sb;
         }
 
-        sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(newLine);
+        sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(System.lineSeparator());
 
         if (nextLineTabStop >= width) {
             // stops infinite loop happening
@@ -152,8 +150,7 @@ public class HelpCommand extends AbstractCommand {
             if (text.length() > width && pos == nextLineTabStop - 1) {
                 pos = width;
             }
-
-            sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(newLine);
+            sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(System.lineSeparator());
         }
     }
 

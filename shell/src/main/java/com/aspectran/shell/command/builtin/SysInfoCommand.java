@@ -87,14 +87,9 @@ public class SysInfoCommand extends AbstractCommand {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
 
-        getConsole().setStyle("yellow");
-        getConsole().write("Total memory: ");
-        getConsole().setStyle("fg:off");
-        getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(total));
-        getConsole().setStyle("yellow");
-        getConsole().write("Used memory: ");
-        getConsole().setStyle("fg:off");
-        getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(total - before));
+        getConsole().writeLine("%-24s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
+        getConsole().writeLine("%-24s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - before));
+
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
             System.gc(); // asynchronous garbage collector might already run
@@ -108,25 +103,12 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            getConsole().setStyle("yellow");
-            getConsole().write("Free memory before GC: ");
-            getConsole().setStyle("fg:off");
-            getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
-            getConsole().setStyle("yellow");
-            getConsole().write("Free memory after GC: ");
-            getConsole().setStyle("fg:off");
-            getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(after));
-            getConsole().setStyle("yellow");
-            getConsole().write("Memory gained with GC: ");
-            getConsole().setStyle("fg:off");
-            getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(after - before));
+            getConsole().writeLine("%-24s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(before));
+            getConsole().writeLine("%-24s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
+            getConsole().writeLine("%-24s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - before));
         } else {
-            getConsole().setStyle("yellow");
-            getConsole().write("Free memory: ");
-            getConsole().setStyle("fg:off");
-            getConsole().writeLine(StringUtils.convertToHumanFriendlyByteSize(before));
+            getConsole().writeLine("%-24s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(before));
         }
-        getConsole().offStyle();
     }
 
     @Override
