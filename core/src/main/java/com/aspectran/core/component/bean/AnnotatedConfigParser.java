@@ -604,7 +604,9 @@ public class AnnotatedConfigParser {
             if (headers.length > 0) {
                 joinpointRule.setHeaders(headers);
             }
-            joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
+            if (pointcut.length > 0) {
+                joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
+            }
             aspectRule.setJoinpointRule(joinpointRule);
         }
 

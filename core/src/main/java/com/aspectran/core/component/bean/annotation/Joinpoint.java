@@ -35,6 +35,6 @@ public @interface Joinpoint {
 
     String[] headers() default {};
 
-    String[] pointcut();
+    String[] pointcut() default {};
 
 }
