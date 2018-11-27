@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -159,12 +160,22 @@ public interface EmbeddedAspectran extends CoreService {
     /**
      * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
      *
-     * @param rootConfigFile the root configuration file
+     * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedService}
      */
-    static EmbeddedAspectran run(String rootConfigFile) {
-        AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootConfigFile(rootConfigFile);
+    static EmbeddedAspectran run(String aspectranConfigFile) {
+        File configFile = new File(aspectranConfigFile);
+        return run(configFile);
+    }
+
+    /**
+     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
+     *
+     * @param aspectranConfigFile the aspectran configuration file
+     * @return the instance of {@code EmbeddedService}
+     */
+    static EmbeddedAspectran run(File aspectranConfigFile) {
+        AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
         return run(aspectranConfig);
     }
 
