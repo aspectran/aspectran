@@ -8,7 +8,7 @@
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
-[![asciicast](https://asciinema.org/a/208915.png)](https://asciinema.org/a/208915)
+[![asciicast](https://asciinema.org/a/213874.png)](https://asciinema.org/a/213874)
 
 Aspectran is a Java framework for building Web and command-line applications.  
 Aspectran will grow into a next-generation Java application framework that supports most of the functionality required in an enterprise environment.
