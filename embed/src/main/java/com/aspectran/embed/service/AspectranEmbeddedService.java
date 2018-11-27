@@ -40,10 +40,10 @@ import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
 
 import java.util.Map;
 
-import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ROOT_CONFIG_FILE;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONFIG_ROOT_FILE;
 
 /**
- * The Class AspectranEmbeddedService.
+ * Provides an interface that can be used by embedding Aspectran in Java applications.
  *
  * @since 3.0.0
  */
@@ -291,10 +291,10 @@ class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedA
             contextConfig = aspectranConfig.newContextConfig();
         }
 
-        String rootConfigFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(rootConfigFile)) {
+        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(appConfigRootFile)) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
+                contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
             }
         }
 

@@ -29,15 +29,16 @@ import java.io.File;
 public class DefaultDaemon extends AbstractDaemon {
 
     public static void main(String[] args) {
+        String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         DefaultDaemon defaultDaemon = new DefaultDaemon();
         int exitStatus = 0;
 
         try {
-            defaultDaemon.init(aspectranConfigFile);
+            defaultDaemon.init(basePath, aspectranConfigFile);
             defaultDaemon.start(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
             exitStatus = 1;
         } finally {
             defaultDaemon.destroy();

@@ -40,7 +40,7 @@ import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
 import java.util.Map;
 
-import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_ROOT_CONFIG_FILE;
+import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONFIG_ROOT_FILE;
 
 /**
  * The Class AspectranDaemonService.
@@ -170,12 +170,12 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
     /**
      * Returns a new instance of {@code AspectranDaemonService}.
      *
-     * @param rootConfigFile the root configuration file
+     * @param appConfigRootFile the application configuration root file
      * @return the instance of {@code AspectranDaemonService}
      */
-    public static AspectranDaemonService create(String rootConfigFile) {
+    public static AspectranDaemonService create(String appConfigRootFile) {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateRootConfigFile(rootConfigFile);
+        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
         return create(aspectranConfig);
     }
 
@@ -187,10 +187,10 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
      */
     public static AspectranDaemonService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(rootConfigFile)) {
+        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(appConfigRootFile)) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
+                contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
             }
         }
 

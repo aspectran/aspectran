@@ -76,13 +76,16 @@ public class AbstractDaemon implements Daemon, Runnable {
         return active;
     }
 
-    protected void init(File aspectranConfigFile) throws Exception {
+    protected void init(String basePath, File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         try {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                     aspectranConfigFile, e);
+        }
+        if (basePath != null) {
+            aspectranConfig.updateBasePath(basePath);
         }
 
         init(aspectranConfig);

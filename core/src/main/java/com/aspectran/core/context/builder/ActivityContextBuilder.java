@@ -41,9 +41,9 @@ public interface ActivityContextBuilder {
 
     void setAspectranParameters(AspectranParameters aspectranParameters);
 
-    String getRootConfigFile();
+    String getAppConfigRootFile();
 
-    void setRootConfigFile(String rootConfigFile);
+    void setAppConfigRootFile(String appConfigRootFile);
 
     String getEncoding();
 
@@ -89,7 +89,7 @@ public interface ActivityContextBuilder {
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 
-    ActivityContext build(String rootConfigFile) throws ActivityContextBuilderException;
+    ActivityContext build(String appConfigRootFile) throws ActivityContextBuilderException;
 
     ActivityContext build() throws ActivityContextBuilderException;
 

@@ -43,7 +43,8 @@ import java.io.IOException;
 import java.net.URLDecoder;
 
 /**
- * The Class AspectranWebService.
+ * Provides overall functionality for building web applications within a web
+ * application container.
  */
 public class AspectranWebService extends AspectranCoreService implements WebService {
 
@@ -51,7 +52,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_ROOT_CONFIG_FILE = "/WEB-INF/aspectran/app-config.xml";
+    private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/WEB-INF/aspectran/app-config.xml";
 
     private String uriDecoding;
 
@@ -270,9 +271,9 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigFile = contextConfig.getString(ContextConfig.root);
-        if (rootConfigFile == null || rootConfigFile.isEmpty()) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
+        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
+        if (appConfigRootFile == null || appConfigRootFile.isEmpty()) {
+            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
         AspectranWebService service = new AspectranWebService(servletContext);

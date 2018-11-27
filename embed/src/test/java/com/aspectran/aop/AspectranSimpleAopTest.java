@@ -16,6 +16,7 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,8 +35,10 @@ public class AspectranSimpleAopTest {
 
     @BeforeAll
     public void ready() {
-        String rootConfigFile = "classpath:config/aop/simple-aop-test-config.xml";
-        aspectran = EmbeddedAspectran.run(rootConfigFile);
+        String appConfigRootFile = "classpath:config/aop/simple-aop-test-config.xml";
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
+        aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
     @AfterAll

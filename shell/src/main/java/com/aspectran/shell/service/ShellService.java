@@ -109,7 +109,7 @@ public interface ShellService extends CoreService {
     void release();
 
     /**
-     * Run the Shell Service, creating and starting a new {@code ShellService}.
+     * Creates and starts a new Aspectran Shell Service.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code ShellService}
@@ -119,7 +119,7 @@ public interface ShellService extends CoreService {
     }
 
     /**
-     * Run the Shell Service, creating and starting a new {@code ShellService}.
+     * Creates and starts a new Aspectran Shell Service.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @param console the console

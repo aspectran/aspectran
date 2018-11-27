@@ -20,6 +20,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.config.AspectranConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,10 @@ public class EmbeddedAspectranTest {
 
     @BeforeAll
     public void ready() {
-        String rootConfigFile = "classpath:config/embedded/embedded-aspectran-config.xml";
-        aspectran = EmbeddedAspectran.run(rootConfigFile);
+        String appConfigRootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
+        aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
     @AfterAll

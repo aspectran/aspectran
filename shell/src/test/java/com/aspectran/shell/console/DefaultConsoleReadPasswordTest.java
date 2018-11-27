@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-/**‰
+/**
  * <p>Created: 2017. 3. 5.</p>
  */
 public class DefaultConsoleReadPasswordTest {

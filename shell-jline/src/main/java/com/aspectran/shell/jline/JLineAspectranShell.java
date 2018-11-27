@@ -39,7 +39,7 @@ public class JLineAspectranShell {
             Console console = new JLineConsole(basePath);
             AspectranShell.bootstrap(aspectranConfigFile, console);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
     }
 

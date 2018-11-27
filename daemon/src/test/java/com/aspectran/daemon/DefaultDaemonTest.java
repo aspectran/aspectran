@@ -19,8 +19,6 @@ import com.aspectran.core.util.ResourceUtils;
 
 import java.io.File;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_DIR_PROPERTY_NAME;
-
 /**
  * <p>Created: 2017. 12. 12.</p>
  */
@@ -30,13 +28,10 @@ public class DefaultDaemonTest {
         try {
             File current = ResourceUtils.getResourceAsFile("com/aspectran/daemon");
             File root = new File(current, "../../../../../../demo/app");
-            File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-            System.setProperty(BASE_DIR_PROPERTY_NAME, root.getCanonicalPath());
-
-            String[] args2 = { aspectranConfigFile.getCanonicalPath() };
+            String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
             DefaultDaemon.main(args2);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
             System.exit(1);
         }
     }

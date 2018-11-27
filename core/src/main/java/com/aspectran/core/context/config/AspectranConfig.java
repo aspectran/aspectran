@@ -22,12 +22,13 @@ import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.io.File;
+import java.io.Reader;
 
 public class AspectranConfig extends AbstractParameters {
 
     public static final String BASE_DIR_PROPERTY_NAME = "aspectran.baseDir";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
-    public static final String DEFAULT_ROOT_CONFIG_FILE = "classpath:aspectran-config.xml";
+    public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
     public static final ParameterDefinition context;
     public static final ParameterDefinition session;
@@ -66,8 +67,13 @@ public class AspectranConfig extends AbstractParameters {
     }
 
     public AspectranConfig(File configFile) {
-        super(parameterDefinitions);
+        this();
         AponReader.parse(configFile, this);
+    }
+
+    public AspectranConfig(Reader reader) {
+        this();
+        AponReader.parse(reader, this);
     }
 
     public ContextConfig newContextConfig() {
@@ -171,9 +177,9 @@ public class AspectranConfig extends AbstractParameters {
         contextParameters.putValue(ContextConfig.base, basePath);
     }
 
-    public void updateRootConfigFile(String rootConfigFile) {
+    public void updateAppConfigRootFile(String appConfigRootFile) {
         Parameters contextParameters = touchParameters(context);
-        contextParameters.putValue(ContextConfig.root, rootConfigFile);
+        contextParameters.putValue(ContextConfig.root, appConfigRootFile);
     }
 
     public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
@@ -183,7 +189,7 @@ public class AspectranConfig extends AbstractParameters {
         schedulerParameters.putValue(SchedulerConfig.startup, startup);
     }
 
-    public String getRootConfigFile() {
+    public String getAppConfigRootFile() {
         Parameters contextParameters = getContextConfig();
         if (contextParameters != null) {
             return contextParameters.getString(ContextConfig.root);

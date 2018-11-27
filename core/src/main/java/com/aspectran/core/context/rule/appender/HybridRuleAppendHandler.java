@@ -118,7 +118,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return ruleConverter;
     }
 
-    private void saveAsAponFormatted(FileRuleAppender fileRuleAppender) throws Exception {
+    private void saveAsAponFormatted(FileRuleAppender fileRuleAppender) {
         log.info("Save as APON formatted " + fileRuleAppender);
 
         File aponFile = null;

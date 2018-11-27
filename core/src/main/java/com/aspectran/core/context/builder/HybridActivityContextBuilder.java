@@ -69,9 +69,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String rootConfigFile) throws ActivityContextBuilderException {
+    public ActivityContext build(String appConfigRootFile) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setRootConfigFile(rootConfigFile);
+            setAppConfigRootFile(appConfigRootFile);
             return doBuild();
         }
     }
@@ -89,15 +89,15 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 throw new IllegalStateException("An ActivityContext already activated");
             }
 
-            String rootConfigFile = getRootConfigFile();
+            String appConfigRootFile = getAppConfigRootFile();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (rootConfigFile != null) {
-                log.info("Building an ActivityContext with " + rootConfigFile);
+            if (appConfigRootFile != null) {
+                log.info("Building an ActivityContext with " + appConfigRootFile);
             } else if (aspectranParameters != null) {
                 log.info("Building an ActivityContext with AspectranParameters");
             } else {
-                log.info("No rootConfigFile or aspectranParameters have been specified");
+                log.info("No appConfigRootFile or aspectranParameters have been specified");
             }
 
             if (getActiveProfiles() != null) {
@@ -119,12 +119,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 beanRuleRegistry.scanConfigBeans(getScanBasePackages());
             }
 
-            if (rootConfigFile != null || aspectranParameters != null) {
+            if (appConfigRootFile != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);
                 parser.setEncoding(getEncoding());
                 parser.setHybridLoad(isHybridLoad());
-                if (rootConfigFile != null) {
-                    parser.parse(rootConfigFile);
+                if (appConfigRootFile != null) {
+                    parser.parse(appConfigRootFile);
                 } else {
                     parser.parse(aspectranParameters);
                 }

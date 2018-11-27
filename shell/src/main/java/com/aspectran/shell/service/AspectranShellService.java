@@ -38,7 +38,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * The Class AspectranShellService.
+ * Provides an interactive shell that lets you use or control Aspectran directly
+ * from the command line.
  *
  * @since 2016. 1. 18.
  */
@@ -46,7 +47,7 @@ public class AspectranShellService extends AbstractShellService {
 
     private static final Log log = LogFactory.getLog(AspectranShellService.class);
 
-    private static final String DEFAULT_ROOT_CONFIG_FILE = "/config/app-config.xml";
+    private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/config/app-config.xml";
 
     private long pauseTimeout = -1L;
 
@@ -169,9 +170,9 @@ public class AspectranShellService extends AbstractShellService {
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootConfigFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(rootConfigFile)) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_ROOT_CONFIG_FILE);
+        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(appConfigRootFile)) {
+            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
         AspectranShellService service = new AspectranShellService();

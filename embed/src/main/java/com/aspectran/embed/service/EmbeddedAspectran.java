@@ -24,6 +24,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 
 import java.io.File;
+import java.io.Reader;
 import java.util.Map;
 
 /**
@@ -158,7 +159,7 @@ public interface EmbeddedAspectran extends CoreService {
     void release();
 
     /**
-     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
+     * Creates and starts a new Aspectran Embedded Service.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedService}
@@ -169,7 +170,7 @@ public interface EmbeddedAspectran extends CoreService {
     }
 
     /**
-     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
+     * Creates and starts a new Aspectran Embedded Service.
      *
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedService}
@@ -180,7 +181,18 @@ public interface EmbeddedAspectran extends CoreService {
     }
 
     /**
-     * Run the Embedded Aspectran, creating and starting a new {@code EmbeddedService}.
+     * Creates and starts a new Aspectran Embedded Service.
+     *
+     * @param configFileReader the aspectran configuration file reader
+     * @return the instance of {@code EmbeddedService}
+     */
+    static EmbeddedAspectran run(Reader configFileReader) {
+        AspectranConfig aspectranConfig = new AspectranConfig(configFileReader);
+        return run(aspectranConfig);
+    }
+
+    /**
+     * Creates and starts a new Aspectran Embedded Service.
      *
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code EmbeddedService}
@@ -196,9 +208,9 @@ public interface EmbeddedAspectran extends CoreService {
         } catch (AspectranServiceException e) {
             throw e;
         } catch (Exception e) {
-            String rootConfigFile = aspectranConfig.getRootConfigFile();
+            String appConfigRootFile = aspectranConfig.getAppConfigRootFile();
             throw new AspectranServiceException("EmbeddedAspectran run failed with " +
-                    (rootConfigFile != null ? rootConfigFile : aspectranConfig), e);
+                    (appConfigRootFile != null ? appConfigRootFile : aspectranConfig), e);
         }
     }
 
