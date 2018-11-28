@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import java.io.PrintStream;
+
 public class Aspectran {
 
     public static final String VERSION;
@@ -52,17 +54,26 @@ public class Aspectran {
     }
 
     /**
+     * Prints Aspectran information to the specified print stream.
+     *
+     * @param out a {@link PrintStream} object to print
+     */
+    public static void printAboutMe(PrintStream out) {
+        out.println("Aspectran version: " + VERSION);
+        out.println("OS Name:           " + System.getProperty("os.name"));
+        out.println("OS Version:        " + System.getProperty("os.version"));
+        out.println("Architecture:      " + System.getProperty("os.arch"));
+        out.println("JVM Version:       " + System.getProperty("java.runtime.version"));
+        out.println("JVM Vendor:        " + System.getProperty("java.vm.vendor"));
+    }
+
+    /**
      * Prints Aspectran information to {@link System#out}.
      *
      * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Aspectran version: " + VERSION);
-        System.out.println("OS Name:           " + System.getProperty("os.name"));
-        System.out.println("OS Version:        " + System.getProperty("os.version"));
-        System.out.println("Architecture:      " + System.getProperty("os.arch"));
-        System.out.println("JVM Version:       " + System.getProperty("java.runtime.version"));
-        System.out.println("JVM Vendor:        " + System.getProperty("java.vm.vendor"));
+        printAboutMe(System.out);
     }
 
 }

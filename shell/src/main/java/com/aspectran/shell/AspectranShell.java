@@ -17,6 +17,7 @@ package com.aspectran.shell;
 
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.console.Console;
@@ -44,6 +45,7 @@ public class AspectranShell {
         int exitStatus = 0;
 
         try {
+            Aspectran.printAboutMe(System.out);
             shellService = ShellService.run(aspectranConfigFile, console);
             ShellCommander commander = new ShellCommander(shellService);
             commander.perform();

@@ -77,23 +77,34 @@ public class InsufficientEnvironmentException extends IllegalStateException {
     }
 
     public String getPrettyMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("-----------------------------------------------------------------------------");
-        sb.append(System.lineSeparator());
-        sb.append("An Error Occurred!\n");
-        sb.append("-----------------------------------------------------------------------------");
-        sb.append(System.lineSeparator());
         String[] lines = StringUtils.split(getMessage(), ";");
-        for (String line : lines) {
-            line = line.trim();
-            sb.append(line);
+        int maxLen = 50;
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
             if (!line.endsWith(")") && !line.endsWith("}") && !line.endsWith("]") && !line.endsWith(">") &&
                     !line.endsWith("!") && !line.endsWith("?") && !line.endsWith("'") && !line.endsWith("\"")) {
-                sb.append(".");
+                line = line.trim() + ".";
+            } else {
+                line = line.trim();
             }
+            if (line.length() > maxLen) {
+                maxLen = line.length();
+            }
+            lines[i] = line;
+        }
+        String bar = String.format("+-%" + maxLen + "s-+", "").replaceAll(" ","-");
+        StringBuilder sb = new StringBuilder();
+        sb.append(bar);
+        sb.append(System.lineSeparator());
+        sb.append(String.format("| %-" + maxLen + "s |", "ASPECTRAN RUN FAILURE"));
+        sb.append(System.lineSeparator());
+        sb.append(bar);
+        sb.append(System.lineSeparator());
+        for (String line : lines) {
+            sb.append(String.format("| %-" + maxLen + "s |", line));
             sb.append(System.lineSeparator());
         }
-        sb.append("-----------------------------------------------------------------------------");
+        sb.append(bar);
         return sb.toString();
     }
 

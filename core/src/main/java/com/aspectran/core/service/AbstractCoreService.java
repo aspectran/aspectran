@@ -17,6 +17,7 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
@@ -176,7 +177,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
                 if (Boolean.TRUE.equals(singleton)) {
                     if (!checkSingletonLock()) {
-                        throw new IllegalStateException("Allow only one instance of Aspectran to run");
+                        throw new InsufficientEnvironmentException("You are already running " + getServiceName() +
+                                "; Only one instance is allowed (context.singleton is set to true)");
                     }
                 }
             }
