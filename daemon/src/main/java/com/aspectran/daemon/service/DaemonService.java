@@ -38,7 +38,7 @@ public interface DaemonService extends CoreService {
     SessionAdapter newSessionAdapter();
 
     /**
-     * Execute the translet.
+     * Executes the translet with a set of parameters and attributes.
      *
      * @param name the translet name
      * @param parameterMap the parameter map
@@ -48,7 +48,7 @@ public interface DaemonService extends CoreService {
     Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet with a set of parameters and attributes.
      *
      * @param name the translet name
      * @param method the request method
@@ -59,7 +59,7 @@ public interface DaemonService extends CoreService {
     Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
-     * Evaluate the template with a set of parameters and a set of attributes.
+     * Evaluates the template with a set of parameters and attributes.
      *
      * @param templateId the template id
      * @param parameterMap the parameter map

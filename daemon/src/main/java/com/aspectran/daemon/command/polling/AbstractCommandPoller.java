@@ -16,16 +16,12 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonPollerConfig;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
  */
 public abstract class AbstractCommandPoller implements CommandPoller {
-
-    protected final Log log = LogFactory.getLog(CommandPoller.class);
 
     private static final long DEFAULT_POLLING_INTERVAL = 5000L;
 

@@ -47,7 +47,7 @@ public class TemplateCommand extends AbstractCommand {
         ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
 
         if (templateName == null) {
-            throw new IllegalRuleException("Parameter 'template' is not specified");
+            throw new IllegalRuleException("'template' parameter is not specified");
         }
 
         ParameterMap parameterMap = null;

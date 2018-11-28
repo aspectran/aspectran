@@ -46,10 +46,10 @@ public class BeanActionCommand extends AbstractCommand {
         ItemRuleMap propertyItemRuleMap = parameters.getPropertyItemRuleMap();
 
         if (beanName == null) {
-            throw new IllegalRuleException("Parameter 'bean' is not specified");
+            throw new IllegalRuleException("'bean' parameter is not specified");
         }
         if (methodName == null) {
-            throw new IllegalRuleException("Parameter 'method' is not specified");
+            throw new IllegalRuleException("'method' parameter is not specified");
         }
 
         BeanActionRule beanActionRule = new BeanActionRule();

@@ -43,7 +43,7 @@ public class TransletCommand extends AbstractCommand {
     public String execute(CommandParameters parameters) throws Exception {
         String transletName = parameters.getTransletName();
         if (transletName == null) {
-            throw new IllegalRuleException("Parameter 'translet' is not specified");
+            throw new IllegalRuleException("'translet' parameter is not specified");
         }
 
         ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();

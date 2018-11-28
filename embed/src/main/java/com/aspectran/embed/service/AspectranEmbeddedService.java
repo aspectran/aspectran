@@ -47,7 +47,7 @@ import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONF
  *
  * @since 3.0.0
  */
-class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedAspectran {
+public class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedAspectran {
 
     private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
 

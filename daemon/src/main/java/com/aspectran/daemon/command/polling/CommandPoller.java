@@ -18,6 +18,8 @@ package com.aspectran.daemon.command.polling;
 import com.aspectran.daemon.Daemon;
 
 /**
+ * The command poller.
+ *
  * <p>Created: 2017. 12. 11.</p>
  */
 public interface CommandPoller {

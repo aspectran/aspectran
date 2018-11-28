@@ -56,7 +56,7 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Releases all resources and exits this daemon";
         }
 
     }

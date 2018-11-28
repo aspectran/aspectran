@@ -58,6 +58,10 @@ public class CommandRegistry {
 
     public void addCommand(Class<? extends Command> commandClass) {
         Command command = ClassUtils.createInstance(commandClass, this);
+        assert command != null : "command is null";
+        if (command.getDescriptor() == null) {
+            throw new NullPointerException("A command without a descriptor");
+        }
         commands.put(command.getDescriptor().getName(), command);
     }
 

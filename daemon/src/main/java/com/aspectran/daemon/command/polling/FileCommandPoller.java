@@ -21,17 +21,24 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
+ * File system-based command poller.
+ *
  * <p>Created: 2017. 12. 11.</p>
  */
 public class FileCommandPoller extends AbstractCommandPoller {
+
+    protected final Log log = LogFactory.getLog(FileCommandPoller.class);
 
     private static final String DEFAULT_INBOUND_PATH = "/inbound";
 
@@ -150,7 +157,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
     private File[] getCommandFiles(File dir) {
         File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files != null && files.length > 0) {
-            Arrays.sort(files, (f1, f2) -> ((File)f1).getName().compareTo(((File)f2).getName()));
+            Arrays.sort(files, Comparator.comparing(f -> f.getName()));
         }
         return files;
     }
