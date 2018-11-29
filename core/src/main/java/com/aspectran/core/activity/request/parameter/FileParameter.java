@@ -39,7 +39,7 @@ public class FileParameter {
 
     private boolean refused;
 
-    protected File savedFile;
+    private File savedFile;
 
     /**
      * Instantiates a new FileParameter.
@@ -176,47 +176,65 @@ public class FileParameter {
      */
     public File saveAs(File destFile, boolean overwrite) throws IOException {
         if (destFile == null) {
-            throw new IllegalArgumentException("Argument 'destFile' must not be null");
+            throw new IllegalArgumentException("destFile can not be null");
         }
 
-        if (!overwrite) {
-            File newFile = FilenameUtils.getUniqueFile(destFile);
-            if (destFile != newFile) {
-                destFile = newFile;
+        try {
+            destFile = determineDestinationFile(destFile, overwrite);
+
+            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int len;
+            try (InputStream input = getInputStream(); OutputStream output = new FileOutputStream(destFile)) {
+                while ((len = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, len);
+                }
             }
-        } else {
+        } catch (Exception e) {
+            throw new IOException("Could not save as file " + destFile, e);
+        }
+
+        setSavedFile(destFile);
+        return destFile;
+    }
+
+    public File renameTo(File destFile) throws IOException {
+        return renameTo(destFile, false);
+    }
+
+    public File renameTo(File destFile, boolean overwrite) throws IOException {
+        File srcFile = getFile();
+        if (srcFile == null) {
+            throw new IllegalStateException("The specified file does not exist");
+        }
+        if (destFile == null) {
+            throw new IllegalArgumentException("destFile can not be null");
+        }
+
+        try {
+            destFile = determineDestinationFile(destFile, overwrite);
+            if (!srcFile.renameTo(destFile)) {
+                throw new IOException("Could not rename file " + srcFile + " to " + destFile);
+            }
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException("Could not rename file", e);
+        }
+
+        setSavedFile(destFile);
+        return destFile;
+    }
+
+    protected File determineDestinationFile(File destFile, boolean overwrite) throws IOException {
+        if (overwrite) {
             if (destFile.exists() && !destFile.delete()) {
                 throw new IOException("Destination file [" + destFile.getAbsolutePath() +
                         "] already exists and could not be deleted");
             }
+            return destFile;
+        } else {
+            return FilenameUtils.getUniqueFile(destFile);
         }
-
-        InputStream input = getInputStream();
-        OutputStream output = new FileOutputStream(destFile);
-
-        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int len;
-
-        try {
-            while ((len = input.read(buffer)) != -1) {
-                output.write(buffer, 0, len);
-            }
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-                // ignore
-            }
-            try {
-                input.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-
-        savedFile = destFile;
-
-        return destFile;
     }
 
     /**
@@ -226,6 +244,17 @@ public class FileParameter {
      */
     public File getSavedFile() {
         return savedFile;
+    }
+
+    protected void setSavedFile(File savedFile) {
+        this.savedFile = savedFile;
+    }
+
+    protected void releaseSavedFile() {
+        if (savedFile != null) {
+            savedFile.setWritable(true);
+            savedFile = null;
+        }
     }
 
     /**

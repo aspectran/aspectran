@@ -43,7 +43,7 @@ public class MemoryMultipartFileParameter extends FileParameter {
 
     @Override
     public File getFile() {
-        throw new UnsupportedOperationException("multipart encoded file");
+        return null;
     }
 
     /**
@@ -112,32 +112,26 @@ public class MemoryMultipartFileParameter extends FileParameter {
     @Override
     public File saveAs(File destFile, boolean overwrite) throws IOException {
         if (destFile == null) {
-            throw new IllegalArgumentException("Argument 'destFile' must not be null");
+            throw new IllegalArgumentException("destFile can not be null");
         }
-        if (!overwrite) {
-            File newFile = FilenameUtils.getUniqueFile(destFile);
-            if (destFile != newFile) {
-                destFile = newFile;
-            }
-        } else {
-            if (destFile.exists() && !destFile.delete()) {
-                throw new IOException("Destination file [" + destFile.getAbsolutePath() +
-                        "] already exists and could not be deleted");
-            }
-        }
+
+        destFile = determineDestinationFile(destFile, overwrite);
 
         try {
             fileItem.write(destFile);
         } catch (FileUploadException e) {
             throw new IllegalStateException(e.getMessage());
-        } catch (IOException e) {
-            throw e;
         } catch (Exception e) {
-            throw new IOException("Could not save file. Cause: " + e);
+            throw new IOException("Could not save as file " + destFile, e);
         }
 
-        savedFile = destFile;
+        setSavedFile(destFile);
         return destFile;
+    }
+
+    @Override
+    public File renameTo(File destFile, boolean overwrite) {
+        throw new IllegalStateException("Can not rename because it is a file stored in memory");
     }
 
     /**
@@ -153,10 +147,7 @@ public class MemoryMultipartFileParameter extends FileParameter {
         if (fileItem != null) {
             fileItem = null;
         }
-        if (savedFile != null) {
-            savedFile.setWritable(true);
-            savedFile = null;
-        }
+        releaseSavedFile();
     }
 
     /**
