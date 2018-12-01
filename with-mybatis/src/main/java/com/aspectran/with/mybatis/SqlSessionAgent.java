@@ -15,6 +15,7 @@
  */
 package com.aspectran.with.mybatis;
 
+import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
@@ -38,6 +39,8 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     private ActivityContext context;
 
+    private boolean autoParameters;
+
     public SqlSessionAgent(String relevantAspectId) {
         if (relevantAspectId == null) {
             throw new IllegalArgumentException("relevantAspectId can not be null");
@@ -45,9 +48,17 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
         this.relevantAspectId = relevantAspectId;
     }
 
+    public void setAutoParameters(boolean autoParameters) {
+        this.autoParameters = autoParameters;
+    }
+
     @Override
     public <T> T selectOne(String statement) {
-        return getSqlSession().selectOne(statement);
+        if (autoParameters) {
+            return getSqlSession().selectOne(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().selectOne(statement);
+        }
     }
 
     @Override
@@ -57,7 +68,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public <E> List<E> selectList(String statement) {
-        return getSqlSession().selectList(statement);
+        if (autoParameters) {
+            return getSqlSession().selectList(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().selectList(statement);
+        }
     }
 
     @Override
@@ -72,7 +87,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
-        return getSqlSession().selectMap(statement, mapKey);
+        if (autoParameters) {
+            return getSqlSession().selectMap(statement, getActivityDataMap(), mapKey);
+        } else {
+            return getSqlSession().selectMap(statement, mapKey);
+        }
     }
 
     @Override
@@ -87,7 +106,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public <T> Cursor<T> selectCursor(String statement) {
-        return getSqlSession().selectCursor(statement);
+        if (autoParameters) {
+            return getSqlSession().selectCursor(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().selectCursor(statement);
+        }
     }
 
     @Override
@@ -107,7 +130,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public void select(String statement, ResultHandler handler) {
-        getSqlSession().select(statement, handler);
+        if (autoParameters) {
+            getSqlSession().select(statement, getActivityDataMap(), handler);
+        } else {
+            getSqlSession().select(statement, handler);
+        }
     }
 
     @Override
@@ -117,7 +144,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public int insert(String statement) {
-        return getSqlSession().insert(statement);
+        if (autoParameters) {
+            return getSqlSession().insert(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().insert(statement);
+        }
     }
 
     @Override
@@ -127,7 +158,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public int update(String statement) {
-        return getSqlSession().update(statement);
+        if (autoParameters) {
+            return getSqlSession().update(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().update(statement);
+        }
     }
 
     @Override
@@ -137,7 +172,11 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public int delete(String statement) {
-        return getSqlSession().delete(statement);
+        if (autoParameters) {
+            return getSqlSession().delete(statement, getActivityDataMap());
+        } else {
+            return getSqlSession().delete(statement);
+        }
     }
 
     @Override
@@ -224,6 +263,14 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
     @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         this.context = context;
+    }
+
+    private ActivityDataMap getActivityDataMap() {
+        if (context != null && context.getCurrentActivity().getTranslet() != null) {
+            return context.getCurrentActivity().getTranslet().getActivityDataMap();
+        } else {
+            return null;
+        }
     }
 
 }
