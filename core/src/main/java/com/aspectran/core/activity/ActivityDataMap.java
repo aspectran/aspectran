@@ -69,9 +69,11 @@ public class ActivityDataMap extends HashMap<String, Object> {
             }
         }
         if (activity.getSessionAdapter() != null) {
-            Enumeration<String> enumeration = activity.getSessionAdapter().getAttributeNames();
-            while(enumeration.hasMoreElements()) {
-                put(enumeration.nextElement(), EMPTY_VALUE);
+            Enumeration<String> e = activity.getSessionAdapter().getAttributeNames();
+            if (e != null) {
+                while (e.hasMoreElements()) {
+                    put(e.nextElement(), EMPTY_VALUE);
+                }
             }
         }
     }
