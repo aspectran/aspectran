@@ -19,7 +19,8 @@ import com.aspectran.core.component.Component;
 import com.aspectran.core.context.config.SessionConfig;
 
 /**
- * The session manager initializes and destroys the session handler and session cache.
+ * The session manager initializes and destroys the session
+ * handler and session cache.
  */
 public interface SessionManager extends Component {
 

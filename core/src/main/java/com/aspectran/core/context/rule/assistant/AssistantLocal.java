@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
  */
 public class AssistantLocal implements Replicable<AssistantLocal> {
 
-    private ContextRuleAssistant assistant;
+    private final ContextRuleAssistant assistant;
 
     private String description;
 

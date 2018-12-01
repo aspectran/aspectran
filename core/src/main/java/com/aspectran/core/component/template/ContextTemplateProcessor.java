@@ -131,7 +131,8 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
                     engine = activity.getBean(templateRule.getEngineBeanId());
                 }
                 if (engine == null) {
-                    throw new IllegalArgumentException("No template engine bean type for '" + templateRule.getEngine() + "'");
+                    throw new IllegalArgumentException("No template engine bean type for '" +
+                            templateRule.getEngine() + "'");
                 }
 
                 if (model == null) {

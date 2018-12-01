@@ -117,7 +117,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     @Override
     public Set<String> doGetExpired(final Set<String> candidates) {
         final long now = System.currentTimeMillis();
-        HashSet<String> expired = new HashSet<>();
+        Set<String> expired = new HashSet<>();
 
         // iterate over the files and work out which have expired
         for (String filename : sessionFileMap.values()) {
@@ -147,7 +147,8 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         // that expired a long time ago.
         // If the graceperiod is disabled, don't do the sweep!
         if (gracePeriodSec > 0 &&
-                (lastSweepTime == 0L || ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec))))) {
+                (lastSweepTime == 0L ||
+                        ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec))))) {
             lastSweepTime = now;
             sweepDisk();
         }
@@ -198,7 +199,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             // make a fresh file using the latest session expiry
             String filename = getIdWithExpiry(data);
             File file = new File(storeDir, filename);
-            try(FileOutputStream fos = new FileOutputStream(file,false)) {
+            try (FileOutputStream fos = new FileOutputStream(file,false)) {
                 save(fos, id, data);
                 sessionFileMap.put(id, filename);
             } catch (Exception e) {

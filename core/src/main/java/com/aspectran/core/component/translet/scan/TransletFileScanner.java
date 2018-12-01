@@ -112,7 +112,7 @@ public class TransletFileScanner extends FileScanner {
 
     private class ProxySaveHandler implements SaveHandler {
 
-        private SaveHandler saveHandler;
+        private final SaveHandler saveHandler;
 
         private ProxySaveHandler(SaveHandler saveHandler) {
             this.saveHandler = saveHandler;

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.component.bean.scope.SessionScope;
 
 import java.util.Collections;
@@ -70,7 +71,6 @@ public class SessionAgent {
         return Collections.enumeration(session.getAttributeNames());
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         Session session = getSession(false);
         if (session == null) {
@@ -102,7 +102,7 @@ public class SessionAgent {
     }
 
     /**
-     * Called by the {@link com.aspectran.core.activity.CoreActivity}
+     * Called by the {@link CoreActivity}
      * when a session is first accessed by a request.
      */
     public void access() {
@@ -114,7 +114,7 @@ public class SessionAgent {
     }
 
     /**
-     * Called by the {@link com.aspectran.core.activity.CoreActivity}
+     * Called by the {@link CoreActivity}
      * when a session is last accessed by a request.
      */
     public void complete() {

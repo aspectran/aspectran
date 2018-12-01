@@ -79,7 +79,7 @@ public class SessionIdGenerator {
             }
             id.append(Long.toString(r0,36));
             id.append(Long.toString(r1,36));
-            id.append(Long.toString(counter.getAndIncrement()));
+            id.append(counter.getAndIncrement());
             return id.toString();
         }
     }

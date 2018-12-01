@@ -25,7 +25,6 @@ import java.util.EventListener;
 public interface SessionBindingListener extends EventListener {
 
     /**
-     *
      * Notifies the object that it is being bound to
      * a session and identifies the session.
      *
@@ -37,7 +36,6 @@ public interface SessionBindingListener extends EventListener {
     void valueBound(Session session, String name, Object value);
 
     /**
-     *
      * Notifies the object that it is being unbound
      * from a session and identifies the session.
      *

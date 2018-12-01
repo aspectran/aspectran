@@ -31,16 +31,6 @@ public class TemplateNotFoundException extends TemplateException {
      * @param templateId the template id
      */
     public TemplateNotFoundException(String templateId) {
-        this(templateId, null);
-    }
-
-    /**
-     * Instantiates a new TemplateNotFoundException.
-     *
-     * @param templateId the template id
-     * @param cause the root cause
-     */
-    public TemplateNotFoundException(String templateId, Throwable cause) {
         super("No template named '" + templateId + "' is defined");
         this.templateId = templateId;
     }
