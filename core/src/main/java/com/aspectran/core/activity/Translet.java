@@ -202,14 +202,6 @@ public interface Translet extends BeanRegistry, MessageSource {
     ActivityDataMap getActivityDataMap();
 
     /**
-     * Returns an Activity Data Map containing the activity result data.
-     *
-     * @param prefill whether data pre-fill.
-     * @return the activity data map
-     */
-    ActivityDataMap getActivityDataMap(boolean prefill);
-
-    /**
      * Gets the setting value in the translet scope.
      *
      * @param <T> the type of the value

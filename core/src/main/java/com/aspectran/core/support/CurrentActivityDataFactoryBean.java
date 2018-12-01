@@ -78,7 +78,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
     }
 
     @Override
-    public ActivityDataMap getObject() throws Exception {
+    public ActivityDataMap getObject() {
         return translet.getActivityDataMap();
     }
 

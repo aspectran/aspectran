@@ -18,7 +18,9 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 
 /**
@@ -33,9 +35,9 @@ public class ActivityDataMap extends HashMap<String, Object> {
     /** @serial */
     private static final long serialVersionUID = -4557424414862800204L;
 
-    protected final Activity activity;
+    private static final Object EMPTY_VALUE = new Object();
 
-    protected final RequestAdapter requestAdapter;
+    private final Activity activity;
 
     /**
      * Instantiates a new ActivityDataMap.
@@ -43,36 +45,33 @@ public class ActivityDataMap extends HashMap<String, Object> {
      * @param activity the activity
      */
     public ActivityDataMap(Activity activity) {
-        this(activity, false);
-    }
-
-    /**
-     * Instantiates a new ActivityDataMap.
-     *
-     * @param activity the activity
-     * @param prefill whether or not to pre-fill the data
-     */
-    public ActivityDataMap(Activity activity, boolean prefill) {
         this.activity = activity;
-        this.requestAdapter = activity.getRequestAdapter();
 
-        if (prefill) {
-            prefillData();
-        }
+        fillToEmptyValues();
     }
 
-    private void prefillData() {
-        if (requestAdapter != null) {
-            requestAdapter.extractParameters(this);
-            requestAdapter.extractAttributes(this);
+    private void fillToEmptyValues() {
+        if (activity.getRequestAdapter() != null) {
+            for (String name : activity.getRequestAdapter().getParameterNames()) {
+                put(name, EMPTY_VALUE);
+            }
+            for (String name : activity.getRequestAdapter().getAttributeNames()) {
+                put(name, EMPTY_VALUE);
+            }
         }
         if (activity.getProcessResult() != null) {
             for (ContentResult cr : activity.getProcessResult()) {
                 for (ActionResult ar : cr) {
                     if (ar.getActionId() != null) {
-                        put(ar.getActionId(), ar.getResultValue());
+                        put(ar.getActionId(), EMPTY_VALUE);
                     }
                 }
+            }
+        }
+        if (activity.getSessionAdapter() != null) {
+            Enumeration<String> enumeration = activity.getSessionAdapter().getAttributeNames();
+            while(enumeration.hasMoreElements()) {
+                put(enumeration.nextElement(), EMPTY_VALUE);
             }
         }
     }
@@ -80,30 +79,46 @@ public class ActivityDataMap extends HashMap<String, Object> {
     @Override
     public Object get(Object key) {
         Object value = super.get(key);
-        if (value != null) {
+        if (value != null && !value.equals(EMPTY_VALUE)) {
             return value;
         }
-        if (key != null) {
-            String name = key.toString();
-
-            value = getActionResultWithoutCache(name);
-            if (value != null) {
-                put(name, value);
-                return value;
-            }
-
-            value = getAttributeWithoutCache(name);
-            if (value != null) {
-                put(name, value);
-                return value;
-            }
-
-            value = getParameterWithoutCache(name);
-            if (value != null) {
-                put(name, value);
-                return value;
-            }
+        if (key == null) {
+            return null;
         }
+
+        String name = key.toString();
+        Object data = getActionResultWithoutCache(name);
+        if (data != null) {
+            if (value == null) {
+                put(name, EMPTY_VALUE);
+            }
+            return data;
+        }
+
+        data = getAttributeWithoutCache(name);
+        if (data != null) {
+            if (value == null) {
+                put(name, EMPTY_VALUE);
+            }
+            return data;
+        }
+
+        data = getParameterWithoutCache(name);
+        if (data != null) {
+            if (value == null) {
+                put(name, EMPTY_VALUE);
+            }
+            return data;
+        }
+
+        data = getSessionAttributeWithoutCache(name);
+        if (data != null) {
+            if (value == null) {
+                put(name, EMPTY_VALUE);
+            }
+            return data;
+        }
+
         return null;
     }
 
@@ -118,8 +133,8 @@ public class ActivityDataMap extends HashMap<String, Object> {
      * @see RequestAdapter#setParameter
      */
     public Object getParameterWithoutCache(String name) {
-        if (requestAdapter != null) {
-            String[] values = requestAdapter.getParameterValues(name);
+        if (activity.getRequestAdapter() != null) {
+            String[] values = activity.getRequestAdapter().getParameterValues(name);
             if (values != null) {
                 if (values.length == 1) {
                     return values[0];
@@ -142,8 +157,8 @@ public class ActivityDataMap extends HashMap<String, Object> {
      * @see RequestAdapter#getAttribute
      */
     public Object getAttributeWithoutCache(String name) {
-        if (requestAdapter != null) {
-            return requestAdapter.getAttribute(name);
+        if (activity.getRequestAdapter() != null) {
+            return activity.getRequestAdapter().getAttribute(name);
         } else {
             return null;
         }
@@ -157,7 +172,6 @@ public class ActivityDataMap extends HashMap<String, Object> {
      * @param name a {@code String} specifying the name of the action
      * @return an {@code Object} containing the value of the action result,
      *         or {@code null} if the action result does not exist
-     * @see RequestAdapter#getAttribute
      */
     public Object getActionResultWithoutCache(String name) {
         if (activity.getProcessResult() != null) {
@@ -165,6 +179,28 @@ public class ActivityDataMap extends HashMap<String, Object> {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns the value of the named attribute from the session adapter
+     * without storing it in the cache.
+     * If no attribute of the given name exists, returns null.
+     *
+     * @param name a {@code String} specifying the name of the attribute
+     * @return an {@code Object} containing the value of the attribute,
+     *         or {@code null} if the attribute does not exist
+     * @see SessionAdapter#getAttribute
+     */
+    public Object getSessionAttributeWithoutCache(String name) {
+        if (activity.getSessionAdapter() != null) {
+            return activity.getSessionAdapter().getAttribute(name);
+        } else {
+            return null;
+        }
+    }
+
+    protected Activity getActivity() {
+        return activity;
     }
 
 }

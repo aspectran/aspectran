@@ -163,15 +163,8 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public ActivityDataMap getActivityDataMap() {
-        return getActivityDataMap(false);
-    }
-
-    @Override
-    public ActivityDataMap getActivityDataMap(boolean prefill) {
-        if (prefill) {
-            activityDataMap = new ActivityDataMap(activity, true);
-        } else if (activityDataMap == null) {
-            activityDataMap = new ActivityDataMap(activity, false);
+        if (activityDataMap == null) {
+            activityDataMap = new ActivityDataMap(activity);
         }
         return activityDataMap;
     }
