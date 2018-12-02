@@ -20,8 +20,15 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A map of data for saving activity results.
@@ -47,35 +54,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     public ActivityDataMap(Activity activity) {
         this.activity = activity;
 
-        fillToEmptyValues();
-    }
-
-    private void fillToEmptyValues() {
-        if (activity.getRequestAdapter() != null) {
-            for (String name : activity.getRequestAdapter().getParameterNames()) {
-                put(name, EMPTY_VALUE);
-            }
-            for (String name : activity.getRequestAdapter().getAttributeNames()) {
-                put(name, EMPTY_VALUE);
-            }
-        }
-        if (activity.getProcessResult() != null) {
-            for (ContentResult cr : activity.getProcessResult()) {
-                for (ActionResult ar : cr) {
-                    if (ar.getActionId() != null) {
-                        put(ar.getActionId(), EMPTY_VALUE);
-                    }
-                }
-            }
-        }
-        if (activity.getSessionAdapter() != null) {
-            Enumeration<String> e = activity.getSessionAdapter().getAttributeNames();
-            if (e != null) {
-                while (e.hasMoreElements()) {
-                    put(e.nextElement(), EMPTY_VALUE);
-                }
-            }
-        }
+        refresh();
     }
 
     @Override
@@ -91,37 +70,49 @@ public class ActivityDataMap extends HashMap<String, Object> {
         String name = key.toString();
         Object data = getActionResultWithoutCache(name);
         if (data != null) {
-            if (value == null) {
-                put(name, EMPTY_VALUE);
-            }
+            preempt(name, value);
             return data;
         }
 
         data = getAttributeWithoutCache(name);
         if (data != null) {
-            if (value == null) {
-                put(name, EMPTY_VALUE);
-            }
+            preempt(name, value);
             return data;
         }
 
         data = getParameterWithoutCache(name);
         if (data != null) {
-            if (value == null) {
-                put(name, EMPTY_VALUE);
-            }
+            preempt(name, value);
             return data;
         }
 
         data = getSessionAttributeWithoutCache(name);
         if (data != null) {
-            if (value == null) {
-                put(name, EMPTY_VALUE);
-            }
+            preempt(name, value);
             return data;
         }
 
         return null;
+    }
+
+    @Override
+    public Collection<Object> values() {
+        List<Object> list = new ArrayList<>(size());
+        for (String name : keySet()) {
+            list.add(get(name));
+        }
+        return list;
+    }
+
+    @Override
+    public Set<Entry<String, Object>> entrySet() {
+        Set<Entry<String, Object>> set = new HashSet<>();
+        for (String name : keySet()) {
+            Object value = get(name);
+            Map.Entry<String, Object> entry = new AbstractMap.SimpleImmutableEntry<>(name, value);
+            set.add(entry);
+        }
+        return set;
     }
 
     /**
@@ -198,6 +189,44 @@ public class ActivityDataMap extends HashMap<String, Object> {
             return activity.getSessionAdapter().getAttribute(name);
         } else {
             return null;
+        }
+    }
+
+    public void refresh() {
+        if (activity.getRequestAdapter() != null) {
+            for (String name : activity.getRequestAdapter().getParameterNames()) {
+                preempt(name);
+            }
+            for (String name : activity.getRequestAdapter().getAttributeNames()) {
+                preempt(name);
+            }
+        }
+        if (activity.getSessionAdapter() != null) {
+            Enumeration<String> e = activity.getSessionAdapter().getAttributeNames();
+            if (e != null) {
+                while (e.hasMoreElements()) {
+                    preempt(e.nextElement());
+                }
+            }
+        }
+        if (activity.getProcessResult() != null) {
+            for (ContentResult cr : activity.getProcessResult()) {
+                for (ActionResult ar : cr) {
+                    if (ar.getActionId() != null) {
+                        preempt(ar.getActionId());
+                    }
+                }
+            }
+        }
+    }
+
+    private void preempt(String name) {
+        preempt(name, get(name));
+    }
+
+    private void preempt(String name, Object value) {
+        if (value == null) {
+            put(name, EMPTY_VALUE);
         }
     }
 

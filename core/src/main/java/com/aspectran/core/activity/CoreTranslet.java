@@ -165,6 +165,8 @@ public class CoreTranslet extends AbstractTranslet {
     public ActivityDataMap getActivityDataMap() {
         if (activityDataMap == null) {
             activityDataMap = new ActivityDataMap(activity);
+        } else {
+            activityDataMap.refresh();
         }
         return activityDataMap;
     }
