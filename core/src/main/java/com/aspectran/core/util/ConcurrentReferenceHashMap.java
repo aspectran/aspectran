@@ -186,11 +186,14 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         this.shift = calculateShift(concurrencyLevel, MAXIMUM_CONCURRENCY_LEVEL);
         int size = 1 << this.shift;
         this.referenceType = referenceType;
-        int roundedUpSegmentCapacity = (int)((initialCapacity + size - 1L) / size);
-        this.segments = (Segment[])Array.newInstance(Segment.class, size);
-        for (int i = 0; i < this.segments.length; i++) {
-            this.segments[i] = new Segment(roundedUpSegmentCapacity);
+        int roundedUpSegmentCapacity = (int) ((initialCapacity + size - 1L) / size);
+        int initialSize = 1 << calculateShift(roundedUpSegmentCapacity, MAXIMUM_SEGMENT_SIZE);
+        Segment[] segments = (Segment[]) Array.newInstance(Segment.class, size);
+        int resizeThreshold = (int) (initialSize * getLoadFactor());
+        for (int i = 0; i < segments.length; i++) {
+            segments[i] = new Segment(initialSize, resizeThreshold);
         }
+        this.segments = segments;
     }
 
     protected final float getLoadFactor() {
@@ -423,11 +426,11 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          */
         private int resizeThreshold;
 
-        public Segment(int initialCapacity) {
+        public Segment(int initialSize, int resizeThreshold) {
             this.referenceManager = createReferenceManager();
-            this.initialSize = 1 << calculateShift(initialCapacity, MAXIMUM_SEGMENT_SIZE);
-            this.references = createReferenceArray(this.initialSize);
-            this.resizeThreshold = (int) (this.references.length * getLoadFactor());
+            this.initialSize = initialSize;
+            this.references = createReferenceArray(initialSize);
+            this.resizeThreshold = resizeThreshold;
         }
 
         public Reference<K, V> getReference(Object key, int hash, Restructure restructure) {
