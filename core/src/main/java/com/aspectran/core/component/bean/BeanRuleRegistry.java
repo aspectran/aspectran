@@ -174,7 +174,7 @@ public class BeanRuleRegistry {
             return;
         }
         for (String basePackage : basePackages) {
-            log.info("Scan configurations from " + basePackage);
+            log.info("Auto components scan on package " + basePackage);
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, scannedClass) -> {
                 if (scannedClass.isAnnotationPresent(Component.class)) {

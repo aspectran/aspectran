@@ -72,9 +72,7 @@ public class ClassScanner {
      * @throws IOException if an I/O error has occurred
      */
     public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
-        scan(classNamePattern, (resourceName, scannedClass) -> {
-            scannedClasses.put(resourceName, scannedClass);
-        });
+        scan(classNamePattern, scannedClasses::put);
     }
 
     /**
@@ -90,7 +88,6 @@ public class ClassScanner {
         }
 
         classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
-
         String basePackageName = determineBasePackageName(classNamePattern);
         if (basePackageName == null) {
             return;
@@ -116,7 +113,7 @@ public class ClassScanner {
             URL resource = resources.nextElement();
 
             if (log.isDebugEnabled()) {
-                log.debug("Scanning classes: " + classNamePattern + " at " + resource.getFile());
+                log.debug("Scanning for classes " + classNamePattern + " within " + resource.getFile());
             }
 
             if (isJarResource(resource)) {

@@ -50,9 +50,7 @@ public class FileScanner {
     }
 
     public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
-        scan(filePathPattern, (filePath, scannedFile) -> {
-            scannedFiles.put(filePath, scannedFile);
-        });
+        scan(filePathPattern, scannedFiles::put);
     }
 
     public void scan(String filePathPattern, SaveHandler saveHandler) {
@@ -91,9 +89,7 @@ public class FileScanner {
     }
 
     public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
-        scan(basePath, filePathPattern, (filePath, scannedFile) -> {
-            scannedFiles.put(filePath, scannedFile);
-        });
+        scan(basePath, filePathPattern, scannedFiles::put);
     }
 
     public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
@@ -117,7 +113,6 @@ public class FileScanner {
         }
         target.listFiles(file -> {
             String filePath = targetPath + FILE_SEPARATOR + file.getName();
-
             if (file.isDirectory()) {
                 scan(filePath, matcher, saveHandler);
             } else {
