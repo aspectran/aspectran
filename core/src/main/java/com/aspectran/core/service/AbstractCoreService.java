@@ -177,8 +177,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
                 if (Boolean.TRUE.equals(singleton)) {
                     if (!checkSingletonLock()) {
-                        throw new InsufficientEnvironmentException("You are already running " + getServiceName() +
-                                "; Only one instance is allowed (context.singleton is set to true)");
+                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already running; " +
+                                "Only one instance is allowed (context.singleton is set to true)");
                     }
                 }
             }
