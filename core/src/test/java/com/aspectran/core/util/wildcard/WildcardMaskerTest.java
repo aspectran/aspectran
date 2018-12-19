@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2016. 4. 3.</p>
  */
-public class WildcardMaskerTest {
+class WildcardMaskerTest {
 
     @Test
-    public void maskTest() {
+    void maskTest() {
         assertEquals(mask("**.*", "com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
         assertEquals(mask("**", "..com.aspectran.core.embedded.ABean"), "com.aspectran.core.embedded.ABean");
         assertEquals(mask("com.aspectran.core.**.*", "com.aspectran.core.embedded.ABean"), "embedded.ABean");

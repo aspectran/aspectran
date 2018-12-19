@@ -53,30 +53,29 @@ public class WildcardPattern {
     static final int SEPARATOR_TYPE = 9;
     static final int EOT_TYPE = 0;
 
-    private char separator;
+    private final String patternString;
 
-    private char[] tokens;
+    private final char separator;
 
-    private int[] types;
+    private final char[] tokens;
 
-    private String patternString;
+    private final int[] types;
+
+    private final float weight;
 
     public WildcardPattern(String patternString) {
-        parse(patternString);
+        this(patternString, Character.MIN_VALUE);
     }
 
     public WildcardPattern(String patternString, char separator) {
+        this.patternString = patternString;
         this.separator = separator;
-
-        parse(patternString);
+        this.tokens = patternString.toCharArray();
+        this.types = new int[tokens.length];
+        this.weight = parse();
     }
 
-    private void parse(String patternString) {
-        this.patternString = patternString;
-
-        tokens = patternString.toCharArray();
-        types = new int[tokens.length];
-
+    private float parse() {
         boolean star = false;
         boolean esc = false;
         int ptype = SKIP_TYPE;
@@ -162,6 +161,15 @@ public class WildcardPattern {
                 types[i] = EOT_TYPE;
             }
         }
+
+        float weight = 0.0f;
+        for (int i = 0; i < types.length; i++) {
+            if (types[i] == EOT_TYPE) {
+                break;
+            }
+            weight += ((i + 1) * types[i] / 10f);
+        }
+        return weight;
     }
 
     public char getSeparator() {
@@ -174,6 +182,10 @@ public class WildcardPattern {
 
     protected int[] getTypes() {
         return types;
+    }
+
+    public float getWeight() {
+        return weight;
     }
 
     /**

@@ -113,7 +113,7 @@ public class WildcardMasker {
                     tidx++;
                 }
             } else if (types[tidx] == WildcardPattern.STAR_STAR_TYPE) {
-                if (separator > 0) {
+                if (separator != Character.MIN_VALUE) {
                     trng1 = -1;
                     trng2 = -1;
                     for (ttemp = tidx + 1; ttemp < tlen; ttemp++) {
@@ -194,7 +194,7 @@ public class WildcardMasker {
                 if (tidx > tlen - 1
                         || types[tidx + 1] != WildcardPattern.LITERAL_TYPE
                         || tokens[tidx + 1] != input.charAt(cidx)) {
-                    if (separator > 0) {
+                    if (separator != Character.MIN_VALUE) {
                         if (input.charAt(cidx) != separator) {
                             masks[cidx] = input.charAt(cidx);
                             cidx++;
@@ -206,7 +206,7 @@ public class WildcardMasker {
                 }
                 tidx++;
             } else if (types[tidx] == WildcardPattern.PLUS_TYPE) {
-                if (separator > 0) {
+                if (separator != Character.MIN_VALUE) {
                     if (input.charAt(cidx) == separator) {
                         return null;
                     }
@@ -263,7 +263,6 @@ public class WildcardMasker {
                 sb.append(mask);
             }
         }
-
         if (types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
             for (int end = 0; end < sb.length(); end++) {
                 if (sb.charAt(end) != separator) {
@@ -274,7 +273,6 @@ public class WildcardMasker {
                 }
             }
         }
-
         return sb.toString();
     }
 

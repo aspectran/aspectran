@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * <p>Created: 2016. 4. 3.</p>
  */
-public class WildcardMatcherTest {
+class WildcardMatcherTest {
 
     @Test
-    public void antStylePatternTest() {
+    void antStylePatternTest() {
         // double asterisks
         assertTrue(checkAntPattern("/static/**", "/static/a/b/sssss/"));
         assertTrue(checkAntPattern("/static/**/", "/static/a/"));

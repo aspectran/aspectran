@@ -213,13 +213,15 @@ public class ReflectionUtils {
         }
 
         float weight = 0.0f;
-        while (destClass != null && !destClass.equals(srcClass)) {
-            if (destClass.isInterface() && destClass.equals(srcClass)) {
-                // slight penalty for interface match.
-                // we still want an exact match to override an interface match, but
-                // an interface match should override anything where we have to get a
-                // superclass.
-                weight += 0.25f;
+        while (destClass != null) {
+            if (destClass.equals(srcClass)) {
+                if (destClass.isInterface()) {
+                    // slight penalty for interface match.
+                    // we still want an exact match to override an interface match, but
+                    // an interface match should override anything where we have to get a
+                    // superclass.
+                    weight += 0.25f;
+                }
                 break;
             }
             weight++;

@@ -34,13 +34,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The Class TransletRuleRegistry.
@@ -59,17 +53,19 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final Map<String, TransletRule> deleteTransletRuleMap = new HashMap<>();
 
-    private final Set<TransletRule> wildGetTransletRuleSet = new HashSet<>();
+    private final Comparator<TransletRule> comparator = new WeightComparator();
 
-    private final Set<TransletRule> wildPostTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildGetTransletRuleSet = new TreeSet<>(comparator);
 
-    private final Set<TransletRule> wildPutTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildPostTransletRuleSet = new TreeSet<>(comparator);
 
-    private final Set<TransletRule> wildPatchTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildPutTransletRuleSet = new TreeSet<>(comparator);
 
-    private final Set<TransletRule> wildDeleteTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildPatchTransletRuleSet = new TreeSet<>(comparator);
 
-    private final Set<TransletRule> wildEtcTransletRuleSet = new HashSet<>();
+    private final Set<TransletRule> wildDeleteTransletRuleSet = new TreeSet<>(comparator);
+
+    private final Set<TransletRule> wildEtcTransletRuleSet = new TreeSet<>(comparator);
 
     private final String basePath;
 
@@ -148,7 +144,7 @@ public class TransletRuleRegistry extends AbstractComponent {
             for (TransletRule transletRule : transletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
                 if (namePattern != null) {
-                    if (namePattern.matches(transletName)){
+                    if (namePattern.matches(transletName)) {
                         return transletRule;
                     }
                 } else {
@@ -167,7 +163,7 @@ public class TransletRuleRegistry extends AbstractComponent {
                 if (requestMethod.containsTo(transletRule.getAllowedMethods())) {
                     WildcardPattern namePattern = transletRule.getNamePattern();
                     if (namePattern != null) {
-                        if (namePattern.matches(transletName)){
+                        if (namePattern.matches(transletName)) {
                             return transletRule;
                         }
                     } else {
@@ -448,6 +444,27 @@ public class TransletRuleRegistry extends AbstractComponent {
         wildPatchTransletRuleSet.clear();
         wildDeleteTransletRuleSet.clear();
         wildEtcTransletRuleSet.clear();
+    }
+
+    class WeightComparator implements Comparator<TransletRule> {
+
+        @Override
+        public int compare(TransletRule transletRule1, TransletRule transletRule2) {
+            if (transletRule1.getNamePattern() != null && transletRule2.getNamePattern() != null) {
+                float weight1 = transletRule1.getNamePattern().getWeight();
+                float weight2 = transletRule2.getNamePattern().getWeight();
+                if (weight1 > weight2) {
+                    return -1;
+                } else if (weight1 < weight2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        }
+
     }
 
 }

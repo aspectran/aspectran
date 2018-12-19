@@ -17,26 +17,14 @@ package com.aspectran.core.util.wildcard;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PluralWildcardPatternTest {
+class WildcardPatternTest {
 
     @Test
-    void matches() {
-        String[] includePatterns = {
-                "/aaa/b*/**",
-                "/aaa/c*"
-        };
-        String[] excludePatterns = {
-                "/aaa/bb*",
-                "/aaa/cc*"
-        };
-
-        PluralWildcardPattern pattern = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
-        assertTrue(pattern.matches("/aaa/bbb/ccc"));
-        assertFalse(pattern.matches("/aaa/ccc"));
-        assertTrue(pattern.matches("/aaa/bcd/ccc"));
+    void testWeight() {
+        WildcardPattern pattern = new WildcardPattern("/dashboard/12/34", '/');
+        assertEquals(34.4f, pattern.getWeight());
     }
 
 }
