@@ -61,42 +61,48 @@ Aspectran can also be used with more low-level jars:
   <artifactId>aspectran-daemon</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to build command-line based applications. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to build command-line based applications that use the feature-rich JLine. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to build web applications. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to embed Aspectran in your application. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to build a web application server with built-in Jetty. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
   <version>5.9.4</version>
 </dependency>
-
+```
+```xml
 <!-- This can be used to build applications that use MyBatis. -->
 <dependency>
   <groupId>com.aspectran</groupId>
