@@ -45,6 +45,8 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>(256);
 
+    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>();
+
     private final Map<String, TransletRule> postTransletRuleMap = new HashMap<>();
 
     private final Map<String, TransletRule> putTransletRuleMap = new HashMap<>();
@@ -65,7 +67,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final Set<TransletRule> wildDeleteTransletRuleSet = new TreeSet<>(comparator);
 
-    private final Set<TransletRule> wildEtcTransletRuleSet = new TreeSet<>(comparator);
+    private final Set<TransletRule> etcTransletRuleSet = new TreeSet<>(comparator);
 
     private final String basePath;
 
@@ -100,31 +102,34 @@ public class TransletRuleRegistry extends AbstractComponent {
             case GET:
                 transletRule = transletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupTransletRule(wildGetTransletRuleSet, transletName);
+                    transletRule = getTransletRuleMap.get(transletName);
+                }
+                if (transletRule == null) {
+                    transletRule = lookupWildTransletRule(wildGetTransletRuleSet, transletName);
                 }
                 break;
             case POST:
                 transletRule = postTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupTransletRule(wildPostTransletRuleSet, transletName);
+                    transletRule = lookupWildTransletRule(wildPostTransletRuleSet, transletName);
                 }
                 break;
             case PUT:
                 transletRule = putTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupTransletRule(wildPutTransletRuleSet, transletName);
+                    transletRule = lookupWildTransletRule(wildPutTransletRuleSet, transletName);
                 }
                 break;
             case PATCH:
                 transletRule = patchTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupTransletRule(wildPatchTransletRuleSet, transletName);
+                    transletRule = lookupWildTransletRule(wildPatchTransletRuleSet, transletName);
                 }
                 break;
             case DELETE:
                 transletRule = deleteTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupTransletRule(wildDeleteTransletRuleSet, transletName);
+                    transletRule = lookupWildTransletRule(wildDeleteTransletRuleSet, transletName);
                 }
                 break;
             default:
@@ -133,13 +138,13 @@ public class TransletRuleRegistry extends AbstractComponent {
         if (transletRule == null && requestMethod != MethodType.GET) {
             transletRule = transletRuleMap.get(transletName);
             if (transletRule == null) {
-                transletRule = lookupTransletRule(wildGetTransletRuleSet, transletName);
+                transletRule = lookupWildTransletRule(wildGetTransletRuleSet, transletName);
             }
         }
         return transletRule;
     }
 
-    private TransletRule lookupTransletRule(Set<TransletRule> transletRuleSet, String transletName) {
+    private TransletRule lookupWildTransletRule(Set<TransletRule> transletRuleSet, String transletName) {
         if (!transletRuleSet.isEmpty()) {
             for (TransletRule transletRule : transletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
@@ -158,8 +163,8 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     private TransletRule lookupEtcTransletRule(String transletName, MethodType requestMethod) {
-        if (!wildEtcTransletRuleSet.isEmpty()) {
-            for (TransletRule transletRule : wildEtcTransletRuleSet) {
+        if (!etcTransletRuleSet.isEmpty()) {
+            for (TransletRule transletRule : etcTransletRuleSet) {
                 if (requestMethod.containsTo(transletRule.getAllowedMethods())) {
                     WildcardPattern namePattern = transletRule.getNamePattern();
                     if (namePattern != null) {
@@ -267,16 +272,40 @@ public class TransletRuleRegistry extends AbstractComponent {
             if (allowedMethods != null) {
                 String restfulTransletName = assembleTransletName(transletName, allowedMethods);
                 transletRuleMap.put(restfulTransletName, transletRule);
+                for (MethodType methodType : allowedMethods) {
+                    switch (methodType) {
+                        case GET:
+                            wildGetTransletRuleSet.add(transletRule);
+                            break;
+                        case POST:
+                            wildPostTransletRuleSet.add(transletRule);
+                            break;
+                        case PUT:
+                            wildPutTransletRuleSet.add(transletRule);
+                            break;
+                        case PATCH:
+                            wildPatchTransletRuleSet.add(transletRule);
+                            break;
+                        case DELETE:
+                            wildDeleteTransletRuleSet.add(transletRule);
+                            break;
+                        default:
+                            etcTransletRuleSet.add(transletRule);
+                    }
+                }
             } else {
                 transletRuleMap.put(transletName, transletRule);
+                wildGetTransletRuleSet.add(transletRule);
             }
-            saveWildTransletRule(transletRule);
         } else {
             if (allowedMethods != null) {
                 String restfulTransletName = assembleTransletName(transletName, allowedMethods);
                 transletRuleMap.put(restfulTransletName, transletRule);
                 for (MethodType methodType : allowedMethods) {
                     switch(methodType) {
+                        case GET:
+                            getTransletRuleMap.put(transletName, transletRule);
+                            break;
                         case POST:
                             postTransletRuleMap.put(transletName, transletRule);
                             break;
@@ -290,7 +319,7 @@ public class TransletRuleRegistry extends AbstractComponent {
                             deleteTransletRuleMap.put(transletName, transletRule);
                             break;
                         default:
-                            saveWildTransletRule(transletRule);
+                            etcTransletRuleSet.add(transletRule);
                     }
                 }
             } else {
@@ -300,34 +329,6 @@ public class TransletRuleRegistry extends AbstractComponent {
 
         if (log.isTraceEnabled()) {
             log.trace("add TransletRule " + transletRule);
-        }
-    }
-
-    private void saveWildTransletRule(TransletRule transletRule) {
-        if (transletRule.getAllowedMethods() != null) {
-            for (MethodType methodType : transletRule.getAllowedMethods()) {
-                switch (methodType) {
-                    case GET:
-                        wildGetTransletRuleSet.add(transletRule);
-                        break;
-                    case POST:
-                        wildPostTransletRuleSet.add(transletRule);
-                        break;
-                    case PUT:
-                        wildPutTransletRuleSet.add(transletRule);
-                        break;
-                    case PATCH:
-                        wildPatchTransletRuleSet.add(transletRule);
-                        break;
-                    case DELETE:
-                        wildDeleteTransletRuleSet.add(transletRule);
-                        break;
-                    default:
-                        wildEtcTransletRuleSet.add(transletRule);
-                }
-            }
-        } else {
-            wildGetTransletRuleSet.add(transletRule);
         }
     }
 
@@ -434,6 +435,7 @@ public class TransletRuleRegistry extends AbstractComponent {
     @Override
     protected void doDestroy() {
         transletRuleMap.clear();
+        getTransletRuleMap.clear();
         postTransletRuleMap.clear();
         putTransletRuleMap.clear();
         patchTransletRuleMap.clear();
@@ -443,7 +445,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         wildPutTransletRuleSet.clear();
         wildPatchTransletRuleSet.clear();
         wildDeleteTransletRuleSet.clear();
-        wildEtcTransletRuleSet.clear();
+        etcTransletRuleSet.clear();
     }
 
     class WeightComparator implements Comparator<TransletRule> {
@@ -453,15 +455,17 @@ public class TransletRuleRegistry extends AbstractComponent {
             if (transletRule1.getNamePattern() != null && transletRule2.getNamePattern() != null) {
                 float weight1 = transletRule1.getNamePattern().getWeight();
                 float weight2 = transletRule2.getNamePattern().getWeight();
-                if (weight1 > weight2) {
-                    return -1;
-                } else if (weight1 < weight2) {
-                    return -1;
-                } else {
-                    return 0;
+                int cmp = Float.compare(weight2, weight1);
+                if (cmp == 0) {
+                    cmp = transletRule1.getNamePattern().toString().compareTo(transletRule2.getNamePattern().toString());
                 }
+                return cmp;
+            } else if (transletRule1.getNamePattern() != null) {
+                return transletRule2.getName().compareTo(transletRule1.getNamePattern().toString());
+            } else if (transletRule2.getNamePattern() != null) {
+                return transletRule1.getName().compareTo(transletRule2.getNamePattern().toString());
             } else {
-                return 0;
+                return transletRule2.getName().compareTo(transletRule1.getName());
             }
         }
 
