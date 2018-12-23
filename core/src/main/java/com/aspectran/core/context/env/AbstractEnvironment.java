@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -30,6 +32,8 @@ import java.util.Set;
  * Abstract base class for {@link Environment} implementations.
  */
 public abstract class AbstractEnvironment implements Environment {
+
+    private static final Log log = LogFactory.getLog(AbstractEnvironment.class);
 
     /**
      * Name of property to set to specify active profiles: {@value}. Value may be comma
@@ -69,6 +73,10 @@ public abstract class AbstractEnvironment implements Environment {
                 String[] profiles = getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
                 if (profiles != null) {
                     setActiveProfiles(profiles);
+                    String[] activeProfiles = getActiveProfiles();
+                    if (activeProfiles.length > 0) {
+                        log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
+                    }
                 }
             }
             return activeProfiles;

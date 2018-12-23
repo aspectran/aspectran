@@ -59,7 +59,9 @@ public class BeanTest {
 
     @AfterAll
     public void finish() {
-        builder.destroy();
+        if (builder != null) {
+            builder.destroy();
+        }
     }
 
     @Test

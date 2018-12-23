@@ -56,7 +56,9 @@ public class CallTest {
 
     @AfterAll
     public void finish() {
-        activityContextBuilder.destroy();
+        if (activityContextBuilder != null) {
+            activityContextBuilder.destroy();
+        }
     }
 
     @Test
