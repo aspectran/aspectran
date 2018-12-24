@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-5.dtd">
+<aspectran>
+
+    <description style="apon">
+        |
+        |{{bold}}Commands that can run examples:{{bold:off}}
+        |   {{CYAN}}hello{{fg:reset}}      Prints "Hello, World!" in your console
+        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI escape sequences
+        |   {{CYAN}}echo{{fg:reset}}       It accepts parameters and print as is
+        |   {{CYAN}}echo2{{fg:reset}}      It accepts parameters and attributes, and print them as is
+        |   (for more examples, type '{{GREEN}}translet -l{{reset}}')
+        |
+        |{{bold}}The Jetty Server is currently running.{{bold:off}}
+        |Use the command '{{GREEN}}jetty{{reset}}' to control the Jetty Server.
+        |When your Jetty Server is running, point your web browser to:
+        |   {{81}}http://localhost:8088/{{fg:reset}}
+        |
+    </description>
+
+    <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
+    <aspect id="activityDataAccessibility">
+        <description>
+            The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
+        </description>
+        <joinpoint target="translet"/>
+        <advice>
+            <before>
+                <echo>
+                    <attributes>
+                        <item name="data">
+                            <call bean="currentActivityData"/>
+                        </item>
+                    </attributes>
+                </echo>
+            </before>
+        </advice>
+    </aspect>
+
+    <aspect id="errorReport">
+        <description>
+            Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
+        </description>
+        <joinpoint target="translet"/>
+        <exception>
+            <thrown>
+                <transform type="transform/text">
+                    <template style="apon">
+                        |
+                        |   An Error Occurred!
+                        |-----------------------------------------------------------------------------------------
+                        |   #{currentTranslet^rootCauseOfRaisedException}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <bean class="com.aspectran.daemon.command.CommandTestBean"/>
+
+</aspectran>

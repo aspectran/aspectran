@@ -1,0 +1,47 @@
+context: {
+    root: classpath:config/app-config.xml
+    resources: [
+    ]
+    scan: [
+    ]
+    profiles: {
+    }
+    hybridLoad: false
+    autoReload: {
+        reloadMode: hard
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    singleton: false
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    startup: false
+}
+daemon: {
+    commands: [
+        com.aspectran.daemon.command.builtin.BeanActionCommand
+        com.aspectran.daemon.command.builtin.TransletCommand
+        com.aspectran.daemon.command.builtin.TemplateCommand
+        com.aspectran.daemon.command.builtin.PollingIntervalCommand
+        com.aspectran.daemon.command.builtin.RestartCommand
+        com.aspectran.daemon.command.builtin.QuitCommand
+    ]
+    poller: {
+        pollingInterval: 5000
+        maxThreads: 5
+        inbound: /inbound
+        requeue: false
+    }
+    exposals: {
+        -: /**
+    }
+}
+web: {
+    uriDecoding: utf-8
+    defaultServletName: default
+    exposals: {
+        +: /**
+    }
+}
