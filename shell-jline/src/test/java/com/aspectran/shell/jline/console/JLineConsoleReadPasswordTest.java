@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class JLineConsoleReadPasswordTest {
+class JLineConsoleReadPasswordTest {
 
     public static void main(String[] argv) throws IOException {
         Console console = new JLineConsole();

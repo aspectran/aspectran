@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * <p>Created: 2017. 12. 4.</p>
  */
-public class ActivityDataMapTest {
+class ActivityDataMapTest {
 
     @Test
-    public void testEvaluateAsString() throws ActivityContextBuilderException {
+    void testEvaluateAsString() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
         ActivityContext context = builder.build();
 

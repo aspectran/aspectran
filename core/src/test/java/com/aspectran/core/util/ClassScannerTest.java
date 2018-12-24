@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test case for scanning classes.
  */
-public class ClassScannerTest {
+class ClassScannerTest {
 
     @Test
-    public void testScanClass() throws IOException {
+    void testScanClass() throws IOException {
         ClassScanner scanner = new ClassScanner(AspectranClassLoader.getDefaultClassLoader());
         Map<String, Class<?>> map = scanner.scan("com.aspectran.**.util.*Test");
         for (Map.Entry<String, Class<?>> entry : map.entrySet()) {

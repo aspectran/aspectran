@@ -26,9 +26,9 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 
-public class AponWriterTest {
+class AponWriterTest {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         try {
             File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
             Reader reader = new FileReader(file);

@@ -54,12 +54,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 9. 7.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ViewDispatcherTest {
+class ViewDispatcherTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() {
+    void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         ContextConfig contextConfig = aspectranConfig.newContextConfig();
 
@@ -165,14 +165,14 @@ public class ViewDispatcherTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
     }
 
     @Test
-    public void testFreemarkerViewDispatcher() throws IOException {
+    void testFreemarkerViewDispatcher() throws IOException {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello");
         params.setParameter("param2", "world");
@@ -185,7 +185,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testEcho() throws IOException {
+    void testEcho() throws IOException {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello2");
         params.setParameter("param2", "world2");
@@ -198,7 +198,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testFreemarkerTemplate1() throws IOException {
+    void testFreemarkerTemplate1() throws IOException {
         List<String> fruits = new ArrayList<>();
         fruits.add("Apple");
         fruits.add("Banana");
@@ -215,7 +215,7 @@ public class ViewDispatcherTest {
     }
 
     @Test
-    public void testPebbleTemplate() throws IOException {
+    void testPebbleTemplate() throws IOException {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello");
         params.setParameter("param2", "pebble");

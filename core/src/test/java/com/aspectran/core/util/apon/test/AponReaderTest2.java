@@ -20,7 +20,7 @@ import com.aspectran.core.util.apon.AponWriter;
 
 public class AponReaderTest2 {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         try {
             Customer customer = new Customer();
             customer.putValue(Customer.id, "guest");

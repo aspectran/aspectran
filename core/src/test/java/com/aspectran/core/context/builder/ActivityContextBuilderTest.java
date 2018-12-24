@@ -33,14 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ActivityContextBuilderTest {
+class ActivityContextBuilderTest {
 
     private File baseDir;
 
     private ActivityContextBuilder builder;
 
     @BeforeAll
-    public void ready() throws IOException {
+    void ready() throws IOException {
         //baseDir = new File("./target/test-classes");
         baseDir = ResourceUtils.getResourceAsFile("");
 
@@ -53,12 +53,12 @@ public class ActivityContextBuilderTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         builder.destroy();
     }
 
     @Test
-    public void test1HybridLoading() throws ActivityContextBuilderException {
+    void test1HybridLoading() throws ActivityContextBuilderException {
         File apon1 = new File(baseDir, "config/sample/test-config.xml.apon");
         File apon2 = new File(baseDir, "config/sample/scheduler-config.xml.apon");
 

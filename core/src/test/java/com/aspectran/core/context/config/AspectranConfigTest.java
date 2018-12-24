@@ -26,10 +26,10 @@ import java.io.IOException;
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-public class AspectranConfigTest {
+class AspectranConfigTest {
 
     @Test
-    public void aspectranConfigTest() throws IOException {
+    void aspectranConfigTest() throws IOException {
         File file = new File(ResourceUtils.getResourceAsFile(""), "config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
         AponReader.parse(file, aspectranConfig);

@@ -23,9 +23,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-public class AponReaderTest {
+class AponReaderTest {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         try {
             Reader reader = new FileReader(new File(argv[0]));
 

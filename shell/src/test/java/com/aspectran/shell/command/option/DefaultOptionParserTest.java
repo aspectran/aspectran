@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DefaultOptionParserTest {
 
     @Test
-    public void testLS() {
+    void testLS() {
         OptionParser parser = new DefaultOptionParser();
 
         Options options = new Options();

@@ -28,10 +28,10 @@ import java.io.InputStream;
 /**
  * <p>Created: 2017. 11. 2.</p>
  */
-public class NodeletParserTest {
+class NodeletParserTest {
 
     @Test
-    public void testParsing() throws Exception {
+    void testParsing() throws Exception {
         RuleAppender appender = new ResourceRuleAppender("/config/xml/nodelet-parser-test-config.xml");
 
         NodeParserTest nodeParserTest = new NodeParserTest(true);
@@ -51,7 +51,7 @@ public class NodeletParserTest {
             addNodelets();
         }
 
-        public void parse(RuleAppender ruleAppender) throws Exception {
+        void parse(RuleAppender ruleAppender) throws Exception {
             InputStream inputStream = null;
             try {
                 inputStream = ruleAppender.getInputStream();

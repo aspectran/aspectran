@@ -23,15 +23,15 @@ import java.io.IOException;
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class JLine3ConsoleTest {
+class JLine3ConsoleTest {
 
     @Test
-    public void testAnsiColor() throws IOException {
+    void testAnsiColor() throws IOException {
         JLineConsole console = new JLineConsole();
         console.writeLine("--- JLineConsoleTest ---");
     }
 
-    public static void main(String argv[]) throws IOException {
+    public static void main(String[] argv) throws IOException {
         Console console = new JLineConsole();
         String prompt = "JLine3> ";
         while (true) {

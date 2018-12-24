@@ -26,21 +26,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 21/10/2018</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PBEncryptionUtilsTest {
+class PBEncryptionUtilsTest {
 
     private String oldPassword;
 
     private String oldAlgorithm;
 
     @BeforeAll
-    public void saveProperties() {
+    void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
         oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "abcd1234()");
     }
 
     @AfterAll
-    public void restoreProperties() {
+    void restoreProperties() {
         if (oldPassword == null) {
             System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
         } else {
@@ -54,7 +54,7 @@ public class PBEncryptionUtilsTest {
     }
 
     @Test
-    public void testEncrypt() {
+    void testEncrypt() {
         String original = "1234"; // fmNbd3A/Jfey9jT+WzoOvQ==
         String encrypted = PBEncryptionUtils.encrypt(original);
         String decrypted = PBEncryptionUtils.decrypt(encrypted);

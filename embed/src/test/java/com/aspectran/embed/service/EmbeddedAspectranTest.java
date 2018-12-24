@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 9. 7.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class EmbeddedAspectranTest {
+class EmbeddedAspectranTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() {
+    void ready() {
         String appConfigRootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
@@ -47,14 +47,14 @@ public class EmbeddedAspectranTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
     }
 
     @Test
-    public void test1() throws IOException {
+    void test1() throws IOException {
         ActivityContext activityContext = aspectran.getActivityContext();
         BeanRegistry beanRegistry = activityContext.getBeanRegistry();
         FirstBean firstBean = beanRegistry.getBean("thirdBean");
@@ -83,19 +83,19 @@ public class EmbeddedAspectranTest {
     }
 
     @Test
-    public void test2() throws IOException {
+    void test2() throws IOException {
         Translet translet = aspectran.translate("attr-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
     @Test
-    public void includeTest() throws IOException {
+    void includeTest() throws IOException {
         Translet translet = aspectran.translate("include-test");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
     @Test
-    public void actionCallTest() {
+    void actionCallTest() {
         Translet translet = aspectran.translate("add-up");
         ActivityDataMap dataMap = translet.getActivityDataMap();
         //System.out.println("Result: " + dataMap.get("result"));
@@ -103,7 +103,7 @@ public class EmbeddedAspectranTest {
     }
 
     @Test
-    public void testEcho123() throws IOException {
+    void testEcho123() throws IOException {
         Translet translet = aspectran.translate("echo123");
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }

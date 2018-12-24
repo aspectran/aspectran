@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test case for scanning files.
  */
-public class FileScannerTest {
+class FileScannerTest {
 
     @Test
-    public void testFileScan() {
+    void testFileScan() {
         FileScanner scanner = new FileScanner("./target/test-classes");
         Map<String, File> map = scanner.scan("**/util/*Test.class");
         for (Map.Entry<String, File> entry : map.entrySet()) {

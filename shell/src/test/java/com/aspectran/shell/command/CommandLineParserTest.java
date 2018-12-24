@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CommandLineParserTest {
 
     @Test
-    public void testExtractParameters() {
+    void testExtractParameters() {
         CommandLineParser parser = CommandLineParser.parse("GET /path/work1 --param1 apple --param2=strawberry --arr=a --arr=b >> abcde.txt > 12345.txt");
         assertEquals(parser.getRequestMethod().toString(), "GET");
         assertEquals(parser.getCommandName(), "/path/work1");
@@ -41,7 +41,7 @@ public class CommandLineParserTest {
     }
 
     @Test
-    public void testRedirectionOperators() {
+    void testRedirectionOperators() {
         List<CommandLineRedirection> list = CommandLineParser.parse(">> abcde > 12345").getRedirectionList();
         assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
         assertEquals(list.get(0).getOperand(), "abcde");
@@ -50,7 +50,7 @@ public class CommandLineParserTest {
     }
 
     @Test
-    public void testRedirectionOperators2() {
+    void testRedirectionOperators2() {
         List<CommandLineRedirection> list = CommandLineParser.parse("> '<abcde>' >> 12345").getRedirectionList();
         assertEquals(list.get(0).getOperator(), CommandLineRedirection.Operator.OVERWRITE_OUT);
         assertEquals(list.get(0).getOperand(), "'<abcde>'");

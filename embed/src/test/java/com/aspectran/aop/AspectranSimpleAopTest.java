@@ -29,12 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 11. 5.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AspectranSimpleAopTest {
+class AspectranSimpleAopTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() {
+    void ready() {
         String appConfigRootFile = "classpath:config/aop/simple-aop-test-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
@@ -42,14 +42,14 @@ public class AspectranSimpleAopTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
     }
 
     @Test
-    public void test1() {
+    void test1() {
         Translet translet = aspectran.translate("aop/test/action1");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         assertEquals(sampleAnnotatedAspect.foo(), "foo");
@@ -59,7 +59,7 @@ public class AspectranSimpleAopTest {
     }
 
     @Test
-    public void test2() {
+    void test2() {
         aspectran.translate("aop/test/action2");
     }
 

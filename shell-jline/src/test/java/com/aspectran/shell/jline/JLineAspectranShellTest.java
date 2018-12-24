@@ -25,7 +25,7 @@ import java.io.File;
 /**
  * <p>Created: 2017. 3. 26.</p>
  */
-public class JLineAspectranShellTest {
+class JLineAspectranShellTest {
 
     public static void main(String[] args) {
         ShellService service = null;

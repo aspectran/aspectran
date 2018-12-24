@@ -35,18 +35,18 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ItemExpressionParserTest {
+class ItemExpressionParserTest {
 
     private ActivityContext context;
 
     @BeforeAll
-    public void ready() throws ActivityContextBuilderException {
+    void ready() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
         context = builder.build();
     }
 
     @Test
-    public void testEvaluateAsMultiValueMap() {
+    void testEvaluateAsMultiValueMap() {
         Activity activity = new InstantActivity(context);
         activity.getRequestAdapter().setParameter("param1", "Apple");
         activity.getRequestAdapter().setAttribute("attr1", "Strawberry");

@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * <p>Created: 20/11/2018</p>
  */
-public class TokenTest {
+class TokenTest {
 
     @Test
-    public void hasTokenTest() {
+    void hasTokenTest() {
         String text = "a${#{x}z";
         assertTrue(Token.hasToken(text));
     }

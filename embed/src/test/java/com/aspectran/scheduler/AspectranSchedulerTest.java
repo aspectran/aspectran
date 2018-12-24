@@ -26,12 +26,12 @@ import org.junit.jupiter.api.TestInstance;
  * <p>Created: 2016. 9. 7.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AspectranSchedulerTest {
+class AspectranSchedulerTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() {
+    void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateAppConfigRootFile("classpath:config/scheduler/scheduler-config.xml");
         aspectranConfig.updateSchedulerConfig(0, true, true);
@@ -39,14 +39,14 @@ public class AspectranSchedulerTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
     }
 
     @Test
-    public void dummyTest() throws InterruptedException {
+    void dummyTest() throws InterruptedException {
         Thread.sleep(3000);
     }
 

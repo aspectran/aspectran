@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * <p>Created: 2017. 12. 3.</p>
  */
-public class ContextEnvironmentTest {
+class ContextEnvironmentTest {
 
     @Test
-    public void testEvaluateAsString() throws ActivityContextBuilderException {
+    void testEvaluateAsString() throws ActivityContextBuilderException {
         ItemRule itemRule1 = new ItemRule();
         itemRule1.setName("item1");
         itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");

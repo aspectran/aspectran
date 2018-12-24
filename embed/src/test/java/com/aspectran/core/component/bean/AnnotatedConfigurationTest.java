@@ -31,12 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 9. 7.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AnnotatedConfigurationTest {
+class AnnotatedConfigurationTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() {
+    void ready() {
         String appConfigRootFile = "classpath:config/anno/annotated-configuration-test-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
@@ -44,14 +44,14 @@ public class AnnotatedConfigurationTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.release();
         }
     }
 
     @Test
-    public void firstTest() {
+    void firstTest() {
         ThirdResult thirdResult = aspectran.getActivityContext().getBeanRegistry().getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
     }

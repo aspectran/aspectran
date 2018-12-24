@@ -24,10 +24,10 @@ import java.io.IOException;
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
-public class AponReadWriteTest {
+class AponReadWriteTest {
 
     @Test
-    public void writeTest() throws IOException, AponParseException {
+    void writeTest() throws IOException, AponParseException {
         File file = ResourceUtils.getResourceAsFile("config/apon/apon-test.apon");
         Parameters parameters = AponReader.parse(file);
 

@@ -37,12 +37,12 @@ import java.net.SocketException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class JettyServerTest {
+class JettyServerTest {
 
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    public void ready() throws Exception {
+    void ready() throws Exception {
         String basePath = new File("target").getCanonicalPath();
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
 
@@ -56,7 +56,7 @@ public class JettyServerTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (aspectran != null) {
             aspectran.translate("jetty stop");
             aspectran.release();
@@ -64,7 +64,7 @@ public class JettyServerTest {
     }
 
     @Test
-    public void testHello() throws IOException {
+    void testHello() throws IOException {
         Translet translet = aspectran.translate("/hello");
         String result1 = translet.getResponseAdapter().getWriter().toString();
         String result2;

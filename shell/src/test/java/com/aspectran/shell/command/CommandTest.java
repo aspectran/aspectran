@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 public class CommandTest {
 
     @Test
-    public void testVerboseCommand() {
+    void testVerboseCommand() {
         Console console = new DefaultConsole();
         Command command = new VerboseCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
@@ -38,7 +38,7 @@ public class CommandTest {
     }
 
     @Test
-    public void testHelpCommand() {
+    void testHelpCommand() {
         Console console = new DefaultConsole();
         Command command = new HelpCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
@@ -46,7 +46,7 @@ public class CommandTest {
     }
 
     @Test
-    public void testSysInfoCommand() {
+    void testSysInfoCommand() {
         Console console = new DefaultConsole();
         Command command = new SysInfoCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
@@ -54,7 +54,7 @@ public class CommandTest {
     }
 
     @Test
-    public void testPBEncryptCommand() throws Exception {
+    void testPBEncryptCommand() throws Exception {
         Console console = new DefaultConsole();
         PBEncryptCommand command = new PBEncryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
@@ -63,7 +63,7 @@ public class CommandTest {
     }
 
     @Test
-    public void testPBDecryptCommand() throws Exception {
+    void testPBDecryptCommand() throws Exception {
         Console console = new DefaultConsole();
         PBDecryptCommand command = new PBDecryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
@@ -72,7 +72,7 @@ public class CommandTest {
     }
 
     @Test
-    public void testTestCommand() throws Exception {
+    void testTestCommand() throws Exception {
         Console console = new DefaultConsole();
         TestCommand command = new TestCommand(null);
         console.writeLine(command.getDescriptor().getDescription());

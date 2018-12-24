@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class BeanTest {
+class BeanTest {
 
     private ActivityContextBuilder builder;
 
@@ -46,7 +46,7 @@ public class BeanTest {
     private BeanRegistry beanRegistry;
 
     @BeforeAll
-    public void ready() throws IOException, ActivityContextBuilderException {
+    void ready() throws IOException, ActivityContextBuilderException {
         File baseDir = ResourceUtils.getResourceAsFile("");
 
         builder = new HybridActivityContextBuilder();
@@ -58,14 +58,14 @@ public class BeanTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (builder != null) {
             builder.destroy();
         }
     }
 
     @Test
-    public void testProperties() {
+    void testProperties() {
         beanRegistry.getBean("properties");
         String property1 = context.getTemplateProcessor().process("property-1");
         String property2 = context.getTemplateProcessor().process("property-2");
@@ -78,28 +78,28 @@ public class BeanTest {
     }
 
     @Test
-    public void testConstructorAutowire() {
+    void testConstructorAutowire() {
         TestConstructorAutowireBean bean = beanRegistry.getBean("bean.TestConstructorAutowireBean");
         assertEquals("This is a Property-1", bean.bean1.getProperty1());
         assertEquals("This is a Property-1", bean.bean2.getProperty1());
     }
 
     @Test
-    public void testConstructorAutowire2() {
+    void testConstructorAutowire2() {
         TestConstructorAutowireBean2 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean2");
         assertEquals("This is a Property-1", bean.bean1.getProperty1());
         assertEquals("This is a Property-1", bean.bean2.getProperty1());
     }
 
     @Test
-    public void testConstructorAutowire3() {
+    void testConstructorAutowire3() {
         TestConstructorAutowireBean3 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean3");
         assertEquals("This is a Property-1", bean.bean1.getBean1().getProperty1());
         assertNull(bean.bean2);
     }
 
     @Test
-    public void testFieldValueAutowire() {
+    void testFieldValueAutowire() {
         TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
         assertEquals(bean.getProperty1(), "This is a Property-1");
         assertEquals(bean.getProperty2(), "This is a Property-2");
@@ -109,7 +109,7 @@ public class BeanTest {
     }
 
     @Test
-    public void testFieldAutowire() {
+    void testFieldAutowire() {
         TestFieldAutowireBean bean = beanRegistry.getBean("bean.TestFieldAutowireBean");
         assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
         assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
@@ -119,7 +119,7 @@ public class BeanTest {
     }
 
     @Test
-    public void testMethodAutowire() {
+    void testMethodAutowire() {
         TestMethodAutowireBean bean = beanRegistry.getBean("bean.TestMethodAutowireBean");
         assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
         assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");

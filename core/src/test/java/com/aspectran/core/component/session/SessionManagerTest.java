@@ -30,12 +30,12 @@ import static org.awaitility.Awaitility.await;
  *
  * <p>Created: 2017. 9. 12.</p>
  */
-public class SessionManagerTest {
+class SessionManagerTest {
 
     private Log log = LogFactory.getLog(getClass());
 
     @Test
-    public void testShortLifecycle() throws Exception {
+    void testShortLifecycle() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setGroupName("TEST1-");
         sessionManager.initialize();
@@ -59,7 +59,7 @@ public class SessionManagerTest {
     }
 
     @Test
-    public void testInactivityTimer() throws Exception {
+    void testInactivityTimer() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setGroupName("TEST2-");
         sessionManager.initialize();
@@ -75,7 +75,7 @@ public class SessionManagerTest {
     }
 
     @Test
-    public void testFileSessionStore() throws Exception {
+    void testFileSessionStore() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setGroupName("TEST3-");
 

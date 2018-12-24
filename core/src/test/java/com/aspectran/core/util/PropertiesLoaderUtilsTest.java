@@ -29,17 +29,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 21/10/2018</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PropertiesLoaderUtilsTest {
+class PropertiesLoaderUtilsTest {
 
     private String oldPassword;
 
     @BeforeAll
-    public void saveProperties() {
+    void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
     }
 
     @AfterAll
-    public void restoreProperties() {
+    void restoreProperties() {
         if (oldPassword == null) {
             System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
         } else {
@@ -48,7 +48,7 @@ public class PropertiesLoaderUtilsTest {
     }
 
     @Test
-    public void testLoadProperties() throws IOException {
+    void testLoadProperties() throws IOException {
         String password = "abcd1234()";
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, password);
         Properties props = PropertiesLoaderUtils.loadProperties("test.encrypted.properties");

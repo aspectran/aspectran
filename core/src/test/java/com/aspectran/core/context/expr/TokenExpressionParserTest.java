@@ -30,18 +30,18 @@ import org.junit.jupiter.api.TestInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class TokenExpressionParserTest {
+class TokenExpressionParserTest {
 
     private ActivityContext context;
 
     @BeforeAll
-    public void ready() throws ActivityContextBuilderException {
+    void ready() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
         context = builder.build();
     }
 
     @Test
-    public void testEvaluateAsString() {
+    void testEvaluateAsString() {
         Activity activity = new InstantActivity(context);
         activity.getRequestAdapter().setParameter("param1", "Apple");
         activity.getRequestAdapter().setAttribute("attr1", "Strawberry");

@@ -28,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * <p>Created: 2016. 3. 1.</p>
  */
-public class PathVariableMapTest {
+class PathVariableMapTest {
 
     @Test
-    public void testNewInstance() {
+    void testNewInstance() {
         String transletNamePattern = "/aaa/${bbb1}/bbb2/ccc/${ddd:eee}/fff/@{ggg:ggg}";
         String requestTransletName = "/aaa/bbb1/bbb2/ccc/ddd/fff/";
 

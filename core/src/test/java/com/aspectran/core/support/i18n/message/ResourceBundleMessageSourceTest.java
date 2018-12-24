@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2016. 3. 13.</p>
  */
-public class ResourceBundleMessageSourceTest {
+class ResourceBundleMessageSourceTest {
 
     @Test
-    public void testMessage() {
+    void testMessage() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setBasename("locale.messages");

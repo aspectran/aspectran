@@ -28,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * <p>Created: 2016. 2. 29.</p>
  */
-public class WildcardPointcutTest {
+class WildcardPointcutTest {
 
     @Test
-    public void wildcardPointcutTest() {
+    void wildcardPointcutTest() {
         // "/translet@class:hello.Simplest^hello*World*"
         PointcutPatternRule ppr1 = PointcutPatternRule.newInstance("/translet", "class:hel*.Sim*", "hello*World*");
 

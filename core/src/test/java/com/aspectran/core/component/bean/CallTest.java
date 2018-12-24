@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2017. 3. 20.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CallTest {
+class CallTest {
 
     private File baseDir = new File("./target/test-classes");
 
@@ -47,7 +47,7 @@ public class CallTest {
     private ActivityContext context;
 
     @BeforeAll
-    public void ready() throws IOException, ActivityContextBuilderException {
+    void ready() throws IOException, ActivityContextBuilderException {
         activityContextBuilder = new HybridActivityContextBuilder();
         activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
 
@@ -55,14 +55,14 @@ public class CallTest {
     }
 
     @AfterAll
-    public void finish() {
+    void finish() {
         if (activityContextBuilder != null) {
             activityContextBuilder.destroy();
         }
     }
 
     @Test
-    public void testBeanCall() {
+    void testBeanCall() {
         TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
         int count = 1;
         for (NumericBean o : totalBean.getNumerics()) {
@@ -72,7 +72,7 @@ public class CallTest {
     }
 
     @Test
-    public void testTemplateCall() {
+    void testTemplateCall() {
         TemplateProcessor templateProcessor = context.getTemplateProcessor();
         String result1 = templateProcessor.process("template-2");
 

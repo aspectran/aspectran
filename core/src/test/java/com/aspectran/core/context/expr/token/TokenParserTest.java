@@ -18,17 +18,16 @@ package com.aspectran.core.context.expr.token;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases that parse tokens.
  *
  * <p>Created: 2017. 3. 23.</p>
  */
-public class TokenParserTest {
+class TokenParserTest {
 
     @Test
-    public void parsingTest() {
+    void parsingTest() {
         String text = "${emailId}@${emailDomain}#{aaaa";
 
         Token[] tokens = TokenParser.parse(text);
@@ -44,7 +43,7 @@ public class TokenParserTest {
     }
 
     @Test
-    public void equalsTest() {
+    void equalsTest() {
         String text = "${param1}" +
                 "${param2:defaultStr}" +
                 "@{attr1}" +
@@ -66,7 +65,7 @@ public class TokenParserTest {
 
         for (Token token : tokens) {
             //System.out.println(token.stringify() + " = " + token.toString());
-            assertTrue(token.equals(token.replicate()));
+            assertEquals(token, token.replicate());
             assertEquals(token.stringify(), token.replicate().stringify());
         }
     }
