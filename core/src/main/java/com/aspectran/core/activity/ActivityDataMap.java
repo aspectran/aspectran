@@ -42,7 +42,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     /** @serial */
     private static final long serialVersionUID = -4557424414862800204L;
 
-    private static final Object EMPTY_VALUE = new Object();
+    private static final Object PREEMPTED = new Object();
 
     private final Activity activity;
 
@@ -52,6 +52,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
      * @param activity the activity
      */
     public ActivityDataMap(Activity activity) {
+        super();
         this.activity = activity;
 
         refresh();
@@ -60,7 +61,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     @Override
     public Object get(Object key) {
         Object value = super.get(key);
-        if (value != null && !value.equals(EMPTY_VALUE)) {
+        if (value != null && !value.equals(PREEMPTED)) {
             return value;
         }
         if (key == null) {
@@ -96,6 +97,14 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     @Override
+    public Object put(String key, Object value) {
+        if (this == value) {
+            throw new IllegalArgumentException("Same instance as this map can not be stored");
+        }
+        return super.put(key, value);
+    }
+
+    @Override
     public Collection<Object> values() {
         List<Object> list = new ArrayList<>(size());
         for (String name : keySet()) {
@@ -105,12 +114,16 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     @Override
-    public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> set = new HashSet<>();
-        for (String name : keySet()) {
-            Object value = get(name);
-            Map.Entry<String, Object> entry = new AbstractMap.SimpleImmutableEntry<>(name, value);
-            set.add(entry);
+    public Set<Map.Entry<String, Object>> entrySet() {
+        Set<Map.Entry<String, Object>> set = new HashSet<>();
+        for (Map.Entry<String, Object> entry : super.entrySet()) {
+            if (entry.getValue() == PREEMPTED) {
+                String key = entry.getKey();
+                Object value = get(key);
+                set.add(new AbstractMap.SimpleEntry<>(key, value));
+            } else {
+                set.add(entry);
+            }
         }
         return set;
     }
@@ -198,21 +211,28 @@ public class ActivityDataMap extends HashMap<String, Object> {
                 preempt(name);
             }
             for (String name : activity.getRequestAdapter().getAttributeNames()) {
-                preempt(name);
+                Object value = activity.getRequestAdapter().getAttribute(name);
+                if (this != value) {
+                    preempt(name);
+                }
             }
         }
         if (activity.getSessionAdapter() != null) {
             Enumeration<String> e = activity.getSessionAdapter().getAttributeNames();
             if (e != null) {
                 while (e.hasMoreElements()) {
-                    preempt(e.nextElement());
+                    String name = e.nextElement();
+                    Object value = activity.getSessionAdapter().getAttribute(name);
+                    if (this != value) {
+                        preempt(name);
+                    }
                 }
             }
         }
         if (activity.getProcessResult() != null) {
             for (ContentResult cr : activity.getProcessResult()) {
                 for (ActionResult ar : cr) {
-                    if (ar.getActionId() != null) {
+                    if (ar.getActionId() != null && this != ar.getResultValue()) {
                         preempt(ar.getActionId());
                     }
                 }
@@ -221,12 +241,12 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     private void preempt(String name) {
-        preempt(name, get(name));
+        preempt(name, super.get(name));
     }
 
     private void preempt(String name, Object value) {
         if (value == null) {
-            put(name, EMPTY_VALUE);
+            put(name, PREEMPTED);
         }
     }
 
