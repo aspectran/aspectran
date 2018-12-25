@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -62,7 +63,7 @@ public class RequestAttributeMap implements Map<String, Object> {
         while (names.hasMoreElements()) {
             String name = names.nextElement();
             Object object = request.getAttribute(name);
-            if (object == value || (value != null && value.equals(object))) {
+            if (Objects.equals(value, object)) {
                 return true;
             }
         }
@@ -128,8 +129,7 @@ public class RequestAttributeMap implements Map<String, Object> {
         while (names.hasMoreElements()) {
             String name = names.nextElement();
             Object value = request.getAttribute(name);
-            Map.Entry<String, Object> entry = new AbstractMap.SimpleImmutableEntry<>(name, value);
-            set.add(entry);
+            set.add(new AbstractMap.SimpleImmutableEntry<>(name, value));
         }
         return set;
     }
