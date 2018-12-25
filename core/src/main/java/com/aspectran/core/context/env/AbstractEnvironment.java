@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Abstract base class for {@link Environment} implementations.
+ * Abstract base class for {@code Environment} implementations.
  */
 public abstract class AbstractEnvironment implements Environment {
 
@@ -124,6 +124,10 @@ public abstract class AbstractEnvironment implements Environment {
                 String[] profiles = getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
                 if (profiles != null) {
                     setDefaultProfiles(profiles);
+                    String[] defaultProfiles = getDefaultProfiles();
+                    if (defaultProfiles.length > 0) {
+                        log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
+                    }
                 }
             }
             return defaultProfiles;
