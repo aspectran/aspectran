@@ -59,7 +59,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             if (object != null) {
                 if (!(object instanceof AspectranWebService)) {
                     throw new IllegalStateException("Context attribute [" + object + "] is not of type [" +
-                            WebService.class.getName() + "]");
+                            AspectranWebService.class.getName() + "]");
                 }
                 rootService = (AspectranWebService)object;
                 webService = AspectranWebService.create(this, rootService);
@@ -69,7 +69,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             standalone = (rootService != webService);
             if (standalone) {
                 webService.start();
-                log.info("WebService is running in standalone mode inside the servlet: " + this);
+                log.info(webService.getServiceName() + " is running in standalone mode inside " + getMyName());
             }
         } catch (Exception e) {
             log.error("Unable to initialize WebActivityServlet", e);
