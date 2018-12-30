@@ -67,12 +67,22 @@ public class Aspectran {
      * @param out a {@link PrintStream} object to print
      */
     public static void printAboutMe(PrintStream out) {
-        out.println("Aspectran version: " + VERSION);
-        out.println("OS Name:           " + System.getProperty("os.name"));
-        out.println("OS Version:        " + System.getProperty("os.version"));
-        out.println("Architecture:      " + System.getProperty("os.arch"));
-        out.println("JVM Version:       " + System.getProperty("java.runtime.version"));
-        out.println("JVM Vendor:        " + System.getProperty("java.vm.vendor"));
+        out.println("Aspectran:   " + VERSION);
+        out.println("JVM:         " + System.getProperty("java.version") + " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " + System.getProperty("java.runtime.version") + ")");
+        out.println("OS:          " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+    }
+
+    /**
+     * Prints Aspectran information to the specified print stream.
+     *
+     * @param out a {@link PrintStream} object to print
+     */
+    public static void printPrettyAboutMe(PrintStream out) {
+        out.println("------------------------------------------------------");
+        out.println(String.format(" %1$-9s : %2$s", "Aspectran", VERSION));
+        out.println(String.format(" %1$-9s : %2$s", "JVM", System.getProperty("java.version") + " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " + System.getProperty("java.runtime.version") + ")"));
+        out.println(String.format(" %1$-9s : %2$s", "OS", System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch")));
+        out.println("------------------------------------------------------");
     }
 
     /**
@@ -81,7 +91,7 @@ public class Aspectran {
      * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {
-        printAboutMe(System.out);
+        printPrettyAboutMe(System.out);
     }
 
 }

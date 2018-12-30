@@ -45,7 +45,7 @@ public class AspectranShell {
         int exitStatus = 0;
 
         try {
-            Aspectran.printAboutMe(System.out);
+            Aspectran.printPrettyAboutMe(System.out);
             shellService = ShellService.run(aspectranConfigFile, console);
             ShellCommander commander = new ShellCommander(shellService);
             commander.perform();
