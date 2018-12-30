@@ -16,7 +16,6 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
@@ -60,8 +59,6 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     protected void doStart() throws Exception {
-        log.info("Welcome to Aspectran " + Aspectran.VERSION);
-
         startAspectranService();
 
         if (!isDerived()) {
