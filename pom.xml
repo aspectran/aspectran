@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2008-2018 The Aspectran Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -299,11 +314,13 @@
                         <fork>true</fork>
                         <debug>true</debug>
                         <optimize>true</optimize>
-                        <meminitial>256m</meminitial>
-                        <maxmem>1024m</maxmem>
-                        <compilerArgument>-Xlint:-options</compilerArgument>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>true</showWarnings>
                         <!-- Slightly faster builds, see https://issues.apache.org/jira/browse/MCOMPILER-209 -->
                         <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <compilerArgument>-Xlint:-options</compilerArgument>
+                        <meminitial>256m</meminitial>
+                        <maxmem>1024m</maxmem>
                         <excludes>
                             <exclude>**/package-info.java</exclude>
                         </excludes>
@@ -317,6 +334,7 @@
                         <archive>
                             <manifest>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             </manifest>
                             <manifestEntries>
                                 <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
@@ -370,10 +388,9 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
-                        <releaseProfiles>release</releaseProfiles>
+                        <releaseProfiles>release,skip-test</releaseProfiles>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
-                        <arguments>-Prelease</arguments>
                     </configuration>
                 </plugin>
 
@@ -551,6 +568,7 @@
                                 <supportedProjectType>bundle</supportedProjectType>
                             </supportedProjectTypes>
                             <instructions>
+                                <_nouses>true</_nouses>
                                 <Export-Package>${project.groupId}.*;version=${project.version};-noimport:=true</Export-Package>
                                 <Import-Package>*;resolution:=optional</Import-Package>
                                 <Private-Package>!*</Private-Package>
