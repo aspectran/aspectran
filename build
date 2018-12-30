@@ -52,10 +52,10 @@ case "$command" in
         echo "Travis Branch: $TRAVIS_BRANCH"
         if [ "$TRAVIS_JDK_VERSION" == 'openjdk11' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
             # deploy to sonatype
-            mvn clean deploy $*
+            mvn clean deploy -q -P skip-test $*
             echo "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
             # coverage reporting of coveralls
-            mvn clean test jacoco:report coveralls:report -q $*
+            mvn clean test jacoco:report coveralls:report -q -P skip-test $*
             echo "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
         else
             echo "Travis deploy skipped"
@@ -69,7 +69,7 @@ case "$command" in
 
     # perform release
     release-perform)
-        mvn -Darguments="-Dmaven.test.skip=true" release:perform
+        mvn release:perform -P skip-test
         ;;
 
     # clean release
