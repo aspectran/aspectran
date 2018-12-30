@@ -64,12 +64,12 @@ case "$command" in
 
     # prepare release
     release-prepare)
-        mvn release:prepare
+        mvn release:clean release:prepare
         ;;
 
     # perform release
     release-perform)
-        mvn release:perform -P skip-test
+        mvn release:perform
         ;;
 
     # clean release
