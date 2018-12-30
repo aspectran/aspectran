@@ -55,7 +55,7 @@ case "$command" in
             mvn clean deploy -q -P skip-test $*
             echo "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
             # coverage reporting of coveralls
-            mvn clean test jacoco:report coveralls:report -q -P skip-test $*
+            mvn clean test jacoco:report coveralls:report -q $*
             echo "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
         else
             echo "Travis deploy skipped"
