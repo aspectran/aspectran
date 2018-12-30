@@ -18,6 +18,7 @@ jdk:
 branches:
   only:
     - master
+    - aspectran-5.9.x
 
 before_install:
   - chmod +x mvnw
