@@ -50,7 +50,7 @@ case "$command" in
         echo "Travis JDK Version: $TRAVIS_JDK_VERSION"
         echo "Travis Pull Request: $TRAVIS_PULL_REQUEST"
         echo "Travis Branch: $TRAVIS_BRANCH"
-        if [ "$TRAVIS_JDK_VERSION" == 'openjdk11' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
+        if [ "$TRAVIS_JDK_VERSION" == 'openjdk8' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
             # deploy to sonatype
             mvn clean deploy -q -P skip-test $*
             echo "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
