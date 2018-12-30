@@ -1,28 +1,31 @@
 language: java
+
 sudo: false
-
-jdk:
-  - oraclejdk8
-  - oraclejdk9
-  - oraclejdk11
-  - openjdk11
-  - openjdk10
-  - openjdk9
-  - openjdk8
-
-before_install:
-  - chmod +x mvnw
-  - chmod +x .travis/install.sh
-  - chmod +x .travis/after_success.sh
-  - echo "MAVEN_OPTS='-Dlicense.skip=true'" > ~/.mavenrc
-
-install:
-  - .travis/install.sh
-
-after_success:
-  - .travis/after_success.sh
 
 env:
   global:
     - secure: "cI0nyZkqf2pHNBABb7BU5056iSGTwgcDE8JoX3fTv4rYPXAb69zDj/xQ9ArWAyLN2+wYSdKyU3FgZOvzQpTL1KU5H+L6tdhpWzBCVxzbuReG8ssZ+ftzJao42UOcjAbZMm4zko5XicIwISWqx1Lgt7BQNioZAPB4NZQxw/MbAQRsoQspVGGft/8+98nL9DMzxElJu3FAk8IMsq9RHI6B6gkHBiSMnrAE0XNaxcQYpVGVGplWai6diez1mOVetolEWnSjkWtTmogREqn+GPH09kiNadpdf++c3uYvSD5y2+mxV9SbZw2bD5QVMxdEQtR48ayLe8N4PF5kMMV6/3qdrz9Y5GmwaSbJcW9nK9Ofm5NIjarFVZ4NS1cDOKqhbS+8KnEflH6IEMV3pF6VGB9PQjuCfnpteUix0VdF+CyaCd02II3QARQ4qWROO7jLiZoF9q7sInYB4FEZNK76EohrfkSeXgrE5hI8Tt0LcjU8WLfob/9AfScWR6cltPBVV+aBTvmOe6ySUS3EvyWvjnkWpiMrmARrMMsvwZTnBNYriqMsnjM95YrUvYGNbq+OGJVRNZ8BXTaB7ERbCClJHfi68LuaQnaHgh0nCxfP3wgkxqzcdRDP0g33x28SJKuDb7gJVvko1HuPGv3JSZmx5gReLpe6/SDkU2KaCXWw39+X7oI="
     - secure: "SmSBFOUXEMT8Rwuq1CKcDrmRWsK+Anm5ylEZ1calJhQYmxRTm9uSo93v3HkcB/5PH99B8/KEzDmrktlDql+mEDDV0vOdlYapBzlHl4TfiPH1/8ZE8qkEypbuvtBDJ9NTre+d6kLryRX6f5iZy0Udm+WEAtnono2W25Oz7wGqKrv0/VH3ndT315JwrcwfJ/W7d8Vs16wFbyQ9X1NB2rwhS4IFeRDZYwu6xWIoQG4p4R4wkpolpQzF6lRQsTXPJVwZXlOM/L9/j2Of2gG68X4gHn9dFNzRbfXnp0kdm3aFbUKDmJ4E1p1Q2qEgLySh6tAOhQ5ykEegqM5EKcbZWh4L8S3KVQTMytSqVWXyEMU/tWgbtMYnXK3mid/agGqM0EQ+itGJQ0h0+dkHSKd2SpqD4rKigDC9wGNhXgLxvkUhThtqYr1HGJ5s/w6V/2n+2n3B6TpLWt6Ps/XhStu4zXogDYONHIdiaSawr6P8adx7rGb+m/PFK1VtDZIQFG7VVtiWYIWuPnTLe0QEA0fuwdwwQE53sCYKFKaTekVytKFseydkDGopiE6JXIKN0k9Q/qCcc8yqqy6ICYeFpVcJ2KK7ufeDsnWb9Yt93JmpDPqfrTpZ0recQQYdqwMlgyX78BY9wRrRSomNicUeuteIFm5SUhxQJwhoNspN7+FpP3DXtUo="
+    - MAVEN_SETTINGS='.travis/settings.xml'
+    - MAVEN_OPTIONS="-V -B -s $MAVEN_SETTINGS"
+
+jdk:
+  - oraclejdk8
+  - oraclejdk11
+  - openjdk11
+  - openjdk8
+
+branches:
+  only:
+    - master
+    - aspectran-5.9.x
+
+before_install:
+  - chmod +x mvnw
+  - chmod +x build
+
+install:
+  - ./build ci-build $MAVEN_OPTIONS
+
+after_success:
+  - ./build ci-deploy $MAVEN_OPTIONS
