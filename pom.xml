@@ -334,6 +334,7 @@
                         <archive>
                             <manifest>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             </manifest>
                             <manifestEntries>
                                 <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
@@ -567,6 +568,7 @@
                                 <supportedProjectType>bundle</supportedProjectType>
                             </supportedProjectTypes>
                             <instructions>
+                                <_nouses>true</_nouses>
                                 <Export-Package>${project.groupId}.*;version=${project.version};-noimport:=true</Export-Package>
                                 <Import-Package>*;resolution:=optional</Import-Package>
                                 <Private-Package>!*</Private-Package>
