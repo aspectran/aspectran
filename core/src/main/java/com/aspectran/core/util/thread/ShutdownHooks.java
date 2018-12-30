@@ -41,7 +41,7 @@ public class ShutdownHooks {
         }
 
         if (hook == null) {
-            hook = addHook(new Thread("Aspectran Shutdown Hook") {
+            hook = addHook(new Thread("AspectranShutdownHook") {
                 @Override
                 public void run() {
                     runTasks();
