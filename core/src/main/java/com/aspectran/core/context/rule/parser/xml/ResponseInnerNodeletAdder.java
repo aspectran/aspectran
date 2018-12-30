@@ -204,7 +204,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             applicable.applyResponseRule(frr);
         });
         parser.addNodelet(new ActionNodeletAdder(assistant));
-        parser.setXpath(xpath + "/forward/parameters");
+        parser.setXpath(xpath + "/forward/attributes");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
