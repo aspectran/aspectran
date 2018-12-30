@@ -22,7 +22,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
@@ -910,32 +909,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         br.setDescription(beanRule.getDescription());
         br.setReplicated(true);
         return br;
-    }
-
-    public static void updateConstructorArgument(BeanRule beanRule, String text)
-            throws IllegalRuleException {
-        if (!beanRule.isFactoryOffered()) {
-            List<ItemParameters> argumentParametersList = ItemRule.toItemParametersList(text);
-            if (argumentParametersList != null) {
-                ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-                if (constructorArgumentItemRuleMap != null) {
-                    beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
-                }
-            }
-        }
-    }
-
-    public static void updateProperty(BeanRule beanRule, String text)
-            throws IllegalRuleException {
-        if (!beanRule.isFactoryOffered()) {
-            List<ItemParameters> propertyParametersList = ItemRule.toItemParametersList(text);
-            if (propertyParametersList != null) {
-                ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-                if (propertyItemRuleMap != null) {
-                    beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
-                }
-            }
-        }
     }
 
 }

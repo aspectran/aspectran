@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
@@ -134,8 +134,8 @@ public class BeanReferenceInspector {
                 }
             } else {
                 for (RefererInfo refererInfo : refererInfoSet) {
-                    if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_ACTION_RULE) {
-                        checkTransletActionParameter((BeanActionRule)refererInfo.getInspectable(),
+                    if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
+                        checkTransletActionParameter((BeanMethodActionRule)refererInfo.getInspectable(),
                                 beanRule, refererInfo);
                     }
                 }
@@ -151,31 +151,29 @@ public class BeanReferenceInspector {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token t = (Token)refererInfo.getInspectable();
             if (t.getAlternativeValue() != null && t.getGetterName() != null) {
-                if (BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName())) {
-                    return true;
-                }
+                return BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName());
             }
         }
         return false;
     }
 
-    private void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule, RefererInfo refererInfo) {
-        if (beanActionRule.getArgumentItemRuleMap() == null) {
+    private void checkTransletActionParameter(BeanMethodActionRule beanMethodActionRule, BeanRule beanRule, RefererInfo refererInfo) {
+        if (beanMethodActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
-            String methodName = beanActionRule.getMethodName();
+            String methodName = beanMethodActionRule.getMethodName();
 
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, BeanRuleAnalyzer.TRANSLET_ACTION_PARAMETER_TYPES);
             if (m1 != null) {
-                beanActionRule.setMethod(m1);
-                beanActionRule.setRequiresTranslet(true);
+                beanMethodActionRule.setMethod(m1);
+                beanMethodActionRule.setRequiresTranslet(true);
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
-                    throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
+                    throw new BeanRuleException("No such bean method " + methodName + "() on bean " + beanClass +
                             " in " + refererInfo, beanRule);
                 }
-                beanActionRule.setMethod(m2);
-                beanActionRule.setRequiresTranslet(false);
+                beanMethodActionRule.setMethod(m2);
+                beanMethodActionRule.setRequiresTranslet(false);
             }
         }
     }

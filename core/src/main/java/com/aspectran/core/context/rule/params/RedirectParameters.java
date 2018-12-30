@@ -40,7 +40,7 @@ public class RedirectParameters extends AbstractParameters {
         excludeNullParameters = new ParameterDefinition("excludeNullParameters", ParameterValueType.BOOLEAN);
         excludeEmptyParameters = new ParameterDefinition("excludeEmptyParameters", ParameterValueType.BOOLEAN);
         defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
+        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 action,

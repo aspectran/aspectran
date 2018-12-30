@@ -49,19 +49,31 @@ public class NodeletParser {
 
     private static final Log log = LogFactory.getLog(NodeletParser.class);
 
-    private final Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>(0));
+    private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>(0));
 
     private final Map<String, Nodelet> nodeletMap = new HashMap<>(2048);
 
     private final Map<String, NodeEndlet> endletMap = new HashMap<>(1024);
 
-    private final ArrayStack objectStack = new ArrayStack();    private boolean validating;
+    private final ArrayStack objectStack = new ArrayStack();
+
+    private boolean validating;
 
     private EntityResolver entityResolver;
 
     private NodeTracker nodeTracker;
 
     private String xpath;
+
+    private final Object nodeParser;
+
+    public NodeletParser(Object nodeParser) {
+        this.nodeParser = nodeParser;
+    }
+
+    public <N> N getNodeParser() {
+        return (N)nodeParser;
+    }
 
     public void setValidating(boolean validating) {
         this.validating = validating;
@@ -201,7 +213,8 @@ public class NodeletParser {
 
                 @Override
                 public void setDocumentLocator(Locator locator) {
-                    this.locator = locator; // Save the locator, so that it can be used later for line tracking when traversing nodes.
+                    // Save the locator, so that it can be used later for line tracking when traversing nodes.
+                    this.locator = locator;
                 }
 
                 @Override

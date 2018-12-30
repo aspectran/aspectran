@@ -42,8 +42,8 @@ class NodeletParserTest {
 
         private final NodeletParser parser;
 
-        public NodeParserTest(boolean validating) {
-            this.parser = new NodeletParser();
+        NodeParserTest(boolean validating) {
+            this.parser = new NodeletParser(this);
             this.parser.setValidating(validating);
             this.parser.setEntityResolver(new AspectranDtdResolver(validating));
             this.parser.trackingLocation();

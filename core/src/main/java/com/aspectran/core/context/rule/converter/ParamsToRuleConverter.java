@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -317,7 +317,7 @@ public class ParamsToRuleConverter {
         Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
         Boolean important = beanParameters.getBoolean(BeanParameters.important);
         ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
-        ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
+        List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
         FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 
         BeanRule beanRule;
@@ -333,15 +333,21 @@ public class ParamsToRuleConverter {
             beanRule.setFilterParameters(filterParameters);
         }
         if (constructorParameters != null) {
-            ItemHolderParameters constructorArgumentItemHolderParameters = constructorParameters.getParameters(ConstructorParameters.arguments);
-            if (constructorArgumentItemHolderParameters != null) {
-                ItemRuleMap constructorArgumentItemRuleMap = convertAsItemRuleMap(constructorArgumentItemHolderParameters);
-                beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+            List<ItemHolderParameters> argumentItemHolderParametersList = constructorParameters.getParametersList(ConstructorParameters.arguments);
+            if (argumentItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                    ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
+                    beanRule.setConstructorArgumentItemRuleMap(irm);
+                }
             }
         }
-        if (propertyItemHolderParameters != null) {
-            ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
-            beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+        if (propertyItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());
+                beanRule.setPropertyItemRuleMap(irm);
+            }
         }
 
         assistant.resolveFactoryBeanClass(beanRule);
@@ -405,16 +411,24 @@ public class ParamsToRuleConverter {
             transletRule.setRequestRule(requestRule);
         }
 
-        ItemHolderParameters parametersItemHolderParameters = transletParameters.getParameters(TransletParameters.parameters);
-        if (parametersItemHolderParameters != null) {
-            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
-            transletRule.touchRequestRule(true).setParameterItemRuleMap(parameterItemRuleMap);
+        List<ItemHolderParameters> parameterItemHolderParametersList = transletParameters.getParametersList(TransletParameters.parameters);
+        if (parameterItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                RequestRule requestRule = transletRule.touchRequestRule(true);
+                irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
+                requestRule.setParameterItemRuleMap(irm);
+            }
         }
 
-        ItemHolderParameters attributesItemHolderParameters = transletParameters.getParameters(TransletParameters.attributes);
-        if (attributesItemHolderParameters != null) {
-            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
-            transletRule.touchRequestRule(true).setAttributeItemRuleMap(attributeItemRuleMap);
+        List<ItemHolderParameters> attributeItemHolderParametersList = transletParameters.getParametersList(TransletParameters.attributes);
+        if (attributeItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                RequestRule requestRule = transletRule.touchRequestRule(true);
+                irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
+                requestRule.setAttributeItemRuleMap(irm);
+            }
         }
 
         ContentsParameters contentsParameters = transletParameters.getParameters(TransletParameters.contents);
@@ -491,17 +505,23 @@ public class ParamsToRuleConverter {
     private RequestRule convertAsRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
         String allowedMethod = requestParameters.getString(RequestParameters.method);
         String encoding = requestParameters.getString(RequestParameters.encoding);
-        ItemHolderParameters parametersItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
-        ItemHolderParameters attributesItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
+        List<ItemHolderParameters> parameterItemHolderParametersList = requestParameters.getParametersList(RequestParameters.parameters);
+        List<ItemHolderParameters> attributeItemHolderParametersList = requestParameters.getParametersList(RequestParameters.attributes);
 
         RequestRule requestRule = RequestRule.newInstance(allowedMethod, encoding);
-        if (parametersItemHolderParameters != null) {
-            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parametersItemHolderParameters);
-            requestRule.setParameterItemRuleMap(parameterItemRuleMap);
+        if (parameterItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
+                requestRule.setParameterItemRuleMap(irm);
+            }
         }
-        if (attributesItemHolderParameters != null) {
-            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributesItemHolderParameters);
-            requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
+        if (attributeItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
+                requestRule.setAttributeItemRuleMap(irm);
+            }
         }
         return requestRule;
     }
@@ -570,48 +590,60 @@ public class ParamsToRuleConverter {
         String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
         String include = actionParameters.getString(ActionParameters.include);
         ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
-        ItemHolderParameters headersItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
+        ItemHolderParameters headerItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
         Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 
         if (include != null) {
             include = assistant.applyTransletNamePattern(include);
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, method, hidden);
-            ItemHolderParameters parameterItemHolderParameters = actionParameters.getParameters(ActionParameters.parameters);
-            if (parameterItemHolderParameters != null) {
-                ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParameters);
-                includeActionRule.setParameterItemRuleMap(parameterItemRuleMap);
+            List<ItemHolderParameters> parameterItemHolderParametersList = actionParameters.getParametersList(ActionParameters.parameters);
+            if (parameterItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
+                    ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, includeActionRule.getParameterItemRuleMap());
+                    includeActionRule.setParameterItemRuleMap(irm);
+                }
             }
-            ItemHolderParameters attributeItemHolderParameters = actionParameters.getParameters(ActionParameters.attributes);
-            if (attributeItemHolderParameters != null) {
-                ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributeItemHolderParameters);
-                includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
+            List<ItemHolderParameters> attributeItemHolderParametersList = actionParameters.getParametersList(ActionParameters.attributes);
+            if (attributeItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
+                    ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());
+                    includeActionRule.setAttributeItemRuleMap(irm);
+                }
             }
             actionRuleApplicable.applyActionRule(includeActionRule);
         } else if (method != null) {
             String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
-            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, method, hidden);
-            ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
-            if (argumentItemHolderParameters != null) {
-                ItemRuleMap argumentItemRuleMap = convertAsItemRuleMap(argumentItemHolderParameters);
-                beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+            BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
+            List<ItemHolderParameters> argumentItemHolderParametersList = actionParameters.getParametersList(ActionParameters.arguments);
+            if (argumentItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                    ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, beanMethodActionRule.getArgumentItemRuleMap());
+                    beanMethodActionRule.setArgumentItemRuleMap(irm);
+                }
             }
-            ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
-            if (propertyItemHolderParameters != null) {
-                ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
-                beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+            List<ItemHolderParameters> propertyItemHolderParametersList = actionParameters.getParametersList(ActionParameters.properties);
+            if (propertyItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                    ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, beanMethodActionRule.getPropertyItemRuleMap());
+                    beanMethodActionRule.setPropertyItemRuleMap(irm);
+                }
             }
-            assistant.resolveActionBeanClass(beanActionRule);
-            actionRuleApplicable.applyActionRule(beanActionRule);
+            assistant.resolveActionBeanClass(beanMethodActionRule);
+            actionRuleApplicable.applyActionRule(beanMethodActionRule);
         } else if (echoItemHolderParameters != null) {
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(echoItemHolderParameters);
             echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
             actionRuleApplicable.applyActionRule(echoActionRule);
-        } else if (headersItemHolderParameters != null) {
-            HeadingActionRule headingActionRule = HeadingActionRule.newInstance(id, hidden);
-            ItemRuleMap headerItemRuleMap = convertAsItemRuleMap(headersItemHolderParameters);
-            headingActionRule.setHeaderItemRuleMap(headerItemRuleMap);
-            actionRuleApplicable.applyActionRule(headingActionRule);
+        } else if (headerItemHolderParameters != null) {
+            HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
+            ItemRuleMap headerItemRuleMap = convertAsItemRuleMap(headerItemHolderParameters);
+            headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
+            actionRuleApplicable.applyActionRule(headerActionRule);
         }
     }
 
@@ -736,7 +768,7 @@ public class ParamsToRuleConverter {
     private RedirectResponseRule convertAsRedirectResponseRule(RedirectParameters redirectParameters) throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);
-        ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
+        List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);
         Boolean excludeNullParameters = redirectParameters.getBoolean(RedirectParameters.excludeNullParameters);
         Boolean excludeEmptyParameters = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameters);
@@ -745,8 +777,11 @@ public class ParamsToRuleConverter {
 
         RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
         if (parameterItemHolderParametersList != null) {
-            ItemRuleMap parameterItemRuleMap = convertAsItemRuleMap(parameterItemHolderParametersList);
-            rrr.setParameterItemRuleMap(parameterItemRuleMap);
+            for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, rrr.getParameterItemRuleMap());
+                rrr.setParameterItemRuleMap(irm);
+            }
         }
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
@@ -770,7 +805,7 @@ public class ParamsToRuleConverter {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
         String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
-        ItemHolderParameters attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
+        List<ItemHolderParameters> attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
         List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
         Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 
@@ -778,8 +813,11 @@ public class ParamsToRuleConverter {
 
         ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, translet, method, defaultResponse);
         if (attributeItemHolderParametersList != null) {
-            ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(attributeItemHolderParametersList);
-            frr.setAttributeItemRuleMap(attributeItemRuleMap);
+            for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, frr.getAttributeItemRuleMap());
+                frr.setAttributeItemRuleMap(irm);
+            }
         }
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList();
@@ -792,9 +830,11 @@ public class ParamsToRuleConverter {
     }
 
     private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
-        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList(ItemHolderParameters.item);
+        String profile = itemHolderParameters.getProfile();
+        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
         ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
         if (itemRuleMap != null) {
+            itemRuleMap.setProfile(profile);
             for (ItemRule itemRule : itemRuleMap.values()) {
                 assistant.resolveBeanClass(itemRule);
             }

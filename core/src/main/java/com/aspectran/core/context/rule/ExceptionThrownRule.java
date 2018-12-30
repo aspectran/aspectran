@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.HeadingAction;
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -166,24 +166,24 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public void applyActionRule(BeanActionRule beanActionRule) {
-        BeanAction action = new BeanAction(beanActionRule, null);
-        if (aspectAdviceRule != null && beanActionRule.getBeanId() == null) {
+    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
+        if (aspectAdviceRule != null && beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(aspectAdviceRule);
         }
         this.action = action;
     }
 
     @Override
-    public void applyActionRule(MethodActionRule methodActionRule) {
+    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Method Action Rule to the Exception Thrown Rule");
+                "Cannot apply the config bean method action rule to the Exception Thrown Rule");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Include Action Rule to the Exception Thrown Rule");
+                "Cannot apply the include action rule to the Exception Thrown Rule");
     }
 
     @Override
@@ -192,8 +192,8 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public void applyActionRule(HeadingActionRule headingActionRule) {
-        action = new HeadingAction(headingActionRule, null);
+    public void applyActionRule(HeaderActionRule headerActionRule) {
+        action = new HeaderAction(headerActionRule, null);
     }
 
     /**
@@ -205,7 +205,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         return action;
     }
 
-    public void setExecutableAction(MethodAction action) {
+    public void setExecutableAction(ConfigBeanMethodAction action) {
         this.action = action;
     }
 
@@ -218,7 +218,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         return (action != null ? action.getActionType() : null);
     }
 
-    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, MethodAction action) {
+    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, ConfigBeanMethodAction action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
         if (types != null && types.length > 0) {
             String[] exceptionTypes = new String[types.length];

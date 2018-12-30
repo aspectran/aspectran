@@ -193,7 +193,6 @@ public class PointcutPatternRule {
             transletNamePattern = patternString.substring(0, beanClassDelimiterIndex);
             beanClassPattern = patternString.substring(beanClassDelimiterIndex + 1);
         }
-
         if (beanClassPattern != null) {
             int methodNameDelimiterIndex = beanClassPattern.indexOf(POINTCUT_METHOD_NAME_DELIMITER);
             if (methodNameDelimiterIndex == 0) {
@@ -204,11 +203,9 @@ public class PointcutPatternRule {
                 beanClassPattern = beanClassPattern.substring(0, methodNameDelimiterIndex);
             }
         }
-
         if (transletNamePattern != null && !transletNamePattern.isEmpty()) {
             ppr.setTransletNamePattern(transletNamePattern);
         }
-
         if (beanClassPattern != null) {
             if (beanClassPattern.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = beanClassPattern.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
@@ -221,21 +218,17 @@ public class PointcutPatternRule {
                 }
             }
         }
-
         if (methodNamePattern != null && !methodNamePattern.isEmpty()) {
             ppr.setMethodNamePattern(methodNamePattern);
         }
-
         return ppr;
     }
 
     public static PointcutPatternRule newInstance(String translet, String bean, String method) {
         PointcutPatternRule ppr = new PointcutPatternRule();
-
         if (translet != null && !translet.isEmpty()) {
             ppr.setTransletNamePattern(translet);
         }
-
         if (bean != null && !bean.isEmpty()) {
             if (bean.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
@@ -246,11 +239,9 @@ public class PointcutPatternRule {
                 ppr.setBeanIdPattern(bean);
             }
         }
-
         if (method != null && !method.isEmpty()) {
             ppr.setMethodNamePattern(method);
         }
-
         return ppr;
     }
 

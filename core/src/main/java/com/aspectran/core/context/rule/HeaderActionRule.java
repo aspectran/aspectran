@@ -19,13 +19,13 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class HeadingActionRule.
+ * The Class HeaderActionRule.
  * 
  * <p>Created: 2016. 08. 23.</p>
  * 
  * @since 3.0.0
  */
-public class HeadingActionRule {
+public class HeaderActionRule {
 
     private String actionId;
 
@@ -133,17 +133,17 @@ public class HeadingActionRule {
     }
 
     /**
-     * Returns a new derived instance of EchoActionRule.
+     * Returns a new derived instance of HeaderActionRule.
      *
      * @param id the action id
      * @param hidden whether to hide result of the action
-     * @return the echo action rule
+     * @return the header action rule
      */
-    public static HeadingActionRule newInstance(String id, Boolean hidden) {
-        HeadingActionRule echoActionRule = new HeadingActionRule();
-        echoActionRule.setActionId(id);
-        echoActionRule.setHidden(hidden);
-        return echoActionRule;
+    public static HeaderActionRule newInstance(String id, Boolean hidden) {
+        HeaderActionRule headerActionRule = new HeaderActionRule();
+        headerActionRule.setActionId(id);
+        headerActionRule.setHidden(hidden);
+        return headerActionRule;
     }
 
 }

@@ -76,28 +76,24 @@ public class Trimmer {
         if (str == null) {
             return null;
         }
-
         if (str.length() == 0) {
             return str;
         }
 
         StringBuilder builder = new StringBuilder(str);
-
         boolean deprefixed = deprefixing(builder);
         boolean desuffixed = desuffixing(builder);
         boolean prefixed = prefixing(builder);
         boolean sufixed = suffixing(builder);
-
         if (deprefixed || desuffixed || prefixed || sufixed) {
             return builder.toString();
+        } else {
+            return str.trim();
         }
-
-        return str.trim();
     }
 
     private boolean deprefixing(StringBuilder builder) {
         boolean applied = false;
-
         if (deprefixes != null && deprefixes.length > 0) {
             int start = 0;
             for (; start < builder.length(); start++) {
@@ -105,20 +101,17 @@ public class Trimmer {
                     break;
                 }
             }
-
             for (String deprefix : deprefixes) {
                 if (delete(deprefix, builder, start)) {
                     applied = true;
                 }
             }
         }
-
         return applied;
     }
 
     private boolean desuffixing(StringBuilder builder) {
         boolean applied = false;
-
         if (desuffixes != null && desuffixes.length > 0) {
             int len = builder.length();
             for (; len > 0; len--) {
@@ -126,7 +119,6 @@ public class Trimmer {
                     break;
                 }
             }
-
             for (String desuffix : desuffixes) {
                 int start = len - desuffix.length();
                 if (delete(desuffix, builder, start)) {
@@ -134,7 +126,6 @@ public class Trimmer {
                 }
             }
         }
-
         return applied;
     }
 
@@ -142,16 +133,13 @@ public class Trimmer {
         if (prefix == null) {
             return false;
         }
-
         int start = 0;
         for (; start < builder.length(); start++) {
             if (!Character.isWhitespace(builder.charAt(start))) {
                 break;
             }
         }
-
         builder.insert(start, prefix);
-
         return true;
     }
 
@@ -159,9 +147,7 @@ public class Trimmer {
         if (suffix == null) {
             return false;
         }
-
         builder.append(suffix);
-
         return true;
     }
 
@@ -169,9 +155,7 @@ public class Trimmer {
         if (str == null || str.length() > builder.length()) {
             return false;
         }
-
         int end = start + str.length();
-
         for (int i = start, j = 0; i < end; i++, j++) {
             char c1 = caseSensitive ? builder.charAt(i) : Character.toLowerCase(builder.charAt(i));
             char c2 = caseSensitive ? str.charAt(j) : Character.toLowerCase(str.charAt(j));
@@ -179,9 +163,7 @@ public class Trimmer {
                 return false;
             }
         }
-
         builder.delete(start, end);
-
         return true;
     }
 

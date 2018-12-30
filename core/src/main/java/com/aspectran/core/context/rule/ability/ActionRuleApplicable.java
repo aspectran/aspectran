@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.ability;
 
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.rule.MethodActionRule;
 
 /**
  * The Interface ActionRuleApplicable.
@@ -29,38 +29,38 @@ import com.aspectran.core.context.rule.MethodActionRule;
 public interface ActionRuleApplicable {
 
     /**
-     * Adds the bean action.
+     * Adds the bean method action rule.
      *
-     * @param beanActionRule the bean action rule
+     * @param beanMethodActionRule the bean method action rule
      */
-    void applyActionRule(BeanActionRule beanActionRule);
+    void applyActionRule(BeanMethodActionRule beanMethodActionRule);
 
     /**
-     * Adds the method action.
+     * Adds the config bean method action rule.
      *
-     * @param methodActionRule the bean action rule
+     * @param configBeanMethodActionRule the config bean method action rule
      */
-    void applyActionRule(MethodActionRule methodActionRule);
+    void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule);
 
     /**
-     * Adds the process-call action.
+     * Adds the include action rule.
      *
-     * @param includeActionRule the process call action rule
+     * @param includeActionRule the include action rule
      */
     void applyActionRule(IncludeActionRule includeActionRule);
 
     /**
-     * Adds the echo action.
+     * Adds the echo action rule.
      *
      * @param echoActionRule the echo action rule
      */
     void applyActionRule(EchoActionRule echoActionRule);
 
     /**
-     * Adds the heading action.
+     * Adds the header action rule.
      *
-     * @param headingActionRule the heading action rule
+     * @param headerActionRule the header action rule
      */
-    void applyActionRule(HeadingActionRule headingActionRule);
+    void applyActionRule(HeaderActionRule headerActionRule);
 
 }

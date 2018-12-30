@@ -31,19 +31,11 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ScheduleNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new ScheduleNodeletAdder.
-     *
-     * @param assistant the assistant
-     */
-    ScheduleNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/schedule");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));

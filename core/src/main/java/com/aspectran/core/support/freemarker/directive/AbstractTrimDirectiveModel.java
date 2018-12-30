@@ -45,14 +45,12 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
         if (body == null) {
             return;
         }
-
         if (loopVars.length != 0) {
             throw new TemplateModelException("Trim directive doesn't allow loop variables");
         }
 
         StringWriter bodyWriter = new StringWriter();
         body.render(bodyWriter);
-
         String trimmed = getTrimmer(params).trim(bodyWriter.toString());
 
         Writer out = env.getOut();
@@ -79,15 +77,12 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
     @SuppressWarnings("rawtypes")
     protected String parseStringParameter(Map params, String paramName) {
         Object paramModel = params.get(paramName);
-
         if (paramModel == null) {
             return null;
         }
-
         if (!(paramModel instanceof SimpleScalar)) {
             throw new IllegalArgumentException(paramName + " must be string");
         }
-
         return ((SimpleScalar)paramModel).getAsString();
     }
 
@@ -102,17 +97,13 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
     @SuppressWarnings("rawtypes")
     protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
         Object paramModel = params.get(paramName);
-
         if (paramModel == null) {
             return null;
         }
-
         if (!(paramModel instanceof SimpleSequence)) {
             throw new IllegalArgumentException(paramName + " must be sequence");
         }
-
         List<String> list = transformSimpleSequenceAsStringList((SimpleSequence)paramModel, paramName);
-
         return list.toArray(new String[0]);
     }
 
@@ -128,17 +119,13 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
             throws TemplateModelException {
         List<String> list = new ArrayList<>();
         int size = sequence.size();
-
         for (int i = 0; i < size; i++) {
             TemplateModel model = sequence.get(i);
-
             if (!(model instanceof SimpleScalar)) {
                 throw new IllegalArgumentException(paramName + "'s item must be string");
             }
-
             list.add(((SimpleScalar)model).getAsString());
         }
-
         return list;
     }
 

@@ -79,13 +79,13 @@ public class ToStringBuilder {
     public void append(String name, boolean value) {
         if (value) {
             appendName(name);
-            this.sb.append(Boolean.toString(true));
+            this.sb.append(true);
         }
     }
 
     public void appendForce(String name, boolean value) {
         appendName(name);
-        this.sb.append(Boolean.toString(value));
+        this.sb.append(value);
     }
 
     public void appendEqual(String name, Object value, Object compare) {

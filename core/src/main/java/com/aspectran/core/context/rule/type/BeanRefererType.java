@@ -23,12 +23,12 @@ package com.aspectran.core.context.rule.type;
 public enum BeanRefererType {
 
     ASPECT_RULE("aspectRule"),
-    SCHEDULE_RULE("scheduleRule"),
-    BEAN_ACTION_RULE("beanActionRule"),
-    BEAN_RULE("beanRule"),
     AUTOWIRE_RULE("autowireRule"),
-    TOKEN("token"),
-    TEMPLATE_RULE("templateRule");
+    BEAN_METHOD_ACTION_RULE("beanMethodActionRule"),
+    BEAN_RULE("beanRule"),
+    SCHEDULE_RULE("scheduleRule"),
+    TEMPLATE_RULE("templateRule"),
+    TOKEN("token");
 
     private final String alias;
 

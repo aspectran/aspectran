@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
@@ -49,15 +50,15 @@ public class EchoAction extends AbstractAction {
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        if (echoActionRule.getAttributeItemRuleMap() == null) {
+        ItemRuleMap itemRuleMap = echoActionRule.getAttributeItemRuleMap();
+        if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return null;
         }
-
         try {
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
-            return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
+            return evaluator.evaluate(itemRuleMap);
         } catch (Exception e) {
-            log.error("Failed to execute an action that echoes attributes. echoActionRule " + echoActionRule);
+            log.error("Failed to execute echo action " + echoActionRule);
             throw e;
         }
     }

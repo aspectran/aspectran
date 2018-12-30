@@ -43,28 +43,28 @@ public class TemplateCommand extends AbstractCommand {
     @Override
     public String execute(CommandParameters parameters) throws Exception {
         String templateName = parameters.getTemplateName();
-        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
-
         if (templateName == null) {
             throw new IllegalRuleException("'template' parameter is not specified");
         }
 
         ParameterMap parameterMap = null;
         Map<String, Object> attrs = null;
-        if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
+
+        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+        if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
+                (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
             Activity activity = new InstantActivity(getService().getActivityContext());
             ItemEvaluator evaluator = new ItemExpressionParser(activity);
-            if (parameterItemRuleMap != null) {
+            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
                 parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
             }
-            if (attributeItemRuleMap != null) {
+            if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
                 attrs = evaluator.evaluate(attributeItemRuleMap);
             }
         }
 
-        String output = getService().template(templateName, parameterMap, attrs);
-        return output;
+        return getService().template(templateName, parameterMap, attrs);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TemplateCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Execute a template";
+            return "Executes a template";
         }
 
     }

@@ -59,7 +59,7 @@ class CommandTest {
     @Test
     void testVerboseCommand() throws Exception {
         CommandParameters parameters = new CommandParameters();
-        parameters.setCommandName("beanAction");
+        parameters.setCommandName("beanMethodAction");
         parameters.setBeanName("class:com.aspectran.daemon.command.CommandTestBean");
         parameters.setMethodName("command1");
 

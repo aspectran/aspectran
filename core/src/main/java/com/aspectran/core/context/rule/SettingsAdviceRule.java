@@ -60,6 +60,9 @@ public class SettingsAdviceRule {
     }
 
     public void putSetting(String name, Object value) {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Setting name can not be null");
+        }
         if (settings == null) {
             settings = new HashMap<>();
         }

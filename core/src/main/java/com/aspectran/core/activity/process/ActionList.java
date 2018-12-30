@@ -15,17 +15,17 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.HeadingAction;
+import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.activity.process.action.IncludeAction;
-import com.aspectran.core.activity.process.action.MethodAction;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -98,13 +98,13 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public void applyActionRule(BeanActionRule beanActionRule) {
-        add(new BeanAction(beanActionRule, this));
+    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        add(new BeanMethodAction(beanMethodActionRule, this));
     }
 
     @Override
-    public void applyActionRule(MethodActionRule methodActionRule) {
-        add(new MethodAction(methodActionRule, this));
+    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+        add(new ConfigBeanMethodAction(configBeanMethodActionRule, this));
     }
 
     @Override
@@ -118,8 +118,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public void applyActionRule(HeadingActionRule headingActionRule) {
-        add(new HeadingAction(headingActionRule, this));
+    public void applyActionRule(HeaderActionRule headerActionRule) {
+        add(new HeaderAction(headerActionRule, this));
     }
 
     @Override

@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
@@ -30,19 +29,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ExceptionInnerNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new ExceptionInnerNodeletAdder.
-     *
-     * @param assistant the assistant for Context Builder
-     */
-    ExceptionInnerNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
+        ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
+
         parser.setXpath(xpath + "/description");
         parser.addNodelet(attrs -> {
             String style = attrs.get("style");
@@ -59,7 +51,7 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
             }
         });
         parser.setXpath(xpath);
-        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/thrown");
         parser.addNodelet(attrs -> {
             String exceptionType = attrs.get("type");
@@ -72,8 +64,8 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(etr);
         });
-        parser.addNodelet(new ActionNodeletAdder(assistant));
-        parser.addNodelet(new ResponseInnerNodeletAdder(assistant));
+        parser.addNodelet(actionNodeletAdder);
+        parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
             ExceptionThrownRule etr = parser.popObject();
             ExceptionRule exceptionRule = parser.peekObject();

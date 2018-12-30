@@ -48,8 +48,8 @@ public class TransletParameters extends AbstractParameters {
         mask = new ParameterDefinition("mask", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         request = new ParameterDefinition("request", RequestParameters.class);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
         contents = new ParameterDefinition("contents", ContentsParameters.class);
         content = new ParameterDefinition("content", ContentParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);

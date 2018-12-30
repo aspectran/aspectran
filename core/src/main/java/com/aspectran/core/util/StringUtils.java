@@ -360,12 +360,12 @@ public class StringUtils {
         int oldIndex = 0;
         int index;
         while ((index = str.indexOf(search, oldIndex)) >= 0) {
-            sb.append(str.substring(oldIndex, index));
+            sb.append(str, oldIndex, index);
             sb.append(replace);
             oldIndex = index + searchLen;
         }
         if (oldIndex < stringLen) {
-            sb.append(str.substring(oldIndex, stringLen));
+            sb.append(str, oldIndex, stringLen);
         }
         return sb.toString();
     }

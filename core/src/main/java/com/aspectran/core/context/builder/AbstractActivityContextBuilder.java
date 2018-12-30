@@ -320,7 +320,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (defaultProfiles != null) {
             environment.setDefaultProfiles(defaultProfiles);
         }
-        if (propertyItemRuleMap != null) {
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
             environment.setPropertyItemRuleMap(propertyItemRuleMap);
         }
         return environment;

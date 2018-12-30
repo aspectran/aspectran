@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * The Class ItemRuleMap.
@@ -26,6 +28,12 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
     /** @serial */
     private static final long serialVersionUID = 192817512158305803L;
+
+    private String profile;
+
+    private List<ItemRuleMap> candidates;
+
+    private boolean dummy;
 
     public ItemRuleMap() {
         super();
@@ -56,6 +64,38 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
      */
     private void autoNaming(ItemRule itemRule) {
         itemRule.setName("item#" + size());
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public List<ItemRuleMap> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(List<ItemRuleMap> candidates) {
+        this.candidates = candidates;
+    }
+
+    public List<ItemRuleMap> addCandidate(ItemRuleMap itemRuleMap) {
+        if (candidates == null) {
+            candidates = new ArrayList<>();
+        }
+        candidates.add(itemRuleMap);
+        return candidates;
+    }
+
+    public boolean isDummy() {
+        return dummy;
+    }
+
+    public void setDummy(boolean dummy) {
+        this.dummy = dummy;
     }
 
 }

@@ -921,8 +921,8 @@ public class ItemRule {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public static ItemRuleMap toItemRuleMap(String text) throws IllegalRuleException {
-        Parameters holder = new ItemHolderParameters(text);
-        List<ItemParameters> itemParametersList = holder.getParametersList(ItemHolderParameters.item);
+        ItemHolderParameters holder = new ItemHolderParameters(text);
+        List<ItemParameters> itemParametersList = holder.getParametersList();
         return toItemRuleMap(itemParametersList);
     }
 

@@ -33,19 +33,11 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ItemNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new ItemNodeletAdder.
-     *
-     * @param assistant the assistant for Context Builder
-     */
-    ItemNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/item");
         parser.addNodelet(attrs -> {
             String type = attrs.get("type");
@@ -58,7 +50,6 @@ class ItemNodeletAdder implements NodeletAdder {
             Boolean security = BooleanUtils.toNullableBooleanObject(attrs.get("security"));
 
             ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, security);
-
             if (value != null && itemRule.getType() == ItemType.SINGLE) {
                 itemRule.setValue(value);
             }
@@ -81,7 +72,8 @@ class ItemNodeletAdder implements NodeletAdder {
             ItemRule itemRule = parser.peekObject();
 
             String name = attrs.get("name");
-            boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attrs.get("tokenize")), itemRule.isTokenize());
+            boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attrs.get("tokenize")),
+                    itemRule.isTokenize());
 
             parser.pushObject(name);
             parser.pushObject(tokenize);
@@ -147,7 +139,6 @@ class ItemNodeletAdder implements NodeletAdder {
                 }
             }
         });
-        parser.setXpath(xpath);
     }
 
 }

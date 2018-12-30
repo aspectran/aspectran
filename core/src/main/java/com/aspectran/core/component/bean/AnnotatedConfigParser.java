@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.After;
 import com.aspectran.core.component.bean.annotation.Around;
@@ -54,13 +54,13 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -364,7 +364,7 @@ public class AnnotatedConfigParser {
                     if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() &&
                             beanRule.getInitMethod() == null) {
                         beanRule.setInitMethod(method);
-                        beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
+                        beanRule.setInitMethodRequiresTranslet(ConfigBeanMethodActionRule.isRequiresTranslet(method));
                     }
                 } else if (method.isAnnotationPresent(Destroy.class)) {
                     if (!beanRule.isDisposableBean() && beanRule.getDestroyMethod() == null) {
@@ -538,11 +538,11 @@ public class AnnotatedConfigParser {
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
 
-        MethodActionRule methodActionRule = new MethodActionRule();
-        methodActionRule.setActionId(actionId);
-        methodActionRule.setConfigBeanClass(beanClass);
-        methodActionRule.setMethod(method);
-        transletRule.applyActionRule(methodActionRule);
+        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
+        configBeanMethodActionRule.setActionId(actionId);
+        configBeanMethodActionRule.setConfigBeanClass(beanClass);
+        configBeanMethodActionRule.setMethod(method);
+        transletRule.applyActionRule(configBeanMethodActionRule);
 
         if (method.isAnnotationPresent(Dispatch.class)) {
             Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
@@ -623,17 +623,17 @@ public class AnnotatedConfigParser {
         for (Method method : beanClass.getMethods()) {
             if (method.isAnnotationPresent(Before.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
-                aspectAdviceRule.setExecutableAction(MethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
-                aspectAdviceRule.setExecutableAction(MethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(Around.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
-                aspectAdviceRule.setExecutableAction(MethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 Class<? extends Throwable>[] types = exceptionThrownAnno.type();
-                MethodAction action = MethodActionRule.newMethodAction(beanClass, method);
+                ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newMethodAction(beanClass, method);
                 ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Dispatch.class)) {

@@ -29,19 +29,11 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class TemplateNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new TemplateNodeletAdder.
-     *
-     * @param assistant the assistant
-     */
-    TemplateNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/template");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));
@@ -56,10 +48,12 @@ class TemplateNodeletAdder implements NodeletAdder {
 
             TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file,
                     resource, url, null, style, encoding, noCache);
+
             parser.pushObject(templateRule);
         });
         parser.addNodeEndlet(text -> {
             TemplateRule templateRule = parser.popObject();
+
             TemplateRule.updateTemplateSource(templateRule, text);
             assistant.addTemplateRule(templateRule);
         });

@@ -310,13 +310,13 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public void applyActionRule(BeanActionRule beanActionRule) {
-        touchActionList().applyActionRule(beanActionRule);
+    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        touchActionList().applyActionRule(beanMethodActionRule);
     }
 
     @Override
-    public void applyActionRule(MethodActionRule methodActionRule) {
-        touchActionList().applyActionRule(methodActionRule);
+    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+        touchActionList().applyActionRule(configBeanMethodActionRule);
     }
 
     @Override
@@ -330,8 +330,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public void applyActionRule(HeadingActionRule headingActionRule) {
-        touchActionList().applyActionRule(headingActionRule);
+    public void applyActionRule(HeaderActionRule headerActionRule) {
+        touchActionList().applyActionRule(headerActionRule);
     }
 
     /**

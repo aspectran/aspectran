@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
@@ -52,21 +53,23 @@ public class IncludeAction extends AbstractAction {
     @Override
     public Object execute(Activity activity) throws Exception {
         Activity innerActivity = null;
-
         try {
             innerActivity = activity.newActivity();
             innerActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
 
-            if (includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
+            ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
+            ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
+            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
+                    (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
                 ItemEvaluator evaluator = new ItemExpressionParser(activity);
-                if (includeActionRule.getParameterItemRuleMap() != null) {
-                    Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
+                if (parameterItemRuleMap != null) {
+                    Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
                     for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                         innerActivity.getRequestAdapter().setParameter(entry.getKey(), entry.getValue().toString());
                     }
                 }
-                if (includeActionRule.getAttributeItemRuleMap() != null) {
-                    Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
+                if (attributeItemRuleMap != null) {
+                    Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
                     innerActivity.getRequestAdapter().putAllAttributes(valueMap);
                 }
             }
@@ -74,7 +77,7 @@ public class IncludeAction extends AbstractAction {
             innerActivity.perform();
             return innerActivity.getProcessResult();
         } catch (Exception e) {
-            log.error("Failed to execute an action that includes other translet. includeActionRule " + includeActionRule);
+            log.error("Failed to execute include action " + includeActionRule);
             throw e;
         } finally {
             if (innerActivity != null) {

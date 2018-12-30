@@ -36,7 +36,7 @@ public class ForwardParameters extends AbstractParameters {
         translet = new ParameterDefinition("translet", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 action,

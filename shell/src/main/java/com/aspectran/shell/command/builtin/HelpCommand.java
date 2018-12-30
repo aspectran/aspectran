@@ -173,7 +173,7 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Display information about builtin commands";
+            return "Display information about all built-in commands";
         }
 
         @Override

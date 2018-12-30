@@ -45,11 +45,11 @@ public class ActionParameters extends AbstractParameters {
         bean = new ParameterDefinition("bean", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
-        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
-        properties = new ParameterDefinition("properties", ItemHolderParameters.class);
+        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class, true, true);
+        properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
         include = new ParameterDefinition("include", ParameterValueType.STRING);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
         echo = new ParameterDefinition("echo", ItemHolderParameters.class);
         headers = new ParameterDefinition("headers", ItemHolderParameters.class);
 

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  XML DTD for the Aspectran Configuration File, Version 5.0
+  XML DTD for the Aspectran Configuration File, Version 6.0
 
   Copyright 2008-2018 The Aspectran Project
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-  SYSTEM "http://aspectran.github.io/dtd/aspectran-5.dtd">
+  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+  SYSTEM "http://aspectran.github.io/dtd/aspectran-6.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
-  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-          "http://aspectran.github.io/dtd/aspectran-5.dtd">
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+          "http://aspectran.github.io/dtd/aspectran-6.dtd">
 -->
 
 <!ELEMENT aspectran (
@@ -26,11 +26,11 @@
   style   (apon | compact | compressed) #IMPLIED
 >
 
-<!ELEMENT settings (#PCDATA | setting)*>
-<!ELEMENT setting (#PCDATA)>
+<!ELEMENT settings (setting+)>
+<!ELEMENT setting EMPTY>
 <!ATTLIST setting
   name    CDATA #REQUIRED
-  value   CDATA #IMPLIED
+  value   CDATA #REQUIRED
 >
 
 <!ELEMENT typeAliases (typeAlias*)>
@@ -41,7 +41,7 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT environment (#PCDATA | description | properties)*>
+<!ELEMENT environment (description?, properties+)>
 <!ATTLIST environment
   profile CDATA #IMPLIED
 >
@@ -68,14 +68,14 @@
 <!ELEMENT around  (action)>
 <!ELEMENT finally (thrown?, (headers | echo | action))>
 
-<!ELEMENT exception (description?, thrown*)>
+<!ELEMENT exception (description?, thrown+)>
 
 <!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description?, filter?, constructor?, properties?)>
+<!ELEMENT bean (description?, filter?, constructor?, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
@@ -96,7 +96,7 @@
   class   CDATA #IMPLIED
 >
 
-<!ELEMENT constructor (arguments?)>
+<!ELEMENT constructor (arguments*)>
 
 <!ELEMENT schedule (description?, scheduler, job*)>
 <!ATTLIST schedule
@@ -125,7 +125,7 @@
   (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
   (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
   (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, parameters?, attributes?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+  (description?, parameters*, attributes*, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -134,7 +134,7 @@
   method  CDATA #IMPLIED
 >
 
-<!ELEMENT request (parameters?, attributes?)>
+<!ELEMENT request (parameters*, attributes*)>
 <!ATTLIST request
   method   CDATA #IMPLIED
   encoding CDATA #IMPLIED
@@ -153,7 +153,7 @@
   hidden    (true | false) #IMPLIED
 >
 
-<!ELEMENT action (arguments?, properties?)>
+<!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED
   bean    CDATA #IMPLIED
@@ -161,7 +161,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT include (parameters?, attributes?)>
+<!ELEMENT include (parameters*, attributes*)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED
@@ -169,13 +169,13 @@
   hidden   (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (#PCDATA | attributes | item)*>
+<!ELEMENT echo (item* | attributes*)>
 <!ATTLIST echo
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT headers (#PCDATA | item)*>
+<!ELEMENT headers (item*)>
 <!ATTLIST headers
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
@@ -205,7 +205,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters?)>
+<!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -215,7 +215,7 @@
   default                (true | false) #IMPLIED
 >
 
-<!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
+<!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes*)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED
@@ -223,10 +223,25 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT parameters (#PCDATA | item)*>
-<!ELEMENT attributes (#PCDATA | item)*>
-<!ELEMENT properties (#PCDATA | item)*>
-<!ELEMENT arguments  (#PCDATA | item)*>
+<!ELEMENT parameters (item*)>
+<!ATTLIST parameters
+  profile CDATA #IMPLIED
+>
+
+<!ELEMENT attributes (item*)>
+<!ATTLIST attributes
+  profile CDATA #IMPLIED
+>
+
+<!ELEMENT properties (item*)>
+<!ATTLIST properties
+  profile CDATA #IMPLIED
+>
+
+<!ELEMENT arguments (item*)>
+<!ATTLIST arguments
+  profile CDATA #IMPLIED
+>
 
 <!ELEMENT item (#PCDATA | value | call | null)*>
 <!ATTLIST item

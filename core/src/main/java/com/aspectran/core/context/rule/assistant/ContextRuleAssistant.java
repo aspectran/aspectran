@@ -27,11 +27,12 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -41,6 +42,7 @@ import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -193,6 +195,9 @@ public class ContextRuleAssistant {
      * @param value the value
      */
     public void putSetting(String name, String value) {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Default setting name can not be null");
+        }
         DefaultSettingType settingType = DefaultSettingType.resolve(name);
         if (settingType == null) {
             throw new IllegalArgumentException("No such default setting name as '" + name + "'");
@@ -374,19 +379,19 @@ public class ContextRuleAssistant {
     }
 
     /**
-     * Resolve bean class for bean action rule.
+     * Resolve bean class for bean method action rule.
      *
-     * @param beanActionRule the bean action rule
+     * @param beanMethodActionRule the bean method action rule
      */
-    public void resolveActionBeanClass(BeanActionRule beanActionRule) {
-        String beanIdOrClass = beanActionRule.getBeanId();
+    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) {
+        String beanIdOrClass = beanMethodActionRule.getBeanId();
         if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanActionRule);
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanMethodActionRule);
             if (beanClass != null) {
-                beanActionRule.setBeanClass(beanClass);
-                reserveBeanReference(beanClass, beanActionRule);
+                beanMethodActionRule.setBeanClass(beanClass);
+                reserveBeanReference(beanClass, beanMethodActionRule);
             } else {
-                reserveBeanReference(beanIdOrClass, beanActionRule);
+                reserveBeanReference(beanIdOrClass, beanMethodActionRule);
             }
         }
     }
@@ -522,7 +527,7 @@ public class ContextRuleAssistant {
             Class<?> beanClass = resolveBeanClass(beanId, templateRule);
             if (beanClass != null) {
                 templateRule.setEngineBeanClass(beanClass);
-                    reserveBeanReference(beanClass, templateRule);
+                reserveBeanReference(beanClass, templateRule);
             } else {
                 reserveBeanReference(beanId, templateRule);
             }
@@ -744,6 +749,54 @@ public class ContextRuleAssistant {
     public void clearCurrentRuleAppender() {
         if (ruleAppendHandler != null) {
             ruleAppendHandler.setCurrentRuleAppender(null);
+        }
+    }
+
+    public ItemRuleMap profiling(ItemRuleMap irm, ItemRuleMap presentIrm) {
+        if (irm.getProfile() != null) {
+            String[] profiles = StringUtils.splitCommaDelimitedString(irm.getProfile());
+            if (getContextEnvironment().acceptsProfiles(profiles)) {
+                if (presentIrm == null) {
+                    return irm;
+                }
+                if (presentIrm.getCandidates() == null) {
+                    irm.addCandidate(presentIrm);
+                    irm.addCandidate(irm);
+                    return irm;
+                } else {
+                    irm.setCandidates(presentIrm.getCandidates());
+                    if (!presentIrm.isDummy()) {
+                        presentIrm.setCandidates(null);
+                        irm.addCandidate(presentIrm);
+                    }
+                    irm.addCandidate(irm);
+                    return irm;
+                }
+            } else {
+                if (presentIrm == null) {
+                    ItemRuleMap dummyIrm = new ItemRuleMap();
+                    dummyIrm.setDummy(true);
+                    dummyIrm.addCandidate(irm);
+                    return dummyIrm;
+                } else {
+                    presentIrm.addCandidate(irm);
+                    return presentIrm;
+                }
+            }
+        } else {
+            if (presentIrm == null) {
+                return irm;
+            }
+            if (presentIrm.getCandidates() == null) {
+                irm.addCandidate(presentIrm);
+                irm.addCandidate(irm);
+                return irm;
+            } else {
+                irm.setCandidates(presentIrm.getCandidates());
+                irm.addCandidate(irm);
+                presentIrm.setCandidates(null);
+                return irm;
+            }
         }
     }
 

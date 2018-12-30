@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -34,19 +34,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ActionNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new ActionNodeletAdder.
-     *
-     * @param assistant the ContextRuleAssistant
-     */
-    ActionNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/action");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));
@@ -54,40 +47,40 @@ class ActionNodeletAdder implements NodeletAdder {
             String methodName = StringUtils.emptyToNull(attrs.get("method"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-            assistant.resolveActionBeanClass(beanActionRule);
-            parser.pushObject(beanActionRule);
+            BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
+            assistant.resolveActionBeanClass(beanMethodActionRule);
+            parser.pushObject(beanMethodActionRule);
         });
         parser.addNodeEndlet(text -> {
-            BeanActionRule beanActionRule = parser.popObject();
+            BeanMethodActionRule beanMethodActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
-            applicable.applyActionRule(beanActionRule);
+            applicable.applyActionRule(beanMethodActionRule);
         });
         parser.setXpath(xpath + "/action/arguments");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = parser.peekObject();
-                beanActionRule.setArgumentItemRuleMap(irm);
-            }
+            BeanMethodActionRule beanMethodActionRule = parser.peekObject();
+            irm = assistant.profiling(irm, beanMethodActionRule.getArgumentItemRuleMap());
+            beanMethodActionRule.setArgumentItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/action/properties");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = parser.peekObject();
-                beanActionRule.setPropertyItemRuleMap(irm);
-            }
+            BeanMethodActionRule beanMethodActionRule = parser.peekObject();
+            irm = assistant.profiling(irm, beanMethodActionRule.getPropertyItemRuleMap());
+            beanMethodActionRule.setPropertyItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/include");
         parser.addNodelet(attrs -> {
@@ -109,28 +102,28 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/include/parameters");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                IncludeActionRule includeActionRule = parser.peekObject();
-                includeActionRule.setParameterItemRuleMap(irm);
-            }
+            IncludeActionRule includeActionRule = parser.peekObject();
+            irm = assistant.profiling(irm, includeActionRule.getParameterItemRuleMap());
+            includeActionRule.setParameterItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/include/attributes");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                IncludeActionRule includeActionRule = parser.peekObject();
-                includeActionRule.setAttributeItemRuleMap(irm);
-            }
+            IncludeActionRule includeActionRule = parser.peekObject();
+            irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());
+            includeActionRule.setAttributeItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/echo");
         parser.addNodelet(attrs -> {
@@ -143,43 +136,52 @@ class ActionNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             EchoActionRule echoActionRule = parser.popObject();
 
-            if (!irm.isEmpty()) {
+            if (echoActionRule.getAttributeItemRuleMap() == null && !irm.isEmpty()) {
                 echoActionRule.setAttributeItemRuleMap(irm);
             }
 
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(echoActionRule);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
         parser.setXpath(xpath + "/echo/attributes");
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(itemNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            EchoActionRule echoActionRule = parser.peekObject(1);
+            irm = assistant.profiling(irm, echoActionRule.getAttributeItemRuleMap());
+            echoActionRule.setAttributeItemRuleMap(irm);
+        });
         parser.setXpath(xpath + "/headers");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            HeadingActionRule headersActionRule = HeadingActionRule.newInstance(id, hidden);
+            HeaderActionRule headersActionRule = HeaderActionRule.newInstance(id, hidden);
             parser.pushObject(headersActionRule);
 
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            HeadingActionRule headersActionRule = parser.popObject();
+            HeaderActionRule headersActionRule = parser.popObject();
 
-            if (!irm.isEmpty()) {
-                headersActionRule.setHeaderItemRuleMap(irm);
-            }
+            headersActionRule.setHeaderItemRuleMap(irm);
 
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(headersActionRule);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
     }
 
 }

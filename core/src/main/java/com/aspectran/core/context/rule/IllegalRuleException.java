@@ -50,7 +50,7 @@ public class IllegalRuleException extends AspectranCheckedException {
     }
 
     /**
-     * Constructor to create exception with a message
+     * Constructor to create exception with a message.
      *
      * @param msg a message to associate with the exception
      */
@@ -59,7 +59,7 @@ public class IllegalRuleException extends AspectranCheckedException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception
+     * Constructor to create exception to wrap another exception.
      *
      * @param cause the real cause of the exception
      */
@@ -68,7 +68,7 @@ public class IllegalRuleException extends AspectranCheckedException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message
+     * Constructor to create exception to wrap another exception and pass a message.
      *
      * @param msg a message to associate with the exception
      * @param cause the real cause of the exception

@@ -38,6 +38,28 @@ public class AspectranNodeParser {
 
     private final ContextRuleAssistant assistant;
 
+    private final ActionNodeletAdder actionNodeletAdder;
+
+    private final AspectAdviceInnerNodeletAdder aspectAdviceInnerNodeletAdder;
+
+    private final AspectNodeletAdder aspectNodeletAdder;
+
+    private final BeanNodeletAdder beanNodeletAdder;
+
+    private final EnvironmentNodeletAdder environmentNodeletAdder;
+
+    private final ExceptionInnerNodeletAdder exceptionInnerNodeletAdder;
+
+    private final ItemNodeletAdder itemNodeletAdder;
+
+    private final ResponseInnerNodeletAdder responseInnerNodeletAdder;
+
+    private final ScheduleNodeletAdder scheduleNodeletAdder;
+
+    private final TemplateNodeletAdder templateNodeletAdder;
+
+    private final TransletNodeletAdder transletNodeletAdder;
+
     private final NodeletParser parser;
 
     /**
@@ -60,8 +82,19 @@ public class AspectranNodeParser {
      */
     public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
+        this.actionNodeletAdder = new ActionNodeletAdder();
+        this.aspectAdviceInnerNodeletAdder = new AspectAdviceInnerNodeletAdder();
+        this.aspectNodeletAdder = new AspectNodeletAdder();
+        this.beanNodeletAdder = new BeanNodeletAdder();
+        this.environmentNodeletAdder = new EnvironmentNodeletAdder();
+        this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
+        this.itemNodeletAdder = new ItemNodeletAdder();
+        this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
+        this.scheduleNodeletAdder = new ScheduleNodeletAdder();
+        this.templateNodeletAdder = new TemplateNodeletAdder();
+        this.transletNodeletAdder = new TransletNodeletAdder();
 
-        this.parser = new NodeletParser();
+        this.parser = new NodeletParser(this);
         this.parser.setValidating(validating);
         this.parser.setEntityResolver(new AspectranDtdResolver(validating));
         if (trackingLocation) {
@@ -78,6 +111,54 @@ public class AspectranNodeParser {
         addTemplateNodelets();
         addTransletNodelets();
         addAppendNodelets();
+    }
+
+    public ContextRuleAssistant getAssistant() {
+        return assistant;
+    }
+
+    public ActionNodeletAdder getActionNodeletAdder() {
+        return actionNodeletAdder;
+    }
+
+    public AspectAdviceInnerNodeletAdder getAspectAdviceInnerNodeletAdder() {
+        return aspectAdviceInnerNodeletAdder;
+    }
+
+    public AspectNodeletAdder getAspectNodeletAdder() {
+        return aspectNodeletAdder;
+    }
+
+    public BeanNodeletAdder getBeanNodeletAdder() {
+        return beanNodeletAdder;
+    }
+
+    public EnvironmentNodeletAdder getEnvironmentNodeletAdder() {
+        return environmentNodeletAdder;
+    }
+
+    public ExceptionInnerNodeletAdder getExceptionInnerNodeletAdder() {
+        return exceptionInnerNodeletAdder;
+    }
+
+    public ItemNodeletAdder getItemNodeletAdder() {
+        return itemNodeletAdder;
+    }
+
+    public ResponseInnerNodeletAdder getResponseInnerNodeletAdder() {
+        return responseInnerNodeletAdder;
+    }
+
+    public ScheduleNodeletAdder getScheduleNodeletAdder() {
+        return scheduleNodeletAdder;
+    }
+
+    public TemplateNodeletAdder getTemplateNodeletAdder() {
+        return templateNodeletAdder;
+    }
+
+    public TransletNodeletAdder getTransletNodeletAdder() {
+        return transletNodeletAdder;
     }
 
     /**
@@ -134,12 +215,6 @@ public class AspectranNodeParser {
     private void addSettingsNodelets() {
         parser.setXpath("/aspectran/settings");
         parser.addNodeEndlet(text -> {
-            if (StringUtils.hasText(text)) {
-                Parameters parameters = new VariableParameters(text);
-                for (String name : parameters.getParameterNameSet()) {
-                    assistant.putSetting(name, parameters.getString(name));
-                }
-            }
             assistant.applySettings();
         });
         parser.setXpath("/aspectran/settings/setting");
@@ -149,7 +224,6 @@ public class AspectranNodeParser {
 
             assistant.putSetting(name, value);
             parser.pushObject(name);
-
         });
         parser.addNodeEndlet(text -> {
             String name = parser.popObject();
@@ -185,42 +259,42 @@ public class AspectranNodeParser {
      * Adds the environment nodelets.
      */
     private void addEnvironmentNodelets() {
-        parser.addNodelet("/aspectran", new EnvironmentNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getEnvironmentNodeletAdder());
     }
 
     /**
      * Adds the aspect rule nodelets.
      */
     private void addAspectNodelets() {
-        parser.addNodelet("/aspectran", new AspectNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getAspectNodeletAdder());
     }
 
     /**
      * Adds the bean nodelets.
      */
     private void addBeanNodelets() {
-        parser.addNodelet("/aspectran", new BeanNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getBeanNodeletAdder());
     }
 
     /**
      * Adds the schedule rule nodelets.
      */
     private void addScheduleNodelets() {
-        parser.addNodelet("/aspectran", new ScheduleNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getScheduleNodeletAdder());
     }
 
     /**
      * Adds the template nodelets.
      */
     private void addTemplateNodelets() {
-        parser.addNodelet("/aspectran", new TemplateNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getTemplateNodeletAdder());
     }
 
     /**
      * Adds the translet nodelets.
      */
     private void addTransletNodelets() {
-        parser.addNodelet("/aspectran", new TransletNodeletAdder(assistant));
+        parser.addNodelet("/aspectran", getTransletNodeletAdder());
     }
 
     /**

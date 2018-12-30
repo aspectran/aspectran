@@ -36,19 +36,13 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ResponseInnerNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new ResponseInnerNodeletAdder.
-     *
-     * @param assistant the assistant for Context Builder
-     */
-    ResponseInnerNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
+        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/transform");
         parser.addNodelet(attrs -> {
             String type = attrs.get("type");
@@ -63,7 +57,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             parser.pushObject(actionList);
         });
-        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             TransformRule tr = parser.popObject();
@@ -86,7 +80,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String encoding = attrs.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, null, style, encoding, noCache);
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url,
+                    null, style, encoding, noCache);
             parser.pushObject(templateRule);
         });
         parser.addNodeEndlet(text -> {
@@ -119,7 +114,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             parser.pushObject(actionList);
         });
-        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             DispatchResponseRule drr = parser.popObject();
@@ -147,7 +142,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             parser.pushObject(actionList);
         });
-        parser.addNodelet(new ActionNodeletAdder(assistant));
+        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             RedirectResponseRule rrr = parser.popObject();
@@ -167,15 +162,15 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/redirect/parameters");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                RedirectResponseRule rrr = parser.peekObject(1);
-                rrr.setParameterItemRuleMap(irm);
-            }
+            RedirectResponseRule rrr = parser.peekObject(1);
+            irm = assistant.profiling(irm, rrr.getParameterItemRuleMap());
+            rrr.setParameterItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/forward");
         parser.addNodelet(attrs -> {
@@ -203,19 +198,19 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(frr);
         });
-        parser.addNodelet(new ActionNodeletAdder(assistant));
-        parser.setXpath(xpath + "/forward/parameters");
+        parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/forward/attributes");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (irm.size() > 0) {
-                ForwardResponseRule frr = parser.peekObject(1);
-                frr.setAttributeItemRuleMap(irm);
-            }
+            ForwardResponseRule frr = parser.peekObject(1);
+            irm = assistant.profiling(irm, frr.getAttributeItemRuleMap());
+            frr.setAttributeItemRuleMap(irm);
         });
     }
 

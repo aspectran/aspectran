@@ -33,19 +33,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class BeanNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new BeanNodeletAdder.
-     *
-     * @param assistant the assistant for Context Builder
-     */
-    BeanNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/bean");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));
@@ -63,9 +56,11 @@ class BeanNodeletAdder implements NodeletAdder {
 
             BeanRule beanRule;
             if (className == null && scan == null && factoryBean != null) {
-                beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
+                beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
+                        initMethod, destroyMethod, scope, singleton, lazyInit, important);
             } else {
-                beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
+                beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
+                        factoryMethod, scope, singleton, lazyInit, important);
             }
 
             parser.pushObject(beanRule);
@@ -105,7 +100,7 @@ class BeanNodeletAdder implements NodeletAdder {
                 filterParameters = new FilterParameters();
                 filterParameters.readFrom(text);
             }
-            if (filterParameters.isValueAssigned(FilterParameters.filterClass) &&
+            if (filterParameters.isValueAssigned(FilterParameters.filterClass) ||
                     filterParameters.isValueAssigned(FilterParameters.exclude)) {
                 BeanRule beanRule = parser.peekObject();
                 beanRule.setFilterParameters(filterParameters);
@@ -114,34 +109,28 @@ class BeanNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/bean/constructor/arguments");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                BeanRule beanRule = parser.peekObject();
-                beanRule.setConstructorArgumentItemRuleMap(irm);
-            } else if (StringUtils.hasText(text)) {
-                BeanRule beanRule = parser.peekObject();
-                BeanRule.updateConstructorArgument(beanRule, text);
-            }
+            BeanRule beanRule = parser.peekObject();
+            irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
+            beanRule.setConstructorArgumentItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/bean/properties");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            if (!irm.isEmpty()) {
-                BeanRule beanRule = parser.peekObject();
-                beanRule.setPropertyItemRuleMap(irm);
-            } else if (StringUtils.hasText(text)) {
-                BeanRule beanRule = parser.peekObject();
-                BeanRule.updateProperty(beanRule, text);
-            }
+            BeanRule beanRule = parser.peekObject();
+            irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());
+            beanRule.setPropertyItemRuleMap(irm);
         });
     }
 

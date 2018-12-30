@@ -394,7 +394,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void parseDeclaredParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-        if (parameterItemRuleMap != null) {
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : parameterItemRuleMap.values()) {
@@ -430,7 +430,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void parseDeclaredAttributes() {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null) {
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpressionParser(this);
             for (ItemRule itemRule : attributeItemRuleMap.values()) {
                 Object value = evaluator.evaluate(itemRule);

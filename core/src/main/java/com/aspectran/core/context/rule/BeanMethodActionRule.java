@@ -27,9 +27,9 @@ import java.lang.reflect.Method;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanActionRule implements BeanReferenceInspectable {
+public class BeanMethodActionRule implements BeanReferenceInspectable {
 
-    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_ACTION_RULE;
+    private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_METHOD_ACTION_RULE;
 
     private String actionId;
 
@@ -268,21 +268,21 @@ public class BeanActionRule implements BeanReferenceInspectable {
      * @param beanId the bean id
      * @param methodName the method name
      * @param hidden true if hiding the result of the action; false otherwise
-     * @return the bean action rule
+     * @return the bean method action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
+    public static BeanMethodActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
             throws IllegalRuleException {
         if (methodName == null) {
             throw new IllegalRuleException("The 'action' element requires an 'method' attribute");
         }
 
-        BeanActionRule beanActionRule = new BeanActionRule();
-        beanActionRule.setActionId(id);
-        beanActionRule.setBeanId(beanId);
-        beanActionRule.setMethodName(methodName);
-        beanActionRule.setHidden(hidden);
-        return beanActionRule;
+        BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
+        beanMethodActionRule.setActionId(id);
+        beanMethodActionRule.setBeanId(beanId);
+        beanMethodActionRule.setMethodName(methodName);
+        beanMethodActionRule.setHidden(hidden);
+        return beanMethodActionRule;
     }
 
 }

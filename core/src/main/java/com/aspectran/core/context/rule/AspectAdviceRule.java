@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.HeadingAction;
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -80,24 +80,24 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public void applyActionRule(BeanActionRule beanActionRule) {
-        BeanAction action = new BeanAction(beanActionRule, null);
-        if (beanActionRule.getBeanId() == null) {
+    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
+        if (beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(this);
         }
         this.action = action;
     }
 
     @Override
-    public void applyActionRule(MethodActionRule methodActionRule) {
+    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Method Action Rule to the Aspect Advice Rule");
+                "Cannot apply the config bean method action Rule to the Aspect Advice Rule");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Include Action Rule to the Aspect Advice Rule; " +
+                "Cannot apply the include action rule to the Aspect Advice Rule; " +
                 "AspectAdvice is not support IncludeAction");
     }
 
@@ -107,15 +107,15 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public void applyActionRule(HeadingActionRule headingActionRule) {
-        action = new HeadingAction(headingActionRule, null);
+    public void applyActionRule(HeaderActionRule headerActionRule) {
+        action = new HeaderAction(headerActionRule, null);
     }
 
     public Executable getExecutableAction() {
         return action;
     }
 
-    public void setExecutableAction(MethodAction action) {
+    public void setExecutableAction(ConfigBeanMethodAction action) {
         this.action = action;
     }
 

@@ -31,8 +31,8 @@ public class RequestParameters extends AbstractParameters {
     static {
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
+        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 method,

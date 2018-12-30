@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-5.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
 <aspectran>
 
     <description style="apon">
@@ -31,11 +31,9 @@
         <advice>
             <before>
                 <echo>
-                    <attributes>
-                        <item name="data">
-                            <call bean="currentActivityData"/>
-                        </item>
-                    </attributes>
+                    <item name="data">
+                        <call bean="currentActivityData"/>
+                    </item>
                 </echo>
             </before>
         </advice>

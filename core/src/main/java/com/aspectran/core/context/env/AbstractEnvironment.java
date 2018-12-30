@@ -236,7 +236,7 @@ public abstract class AbstractEnvironment implements Environment {
 
     @Override
     public <T> T getProperty(String name, Activity activity) {
-        if (propertyItemRuleMap == null) {
+        if (propertyItemRuleMap == null || propertyItemRuleMap.isEmpty()) {
             return null;
         }
 

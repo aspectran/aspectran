@@ -579,7 +579,7 @@ public class MethodUtils {
             Object[] args2 = new Object[methodsParams.length];
             for (int i = 0; i < methodsParams.length; i++) {
                 args2[i] = args[i];
-                if (methodsParams[i].isArray()) {
+                if (paramTypes[i] != null && methodsParams[i].isArray()) {
                     Class<?> methodParamType = methodsParams[i].getComponentType();
                     Class<?> argParamType = paramTypes[i].getComponentType();
                     if (!methodParamType.equals(argParamType)) {

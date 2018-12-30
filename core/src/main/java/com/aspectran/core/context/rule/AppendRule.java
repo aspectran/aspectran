@@ -21,7 +21,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class AppendRule.
+ * Define rules for importing other rules.
  * 
  * <p>Created: 2017. 05. 06.</p>
  */

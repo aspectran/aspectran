@@ -17,8 +17,8 @@ package com.aspectran.daemon.command.builtin;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.activity.process.action.BeanAction;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -30,7 +30,7 @@ public class BeanActionCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "beanAction";
+    private static final String COMMAND_NAME = "beanMethodAction";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
@@ -52,21 +52,21 @@ public class BeanActionCommand extends AbstractCommand {
             throw new IllegalRuleException("'method' parameter is not specified");
         }
 
-        BeanActionRule beanActionRule = new BeanActionRule();
-        beanActionRule.setBeanId(beanName);
-        beanActionRule.setMethodName(methodName);
-        beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
-        beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+        BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
+        beanMethodActionRule.setBeanId(beanName);
+        beanMethodActionRule.setMethodName(methodName);
+        beanMethodActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+        beanMethodActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 
         if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             Class<?> beanClass = getService().getAspectranClassLoader().loadClass(className);
-            beanActionRule.setBeanClass(beanClass);
+            beanMethodActionRule.setBeanClass(beanClass);
         }
 
         Activity activity = new InstantActivity(getService().getActivityContext());
-        BeanAction beanAction = new BeanAction(beanActionRule, null);
-        Object result = beanAction.execute(activity);
+        BeanMethodAction beanMethodAction = new BeanMethodAction(beanMethodActionRule, null);
+        Object result = beanMethodAction.execute(activity);
         return (result != null ? result.toString() : null);
     }
 
@@ -89,7 +89,7 @@ public class BeanActionCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Execute a method in the bean";
+            return "Executes a method on the specified bean";
         }
 
     }

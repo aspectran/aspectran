@@ -53,6 +53,14 @@ public class Aspectran {
         return VERSION;
     }
 
+    public static String getPoweredBy() {
+        return POWERED_BY;
+    }
+
+    public static String getPoweredByLink() {
+        return POWERED_BY_LINK;
+    }
+
     /**
      * Prints Aspectran information to the specified print stream.
      *

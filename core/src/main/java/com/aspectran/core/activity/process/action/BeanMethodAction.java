@@ -21,7 +21,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -36,30 +36,30 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * The BeanAction that invoking method in the bean instance.
+ * The BeanMethodAction that invoking method in the bean instance.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanAction extends AbstractAction {
+public class BeanMethodAction extends AbstractAction {
 
-    private static final Log log = LogFactory.getLog(BeanAction.class);
+    private static final Log log = LogFactory.getLog(BeanMethodAction.class);
 
-    private final BeanActionRule beanActionRule;
+    private final BeanMethodActionRule beanMethodActionRule;
 
     private AspectAdviceRule aspectAdviceRule;
 
     private Boolean requiresTranslet;
 
     /**
-     * Instantiates a new BeanAction.
+     * Instantiates a new BeanMethodAction.
      *
-     * @param beanActionRule the bean action rule
+     * @param beanMethodActionRule the bean method action rule
      * @param parent the parent
      */
-    public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
+    public BeanMethodAction(BeanMethodActionRule beanMethodActionRule, ActionList parent) {
         super(parent);
 
-        this.beanActionRule = beanActionRule;
+        this.beanMethodActionRule = beanMethodActionRule;
     }
 
     /**
@@ -90,39 +90,40 @@ public class BeanAction extends AbstractAction {
                     throw new ActionExecutionException("No such bean; Invalid AspectAdviceRule" + aspectAdviceRule);
                 }
             } else {
-                if (beanActionRule.getBeanClass() != null) {
-                    bean = activity.getBean(beanActionRule.getBeanClass());
-                } else if (beanActionRule.getBeanId() != null) {
-                    bean = activity.getBean(beanActionRule.getBeanId());
+                if (beanMethodActionRule.getBeanClass() != null) {
+                    bean = activity.getBean(beanMethodActionRule.getBeanClass());
+                } else if (beanMethodActionRule.getBeanId() != null) {
+                    bean = activity.getBean(beanMethodActionRule.getBeanId());
                 }
                 if (bean == null) {
-                    throw new ActionExecutionException("No such bean; Invalid BeanActionRule " + beanActionRule);
+                    throw new ActionExecutionException("No such bean; Invalid BeanMethodActionRule " + beanMethodActionRule);
                 }
             }
 
-            ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
-            ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
+            ItemRuleMap propertyItemRuleMap = beanMethodActionRule.getPropertyItemRuleMap();
+            ItemRuleMap argumentItemRuleMap = beanMethodActionRule.getArgumentItemRuleMap();
             ItemEvaluator evaluator = null;
-            if (propertyItemRuleMap != null || argumentItemRuleMap != null) {
+            if ((propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) ||
+                    (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty())) {
                 evaluator = new ItemExpressionParser(activity);
             }
-            if (propertyItemRuleMap != null) {
+            if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
                 }
             }
 
-            Method method = beanActionRule.getMethod();
+            Method method = beanMethodActionRule.getMethod();
             if (method != null) {
-                if (argumentItemRuleMap == null) {
-                    return MethodAction.invokeMethod(activity, bean, method, beanActionRule.isRequiresTranslet());
-                } else {
-                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanActionRule.isRequiresTranslet());
+                if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
+                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanMethodActionRule.isRequiresTranslet());
                     return method.invoke(bean, args);
+                } else {
+                    return ConfigBeanMethodAction.invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
                 }
             } else {
-                String methodName = beanActionRule.getMethodName();
+                String methodName = beanMethodActionRule.getMethodName();
                 Object result;
                 if (activity.getTranslet() != null) {
                     if (requiresTranslet == null) {
@@ -131,7 +132,7 @@ public class BeanAction extends AbstractAction {
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (log.isDebugEnabled()) {
-                                log.debug("No have a Translet argument on bean action method " + beanActionRule);
+                                log.debug("No have a Translet argument on bean method " + beanMethodActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
@@ -146,9 +147,9 @@ public class BeanAction extends AbstractAction {
             }
         } catch (Exception e) {
             if (aspectAdviceRule != null) {
-                log.error("Failed to execute an advice action method " + aspectAdviceRule);
+                log.error("Failed to execute advice bean method action " + aspectAdviceRule);
             } else {
-                log.error("Failed to execute a bean action method " + beanActionRule);
+                log.error("Failed to execute bean method action " + beanMethodActionRule);
             }
             throw e;
         }
@@ -156,31 +157,27 @@ public class BeanAction extends AbstractAction {
 
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
-        Object[] args = null;
-        if (argumentItemRuleMap != null) {
-            if (evaluator == null) {
-                evaluator = new ItemExpressionParser(activity);
-            }
+        if (evaluator == null) {
+            evaluator = new ItemExpressionParser(activity);
+        }
 
-            Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
-            int size = argumentItemRuleMap.size();
-            int index;
-            if (requiresTranslet) {
-                index = 1;
-                args = new Object[size + index];
-                args[0] = activity.getTranslet();
-            } else {
-                index = 0;
-                args = new Object[size];
-            }
+        Object[] args;
+        int size = argumentItemRuleMap.size();
+        int index;
+        if (requiresTranslet) {
+            index = 1;
+            args = new Object[size + index];
+            args[0] = activity.getTranslet();
+        } else {
+            index = 0;
+            args = new Object[size];
+        }
 
-            for (String name : argumentItemRuleMap.keySet()) {
-                Object o = valueMap.get(name);
-                args[index] = o;
-                index++;
-            }
-        } else if (requiresTranslet) {
-            args = new Object[] { activity.getTranslet() };
+        Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
+        for (String name : argumentItemRuleMap.keySet()) {
+            Object o = valueMap.get(name);
+            args[index] = o;
+            index++;
         }
 
         return args;
@@ -193,7 +190,7 @@ public class BeanAction extends AbstractAction {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
-        if (argumentItemRuleMap != null) {
+        if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
             if (evaluator == null) {
                 evaluator = new ItemExpressionParser(activity);
             }
@@ -229,12 +226,12 @@ public class BeanAction extends AbstractAction {
     }
 
     /**
-     * Returns the bean action rule.
+     * Returns the bean method action rule.
      *
-     * @return the bean action rule
+     * @return the bean method action rule
      */
-    public BeanActionRule getBeanActionRule() {
-        return beanActionRule;
+    public BeanMethodActionRule getBeanMethodActionRule() {
+        return beanMethodActionRule;
     }
 
     @Override
@@ -244,30 +241,30 @@ public class BeanAction extends AbstractAction {
 
     @Override
     public String getActionId() {
-        return beanActionRule.getActionId();
+        return beanMethodActionRule.getActionId();
     }
 
     @Override
     public boolean isHidden() {
-        return beanActionRule.isHidden();
+        return beanMethodActionRule.isHidden();
     }
 
     @Override
     public ActionType getActionType() {
-        return ActionType.BEAN;
+        return ActionType.BEAN_METHOD;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)beanActionRule;
+        return (T)beanMethodActionRule;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
-        tsb.append("beanActionRule", beanActionRule);
+        tsb.append("beanMethodActionRule", beanMethodActionRule);
         if (aspectAdviceRule != null) {
             tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
         }

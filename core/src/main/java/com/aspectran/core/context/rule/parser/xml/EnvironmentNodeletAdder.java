@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
@@ -31,19 +30,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class EnvironmentNodeletAdder implements NodeletAdder {
 
-    protected final ContextRuleAssistant assistant;
-
-    /**
-     * Instantiates a new EnvironmentNodeletAdder.
-     *
-     * @param assistant the assistant
-     */
-    EnvironmentNodeletAdder(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
-    }
-
     @Override
     public void process(String xpath, NodeletParser parser) {
+        AspectranNodeParser nodeParser = parser.getNodeParser();
+        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
+
         parser.setXpath(xpath + "/environment");
         parser.addNodelet(attrs -> {
             String profile = attrs.get("profile");
@@ -75,16 +67,11 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
-        parser.addNodelet(new ItemNodeletAdder(assistant));
+        parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             EnvironmentRule environmentRule = parser.peekObject();
-            if (!irm.isEmpty()) {
-                environmentRule.setPropertyItemRuleMap(irm);
-            } else if (StringUtils.hasLength(text)) {
-                ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
-                environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
-            }
+            environmentRule.setPropertyItemRuleMap(irm);
         });
     }
 

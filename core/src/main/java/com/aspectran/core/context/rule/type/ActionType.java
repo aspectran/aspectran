@@ -22,11 +22,11 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ActionType {
 
-    BEAN("bean"),
-    METHOD("method"),
+    BEAN_METHOD("beanMethod"),
+    CONFIG_BEAN_METHOD("configBeanMethod"),
     INCLUDE("include"),
     ECHO("echo"),
-    HEADERS("headers");
+    HEADER("header");
 
     private final String alias;
 
