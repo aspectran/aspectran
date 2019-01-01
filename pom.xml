@@ -316,8 +316,6 @@
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <!-- Slightly faster builds, see https://issues.apache.org/jira/browse/MCOMPILER-209 -->
-                        <useIncrementalCompilation>false</useIncrementalCompilation>
                         <compilerArgument>-Xlint:-options</compilerArgument>
                         <meminitial>256m</meminitial>
                         <maxmem>1024m</maxmem>
