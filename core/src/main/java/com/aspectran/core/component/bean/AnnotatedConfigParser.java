@@ -376,6 +376,103 @@ public class AnnotatedConfigParser {
         }
     }
 
+    private void parseAspectRule(Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
+        Aspect aspectAnno = beanClass.getAnnotation(Aspect.class);
+        String aspectId = StringUtils.emptyToNull(aspectAnno.id());
+        if (aspectId == null) {
+            aspectId = StringUtils.emptyToNull(aspectAnno.value());
+        }
+        if (aspectId == null) {
+            aspectId = beanClass.getName();
+        }
+        if (nameArray != null) {
+            aspectId = applyNamespace(nameArray, aspectId);
+        }
+        int order = aspectAnno.order();
+        boolean isolated = aspectAnno.isolated();
+
+        AspectRule aspectRule = new AspectRule();
+        aspectRule.setId(aspectId);
+        aspectRule.setOrder(order);
+        aspectRule.setIsolated(isolated);
+        aspectRule.setAdviceBeanClass(beanClass);
+
+        if (beanClass.isAnnotationPresent(Joinpoint.class)) {
+            Joinpoint joinpointAnno = beanClass.getAnnotation(Joinpoint.class);
+            JoinpointTargetType target = joinpointAnno.target();
+            MethodType[] methods = joinpointAnno.methods();
+            String[] headers = joinpointAnno.headers();
+            String[] pointcut = joinpointAnno.pointcut();
+
+            JoinpointRule joinpointRule = new JoinpointRule();
+            joinpointRule.setJoinpointTargetType(target);
+            if (methods.length > 0) {
+                joinpointRule.setMethods(methods);
+            }
+            if (headers.length > 0) {
+                joinpointRule.setHeaders(headers);
+            }
+            if (pointcut.length > 0) {
+                joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
+            }
+            aspectRule.setJoinpointRule(joinpointRule);
+        }
+
+        if (beanClass.isAnnotationPresent(Settings.class)) {
+            Settings settingsAnno = beanClass.getAnnotation(Settings.class);
+            String text = StringUtils.toDelimitedString(settingsAnno.value(), ActivityContext.LINE_SEPARATOR);
+            if (!text.isEmpty()) {
+                SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+                SettingsAdviceRule.updateSettingsAdviceRule(sar, text);
+                aspectRule.setSettingsAdviceRule(sar);
+            }
+        }
+
+        for (Method method : beanClass.getMethods()) {
+            if (method.isAnnotationPresent(Before.class)) {
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+            } else if (method.isAnnotationPresent(After.class)) {
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+            } else if (method.isAnnotationPresent(Around.class)) {
+                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+            } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
+                ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
+                Class<? extends Throwable>[] types = exceptionThrownAnno.type();
+                ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newMethodAction(beanClass, method);
+                ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
+                aspectRule.putExceptionThrownRule(exceptionThrownRule);
+                if (method.isAnnotationPresent(Dispatch.class)) {
+                    Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
+                    DispatchResponseRule drr = parseDispatchResponseRule(dispatchAnno);
+                    exceptionThrownRule.applyResponseRule(drr);
+                } else if (method.isAnnotationPresent(Transform.class)) {
+                    Transform transformAnno = method.getAnnotation(Transform.class);
+                    TransformRule tr = parseTransformRule(transformAnno);
+                    exceptionThrownRule.applyResponseRule(tr);
+                } else if (method.isAnnotationPresent(Forward.class)) {
+                    Forward forwardAnno = method.getAnnotation(Forward.class);
+                    ForwardResponseRule frr = parseForwardResponseRule(forwardAnno);
+                    exceptionThrownRule.applyResponseRule(frr);
+                } else if (method.isAnnotationPresent(Redirect.class)) {
+                    Redirect redirectAnno = method.getAnnotation(Redirect.class);
+                    RedirectResponseRule rrr = parseRedirectResponseRule(redirectAnno);
+                    exceptionThrownRule.applyResponseRule(rrr);
+                }
+            }
+        }
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            aspectRule.setDescription(description);
+        }
+
+        relater.relay(aspectRule);
+    }
+
     private void parseBeanRule(BeanRule beanRule, String[] nameArray) {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
@@ -569,100 +666,6 @@ public class AnnotatedConfigParser {
         }
 
         relater.relay(transletRule);
-    }
-
-    private void parseAspectRule(Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
-        Aspect aspectAnno = beanClass.getAnnotation(Aspect.class);
-        String aspectId = StringUtils.emptyToNull(aspectAnno.id());
-        if (aspectId == null) {
-            aspectId = beanClass.getName();
-        }
-        if (nameArray != null) {
-            aspectId = applyNamespace(nameArray, aspectId);
-        }
-        int order = aspectAnno.order();
-        boolean isolated = aspectAnno.isolated();
-
-        AspectRule aspectRule = new AspectRule();
-        aspectRule.setId(aspectId);
-        aspectRule.setOrder(order);
-        aspectRule.setIsolated(isolated);
-        aspectRule.setAdviceBeanClass(beanClass);
-
-        if (beanClass.isAnnotationPresent(Joinpoint.class)) {
-            Joinpoint joinpointAnno = beanClass.getAnnotation(Joinpoint.class);
-            JoinpointTargetType target = joinpointAnno.target();
-            MethodType[] methods = joinpointAnno.methods();
-            String[] headers = joinpointAnno.headers();
-            String[] pointcut = joinpointAnno.pointcut();
-
-            JoinpointRule joinpointRule = new JoinpointRule();
-            joinpointRule.setJoinpointTargetType(target);
-            if (methods.length > 0) {
-                joinpointRule.setMethods(methods);
-            }
-            if (headers.length > 0) {
-                joinpointRule.setHeaders(headers);
-            }
-            if (pointcut.length > 0) {
-                joinpointRule.setPointcutRule(PointcutRule.newInstance(pointcut));
-            }
-            aspectRule.setJoinpointRule(joinpointRule);
-        }
-
-        if (beanClass.isAnnotationPresent(Settings.class)) {
-            Settings settingsAnno = beanClass.getAnnotation(Settings.class);
-            String text = StringUtils.toDelimitedString(settingsAnno.value(), ActivityContext.LINE_SEPARATOR);
-            if (!text.isEmpty()) {
-                SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
-                SettingsAdviceRule.updateSettingsAdviceRule(sar, text);
-                aspectRule.setSettingsAdviceRule(sar);
-            }
-        }
-
-        for (Method method : beanClass.getMethods()) {
-            if (method.isAnnotationPresent(Before.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
-            } else if (method.isAnnotationPresent(After.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
-            } else if (method.isAnnotationPresent(Around.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
-            } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
-                ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
-                Class<? extends Throwable>[] types = exceptionThrownAnno.type();
-                ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newMethodAction(beanClass, method);
-                ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
-                aspectRule.putExceptionThrownRule(exceptionThrownRule);
-                if (method.isAnnotationPresent(Dispatch.class)) {
-                    Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                    DispatchResponseRule drr = parseDispatchResponseRule(dispatchAnno);
-                    exceptionThrownRule.applyResponseRule(drr);
-                } else if (method.isAnnotationPresent(Transform.class)) {
-                    Transform transformAnno = method.getAnnotation(Transform.class);
-                    TransformRule tr = parseTransformRule(transformAnno);
-                    exceptionThrownRule.applyResponseRule(tr);
-                } else if (method.isAnnotationPresent(Forward.class)) {
-                    Forward forwardAnno = method.getAnnotation(Forward.class);
-                    ForwardResponseRule frr = parseForwardResponseRule(forwardAnno);
-                    exceptionThrownRule.applyResponseRule(frr);
-                } else if (method.isAnnotationPresent(Redirect.class)) {
-                    Redirect redirectAnno = method.getAnnotation(Redirect.class);
-                    RedirectResponseRule rrr = parseRedirectResponseRule(redirectAnno);
-                    exceptionThrownRule.applyResponseRule(rrr);
-                }
-            }
-        }
-
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            aspectRule.setDescription(description);
-        }
-
-        relater.relay(aspectRule);
     }
 
     private DispatchResponseRule parseDispatchResponseRule(Dispatch dispatchAnno) {
