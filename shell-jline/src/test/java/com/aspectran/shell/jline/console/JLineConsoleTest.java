@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-class JLine3ConsoleTest {
+class JLineConsoleTest {
 
     @Test
     void testAnsiColor() throws IOException {
