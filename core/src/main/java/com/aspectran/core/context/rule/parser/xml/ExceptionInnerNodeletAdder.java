@@ -30,7 +30,7 @@ import com.aspectran.core.util.nodelet.NodeletParser;
 class ExceptionInnerNodeletAdder implements NodeletAdder {
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
         ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();

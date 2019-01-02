@@ -31,7 +31,7 @@ import com.aspectran.core.util.nodelet.NodeletParser;
 class EnvironmentNodeletAdder implements NodeletAdder {
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();

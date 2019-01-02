@@ -139,7 +139,7 @@ public class NodeletParser {
      * @param nodeletAdder the nodelet adder
      */
     public void addNodelet(String xpath, NodeletAdder nodeletAdder) {
-        nodeletAdder.process(xpath, this);
+        nodeletAdder.add(xpath, this);
         setXpath(xpath);
     }
 
