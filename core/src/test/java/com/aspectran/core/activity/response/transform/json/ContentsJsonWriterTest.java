@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ContentsJsonWriterTest {
 
     @Test
     void testWrite() throws IOException, InvocationTargetException {
         ProcessResult processResult = new ProcessResult();
-        ContentResult contentResult = new ContentResult(processResult, 10);
+        ContentResult contentResult = new ContentResult(processResult, 4);
 
         ActionResult actionResult0 = new ActionResult();
         actionResult0.setResultValue("action0", "value0");
@@ -47,15 +49,11 @@ class ContentsJsonWriterTest {
         actionResult3.setResultValue("action1", "value3");
         contentResult.addActionResult(actionResult3);
 
-        //actionResult0.setHidden(true);
-        //actionResult1.setHidden(true);
-        actionResult2.setHidden(true);
-        actionResult3.setHidden(true);
-
         StringWriter writer = new StringWriter();
-        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer, true);
+        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer, false);
         jsonWriter.write(processResult);
-        System.out.println(writer.toString());
+
+        assertEquals("{\"action0\":\"value0\",\"action1\":\"value3\"}", writer.toString());
     }
 
 }

@@ -20,6 +20,9 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.ListIterator;
+import java.util.Set;
 
 /**
  * The Class ContentResult.
@@ -36,6 +39,10 @@ public class ContentResult extends ArrayList<ActionResult> {
     private String name;
 
     private boolean omittable;
+
+    public ContentResult(ProcessResult parent) {
+        this(parent, 5);
+    }
 
     public ContentResult(ProcessResult parent, int initialCapacity) {
         super(initialCapacity);
@@ -62,7 +69,8 @@ public class ContentResult extends ArrayList<ActionResult> {
         if (actionId == null) {
             return null;
         }
-        for (ActionResult actionResult : this) {
+        for (ListIterator<ActionResult> iterator = listIterator(size()); iterator.hasPrevious();) {
+            ActionResult actionResult = iterator.previous();
             if (actionId.equals(actionResult.getActionId())) {
                 return actionResult;
             }
@@ -98,7 +106,6 @@ public class ContentResult extends ArrayList<ActionResult> {
     public void addActionResult(Executable action, Object resultValue) {
         ActionResult actionResult = new ActionResult();
         actionResult.setResultValue(action.getActionId(), resultValue);
-        actionResult.setHidden(action.isHidden());
         addActionResult(actionResult);
     }
 
@@ -115,18 +122,27 @@ public class ContentResult extends ArrayList<ActionResult> {
                     }
                     ActionResult newActionResult = new ActionResult();
                     newActionResult.setResultValue(actionId, actionResult.getResultValue());
-                    newActionResult.setHidden(parentAction.isHidden());
                     addActionResult(newActionResult);
                 }
             }
         }
     }
 
+    public String[] getActionIds() {
+        Set<String> set = new LinkedHashSet<>();
+        for (ActionResult actionResult : this) {
+            if (actionResult.getActionId() != null) {
+                set.add(actionResult.getActionId());
+            }
+        }
+        return set.toArray(new String[0]);
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("values", this);
+        tsb.append("actionResults", this);
         return tsb.toString();
     }
 

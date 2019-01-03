@@ -23,12 +23,14 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ContentsAponAssemblerTest {
 
     @Test
     void testAssemble() throws InvocationTargetException {
         ProcessResult processResult = new ProcessResult();
-        ContentResult contentResult = new ContentResult(processResult, 10);
+        ContentResult contentResult = new ContentResult(processResult, 4);
 
         ActionResult actionResult0 = new ActionResult();
         actionResult0.setResultValue("action0", "value0");
@@ -46,13 +48,10 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action1", "value3");
         contentResult.addActionResult(actionResult3);
 
-        //actionResult0.setHidden(true);
-        //actionResult1.setHidden(true);
-        actionResult2.setHidden(true);
-        actionResult3.setHidden(true);
-
         Parameters parameters = ContentsAponAssembler.assemble(processResult);
-        System.out.println(parameters.toString());
+
+        assertEquals("value0", parameters.getString("action0"));
+        assertEquals("value3", parameters.getString("action1"));
     }
 
 }

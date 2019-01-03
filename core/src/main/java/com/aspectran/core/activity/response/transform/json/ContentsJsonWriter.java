@@ -110,47 +110,35 @@ public class ContentsJsonWriter extends JsonWriter {
             writeNull();
             return;
         }
+        if (contentResult.getName() != null) {
+            openCurlyBracket();
+            writeName(contentResult.getName());
+        }
         if (contentResult.size() == 1) {
             ActionResult actionResult = contentResult.get(0);
-            if (!actionResult.isHidden()) {
-                if (contentResult.getName() != null) {
-                    openCurlyBracket();
-                    writeName(contentResult.getName());
-                }
-                if (actionResult.getActionId() != null) {
-                    openCurlyBracket();
-                    writeName(actionResult.getActionId());
-                    write(actionResult.getResultValue());
-                    closeCurlyBracket();
-                } else {
-                    write(actionResult.getResultValue());
-                }
-                if (contentResult.getName() != null) {
-                    closeCurlyBracket();
-                }
+            if (actionResult.getActionId() != null) {
+                openCurlyBracket();
+                writeName(actionResult.getActionId());
+                write(actionResult.getResultValue());
+                closeCurlyBracket();
+            } else {
+                write(actionResult.getResultValue());
             }
         } else {
-            if (contentResult.getName() != null) {
-                openCurlyBracket();
-                writeName(contentResult.getName());
-            }
             openCurlyBracket();
-            Iterator<ActionResult> iter = contentResult.iterator();
             int cnt = 0;
-            while (iter.hasNext()) {
-                ActionResult actionResult = iter.next();
-                if (actionResult.getActionId() != null && !actionResult.isHidden()) {
-                    if (cnt++ > 0) {
-                        writeComma();
-                    }
-                    writeName(actionResult.getActionId());
-                    write(actionResult.getResultValue());
+            for (String actionId : contentResult.getActionIds()) {
+                if (cnt++ > 0) {
+                    writeComma();
                 }
+                ActionResult actionResult = contentResult.getActionResult(actionId);
+                writeName(actionResult.getActionId());
+                write(actionResult.getResultValue());
             }
             closeCurlyBracket();
-            if (contentResult.getName() != null) {
-                closeCurlyBracket();
-            }
+        }
+        if (contentResult.getName() != null) {
+            closeCurlyBracket();
         }
     }
 

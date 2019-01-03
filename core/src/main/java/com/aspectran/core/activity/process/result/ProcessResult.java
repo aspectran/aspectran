@@ -20,6 +20,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * The Class ProcessResult.
@@ -36,6 +37,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
     private boolean omittable;
 
     public ProcessResult() {
+        this(5);
     }
 
     public ProcessResult(int initialCapacity) {
@@ -74,7 +76,11 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @return the result of the action
      */
     public ActionResult getActionResult(String actionId) {
-        for (ContentResult contentResult : this) {
+        if (actionId == null) {
+            return null;
+        }
+        for (ListIterator<ContentResult> iterator = listIterator(size()); iterator.hasPrevious();) {
+            ContentResult contentResult = iterator.previous();
             ActionResult actionResult = contentResult.getActionResult(actionId);
             if (actionResult != null) {
                 return actionResult;

@@ -32,8 +32,6 @@ public class ActionResult {
 
     private Object resultValue;
 
-    private boolean hidden;
-
     /**
      * Gets the action id.
      *
@@ -86,30 +84,11 @@ public class ActionResult {
         }
     }
 
-    /**
-     * Returns whether or not to expose this action's result.
-     *
-     * @return true if hide this action result; false otherwise
-     */
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    /**
-     * Sets whether or not to hide the result of this action.
-     *
-     * @param hidden whether to hide this action result
-     */
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionId", actionId);
         tsb.append("resultValue", resultValue);
-        tsb.append("hidden", hidden);
         return tsb.toString();
     }
 

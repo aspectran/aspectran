@@ -44,19 +44,17 @@ public class ContentsAponAssembler {
             ContentResult contentResult = processResult.get(0);
             if (contentResult.getName() == null && contentResult.size() == 1) {
                 ActionResult actionResult = contentResult.get(0);
-                if (!actionResult.isHidden()) {
-                    Object resultValue = actionResult.getResultValue();
-                    if (actionResult.getActionId() == null) {
-                        if (resultValue instanceof Parameters) {
-                            return (Parameters) resultValue;
-                        } else {
-                            return null;
-                        }
+                Object resultValue = actionResult.getResultValue();
+                if (actionResult.getActionId() == null) {
+                    if (resultValue instanceof Parameters) {
+                        return (Parameters)resultValue;
                     } else {
-                        Parameters container = new VariableParameters();
-                        putValue(container, actionResult.getActionId(), resultValue);
-                        return container;
+                        return null;
                     }
+                } else {
+                    Parameters container = new VariableParameters();
+                    putValue(container, actionResult.getActionId(), resultValue);
+                    return container;
                 }
             }
         }
@@ -77,11 +75,9 @@ public class ContentsAponAssembler {
             container.putValue(contentResult.getName(), p);
             container = p;
         }
-        for (ActionResult actionResult : contentResult) {
-            if (actionResult.getActionId() != null && !actionResult.isHidden()) {
-                Object resultValue = actionResult.getResultValue();
-                putValue(container, actionResult.getActionId(), resultValue);
-            }
+        for (String actionId : contentResult.getActionIds()) {
+            ActionResult actionResult = contentResult.getActionResult(actionId);
+            putValue(container, actionResult.getActionId(), actionResult.getResultValue());
         }
     }
 

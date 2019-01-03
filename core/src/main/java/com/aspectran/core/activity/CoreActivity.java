@@ -494,7 +494,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void execute(ActionList actionList) {
         ContentResult contentResult = null;
-        if (translet.getProcessResult() != null) {
+        if (translet.getProcessResult() != null && !actionList.isHidden()) {
             contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
             contentResult.setName(actionList.getName());
             if (getTransletRule().isExplicitContent()) {
@@ -524,7 +524,7 @@ public class CoreActivity extends AdviceActivity {
 
         try {
             Object resultValue = action.execute(this);
-            if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
+            if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 if (resultValue instanceof ProcessResult) {
                     contentResult.addActionResult(action, (ProcessResult)resultValue);
                 } else {

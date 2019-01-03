@@ -178,7 +178,7 @@ public class ContentsXMLReader implements XMLReader {
             }
             handler.endDocument();
         } catch (InvocationTargetException e) {
-            throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
+            throw new SAXException("Process results could not be parsed. Cause: " + e.toString());
         }
     }
 
@@ -201,19 +201,17 @@ public class ContentsXMLReader implements XMLReader {
                 }
             }
             for (ActionResult actionResult : contentResult) {
-                if (!actionResult.isHidden()) {
-                    String actionId = actionResult.getActionId();
-                    Object resultValue = actionResult.getResultValue();
-                    if (resultValue instanceof ProcessResult) {
-                        parse((ProcessResult) resultValue);
-                    } else {
-                        if (actionId != null) {
-                            handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-                        }
-                        parse(resultValue);
-                        if (actionId != null) {
-                            handler.endElement(StringUtils.EMPTY, actionId, actionId);
-                        }
+                String actionId = actionResult.getActionId();
+                Object resultValue = actionResult.getResultValue();
+                if (resultValue instanceof ProcessResult) {
+                    parse((ProcessResult) resultValue);
+                } else {
+                    if (actionId != null) {
+                        handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
+                    }
+                    parse(resultValue);
+                    if (actionId != null) {
+                        handler.endElement(StringUtils.EMPTY, actionId, actionId);
                     }
                 }
             }

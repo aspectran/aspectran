@@ -19,4 +19,8 @@ import java.util.LinkedHashMap;
 
 public class ResultValueMap extends LinkedHashMap<String, Object> {
 
+    protected ResultValueMap() {
+        super(1 << 3);
+    }
+
 }
