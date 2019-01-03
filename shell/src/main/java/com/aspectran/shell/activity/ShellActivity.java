@@ -20,7 +20,7 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
@@ -451,7 +451,7 @@ public class ShellActivity extends CoreActivity {
 
     private ItemRuleList checkRequiredParameters(ItemRuleList itemRuleList) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
-        ItemEvaluator evaluator = new ItemExpressionParser(this);
+        ItemEvaluator evaluator = new ItemExpression(this);
         for (ItemRule itemRule : itemRuleList) {
             String[] values = evaluator.evaluateAsStringArray(itemRule);
             if (values != null && values.length > 0) {
@@ -465,7 +465,7 @@ public class ShellActivity extends CoreActivity {
 
     private ItemRuleList checkRequiredAttributes(ItemRuleList itemRuleList) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
-        ItemEvaluator evaluator = new ItemExpressionParser(this);
+        ItemEvaluator evaluator = new ItemExpression(this);
         for (ItemRule itemRule : itemRuleList) {
             Object value = evaluator.evaluate(itemRule);
             if (value != null) {

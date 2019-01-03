@@ -22,7 +22,7 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
@@ -167,7 +167,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void printGreetings() {
         if (greetingsTokens != null) {
-            TokenEvaluator evaluator = new TokenExpressionParser(getActivityContext());
+            TokenEvaluator evaluator = new TokenExpression(getActivityContext());
             String message = evaluator.evaluateAsString(greetingsTokens);
             console.writeLine(message);
             console.flush();

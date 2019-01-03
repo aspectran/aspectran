@@ -46,7 +46,7 @@ import java.util.Set;
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
-public class TokenExpressionParser implements TokenEvaluator {
+public class TokenExpression implements TokenEvaluator {
 
     protected final Activity activity;
 
@@ -55,7 +55,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param activity the current Activity
      */
-    public TokenExpressionParser(Activity activity) {
+    public TokenExpression(Activity activity) {
         this.activity = activity;
     }
 
@@ -64,7 +64,7 @@ public class TokenExpressionParser implements TokenEvaluator {
      *
      * @param context the activity context
      */
-    public TokenExpressionParser(ActivityContext context) {
+    public TokenExpression(ActivityContext context) {
         this(new DefaultActivity(context));
     }
 

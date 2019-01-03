@@ -20,7 +20,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -146,7 +146,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
         ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            ItemEvaluator evaluator = new ItemExpression(activity);
             Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
             if (valueMap != null && !valueMap.isEmpty()) {
                 if (questionPos == -1) {

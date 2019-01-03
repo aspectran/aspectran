@@ -21,7 +21,7 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpressionParser;
+import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
 
@@ -160,7 +160,7 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
             } else {
                 Token[] templateTokens = templateRule.getTemplateTokens(context.getEnvironment());
                 if (templateTokens != null) {
-                    TokenEvaluator evaluator = new TokenExpressionParser(activity);
+                    TokenEvaluator evaluator = new TokenExpression(activity);
                     evaluator.evaluate(templateTokens, writer);
                 } else {
                     writer.write(templateRule.getTemplateSource(context.getEnvironment()));
