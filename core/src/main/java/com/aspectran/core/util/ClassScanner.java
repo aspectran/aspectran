@@ -119,7 +119,7 @@ public class ClassScanner {
             if (isJarResource(resource)) {
                 scanFromJarResource(resource, matcher, saveHandler);
             } else {
-                scan(resource.getFile(), basePackageName, null,  matcher, saveHandler);
+                scan(resource.getFile(), basePackageName, null, matcher, saveHandler);
             }
         }
     }

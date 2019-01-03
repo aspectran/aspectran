@@ -432,7 +432,7 @@ public class TokenExpressionParser implements TokenEvaluator {
             try {
                 props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getEnvironment().getClassLoader());
             } catch (IOException e) {
-                throw new TokenEvaluationException("Unable to load properties file for token", token,  e);
+                throw new TokenEvaluationException("Unable to load properties file for token", token, e);
             }
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());

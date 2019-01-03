@@ -65,7 +65,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     public boolean doReplace(String id, Session oldValue, Session newValue) {
-        boolean result = sessions.replace(id,  oldValue, newValue);
+        boolean result = sessions.replace(id, oldValue, newValue);
         if (result && (oldValue instanceof PlaceHolderSession)) {
             statistic.increment();
         }

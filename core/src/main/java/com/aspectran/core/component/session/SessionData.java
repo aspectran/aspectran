@@ -56,7 +56,7 @@ public class SessionData implements Serializable {
 
     private long lastSaved; //time in msec since last save
 
-    public SessionData(String id, long creationTime, long accessedTime,  long lastAccessedTime, long maxInactiveIntervalMS) {
+    public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS) {
         if (id == null) {
             throw new IllegalArgumentException("Argument 'id' must not be null");
         }
