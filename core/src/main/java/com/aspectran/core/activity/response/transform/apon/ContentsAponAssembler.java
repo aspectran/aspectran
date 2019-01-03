@@ -44,17 +44,19 @@ public class ContentsAponAssembler {
             ContentResult contentResult = processResult.get(0);
             if (contentResult.getName() == null && contentResult.size() == 1) {
                 ActionResult actionResult = contentResult.get(0);
-                Object resultValue = actionResult.getResultValue();
-                if (actionResult.getActionId() == null) {
-                    if (resultValue instanceof Parameters) {
-                        return (Parameters)resultValue;
+                if (!actionResult.isHidden()) {
+                    Object resultValue = actionResult.getResultValue();
+                    if (actionResult.getActionId() == null) {
+                        if (resultValue instanceof Parameters) {
+                            return (Parameters) resultValue;
+                        } else {
+                            return null;
+                        }
                     } else {
-                        return null;
+                        Parameters container = new VariableParameters();
+                        putValue(container, actionResult.getActionId(), resultValue);
+                        return container;
                     }
-                } else {
-                    Parameters container = new VariableParameters();
-                    putValue(container, actionResult.getActionId(), resultValue);
-                    return container;
                 }
             }
         }
@@ -76,10 +78,9 @@ public class ContentsAponAssembler {
             container = p;
         }
         for (ActionResult actionResult : contentResult) {
-            String actionId = actionResult.getActionId();
-            if (actionId != null) {
+            if (actionResult.getActionId() != null && !actionResult.isHidden()) {
                 Object resultValue = actionResult.getResultValue();
-                putValue(container, actionId, resultValue);
+                putValue(container, actionResult.getActionId(), resultValue);
             }
         }
     }

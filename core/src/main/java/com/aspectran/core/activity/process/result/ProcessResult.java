@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      *
      * @param contentResult the content result
      */
-    public void addContentResult(ContentResult contentResult) {
+    protected void addContentResult(ContentResult contentResult) {
         add(contentResult);
     }
 
@@ -88,11 +90,32 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @return the result value of the action
      */
     public Object getResultValue(String actionId) {
-        ActionResult actionResult = getActionResult(actionId);
-        if (actionResult != null) {
-            return actionResult.getResultValue();
+        if (actionId == null) {
+            return null;
         }
-        return null;
+        if (!actionId.contains(ActivityContext.ID_SEPARATOR)) {
+            ActionResult actionResult = getActionResult(actionId);
+            return (actionResult != null ? actionResult.getResultValue() : null);
+        } else {
+            String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
+            if (ids.length == 1) {
+                ActionResult actionResult = getActionResult(actionId);
+                return (actionResult != null ? actionResult.getResultValue() : null);
+            } else {
+                ActionResult actionResult = getActionResult(ids[0]);
+                if (actionResult == null || !(actionResult.getResultValue() instanceof ResultValueMap)) {
+                    return null;
+                }
+                ResultValueMap resultValueMap = (ResultValueMap)actionResult.getResultValue();
+                for (int i = 1; i < ids.length - 1; i++) {
+                    Object value = resultValueMap.get(ids[i]);
+                    if (!(value instanceof ResultValueMap)) {
+                        return null;
+                    }
+                }
+                return resultValueMap.get(ids[ids.length - 1]);
+            }
+        }
     }
 
     public String describe() {

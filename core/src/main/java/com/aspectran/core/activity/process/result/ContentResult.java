@@ -59,6 +59,9 @@ public class ContentResult extends ArrayList<ActionResult> {
     }
 
     public ActionResult getActionResult(String actionId) {
+        if (actionId == null) {
+            return null;
+        }
         for (ActionResult actionResult : this) {
             if (actionId.equals(actionResult.getActionId())) {
                 return actionResult;
@@ -81,14 +84,22 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param actionResult the action result
      */
     public void addActionResult(ActionResult actionResult) {
-        add(actionResult);
+        ActionResult existActionResult = getActionResult(actionResult.getActionId());
+        if (existActionResult != null &&
+                existActionResult.getResultValue() instanceof ResultValueMap &&
+                actionResult.getResultValue() instanceof ResultValueMap) {
+            ResultValueMap resultValueMap = (ResultValueMap)existActionResult.getResultValue();
+            resultValueMap.putAll((ResultValueMap)actionResult.getResultValue());
+        } else {
+            add(actionResult);
+        }
     }
 
     public void addActionResult(Executable action, Object resultValue) {
-        ActionResult actionResult = new ActionResult(this);
-        actionResult.setActionId(action.getActionId());
-        actionResult.setResultValue(resultValue);
+        ActionResult actionResult = new ActionResult();
+        actionResult.setResultValue(action.getActionId(), resultValue);
         actionResult.setHidden(action.isHidden());
+        addActionResult(actionResult);
     }
 
     public void addActionResult(Executable parentAction, ProcessResult processResult) {
@@ -102,10 +113,10 @@ public class ContentResult extends ArrayList<ActionResult> {
                     } else {
                         actionId = actionResult.getActionId();
                     }
-                    ActionResult newActionResult = new ActionResult(this);
-                    newActionResult.setActionId(actionId);
-                    newActionResult.setResultValue(actionResult.getResultValue());
+                    ActionResult newActionResult = new ActionResult();
+                    newActionResult.setResultValue(actionId, actionResult.getResultValue());
                     newActionResult.setHidden(parentAction.isHidden());
+                    addActionResult(newActionResult);
                 }
             }
         }
