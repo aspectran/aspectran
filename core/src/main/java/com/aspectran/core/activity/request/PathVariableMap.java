@@ -20,12 +20,12 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Class PathVariableMap.
  *
- * <p>This class is generally not thread-safe. It is primarily designed
- * for use in a single thread only.</p>
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
  *
  * <p>Created: 2016. 2. 13.</p>
  */
@@ -33,8 +33,8 @@ public class PathVariableMap extends HashMap<Token, String> {
 
     private static final long serialVersionUID = -3327966082696522044L;
 
-    protected void apply(Translet translet) {
-        for (Entry<Token, String> entry : entrySet()) {
+    public void applyTo(Translet translet) {
+        for (Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
             if (token.getType() == TokenType.PARAMETER) {
                 translet.setParameter(token.getName(), entry.getValue());
