@@ -23,6 +23,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
+import com.aspectran.core.activity.request.PathVariableMap;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.BasicSessionAdapter;
@@ -443,7 +444,7 @@ public class CoreActivity extends AdviceActivity {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
             PathVariableMap pathVariableMap = PathVariableMap.newInstance(nameTokens, translet.getRequestName());
-            pathVariableMap.apply(translet);
+            pathVariableMap.applyTo(translet);
         }
     }
 
