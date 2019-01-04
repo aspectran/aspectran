@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * <p>Created: 2017. 11. 19.</p>
  */
-public class CommandTest {
+class CommandTest {
 
     @Test
     void testVerboseCommand() {

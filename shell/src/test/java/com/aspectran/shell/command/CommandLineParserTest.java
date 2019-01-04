@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class CommandLineParserTest {
+class CommandLineParserTest {
 
     @Test
     void testExtractParameters() {

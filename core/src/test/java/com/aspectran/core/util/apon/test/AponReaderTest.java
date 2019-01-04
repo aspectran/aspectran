@@ -25,9 +25,9 @@ import java.io.Reader;
 
 class AponReaderTest {
 
-    public static void main(String[] argv) {
+    public static void main(String[] args) {
         try {
-            Reader reader = new FileReader(new File(argv[0]));
+            Reader reader = new FileReader(new File(args[0]));
 
             Parameters aspectranConfig = new AspectranConfig();
 

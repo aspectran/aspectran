@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class JsonWriterTest {
 
-    public static void main(String[] argv) {
+    public static void main(String[] args) {
         try {
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("locale", "Start Testing Now!");

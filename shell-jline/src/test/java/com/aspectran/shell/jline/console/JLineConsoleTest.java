@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.Console;
 import org.junit.jupiter.api.Test;
 
@@ -26,18 +27,21 @@ import java.io.IOException;
 class JLineConsoleTest {
 
     @Test
-    void testAnsiColor() throws IOException {
+    void testWrite() throws IOException {
         JLineConsole console = new JLineConsole();
         console.writeLine("--- JLineConsoleTest ---");
     }
 
-    public static void main(String[] argv) throws IOException {
+    public static void main(String[] args) throws IOException {
         Console console = new JLineConsole();
-        String prompt = "JLine3> ";
+        String prompt = "> ";
         while (true) {
             String line = console.readLine(prompt);
-            if ("quit".equals(line)) {
-                break;
+            if (StringUtils.hasLength(line)) {
+                console.writeLine(line);
+                if ("quit".equals(line)) {
+                    break;
+                }
             }
         }
     }

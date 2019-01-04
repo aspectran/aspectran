@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class JLineAnsiStylerTest {
 
     @Test
-    void testAnsiColor() {
+    void testParse() {
         String s0 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{reset}}";
         System.out.println(JLineAnsiStyler.parse(s0));
         String s1 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{reset}}";

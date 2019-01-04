@@ -15,18 +15,30 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.util.StringUtils;
+import org.junit.jupiter.api.Test;
+
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-public class DefaultConsoleTest {
+class DefaultConsoleTest {
 
-    public static void main(String[] argv) {
+    @Test
+    void testWrite() {
+        DefaultConsole console = new DefaultConsole();
+        console.writeLine("--- DefaultConsoleTest ---");
+    }
+
+    public static void main(String[] args) {
         Console console = new DefaultConsole();
         String prompt = "> ";
         while (true) {
             String line = console.readLine(prompt);
-            if ("quit".equals(line)) {
-                break;
+            if (StringUtils.hasLength(line)) {
+                console.writeLine(line);
+                if ("quit".equals(line)) {
+                    break;
+                }
             }
         }
     }

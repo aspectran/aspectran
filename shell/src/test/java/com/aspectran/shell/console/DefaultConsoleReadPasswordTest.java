@@ -15,18 +15,23 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.util.StringUtils;
+
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
 public class DefaultConsoleReadPasswordTest {
 
-    public static void main(String[] argv) {
+    public static void main(String[] args) {
         Console console = new DefaultConsole();
         String prompt = "> ";
         while (true) {
             String line = console.readPassword(prompt);
-            if ("quit".equals(line)) {
-                break;
+            if (StringUtils.hasLength(line)) {
+                console.writeLine(line);
+                if ("quit".equals(line)) {
+                    break;
+                }
             }
         }
     }
