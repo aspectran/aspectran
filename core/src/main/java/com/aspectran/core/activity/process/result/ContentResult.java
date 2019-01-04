@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,13 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.ListIterator;
+import java.util.Set;
 
 /**
  * The Class ContentResult.
- * 
+ *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ContentResult extends ArrayList<ActionResult> {
@@ -36,6 +39,10 @@ public class ContentResult extends ArrayList<ActionResult> {
     private String name;
 
     private boolean omittable;
+
+    public ContentResult(ProcessResult parent) {
+        this(parent, 5);
+    }
 
     public ContentResult(ProcessResult parent, int initialCapacity) {
         super(initialCapacity);
@@ -59,7 +66,11 @@ public class ContentResult extends ArrayList<ActionResult> {
     }
 
     public ActionResult getActionResult(String actionId) {
-        for (ActionResult actionResult : this) {
+        if (actionId == null) {
+            return null;
+        }
+        for (ListIterator<ActionResult> iterator = listIterator(size()); iterator.hasPrevious();) {
+            ActionResult actionResult = iterator.previous();
             if (actionId.equals(actionResult.getActionId())) {
                 return actionResult;
             }
@@ -81,14 +92,21 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param actionResult the action result
      */
     public void addActionResult(ActionResult actionResult) {
-        add(actionResult);
+        ActionResult existActionResult = getActionResult(actionResult.getActionId());
+        if (existActionResult != null &&
+                existActionResult.getResultValue() instanceof ResultValueMap &&
+                actionResult.getResultValue() instanceof ResultValueMap) {
+            ResultValueMap resultValueMap = (ResultValueMap)existActionResult.getResultValue();
+            resultValueMap.putAll((ResultValueMap)actionResult.getResultValue());
+        } else {
+            add(actionResult);
+        }
     }
 
     public void addActionResult(Executable action, Object resultValue) {
-        ActionResult actionResult = new ActionResult(this);
-        actionResult.setActionId(action.getActionId());
-        actionResult.setResultValue(resultValue);
-        actionResult.setHidden(action.isHidden());
+        ActionResult actionResult = new ActionResult();
+        actionResult.setResultValue(action.getActionId(), resultValue);
+        addActionResult(actionResult);
     }
 
     public void addActionResult(Executable parentAction, ProcessResult processResult) {
@@ -102,20 +120,29 @@ public class ContentResult extends ArrayList<ActionResult> {
                     } else {
                         actionId = actionResult.getActionId();
                     }
-                    ActionResult newActionResult = new ActionResult(this);
-                    newActionResult.setActionId(actionId);
-                    newActionResult.setResultValue(actionResult.getResultValue());
-                    newActionResult.setHidden(parentAction.isHidden());
+                    ActionResult newActionResult = new ActionResult();
+                    newActionResult.setResultValue(actionId, actionResult.getResultValue());
+                    addActionResult(newActionResult);
                 }
             }
         }
+    }
+
+    public String[] getActionIds() {
+        Set<String> set = new LinkedHashSet<>();
+        for (ActionResult actionResult : this) {
+            if (actionResult.getActionId() != null) {
+                set.add(actionResult.getActionId());
+            }
+        }
+        return set.toArray(new String[0]);
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("values", this);
+        tsb.append("actionResults", this);
         return tsb.toString();
     }
 

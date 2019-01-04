@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a APON object.
- * 
+ *
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
 public class ContentsAponAssembler {
@@ -75,12 +75,9 @@ public class ContentsAponAssembler {
             container.putValue(contentResult.getName(), p);
             container = p;
         }
-        for (ActionResult actionResult : contentResult) {
-            String actionId = actionResult.getActionId();
-            if (actionId != null) {
-                Object resultValue = actionResult.getResultValue();
-                putValue(container, actionId, resultValue);
-            }
+        for (String actionId : contentResult.getActionIds()) {
+            ActionResult actionResult = contentResult.getActionResult(actionId);
+            putValue(container, actionResult.getActionId(), actionResult.getResultValue());
         }
     }
 

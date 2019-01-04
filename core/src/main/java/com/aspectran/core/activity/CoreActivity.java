@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -394,7 +394,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void parseDeclaredParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-        if (parameterItemRuleMap != null) {
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : parameterItemRuleMap.values()) {
@@ -430,7 +430,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void parseDeclaredAttributes() {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null) {
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpressionParser(this);
             for (ItemRule itemRule : attributeItemRuleMap.values()) {
                 Object value = evaluator.evaluate(itemRule);
@@ -494,7 +494,7 @@ public class CoreActivity extends AdviceActivity {
      */
     protected void execute(ActionList actionList) {
         ContentResult contentResult = null;
-        if (translet.getProcessResult() != null) {
+        if (translet.getProcessResult() != null && !actionList.isHidden()) {
             contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
             contentResult.setName(actionList.getName());
             if (getTransletRule().isExplicitContent()) {
@@ -524,7 +524,7 @@ public class CoreActivity extends AdviceActivity {
 
         try {
             Object resultValue = action.execute(this);
-            if (contentResult != null && resultValue != ActionResult.NO_RESULT) {
+            if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 if (resultValue instanceof ProcessResult) {
                     contentResult.addActionResult(action, (ProcessResult)resultValue);
                 } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * The Class ProcessResult.
- * 
+ *
  * <p>Created: 2008. 06. 09 PM 4:13:40</p>
  */
 public class ProcessResult extends ArrayList<ContentResult> {
@@ -34,6 +37,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
     private boolean omittable;
 
     public ProcessResult() {
+        this(5);
     }
 
     public ProcessResult(int initialCapacity) {
@@ -61,7 +65,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      *
      * @param contentResult the content result
      */
-    public void addContentResult(ContentResult contentResult) {
+    protected void addContentResult(ContentResult contentResult) {
         add(contentResult);
     }
 
@@ -72,7 +76,11 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @return the result of the action
      */
     public ActionResult getActionResult(String actionId) {
-        for (ContentResult contentResult : this) {
+        if (actionId == null) {
+            return null;
+        }
+        for (ListIterator<ContentResult> iterator = listIterator(size()); iterator.hasPrevious();) {
+            ContentResult contentResult = iterator.previous();
             ActionResult actionResult = contentResult.getActionResult(actionId);
             if (actionResult != null) {
                 return actionResult;
@@ -88,11 +96,32 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @return the result value of the action
      */
     public Object getResultValue(String actionId) {
-        ActionResult actionResult = getActionResult(actionId);
-        if (actionResult != null) {
-            return actionResult.getResultValue();
+        if (actionId == null) {
+            return null;
         }
-        return null;
+        if (!actionId.contains(ActivityContext.ID_SEPARATOR)) {
+            ActionResult actionResult = getActionResult(actionId);
+            return (actionResult != null ? actionResult.getResultValue() : null);
+        } else {
+            String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
+            if (ids.length == 1) {
+                ActionResult actionResult = getActionResult(actionId);
+                return (actionResult != null ? actionResult.getResultValue() : null);
+            } else {
+                ActionResult actionResult = getActionResult(ids[0]);
+                if (actionResult == null || !(actionResult.getResultValue() instanceof ResultValueMap)) {
+                    return null;
+                }
+                ResultValueMap resultValueMap = (ResultValueMap)actionResult.getResultValue();
+                for (int i = 1; i < ids.length - 1; i++) {
+                    Object value = resultValueMap.get(ids[i]);
+                    if (!(value instanceof ResultValueMap)) {
+                        return null;
+                    }
+                }
+                return resultValueMap.get(ids[ids.length - 1]);
+            }
+        }
     }
 
     public String describe() {

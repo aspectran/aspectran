@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,22 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ActionResult.
- * 
+ *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ActionResult {
 
     public static final Object NO_RESULT = new Object();
 
-    private final ContentResult parent;
-
     private String actionId;
 
     private Object resultValue;
-
-    private boolean hidden;
-
-    /**
-     * Instantiates a new Action result.
-     *
-     * @param parent the parent result
-     */
-    public ActionResult(ContentResult parent) {
-        this.parent = parent;
-
-        if (parent != null) {
-            parent.addActionResult(this);
-        }
-    }
-
-    /**
-     * Gets the parent.
-     *
-     * @return the parent result
-     */
-    public ContentResult getParent() {
-        return parent;
-    }
 
     /**
      * Gets the action id.
@@ -66,48 +42,46 @@ public class ActionResult {
     }
 
     /**
-     * Sets the action id.
+     * Gets the result value of the action.
      *
-     * @param actionId the new action id
-     */
-    public void setActionId(String actionId) {
-        this.actionId = actionId;
-    }
-
-    /**
-     * Gets the result value of an action.
-     *
-     * @return the result value of an action
+     * @return the result value of the action
      */
     public Object getResultValue() {
         return resultValue;
     }
 
     /**
-     * Sets the result value of an action.
+     * Sets the result value of the action.
      *
-     * @param resultValue the new result value of an action
+     * @param actionId the new action id
+     * @param resultValue the new result value of the action
      */
-    public void setResultValue(Object resultValue) {
-        this.resultValue = resultValue;
-    }
-
-    /**
-     * Returns whether or not to expose this action's result.
-     *
-     * @return true if hide this action result; false otherwise
-     */
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    /**
-     * Sets whether or not to hide the result of this action.
-     *
-     * @param hidden whether to hide this action result
-     */
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public void setResultValue(String actionId, Object resultValue) {
+        if (actionId == null || !actionId.contains(ActivityContext.ID_SEPARATOR)) {
+            this.actionId = actionId;
+            this.resultValue = resultValue;
+        } else {
+            String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
+            if (ids.length == 1) {
+                this.actionId = null;
+                this.resultValue = resultValue;
+            } else if (ids.length == 2) {
+                ResultValueMap resultValueMap = new ResultValueMap();
+                resultValueMap.put(ids[1], resultValue);
+                this.actionId = ids[0];
+                this.resultValue = resultValueMap;
+            } else {
+                ResultValueMap resultValueMap = new ResultValueMap();
+                for (int i = 1; i < ids.length - 1; i++) {
+                    ResultValueMap resultValueMap2 = new ResultValueMap();
+                    resultValueMap.put(ids[i], resultValueMap2);
+                    resultValueMap = resultValueMap2;
+                }
+                resultValueMap.put(ids[ids.length - 1], resultValue);
+                this.actionId = actionId;
+                this.resultValue = resultValueMap;
+            }
+        }
     }
 
     @Override
@@ -115,7 +89,6 @@ public class ActionResult {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionId", actionId);
         tsb.append("resultValue", resultValue);
-        tsb.append("hidden", hidden);
         return tsb.toString();
     }
 

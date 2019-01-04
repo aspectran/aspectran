@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a XML string.
- * 
+ *
  * <p>Created: 2008. 05. 26 PM 2:03:15</p>
  */
 public class ContentsXMLReader implements XMLReader {
@@ -178,9 +178,7 @@ public class ContentsXMLReader implements XMLReader {
             }
             handler.endDocument();
         } catch (InvocationTargetException e) {
-            throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
-        } catch (IOException | SAXException e) {
-            throw e;
+            throw new SAXException("Process results could not be parsed. Cause: " + e.toString());
         }
     }
 
@@ -206,7 +204,7 @@ public class ContentsXMLReader implements XMLReader {
                 String actionId = actionResult.getActionId();
                 Object resultValue = actionResult.getResultValue();
                 if (resultValue instanceof ProcessResult) {
-                    parse((ProcessResult)resultValue);
+                    parse((ProcessResult) resultValue);
                 } else {
                     if (actionId != null) {
                         handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);

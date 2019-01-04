@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 The Aspectran Project
+ * Copyright (c) 2008-2019 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Iterator;
 
 /**
  * Converts a ProcessResult object to a JSON formatted string.
- * 
+ *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  */
 public class ContentsJsonWriter extends JsonWriter {
@@ -126,17 +126,14 @@ public class ContentsJsonWriter extends JsonWriter {
             }
         } else {
             openCurlyBracket();
-            Iterator<ActionResult> iter = contentResult.iterator();
             int cnt = 0;
-            while (iter.hasNext()) {
-                ActionResult actionResult = iter.next();
-                if (actionResult.getActionId() != null) {
-                    if (cnt++ > 0) {
-                        writeComma();
-                    }
-                    writeName(actionResult.getActionId());
-                    write(actionResult.getResultValue());
+            for (String actionId : contentResult.getActionIds()) {
+                if (cnt++ > 0) {
+                    writeComma();
                 }
+                ActionResult actionResult = contentResult.getActionResult(actionId);
+                writeName(actionResult.getActionId());
+                write(actionResult.getResultValue());
             }
             closeCurlyBracket();
         }
