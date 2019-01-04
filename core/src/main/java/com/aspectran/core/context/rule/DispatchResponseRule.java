@@ -284,7 +284,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
      */
     public static DispatchResponseRule newInstance(String name) throws IllegalRuleException {
         if (name == null) {
-            throw new IllegalRuleException("Argument 'name' must not be null");
+            throw new IllegalRuleException("name must not be null");
         }
         DispatchResponseRule drr = new DispatchResponseRule();
         drr.setName(name);

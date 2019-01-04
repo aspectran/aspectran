@@ -58,7 +58,7 @@ public class SessionData implements Serializable {
 
     public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS) {
         if (id == null) {
-            throw new IllegalArgumentException("Argument 'id' must not be null");
+            throw new IllegalArgumentException("id must not be null");
         }
         this.id = id;
         this.creationTime = creationTime;

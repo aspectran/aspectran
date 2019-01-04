@@ -55,7 +55,7 @@ public class AponReader extends AponFormat {
      */
     public AponReader(Reader reader) {
         if (reader == null) {
-            throw new IllegalArgumentException("Argument 'reader' must not be null");
+            throw new IllegalArgumentException("reader must not be null");
         }
         if (reader instanceof BufferedReader) {
             this.reader = (BufferedReader)reader;
@@ -85,7 +85,7 @@ public class AponReader extends AponFormat {
      */
     public <T extends Parameters> T read(T parameters) {
         if (parameters == null) {
-            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+            throw new IllegalArgumentException("parameters must not be null");
         }
         addable = parameters.isAddable();
         try {
@@ -425,10 +425,10 @@ public class AponReader extends AponFormat {
      */
     public static <T extends Parameters> T parse(String text, T parameters) throws AponParseException {
         if (text == null) {
-            throw new IllegalArgumentException("Argument 'text' must not be null");
+            throw new IllegalArgumentException("text must not be null");
         }
         if (parameters == null) {
-            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+            throw new IllegalArgumentException("parameters must not be null");
         }
         try {
             AponReader aponReader = new AponReader(text);
@@ -463,7 +463,7 @@ public class AponReader extends AponFormat {
      */
     public static Parameters parse(File file, String encoding) throws AponParseException {
         if (file == null) {
-            throw new IllegalArgumentException("Argument 'file' must not be null");
+            throw new IllegalArgumentException("file must not be null");
         }
         Parameters parameters = new VariableParameters();
         return parse(file, encoding, parameters);
@@ -495,10 +495,10 @@ public class AponReader extends AponFormat {
     public static <T extends Parameters> T parse(File file, String encoding, T parameters)
             throws AponParseException {
         if (file == null) {
-            throw new IllegalArgumentException("Argument 'file' must not be null");
+            throw new IllegalArgumentException("file must not be null");
         }
         if (parameters == null) {
-            throw new IllegalArgumentException("Argument 'parameters' must not be null");
+            throw new IllegalArgumentException("parameters must not be null");
         }
         AponReader aponReader = null;
         try {
@@ -530,7 +530,7 @@ public class AponReader extends AponFormat {
      */
     public static Parameters parse(Reader reader) throws AponParseException {
         if (reader == null) {
-            throw new IllegalArgumentException("Argument 'reader' must not be null");
+            throw new IllegalArgumentException("reader must not be null");
         }
         AponReader aponReader = new AponReader(reader);
         return aponReader.read();

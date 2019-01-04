@@ -69,7 +69,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     public AbstractCoreService(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
-            throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
+            throw new IllegalArgumentException("applicationAdapter must not be null");
         }
 
         this.rootService = null;
@@ -79,7 +79,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     public AbstractCoreService(CoreService rootService) {
         if (rootService == null) {
-            throw new IllegalArgumentException("Argument 'rootService' must not be null");
+            throw new IllegalArgumentException("rootService must not be null");
         }
         if (rootService.getActivityContext() == null) {
             throw new IllegalStateException("Oops! rootService's ActivityContext is not yet created");

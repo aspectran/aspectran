@@ -101,7 +101,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
-            throw new IllegalArgumentException("Argument 'applicationAdapter' must not be null");
+            throw new IllegalArgumentException("applicationAdapter must not be null");
         }
         this.applicationAdapter = applicationAdapter;
     }
@@ -255,7 +255,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException {
         if (contextConfig == null) {
-            throw new IllegalArgumentException("Argument 'contextConfig' must not be null");
+            throw new IllegalArgumentException("contextConfig must not be null");
         }
 
         this.contextConfig = contextConfig;

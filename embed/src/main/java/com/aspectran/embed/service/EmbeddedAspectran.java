@@ -199,7 +199,7 @@ public interface EmbeddedAspectran extends CoreService {
      */
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
         if (aspectranConfig == null) {
-            throw new IllegalArgumentException("aspectranConfig can not be null");
+            throw new IllegalArgumentException("aspectranConfig must not be null");
         }
         try {
             AspectranEmbeddedService aspectran = AspectranEmbeddedService.create(aspectranConfig);

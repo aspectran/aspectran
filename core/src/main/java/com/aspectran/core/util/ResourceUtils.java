@@ -83,7 +83,7 @@ public class ResourceUtils {
 
     public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         if (resourceLocation == null) {
-            throw new IllegalArgumentException("Argument 'resourceLocation' must not be null");
+            throw new IllegalArgumentException("resourceLocation must not be null");
         }
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
@@ -110,7 +110,7 @@ public class ResourceUtils {
 
     public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         if (resourceLocation == null) {
-            throw new IllegalArgumentException("Argument 'resourceLocation' must not be null");
+            throw new IllegalArgumentException("resourceLocation must not be null");
         }
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
@@ -137,7 +137,7 @@ public class ResourceUtils {
 
     public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
         if (resourceUrl == null) {
-            throw new IllegalArgumentException("Argument 'resourceUrl' must not be null");
+            throw new IllegalArgumentException("resourceUrl must not be null");
         }
         if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
             throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
@@ -157,7 +157,7 @@ public class ResourceUtils {
 
     public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
         if (resourceUri == null) {
-            throw new IllegalArgumentException("Argument 'resourceUri' must not be null");
+            throw new IllegalArgumentException("resourceUri must not be null");
         }
         if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
             throw new FileNotFoundException(description + " cannot be resolved to absolute file path "

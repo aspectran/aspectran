@@ -36,7 +36,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     public ContextRuleAssistant parse(String appConfigRootFile) throws ActivityContextParserException {
         try {
             if (appConfigRootFile == null) {
-                throw new IllegalArgumentException("Argument 'appConfigRootFile' must not be null");
+                throw new IllegalArgumentException("appConfigRootFile must not be null");
             }
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
@@ -52,7 +52,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     public ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
         try {
             if (aspectranParameters == null) {
-                throw new IllegalArgumentException("Argument 'aspectranParameters' must not be null");
+                throw new IllegalArgumentException("aspectranParameters must not be null");
             }
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();

@@ -135,7 +135,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     public Map<String, Object> extractParameters(Map<String, Object> targetMap) {
         if (targetMap == null) {
-            throw new IllegalArgumentException("Argument 'targetMap' must not be null");
+            throw new IllegalArgumentException("targetMap must not be null");
         }
         for (Map.Entry<String, String[]> entry : this.entrySet()) {
             String name = entry.getKey();
