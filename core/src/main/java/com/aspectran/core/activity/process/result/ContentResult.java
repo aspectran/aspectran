@@ -104,12 +104,21 @@ public class ContentResult extends ArrayList<ActionResult> {
     }
 
     public void addActionResult(Executable action, Object resultValue) {
+        if (action == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
         ActionResult actionResult = new ActionResult();
         actionResult.setResultValue(action.getActionId(), resultValue);
         addActionResult(actionResult);
     }
 
     public void addActionResult(Executable parentAction, ProcessResult processResult) {
+        if (parentAction == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+        if (processResult == null) {
+            throw new IllegalArgumentException("processResult must not be null");
+        }
         for (ContentResult contentResult : processResult) {
             for (ActionResult actionResult : contentResult) {
                 if (actionResult.getActionId() != null) {
