@@ -18,7 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.shell.command.builtin.QuitCommand;
+import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;

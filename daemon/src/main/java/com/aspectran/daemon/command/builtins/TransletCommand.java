@@ -13,45 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.builtin;
+package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.ItemRuleList;
+import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
-public class PollingIntervalCommand extends AbstractCommand {
+import java.util.Map;
+
+public class TransletCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "pollingInterval";
+    private static final String COMMAND_NAME = "translet";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public PollingIntervalCommand(CommandRegistry registry) {
+    public TransletCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
-        long pollingInterval = 0L;
-        ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
-        if (!itemRuleList.isEmpty()) {
-            Activity activity = new InstantActivity(getService().getActivityContext());
-            ItemEvaluator evaluator = new ItemExpression(activity);
-            pollingInterval = evaluator.evaluate(itemRuleList.get(0));
+        String transletName = parameters.getTransletName();
+        if (transletName == null) {
+            throw new IllegalRuleException("'translet' parameter is not specified");
         }
-        if (pollingInterval != 0L) {
-            getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
-            return "The polling interval is changed from " + oldPollingInterval + " to " + pollingInterval;
-        } else {
-            return "The polling interval is not changed";
+
+        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+
+        ParameterMap parameterMap = null;
+        Map<String, Object> attributeMap = null;
+        if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
+            ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+            if (parameterItemRuleMap != null) {
+                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+            }
+            if (attributeItemRuleMap != null) {
+                attributeMap = evaluator.evaluate(attributeItemRuleMap);
+            }
         }
+
+        Translet translet = getService().translate(transletName, parameterMap, attributeMap);
+        return translet.getResponseAdapter().getWriter().toString();
     }
 
     @Override
@@ -73,7 +84,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Specifies in seconds how often the daemon polls for new commands";
+            return "Executes a translet";
         }
 
     }

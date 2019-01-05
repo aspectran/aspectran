@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.builtin;
+package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.Option;
 
 import java.util.Collection;
 
 /**
- * Releases all resources and exits this application.
+ * Restarts the Aspectran Shell.
  */
-public class QuitCommand extends AbstractCommand {
+public class RestartCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "quit";
+    private static final String COMMAND_NAME = "restart";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public QuitCommand(CommandRegistry registry) {
+    public RestartCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        if (getService().getConsole().confirmQuit()) {
-            throw new ConsoleTerminatedException();
+        if (getService().getConsole().confirmRestart()) {
+            getService().getConsole().clearScreen();
+            getService().getServiceController().restart();
         }
         return null;
     }
@@ -64,7 +64,7 @@ public class QuitCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Releases all resources and exits this application";
+            return "Restarts the Aspectran Shell";
         }
 
         @Override

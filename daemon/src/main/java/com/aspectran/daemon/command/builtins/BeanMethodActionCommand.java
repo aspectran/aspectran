@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.builtin;
+package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
@@ -26,7 +26,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
-public class BeanActionCommand extends AbstractCommand {
+public class BeanMethodActionCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
@@ -34,7 +34,7 @@ public class BeanActionCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public BeanActionCommand(CommandRegistry registry) {
+    public BeanMethodActionCommand(CommandRegistry registry) {
         super(registry);
     }
 

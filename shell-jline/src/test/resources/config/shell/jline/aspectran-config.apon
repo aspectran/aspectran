@@ -19,18 +19,18 @@ scheduler: {
 shell: {
     prompt: "test-console-app> "
     commands: [
-        com.aspectran.shell.command.builtin.JettyCommand
-        com.aspectran.shell.command.builtin.TransletCommand
-        com.aspectran.shell.command.builtin.SysInfoCommand
-        com.aspectran.shell.command.builtin.PBEncryptCommand
-        com.aspectran.shell.command.builtin.PBDecryptCommand
-        com.aspectran.shell.command.builtin.HelpCommand
-        com.aspectran.shell.command.builtin.VerboseCommand
-        com.aspectran.shell.command.builtin.RestartCommand
-        com.aspectran.shell.command.builtin.PauseCommand
-        com.aspectran.shell.command.builtin.ResumeCommand
-        com.aspectran.shell.command.builtin.ClearCommand
-        com.aspectran.shell.command.builtin.QuitCommand
+        com.aspectran.shell.command.builtins.JettyCommand
+        com.aspectran.shell.command.builtins.TransletCommand
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.PauseCommand
+        com.aspectran.shell.command.builtins.ResumeCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.QuitCommand
     ]
     verbose: true
     greetings: (

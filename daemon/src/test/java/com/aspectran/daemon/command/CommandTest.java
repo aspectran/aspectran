@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command;
 
 import com.aspectran.daemon.TestDaemon;
-import com.aspectran.daemon.command.builtin.BeanActionCommand;
+import com.aspectran.daemon.command.builtins.BeanMethodActionCommand;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -63,7 +63,7 @@ class CommandTest {
         parameters.setBeanName("class:com.aspectran.daemon.command.CommandTestBean");
         parameters.setMethodName("command1");
 
-        Command command = new BeanActionCommand(commandRegistry);
+        Command command = new BeanMethodActionCommand(commandRegistry);
         String result = command.execute(parameters);
         assertEquals("<<command1>>", result);
     }

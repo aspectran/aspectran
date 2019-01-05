@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.builtin;
+package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
@@ -22,26 +22,23 @@ import com.aspectran.shell.command.option.Option;
 import java.util.Collection;
 
 /**
- * Restarts the Aspectran Shell.
+ * Pause the Aspectran Shell.
  */
-public class RestartCommand extends AbstractCommand {
+public class PauseCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "restart";
+    private static final String COMMAND_NAME = "pause";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public RestartCommand(CommandRegistry registry) {
+    public PauseCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        if (getService().getConsole().confirmRestart()) {
-            getService().getConsole().clearScreen();
-            getService().getServiceController().restart();
-        }
+        getService().getServiceController().pause();
         return null;
     }
 
@@ -64,7 +61,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restarts the Aspectran Shell";
+            return "Pause the Aspectran Shell";
         }
 
         @Override

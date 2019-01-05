@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.builtin;
+package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
@@ -22,23 +22,23 @@ import com.aspectran.shell.command.option.Option;
 import java.util.Collection;
 
 /**
- * Resume the Aspectran Shell.
+ * Clear the terminal screen.
  */
-public class ResumeCommand extends AbstractCommand {
+public class ClearCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "resume";
+    private static final String COMMAND_NAME = "clear";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public ResumeCommand(CommandRegistry registry) {
+    public ClearCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        getService().getServiceController().resume();
+        getConsole().clearScreen();
         return null;
     }
 
@@ -61,7 +61,7 @@ public class ResumeCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Resume the Aspectran Shell";
+            return "Clear the terminal screen";
         }
 
         @Override

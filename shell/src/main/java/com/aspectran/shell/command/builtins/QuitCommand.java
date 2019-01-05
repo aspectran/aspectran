@@ -13,49 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command.builtin;
+package com.aspectran.shell.command.builtins;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.Option;
-import com.aspectran.shell.command.option.ParsedOptions;
 
 import java.util.Collection;
 
 /**
- * Turns verbose mode on or off.
+ * Releases all resources and exits this application.
  */
-public class VerboseCommand extends AbstractCommand {
-
-    private static final Log log = LogFactory.getLog(VerboseCommand.class);
+public class QuitCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "verbose";
+    private static final String COMMAND_NAME = "quit";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public VerboseCommand(CommandRegistry registry) {
+    public QuitCommand(CommandRegistry registry) {
         super(registry);
-
-        addOption(new Option("on", "Enable verbose output"));
-        addOption(new Option("off", "Disable verbose output"));
-        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args);
-        if (options.hasOption("on")) {
-            getService().setVerbose(true);
-            getConsole().writeLine("Enabled verbose mode");
-        } else if (options.hasOption("off")) {
-            getService().setVerbose(false);
-            getConsole().writeLine("Disabled verbose mode");
-        } else {
-            printUsage();
+        if (getService().getConsole().confirmQuit()) {
+            throw new ConsoleTerminatedException();
         }
         return null;
     }
@@ -79,17 +64,17 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Turns verbose mode on or off";
+            return "Releases all resources and exits this application";
         }
 
         @Override
         public String getUsage() {
-            return "verbose [OPTION]";
+            return null;
         }
 
         @Override
         public Collection<Option> getOptions() {
-            return options.getOptions();
+            return null;
         }
 
     }

@@ -13,28 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.builtin;
+package com.aspectran.daemon.command.builtins;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
-public class RestartCommand extends AbstractCommand {
+public class PollingIntervalCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "restart";
+    private static final String COMMAND_NAME = "pollingInterval";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public RestartCommand(CommandRegistry registry) {
+    public PollingIntervalCommand(CommandRegistry registry) {
         super(registry);
     }
 
     @Override
     public String execute(CommandParameters parameters) throws Exception {
-        getCommandRegistry().getDaemon().getService().getServiceController().restart();
-        return null;
+        long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
+        long pollingInterval = 0L;
+        ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
+        if (!itemRuleList.isEmpty()) {
+            Activity activity = new InstantActivity(getService().getActivityContext());
+            ItemEvaluator evaluator = new ItemExpression(activity);
+            pollingInterval = evaluator.evaluate(itemRuleList.get(0));
+        }
+        if (pollingInterval != 0L) {
+            getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
+            return "The polling interval is changed from " + oldPollingInterval + " to " + pollingInterval;
+        } else {
+            return "The polling interval is not changed";
+        }
     }
 
     @Override
@@ -56,7 +73,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart this application to reload all resources";
+            return "Specifies in seconds how often the daemon polls for new commands";
         }
 
     }

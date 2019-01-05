@@ -15,11 +15,11 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.command.builtin.HelpCommand;
-import com.aspectran.shell.command.builtin.PBDecryptCommand;
-import com.aspectran.shell.command.builtin.PBEncryptCommand;
-import com.aspectran.shell.command.builtin.SysInfoCommand;
-import com.aspectran.shell.command.builtin.VerboseCommand;
+import com.aspectran.shell.command.builtins.HelpCommand;
+import com.aspectran.shell.command.builtins.PBDecryptCommand;
+import com.aspectran.shell.command.builtins.PBEncryptCommand;
+import com.aspectran.shell.command.builtins.SysInfoCommand;
+import com.aspectran.shell.command.builtins.VerboseCommand;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 import org.junit.jupiter.api.Test;
