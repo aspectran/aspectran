@@ -17,7 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.rule.MethodActionRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -34,34 +34,34 @@ import java.lang.reflect.Method;
  *
  * @since 2.0.0
  */
-public class MethodAction extends AbstractAction {
+public class ConfigBeanMethodAction extends AbstractAction {
 
-    private static final Log log = LogFactory.getLog(MethodAction.class);
+    private static final Log log = LogFactory.getLog(ConfigBeanMethodAction.class);
 
-    private final MethodActionRule methodActionRule;
+    private final ConfigBeanMethodActionRule configBeanMethodActionRule;
 
     private final Class<?> configBeanClass;
 
     /**
      * Instantiates a new MethodAction.
      *
-     * @param methodActionRule the method action rule
+     * @param configBeanMethodActionRule the config bean method action rule
      * @param parent the parent of this action
      */
-    public MethodAction(MethodActionRule methodActionRule, ActionList parent) {
+    public ConfigBeanMethodAction(ConfigBeanMethodActionRule configBeanMethodActionRule, ActionList parent) {
         super(parent);
 
-        this.methodActionRule = methodActionRule;
-        this.configBeanClass = methodActionRule.getConfigBeanClass();
+        this.configBeanMethodActionRule = configBeanMethodActionRule;
+        this.configBeanClass = configBeanMethodActionRule.getConfigBeanClass();
     }
 
     @Override
     public Object execute(Activity activity) throws Exception {
         try {
             Object bean = activity.getConfigBean(configBeanClass);
-            return invokeMethod(activity, bean, methodActionRule.getMethod(), methodActionRule.isRequiresTranslet());
+            return invokeMethod(activity, bean, configBeanMethodActionRule.getMethod(), configBeanMethodActionRule.isRequiresTranslet());
         } catch (Exception e) {
-            log.error("Failed to execute a bean action method " + methodActionRule);
+            log.error("Failed to execute config bean method action " + configBeanMethodActionRule);
             throw e;
         }
     }
@@ -82,8 +82,8 @@ public class MethodAction extends AbstractAction {
      *
      * @return the method action rule
      */
-    public MethodActionRule getMethodActionRule() {
-        return methodActionRule;
+    public ConfigBeanMethodActionRule getConfigBeanMethodActionRule() {
+        return configBeanMethodActionRule;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MethodAction extends AbstractAction {
 
     @Override
     public String getActionId() {
-        return methodActionRule.getActionId();
+        return configBeanMethodActionRule.getActionId();
     }
 
     @Override
@@ -103,20 +103,20 @@ public class MethodAction extends AbstractAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.METHOD;
+        return ActionType.CONFIG_BEAN_METHOD;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)methodActionRule;
+        return (T)configBeanMethodActionRule;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
-        tsb.append("methodActionRule", methodActionRule);
+        tsb.append("configBeanMethodActionRule", configBeanMethodActionRule);
         return tsb.toString();
     }
 

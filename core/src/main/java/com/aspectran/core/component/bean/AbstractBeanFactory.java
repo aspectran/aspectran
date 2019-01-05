@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
@@ -368,7 +368,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method initMethod = beanRule.getInitMethod();
             boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-            MethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
+            ConfigBeanMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
                     beanRule, e);
@@ -379,7 +379,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
             boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
-            return MethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
+            return ConfigBeanMethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of the bean",
                     beanRule, e);

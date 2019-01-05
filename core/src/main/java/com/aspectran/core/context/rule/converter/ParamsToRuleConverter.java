@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -589,7 +589,7 @@ public class ParamsToRuleConverter {
             actionRuleApplicable.applyActionRule(includeActionRule);
         } else if (method != null) {
             String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
-            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, method, hidden);
+            BeanMethodActionRule beanActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
             ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
             if (argumentItemHolderParameters != null) {
                 ItemRuleMap argumentItemRuleMap = convertAsItemRuleMap(argumentItemHolderParameters);
@@ -608,7 +608,7 @@ public class ParamsToRuleConverter {
             echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
             actionRuleApplicable.applyActionRule(echoActionRule);
         } else if (headersItemHolderParameters != null) {
-            HeadingActionRule headingActionRule = HeadingActionRule.newInstance(id, hidden);
+            HeaderActionRule headingActionRule = HeaderActionRule.newInstance(id, hidden);
             ItemRuleMap headerItemRuleMap = convertAsItemRuleMap(headersItemHolderParameters);
             headingActionRule.setHeaderItemRuleMap(headerItemRuleMap);
             actionRuleApplicable.applyActionRule(headingActionRule);

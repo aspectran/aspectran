@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.ToStringBuilder;
@@ -37,32 +37,32 @@ import java.util.Map;
  * 
  * @since 3.0.0
  */
-public class HeadingAction extends AbstractAction {
+public class HeaderAction extends AbstractAction {
 
-    private static final Log log = LogFactory.getLog(HeadingAction.class);
+    private static final Log log = LogFactory.getLog(HeaderAction.class);
 
-    private final HeadingActionRule headingActionRule;
+    private final HeaderActionRule headerActionRule;
 
     /**
-     * Instantiates a new HeadingAction.
+     * Instantiates a new HeaderAction.
      *
-     * @param headingActionRule the heading action rule
+     * @param headerActionRule the header action rule
      * @param parent the parent
      */
-    public HeadingAction(HeadingActionRule headingActionRule, ActionList parent) {
+    public HeaderAction(HeaderActionRule headerActionRule, ActionList parent) {
         super(parent);
-        this.headingActionRule = headingActionRule;
+        this.headerActionRule = headerActionRule;
     }
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        if (headingActionRule.getHeaderItemRuleMap() == null) {
+        if (headerActionRule.getHeaderItemRuleMap() == null) {
             return null;
         }
 
         try {
             ItemEvaluator evaluator = new ItemExpression(activity);
-            MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
+            MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headerActionRule.getHeaderItemRuleMap());
             if (!valueMap.isEmpty()) {
                 ResponseAdapter responseAdapter = activity.getResponseAdapter();
                 for (Map.Entry<String, List<String>> entry : valueMap.entrySet()) {
@@ -75,7 +75,7 @@ public class HeadingAction extends AbstractAction {
             }
             return valueMap;
         } catch (Exception e) {
-            log.error("Failed to execute an action that generates response headers. headingActionRule " + headingActionRule);
+            log.error("Failed to execute header action " + headerActionRule);
             throw e;
         }
     }
@@ -85,36 +85,36 @@ public class HeadingAction extends AbstractAction {
      *
      * @return the headingActionRule
      */
-    public HeadingActionRule getHeadingActionRule() {
-        return headingActionRule;
+    public HeaderActionRule getHeaderActionRule() {
+        return headerActionRule;
     }
 
     @Override
     public String getActionId() {
-        return headingActionRule.getActionId();
+        return headerActionRule.getActionId();
     }
 
     @Override
     public boolean isHidden() {
-        return headingActionRule.isHidden();
+        return headerActionRule.isHidden();
     }
 
     @Override
     public ActionType getActionType() {
-        return ActionType.HEADERS;
+        return ActionType.HEADER;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)headingActionRule;
+        return (T)headerActionRule;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
-        tsb.append("headingActionRule", headingActionRule);
+        tsb.append("headerActionRule", headerActionRule);
         return tsb.toString();
     }
 

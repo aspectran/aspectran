@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
@@ -134,8 +134,8 @@ public class BeanReferenceInspector {
                 }
             } else {
                 for (RefererInfo refererInfo : refererInfoSet) {
-                    if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_ACTION_RULE) {
-                        checkTransletActionParameter((BeanActionRule)refererInfo.getInspectable(),
+                    if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
+                        checkTransletActionParameter((BeanMethodActionRule)refererInfo.getInspectable(),
                                 beanRule, refererInfo);
                     }
                 }
@@ -159,7 +159,7 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule, RefererInfo refererInfo) {
+    private void checkTransletActionParameter(BeanMethodActionRule beanActionRule, BeanRule beanRule, RefererInfo refererInfo) {
         if (beanActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
             String methodName = beanActionRule.getMethodName();

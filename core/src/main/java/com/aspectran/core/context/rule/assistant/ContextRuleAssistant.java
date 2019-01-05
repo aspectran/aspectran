@@ -27,7 +27,7 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -378,7 +378,7 @@ public class ContextRuleAssistant {
      *
      * @param beanActionRule the bean action rule
      */
-    public void resolveActionBeanClass(BeanActionRule beanActionRule) {
+    public void resolveActionBeanClass(BeanMethodActionRule beanActionRule) {
         String beanIdOrClass = beanActionRule.getBeanId();
         if (beanIdOrClass != null) {
             Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanActionRule);

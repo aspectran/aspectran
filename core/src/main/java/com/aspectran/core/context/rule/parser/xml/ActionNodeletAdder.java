@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -54,14 +54,14 @@ class ActionNodeletAdder implements NodeletAdder {
             String methodName = StringUtils.emptyToNull(attrs.get("method"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
+            BeanMethodActionRule beanActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
             assistant.resolveActionBeanClass(beanActionRule);
             parser.pushObject(beanActionRule);
         });
         parser.addNodeEndlet(text -> {
-            BeanActionRule beanActionRule = parser.popObject();
+            BeanMethodActionRule beanMethodActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
-            applicable.applyActionRule(beanActionRule);
+            applicable.applyActionRule(beanMethodActionRule);
         });
         parser.setXpath(xpath + "/action/arguments");
         parser.addNodelet(attrs -> {
@@ -72,7 +72,7 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = parser.peekObject();
+                BeanMethodActionRule beanActionRule = parser.peekObject();
                 beanActionRule.setArgumentItemRuleMap(irm);
             }
         });
@@ -85,7 +85,7 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                BeanActionRule beanActionRule = parser.peekObject();
+                BeanMethodActionRule beanActionRule = parser.peekObject();
                 beanActionRule.setPropertyItemRuleMap(irm);
             }
         });
@@ -162,22 +162,22 @@ class ActionNodeletAdder implements NodeletAdder {
             String id = StringUtils.emptyToNull(attrs.get("id"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            HeadingActionRule headersActionRule = HeadingActionRule.newInstance(id, hidden);
-            parser.pushObject(headersActionRule);
+            HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
+            parser.pushObject(headerActionRule);
 
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            HeadingActionRule headersActionRule = parser.popObject();
+            HeaderActionRule headerActionRule = parser.popObject();
 
             if (!irm.isEmpty()) {
-                headersActionRule.setHeaderItemRuleMap(irm);
+                headerActionRule.setHeaderItemRuleMap(irm);
             }
 
             ActionRuleApplicable applicable = parser.peekObject();
-            applicable.applyActionRule(headersActionRule);
+            applicable.applyActionRule(headerActionRule);
         });
         parser.addNodelet(new ItemNodeletAdder(assistant));
     }

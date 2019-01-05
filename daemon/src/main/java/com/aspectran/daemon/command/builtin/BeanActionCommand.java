@@ -17,8 +17,8 @@ package com.aspectran.daemon.command.builtin;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.activity.process.action.BeanAction;
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -52,7 +52,7 @@ public class BeanActionCommand extends AbstractCommand {
             throw new IllegalRuleException("'method' parameter is not specified");
         }
 
-        BeanActionRule beanActionRule = new BeanActionRule();
+        BeanMethodActionRule beanActionRule = new BeanMethodActionRule();
         beanActionRule.setBeanId(beanName);
         beanActionRule.setMethodName(methodName);
         beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
@@ -65,7 +65,7 @@ public class BeanActionCommand extends AbstractCommand {
         }
 
         Activity activity = new InstantActivity(getService().getActivityContext());
-        BeanAction beanAction = new BeanAction(beanActionRule, null);
+        BeanMethodAction beanAction = new BeanMethodAction(beanActionRule, null);
         Object result = beanAction.execute(activity);
         return (result != null ? result.toString() : null);
     }

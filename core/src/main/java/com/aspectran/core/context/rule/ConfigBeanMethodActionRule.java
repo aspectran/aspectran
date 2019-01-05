@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Method;
@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  * 
  * @since 2.0.0
  */
-public class MethodActionRule {
+public class ConfigBeanMethodActionRule {
 
     private String actionId;
 
@@ -37,8 +37,6 @@ public class MethodActionRule {
     private Method method;
 
     private boolean requiresTranslet;
-
-//    private AspectAdviceRule aspectAdviceRule;
 
     public String getActionId() {
         return actionId;
@@ -73,24 +71,6 @@ public class MethodActionRule {
         return requiresTranslet;
     }
 
-//    /**
-//     * Gets the aspect advice rule.
-//     *
-//     * @return the aspect advice rule
-//     */
-//    public AspectAdviceRule getAspectAdviceRule() {
-//        return aspectAdviceRule;
-//    }
-//
-//    /**
-//     * Sets the aspect advice rule.
-//     *
-//     * @param aspectAdviceRule the new aspect advice rule
-//     */
-//    public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-//        this.aspectAdviceRule = aspectAdviceRule;
-//    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -98,7 +78,6 @@ public class MethodActionRule {
             tsb.append("class", configBeanClass.getName());
         }
         tsb.append("method", method);
-        //tsb.append("aspectAdviceRule", aspectAdviceRule);
         return tsb.toString();
     }
 
@@ -109,8 +88,8 @@ public class MethodActionRule {
      * @param method the method
      * @return the method action rule
      */
-    public static MethodActionRule newInstance(Class<?> actionClass, Method method) {
-        MethodActionRule methodActionRule = new MethodActionRule();
+    public static ConfigBeanMethodActionRule newInstance(Class<?> actionClass, Method method) {
+        ConfigBeanMethodActionRule methodActionRule = new ConfigBeanMethodActionRule();
         methodActionRule.setConfigBeanClass(actionClass);
         methodActionRule.setMethod(method);
         return methodActionRule;
@@ -125,11 +104,11 @@ public class MethodActionRule {
         }
     }
 
-    public static MethodAction newMethodAction(Class<?> configBeanClass, Method method) {
-        MethodActionRule methodActionRule = new MethodActionRule();
+    public static ConfigBeanMethodAction newMethodAction(Class<?> configBeanClass, Method method) {
+        ConfigBeanMethodActionRule methodActionRule = new ConfigBeanMethodActionRule();
         methodActionRule.setConfigBeanClass(configBeanClass);
         methodActionRule.setMethod(method);
-        return new MethodAction(methodActionRule, null);
+        return new ConfigBeanMethodAction(methodActionRule, null);
     }
 
 }

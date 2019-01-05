@@ -28,6 +28,8 @@ public @interface Aspect {
 
     String id() default "";
 
+    String value() default "";
+
     int order() default Integer.MAX_VALUE;
 
     boolean isolated() default false;

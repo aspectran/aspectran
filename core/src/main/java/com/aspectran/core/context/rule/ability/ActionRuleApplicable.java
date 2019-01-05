@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.ability;
 
-import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.HeadingActionRule;
+import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.rule.MethodActionRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 
 /**
  * The Interface ActionRuleApplicable.
@@ -33,14 +33,14 @@ public interface ActionRuleApplicable {
      *
      * @param beanActionRule the bean action rule
      */
-    void applyActionRule(BeanActionRule beanActionRule);
+    void applyActionRule(BeanMethodActionRule beanActionRule);
 
     /**
      * Adds the method action.
      *
      * @param methodActionRule the bean action rule
      */
-    void applyActionRule(MethodActionRule methodActionRule);
+    void applyActionRule(ConfigBeanMethodActionRule methodActionRule);
 
     /**
      * Adds the process-call action.
@@ -61,6 +61,6 @@ public interface ActionRuleApplicable {
      *
      * @param headingActionRule the heading action rule
      */
-    void applyActionRule(HeadingActionRule headingActionRule);
+    void applyActionRule(HeaderActionRule headingActionRule);
 
 }
