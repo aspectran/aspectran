@@ -159,23 +159,23 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(BeanMethodActionRule beanActionRule, BeanRule beanRule, RefererInfo refererInfo) {
-        if (beanActionRule.getArgumentItemRuleMap() == null) {
+    private void checkTransletActionParameter(BeanMethodActionRule beanMethodActionRule, BeanRule beanRule, RefererInfo refererInfo) {
+        if (beanMethodActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
-            String methodName = beanActionRule.getMethodName();
+            String methodName = beanMethodActionRule.getMethodName();
 
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, BeanRuleAnalyzer.TRANSLET_ACTION_PARAMETER_TYPES);
             if (m1 != null) {
-                beanActionRule.setMethod(m1);
-                beanActionRule.setRequiresTranslet(true);
+                beanMethodActionRule.setMethod(m1);
+                beanMethodActionRule.setRequiresTranslet(true);
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
-                    throw new BeanRuleException("No such action method " + methodName + "() on bean " + beanClass +
+                    throw new BeanRuleException("No such " + methodName + "() on bean " + beanClass +
                             " in " + refererInfo, beanRule);
                 }
-                beanActionRule.setMethod(m2);
-                beanActionRule.setRequiresTranslet(false);
+                beanMethodActionRule.setMethod(m2);
+                beanMethodActionRule.setRequiresTranslet(false);
             }
         }
     }

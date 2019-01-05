@@ -82,17 +82,17 @@ public class ConfigBeanMethodActionRule {
     }
 
     /**
-     * Returns a new derived instance of MethodActionRule.
+     * Returns a new derived instance of ConfigBeanMethodActionRule.
      *
      * @param actionClass the action class
      * @param method the method
-     * @return the method action rule
+     * @return the config bean method action rule
      */
     public static ConfigBeanMethodActionRule newInstance(Class<?> actionClass, Method method) {
-        ConfigBeanMethodActionRule methodActionRule = new ConfigBeanMethodActionRule();
-        methodActionRule.setConfigBeanClass(actionClass);
-        methodActionRule.setMethod(method);
-        return methodActionRule;
+        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
+        configBeanMethodActionRule.setConfigBeanClass(actionClass);
+        configBeanMethodActionRule.setMethod(method);
+        return configBeanMethodActionRule;
     }
 
     public static boolean isRequiresTranslet(Method method) {
@@ -105,10 +105,10 @@ public class ConfigBeanMethodActionRule {
     }
 
     public static ConfigBeanMethodAction newMethodAction(Class<?> configBeanClass, Method method) {
-        ConfigBeanMethodActionRule methodActionRule = new ConfigBeanMethodActionRule();
-        methodActionRule.setConfigBeanClass(configBeanClass);
-        methodActionRule.setMethod(method);
-        return new ConfigBeanMethodAction(methodActionRule, null);
+        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
+        configBeanMethodActionRule.setConfigBeanClass(configBeanClass);
+        configBeanMethodActionRule.setMethod(method);
+        return new ConfigBeanMethodAction(configBeanMethodActionRule, null);
     }
 
 }

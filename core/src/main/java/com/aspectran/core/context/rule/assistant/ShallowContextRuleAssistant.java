@@ -147,7 +147,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void resolveActionBeanClass(BeanMethodActionRule beanActionRule) {
+    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) {
         // Do Nothing
     }
 

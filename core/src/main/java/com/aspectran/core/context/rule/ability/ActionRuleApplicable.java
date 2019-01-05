@@ -16,10 +16,10 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 
 /**
  * The Interface ActionRuleApplicable.
@@ -29,23 +29,23 @@ import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 public interface ActionRuleApplicable {
 
     /**
-     * Adds the bean action.
+     * Adds the bean method action.
      *
-     * @param beanActionRule the bean action rule
+     * @param beanMethodActionRule the bean method action rule
      */
-    void applyActionRule(BeanMethodActionRule beanActionRule);
+    void applyActionRule(BeanMethodActionRule beanMethodActionRule);
 
     /**
-     * Adds the method action.
+     * Adds the config bean method action.
      *
-     * @param methodActionRule the bean action rule
+     * @param configBeanMethodActionRule the config bean action rule
      */
-    void applyActionRule(ConfigBeanMethodActionRule methodActionRule);
+    void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule);
 
     /**
-     * Adds the process-call action.
+     * Adds the include action.
      *
-     * @param includeActionRule the process call action rule
+     * @param includeActionRule the include action rule
      */
     void applyActionRule(IncludeActionRule includeActionRule);
 
@@ -57,10 +57,10 @@ public interface ActionRuleApplicable {
     void applyActionRule(EchoActionRule echoActionRule);
 
     /**
-     * Adds the heading action.
+     * Adds the header action.
      *
-     * @param headingActionRule the heading action rule
+     * @param headerActionRule the header action rule
      */
-    void applyActionRule(HeaderActionRule headingActionRule);
+    void applyActionRule(HeaderActionRule headerActionRule);
 
 }

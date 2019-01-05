@@ -376,17 +376,17 @@ public class ContextRuleAssistant {
     /**
      * Resolve bean class for bean action rule.
      *
-     * @param beanActionRule the bean action rule
+     * @param beanMethodActionRule the bean action rule
      */
-    public void resolveActionBeanClass(BeanMethodActionRule beanActionRule) {
-        String beanIdOrClass = beanActionRule.getBeanId();
+    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) {
+        String beanIdOrClass = beanMethodActionRule.getBeanId();
         if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanActionRule);
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanMethodActionRule);
             if (beanClass != null) {
-                beanActionRule.setBeanClass(beanClass);
-                reserveBeanReference(beanClass, beanActionRule);
+                beanMethodActionRule.setBeanClass(beanClass);
+                reserveBeanReference(beanClass, beanMethodActionRule);
             } else {
-                reserveBeanReference(beanIdOrClass, beanActionRule);
+                reserveBeanReference(beanIdOrClass, beanMethodActionRule);
             }
         }
     }

@@ -16,10 +16,10 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
-import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -166,18 +166,18 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanActionRule) {
-        BeanMethodAction action = new BeanMethodAction(beanActionRule, null);
-        if (aspectAdviceRule != null && beanActionRule.getBeanId() == null) {
+    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
+        if (aspectAdviceRule != null && beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(aspectAdviceRule);
         }
         this.action = action;
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule methodActionRule) {
+    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the Method Action Rule to the Exception Thrown Rule");
+                "Cannot apply the Config Bean Method Action Rule to the Exception Thrown Rule");
     }
 
     @Override
@@ -192,8 +192,8 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headingActionRule) {
-        action = new HeaderAction(headingActionRule, null);
+    public void applyActionRule(HeaderActionRule headerActionRule) {
+        action = new HeaderAction(headerActionRule, null);
     }
 
     /**

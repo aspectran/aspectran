@@ -589,29 +589,29 @@ public class ParamsToRuleConverter {
             actionRuleApplicable.applyActionRule(includeActionRule);
         } else if (method != null) {
             String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
-            BeanMethodActionRule beanActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
+            BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
             ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
             if (argumentItemHolderParameters != null) {
                 ItemRuleMap argumentItemRuleMap = convertAsItemRuleMap(argumentItemHolderParameters);
-                beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+                beanMethodActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
             }
             ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
             if (propertyItemHolderParameters != null) {
                 ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
-                beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+                beanMethodActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
             }
-            assistant.resolveActionBeanClass(beanActionRule);
-            actionRuleApplicable.applyActionRule(beanActionRule);
+            assistant.resolveActionBeanClass(beanMethodActionRule);
+            actionRuleApplicable.applyActionRule(beanMethodActionRule);
         } else if (echoItemHolderParameters != null) {
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(echoItemHolderParameters);
             echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
             actionRuleApplicable.applyActionRule(echoActionRule);
         } else if (headersItemHolderParameters != null) {
-            HeaderActionRule headingActionRule = HeaderActionRule.newInstance(id, hidden);
+            HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
             ItemRuleMap headerItemRuleMap = convertAsItemRuleMap(headersItemHolderParameters);
-            headingActionRule.setHeaderItemRuleMap(headerItemRuleMap);
-            actionRuleApplicable.applyActionRule(headingActionRule);
+            headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
+            actionRuleApplicable.applyActionRule(headerActionRule);
         }
     }
 

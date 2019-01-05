@@ -277,12 +277,12 @@ public class BeanMethodActionRule implements BeanReferenceInspectable {
             throw new IllegalRuleException("The 'action' element requires an 'method' attribute");
         }
 
-        BeanMethodActionRule beanActionRule = new BeanMethodActionRule();
-        beanActionRule.setActionId(id);
-        beanActionRule.setBeanId(beanId);
-        beanActionRule.setMethodName(methodName);
-        beanActionRule.setHidden(hidden);
-        return beanActionRule;
+        BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
+        beanMethodActionRule.setActionId(id);
+        beanMethodActionRule.setBeanId(beanId);
+        beanMethodActionRule.setMethodName(methodName);
+        beanMethodActionRule.setHidden(hidden);
+        return beanMethodActionRule;
     }
 
 }

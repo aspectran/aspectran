@@ -54,13 +54,13 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -635,11 +635,11 @@ public class AnnotatedConfigParser {
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
 
-        ConfigBeanMethodActionRule methodActionRule = new ConfigBeanMethodActionRule();
-        methodActionRule.setActionId(actionId);
-        methodActionRule.setConfigBeanClass(beanClass);
-        methodActionRule.setMethod(method);
-        transletRule.applyActionRule(methodActionRule);
+        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
+        configBeanMethodActionRule.setActionId(actionId);
+        configBeanMethodActionRule.setConfigBeanClass(beanClass);
+        configBeanMethodActionRule.setMethod(method);
+        transletRule.applyActionRule(configBeanMethodActionRule);
 
         if (method.isAnnotationPresent(Dispatch.class)) {
             Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);

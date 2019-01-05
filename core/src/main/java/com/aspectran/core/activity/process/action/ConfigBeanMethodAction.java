@@ -78,9 +78,9 @@ public class ConfigBeanMethodAction extends AbstractAction {
     }
 
     /**
-     * Returns the method action rule.
+     * Returns the config bean method action rule.
      *
-     * @return the method action rule
+     * @return the config bean method action rule
      */
     public ConfigBeanMethodActionRule getConfigBeanMethodActionRule() {
         return configBeanMethodActionRule;

@@ -52,20 +52,20 @@ public class BeanActionCommand extends AbstractCommand {
             throw new IllegalRuleException("'method' parameter is not specified");
         }
 
-        BeanMethodActionRule beanActionRule = new BeanMethodActionRule();
-        beanActionRule.setBeanId(beanName);
-        beanActionRule.setMethodName(methodName);
-        beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
-        beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+        BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
+        beanMethodActionRule.setBeanId(beanName);
+        beanMethodActionRule.setMethodName(methodName);
+        beanMethodActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+        beanMethodActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 
         if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             Class<?> beanClass = getService().getAspectranClassLoader().loadClass(className);
-            beanActionRule.setBeanClass(beanClass);
+            beanMethodActionRule.setBeanClass(beanClass);
         }
 
         Activity activity = new InstantActivity(getService().getActivityContext());
-        BeanMethodAction beanAction = new BeanMethodAction(beanActionRule, null);
+        BeanMethodAction beanAction = new BeanMethodAction(beanMethodActionRule, null);
         Object result = beanAction.execute(activity);
         return (result != null ? result.toString() : null);
     }

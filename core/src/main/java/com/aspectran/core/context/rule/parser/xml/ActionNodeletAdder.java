@@ -54,9 +54,9 @@ class ActionNodeletAdder implements NodeletAdder {
             String methodName = StringUtils.emptyToNull(attrs.get("method"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            BeanMethodActionRule beanActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-            assistant.resolveActionBeanClass(beanActionRule);
-            parser.pushObject(beanActionRule);
+            BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
+            assistant.resolveActionBeanClass(beanMethodActionRule);
+            parser.pushObject(beanMethodActionRule);
         });
         parser.addNodeEndlet(text -> {
             BeanMethodActionRule beanMethodActionRule = parser.popObject();
@@ -72,8 +72,8 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                BeanMethodActionRule beanActionRule = parser.peekObject();
-                beanActionRule.setArgumentItemRuleMap(irm);
+                BeanMethodActionRule beanMethodActionRule = parser.peekObject();
+                beanMethodActionRule.setArgumentItemRuleMap(irm);
             }
         });
         parser.setXpath(xpath + "/action/properties");
@@ -85,8 +85,8 @@ class ActionNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             if (!irm.isEmpty()) {
-                BeanMethodActionRule beanActionRule = parser.peekObject();
-                beanActionRule.setPropertyItemRuleMap(irm);
+                BeanMethodActionRule beanMethodActionRule = parser.peekObject();
+                beanMethodActionRule.setPropertyItemRuleMap(irm);
             }
         });
         parser.setXpath(xpath + "/include");

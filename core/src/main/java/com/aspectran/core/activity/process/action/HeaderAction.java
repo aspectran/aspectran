@@ -81,9 +81,9 @@ public class HeaderAction extends AbstractAction {
     }
 
     /**
-     * Returns the heading action rule.
+     * Returns the header action rule.
      *
-     * @return the headingActionRule
+     * @return the headerActionRule
      */
     public HeaderActionRule getHeaderActionRule() {
         return headerActionRule;
