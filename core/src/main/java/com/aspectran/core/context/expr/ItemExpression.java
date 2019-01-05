@@ -42,27 +42,27 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class ItemExpressionParser.
+ * The Class ItemExpression.
  *
  * @since 2008. 06. 19
  */
-public class ItemExpressionParser extends TokenExpressionParser implements ItemEvaluator {
+public class ItemExpression extends TokenExpression implements ItemEvaluator {
 
     /**
-     * Instantiates a new ItemExpressionParser.
+     * Instantiates a new ItemExpression.
      *
      * @param activity the current Activity
      */
-    public ItemExpressionParser(Activity activity) {
+    public ItemExpression(Activity activity) {
         super(activity);
     }
 
     /**
-     * Instantiates a new ItemExpressionParser.
+     * Instantiates a new ItemExpression.
      *
      * @param context the activity context
      */
-    public ItemExpressionParser(ActivityContext context) {
+    public ItemExpression(ActivityContext context) {
         super(context);
     }
 

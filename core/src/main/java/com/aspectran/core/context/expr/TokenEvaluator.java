@@ -56,7 +56,7 @@ public interface TokenEvaluator {
     static Object evaluate(String str, Activity activity) {
         if (Token.hasToken(str)) {
             Token[] tokens = TokenParser.parse(str);
-            TokenEvaluator tokenEvaluator = new TokenExpressionParser(activity);
+            TokenEvaluator tokenEvaluator = new TokenExpression(activity);
             return tokenEvaluator.evaluate(tokens);
         } else {
             return str;

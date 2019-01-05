@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
@@ -55,7 +55,7 @@ public class TemplateCommand extends AbstractCommand {
         if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
                 (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
             Activity activity = new InstantActivity(getService().getActivityContext());
-            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            ItemEvaluator evaluator = new ItemExpression(activity);
             if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
                 parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
             }

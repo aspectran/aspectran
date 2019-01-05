@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -61,7 +61,7 @@ public class IncludeAction extends AbstractAction {
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
                     (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemExpressionParser(activity);
+                ItemEvaluator evaluator = new ItemExpression(activity);
                 if (parameterItemRuleMap != null) {
                     Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
                     for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
