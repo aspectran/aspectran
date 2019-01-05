@@ -44,7 +44,7 @@ class AspectNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/aspect");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));

@@ -43,7 +43,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/environment");
         parser.addNodelet(attrs -> {
             String profile = attrs.get("profile");

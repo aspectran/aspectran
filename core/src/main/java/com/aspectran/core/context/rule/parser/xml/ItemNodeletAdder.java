@@ -45,7 +45,7 @@ class ItemNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/item");
         parser.addNodelet(attrs -> {
             String type = attrs.get("type");

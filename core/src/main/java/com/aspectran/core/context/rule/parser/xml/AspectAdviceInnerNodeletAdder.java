@@ -43,7 +43,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/before");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();

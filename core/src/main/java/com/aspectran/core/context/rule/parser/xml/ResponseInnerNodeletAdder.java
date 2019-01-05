@@ -48,7 +48,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/transform");
         parser.addNodelet(attrs -> {
             String type = attrs.get("type");

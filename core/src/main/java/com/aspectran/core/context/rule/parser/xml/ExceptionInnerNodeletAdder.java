@@ -42,7 +42,7 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
     }
 
     @Override
-    public void process(String xpath, NodeletParser parser) {
+    public void add(String xpath, NodeletParser parser) {
         parser.setXpath(xpath + "/description");
         parser.addNodelet(attrs -> {
             String style = attrs.get("style");
