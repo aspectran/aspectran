@@ -299,7 +299,7 @@ public class FilenameUtils {
      */
     public static File getUniqueFile(File srcFile, char extSeparator) throws IOException {
         if (srcFile == null) {
-            throw new IllegalArgumentException("Argument 'srcFile' must not be null");
+            throw new IllegalArgumentException("srcFile must not be null");
         }
 
         String path = getFullPath(srcFile.getCanonicalPath());

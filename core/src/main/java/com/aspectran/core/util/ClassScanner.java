@@ -84,7 +84,7 @@ public class ClassScanner {
      */
     public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
         if (classNamePattern == null) {
-            throw new IllegalArgumentException("Argument 'classNamePattern' must not be null");
+            throw new IllegalArgumentException("classNamePattern must not be null");
         }
 
         classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);

@@ -283,7 +283,7 @@ public class ItemRule {
      */
     public void setValue(Properties properties)  {
         if (properties == null) {
-            throw new IllegalArgumentException("Argument 'properties' must not be null");
+            throw new IllegalArgumentException("properties must not be null");
         }
         if (type == null) {
             type = ItemType.PROPERTIES;
@@ -357,7 +357,7 @@ public class ItemRule {
      */
     public void setValue(Set<Token[]> tokensSet) {
         if (tokensSet == null) {
-            throw new IllegalArgumentException("Argument 'tokensSet' must not be null");
+            throw new IllegalArgumentException("tokensSet must not be null");
         }
         if (type == null) {
             type = ItemType.SET;

@@ -950,10 +950,10 @@ public class MethodUtils {
          */
         private MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {
             if (cls == null) {
-                throw new IllegalArgumentException("Argument 'cls' must not be null");
+                throw new IllegalArgumentException("cls must not be null");
             }
             if (methodName == null) {
-                throw new IllegalArgumentException("Argument 'methodName' must not be null");
+                throw new IllegalArgumentException("methodName must not be null");
             }
             this.cls = cls;
             this.methodName = methodName;

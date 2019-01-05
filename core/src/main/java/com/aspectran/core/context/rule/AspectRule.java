@@ -212,7 +212,7 @@ public class AspectRule implements BeanReferenceInspectable {
 
     public AspectAdviceRule touchAspectAdviceRule(AspectAdviceType aspectAdviceType) {
         if (aspectAdviceType == null) {
-            throw new IllegalArgumentException("Argument 'aspectAdviceType' must not be null");
+            throw new IllegalArgumentException("aspectAdviceType must not be null");
         }
         AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(this, aspectAdviceType);
         touchAspectAdviceRuleList().add(aspectAdviceRule);

@@ -280,7 +280,7 @@ public abstract class AbstractRequest {
 
     public void extractAttributes(Map<String, Object> targetMap) {
         if (targetMap == null) {
-            throw new IllegalArgumentException("Argument 'targetMap' must not be null");
+            throw new IllegalArgumentException("targetMap must not be null");
         }
         if (hasAttributes()) {
             targetMap.putAll(getAttributeMap());

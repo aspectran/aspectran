@@ -55,7 +55,7 @@ public class FileScanner {
 
     public void scan(String filePathPattern, SaveHandler saveHandler) {
         if (filePathPattern == null) {
-            throw new IllegalArgumentException("Argument 'filePathPattern' must not be null");
+            throw new IllegalArgumentException("filePathPattern must not be null");
         }
 
         WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);

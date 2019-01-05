@@ -52,7 +52,7 @@ public class Tokenizer {
      */
     public static List<Token> tokenize(CharSequence input, boolean textTrim) {
         if (input == null) {
-            throw new IllegalArgumentException("Argument 'input' must not be null");
+            throw new IllegalArgumentException("input must not be null");
         }
 
         int inputLen = input.length();

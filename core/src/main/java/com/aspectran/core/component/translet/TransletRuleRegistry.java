@@ -101,7 +101,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     public TransletRule getTransletRule(String transletName, MethodType requestMethod) {
         if (requestMethod == null) {
-            throw new IllegalArgumentException("Argument 'requestMethod' must not be null");
+            throw new IllegalArgumentException("requestMethod must not be null");
         }
 
         TransletRule transletRule;

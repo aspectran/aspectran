@@ -332,7 +332,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 
     public static RedirectResponseRule newInstance(String path) throws IllegalRuleException {
         if (path == null) {
-            throw new IllegalRuleException("Argument 'path' must not be null");
+            throw new IllegalRuleException("path must not be null");
         }
         RedirectResponseRule rrr = new RedirectResponseRule();
         rrr.setPath(path);

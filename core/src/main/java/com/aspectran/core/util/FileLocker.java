@@ -48,7 +48,7 @@ public class FileLocker {
      */
     public FileLocker(File lockFile) {
         if (lockFile == null) {
-            throw new IllegalArgumentException("Argument 'lockFile' must not be null");
+            throw new IllegalArgumentException("lockFile must not be null");
         }
         this.lockFile = lockFile;
     }

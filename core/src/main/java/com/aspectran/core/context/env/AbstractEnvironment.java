@@ -96,7 +96,7 @@ public abstract class AbstractEnvironment implements Environment {
      */
     public void setActiveProfiles(String... profiles) {
         if (profiles == null) {
-            throw new IllegalArgumentException("Argument 'profiles' must not be null");
+            throw new IllegalArgumentException("profiles must not be null");
         }
         synchronized (activeProfiles) {
             activeProfiles.clear();
@@ -144,7 +144,7 @@ public abstract class AbstractEnvironment implements Environment {
      */
     public void setDefaultProfiles(String... profiles) {
         if (profiles == null) {
-            throw new IllegalArgumentException("Argument 'profiles' must not be null");
+            throw new IllegalArgumentException("profiles must not be null");
         }
         synchronized (defaultProfiles) {
             defaultProfiles.clear();
