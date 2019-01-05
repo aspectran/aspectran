@@ -45,6 +45,7 @@ The following packages based on the `com.aspectran.core` package exist to suppor
 ## Maven dependencies
 
 Use the following definition to use Aspectran in your maven project:
+
 ```xml
 <dependency>
   <groupId>com.aspectran</groupId>
@@ -120,10 +121,24 @@ Requirements
 
 Check out and build:
 
-    git clone git://github.com/aspectran/aspectran.git
-    cd aspectran
-    mvn install
-    
+```sh
+git clone git://github.com/aspectran/aspectran.git
+cd aspectran
+./build rebuild
+```
+
+## Running the demo
+
+To run the demo, simply use the following command after having build `Aspectran`
+
+```sh
+./build demo
+```
+
+## Continuous Integration
+
+* [Travis](https://travis-ci.org/aspectran/aspectran)
+
 ## Links
 
 * [Official Website](http://www.aspectran.com/)
