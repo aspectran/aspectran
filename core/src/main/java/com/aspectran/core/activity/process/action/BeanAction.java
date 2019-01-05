@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -104,7 +104,7 @@ public class BeanAction extends AbstractAction {
             ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
             ItemEvaluator evaluator = null;
             if (propertyItemRuleMap != null || argumentItemRuleMap != null) {
-                evaluator = new ItemExpressionParser(activity);
+                evaluator = new ItemExpression(activity);
             }
             if (propertyItemRuleMap != null) {
                 Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
@@ -159,7 +159,7 @@ public class BeanAction extends AbstractAction {
         Object[] args = null;
         if (argumentItemRuleMap != null) {
             if (evaluator == null) {
-                evaluator = new ItemExpressionParser(activity);
+                evaluator = new ItemExpression(activity);
             }
 
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
@@ -195,7 +195,7 @@ public class BeanAction extends AbstractAction {
 
         if (argumentItemRuleMap != null) {
             if (evaluator == null) {
-                evaluator = new ItemExpressionParser(activity);
+                evaluator = new ItemExpression(activity);
             }
 
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);

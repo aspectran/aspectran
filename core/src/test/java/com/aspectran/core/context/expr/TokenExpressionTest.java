@@ -30,7 +30,7 @@ import org.junit.jupiter.api.TestInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TokenExpressionParserTest {
+class TokenExpressionTest {
 
     private ActivityContext context;
 
@@ -48,7 +48,7 @@ class TokenExpressionParserTest {
 
         Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-        TokenEvaluator tokenEvaluator = new TokenExpressionParser(activity);
+        TokenEvaluator tokenEvaluator = new TokenExpression(activity);
         String result = tokenEvaluator.evaluateAsString(tokens);
 
         assertEquals("Apple, Tomato, Strawberry, Melon", result);

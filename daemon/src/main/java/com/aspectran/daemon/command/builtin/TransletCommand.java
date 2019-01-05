@@ -18,7 +18,7 @@ package com.aspectran.daemon.command.builtin;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
@@ -52,7 +52,7 @@ public class TransletCommand extends AbstractCommand {
         ParameterMap parameterMap = null;
         Map<String, Object> attributeMap = null;
         if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
-            ItemEvaluator evaluator = new ItemExpressionParser(getService().getActivityContext());
+            ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
             if (parameterItemRuleMap != null) {
                 parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
             }

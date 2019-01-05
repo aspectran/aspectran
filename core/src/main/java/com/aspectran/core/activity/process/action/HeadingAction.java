@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.HeadingActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.MultiValueMap;
@@ -61,7 +61,7 @@ public class HeadingAction extends AbstractAction {
         }
 
         try {
-            ItemEvaluator evaluator = new ItemExpressionParser(activity);
+            ItemEvaluator evaluator = new ItemExpression(activity);
             MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(headingActionRule.getHeaderItemRuleMap());
             if (!valueMap.isEmpty()) {
                 ResponseAdapter responseAdapter = activity.getResponseAdapter();

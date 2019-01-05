@@ -35,7 +35,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ItemExpressionParserTest {
+class ItemExpressionTest {
 
     private ActivityContext context;
 
@@ -67,7 +67,7 @@ class ItemExpressionParserTest {
         itemRuleMap.putItemRule(itemRule1);
         itemRuleMap.putItemRule(itemRule2);
 
-        ItemEvaluator itemEvaluator = new ItemExpressionParser(activity);
+        ItemEvaluator itemEvaluator = new ItemExpression(activity);
         MultiValueMap<String, String> result = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
 
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {

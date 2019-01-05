@@ -32,7 +32,7 @@ import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
@@ -402,7 +402,7 @@ public class CoreActivity extends AdviceActivity {
                 Token[] tokens = itemRule.getTokens();
                 if (tokens != null) {
                     if (evaluator == null) {
-                        evaluator = new ItemExpressionParser(this);
+                        evaluator = new ItemExpression(this);
                     }
                     String[] values = evaluator.evaluateAsStringArray(itemRule);
                     String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
@@ -432,7 +432,7 @@ public class CoreActivity extends AdviceActivity {
     protected void parseDeclaredAttributes() {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemExpressionParser(this);
+            ItemEvaluator evaluator = new ItemExpression(this);
             for (ItemRule itemRule : attributeItemRuleMap.values()) {
                 Object value = evaluator.evaluate(itemRule);
                 getRequestAdapter().setAttribute(itemRule.getName(), value);

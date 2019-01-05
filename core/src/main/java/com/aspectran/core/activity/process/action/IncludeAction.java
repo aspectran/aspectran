@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -58,7 +58,7 @@ public class IncludeAction extends AbstractAction {
             innerActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
 
             if (includeActionRule.getParameterItemRuleMap() != null || includeActionRule.getAttributeItemRuleMap() != null) {
-                ItemEvaluator evaluator = new ItemExpressionParser(activity);
+                ItemEvaluator evaluator = new ItemExpression(activity);
                 if (includeActionRule.getParameterItemRuleMap() != null) {
                     Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getParameterItemRuleMap());
                     for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
