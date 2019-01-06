@@ -25,8 +25,6 @@ public class DefaultSettingsParameters extends AbstractParameters {
     public static final ParameterDefinition transletNamePattern;
     public static final ParameterDefinition transletNamePrefix;
     public static final ParameterDefinition transletNameSuffix;
-    public static final ParameterDefinition transletInterfaceClass;
-    public static final ParameterDefinition transletImplementationClass;
     public static final ParameterDefinition beanProxifier;
     public static final ParameterDefinition pointcutPatternVerifiable;
     public static final ParameterDefinition defaultTemplateEngineBean;
@@ -38,8 +36,6 @@ public class DefaultSettingsParameters extends AbstractParameters {
         transletNamePattern = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), ParameterValueType.STRING);
         transletNamePrefix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ParameterValueType.STRING);
         transletNameSuffix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ParameterValueType.STRING);
-        transletInterfaceClass = new ParameterDefinition(DefaultSettingType.TRANSLET_INTERFACE_CLASS.toString(), ParameterValueType.STRING);
-        transletImplementationClass = new ParameterDefinition(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS.toString(), ParameterValueType.STRING);
         beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
         pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.BOOLEAN);
         defaultTemplateEngineBean = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ParameterValueType.STRING);
@@ -49,8 +45,6 @@ public class DefaultSettingsParameters extends AbstractParameters {
                 transletNamePattern,
                 transletNamePrefix,
                 transletNameSuffix,
-                transletInterfaceClass,
-                transletImplementationClass,
                 beanProxifier,
                 pointcutPatternVerifiable,
                 defaultTemplateEngineBean,
