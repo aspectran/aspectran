@@ -17,6 +17,8 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.context.rule.CaseRule;
+import com.aspectran.core.context.rule.CaseRuleMap;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
@@ -43,6 +45,7 @@ class TransletNodeletAdder implements NodeletAdder {
         ExceptionInnerNodeletAdder exceptionInnerNodeletAdder = nodeParser.getExceptionInnerNodeletAdder();
         ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
+        CaseWhenNodeletAdder caseWhenNodeletAdder = nodeParser.getCaseWhenNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/translet");
@@ -143,6 +146,19 @@ class TransletNodeletAdder implements NodeletAdder {
             irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
             requestRule.setAttributeItemRuleMap(irm);
         });
+        parser.setXpath(xpath + "/translet/case");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject();
+
+            CaseRuleMap caseRuleMap = transletRule.touchCaseRuleMap();
+            CaseRule caseRule = caseRuleMap.newCaseRule();
+
+            parser.pushObject(caseRule);
+        });
+        parser.addNodelet(caseWhenNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            parser.popObject();
+        });
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -175,6 +191,19 @@ class TransletNodeletAdder implements NodeletAdder {
                 contentList.addActionList(actionList);
             }
         });
+        parser.setXpath(xpath + "/translet/contents/content/case");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(2);
+
+            CaseRuleMap caseRuleMap = transletRule.touchCaseRuleMap();
+            CaseRule caseRule = caseRuleMap.newCaseRule();
+
+            parser.pushObject(caseRule);
+        });
+        parser.addNodelet(caseWhenNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            parser.popObject();
+        });
         parser.setXpath(xpath + "/translet/content");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -192,6 +221,19 @@ class TransletNodeletAdder implements NodeletAdder {
                 ContentList contentList = transletRule.touchContentList(true, true);
                 contentList.addActionList(actionList);
             }
+        });
+        parser.setXpath(xpath + "/translet/content/case");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(1);
+
+            CaseRuleMap caseRuleMap = transletRule.touchCaseRuleMap();
+            CaseRule caseRule = caseRuleMap.newCaseRule();
+
+            parser.pushObject(caseRule);
+        });
+        parser.addNodelet(caseWhenNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            parser.popObject();
         });
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {

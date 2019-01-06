@@ -196,6 +196,11 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         action = new HeaderAction(headerActionRule, null);
     }
 
+    @Override
+    public void applyActionRule(Executable action) {
+        this.action = action;
+    }
+
     /**
      * Returns the executable action.
      *

@@ -123,6 +123,11 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
+    public void applyActionRule(Executable action) {
+        add(action);
+    }
+
+    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);

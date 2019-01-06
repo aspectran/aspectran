@@ -87,11 +87,6 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-        // Do Nothing
-    }
-
-    @Override
     public void addAspectRule(AspectRule aspectRule) {
         aspectRules.add(aspectRule);
     }

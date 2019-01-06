@@ -198,12 +198,6 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     public void addTransletRule(final TransletRule transletRule) {
-        DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-        if (defaultSettings != null) {
-            transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
-            transletRule.setTransletImplementationClass(defaultSettings.getTransletImplementationClass());
-        }
-
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
             TransletFileScanner scanner = new TransletFileScanner(basePath, classLoader);

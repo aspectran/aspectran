@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
@@ -67,6 +68,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private List<ResponseRule> responseRuleList;
 
     private ExceptionRule exceptionRule;
+
+    private CaseRuleMap caseRuleMap;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -328,6 +331,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         touchActionList().applyActionRule(headerActionRule);
     }
 
+    @Override
+    public void applyActionRule(Executable action) {
+        touchActionList().applyActionRule(action);
+    }
+
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
@@ -458,6 +466,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     public void setExceptionRule(ExceptionRule exceptionRule) {
         this.exceptionRule = exceptionRule;
+    }
+
+    public CaseRuleMap getCaseRuleMap() {
+        return caseRuleMap;
+    }
+
+    public void setCaseRuleMap(CaseRuleMap caseRuleMap) {
+        this.caseRuleMap = caseRuleMap;
+    }
+
+    public CaseRuleMap touchCaseRuleMap() {
+        if (caseRuleMap == null) {
+            caseRuleMap = new CaseRuleMap();
+        }
+        return caseRuleMap;
     }
 
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

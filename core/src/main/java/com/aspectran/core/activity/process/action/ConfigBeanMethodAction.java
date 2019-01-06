@@ -87,11 +87,6 @@ public class ConfigBeanMethodAction extends AbstractAction {
     }
 
     @Override
-    public ActionList getParent() {
-        return parent;
-    }
-
-    @Override
     public String getActionId() {
         return configBeanMethodActionRule.getActionId();
     }

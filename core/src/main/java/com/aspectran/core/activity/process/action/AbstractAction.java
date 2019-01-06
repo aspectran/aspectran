@@ -24,7 +24,13 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public abstract class AbstractAction implements Executable {
 
-    protected final ActionList parent;
+    private final ActionList parent;
+
+    private int caseWhenNo;
+
+    private boolean caseWhenFirst;
+
+    private boolean caseWhenLast;
 
     /**
      * Instantiates a new AbstractAction.
@@ -43,4 +49,34 @@ public abstract class AbstractAction implements Executable {
     @Override
     public abstract String getActionId();
 
+    @Override
+    public int getCaseWhenNo() {
+        return caseWhenNo;
+    }
+
+    @Override
+    public void setCaseWhenNo(int caseWhenNo) {
+        this.caseWhenNo = caseWhenNo;
+    }
+
+    @Override
+    public boolean isCaseWhenFirst() {
+        return caseWhenFirst;
+    }
+
+    @Override
+    public void setCaseWhenFirst(boolean caseWhenFirst) {
+        this.caseWhenFirst = caseWhenFirst;
+    }
+
+    @Override
+    public boolean isCaseWhenLast() {
+        return caseWhenLast;
+    }
+
+    @Override
+    public void setCaseWhenLast(boolean caseWhenLast) {
+        this.caseWhenLast = caseWhenLast;
+    }
+    
 }

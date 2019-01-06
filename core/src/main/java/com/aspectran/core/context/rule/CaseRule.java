@@ -16,11 +16,15 @@ public class CaseRule {
         this.caseNo = caseNo;
     }
 
+    public int getCaseNo() {
+        return caseNo;
+    }
+
     public CaseWhenRule newCaseWhenRule() {
         if (caseWhenRuleMap == null) {
             caseWhenRuleMap = new LinkedHashMap<>();
         }
-        int caseWhenNo = (caseNo * 1000) + caseWhenRuleMap.size();
+        int caseWhenNo = (caseNo * 1000) + caseWhenRuleMap.size() + 1;
         CaseWhenRule caseWhenRule = new CaseWhenRule(caseWhenNo);
         caseWhenRuleMap.put(caseWhenNo, caseWhenRule);
         return caseWhenRule;

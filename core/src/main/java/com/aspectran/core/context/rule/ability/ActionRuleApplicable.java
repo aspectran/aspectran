@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.ability;
 
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -62,5 +63,7 @@ public interface ActionRuleApplicable {
      * @param headerActionRule the header action rule
      */
     void applyActionRule(HeaderActionRule headerActionRule);
+
+    void applyActionRule(Executable action);
 
 }

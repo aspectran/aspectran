@@ -440,22 +440,22 @@ public class CoreTranslet extends AbstractTranslet {
     //---------------------------------------------------------------------
 
     @Override
-    public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
+    public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
         return activity.getActivityContext().getMessageSource().getMessage(code, args, defaultMessage, locale);
     }
 
     @Override
-    public String getMessage(String code, Object args[], Locale locale) throws NoSuchMessageException {
+    public String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
         return activity.getActivityContext().getMessageSource().getMessage(code, args, locale);
     }
 
     @Override
-    public String getMessage(String code, Object args[], String defaultMessage) {
+    public String getMessage(String code, Object[] args, String defaultMessage) {
         return getMessage(code, args, defaultMessage, getRequestAdapter().getLocale());
     }
 
     @Override
-    public String getMessage(String code, Object args[]) throws NoSuchMessageException {
+    public String getMessage(String code, Object[] args) throws NoSuchMessageException {
         return getMessage(code, args, getRequestAdapter().getLocale());
     }
 
