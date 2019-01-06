@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
-import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
@@ -207,32 +205,10 @@ public class ContextRuleAssistant {
 
     /**
      * Apply settings.
-     *
-     * @throws ClassNotFoundException the class not found exception
      */
-    public void applySettings() throws ClassNotFoundException {
+    public void applySettings() {
         DefaultSettings defaultSettings = assistantLocal.touchDefaultSettings();
         defaultSettings.apply(getSettings());
-
-        applyTransletInterface(defaultSettings);
-    }
-
-    /**
-     * Apply translet interface.
-     *
-     * @param defaultSettings the default settings
-     * @throws ClassNotFoundException the class not found exception
-     */
-    @SuppressWarnings("unchecked")
-    public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-        if (defaultSettings.getTransletInterfaceClassName() != null) {
-            Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
-            defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
-        }
-        if (defaultSettings.getTransletImplementationClassName() != null) {
-            Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
-            defaultSettings.setTransletImplementationClass((Class<CoreTranslet>)transletImplementationClass);
-        }
     }
 
     /**

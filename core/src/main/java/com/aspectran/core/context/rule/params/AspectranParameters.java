@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -93,16 +91,6 @@ public class AspectranParameters extends AbstractParameters {
     public void setTransletNameSuffix(String suffixPattern) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.transletNameSuffix, suffixPattern);
-    }
-
-    public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.transletInterfaceClass, transletInterfaceClass.getName());
-    }
-
-    public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.transletImplementationClass, transletImplementationClass.getName());
     }
 
     public void setBeanProxifier(String proxifierName) {

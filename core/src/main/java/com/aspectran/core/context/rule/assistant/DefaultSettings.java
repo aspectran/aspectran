@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
-import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
@@ -36,14 +34,6 @@ public class DefaultSettings {
 
     private String transletNameSuffix;
 
-    private String transletInterfaceClassName;
-
-    private Class<Translet> transletInterfaceClass;
-
-    private String transletImplementationClassName;
-
-    private Class<CoreTranslet> transletImplementationClass;
-
     private String beanProxifier;
 
     private Boolean pointcutPatternVerifiable;
@@ -59,10 +49,6 @@ public class DefaultSettings {
         this.transletNamePattern = ds.getTransletNamePattern();
         this.transletNamePrefix = ds.getTransletNamePrefix();
         this.transletNameSuffix = ds.getTransletNameSuffix();
-        this.transletInterfaceClassName = ds.getTransletInterfaceClassName();
-        this.transletInterfaceClass = ds.getTransletInterfaceClass();
-        this.transletImplementationClassName = ds.getTransletImplementationClassName();
-        this.transletImplementationClass = ds.getTransletImplementationClass();
         this.beanProxifier = ds.getBeanProxifier();
         this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
         this.defaultTemplateEngineBean = ds.getDefaultTemplateEngineBean();
@@ -117,38 +103,6 @@ public class DefaultSettings {
         return transletNameSuffix;
     }
 
-    public String getTransletInterfaceClassName() {
-        return transletInterfaceClassName;
-    }
-
-    public void setTransletInterfaceClassName(String transletInterfaceClassName) {
-        this.transletInterfaceClassName = transletInterfaceClassName;
-    }
-
-    public Class<Translet> getTransletInterfaceClass() {
-        return transletInterfaceClass;
-    }
-
-    public void setTransletInterfaceClass(Class<Translet> transletInterfaceClass) {
-        this.transletInterfaceClass = transletInterfaceClass;
-    }
-
-    public String getTransletImplementationClassName() {
-        return transletImplementationClassName;
-    }
-
-    public void setTransletImplementationClassName(String transletImplementationClassName) {
-        this.transletImplementationClassName = transletImplementationClassName;
-    }
-
-    public Class<CoreTranslet> getTransletImplementationClass() {
-        return transletImplementationClass;
-    }
-
-    public void setTransletImplementationClass(Class<CoreTranslet> transletImplementationClass) {
-        this.transletImplementationClass = transletImplementationClass;
-    }
-
     public String getBeanProxifier() {
         return beanProxifier;
     }
@@ -194,12 +148,6 @@ public class DefaultSettings {
         }
         if (settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX) != null) {
             setTransletNameSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX));
-        }
-        if (settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null) {
-            setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
-        }
-        if (settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null) {
-            setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
         }
         if (settings.get(DefaultSettingType.BEAN_PROXIFIER) != null) {
             beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
