@@ -35,6 +35,7 @@ class CaseWhenNodeletAdder implements NodeletAdder {
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
+        ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
 
         parser.setXpath(xpath + "/when");
         parser.addNodelet(attrs -> {
@@ -49,6 +50,7 @@ class CaseWhenNodeletAdder implements NodeletAdder {
             parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
+        parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             CaseWhenRule caseWhenRule = parser.popObject();

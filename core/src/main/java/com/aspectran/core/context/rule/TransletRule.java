@@ -307,28 +307,28 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        touchActionList().applyActionRule(beanMethodActionRule);
+    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        return touchActionList().applyActionRule(beanMethodActionRule);
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        touchActionList().applyActionRule(configBeanMethodActionRule);
+    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+        return touchActionList().applyActionRule(configBeanMethodActionRule);
     }
 
     @Override
-    public void applyActionRule(IncludeActionRule includeActionRule) {
-        touchActionList().applyActionRule(includeActionRule);
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().applyActionRule(includeActionRule);
     }
 
     @Override
-    public void applyActionRule(EchoActionRule echoActionRule) {
-        touchActionList().applyActionRule(echoActionRule);
+    public Executable applyActionRule(EchoActionRule echoActionRule) {
+        return touchActionList().applyActionRule(echoActionRule);
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headerActionRule) {
-        touchActionList().applyActionRule(headerActionRule);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().applyActionRule(headerActionRule);
     }
 
     @Override
@@ -581,12 +581,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setName(transletRule.getName());
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
-        tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setDescription(transletRule.getDescription());
         if (transletRule.getContentList() != null) {
             ContentList contentList = transletRule.getContentList().replicate();
             tr.setContentList(contentList, transletRule.isExplicitContent());
         }
+        tr.setResponseRule(transletRule.getResponseRule());
+        tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
+        tr.setDescription(transletRule.getDescription());
         return tr;
     }
 
@@ -596,6 +598,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();

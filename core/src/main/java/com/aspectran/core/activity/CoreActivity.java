@@ -75,9 +75,9 @@ public class CoreActivity extends AdviceActivity {
 
     private boolean committed;
 
-    private Set<Integer> cases;
+    private Set<Integer> processedCases;
 
-    private Set<Integer> caseWhens;
+    private Set<Integer> processedCaseWhens;
 
     /**
      * Instantiates a new CoreActivity.
@@ -540,20 +540,20 @@ public class CoreActivity extends AdviceActivity {
                 if (caseWhenRule == null) {
                     throw new IllegalRuleException();
                 }
-                if (cases != null && cases.contains(caseRule.getCaseNo())) {
+                if (processedCases != null && processedCases.contains(caseRule.getCaseNo())) {
                     return;
                 }
-                if (caseWhens == null || !caseWhens.contains(caseWhenRule.getCaseWhenNo())) {
+                if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseWhenNo())) {
                     CaseExpression caseExpression = new CaseExpression(this);
                     if (caseExpression.test(caseWhenRule)) {
-                        if (cases == null) {
-                            cases = new HashSet<>();
+                        if (processedCases == null) {
+                            processedCases = new HashSet<>();
                         }
-                        cases.add(caseRule.getCaseNo());
-                        if (caseWhens == null) {
-                            caseWhens = new HashSet<>();
+                        processedCases.add(caseRule.getCaseNo());
+                        if (processedCaseWhens == null) {
+                            processedCaseWhens = new HashSet<>();
                         }
-                        caseWhens.add(caseWhenRule.getCaseWhenNo());
+                        processedCaseWhens.add(caseWhenRule.getCaseWhenNo());
                     } else {
                         return;
                     }

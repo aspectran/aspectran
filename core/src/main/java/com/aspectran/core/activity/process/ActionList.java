@@ -98,28 +98,38 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        add(new BeanMethodAction(beanMethodActionRule, this));
+    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        Executable action = new BeanMethodAction(beanMethodActionRule, this);
+        add(action);
+        return action;
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        add(new ConfigBeanMethodAction(configBeanMethodActionRule, this));
+    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+        Executable action = new ConfigBeanMethodAction(configBeanMethodActionRule, this);
+        add(action);
+        return action;
     }
 
     @Override
-    public void applyActionRule(IncludeActionRule includeActionRule) {
-        add(new IncludeAction(includeActionRule, this));
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        Executable action = new IncludeAction(includeActionRule, this);
+        add(action);
+        return action;
     }
 
     @Override
-    public void applyActionRule(EchoActionRule echoActionRule) {
-        add(new EchoAction(echoActionRule, this));
+    public Executable applyActionRule(EchoActionRule echoActionRule) {
+        Executable action = new EchoAction(echoActionRule, this);
+        add(action);
+        return action;
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headerActionRule) {
-        add(new HeaderAction(headerActionRule, this));
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule, this);
+        add(action);
+        return action;
     }
 
     @Override

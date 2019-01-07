@@ -162,11 +162,6 @@
 
 <!ELEMENT else ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
 
-<!ELEMENT if ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
-<!ATTLIST if
-  test    CDATA #IMPLIED
->
-
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED

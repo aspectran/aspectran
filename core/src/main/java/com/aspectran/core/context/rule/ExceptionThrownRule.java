@@ -166,34 +166,39 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
         BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
         if (aspectAdviceRule != null && beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(aspectAdviceRule);
         }
         this.action = action;
+        return action;
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the config bean method action rule to the Exception Thrown Rule");
     }
 
     @Override
-    public void applyActionRule(IncludeActionRule includeActionRule) {
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the include action rule to the Exception Thrown Rule");
     }
 
     @Override
-    public void applyActionRule(EchoActionRule echoActionRule) {
-        action = new EchoAction(echoActionRule, null);
+    public Executable applyActionRule(EchoActionRule echoActionRule) {
+        Executable action = new EchoAction(echoActionRule, null);
+        this.action = action;
+        return action;
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headerActionRule) {
-        action = new HeaderAction(headerActionRule, null);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule, null);
+        this.action = action;
+        return action;
     }
 
     @Override

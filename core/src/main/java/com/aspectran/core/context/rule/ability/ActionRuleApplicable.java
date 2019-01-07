@@ -33,37 +33,47 @@ public interface ActionRuleApplicable {
      * Adds the bean method action rule.
      *
      * @param beanMethodActionRule the bean method action rule
+     * @return an instance of the executable action
      */
-    void applyActionRule(BeanMethodActionRule beanMethodActionRule);
+    Executable applyActionRule(BeanMethodActionRule beanMethodActionRule);
 
     /**
      * Adds the config bean method action rule.
      *
      * @param configBeanMethodActionRule the config bean method action rule
+     * @return an instance of the executable action
      */
-    void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule);
+    Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule);
 
     /**
      * Adds the include action rule.
      *
      * @param includeActionRule the include action rule
+     * @return an instance of the executable action
      */
-    void applyActionRule(IncludeActionRule includeActionRule);
+    Executable applyActionRule(IncludeActionRule includeActionRule);
 
     /**
      * Adds the echo action rule.
      *
      * @param echoActionRule the echo action rule
+     * @return an instance of the executable action
      */
-    void applyActionRule(EchoActionRule echoActionRule);
+    Executable applyActionRule(EchoActionRule echoActionRule);
 
     /**
      * Adds the header action rule.
      *
      * @param headerActionRule the header action rule
+     * @return an instance of the executable action
      */
-    void applyActionRule(HeaderActionRule headerActionRule);
+    Executable applyActionRule(HeaderActionRule headerActionRule);
 
+    /**
+     * Adds an executable action instance.
+     *
+     * @param action an executable action instance
+     */
     void applyActionRule(Executable action);
 
 }

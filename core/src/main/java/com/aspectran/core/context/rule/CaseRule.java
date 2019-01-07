@@ -34,4 +34,15 @@ public class CaseRule {
         return (caseWhenRuleMap != null ? caseWhenRuleMap.get(caseWhenNo) : null);
     }
 
+    public Map<Integer, CaseWhenRule> getCaseWhenRuleMap() {
+        return caseWhenRuleMap;
+    }
+
+    public static int toCaseNo(int caseNo) {
+        if (caseNo > 1000) {
+            caseNo = caseNo / 1000;
+        }
+        return caseNo;
+    }
+
 }

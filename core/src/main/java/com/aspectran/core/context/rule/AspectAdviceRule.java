@@ -80,35 +80,40 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
         BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
         if (beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(this);
         }
         this.action = action;
+        return action;
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the config bean method action Rule to the Aspect Advice Rule");
     }
 
     @Override
-    public void applyActionRule(IncludeActionRule includeActionRule) {
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the include action rule to the Aspect Advice Rule; " +
                 "AspectAdvice is not support IncludeAction");
     }
 
     @Override
-    public void applyActionRule(EchoActionRule echoActionRule) {
-        action = new EchoAction(echoActionRule, null);
+    public Executable applyActionRule(EchoActionRule echoActionRule) {
+        Executable action = new EchoAction(echoActionRule, null);
+        this.action = action;
+        return action;
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headerActionRule) {
-        action = new HeaderAction(headerActionRule, null);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule, null);
+        this.action = action;
+        return action;
     }
 
     @Override

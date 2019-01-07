@@ -19,33 +19,24 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class ContentParameters extends AbstractParameters {
+public class CaseParameters extends AbstractParameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition hidden;
-    public static final ParameterDefinition omittable;
-    public static final ParameterDefinition condition;
-    public static final ParameterDefinition action;
+    public static final ParameterDefinition caseNo;
+    public static final ParameterDefinition when;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
-        omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
-        condition = new ParameterDefinition("case", CaseParameters.class, true, true);
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
+        caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
+        when = new ParameterDefinition("when", CaseWhenParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
-                name,
-                hidden,
-                omittable,
-                condition,
-                action
+                caseNo,
+                when
         };
     }
 
-    public ContentParameters() {
+    public CaseParameters() {
         super(parameterDefinitions);
     }
 

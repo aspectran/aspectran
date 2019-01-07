@@ -2,11 +2,12 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 
 /**
  * <p>Created: 2019-01-06</p>
  */
-public class CaseWhenRule {
+public class CaseWhenRule implements ResponseRuleApplicable {
 
     private final int caseWhenNo;
 
@@ -42,6 +43,26 @@ public class CaseWhenRule {
 
     public void setResponse(Response response) {
         this.response = response;
+    }
+
+    @Override
+    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+        return null;
+    }
+
+    @Override
+    public Response applyResponseRule(TransformRule transformRule) {
+        return null;
+    }
+
+    @Override
+    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+        return null;
+    }
+
+    @Override
+    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+        return null;
     }
 
 }

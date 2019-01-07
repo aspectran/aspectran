@@ -19,10 +19,7 @@ public class CaseRuleMap extends LinkedHashMap<Integer, CaseRule> {
     }
 
     public CaseRule getCaseRule(int caseNo) {
-        if (caseNo > 1000) {
-            caseNo = caseNo / 1000;
-        }
-        return get(caseNo);
+        return get(CaseRule.toCaseNo(caseNo));
     }
 
 }

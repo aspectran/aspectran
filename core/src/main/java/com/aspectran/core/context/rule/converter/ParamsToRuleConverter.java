@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.converter;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -46,38 +47,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.params.ActionParameters;
-import com.aspectran.core.context.rule.params.AdviceActionParameters;
-import com.aspectran.core.context.rule.params.AdviceParameters;
-import com.aspectran.core.context.rule.params.AppendParameters;
-import com.aspectran.core.context.rule.params.AspectParameters;
-import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.params.BeanParameters;
-import com.aspectran.core.context.rule.params.CallParameters;
-import com.aspectran.core.context.rule.params.ConstructorParameters;
-import com.aspectran.core.context.rule.params.ContentParameters;
-import com.aspectran.core.context.rule.params.ContentsParameters;
-import com.aspectran.core.context.rule.params.DefaultSettingsParameters;
-import com.aspectran.core.context.rule.params.DispatchParameters;
-import com.aspectran.core.context.rule.params.EnvironmentParameters;
-import com.aspectran.core.context.rule.params.ExceptionParameters;
-import com.aspectran.core.context.rule.params.ExceptionThrownParameters;
-import com.aspectran.core.context.rule.params.FilterParameters;
-import com.aspectran.core.context.rule.params.ForwardParameters;
-import com.aspectran.core.context.rule.params.ItemHolderParameters;
-import com.aspectran.core.context.rule.params.ItemParameters;
-import com.aspectran.core.context.rule.params.JoinpointParameters;
-import com.aspectran.core.context.rule.params.RedirectParameters;
-import com.aspectran.core.context.rule.params.RequestParameters;
-import com.aspectran.core.context.rule.params.ResponseParameters;
-import com.aspectran.core.context.rule.params.RootParameters;
-import com.aspectran.core.context.rule.params.ScheduleJobParameters;
-import com.aspectran.core.context.rule.params.ScheduleParameters;
-import com.aspectran.core.context.rule.params.SchedulerParameters;
-import com.aspectran.core.context.rule.params.TemplateParameters;
-import com.aspectran.core.context.rule.params.TransformParameters;
-import com.aspectran.core.context.rule.params.TransletParameters;
-import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.context.rule.params.*;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -499,6 +469,11 @@ public class ParamsToRuleConverter {
             transletRule.applyResponseRule(frr);
         }
 
+        CaseParameters caseParameters = transletParameters.getParameters(TransletParameters.condition);
+        if (caseParameters != null) {
+
+        }
+
         assistant.addTransletRule(transletRule);
     }
 
@@ -592,6 +567,8 @@ public class ParamsToRuleConverter {
         ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
         ItemHolderParameters headerItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
         Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
+        Integer caseWhenNo = actionParameters.getInt(ActionParameters.caseWhenNo);
+        Executable action = null;
 
         if (include != null) {
             include = assistant.applyTransletNamePattern(include);
@@ -612,7 +589,7 @@ public class ParamsToRuleConverter {
                     includeActionRule.setAttributeItemRuleMap(irm);
                 }
             }
-            actionRuleApplicable.applyActionRule(includeActionRule);
+            action = actionRuleApplicable.applyActionRule(includeActionRule);
         } else if (method != null) {
             String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
             BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
@@ -633,17 +610,20 @@ public class ParamsToRuleConverter {
                 }
             }
             assistant.resolveActionBeanClass(beanMethodActionRule);
-            actionRuleApplicable.applyActionRule(beanMethodActionRule);
+            action = actionRuleApplicable.applyActionRule(beanMethodActionRule);
         } else if (echoItemHolderParameters != null) {
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             ItemRuleMap attributeItemRuleMap = convertAsItemRuleMap(echoItemHolderParameters);
             echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-            actionRuleApplicable.applyActionRule(echoActionRule);
+            action = actionRuleApplicable.applyActionRule(echoActionRule);
         } else if (headerItemHolderParameters != null) {
             HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
             ItemRuleMap headerItemRuleMap = convertAsItemRuleMap(headerItemHolderParameters);
             headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
-            actionRuleApplicable.applyActionRule(headerActionRule);
+            action = actionRuleApplicable.applyActionRule(headerActionRule);
+        }
+        if (action != null && caseWhenNo != null) {
+            action.setCaseWhenNo(caseWhenNo);
         }
     }
 
