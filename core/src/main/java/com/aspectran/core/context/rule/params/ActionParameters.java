@@ -38,6 +38,8 @@ public class ActionParameters extends AbstractParameters {
 
     public static final ParameterDefinition headers;
 
+    public static final ParameterDefinition caseWhenNo;
+
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
@@ -52,6 +54,7 @@ public class ActionParameters extends AbstractParameters {
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
         echo = new ParameterDefinition("echo", ItemHolderParameters.class);
         headers = new ParameterDefinition("headers", ItemHolderParameters.class);
+        caseWhenNo = new ParameterDefinition("caseWhenNo", ParameterValueType.INT);
 
         parameterDefinitions = new ParameterDefinition[] {
                 id,
@@ -64,7 +67,8 @@ public class ActionParameters extends AbstractParameters {
                 parameters,
                 attributes,
                 echo,
-                headers
+                headers,
+                caseWhenNo
         };
     }
 

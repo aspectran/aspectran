@@ -42,7 +42,7 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class TokenExpressionParser.
+ * The Class TokenExpression.
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */

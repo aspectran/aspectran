@@ -60,6 +60,8 @@ public class AspectranNodeParser {
 
     private final TransletNodeletAdder transletNodeletAdder;
 
+    private final CaseWhenNodeletAdder caseWhenNodeletAdder;
+
     private final NodeletParser parser;
 
     /**
@@ -93,6 +95,7 @@ public class AspectranNodeParser {
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
         this.transletNodeletAdder = new TransletNodeletAdder();
+        this.caseWhenNodeletAdder = new CaseWhenNodeletAdder();
 
         this.parser = new NodeletParser(this);
         this.parser.setValidating(validating);
@@ -159,6 +162,10 @@ public class AspectranNodeParser {
 
     public TransletNodeletAdder getTransletNodeletAdder() {
         return transletNodeletAdder;
+    }
+
+    public CaseWhenNodeletAdder getCaseWhenNodeletAdder() {
+        return caseWhenNodeletAdder;
     }
 
     /**

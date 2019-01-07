@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
@@ -67,6 +69,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private List<ResponseRule> responseRuleList;
 
     private ExceptionRule exceptionRule;
+
+    private Class<? extends Translet> transletInterfaceClass;
+
+    private Class<? extends CoreTranslet> transletImplementationClass;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -460,6 +466,22 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.exceptionRule = exceptionRule;
     }
 
+    public Class<? extends Translet> getTransletInterfaceClass() {
+        return transletInterfaceClass;
+    }
+
+    public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+        this.transletInterfaceClass = transletInterfaceClass;
+    }
+
+    public Class<? extends CoreTranslet> getTransletImplementationClass() {
+        return transletImplementationClass;
+    }
+
+    public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
+        this.transletImplementationClass = transletImplementationClass;
+    }
+
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
         return aspectAdviceRuleRegistry;
     }
@@ -511,6 +533,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("requestRule", requestRule);
         tsb.append("responseRule", responseRule);
         tsb.append("exceptionRule", exceptionRule);
+        tsb.append("transletInterfaceClass", transletInterfaceClass);
+        tsb.append("transletImplementationClass", transletImplementationClass);
         tsb.append("explicitContent", explicitContent);
         tsb.append("implicitResponse", implicitResponse);
         return tsb.toString();
@@ -559,6 +583,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getContentList() != null) {
             ContentList contentList = transletRule.getContentList().replicate();
@@ -573,6 +599,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();

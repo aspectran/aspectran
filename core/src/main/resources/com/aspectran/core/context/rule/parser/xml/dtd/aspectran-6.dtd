@@ -123,9 +123,9 @@
 <!ELEMENT translet (
   (description?, request?, content*, contents?, response*, exception?) |
   (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
-  (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, parameters*, attributes*, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+  (description?, request?, (action? | include? | echo? | headers? | case?)*, response*, exception?) |
+  (description?, request?, (action? | include? | echo? | headers? | case?)*, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, parameters*, attributes*, (action? | include? | echo? | headers? | case?)*, (transform | dispatch | redirect | forward)?, exception?)
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -146,12 +146,21 @@
   omittable (true | false) #IMPLIED
 >
 
-<!ELEMENT content (action? | include? | echo? | headers?)*>
+<!ELEMENT content (action? | include? | echo? | headers? | case?)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
   omittable (true | false) #IMPLIED
   hidden    (true | false) #IMPLIED
 >
+
+<!ELEMENT case (when*, else?)>
+
+<!ELEMENT when ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
+<!ATTLIST when
+  test    CDATA #IMPLIED
+>
+
+<!ELEMENT else ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
 
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action

@@ -31,12 +31,16 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.CaseExpression;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.CaseRule;
+import com.aspectran.core.context.rule.CaseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -50,6 +54,9 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Core activity that handles all external requests.
@@ -68,6 +75,10 @@ public class CoreActivity extends AdviceActivity {
     private Response reservedResponse;
 
     private boolean committed;
+
+    private Set<Integer> processedCases;
+
+    private Set<Integer> processedCaseWhens;
 
     /**
      * Instantiates a new CoreActivity.
@@ -519,11 +530,41 @@ public class CoreActivity extends AdviceActivity {
      * @param contentResult the content result
      */
     private void execute(Executable action, ContentResult contentResult) {
-        if (log.isDebugEnabled()) {
-            log.debug("action " + action);
-        }
-
         try {
+            CaseWhenRule caseWhenRule = null;
+            if (action.getCaseWhenNo() > 0) {
+                CaseRule caseRule = getTransletRule().getCaseRuleMap().getCaseRule(action.getCaseWhenNo());
+                if (caseRule == null) {
+                    throw new IllegalRuleException();
+                }
+                caseWhenRule = caseRule.getCaseWhenRule(action.getCaseWhenNo());
+                if (caseWhenRule == null) {
+                    throw new IllegalRuleException();
+                }
+                if (processedCases != null && processedCases.contains(caseRule.getCaseNo())) {
+                    return;
+                }
+                if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseWhenNo())) {
+                    CaseExpression caseExpression = new CaseExpression(this);
+                    if (caseExpression.test(caseWhenRule)) {
+                        if (processedCases == null) {
+                            processedCases = new HashSet<>();
+                        }
+                        processedCases.add(caseRule.getCaseNo());
+                        if (processedCaseWhens == null) {
+                            processedCaseWhens = new HashSet<>();
+                        }
+                        processedCaseWhens.add(caseWhenRule.getCaseWhenNo());
+                    } else {
+                        return;
+                    }
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("action " + action);
+            }
+
             Object resultValue = action.execute(this);
             if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 if (resultValue instanceof ProcessResult) {
@@ -535,6 +576,10 @@ public class CoreActivity extends AdviceActivity {
 
             if (log.isTraceEnabled()) {
                 log.trace("actionResult " + resultValue);
+            }
+
+            if (action.isCaseWhenLast() && caseWhenRule != null && caseWhenRule.getResponse() != null) {
+                reserveResponse(caseWhenRule.getResponse());
             }
         } catch (Exception e) {
             setRaisedException(e);
