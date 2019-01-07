@@ -30,11 +30,9 @@ class AspectranConfigTest {
 
     @Test
     void aspectranConfigTest() throws IOException {
-        File file = new File(ResourceUtils.getResourceAsFile(""), "config/aspectran-config-test.apon");
+        File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
         AponReader.parse(file, aspectranConfig);
-
-        //System.out.println(aspectranConfig.toString());
 
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 

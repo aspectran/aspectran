@@ -23,6 +23,9 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.CaseRule;
+import com.aspectran.core.context.rule.CaseRuleMap;
+import com.aspectran.core.context.rule.CaseWhenRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -469,9 +472,42 @@ public class ParamsToRuleConverter {
             transletRule.applyResponseRule(frr);
         }
 
-        CaseParameters caseParameters = transletParameters.getParameters(TransletParameters.condition);
-        if (caseParameters != null) {
+        List<CaseParameters> caseParametersList = transletParameters.getParametersList(TransletParameters.caseOf);
+        if (caseParametersList != null) {
+            CaseRuleMap caseRuleMap = transletRule.touchCaseRuleMap();
+            for (CaseParameters caseParameters : caseParametersList) {
+                int caseNo = caseParameters.getInt(CaseParameters.caseNo);
+                List<CaseWhenParameters> caseWhenParametersList = caseParameters.getParametersList(CaseParameters.caseWhen);
+                CaseRule caseRule = caseRuleMap.newCaseRule(caseNo);
+                for (CaseWhenParameters caseWhenParameters : caseWhenParametersList) {
+                    int caseWhenNo = caseWhenParameters.getInt(CaseWhenParameters.caseWhenNo);
+                    CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule(caseWhenNo);
 
+                    transformParameters = caseWhenParameters.getParameters(CaseWhenParameters.transform);
+                    if (transformParameters != null) {
+                        TransformRule tr = convertAsTransformRule(transformParameters);
+                        caseWhenRule.applyResponseRule(tr);
+                    }
+
+                    dispatchParameters = caseWhenParameters.getParameters(CaseWhenParameters.dispatch);
+                    if (dispatchParameters != null) {
+                        DispatchResponseRule drr = convertAsDispatchResponseRule(dispatchParameters);
+                        caseWhenRule.applyResponseRule(drr);
+                    }
+
+                    redirectParameters = caseWhenParameters.getParameters(CaseWhenParameters.redirect);
+                    if (redirectParameters != null) {
+                        RedirectResponseRule rrr = convertAsRedirectResponseRule(redirectParameters);
+                        caseWhenRule.applyResponseRule(rrr);
+                    }
+
+                    forwardParameters = caseWhenParameters.getParameters(CaseWhenParameters.forward);
+                    if (forwardParameters != null) {
+                        ForwardResponseRule frr = convertAsForwardResponseRule(forwardParameters);
+                        caseWhenRule.applyResponseRule(frr);
+                    }
+                }
+            }
         }
 
         assistant.addTransletRule(transletRule);

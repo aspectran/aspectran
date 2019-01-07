@@ -22,17 +22,20 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class CaseParameters extends AbstractParameters {
 
     public static final ParameterDefinition caseNo;
-    public static final ParameterDefinition when;
+    public static final ParameterDefinition caseWhen;
+    public static final ParameterDefinition caseElse;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
         caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
-        when = new ParameterDefinition("when", CaseWhenParameters.class, true, true);
+        caseWhen = new ParameterDefinition("when", CaseWhenParameters.class, true, true);
+        caseElse = new ParameterDefinition("else", CaseWhenParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 caseNo,
-                when
+                caseWhen,
+                caseElse
         };
     }
 

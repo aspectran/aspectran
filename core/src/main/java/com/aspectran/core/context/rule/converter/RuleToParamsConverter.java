@@ -426,11 +426,16 @@ public class RuleToParamsConverter {
 
         if (transletRule.getCaseRuleMap() != null) {
             for (CaseRule caseRule : transletRule.getCaseRuleMap().values()) {
-                CaseParameters caseParameters = transletParameters.newParameters(TransletParameters.condition);
+                CaseParameters caseParameters = transletParameters.newParameters(TransletParameters.caseOf);
                 caseParameters.putValue(CaseParameters.caseNo, caseRule.getCaseNo());
                 if (caseRule.getCaseWhenRuleMap() != null) {
                     for (CaseWhenRule caseWhenRule : caseRule.getCaseWhenRuleMap().values()) {
-                        CaseWhenParameters caseWhenParameters = caseParameters.newParameters(CaseParameters.when);
+                        CaseWhenParameters caseWhenParameters;
+                        if (caseWhenRule.getExpression() != null) {
+                            caseWhenParameters = caseParameters.newParameters(CaseParameters.caseWhen);
+                        } else {
+                            caseWhenParameters = caseParameters.newParameters(CaseParameters.caseElse);
+                        }
                         caseWhenParameters.putValue(CaseWhenParameters.caseWhenNo, caseWhenRule.getCaseWhenNo());
                         caseWhenParameters.putValueNonNull(CaseWhenParameters.test, caseWhenRule.getExpression());
                         if (caseWhenRule.getResponse() != null) {

@@ -13,6 +13,10 @@ public class CaseRuleMap extends LinkedHashMap<Integer, CaseRule> {
 
     public CaseRule newCaseRule() {
         int caseNo = size() + 1;
+        return newCaseRule(caseNo);
+    }
+
+    public CaseRule newCaseRule(int caseNo) {
         CaseRule caseRule = new CaseRule(caseNo);
         put(caseNo, caseRule);
         return caseRule;

@@ -42,8 +42,9 @@ class ActivityContextBuilderTest {
     @BeforeAll
     void ready() throws IOException {
         //baseDir = new File("./target/test-classes");
-        baseDir = ResourceUtils.getResourceAsFile("");
+        baseDir = ResourceUtils.getResourceAsFile(".");
 
+        System.out.println(baseDir.getCanonicalPath());
         System.out.println(" --- Test case for building ActivityContext --- ");
 
         builder = new HybridActivityContextBuilder();

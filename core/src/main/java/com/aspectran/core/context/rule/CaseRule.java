@@ -21,10 +21,15 @@ public class CaseRule {
     }
 
     public CaseWhenRule newCaseWhenRule() {
+        int size = (caseWhenRuleMap != null ? caseWhenRuleMap.size() : 0);
+        int caseWhenNo = (caseNo * 1000) + size + 1;
+        return newCaseWhenRule(caseWhenNo);
+    }
+
+    public CaseWhenRule newCaseWhenRule(int caseWhenNo) {
         if (caseWhenRuleMap == null) {
             caseWhenRuleMap = new LinkedHashMap<>();
         }
-        int caseWhenNo = (caseNo * 1000) + caseWhenRuleMap.size() + 1;
         CaseWhenRule caseWhenRule = new CaseWhenRule(caseWhenNo);
         caseWhenRuleMap.put(caseWhenNo, caseWhenRule);
         return caseWhenRule;
