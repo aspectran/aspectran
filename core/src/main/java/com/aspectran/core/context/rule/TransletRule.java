@@ -15,10 +15,9 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
@@ -70,9 +69,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private ExceptionRule exceptionRule;
 
-    private Class<? extends Translet> transletInterfaceClass;
-
-    private Class<? extends CoreTranslet> transletImplementationClass;
+    private CaseRuleMap caseRuleMap;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -310,28 +307,33 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public void applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        touchActionList().applyActionRule(beanMethodActionRule);
+    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
+        return touchActionList().applyActionRule(beanMethodActionRule);
     }
 
     @Override
-    public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        touchActionList().applyActionRule(configBeanMethodActionRule);
+    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+        return touchActionList().applyActionRule(configBeanMethodActionRule);
     }
 
     @Override
-    public void applyActionRule(IncludeActionRule includeActionRule) {
-        touchActionList().applyActionRule(includeActionRule);
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().applyActionRule(includeActionRule);
     }
 
     @Override
-    public void applyActionRule(EchoActionRule echoActionRule) {
-        touchActionList().applyActionRule(echoActionRule);
+    public Executable applyActionRule(EchoActionRule echoActionRule) {
+        return touchActionList().applyActionRule(echoActionRule);
     }
 
     @Override
-    public void applyActionRule(HeaderActionRule headerActionRule) {
-        touchActionList().applyActionRule(headerActionRule);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().applyActionRule(headerActionRule);
+    }
+
+    @Override
+    public void applyActionRule(Executable action) {
+        touchActionList().applyActionRule(action);
     }
 
     /**
@@ -466,20 +468,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.exceptionRule = exceptionRule;
     }
 
-    public Class<? extends Translet> getTransletInterfaceClass() {
-        return transletInterfaceClass;
+    public CaseRuleMap getCaseRuleMap() {
+        return caseRuleMap;
     }
 
-    public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-        this.transletInterfaceClass = transletInterfaceClass;
+    public void setCaseRuleMap(CaseRuleMap caseRuleMap) {
+        this.caseRuleMap = caseRuleMap;
     }
 
-    public Class<? extends CoreTranslet> getTransletImplementationClass() {
-        return transletImplementationClass;
-    }
-
-    public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
-        this.transletImplementationClass = transletImplementationClass;
+    public CaseRuleMap touchCaseRuleMap() {
+        if (caseRuleMap == null) {
+            caseRuleMap = new CaseRuleMap();
+        }
+        return caseRuleMap;
     }
 
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -533,8 +534,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("requestRule", requestRule);
         tsb.append("responseRule", responseRule);
         tsb.append("exceptionRule", exceptionRule);
-        tsb.append("transletInterfaceClass", transletInterfaceClass);
-        tsb.append("transletImplementationClass", transletImplementationClass);
         tsb.append("explicitContent", explicitContent);
         tsb.append("implicitResponse", implicitResponse);
         return tsb.toString();
@@ -582,14 +581,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setName(transletRule.getName());
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
-        tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
-        tr.setDescription(transletRule.getDescription());
         if (transletRule.getContentList() != null) {
             ContentList contentList = transletRule.getContentList().replicate();
             tr.setContentList(contentList, transletRule.isExplicitContent());
         }
+        tr.setResponseRule(transletRule.getResponseRule());
+        tr.setExceptionRule(transletRule.getExceptionRule());
+        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
+        tr.setDescription(transletRule.getDescription());
         return tr;
     }
 
@@ -599,8 +598,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-        tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
+        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();
