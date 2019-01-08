@@ -553,7 +553,7 @@ public class ParamsToRuleConverter {
                        }
                        if (transletRule.getResponseRule() != null) {
                            Response response = transletRule.getResponseRule().getResponse();
-                           if (response != null) {
+                           if (response != null && response.getActionList() != null) {
                                checkActionList(caseRule, caseWhenRule, response.getActionList());
                            }
                        }

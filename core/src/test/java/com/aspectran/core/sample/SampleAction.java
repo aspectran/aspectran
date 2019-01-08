@@ -30,6 +30,10 @@ public class SampleAction {
         return msg;
     }
 
+    public String case0() {
+        return "case-0";
+    }
+
     public String case1() {
         return "case-1";
     }

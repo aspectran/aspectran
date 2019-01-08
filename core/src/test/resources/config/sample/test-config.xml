@@ -227,6 +227,7 @@
                 <item name="input_2">${input_2:67890}</item>
             </attributes>
         </request>
+        <action id="case0" method="case0" bean="SampleAction"/>
         <case>
             <when test="case1">
                 <action id="case1" method="case1" bean="SampleAction"/>
@@ -237,6 +238,7 @@
         </case>
         <transform type="transform/text">
             <template style="apon">
+                |@{case0}
                 |@{case1}
             </template>
         </transform>
