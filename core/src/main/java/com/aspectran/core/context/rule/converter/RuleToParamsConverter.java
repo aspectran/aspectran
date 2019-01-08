@@ -436,7 +436,7 @@ public class RuleToParamsConverter {
                         } else {
                             caseWhenParameters = caseParameters.newParameters(CaseParameters.caseElse);
                         }
-                        caseWhenParameters.putValue(CaseWhenParameters.caseWhenNo, caseWhenRule.getCaseWhenNo());
+                        caseWhenParameters.putValue(CaseWhenParameters.caseNo, caseWhenRule.getCaseNo());
                         caseWhenParameters.putValueNonNull(CaseWhenParameters.test, caseWhenRule.getExpression());
                         if (caseWhenRule.getResponse() != null) {
                             Response response = caseWhenRule.getResponse();
@@ -693,8 +693,8 @@ public class RuleToParamsConverter {
                 actionParameters = toActionParameters(headerActionRule);
             }
             if (actionParameters != null) {
-                if (action.getCaseWhenNo() > 0) {
-                    actionParameters.putValue(ActionParameters.caseWhenNo, action.getCaseWhenNo());
+                if (action.getCaseNo() > 0) {
+                    actionParameters.putValue(ActionParameters.caseNo, action.getCaseNo());
                 }
                 parameters.putValue(actionParam, actionParameters);
             }

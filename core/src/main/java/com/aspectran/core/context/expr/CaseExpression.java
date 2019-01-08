@@ -16,9 +16,9 @@ public class CaseExpression {
 
     public boolean test(CaseWhenRule caseWhenRule) {
         if (caseWhenRule.getExpression() == null) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
 }

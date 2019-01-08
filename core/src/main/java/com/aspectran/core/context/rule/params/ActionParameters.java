@@ -21,7 +21,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ActionParameters extends AbstractParameters {
 
-    public static final ParameterDefinition caseWhenNo;
+    public static final ParameterDefinition caseNo;
 
     public static final ParameterDefinition id;
 
@@ -43,7 +43,7 @@ public class ActionParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        caseWhenNo = new ParameterDefinition("caseWhenNo", ParameterValueType.INT);
+        caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
         id = new ParameterDefinition("id", ParameterValueType.STRING);
         bean = new ParameterDefinition("bean", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
@@ -57,7 +57,7 @@ public class ActionParameters extends AbstractParameters {
         headers = new ParameterDefinition("headers", ItemHolderParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                caseWhenNo,
+                caseNo,
                 id,
                 bean,
                 method,

@@ -25,4 +25,12 @@ public class TestAction {
         return 4;
     }
 
+    public String case1() {
+        return "case-1";
+    }
+
+    public String case2() {
+        return "case-2";
+    }
+
 }

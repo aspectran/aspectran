@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.converter;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -50,7 +51,40 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.params.*;
+import com.aspectran.core.context.rule.params.ActionParameters;
+import com.aspectran.core.context.rule.params.AdviceActionParameters;
+import com.aspectran.core.context.rule.params.AdviceParameters;
+import com.aspectran.core.context.rule.params.AppendParameters;
+import com.aspectran.core.context.rule.params.AspectParameters;
+import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.params.BeanParameters;
+import com.aspectran.core.context.rule.params.CallParameters;
+import com.aspectran.core.context.rule.params.CaseParameters;
+import com.aspectran.core.context.rule.params.CaseWhenParameters;
+import com.aspectran.core.context.rule.params.ConstructorParameters;
+import com.aspectran.core.context.rule.params.ContentParameters;
+import com.aspectran.core.context.rule.params.ContentsParameters;
+import com.aspectran.core.context.rule.params.DefaultSettingsParameters;
+import com.aspectran.core.context.rule.params.DispatchParameters;
+import com.aspectran.core.context.rule.params.EnvironmentParameters;
+import com.aspectran.core.context.rule.params.ExceptionParameters;
+import com.aspectran.core.context.rule.params.ExceptionThrownParameters;
+import com.aspectran.core.context.rule.params.FilterParameters;
+import com.aspectran.core.context.rule.params.ForwardParameters;
+import com.aspectran.core.context.rule.params.ItemHolderParameters;
+import com.aspectran.core.context.rule.params.ItemParameters;
+import com.aspectran.core.context.rule.params.JoinpointParameters;
+import com.aspectran.core.context.rule.params.RedirectParameters;
+import com.aspectran.core.context.rule.params.RequestParameters;
+import com.aspectran.core.context.rule.params.ResponseParameters;
+import com.aspectran.core.context.rule.params.RootParameters;
+import com.aspectran.core.context.rule.params.ScheduleJobParameters;
+import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TemplateParameters;
+import com.aspectran.core.context.rule.params.TransformParameters;
+import com.aspectran.core.context.rule.params.TransletParameters;
+import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -480,8 +514,8 @@ public class ParamsToRuleConverter {
                 List<CaseWhenParameters> caseWhenParametersList = caseParameters.getParametersList(CaseParameters.caseWhen);
                 CaseRule caseRule = caseRuleMap.newCaseRule(caseNo);
                 for (CaseWhenParameters caseWhenParameters : caseWhenParametersList) {
-                    int caseWhenNo = caseWhenParameters.getInt(CaseWhenParameters.caseWhenNo);
-                    CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule(caseWhenNo);
+                    caseNo = caseWhenParameters.getInt(CaseWhenParameters.caseNo);
+                    CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule(caseNo);
 
                     transformParameters = caseWhenParameters.getParameters(CaseWhenParameters.transform);
                     if (transformParameters != null) {
@@ -508,9 +542,45 @@ public class ParamsToRuleConverter {
                     }
                 }
             }
+
+            for (CaseRule caseRule : caseRuleMap.values()) {
+                if (caseRule.getCaseWhenRuleMap() != null) {
+                   for (CaseWhenRule caseWhenRule : caseRule.getCaseWhenRuleMap().values()) {
+                       if (transletRule.getContentList() != null) {
+                           for (ActionList actionList : transletRule.getContentList()) {
+                               checkActionList(caseRule, caseWhenRule, actionList);
+                           }
+                       }
+                       if (transletRule.getResponseRule() != null) {
+                           Response response = transletRule.getResponseRule().getResponse();
+                           if (response != null) {
+                               checkActionList(caseRule, caseWhenRule, response.getActionList());
+                           }
+                       }
+                   }
+                }
+            }
         }
 
         assistant.addTransletRule(transletRule);
+    }
+
+    private void checkActionList(CaseRule caseRule, CaseWhenRule caseWhenRule, ActionList actionList) throws IllegalRuleException {
+        Executable prev = null;
+        for (Executable action : actionList) {
+            if (action.getCaseNo() == caseWhenRule.getCaseNo()) {
+                if (prev != null) {
+                    prev.setLastInCaseWhen(false);
+                }
+                action.setLastInCaseWhen(true);
+                prev = action;
+            } else {
+                prev = null;
+                if (action.getCaseNo() > 0 && caseRule.getCaseWhenRule(action.getCaseNo()) == null) {
+                    throw new IllegalRuleException("No matching case number: " + action.getCaseNo());
+                }
+            }
+        }
     }
 
     private RequestRule convertAsRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
@@ -603,7 +673,7 @@ public class ParamsToRuleConverter {
         ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
         ItemHolderParameters headerItemHolderParameters = actionParameters.getParameters(ActionParameters.headers);
         Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
-        Integer caseWhenNo = actionParameters.getInt(ActionParameters.caseWhenNo);
+        Integer caseNo = actionParameters.getInt(ActionParameters.caseNo);
         Executable action = null;
 
         if (include != null) {
@@ -658,8 +728,8 @@ public class ParamsToRuleConverter {
             headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
             action = actionRuleApplicable.applyActionRule(headerActionRule);
         }
-        if (action != null && caseWhenNo != null) {
-            action.setCaseWhenNo(caseWhenNo);
+        if (action != null && caseNo != null) {
+            action.setCaseNo(caseNo);
         }
     }
 

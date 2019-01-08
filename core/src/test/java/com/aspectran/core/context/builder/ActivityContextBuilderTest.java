@@ -62,7 +62,6 @@ class ActivityContextBuilderTest {
     void test1HybridLoading() throws ActivityContextBuilderException {
         File apon1 = new File(baseDir, "config/sample/test-config.xml.apon");
         File apon2 = new File(baseDir, "config/sample/scheduler-config.xml.apon");
-
         apon1.delete();
         apon2.delete();
 

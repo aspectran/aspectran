@@ -108,4 +108,12 @@ class EmbeddedAspectranTest {
         System.out.println(translet.getResponseAdapter().getWriter().toString());
     }
 
+    @Test
+    void testCase() {
+        Translet translet = aspectran.translate("caseTest");
+        ActivityDataMap dataMap = translet.getActivityDataMap();
+        System.out.println("Result: " + dataMap.get("case1"));
+        assertEquals("case-1", dataMap.get("case1"));
+    }
+
 }

@@ -21,7 +21,7 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class CaseWhenParameters extends AbstractParameters {
 
-    public static final ParameterDefinition caseWhenNo;
+    public static final ParameterDefinition caseNo;
     public static final ParameterDefinition test;
     public static final ParameterDefinition transform;
     public static final ParameterDefinition dispatch;
@@ -31,7 +31,7 @@ public class CaseWhenParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        caseWhenNo = new ParameterDefinition("caseWhenNo", ParameterValueType.INT);
+        caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
         test = new ParameterDefinition("test", ParameterValueType.STRING);
         transform = new ParameterDefinition("transform", TransformParameters.class);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
@@ -39,7 +39,7 @@ public class CaseWhenParameters extends AbstractParameters {
         forward = new ParameterDefinition("forward", ForwardParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
-                caseWhenNo,
+                caseNo,
                 test,
                 transform,
                 dispatch,

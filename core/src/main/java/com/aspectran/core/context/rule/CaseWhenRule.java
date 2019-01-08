@@ -4,12 +4,14 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 
+import static com.aspectran.core.context.rule.CaseRule.checkCaseNo;
+
 /**
  * <p>Created: 2019-01-06</p>
  */
 public class CaseWhenRule implements ResponseRuleApplicable {
 
-    private final int caseWhenNo;
+    private final int caseNo;
 
     private String expression;
 
@@ -17,15 +19,13 @@ public class CaseWhenRule implements ResponseRuleApplicable {
 
     private Response response;
 
-    public CaseWhenRule(int caseWhenNo) {
-        if (caseWhenNo <= 0 || caseWhenNo > 999) {
-            throw new IllegalArgumentException("caseWhenNo must be > 0 and <= 999");
-        }
-        this.caseWhenNo = caseWhenNo;
+    public CaseWhenRule(int caseNo) {
+        checkCaseNo(caseNo);
+        this.caseNo = caseNo;
     }
 
-    public int getCaseWhenNo() {
-        return caseWhenNo;
+    public int getCaseNo() {
+        return caseNo;
     }
 
     public String getExpression() {

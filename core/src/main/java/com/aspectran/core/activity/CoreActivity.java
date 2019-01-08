@@ -36,6 +36,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.CaseRule;
+import com.aspectran.core.context.rule.CaseRuleMap;
 import com.aspectran.core.context.rule.CaseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
@@ -532,19 +533,24 @@ public class CoreActivity extends AdviceActivity {
     private void execute(Executable action, ContentResult contentResult) {
         try {
             CaseWhenRule caseWhenRule = null;
-            if (action.getCaseWhenNo() > 0) {
-                CaseRule caseRule = getTransletRule().getCaseRuleMap().getCaseRule(action.getCaseWhenNo());
-                if (caseRule == null) {
-                    throw new IllegalRuleException();
+            if (action.getCaseNo() > 0) {
+                CaseRuleMap caseRuleMap = getTransletRule().getCaseRuleMap();
+                if (caseRuleMap == null || caseRuleMap.isEmpty()) {
+                    throw new IllegalRuleException("No defined case rules");
                 }
-                caseWhenRule = caseRule.getCaseWhenRule(action.getCaseWhenNo());
+                CaseRule caseRule = caseRuleMap.getCaseRule(action.getCaseNo());
+                if (caseRule == null) {
+                    throw new IllegalRuleException("No case rule with case number: " +
+                            CaseRule.toCaseGroupNo(action.getCaseNo()));
+                }
+                caseWhenRule = caseRule.getCaseWhenRule(action.getCaseNo());
                 if (caseWhenRule == null) {
-                    throw new IllegalRuleException();
+                    throw new IllegalRuleException("No case rule with case number: " + action.getCaseNo());
                 }
                 if (processedCases != null && processedCases.contains(caseRule.getCaseNo())) {
                     return;
                 }
-                if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseWhenNo())) {
+                if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseNo())) {
                     CaseExpression caseExpression = new CaseExpression(this);
                     if (caseExpression.test(caseWhenRule)) {
                         if (processedCases == null) {
@@ -554,7 +560,7 @@ public class CoreActivity extends AdviceActivity {
                         if (processedCaseWhens == null) {
                             processedCaseWhens = new HashSet<>();
                         }
-                        processedCaseWhens.add(caseWhenRule.getCaseWhenNo());
+                        processedCaseWhens.add(caseWhenRule.getCaseNo());
                     } else {
                         return;
                     }
@@ -578,7 +584,7 @@ public class CoreActivity extends AdviceActivity {
                 log.trace("actionResult " + resultValue);
             }
 
-            if (action.isCaseWhenLast() && caseWhenRule != null && caseWhenRule.getResponse() != null) {
+            if (action.isLastInCaseWhen() && caseWhenRule != null && caseWhenRule.getResponse() != null) {
                 reserveResponse(caseWhenRule.getResponse());
             }
         } catch (Exception e) {

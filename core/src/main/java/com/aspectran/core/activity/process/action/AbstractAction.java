@@ -26,11 +26,9 @@ public abstract class AbstractAction implements Executable {
 
     private final ActionList parent;
 
-    private int caseWhenNo;
+    private int caseNo;
 
-    private boolean caseWhenFirst;
-
-    private boolean caseWhenLast;
+    private boolean lastInCaseWhen;
 
     /**
      * Instantiates a new AbstractAction.
@@ -50,33 +48,23 @@ public abstract class AbstractAction implements Executable {
     public abstract String getActionId();
 
     @Override
-    public int getCaseWhenNo() {
-        return caseWhenNo;
+    public int getCaseNo() {
+        return caseNo;
     }
 
     @Override
-    public void setCaseWhenNo(int caseWhenNo) {
-        this.caseWhenNo = caseWhenNo;
+    public void setCaseNo(int caseNo) {
+        this.caseNo = caseNo;
     }
 
     @Override
-    public boolean isCaseWhenFirst() {
-        return caseWhenFirst;
+    public boolean isLastInCaseWhen() {
+        return lastInCaseWhen;
     }
 
     @Override
-    public void setCaseWhenFirst(boolean caseWhenFirst) {
-        this.caseWhenFirst = caseWhenFirst;
-    }
-
-    @Override
-    public boolean isCaseWhenLast() {
-        return caseWhenLast;
-    }
-
-    @Override
-    public void setCaseWhenLast(boolean caseWhenLast) {
-        this.caseWhenLast = caseWhenLast;
+    public void setLastInCaseWhen(boolean lastInCaseWhen) {
+        this.lastInCaseWhen = lastInCaseWhen;
     }
     
 }

@@ -72,16 +72,12 @@ public interface Executable {
      */
     <T> T getActionRule();
 
-    int getCaseWhenNo();
+    int getCaseNo();
 
-    void setCaseWhenNo(int caseWhenNo);
+    void setCaseNo(int caseNo);
 
-    boolean isCaseWhenFirst();
+    boolean isLastInCaseWhen();
 
-    void setCaseWhenFirst(boolean caseWhenFirst);
-
-    boolean isCaseWhenLast();
-
-    void setCaseWhenLast(boolean caseWhenLast);
+    void setLastInCaseWhen(boolean lastInCaseWhen);
 
 }

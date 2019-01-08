@@ -220,4 +220,26 @@
 
     <append file="/config/sample/scheduler-config.xml"/>
 
+    <translet name="caseTest">
+        <request>
+            <attributes>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </attributes>
+        </request>
+        <case>
+            <when test="case1">
+                <action id="case1" method="case1" bean="SampleAction"/>
+            </when>
+            <else>
+                <action id="case2" method="case2" bean="SampleAction"/>
+            </else>
+        </case>
+        <transform type="transform/text">
+            <template style="apon">
+                |@{case1}
+            </template>
+        </transform>
+    </translet>
+
 </aspectran>

@@ -2,6 +2,8 @@ package com.aspectran.core.context.rule;
 
 import java.util.LinkedHashMap;
 
+import static com.aspectran.core.context.rule.CaseRule.toCaseGroupNo;
+
 /**
  * <p>Created: 2019-01-06</p>
  */
@@ -12,7 +14,7 @@ public class CaseRuleMap extends LinkedHashMap<Integer, CaseRule> {
     }
 
     public CaseRule newCaseRule() {
-        int caseNo = size() + 1;
+        int caseNo = toCaseGroupNo(size() + 1);
         return newCaseRule(caseNo);
     }
 
@@ -23,7 +25,7 @@ public class CaseRuleMap extends LinkedHashMap<Integer, CaseRule> {
     }
 
     public CaseRule getCaseRule(int caseNo) {
-        return get(CaseRule.toCaseNo(caseNo));
+        return get(toCaseGroupNo(caseNo));
     }
 
 }

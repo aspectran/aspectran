@@ -57,10 +57,9 @@ class CaseWhenNodeletAdder implements NodeletAdder {
             ActionRuleApplicable applicable = parser.peekObject(1);
 
             if (!actionList.isEmpty()) {
-                actionList.get(0).setCaseWhenFirst(true);
-                actionList.get(actionList.size() - 1).setCaseWhenLast(true);
+                actionList.get(actionList.size() - 1).setLastInCaseWhen(true);
                 for (Executable action : actionList) {
-                    action.setCaseWhenNo(caseWhenRule.getCaseWhenNo());
+                    action.setCaseNo(caseWhenRule.getCaseNo());
                     applicable.applyActionRule(action);
                 }
             }
@@ -80,10 +79,9 @@ class CaseWhenNodeletAdder implements NodeletAdder {
             ActionRuleApplicable applicable = parser.peekObject(1);
 
             if (!actionList.isEmpty()) {
-                actionList.get(0).setCaseWhenFirst(true);
-                actionList.get(actionList.size() - 1).setCaseWhenLast(true);
+                actionList.get(actionList.size() - 1).setLastInCaseWhen(true);
                 for (Executable action : actionList) {
-                    action.setCaseWhenNo(caseWhenRule.getCaseWhenNo());
+                    action.setCaseNo(caseWhenRule.getCaseNo());
                     applicable.applyActionRule(action);
                 }
             }
