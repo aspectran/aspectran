@@ -18,6 +18,9 @@ public class CaseWhenRule implements ResponseRuleApplicable {
     private Response response;
 
     public CaseWhenRule(int caseWhenNo) {
+        if (caseWhenNo <= 0 || caseWhenNo > 999) {
+            throw new IllegalArgumentException("caseWhenNo must be > 0 and <= 999");
+        }
         this.caseWhenNo = caseWhenNo;
     }
 

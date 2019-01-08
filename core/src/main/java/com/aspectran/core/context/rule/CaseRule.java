@@ -13,6 +13,9 @@ public class CaseRule {
     private Map<Integer, CaseWhenRule> caseWhenRuleMap;
 
     public CaseRule(int caseNo) {
+        if (caseNo <= 0 || caseNo > 99) {
+            throw new IllegalArgumentException("caseWhenNo must be > 0 and <= 99");
+        }
         this.caseNo = caseNo;
     }
 
@@ -27,6 +30,9 @@ public class CaseRule {
     }
 
     public CaseWhenRule newCaseWhenRule(int caseWhenNo) {
+        if (caseWhenNo <= 0 || caseWhenNo > 999) {
+            throw new IllegalArgumentException("caseWhenNo must be > 0 and <= 999");
+        }
         if (caseWhenRuleMap == null) {
             caseWhenRuleMap = new LinkedHashMap<>();
         }
