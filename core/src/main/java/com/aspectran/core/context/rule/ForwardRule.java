@@ -15,19 +15,17 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class ForwardResponseRule.
+ * The Class ForwardRule.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class ForwardResponseRule extends ActionPossessSupport implements Replicable<ForwardResponseRule> {
+public class ForwardRule extends AbstractResponseRule implements Replicable<ForwardRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
@@ -38,8 +36,6 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
     private MethodType requestMethod;
 
     private ItemRuleMap attributeItemRuleMap;
-
-    private Boolean defaultResponse;
 
     /**
      * Gets the content type.
@@ -128,35 +124,8 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
         attributeItemRuleMap.putItemRule(itemRule);
     }
 
-    /**
-     * Returns whether the default response.
-     *
-     * @return whether the default response
-     */
-    public Boolean getDefaultResponse() {
-        return defaultResponse;
-    }
-
-    /**
-     * Returns whether the default response.
-     *
-     * @return true, if is default response
-     */
-    public boolean isDefaultResponse() {
-        return BooleanUtils.toBoolean(defaultResponse);
-    }
-
-    /**
-     * Sets whether the default response.
-     *
-     * @param defaultResponse whether the default response
-     */
-    public void setDefaultResponse(Boolean defaultResponse) {
-        this.defaultResponse = defaultResponse;
-    }
-
     @Override
-    public ForwardResponseRule replicate() {
+    public ForwardRule replicate() {
         return replicate(this);
     }
 
@@ -167,21 +136,21 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
         tsb.append("translet", transletName);
         tsb.append("method", requestMethod);
         tsb.append("contentType", contentType);
-        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("default", getDefaultResponse());
         return tsb.toString();
     }
 
     /**
-     * Returns a new instance of ForwardResponseRule.
+     * Returns a new instance of ForwardRule.
      *
      * @param contentType the content type
      * @param transletName the translet name
      * @param method the request method
      * @param defaultResponse whether the default response
-     * @return an instance of ForwardResponseRule
+     * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ForwardResponseRule newInstance(String contentType, String transletName, String method, Boolean defaultResponse)
+    public static ForwardRule newInstance(String contentType, String transletName, String method, Boolean defaultResponse)
             throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'forward' element requires a 'translet' attribute");
@@ -195,7 +164,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
             }
         }
 
-        ForwardResponseRule frr = new ForwardResponseRule();
+        ForwardRule frr = new ForwardRule();
         frr.setContentType(contentType);
         frr.setTransletName(transletName);
         frr.setRequestMethod(requestMethod);
@@ -204,29 +173,29 @@ public class ForwardResponseRule extends ActionPossessSupport implements Replica
     }
 
     /**
-     * Returns a new instance of ForwardResponseRule.
+     * Returns a new instance of ForwardRule.
      *
      * @param transletName the translet name
-     * @return an instance of ForwardResponseRule
+     * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ForwardResponseRule newInstance(String transletName) throws IllegalRuleException {
+    public static ForwardRule newInstance(String transletName) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("transletName must not be null");
         }
 
-        ForwardResponseRule frr = new ForwardResponseRule();
+        ForwardRule frr = new ForwardRule();
         frr.setTransletName(transletName);
         return frr;
     }
 
-    public static ForwardResponseRule replicate(ForwardResponseRule forwardResponseRule) {
-        ForwardResponseRule frr = new ForwardResponseRule();
-        frr.setContentType(forwardResponseRule.getContentType());
-        frr.setTransletName(forwardResponseRule.getTransletName());
-        frr.setAttributeItemRuleMap(forwardResponseRule.getAttributeItemRuleMap());
-        frr.setDefaultResponse(forwardResponseRule.getDefaultResponse());
-        frr.setActionList(forwardResponseRule.getActionList());
+    public static ForwardRule replicate(ForwardRule forwardRule) {
+        ForwardRule frr = new ForwardRule();
+        frr.setContentType(forwardRule.getContentType());
+        frr.setTransletName(forwardRule.getTransletName());
+        frr.setAttributeItemRuleMap(forwardRule.getAttributeItemRuleMap());
+        frr.setDefaultResponse(forwardRule.getDefaultResponse());
+        frr.setActionList(forwardRule.getActionList());
         return frr;
     }
 

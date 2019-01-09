@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.CaseRule;
 import com.aspectran.core.context.rule.CaseWhenRule;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -45,46 +42,22 @@ class CaseWhenNodeletAdder implements NodeletAdder {
             CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule();
             caseWhenRule.setExpression(test);
             parser.pushObject(caseWhenRule);
-
-            ActionList actionList = new ActionList();
-            parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
         parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
-            ActionList actionList = parser.popObject();
-            CaseWhenRule caseWhenRule = parser.popObject();
-            ActionRuleApplicable applicable = parser.peekObject(1);
-
-            if (!actionList.isEmpty()) {
-                actionList.get(actionList.size() - 1).setLastInCaseWhen(true);
-                for (Executable action : actionList) {
-                    action.setCaseNo(caseWhenRule.getCaseNo());
-                    applicable.applyActionRule(action);
-                }
-            }
+            parser.popObject();
         });
         parser.setXpath(xpath + "/else");
         parser.addNodelet(attrs -> {
             CaseRule caseRule = parser.peekObject();
             CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule();
             parser.pushObject(caseWhenRule);
-
-            ActionList actionList = new ActionList();
-            parser.pushObject(actionList);
         });
+        parser.addNodelet(actionNodeletAdder);
+        parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
-            ActionList actionList = parser.popObject();
-            CaseWhenRule caseWhenRule = parser.popObject();
-            ActionRuleApplicable applicable = parser.peekObject(1);
-
-            if (!actionList.isEmpty()) {
-                actionList.get(actionList.size() - 1).setLastInCaseWhen(true);
-                for (Executable action : actionList) {
-                    action.setCaseNo(caseWhenRule.getCaseNo());
-                    applicable.applyActionRule(action);
-                }
-            }
+            parser.popObject();
         });
     }
 

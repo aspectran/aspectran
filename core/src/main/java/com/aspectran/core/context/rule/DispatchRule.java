@@ -21,21 +21,19 @@ import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.List;
 
 /**
- * The Class DispatchResponseRule.
+ * The Class DispatchRule.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class DispatchResponseRule extends ActionPossessSupport implements Replicable<DispatchResponseRule> {
+public class DispatchRule extends AbstractResponseRule implements Replicable<DispatchRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 
@@ -177,33 +175,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
         this.encoding = encoding;
     }
 
-    /**
-     * Gets the default response.
-     *
-     * @return the default response
-     */
-    public Boolean getDefaultResponse() {
-        return defaultResponse;
-    }
-
-    /**
-     * Returns whether the default response.
-     *
-     * @return true, if is default response
-     */
-    public boolean isDefaultResponse() {
-        return BooleanUtils.toBoolean(defaultResponse);
-    }
-
-    /**
-     * Sets whether the default response.
-     *
-     * @param defaultResponse whether the default response
-     */
-    public void setDefaultResponse(Boolean defaultResponse) {
-        this.defaultResponse = defaultResponse;
-    }
-
     public ViewDispatcher getViewDispatcher() {
         return viewDispatcher;
     }
@@ -213,7 +184,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     }
 
     @Override
-    public DispatchResponseRule replicate() {
+    public DispatchRule replicate() {
         return replicate(this);
     }
 
@@ -223,11 +194,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Returns a string representation of {@code DispatchResponseRule} with used {@code Dispatcher}.
+     * Returns a string representation of {@code DispatchRule} with used {@code Dispatcher}.
      *
      * @param viewDispatcher the view dispatcher
      * @param targetName the new dispatch name
-     * @return a string representation of {@code DispatchResponseRule}.
+     * @return a string representation of {@code DispatchRule}.
      */
     public String toString(ViewDispatcher viewDispatcher, String targetName) {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -242,18 +213,18 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Returns a new instance of DispatchResponseRule.
+     * Returns a new instance of DispatchRule.
      *
      * @param name the dispatch name
      * @param dispatcherName the id or class name of the view dispatcher bean
      * @param contentType the content type
      * @param encoding the character encoding
      * @param defaultResponse whether it is the default response
-     * @return an instance of DispatchResponseRule
+     * @return an instance of DispatchRule
      */
-    public static DispatchResponseRule newInstance(String name, String dispatcherName, String contentType,
-                                                   String encoding, Boolean defaultResponse) {
-        DispatchResponseRule drr = new DispatchResponseRule();
+    public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
+                                           String encoding, Boolean defaultResponse) {
+        DispatchRule drr = new DispatchRule();
         drr.setName(name);
         drr.setDispatcherName(dispatcherName);
         drr.setContentType(contentType);
@@ -263,47 +234,47 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
     }
 
     /**
-     * Returns a new instance of DispatchResponseRule.
+     * Returns a new instance of DispatchRule.
      *
      * @param name the dispatch name
      * @param dispatcher the id or class name of the view dispatcher bean
      * @param contentType the content type
      * @param encoding the character encoding
-     * @return the dispatch response rule
+     * @return the dispatch rule
      */
-    public static DispatchResponseRule newInstance(String name, String dispatcher, String contentType, String encoding) {
+    public static DispatchRule newInstance(String name, String dispatcher, String contentType, String encoding) {
         return newInstance(name, dispatcher, contentType, encoding, null);
     }
 
     /**
-     * Returns a new instance of DispatchResponseRule.
+     * Returns a new instance of DispatchRule.
      *
      * @param name the dispatch name
-     * @return the dispatch response rule
+     * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static DispatchResponseRule newInstance(String name) throws IllegalRuleException {
+    public static DispatchRule newInstance(String name) throws IllegalRuleException {
         if (name == null) {
             throw new IllegalRuleException("name must not be null");
         }
-        DispatchResponseRule drr = new DispatchResponseRule();
+        DispatchRule drr = new DispatchRule();
         drr.setName(name);
         return drr;
     }
 
     /**
-     * Returns a new derived instance of DispatchResponseRule.
+     * Returns a new derived instance of DispatchRule.
      *
-     * @param dispatchResponseRule an instance of DispatchResponseRule
-     * @return the dispatch response rule
+     * @param dispatchRule an instance of DispatchRule
+     * @return the dispatch rule
      */
-    public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
-        DispatchResponseRule drr = new DispatchResponseRule();
-        drr.setName(dispatchResponseRule.getName(), dispatchResponseRule.getNameTokens());
-        drr.setContentType(dispatchResponseRule.getContentType());
-        drr.setEncoding(dispatchResponseRule.getEncoding());
-        drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
-        drr.setActionList(dispatchResponseRule.getActionList());
+    public static DispatchRule replicate(DispatchRule dispatchRule) {
+        DispatchRule drr = new DispatchRule();
+        drr.setName(dispatchRule.getName(), dispatchRule.getNameTokens());
+        drr.setContentType(dispatchRule.getContentType());
+        drr.setEncoding(dispatchRule.getEncoding());
+        drr.setDefaultResponse(dispatchRule.getDefaultResponse());
+        drr.setActionList(dispatchRule.getActionList());
         return drr;
     }
 

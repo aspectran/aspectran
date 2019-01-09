@@ -25,6 +25,8 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.util.Collection;
+
 /**
  * Advices are actions taken for a particular join point.
  * In terms of programming, they are methods that gets executed
@@ -119,6 +121,11 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     @Override
     public void applyActionRule(Executable action) {
         this.action = action;
+    }
+
+    @Override
+    public void applyActionRule(Collection<Executable> actionList) {
+        throw new UnsupportedOperationException();
     }
 
     public Executable getExecutableAction() {

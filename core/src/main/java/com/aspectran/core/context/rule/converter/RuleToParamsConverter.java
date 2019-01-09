@@ -31,17 +31,17 @@ import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.CaseRule;
 import com.aspectran.core.context.rule.CaseWhenRule;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.ScheduleJobRule;
@@ -53,7 +53,39 @@ import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
-import com.aspectran.core.context.rule.params.*;
+import com.aspectran.core.context.rule.params.ActionParameters;
+import com.aspectran.core.context.rule.params.AdviceActionParameters;
+import com.aspectran.core.context.rule.params.AdviceParameters;
+import com.aspectran.core.context.rule.params.AppendParameters;
+import com.aspectran.core.context.rule.params.AspectParameters;
+import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.params.BeanParameters;
+import com.aspectran.core.context.rule.params.CallParameters;
+import com.aspectran.core.context.rule.params.CaseParameters;
+import com.aspectran.core.context.rule.params.CaseWhenParameters;
+import com.aspectran.core.context.rule.params.ConstructorParameters;
+import com.aspectran.core.context.rule.params.ContentParameters;
+import com.aspectran.core.context.rule.params.ContentsParameters;
+import com.aspectran.core.context.rule.params.DefaultSettingsParameters;
+import com.aspectran.core.context.rule.params.DispatchParameters;
+import com.aspectran.core.context.rule.params.EnvironmentParameters;
+import com.aspectran.core.context.rule.params.ExceptionParameters;
+import com.aspectran.core.context.rule.params.ExceptionThrownParameters;
+import com.aspectran.core.context.rule.params.ForwardParameters;
+import com.aspectran.core.context.rule.params.ItemHolderParameters;
+import com.aspectran.core.context.rule.params.ItemParameters;
+import com.aspectran.core.context.rule.params.JoinpointParameters;
+import com.aspectran.core.context.rule.params.RedirectParameters;
+import com.aspectran.core.context.rule.params.RequestParameters;
+import com.aspectran.core.context.rule.params.ResponseParameters;
+import com.aspectran.core.context.rule.params.RootParameters;
+import com.aspectran.core.context.rule.params.ScheduleJobParameters;
+import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TemplateParameters;
+import com.aspectran.core.context.rule.params.TransformParameters;
+import com.aspectran.core.context.rule.params.TransletParameters;
+import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ContentStyleType;
@@ -445,13 +477,13 @@ public class RuleToParamsConverter {
                                 caseWhenParameters.putValue(CaseWhenParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
                             } else if (response.getResponseType() == ResponseType.DISPATCH) {
                                 DispatchResponse dispatchResponse = (DispatchResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+                                caseWhenParameters.putValue(CaseWhenParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
                             } else if (response.getResponseType() == ResponseType.FORWARD) {
                                 ForwardResponse forwardResponse = (ForwardResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
+                                caseWhenParameters.putValue(CaseWhenParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
                             } else if (response.getResponseType() == ResponseType.REDIRECT) {
                                 RedirectResponse redirectResponse = (RedirectResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+                                caseWhenParameters.putValue(CaseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
                             }
                         }
                     }
@@ -478,13 +510,13 @@ public class RuleToParamsConverter {
                         transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
                     } else if (response.getResponseType() == ResponseType.DISPATCH) {
                         DispatchResponse dispatchResponse = (DispatchResponse)response;
-                        transletParameters.putValue(TransletParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+                        transletParameters.putValue(TransletParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
                     } else if (response.getResponseType() == ResponseType.FORWARD) {
                         ForwardResponse forwardResponse = (ForwardResponse)response;
-                        transletParameters.putValue(TransletParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
+                        transletParameters.putValue(TransletParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
                     } else if (response.getResponseType() == ResponseType.REDIRECT) {
                         RedirectResponse redirectResponse = (RedirectResponse)response;
-                        transletParameters.putValue(TransletParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+                        transletParameters.putValue(TransletParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
                     }
                 }
             }
@@ -528,13 +560,13 @@ public class RuleToParamsConverter {
                 etParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
             } else if (response.getResponseType() == ResponseType.DISPATCH) {
                 DispatchResponse dispatchResponse = (DispatchResponse)response;
-                etParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+                etParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
             } else if (response.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)response;
-                etParameters.putValue(ExceptionThrownParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
+                etParameters.putValue(ExceptionThrownParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
             } else if (response.getResponseType() == ResponseType.REDIRECT) {
                 RedirectResponse redirectResponse = (RedirectResponse)response;
-                etParameters.putValue(ExceptionThrownParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+                etParameters.putValue(ExceptionThrownParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
             }
         }
 
@@ -547,17 +579,17 @@ public class RuleToParamsConverter {
         responseParameters.putValueNonNull(ResponseParameters.encoding, responseRule.getEncoding());
 
         if (responseRule.getResponseType() == ResponseType.TRANSFORM) {
-            TransformResponse transformResponse = responseRule.getRespondent();
+            TransformResponse transformResponse = (TransformResponse)responseRule.getResponse();
             responseParameters.putValue(ResponseParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
         } else if (responseRule.getResponseType() == ResponseType.DISPATCH) {
-            DispatchResponse dispatchResponse = responseRule.getRespondent();
-            responseParameters.putValue(ResponseParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+            DispatchResponse dispatchResponse = (DispatchResponse)responseRule.getResponse();
+            responseParameters.putValue(ResponseParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
         } else if (responseRule.getResponseType() == ResponseType.FORWARD) {
-            ForwardResponse forwardResponse = responseRule.getRespondent();
-            responseParameters.putValue(ResponseParameters.forward, toForwardParameters(forwardResponse.getForwardResponseRule()));
+            ForwardResponse forwardResponse = (ForwardResponse)responseRule.getResponse();
+            responseParameters.putValue(ResponseParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
         } else if (responseRule.getResponseType() == ResponseType.REDIRECT) {
-            RedirectResponse redirectResponse = responseRule.getRespondent();
-            responseParameters.putValue(ResponseParameters.redirect, toRedirectParameters(redirectResponse.getRedirectResponseRule()));
+            RedirectResponse redirectResponse = (RedirectResponse)responseRule.getResponse();
+            responseParameters.putValue(ResponseParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
         }
 
         return responseParameters;
@@ -592,15 +624,15 @@ public class RuleToParamsConverter {
         return transformParameters;
     }
 
-    public static DispatchParameters toDispatchParameters(DispatchResponseRule dispatchResponseRule) {
+    public static DispatchParameters toDispatchParameters(DispatchRule dispatchRule) {
         DispatchParameters dispatchParameters = new DispatchParameters();
-        dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchResponseRule.getName());
-        dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchResponseRule.getDispatcherName());
-        dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchResponseRule.getContentType());
-        dispatchParameters.putValueNonNull(DispatchParameters.encoding, dispatchResponseRule.getEncoding());
-        dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
+        dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchRule.getName());
+        dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchRule.getDispatcherName());
+        dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchRule.getContentType());
+        dispatchParameters.putValueNonNull(DispatchParameters.encoding, dispatchRule.getEncoding());
+        dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchRule.getDefaultResponse());
 
-        ActionList actionList = dispatchResponseRule.getActionList();
+        ActionList actionList = dispatchRule.getActionList();
         if (actionList != null) {
             toActionList(actionList, dispatchParameters, DispatchParameters.action);
         }
@@ -608,18 +640,18 @@ public class RuleToParamsConverter {
         return dispatchParameters;
     }
 
-    public static ForwardParameters toForwardParameters(ForwardResponseRule forwardResponseRule) {
+    public static ForwardParameters toForwardParameters(ForwardRule forwardRule) {
         ForwardParameters forwardParameters = new ForwardParameters();
-        forwardParameters.putValueNonNull(ForwardParameters.contentType, forwardResponseRule.getContentType());
-        forwardParameters.putValueNonNull(ForwardParameters.translet, forwardResponseRule.getTransletName());
-        forwardParameters.putValueNonNull(ForwardParameters.defaultResponse, forwardResponseRule.getDefaultResponse());
+        forwardParameters.putValueNonNull(ForwardParameters.contentType, forwardRule.getContentType());
+        forwardParameters.putValueNonNull(ForwardParameters.translet, forwardRule.getTransletName());
+        forwardParameters.putValueNonNull(ForwardParameters.defaultResponse, forwardRule.getDefaultResponse());
 
-        ItemRuleMap attributeItemRuleMap = forwardResponseRule.getAttributeItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = forwardRule.getAttributeItemRuleMap();
         if (attributeItemRuleMap != null) {
             toItemHolderParameters(attributeItemRuleMap, forwardParameters, ForwardParameters.attributes);
         }
 
-        ActionList actionList = forwardResponseRule.getActionList();
+        ActionList actionList = forwardRule.getActionList();
         if (actionList != null) {
             toActionList(actionList, forwardParameters, ForwardParameters.action);
         }
@@ -627,21 +659,21 @@ public class RuleToParamsConverter {
         return forwardParameters;
     }
 
-    public static RedirectParameters toRedirectParameters(RedirectResponseRule redirectResponseRule) {
+    public static RedirectParameters toRedirectParameters(RedirectRule redirectRule) {
         RedirectParameters redirectParameters = new RedirectParameters();
-        redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
-        redirectParameters.putValueNonNull(RedirectParameters.path, redirectResponseRule.getPath());
-        redirectParameters.putValueNonNull(RedirectParameters.encoding, redirectResponseRule.getEncoding());
-        redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameters, redirectResponseRule.getExcludeNullParameters());
-        redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameters, redirectResponseRule.getExcludeEmptyParameters());
-        redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
+        redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectRule.getContentType());
+        redirectParameters.putValueNonNull(RedirectParameters.path, redirectRule.getPath());
+        redirectParameters.putValueNonNull(RedirectParameters.encoding, redirectRule.getEncoding());
+        redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameters, redirectRule.getExcludeNullParameters());
+        redirectParameters.putValueNonNull(RedirectParameters.excludeEmptyParameters, redirectRule.getExcludeEmptyParameters());
+        redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectRule.getDefaultResponse());
 
-        ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
+        ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
         if (parameterItemRuleMap != null) {
             toItemHolderParameters(parameterItemRuleMap, redirectParameters, RedirectParameters.parameters);
         }
 
-        ActionList actionList = redirectResponseRule.getActionList();
+        ActionList actionList = redirectRule.getActionList();
         if (actionList != null) {
             toActionList(actionList, redirectParameters, RedirectParameters.action);
         }

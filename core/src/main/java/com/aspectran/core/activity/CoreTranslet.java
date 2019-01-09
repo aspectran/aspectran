@@ -27,9 +27,9 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
+import com.aspectran.core.context.rule.ForwardRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
@@ -294,31 +294,31 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void dispatch(String name, String dispatcherName) {
-        DispatchResponseRule drr = new DispatchResponseRule();
+        DispatchRule drr = new DispatchRule();
         drr.setName(name, null);
         drr.setDispatcherName(dispatcherName);
         dispatch(drr);
     }
 
     @Override
-    public void dispatch(DispatchResponseRule dispatchResponseRule) {
-        Response res = new DispatchResponse(dispatchResponseRule);
+    public void dispatch(DispatchRule dispatchRule) {
+        Response res = new DispatchResponse(dispatchRule);
         response(res);
     }
 
     @Override
     public void forward(String transletName) {
-        ForwardResponseRule frr = new ForwardResponseRule();
+        ForwardRule frr = new ForwardRule();
         frr.setTransletName(transletName);
         forward(frr);
     }
 
     @Override
-    public void forward(ForwardResponseRule forwardResponseRule) {
-        if (forwardResponseRule.getTransletName() == null) {
-            forwardResponseRule.setTransletName(StringUtils.EMPTY);
+    public void forward(ForwardRule forwardRule) {
+        if (forwardRule.getTransletName() == null) {
+            forwardRule.setTransletName(StringUtils.EMPTY);
         }
-        Response res = new ForwardResponse(forwardResponseRule);
+        Response res = new ForwardResponse(forwardRule);
         response(res);
     }
 
@@ -329,15 +329,15 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void redirect(String path, Map<String, String> parameters) {
-        RedirectResponseRule rrr = new RedirectResponseRule();
+        RedirectRule rrr = new RedirectRule();
         rrr.setPath(path, null);
         rrr.setParameters(parameters);
         redirect(rrr);
     }
 
     @Override
-    public void redirect(RedirectResponseRule redirectResponseRule) {
-        Response res = new RedirectResponse(redirectResponseRule);
+    public void redirect(RedirectRule redirectRule) {
+        Response res = new RedirectResponse(redirectRule);
         response(res);
     }
 

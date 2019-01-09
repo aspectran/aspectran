@@ -31,7 +31,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.CaseExpression;
+import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.CaseRuleMap;
 import com.aspectran.core.context.rule.CaseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -195,7 +195,7 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public void perform() {
-        ForwardResponseRule forwardResponseRule = null;
+        ForwardRule forwardRule = null;
         try {
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
@@ -207,9 +207,9 @@ public class CoreActivity extends AdviceActivity {
                     }
                 }
 
-                forwardResponseRule = response();
-                if (forwardResponseRule != null) {
-                    forward(forwardResponseRule);
+                forwardRule = response();
+                if (forwardRule != null) {
+                    forward(forwardRule);
                     return;
                 }
 
@@ -218,7 +218,7 @@ public class CoreActivity extends AdviceActivity {
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
-                if (forwardResponseRule == null) {
+                if (forwardRule == null) {
                     setCurrentAspectAdviceType(AspectAdviceType.FINALLY);
                     executeAdvice(getFinallyAdviceRuleList(), false);
                 }
@@ -239,7 +239,7 @@ public class CoreActivity extends AdviceActivity {
         } catch (Throwable e) {
             throw new ActivityException("An error occurred while performing the activity", e);
         } finally {
-            if (forwardResponseRule == null) {
+            if (forwardRule == null) {
                 Scope requestScope = getRequestAdapter().getRequestScope(false);
                 if (requestScope != null) {
                     requestScope.destroy();
@@ -271,7 +271,7 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    private ForwardResponseRule response() {
+    private ForwardRule response() {
         if (!committed) {
             committed = true;
         } else {
@@ -291,22 +291,22 @@ public class CoreActivity extends AdviceActivity {
 
             if (res.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)res;
-                return forwardResponse.getForwardResponseRule();
+                return forwardResponse.getForwardRule();
             }
         }
         return null;
     }
 
-    private void forward(ForwardResponseRule forwardResponseRule) {
+    private void forward(ForwardRule forwardRule) {
         if (log.isDebugEnabled()) {
             log.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
-                    forwardResponseRule.getTransletName() + "]");
+                    forwardRule.getTransletName() + "]");
         }
 
         reserveResponse(null);
         committed = false;
 
-        prepare(forwardResponseRule.getTransletName(), forwardResponseRule.getRequestMethod(), translet);
+        prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod(), translet);
         perform();
     }
 
@@ -551,8 +551,8 @@ public class CoreActivity extends AdviceActivity {
                     return;
                 }
                 if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseNo())) {
-                    CaseExpression caseExpression = new CaseExpression(this);
-                    if (caseExpression.test(caseWhenRule)) {
+                    BooleanExpression caseExpression = new BooleanExpression(this);
+                    if (caseExpression.evaluate(caseWhenRule)) {
                         if (processedCases == null) {
                             processedCases = new HashSet<>();
                         }

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -28,7 +27,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends ActionPossessSupport implements Replicable<TransformRule> {
+public class TransformRule extends AbstractResponseRule implements Replicable<TransformRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
@@ -37,8 +36,6 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
     private String contentType;
 
     private String encoding;
-
-    private Boolean defaultResponse;
 
     private Boolean pretty;
 
@@ -114,33 +111,6 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    /**
-     * Returns whether this is the default response.
-     *
-     * @return whether this is the default response
-     */
-    public Boolean getDefaultResponse() {
-        return defaultResponse;
-    }
-
-    /**
-     * Returns whether this is the default response.
-     *
-     * @return whether this is the default response
-     */
-    public boolean isDefaultResponse() {
-        return BooleanUtils.toBoolean(defaultResponse);
-    }
-
-    /**
-     * Sets whether this is the default response.
-     *
-     * @param defaultResponse whether this is the default response
-     */
-    public void setDefaultResponse(Boolean defaultResponse) {
-        this.defaultResponse = defaultResponse;
     }
 
     /**
@@ -229,7 +199,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
         tsb.appendForce("transformType", transformType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
-        tsb.append("defaultResponse", defaultResponse);
+        tsb.append("default", getDefaultResponse());
         tsb.append("pretty", pretty);
         tsb.append("template", templateId);
         tsb.append("template", templateRule);

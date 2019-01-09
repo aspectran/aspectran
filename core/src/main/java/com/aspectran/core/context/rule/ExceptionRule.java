@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class ExceptionRule implements Iterable<ExceptionThrownRule> {
 
-    private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(5);
+    private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(8);
 
     private ExceptionThrownRule defaultExceptionThrownRule;
 

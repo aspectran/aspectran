@@ -21,7 +21,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -143,9 +143,9 @@ class ViewDispatcherTest {
 
         TransletRule transletRule3 = new TransletRule();
         transletRule3.setName("test/appended/freemarker/template1");
-        DispatchResponseRule dispatchResponseRule1 = new DispatchResponseRule();
-        dispatchResponseRule1.setName("freemarker-template1");
-        transletRule3.applyResponseRule(dispatchResponseRule1);
+        DispatchRule dispatchRule1 = new DispatchRule();
+        dispatchRule1.setName("freemarker-template1");
+        transletRule3.applyResponseRule(dispatchRule1);
         aspectran1.addRule(transletRule3);
 
         TransletRule transletRule4 = new TransletRule();

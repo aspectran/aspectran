@@ -32,6 +32,7 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -336,6 +337,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         touchActionList().applyActionRule(action);
     }
 
+    @Override
+    public void applyActionRule(Collection<Executable> actionList) {
+        touchActionList().addAll(actionList);
+    }
+
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
@@ -415,33 +421,33 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+    public Response applyResponseRule(DispatchRule dispatchRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule();
         }
         implicitResponse = true;
 
-        return responseRule.applyResponseRule(dispatchResponseRule);
+        return responseRule.applyResponseRule(dispatchRule);
     }
 
     @Override
-    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+    public Response applyResponseRule(RedirectRule redirectRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule();
         }
         implicitResponse = true;
 
-        return responseRule.applyResponseRule(redirectResponseRule);
+        return responseRule.applyResponseRule(redirectRule);
     }
 
     @Override
-    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+    public Response applyResponseRule(ForwardRule forwardRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule();
         }
         implicitResponse = true;
 
-        return responseRule.applyResponseRule(forwardResponseRule);
+        return responseRule.applyResponseRule(forwardRule);
     }
 
     public void determineResponseRule() {
@@ -623,17 +629,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
             // assign dispatch name if the dispatch response exists
             if (rr.getResponse() instanceof DispatchResponse) {
                 DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
-                DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
-                String dispatchName = dispatchResponseRule.getName();
+                DispatchRule dispatchRule = dispatchResponse.getDispatchRule();
+                String dispatchName = dispatchRule.getName();
 
                 PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
                 if (prefixSuffixPattern.isSplitted()) {
-                    dispatchResponseRule.setName(prefixSuffixPattern.join(newDispatchName));
+                    dispatchRule.setName(prefixSuffixPattern.join(newDispatchName));
                 } else {
                     if (dispatchName != null) {
-                        dispatchResponseRule.setName(dispatchName + newDispatchName);
+                        dispatchRule.setName(dispatchName + newDispatchName);
                     } else {
-                        dispatchResponseRule.setName(newDispatchName);
+                        dispatchRule.setName(newDispatchName);
                     }
                 }
             }

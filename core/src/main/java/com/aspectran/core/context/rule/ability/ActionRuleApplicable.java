@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 
+import java.util.Collection;
+
 /**
  * The Interface ActionRuleApplicable.
  *
@@ -75,5 +77,7 @@ public interface ActionRuleApplicable {
      * @param action an executable action instance
      */
     void applyActionRule(Executable action);
+
+    void applyActionRule(Collection<Executable> actionList);
 
 }

@@ -23,7 +23,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -42,72 +42,72 @@ public class DispatchResponse implements Response {
 
     private static final Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
-    private final DispatchResponseRule dispatchResponseRule;
+    private final DispatchRule dispatchRule;
 
     /**
-     * Instantiates a new DispatchResponse with specified DispatchResponseRule.
+     * Instantiates a new DispatchResponse with specified DispatchRule.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      */
-    public DispatchResponse(DispatchResponseRule dispatchResponseRule) {
-        this.dispatchResponseRule = dispatchResponseRule;
+    public DispatchResponse(DispatchRule dispatchRule) {
+        this.dispatchRule = dispatchRule;
     }
 
     @Override
     public void commit(Activity activity) {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("response " + dispatchResponseRule);
+                log.debug("response " + dispatchRule);
             }
 
             ViewDispatcher viewDispatcher = getViewDispatcher(activity);
-            viewDispatcher.dispatch(activity, dispatchResponseRule);
+            viewDispatcher.dispatch(activity, dispatchRule);
         } catch (Exception e) {
-            throw new DispatchResponseException(dispatchResponseRule, e);
+            throw new DispatchResponseException(dispatchRule, e);
         }
     }
 
     /**
-     * Gets the dispatch response rule.
+     * Gets the dispatch rule.
      *
-     * @return the dispatch response rule
+     * @return the dispatch rule
      */
-    public DispatchResponseRule getDispatchResponseRule() {
-        return dispatchResponseRule;
+    public DispatchRule getDispatchRule() {
+        return dispatchRule;
     }
 
     @Override
     public ResponseType getResponseType() {
-        return DispatchResponseRule.RESPONSE_TYPE;
+        return DispatchRule.RESPONSE_TYPE;
     }
 
     @Override
     public String getContentType() {
-        return dispatchResponseRule.getContentType();
+        return dispatchRule.getContentType();
     }
 
     @Override
     public String getContentType(Activity activity) {
-        if (dispatchResponseRule.getContentType() != null) {
-            return dispatchResponseRule.getContentType();
+        if (dispatchRule.getContentType() != null) {
+            return dispatchRule.getContentType();
         } else {
             try {
                 ViewDispatcher viewDispatcher = getViewDispatcher(activity);
                 return viewDispatcher.getContentType();
             } catch (ViewDispatcherException e) {
-                throw new DispatchResponseException(dispatchResponseRule, e);
+                throw new DispatchResponseException(dispatchRule, e);
             }
         }
     }
 
     @Override
     public ActionList getActionList() {
-        return dispatchResponseRule.getActionList();
+        return dispatchRule.getActionList();
     }
 
     @Override
     public Response replicate() {
-        DispatchResponseRule drr = dispatchResponseRule.replicate();
+        DispatchRule drr = dispatchRule.replicate();
         return new DispatchResponse(drr);
     }
 
@@ -118,14 +118,14 @@ public class DispatchResponse implements Response {
      * @throws ViewDispatcherException if ViewDispatcher can not be determined
      */
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
-        if (dispatchResponseRule.getViewDispatcher() != null) {
-            return dispatchResponseRule.getViewDispatcher();
+        if (dispatchRule.getViewDispatcher() != null) {
+            return dispatchRule.getViewDispatcher();
         }
 
         try {
             String dispatcherName;
-            if (dispatchResponseRule.getDispatcherName() != null) {
-                dispatcherName = dispatchResponseRule.getDispatcherName();
+            if (dispatchRule.getDispatcherName() != null) {
+                dispatcherName = dispatchRule.getDispatcherName();
             } else {
                 dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
                 if (dispatcherName == null) {
@@ -165,7 +165,7 @@ public class DispatchResponse implements Response {
 
     @Override
     public String toString() {
-        return dispatchResponseRule.toString();
+        return dispatchRule.toString();
     }
 
     /**

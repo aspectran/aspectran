@@ -31,6 +31,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * The set of actions is called a Content or ActionList.
@@ -135,6 +136,11 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     @Override
     public void applyActionRule(Executable action) {
         add(action);
+    }
+
+    @Override
+    public void applyActionRule(Collection<Executable> actionList) {
+        addAll(actionList);
     }
 
     @Override

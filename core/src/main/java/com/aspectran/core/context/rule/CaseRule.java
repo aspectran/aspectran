@@ -1,5 +1,7 @@
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,6 +43,14 @@ public class CaseRule {
 
     public Map<Integer, CaseWhenRule> getCaseWhenRuleMap() {
         return caseWhenRuleMap;
+    }
+
+    public void join(ActionRuleApplicable applicable) {
+        if (caseWhenRuleMap != null) {
+            for (CaseWhenRule caseWhenRule : caseWhenRuleMap.values()) {
+                caseWhenRule.join(applicable);
+            }
+        }
     }
 
     public static int toCaseGroupNo(int caseNo) {

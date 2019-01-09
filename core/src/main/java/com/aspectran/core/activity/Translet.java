@@ -24,9 +24,9 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
+import com.aspectran.core.context.rule.ForwardRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.MessageSource;
@@ -434,9 +434,9 @@ public interface Translet extends BeanRegistry, MessageSource {
     /**
      * Dispatch to other resources as the given rule.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      */
-    void dispatch(DispatchResponseRule dispatchResponseRule);
+    void dispatch(DispatchRule dispatchRule);
 
     /**
      * Forward to the specified translet immediately.
@@ -448,13 +448,13 @@ public interface Translet extends BeanRegistry, MessageSource {
     /**
      * Forward according to a given rule.
      *
-     * @param forwardResponseRule the forward response rule
+     * @param forwardRule the forward rule
      */
-    void forward(ForwardResponseRule forwardResponseRule);
+    void forward(ForwardRule forwardRule);
 
     /**
      * Redirect a client to a new target resource.
-     * If an intended redirect response rule exists, that may be used.
+     * If an intended redirect rule exists, that may be used.
      *
      * @param path the redirect path
      */
@@ -471,9 +471,9 @@ public interface Translet extends BeanRegistry, MessageSource {
     /**
      * Redirect a client according to the given rule.
      *
-     * @param redirectResponseRule the redirect response rule
+     * @param redirectRule the redirect rule
      */
-    void redirect(RedirectResponseRule redirectResponseRule);
+    void redirect(RedirectRule redirectRule);
 
     /**
      * Returns whether the exception was thrown.

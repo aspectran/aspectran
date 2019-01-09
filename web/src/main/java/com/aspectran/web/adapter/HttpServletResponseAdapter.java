@@ -22,7 +22,7 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 
@@ -134,8 +134,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
-        String path = redirectResponseRule.getPath(activity);
+    public String redirect(RedirectRule redirectRule) throws IOException {
+        String path = redirectRule.getPath(activity);
         int questionPos = -1;
 
         StringBuilder sb = new StringBuilder(256);
@@ -144,7 +144,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
             questionPos = path.indexOf(QUESTION_CHAR);
         }
 
-        ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
+        ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpression(activity);
             Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
@@ -163,10 +163,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                     name = entry.getKey();
                     value = entry.getValue();
                     String stringValue = (value != null ? value.toString() : null);
-                    if (redirectResponseRule.isExcludeEmptyParameters() &&
+                    if (redirectRule.isExcludeEmptyParameters() &&
                             stringValue != null && !stringValue.isEmpty()) {
                         sb.append(name).append(EQUAL_CHAR);
-                    } else if (redirectResponseRule.isExcludeNullParameters() && stringValue != null) {
+                    } else if (redirectRule.isExcludeNullParameters() && stringValue != null) {
                         sb.append(name).append(EQUAL_CHAR);
                     } else {
                         sb.append(name).append(EQUAL_CHAR);

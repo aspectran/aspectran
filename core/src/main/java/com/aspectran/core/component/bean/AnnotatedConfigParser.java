@@ -55,14 +55,14 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -446,7 +446,7 @@ public class AnnotatedConfigParser {
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Dispatch.class)) {
                     Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                    DispatchResponseRule drr = parseDispatchResponseRule(dispatchAnno);
+                    DispatchRule drr = parseDispatchRule(dispatchAnno);
                     exceptionThrownRule.applyResponseRule(drr);
                 } else if (method.isAnnotationPresent(Transform.class)) {
                     Transform transformAnno = method.getAnnotation(Transform.class);
@@ -454,11 +454,11 @@ public class AnnotatedConfigParser {
                     exceptionThrownRule.applyResponseRule(tr);
                 } else if (method.isAnnotationPresent(Forward.class)) {
                     Forward forwardAnno = method.getAnnotation(Forward.class);
-                    ForwardResponseRule frr = parseForwardResponseRule(forwardAnno);
+                    ForwardRule frr = parseForwardRule(forwardAnno);
                     exceptionThrownRule.applyResponseRule(frr);
                 } else if (method.isAnnotationPresent(Redirect.class)) {
                     Redirect redirectAnno = method.getAnnotation(Redirect.class);
-                    RedirectResponseRule rrr = parseRedirectResponseRule(redirectAnno);
+                    RedirectRule rrr = parseRedirectRule(redirectAnno);
                     exceptionThrownRule.applyResponseRule(rrr);
                 }
             }
@@ -643,7 +643,7 @@ public class AnnotatedConfigParser {
 
         if (method.isAnnotationPresent(Dispatch.class)) {
             Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-            DispatchResponseRule drr = parseDispatchResponseRule(dispatchAnno);
+            DispatchRule drr = parseDispatchRule(dispatchAnno);
             transletRule.setResponseRule(ResponseRule.newInstance(drr));
         } else if (method.isAnnotationPresent(Transform.class)) {
             Transform transformAnno = method.getAnnotation(Transform.class);
@@ -651,11 +651,11 @@ public class AnnotatedConfigParser {
             transletRule.setResponseRule(ResponseRule.newInstance(tr));
         } else if (method.isAnnotationPresent(Forward.class)) {
             Forward forwardAnno = method.getAnnotation(Forward.class);
-            ForwardResponseRule frr = parseForwardResponseRule(forwardAnno);
+            ForwardRule frr = parseForwardRule(forwardAnno);
             transletRule.setResponseRule(ResponseRule.newInstance(frr));
         } else if (method.isAnnotationPresent(Redirect.class)) {
             Redirect redirectAnno = method.getAnnotation(Redirect.class);
-            RedirectResponseRule rrr = parseRedirectResponseRule(redirectAnno);
+            RedirectRule rrr = parseRedirectRule(redirectAnno);
             transletRule.setResponseRule(ResponseRule.newInstance(rrr));
         }
 
@@ -668,12 +668,12 @@ public class AnnotatedConfigParser {
         relater.relay(transletRule);
     }
 
-    private DispatchResponseRule parseDispatchResponseRule(Dispatch dispatchAnno) {
+    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {
         String name = StringUtils.emptyToNull(dispatchAnno.name());
         String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
         String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
         String encoding = StringUtils.emptyToNull(dispatchAnno.encoding());
-        return DispatchResponseRule.newInstance(name, dispatcher, contentType, encoding);
+        return DispatchRule.newInstance(name, dispatcher, contentType, encoding);
     }
 
     private TransformRule parseTransformRule(Transform transformAnno) {
@@ -687,30 +687,30 @@ public class AnnotatedConfigParser {
         return transformRule;
     }
 
-    private ForwardResponseRule parseForwardResponseRule(Forward forwardAnno) throws IllegalRuleException {
+    private ForwardRule parseForwardRule(Forward forwardAnno) throws IllegalRuleException {
         String translet = StringUtils.emptyToNull(forwardAnno.translet());
         if (translet == null) {
             translet = StringUtils.emptyToNull(forwardAnno.value());
         }
-        ForwardResponseRule forwardResponseRule = ForwardResponseRule.newInstance(translet);
+        ForwardRule forwardRule = ForwardRule.newInstance(translet);
         Attribute[] attributes = forwardAnno.attributes();
         if (attributes.length > 0) {
-            forwardResponseRule.setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+            forwardRule.setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
         }
-        return forwardResponseRule;
+        return forwardRule;
     }
 
-    private RedirectResponseRule parseRedirectResponseRule(Redirect redirectAnno) throws IllegalRuleException {
+    private RedirectRule parseRedirectRule(Redirect redirectAnno) throws IllegalRuleException {
         String path = StringUtils.emptyToNull(redirectAnno.path());
         if (path == null) {
             path = StringUtils.emptyToNull(redirectAnno.value());
         }
-        RedirectResponseRule redirectResponseRule = RedirectResponseRule.newInstance(path);
+        RedirectRule redirectRule = RedirectRule.newInstance(path);
         Parameter[] parameters = redirectAnno.parameters();
         if (parameters.length > 0) {
-            redirectResponseRule.setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+            redirectRule.setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
         }
-        return redirectResponseRule;
+        return redirectRule;
     }
 
     private String[] splitNamespace(String namespace) {

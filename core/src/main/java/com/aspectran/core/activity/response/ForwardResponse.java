@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
@@ -37,15 +37,15 @@ public class ForwardResponse implements Response {
 
     private static final Log log = LogFactory.getLog(ForwardResponse.class);
 
-    private final ForwardResponseRule forwardResponseRule;
+    private final ForwardRule forwardRule;
 
     /**
      * Instantiates a new ForwardResponse.
      *
-     * @param forwardResponseRule the forward response rule
+     * @param forwardRule the forward rule
      */
-    public ForwardResponse(ForwardResponseRule forwardResponseRule) {
-        this.forwardResponseRule = forwardResponseRule;
+    public ForwardResponse(ForwardRule forwardRule) {
+        this.forwardRule = forwardRule;
     }
 
     @Override
@@ -56,10 +56,10 @@ public class ForwardResponse implements Response {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("response " + forwardResponseRule);
+            log.debug("response " + forwardRule);
         }
 
-        ItemRuleMap itemRuleMap = forwardResponseRule.getAttributeItemRuleMap();
+        ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpression(activity);
             Map<String, Object> valueMap = evaluator.evaluate(itemRuleMap);
@@ -69,13 +69,13 @@ public class ForwardResponse implements Response {
 
     @Override
     public ResponseType getResponseType() {
-        return ForwardResponseRule.RESPONSE_TYPE;
+        return ForwardRule.RESPONSE_TYPE;
     }
 
     @Override
     public String getContentType() {
-        if (forwardResponseRule != null) {
-            return forwardResponseRule.getContentType();
+        if (forwardRule != null) {
+            return forwardRule.getContentType();
         } else {
             return null;
         }
@@ -88,27 +88,27 @@ public class ForwardResponse implements Response {
 
     @Override
     public ActionList getActionList() {
-        return forwardResponseRule.getActionList();
+        return forwardRule.getActionList();
     }
 
     @Override
     public Response replicate() {
-        ForwardResponseRule frr = forwardResponseRule.replicate();
+        ForwardRule frr = forwardRule.replicate();
         return new ForwardResponse(frr);
     }
 
     /**
-     * Returns the forward response rule.
+     * Returns the forward rule.
      *
-     * @return the forward response rule
+     * @return the forward rule
      */
-    public ForwardResponseRule getForwardResponseRule() {
-        return forwardResponseRule;
+    public ForwardRule getForwardRule() {
+        return forwardRule;
     }
 
     @Override
     public String toString() {
-        return forwardResponseRule.toString();
+        return forwardRule.toString();
     }
 
 }

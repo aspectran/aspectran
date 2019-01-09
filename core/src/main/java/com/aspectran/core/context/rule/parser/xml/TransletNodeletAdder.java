@@ -157,7 +157,9 @@ class TransletNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(caseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
-            parser.popObject();
+            CaseRule caseRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject();
+            caseRule.join(transletRule);
         });
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
@@ -202,7 +204,9 @@ class TransletNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(caseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
-            parser.popObject();
+            CaseRule caseRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject(2);
+            caseRule.join(transletRule);
         });
         parser.setXpath(xpath + "/translet/content");
         parser.addNodelet(attrs -> {
@@ -233,7 +237,9 @@ class TransletNodeletAdder implements NodeletAdder {
         });
         parser.addNodelet(caseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
-            parser.popObject();
+            CaseRule caseRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject(1);
+            caseRule.join(transletRule);
         });
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {

@@ -20,7 +20,6 @@ import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -31,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class RedirectResponseRule.
+ * The Class RedirectRule.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionPossessSupport implements Replicable<RedirectResponseRule> {
+public class RedirectRule extends AbstractResponseRule implements Replicable<RedirectRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
@@ -52,8 +51,6 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
     private Boolean excludeEmptyParameters;
 
     private ItemRuleMap parameterItemRuleMap;
-
-    private Boolean defaultResponse;
 
     /**
      * Gets the content type.
@@ -269,35 +266,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         }
     }
 
-    /**
-     * Returns whether the default response.
-     *
-     * @return whether the default response
-     */
-    public Boolean getDefaultResponse() {
-        return defaultResponse;
-    }
-
-    /**
-     * Returns whether the default response.
-     *
-     * @return true, if is default response
-     */
-    public boolean isDefaultResponse() {
-        return BooleanUtils.toBoolean(defaultResponse);
-    }
-
-    /**
-     * Sets whether the default response.
-     *
-     * @param defaultResponse whether it is the default response
-     */
-    public void setDefaultResponse(Boolean defaultResponse) {
-        this.defaultResponse = defaultResponse;
-    }
-
     @Override
-    public RedirectResponseRule replicate() {
+    public RedirectRule replicate() {
         return replicate(this);
     }
 
@@ -311,14 +281,14 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         tsb.append("encoding", encoding);
         tsb.append("excludeNullParameters", excludeNullParameters);
         tsb.append("excludeEmptyParameters", excludeEmptyParameters);
-        tsb.append("default", defaultResponse);
+        tsb.append("default", getDefaultResponse());
         return tsb.toString();
     }
 
-    public static RedirectResponseRule newInstance(String contentType, String path, String encoding,
-                                                   Boolean excludeNullParameters, Boolean excludeEmptyParameters,
-                                                   Boolean defaultResponse) {
-        RedirectResponseRule rrr = new RedirectResponseRule();
+    public static RedirectRule newInstance(String contentType, String path, String encoding,
+                                           Boolean excludeNullParameters, Boolean excludeEmptyParameters,
+                                           Boolean defaultResponse) {
+        RedirectRule rrr = new RedirectRule();
         rrr.setContentType(contentType);
         if (path != null && path.length() > 0) {
             rrr.setPath(path);
@@ -330,25 +300,25 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
         return rrr;
     }
 
-    public static RedirectResponseRule newInstance(String path) throws IllegalRuleException {
+    public static RedirectRule newInstance(String path) throws IllegalRuleException {
         if (path == null) {
             throw new IllegalRuleException("path must not be null");
         }
-        RedirectResponseRule rrr = new RedirectResponseRule();
+        RedirectRule rrr = new RedirectRule();
         rrr.setPath(path);
         return rrr;
     }
 
-    public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
-        RedirectResponseRule rrr = new RedirectResponseRule();
-        rrr.setContentType(redirectResponseRule.getContentType());
-        rrr.setPath(redirectResponseRule.getPath(), redirectResponseRule.getPathTokens());
-        rrr.setEncoding(redirectResponseRule.getEncoding());
-        rrr.setExcludeNullParameters(redirectResponseRule.getExcludeNullParameters());
-        rrr.setExcludeEmptyParameters(redirectResponseRule.getExcludeEmptyParameters());
-        rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
-        rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
-        rrr.setActionList(redirectResponseRule.getActionList());
+    public static RedirectRule replicate(RedirectRule redirectRule) {
+        RedirectRule rrr = new RedirectRule();
+        rrr.setContentType(redirectRule.getContentType());
+        rrr.setPath(redirectRule.getPath(), redirectRule.getPathTokens());
+        rrr.setEncoding(redirectRule.getEncoding());
+        rrr.setExcludeNullParameters(redirectRule.getExcludeNullParameters());
+        rrr.setExcludeEmptyParameters(redirectRule.getExcludeEmptyParameters());
+        rrr.setParameterItemRuleMap(redirectRule.getParameterItemRuleMap());
+        rrr.setDefaultResponse(redirectRule.getDefaultResponse());
+        rrr.setActionList(redirectRule.getActionList());
         return rrr;
     }
 

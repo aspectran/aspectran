@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -79,11 +79,11 @@ public class JspViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule)
+    public void dispatch(Activity activity, DispatchRule dispatchRule)
             throws ViewDispatcherException {
         String dispatchName = null;
         try {
-            dispatchName = dispatchResponseRule.getName(activity);
+            dispatchName = dispatchRule.getName(activity);
             if (dispatchName == null) {
                 throw new IllegalArgumentException("No specified dispatch name");
             }
@@ -99,14 +99,14 @@ public class JspViewDispatcher implements ViewDispatcher {
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-            String contentType = dispatchResponseRule.getContentType();
+            String contentType = dispatchRule.getContentType();
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             } else {
                 responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
             }
 
-            String encoding = dispatchResponseRule.getEncoding();
+            String encoding = dispatchRule.getEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             } else {
@@ -134,7 +134,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch for JSP " +
-                    dispatchResponseRule.toString(this, dispatchName), e);
+                    dispatchRule.toString(this, dispatchName), e);
         }
     }
 

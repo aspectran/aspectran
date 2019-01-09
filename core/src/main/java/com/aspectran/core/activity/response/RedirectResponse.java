@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -32,18 +32,18 @@ public class RedirectResponse implements Response {
 
     private static final Log log = LogFactory.getLog(RedirectResponse.class);
 
-    private final RedirectResponseRule redirectResponseRule;
+    private final RedirectRule redirectRule;
 
     private final String encoding;
 
     /**
      * Instantiates a new RedirectResponse.
      *
-     * @param redirectResponseRule the redirect response rule
+     * @param redirectRule the redirect rule
      */
-    public RedirectResponse(RedirectResponseRule redirectResponseRule) {
-        this.redirectResponseRule = redirectResponseRule;
-        this.encoding = redirectResponseRule.getEncoding();
+    public RedirectResponse(RedirectRule redirectRule) {
+        this.redirectRule = redirectRule;
+        this.encoding = redirectRule.getEncoding();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RedirectResponse implements Response {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("response " + redirectResponseRule);
+            log.debug("response " + redirectRule);
         }
 
         try {
@@ -66,21 +66,21 @@ public class RedirectResponse implements Response {
                     responseAdapter.setEncoding(encoding);
                 }
             }
-            responseAdapter.redirect(redirectResponseRule);
+            responseAdapter.redirect(redirectRule);
         } catch (Exception e) {
-            throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
+            throw new ResponseException("Failed to redirect " + redirectRule, e);
         }
     }
 
     @Override
     public ResponseType getResponseType() {
-        return RedirectResponseRule.RESPONSE_TYPE;
+        return RedirectRule.RESPONSE_TYPE;
     }
 
     @Override
     public String getContentType() {
-        if (redirectResponseRule != null) {
-            return redirectResponseRule.getContentType();
+        if (redirectRule != null) {
+            return redirectRule.getContentType();
         } else {
             return null;
         }
@@ -93,27 +93,27 @@ public class RedirectResponse implements Response {
 
     @Override
     public ActionList getActionList() {
-        return redirectResponseRule.getActionList();
+        return redirectRule.getActionList();
     }
 
     @Override
     public Response replicate() {
-        RedirectResponseRule rrr = redirectResponseRule.replicate();
+        RedirectRule rrr = redirectRule.replicate();
         return new RedirectResponse(rrr);
     }
 
     /**
-     * Returns the redirect response rule.
+     * Returns the redirect rule.
      *
-     * @return the redirect response rule
+     * @return the redirect rule
      */
-    public RedirectResponseRule getRedirectResponseRule() {
-        return redirectResponseRule;
+    public RedirectRule getRedirectRule() {
+        return redirectRule;
     }
 
     @Override
     public String toString() {
-        return redirectResponseRule.toString();
+        return redirectRule.toString();
     }
 
 }

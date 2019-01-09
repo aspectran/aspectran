@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 
 /**
  * The Class DispatchResponseException.
@@ -28,7 +28,7 @@ public class DispatchResponseException extends ResponseException {
     /** @serial */
     private static final long serialVersionUID = 6318844460136930428L;
 
-    private DispatchResponseRule dispatchResponseRule;
+    private DispatchRule dispatchRule;
 
     /**
      * Simple constructor.
@@ -68,44 +68,44 @@ public class DispatchResponseException extends ResponseException {
     /**
      * Constructor to create exception to wrap another exception and pass a message.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      * @param cause the real cause of the exception
      */
-    public DispatchResponseException(DispatchResponseRule dispatchResponseRule, Throwable cause) {
-        super("Failed to dispatch " + dispatchResponseRule, cause);
-        this.dispatchResponseRule = dispatchResponseRule;
+    public DispatchResponseException(DispatchRule dispatchRule, Throwable cause) {
+        super("Failed to dispatch " + dispatchRule, cause);
+        this.dispatchRule = dispatchRule;
     }
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      * @param msg the detail message
      * @param cause the real cause of the exception
      */
-    public DispatchResponseException(DispatchResponseRule dispatchResponseRule, String msg, Throwable cause) {
-        super(msg + " " + dispatchResponseRule, cause);
-        this.dispatchResponseRule = dispatchResponseRule;
+    public DispatchResponseException(DispatchRule dispatchRule, String msg, Throwable cause) {
+        super(msg + " " + dispatchRule, cause);
+        this.dispatchRule = dispatchRule;
     }
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      * @param msg the detail message
      */
-    public DispatchResponseException(DispatchResponseRule dispatchResponseRule, String msg) {
-        super(msg + " " + dispatchResponseRule);
-        this.dispatchResponseRule = dispatchResponseRule;
+    public DispatchResponseException(DispatchRule dispatchRule, String msg) {
+        super(msg + " " + dispatchRule);
+        this.dispatchRule = dispatchRule;
     }
 
     /**
-     * Gets the dispatch response rule.
+     * Gets the dispatch rule.
      *
-     * @return the dispatch response rule
+     * @return the dispatch rule
      */
-    public DispatchResponseRule getDispatchResponseRule() {
-        return dispatchResponseRule;
+    public DispatchRule getDispatchRule() {
+        return dispatchRule;
     }
 
 }

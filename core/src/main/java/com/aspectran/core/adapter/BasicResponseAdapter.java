@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 
@@ -219,7 +219,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectResponseRule redirectResponseRule) {
+    public String redirect(RedirectRule redirectRule) {
         throw new UnsupportedOperationException("redirect");
     }
 

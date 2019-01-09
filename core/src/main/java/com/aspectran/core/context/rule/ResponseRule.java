@@ -87,14 +87,9 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return (response != null ? response.getResponseType() : null);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T getRespondent() {
-        return (T)response;
-    }
-
     @Override
-    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-        Response response = new DispatchResponse(dispatchResponseRule);
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }
@@ -107,15 +102,15 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     }
 
     @Override
-    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-        Response response = new ForwardResponse(forwardResponseRule);
+    public Response applyResponseRule(ForwardRule forwardRule) {
+        Response response = new ForwardResponse(forwardRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-        Response response = new RedirectResponse(redirectResponseRule);
+    public Response applyResponseRule(RedirectRule redirectRule) {
+        Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;
     }
@@ -149,7 +144,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return responseRule;
     }
 
-    public static ResponseRule newInstance(DispatchResponseRule drr) {
+    public static ResponseRule newInstance(DispatchRule drr) {
         ResponseRule responseRule = new ResponseRule();
         responseRule.applyResponseRule(drr);
         return responseRule;
@@ -161,13 +156,13 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return responseRule;
     }
 
-    public static ResponseRule newInstance(ForwardResponseRule frr) {
+    public static ResponseRule newInstance(ForwardRule frr) {
         ResponseRule responseRule = new ResponseRule();
         responseRule.applyResponseRule(frr);
         return responseRule;
     }
 
-    public static ResponseRule newInstance(RedirectResponseRule rrr) {
+    public static ResponseRule newInstance(RedirectRule rrr) {
         ResponseRule responseRule = new ResponseRule();
         responseRule.applyResponseRule(rrr);
         return responseRule;

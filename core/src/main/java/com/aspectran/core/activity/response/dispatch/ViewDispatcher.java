@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
 
 /**
  * The Interface ViewDispatcher.
@@ -33,10 +33,10 @@ public interface ViewDispatcher {
      * Dispatch to other resources as the given rule.
      *
      * @param activity the current activity
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      * @throws ViewDispatcherException the view dispatch exception
      */
-    void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatcherException;
+    void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException;
 
     /**
      * Return whether this view dispatcher corresponds to a singleton instance.

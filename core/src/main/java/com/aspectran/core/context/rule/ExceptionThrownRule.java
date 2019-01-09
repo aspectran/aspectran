@@ -30,6 +30,8 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
+import java.util.Collection;
+
 /**
  * The Class ExceptionThrownRule.
  * 
@@ -121,45 +123,45 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     }
 
     @Override
-    public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-        Response response = new DispatchResponse(dispatchResponseRule);
-        if (dispatchResponseRule.getContentType() != null) {
-            touchResponseMap().put(dispatchResponseRule.getContentType(), response);
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        Response response = new DispatchResponse(dispatchRule);
+        if (dispatchRule.getContentType() != null) {
+            touchResponseMap().put(dispatchRule.getContentType(), response);
         }
-        if (dispatchResponseRule.isDefaultResponse()) {
+        if (dispatchRule.isDefaultResponse()) {
             defaultResponse = response;
         }
-        if (defaultResponse == null && dispatchResponseRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
-    }
-
-    @Override
-    public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
-        Response response = new RedirectResponse(redirectResponseRule);
-        if (redirectResponseRule.getContentType() != null) {
-            touchResponseMap().put(redirectResponseRule.getContentType(), response);
-        }
-        if (redirectResponseRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && redirectResponseRule.getContentType() == null) {
+        if (defaultResponse == null && dispatchRule.getContentType() == null) {
             defaultResponse = response;
         }
         return response;
     }
 
     @Override
-    public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-        Response response = new ForwardResponse(forwardResponseRule);
-        if (forwardResponseRule.getContentType() != null) {
-            touchResponseMap().put(forwardResponseRule.getContentType(), response);
+    public Response applyResponseRule(RedirectRule redirectRule) {
+        Response response = new RedirectResponse(redirectRule);
+        if (redirectRule.getContentType() != null) {
+            touchResponseMap().put(redirectRule.getContentType(), response);
         }
-        if (forwardResponseRule.isDefaultResponse()) {
+        if (redirectRule.isDefaultResponse()) {
             defaultResponse = response;
         }
-        if (defaultResponse == null && forwardResponseRule.getContentType() == null) {
+        if (defaultResponse == null && redirectRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(ForwardRule forwardRule) {
+        Response response = new ForwardResponse(forwardRule);
+        if (forwardRule.getContentType() != null) {
+            touchResponseMap().put(forwardRule.getContentType(), response);
+        }
+        if (forwardRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && forwardRule.getContentType() == null) {
             defaultResponse = response;
         }
         return response;
@@ -204,6 +206,11 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     @Override
     public void applyActionRule(Executable action) {
         this.action = action;
+    }
+
+    @Override
+    public void applyActionRule(Collection<Executable> actionList) {
+        throw new UnsupportedOperationException();
     }
 
     /**

@@ -16,9 +16,9 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.DispatchRule;
+import com.aspectran.core.context.rule.ForwardRule;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
@@ -27,15 +27,15 @@ import com.aspectran.core.context.rule.TransformRule;
 public interface ResponseRuleApplicable {
 
     /**
-     * Apply the dispatch response rule to the response rule.
+     * Apply the dispatch rule to the response rule.
      *
-     * @param dispatchResponseRule the dispatch response rule
+     * @param dispatchRule the dispatch rule
      * @return the response
      */
-    Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
+    Response applyResponseRule(DispatchRule dispatchRule);
 
     /**
-     * Apply the transform response rule to the response rule.
+     * Apply the transform rule to the response rule.
      *
      * @param transformRule the transform rule
      * @return the response
@@ -43,19 +43,19 @@ public interface ResponseRuleApplicable {
     Response applyResponseRule(TransformRule transformRule);
 
     /**
-     * Apply the forward response rule to the response rule.
+     * Apply the forward rule to the response rule.
      *
-     * @param forwardResponseRule the forward response rule
+     * @param forwardRule the forward rule
      * @return the response
      */
-    Response applyResponseRule(ForwardResponseRule forwardResponseRule);
+    Response applyResponseRule(ForwardRule forwardRule);
 
     /**
-     * Apply the redirect response rule to the response rule.
+     * Apply the redirect rule to the response rule.
      *
-     * @param redirectResponseRule the redirect response rule
+     * @param redirectRule the redirect rule
      * @return the response
      */
-    Response applyResponseRule(RedirectResponseRule redirectResponseRule);
+    Response applyResponseRule(RedirectRule redirectRule);
 
 }
