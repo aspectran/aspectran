@@ -24,7 +24,7 @@ public class ContentParameters extends AbstractParameters {
     public static final ParameterDefinition name;
     public static final ParameterDefinition hidden;
     public static final ParameterDefinition omittable;
-    public static final ParameterDefinition caseOf;
+    public static final ParameterDefinition choose;
     public static final ParameterDefinition action;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -33,14 +33,14 @@ public class ContentParameters extends AbstractParameters {
         name = new ParameterDefinition("name", ParameterValueType.STRING);
         hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
         omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
-        caseOf = new ParameterDefinition("case", CaseParameters.class, true, true);
+        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 name,
                 hidden,
                 omittable,
-                caseOf,
+                choose,
                 action
         };
     }

@@ -70,7 +70,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private ExceptionRule exceptionRule;
 
-    private CaseRuleMap caseRuleMap;
+    private ChooseRuleMap chooseRuleMap;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -474,19 +474,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.exceptionRule = exceptionRule;
     }
 
-    public CaseRuleMap getCaseRuleMap() {
-        return caseRuleMap;
+    public ChooseRuleMap getChooseRuleMap() {
+        return chooseRuleMap;
     }
 
-    public void setCaseRuleMap(CaseRuleMap caseRuleMap) {
-        this.caseRuleMap = caseRuleMap;
+    public void setChooseRuleMap(ChooseRuleMap chooseRuleMap) {
+        this.chooseRuleMap = chooseRuleMap;
     }
 
-    public CaseRuleMap touchCaseRuleMap() {
-        if (caseRuleMap == null) {
-            caseRuleMap = new CaseRuleMap();
+    public ChooseRuleMap touchChooseRuleMap() {
+        if (chooseRuleMap == null) {
+            chooseRuleMap = new ChooseRuleMap();
         }
-        return caseRuleMap;
+        return chooseRuleMap;
     }
 
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -593,7 +593,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         }
         tr.setResponseRule(transletRule.getResponseRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
+        tr.setChooseRuleMap(transletRule.getChooseRuleMap());
         tr.setDescription(transletRule.getDescription());
         return tr;
     }
@@ -604,7 +604,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setCaseRuleMap(transletRule.getCaseRuleMap());
+        tr.setChooseRuleMap(transletRule.getChooseRuleMap());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();

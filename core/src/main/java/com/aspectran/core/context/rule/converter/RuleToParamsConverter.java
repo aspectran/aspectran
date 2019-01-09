@@ -29,8 +29,8 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.CaseRule;
-import com.aspectran.core.context.rule.CaseWhenRule;
+import com.aspectran.core.context.rule.ChooseRule;
+import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -61,8 +61,8 @@ import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
 import com.aspectran.core.context.rule.params.CallParameters;
-import com.aspectran.core.context.rule.params.CaseParameters;
-import com.aspectran.core.context.rule.params.CaseWhenParameters;
+import com.aspectran.core.context.rule.params.ChooseParameters;
+import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
@@ -456,34 +456,34 @@ public class RuleToParamsConverter {
             }
         }
 
-        if (transletRule.getCaseRuleMap() != null) {
-            for (CaseRule caseRule : transletRule.getCaseRuleMap().values()) {
-                CaseParameters caseParameters = transletParameters.newParameters(TransletParameters.caseOf);
-                caseParameters.putValue(CaseParameters.caseNo, caseRule.getCaseNo());
-                if (caseRule.getCaseWhenRuleMap() != null) {
-                    for (CaseWhenRule caseWhenRule : caseRule.getCaseWhenRuleMap().values()) {
-                        CaseWhenParameters caseWhenParameters;
-                        if (caseWhenRule.getExpression() != null) {
-                            caseWhenParameters = caseParameters.newParameters(CaseParameters.caseWhen);
+        if (transletRule.getChooseRuleMap() != null) {
+            for (ChooseRule chooseRule : transletRule.getChooseRuleMap().values()) {
+                ChooseParameters chooseParameters = transletParameters.newParameters(TransletParameters.choose);
+                chooseParameters.putValue(ChooseParameters.caseNo, chooseRule.getCaseNo());
+                if (chooseRule.getChooseWhenRuleMap() != null) {
+                    for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRuleMap().values()) {
+                        ChooseWhenParameters chooseWhenParameters;
+                        if (chooseWhenRule.getExpression() != null) {
+                            chooseWhenParameters = chooseParameters.newParameters(ChooseParameters.when);
                         } else {
-                            caseWhenParameters = caseParameters.newParameters(CaseParameters.caseElse);
+                            chooseWhenParameters = chooseParameters.newParameters(ChooseParameters.otherwise);
                         }
-                        caseWhenParameters.putValue(CaseWhenParameters.caseNo, caseWhenRule.getCaseNo());
-                        caseWhenParameters.putValueNonNull(CaseWhenParameters.test, caseWhenRule.getExpression());
-                        if (caseWhenRule.getResponse() != null) {
-                            Response response = caseWhenRule.getResponse();
+                        chooseWhenParameters.putValue(ChooseWhenParameters.caseNo, chooseWhenRule.getCaseNo());
+                        chooseWhenParameters.putValueNonNull(ChooseWhenParameters.test, chooseWhenRule.getExpression());
+                        if (chooseWhenRule.getResponse() != null) {
+                            Response response = chooseWhenRule.getResponse();
                             if (response.getResponseType() == ResponseType.TRANSFORM) {
                                 TransformResponse transformResponse = (TransformResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                                chooseWhenParameters.putValue(ChooseWhenParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
                             } else if (response.getResponseType() == ResponseType.DISPATCH) {
                                 DispatchResponse dispatchResponse = (DispatchResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
+                                chooseWhenParameters.putValue(ChooseWhenParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
                             } else if (response.getResponseType() == ResponseType.FORWARD) {
                                 ForwardResponse forwardResponse = (ForwardResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
+                                chooseWhenParameters.putValue(ChooseWhenParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
                             } else if (response.getResponseType() == ResponseType.REDIRECT) {
                                 RedirectResponse redirectResponse = (RedirectResponse)response;
-                                caseWhenParameters.putValue(CaseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
+                                chooseWhenParameters.putValue(ChooseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
                             }
                         }
                     }

@@ -35,9 +35,9 @@ import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.CaseRule;
-import com.aspectran.core.context.rule.CaseRuleMap;
-import com.aspectran.core.context.rule.CaseWhenRule;
+import com.aspectran.core.context.rule.ChooseRule;
+import com.aspectran.core.context.rule.ChooseRuleMap;
+import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -532,35 +532,35 @@ public class CoreActivity extends AdviceActivity {
      */
     private void execute(Executable action, ContentResult contentResult) {
         try {
-            CaseWhenRule caseWhenRule = null;
+            ChooseWhenRule chooseWhenRule = null;
             if (action.getCaseNo() > 0) {
-                CaseRuleMap caseRuleMap = getTransletRule().getCaseRuleMap();
-                if (caseRuleMap == null || caseRuleMap.isEmpty()) {
-                    throw new IllegalRuleException("No defined case rules");
+                ChooseRuleMap chooseRuleMap = getTransletRule().getChooseRuleMap();
+                if (chooseRuleMap == null || chooseRuleMap.isEmpty()) {
+                    throw new IllegalRuleException("No defined choose rules");
                 }
-                CaseRule caseRule = caseRuleMap.getCaseRule(action.getCaseNo());
-                if (caseRule == null) {
-                    throw new IllegalRuleException("No case rule with case number: " +
-                            CaseRule.toCaseGroupNo(action.getCaseNo()));
+                ChooseRule chooseRule = chooseRuleMap.getChooseRule(action.getCaseNo());
+                if (chooseRule == null) {
+                    throw new IllegalRuleException("No choose rule with case number: " +
+                            ChooseRule.toCaseGroupNo(action.getCaseNo()));
                 }
-                caseWhenRule = caseRule.getCaseWhenRule(action.getCaseNo());
-                if (caseWhenRule == null) {
-                    throw new IllegalRuleException("No case rule with case number: " + action.getCaseNo());
+                chooseWhenRule = chooseRule.getChooseWhenRule(action.getCaseNo());
+                if (chooseWhenRule == null) {
+                    throw new IllegalRuleException("No choose rule with case number: " + action.getCaseNo());
                 }
-                if (processedCases != null && processedCases.contains(caseRule.getCaseNo())) {
+                if (processedCases != null && processedCases.contains(chooseRule.getCaseNo())) {
                     return;
                 }
-                if (processedCaseWhens == null || !processedCaseWhens.contains(caseWhenRule.getCaseNo())) {
+                if (processedCaseWhens == null || !processedCaseWhens.contains(chooseWhenRule.getCaseNo())) {
                     BooleanExpression caseExpression = new BooleanExpression(this);
-                    if (caseExpression.evaluate(caseWhenRule)) {
+                    if (caseExpression.evaluate(chooseWhenRule)) {
                         if (processedCases == null) {
                             processedCases = new HashSet<>();
                         }
-                        processedCases.add(caseRule.getCaseNo());
+                        processedCases.add(chooseRule.getCaseNo());
                         if (processedCaseWhens == null) {
                             processedCaseWhens = new HashSet<>();
                         }
-                        processedCaseWhens.add(caseWhenRule.getCaseNo());
+                        processedCaseWhens.add(chooseWhenRule.getCaseNo());
                     } else {
                         return;
                     }
@@ -584,8 +584,8 @@ public class CoreActivity extends AdviceActivity {
                 log.trace("actionResult " + resultValue);
             }
 
-            if (action.isLastInCaseWhen() && caseWhenRule != null && caseWhenRule.getResponse() != null) {
-                reserveResponse(caseWhenRule.getResponse());
+            if (action.isLastInCaseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {
+                reserveResponse(chooseWhenRule.getResponse());
             }
         } catch (Exception e) {
             setRaisedException(e);

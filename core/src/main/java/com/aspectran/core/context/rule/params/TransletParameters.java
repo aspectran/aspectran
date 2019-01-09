@@ -31,7 +31,7 @@ public class TransletParameters extends AbstractParameters {
     public static final ParameterDefinition attributes;
     public static final ParameterDefinition contents;
     public static final ParameterDefinition content;
-    public static final ParameterDefinition caseOf;
+    public static final ParameterDefinition choose;
     public static final ParameterDefinition action;
     public static final ParameterDefinition response;
     public static final ParameterDefinition transform;
@@ -53,7 +53,7 @@ public class TransletParameters extends AbstractParameters {
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
         contents = new ParameterDefinition("contents", ContentsParameters.class);
         content = new ParameterDefinition("content", ContentParameters.class, true, true);
-        caseOf = new ParameterDefinition("case", CaseParameters.class, true, true);
+        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
         response = new ParameterDefinition("response", ResponseParameters.class, true, true);
         transform = new ParameterDefinition("transform", TransformParameters.class);
@@ -73,7 +73,7 @@ public class TransletParameters extends AbstractParameters {
                 attributes,
                 contents,
                 content,
-                caseOf,
+                choose,
                 action,
                 response,
                 transform,

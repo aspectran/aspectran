@@ -199,14 +199,14 @@
     </translet>
 
     <translet name="caseTest">
-        <case>
+        <choose>
             <when test="case-1">
                 <action id="case1" bean="action.TestAction" method="case1"/>
             </when>
             <when test="case-2">
                 <action id="case2" bean="action.TestAction" method="case2"/>
             </when>
-        </case>
+        </choose>
     </translet>
 
 </aspectran>

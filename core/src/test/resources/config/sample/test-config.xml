@@ -228,14 +228,14 @@
             </attributes>
         </request>
         <action id="case0" method="case0" bean="SampleAction"/>
-        <case>
+        <choose>
             <when test="case1">
                 <action id="case1" method="case1" bean="SampleAction"/>
             </when>
-            <else>
+            <otherwise>
                 <action id="case2" method="case2" bean="SampleAction"/>
-            </else>
-        </case>
+            </otherwise>
+        </choose>
         <transform type="transform/text">
             <template style="apon">
                 |@{case0}

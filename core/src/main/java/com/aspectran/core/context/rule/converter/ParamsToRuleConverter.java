@@ -24,9 +24,9 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.CaseRule;
-import com.aspectran.core.context.rule.CaseRuleMap;
-import com.aspectran.core.context.rule.CaseWhenRule;
+import com.aspectran.core.context.rule.ChooseRule;
+import com.aspectran.core.context.rule.ChooseRuleMap;
+import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -59,8 +59,8 @@ import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
 import com.aspectran.core.context.rule.params.CallParameters;
-import com.aspectran.core.context.rule.params.CaseParameters;
-import com.aspectran.core.context.rule.params.CaseWhenParameters;
+import com.aspectran.core.context.rule.params.ChooseParameters;
+import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
@@ -506,85 +506,85 @@ public class ParamsToRuleConverter {
             transletRule.applyResponseRule(forwardRule);
         }
 
-        List<CaseParameters> caseParametersList = transletParameters.getParametersList(TransletParameters.caseOf);
-        if (caseParametersList != null) {
-            CaseRuleMap caseRuleMap = transletRule.touchCaseRuleMap();
-            for (CaseParameters caseParameters : caseParametersList) {
-                int caseNo = caseParameters.getInt(CaseParameters.caseNo);
-                CaseRule caseRule = caseRuleMap.newCaseRule(caseNo);
-                List<CaseWhenParameters> caseWhenParametersList = caseParameters.getParametersList(CaseParameters.caseWhen);
-                for (CaseWhenParameters caseWhenParameters : caseWhenParametersList) {
-                    caseNo = caseWhenParameters.getInt(CaseWhenParameters.caseNo);
-                    CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule(caseNo);
-                    caseWhenRule.setExpression(caseWhenParameters.getString(CaseWhenParameters.test));
+        List<ChooseParameters> chooseParametersList = transletParameters.getParametersList(TransletParameters.choose);
+        if (chooseParametersList != null) {
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            for (ChooseParameters chooseParameters : chooseParametersList) {
+                int caseNo = chooseParameters.getInt(ChooseParameters.caseNo);
+                ChooseRule chooseRule = chooseRuleMap.newChooseRule(caseNo);
+                List<ChooseWhenParameters> chooseWhenParametersList = chooseParameters.getParametersList(ChooseParameters.when);
+                for (ChooseWhenParameters chooseWhenParameters : chooseWhenParametersList) {
+                    caseNo = chooseWhenParameters.getInt(ChooseWhenParameters.caseNo);
+                    ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
+                    chooseWhenRule.setExpression(chooseWhenParameters.getString(ChooseWhenParameters.test));
 
-                    transformParameters = caseWhenParameters.getParameters(CaseWhenParameters.transform);
+                    transformParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.transform);
                     if (transformParameters != null) {
                         TransformRule transformRule = convertAsTransformRule(transformParameters);
-                        caseWhenRule.applyResponseRule(transformRule);
+                        chooseWhenRule.applyResponseRule(transformRule);
                     }
 
-                    dispatchParameters = caseWhenParameters.getParameters(CaseWhenParameters.dispatch);
+                    dispatchParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.dispatch);
                     if (dispatchParameters != null) {
                         DispatchRule dispatchRule = convertAsDispatchRule(dispatchParameters);
-                        caseWhenRule.applyResponseRule(dispatchRule);
+                        chooseWhenRule.applyResponseRule(dispatchRule);
                     }
 
-                    redirectParameters = caseWhenParameters.getParameters(CaseWhenParameters.redirect);
+                    redirectParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.redirect);
                     if (redirectParameters != null) {
                         RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
-                        caseWhenRule.applyResponseRule(redirectRule);
+                        chooseWhenRule.applyResponseRule(redirectRule);
                     }
 
-                    forwardParameters = caseWhenParameters.getParameters(CaseWhenParameters.forward);
+                    forwardParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.forward);
                     if (forwardParameters != null) {
                         ForwardRule forwardRule = convertAsForwardRule(forwardParameters);
-                        caseWhenRule.applyResponseRule(forwardRule);
+                        chooseWhenRule.applyResponseRule(forwardRule);
                     }
                 }
 
-                CaseWhenParameters caseElseParameters = caseParameters.getParameters(CaseParameters.caseElse);
-                if (caseElseParameters != null) {
-                    caseNo = caseElseParameters.getInt(CaseWhenParameters.caseNo);
-                    CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule(caseNo);
-                    transformParameters = caseElseParameters.getParameters(CaseWhenParameters.transform);
+                ChooseWhenParameters caseOtherwiseParameters = chooseParameters.getParameters(ChooseParameters.otherwise);
+                if (caseOtherwiseParameters != null) {
+                    caseNo = caseOtherwiseParameters.getInt(ChooseWhenParameters.caseNo);
+                    ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
+                    transformParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.transform);
                     if (transformParameters != null) {
                         TransformRule transformRule = convertAsTransformRule(transformParameters);
-                        caseWhenRule.applyResponseRule(transformRule);
+                        chooseWhenRule.applyResponseRule(transformRule);
                     }
 
-                    dispatchParameters = caseElseParameters.getParameters(CaseWhenParameters.dispatch);
+                    dispatchParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.dispatch);
                     if (dispatchParameters != null) {
                         DispatchRule dispatchRule = convertAsDispatchRule(dispatchParameters);
-                        caseWhenRule.applyResponseRule(dispatchRule);
+                        chooseWhenRule.applyResponseRule(dispatchRule);
                     }
 
-                    redirectParameters = caseElseParameters.getParameters(CaseWhenParameters.redirect);
+                    redirectParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
                     if (redirectParameters != null) {
                         RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
-                        caseWhenRule.applyResponseRule(redirectRule);
+                        chooseWhenRule.applyResponseRule(redirectRule);
                     }
 
-                    forwardParameters = caseElseParameters.getParameters(CaseWhenParameters.forward);
+                    forwardParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.forward);
                     if (forwardParameters != null) {
                         ForwardRule forwardRule = convertAsForwardRule(forwardParameters);
-                        caseWhenRule.applyResponseRule(forwardRule);
+                        chooseWhenRule.applyResponseRule(forwardRule);
                     }
                 }
             }
 
-            for (CaseRule caseRule : caseRuleMap.values()) {
-                if (caseRule.getCaseWhenRuleMap() != null) {
-                   for (CaseWhenRule caseWhenRule : caseRule.getCaseWhenRuleMap().values()) {
+            for (ChooseRule chooseRule : chooseRuleMap.values()) {
+                if (chooseRule.getChooseWhenRuleMap() != null) {
+                   for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRuleMap().values()) {
                        if (transletRule.getContentList() != null) {
                            for (ActionList actionList : transletRule.getContentList()) {
-                               checkActionList(caseRule, caseWhenRule, actionList);
+                               checkActionList(chooseRule, chooseWhenRule, actionList);
                            }
                        }
                        if (transletRule.getResponseRule() != null) {
                            Response response = transletRule.getResponseRule().getResponse();
                            if (response != null && response.getActionList() != null) {
-                               checkActionList(caseRule, caseWhenRule, response.getActionList());
+                               checkActionList(chooseRule, chooseWhenRule, response.getActionList());
                            }
                        }
                    }
@@ -595,10 +595,10 @@ public class ParamsToRuleConverter {
         assistant.addTransletRule(transletRule);
     }
 
-    private void checkActionList(CaseRule caseRule, CaseWhenRule caseWhenRule, ActionList actionList) throws IllegalRuleException {
+    private void checkActionList(ChooseRule chooseRule, ChooseWhenRule chooseWhenRule, ActionList actionList) throws IllegalRuleException {
         Executable prev = null;
         for (Executable action : actionList) {
-            if (action.getCaseNo() == caseWhenRule.getCaseNo()) {
+            if (action.getCaseNo() == chooseWhenRule.getCaseNo()) {
                 if (prev != null) {
                     prev.setLastInCaseWhen(false);
                 }
@@ -606,7 +606,7 @@ public class ParamsToRuleConverter {
                 prev = action;
             } else {
                 prev = null;
-                if (action.getCaseNo() > 0 && caseRule.getCaseWhenRule(action.getCaseNo()) == null) {
+                if (action.getCaseNo() > 0 && chooseRule.getChooseWhenRule(action.getCaseNo()) == null) {
                     throw new IllegalRuleException("No matching case number: " + action.getCaseNo());
                 }
             }

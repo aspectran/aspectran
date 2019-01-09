@@ -3,7 +3,7 @@ package com.aspectran.core.context.expr;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.CaseWhenRule;
+import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -17,8 +17,8 @@ public class BooleanExpression {
         this.activity = activity;
     }
 
-    public boolean evaluate(CaseWhenRule caseWhenRule) {
-        if (caseWhenRule.getExpression() == null) {
+    public boolean evaluate(ChooseWhenRule chooseWhenRule) {
+        if (chooseWhenRule.getExpression() == null) {
             return false;
         }
         return true;

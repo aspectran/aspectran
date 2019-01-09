@@ -19,27 +19,36 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class CaseParameters extends AbstractParameters {
+public class ChooseWhenParameters extends AbstractParameters {
 
     public static final ParameterDefinition caseNo;
-    public static final ParameterDefinition caseWhen;
-    public static final ParameterDefinition caseElse;
+    public static final ParameterDefinition test;
+    public static final ParameterDefinition transform;
+    public static final ParameterDefinition dispatch;
+    public static final ParameterDefinition redirect;
+    public static final ParameterDefinition forward;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
         caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
-        caseWhen = new ParameterDefinition("when", CaseWhenParameters.class, true, true);
-        caseElse = new ParameterDefinition("else", CaseWhenParameters.class);
+        test = new ParameterDefinition("test", ParameterValueType.STRING);
+        transform = new ParameterDefinition("transform", TransformParameters.class);
+        dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
+        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
+        forward = new ParameterDefinition("forward", ForwardParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
                 caseNo,
-                caseWhen,
-                caseElse
+                test,
+                transform,
+                dispatch,
+                redirect,
+                forward
         };
     }
 
-    public CaseParameters() {
+    public ChooseWhenParameters() {
         super(parameterDefinitions);
     }
 

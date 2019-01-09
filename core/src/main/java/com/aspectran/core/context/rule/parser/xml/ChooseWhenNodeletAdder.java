@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.CaseRule;
-import com.aspectran.core.context.rule.CaseWhenRule;
+import com.aspectran.core.context.rule.ChooseRule;
+import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -26,7 +26,7 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  *
  * @since 2011. 1. 9.
  */
-class CaseWhenNodeletAdder implements NodeletAdder {
+class ChooseWhenNodeletAdder implements NodeletAdder {
 
     @Override
     public void add(String xpath, NodeletParser parser) {
@@ -38,21 +38,21 @@ class CaseWhenNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String test = StringUtils.emptyToNull(attrs.get("test"));
 
-            CaseRule caseRule = parser.peekObject();
-            CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule();
-            caseWhenRule.setExpression(test);
-            parser.pushObject(caseWhenRule);
+            ChooseRule chooseRule = parser.peekObject();
+            ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
+            chooseWhenRule.setExpression(test);
+            parser.pushObject(chooseWhenRule);
         });
         parser.addNodelet(actionNodeletAdder);
         parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });
-        parser.setXpath(xpath + "/else");
+        parser.setXpath(xpath + "/otherwise");
         parser.addNodelet(attrs -> {
-            CaseRule caseRule = parser.peekObject();
-            CaseWhenRule caseWhenRule = caseRule.newCaseWhenRule();
-            parser.pushObject(caseWhenRule);
+            ChooseRule chooseRule = parser.peekObject();
+            ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
+            parser.pushObject(chooseWhenRule);
         });
         parser.addNodelet(actionNodeletAdder);
         parser.addNodelet(responseInnerNodeletAdder);

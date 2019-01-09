@@ -15,12 +15,12 @@ import com.aspectran.core.util.StringUtils;
 
 import java.util.Collection;
 
-import static com.aspectran.core.context.rule.CaseRule.checkCaseNo;
+import static com.aspectran.core.context.rule.ChooseRule.checkCaseNo;
 
 /**
  * <p>Created: 2019-01-06</p>
  */
-public class CaseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
+public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
 
     private final int caseNo;
 
@@ -32,7 +32,7 @@ public class CaseWhenRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private Response response;
 
-    public CaseWhenRule(int caseNo) {
+    public ChooseWhenRule(int caseNo) {
         checkCaseNo(caseNo);
         this.caseNo = caseNo;
     }
