@@ -579,7 +579,7 @@ public class CoreActivity extends AdviceActivity {
                 log.trace("actionResult " + resultValue);
             }
 
-            if (action.isLastInCaseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {
+            if (action.isLastInChooseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {
                 reserveResponse(chooseWhenRule.getResponse());
             }
         } catch (Exception e) {

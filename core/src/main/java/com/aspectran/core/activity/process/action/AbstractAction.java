@@ -28,7 +28,7 @@ public abstract class AbstractAction implements Executable {
 
     private int caseNo;
 
-    private boolean lastInCaseWhen;
+    private boolean lastInChooseWhen;
 
     /**
      * Instantiates a new AbstractAction.
@@ -58,13 +58,13 @@ public abstract class AbstractAction implements Executable {
     }
 
     @Override
-    public boolean isLastInCaseWhen() {
-        return lastInCaseWhen;
+    public boolean isLastInChooseWhen() {
+        return lastInChooseWhen;
     }
 
     @Override
-    public void setLastInCaseWhen(boolean lastInCaseWhen) {
-        this.lastInCaseWhen = lastInCaseWhen;
+    public void setLastInChooseWhen(boolean lastInChooseWhen) {
+        this.lastInChooseWhen = lastInChooseWhen;
     }
     
 }

@@ -76,8 +76,8 @@ public interface Executable {
 
     void setCaseNo(int caseNo);
 
-    boolean isLastInCaseWhen();
+    boolean isLastInChooseWhen();
 
-    void setLastInCaseWhen(boolean lastInCaseWhen);
+    void setLastInChooseWhen(boolean lastInChooseWhen);
 
 }

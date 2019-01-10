@@ -208,7 +208,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing an EmbeddedActivity", e);
+            throw new AspectranRuntimeException("An error occurred while processing an activity", e);
         } finally {
             if (activity != null) {
                 activity.finish();

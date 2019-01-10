@@ -64,9 +64,9 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     public void join(ActionRuleApplicable applicable) {
         if (actionList != null && !actionList.isEmpty()) {
             for (Executable action : actionList) {
-                action.setLastInCaseWhen(false);
+                action.setLastInChooseWhen(false);
             }
-            actionList.get(actionList.size() - 1).setLastInCaseWhen(true);
+            actionList.get(actionList.size() - 1).setLastInChooseWhen(true);
             applicable.applyActionRule(actionList);
             actionList = null;
         }

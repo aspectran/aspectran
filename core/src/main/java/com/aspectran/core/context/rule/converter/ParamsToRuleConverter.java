@@ -600,9 +600,9 @@ public class ParamsToRuleConverter {
         for (Executable action : actionList) {
             if (action.getCaseNo() == chooseWhenRule.getCaseNo()) {
                 if (prev != null) {
-                    prev.setLastInCaseWhen(false);
+                    prev.setLastInChooseWhen(false);
                 }
-                action.setLastInCaseWhen(true);
+                action.setLastInChooseWhen(true);
                 prev = action;
             } else {
                 prev = null;

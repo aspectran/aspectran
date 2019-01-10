@@ -22,7 +22,7 @@ import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
- * The Class CaseWhenNodeletAdder.
+ * The Class ChooseWhenNodeletAdder.
  *
  * @since 2011. 1. 9.
  */

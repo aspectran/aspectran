@@ -136,7 +136,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing a DaemonActivity", e);
+            throw new AspectranRuntimeException("An error occurred while processing the daemon activity", e);
         } finally {
             if (activity != null) {
                 activity.finish();
