@@ -67,6 +67,7 @@ public final class LogFactory {
         setImplementation(com.aspectran.core.util.logging.commons.JakartaCommonsLoggingImpl.class);
     }
 
+    @Deprecated
     public static synchronized void useLog4JLogging() {
         setImplementation(com.aspectran.core.util.logging.log4j.Log4jImpl.class);
     }
