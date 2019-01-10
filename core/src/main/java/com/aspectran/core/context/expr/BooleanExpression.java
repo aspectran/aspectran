@@ -1,10 +1,10 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.context.expr.ognl.OgnlSupport;
 import com.aspectran.core.context.rule.ChooseWhenRule;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.context.rule.IllegalRuleException;
 
 /**
  * <p>Created: 2019-01-06</p>
@@ -17,21 +17,16 @@ public class BooleanExpression {
         this.activity = activity;
     }
 
-    public boolean evaluate(ChooseWhenRule chooseWhenRule) {
+    public boolean evaluate(ChooseWhenRule chooseWhenRule) throws IllegalRuleException {
         if (chooseWhenRule.getExpression() == null) {
-            return false;
+            return true;
         }
-        return true;
+        ActivityDataMap root = (activity.getTranslet() != null ? activity.getTranslet().getActivityDataMap() : null);
+        return OgnlSupport.evaluateAsBoolean(chooseWhenRule.getExpression(), chooseWhenRule.getRepresented(), root);
     }
 
-    public static Token[] parseTokens(String expression) {
-        if (StringUtils.hasLength(expression)) {
-            Token[] tokens = TokenParser.parse(expression);
-            if (tokens != null && tokens.length > 0) {
-                return tokens;
-            }
-        }
-        return null;
+    public static Object parseExpression(String expression) throws IllegalRuleException {
+        return OgnlSupport.parseExpression(expression);
     }
 
 }

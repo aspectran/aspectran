@@ -109,11 +109,21 @@ class EmbeddedAspectranTest {
     }
 
     @Test
-    void testCase() {
-        Translet translet = aspectran.translate("caseTest");
+    void testChooseWhen() throws IOException {
+        String mode = "case2-2";
+
+        ParameterMap params = new ParameterMap();
+        params.setParameter("mode", mode);
+
+        Translet translet = aspectran.translate("chooseWhenTest", params);
         ActivityDataMap dataMap = translet.getActivityDataMap();
-        System.out.println("Result: " + dataMap.get("case1"));
-        assertEquals("case-1", dataMap.get("case1"));
+        String response = translet.getResponseAdapter().getWriter().toString();
+
+        System.out.println("Mode: " + mode);
+        System.out.println("Action Result: " + dataMap.get(mode));
+        System.out.println("Response: " + response);
+
+        assertEquals(mode, dataMap.get(mode));
     }
 
 }

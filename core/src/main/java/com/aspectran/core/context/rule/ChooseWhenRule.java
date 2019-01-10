@@ -8,7 +8,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.expr.BooleanExpression;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.util.StringUtils;
@@ -26,7 +25,7 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
 
     private String expression;
 
-    private Token[] tokens;
+    private Object represented;
 
     private ActionList actionList;
 
@@ -45,13 +44,13 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
         return expression;
     }
 
-    public void setExpression(String expression) {
+    public void setExpression(String expression) throws IllegalRuleException {
         this.expression = (StringUtils.hasLength(expression) ? expression : null);
-        this.tokens = BooleanExpression.parseTokens(expression);
+        this.represented = BooleanExpression.parseExpression(expression);
     }
 
-    public Token[] getTokens() {
-        return tokens;
+    public Object getRepresented() {
+        return represented;
     }
 
     public ActionList getActionList() {

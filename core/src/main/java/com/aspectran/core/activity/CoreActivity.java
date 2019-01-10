@@ -77,9 +77,7 @@ public class CoreActivity extends AdviceActivity {
 
     private boolean committed;
 
-    private Set<Integer> processedCases;
-
-    private Set<Integer> processedCaseWhens;
+    private Set<Integer> processedChooses;
 
     /**
      * Instantiates a new CoreActivity.
@@ -547,20 +545,17 @@ public class CoreActivity extends AdviceActivity {
                 if (chooseWhenRule == null) {
                     throw new IllegalRuleException("No choose rule with case number: " + action.getCaseNo());
                 }
-                if (processedCases != null && processedCases.contains(chooseRule.getCaseNo())) {
+                if (processedChooses != null && processedChooses.contains(chooseRule.getCaseNo())) {
                     return;
                 }
-                if (processedCaseWhens == null || !processedCaseWhens.contains(chooseWhenRule.getCaseNo())) {
-                    BooleanExpression caseExpression = new BooleanExpression(this);
-                    if (caseExpression.evaluate(chooseWhenRule)) {
-                        if (processedCases == null) {
-                            processedCases = new HashSet<>();
+                if (processedChooses == null || !processedChooses.contains(chooseWhenRule.getCaseNo())) {
+                    BooleanExpression expression = new BooleanExpression(this);
+                    if (expression.evaluate(chooseWhenRule)) {
+                        if (processedChooses == null) {
+                            processedChooses = new HashSet<>();
                         }
-                        processedCases.add(chooseRule.getCaseNo());
-                        if (processedCaseWhens == null) {
-                            processedCaseWhens = new HashSet<>();
-                        }
-                        processedCaseWhens.add(chooseWhenRule.getCaseNo());
+                        processedChooses.add(chooseRule.getCaseNo());
+                        processedChooses.add(chooseWhenRule.getCaseNo());
                     } else {
                         return;
                     }

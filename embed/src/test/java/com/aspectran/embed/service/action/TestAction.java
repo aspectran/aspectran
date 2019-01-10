@@ -15,6 +15,8 @@
  */
 package com.aspectran.embed.service.action;
 
+import com.aspectran.core.activity.Translet;
+
 public class TestAction {
 
     public int addUp(int arg1, int arg2, int arg3, int arg4) {
@@ -25,12 +27,16 @@ public class TestAction {
         return 4;
     }
 
-    public String case1() {
-        return "case-1";
+    public String case1(Translet translet) {
+        return translet.getParameter("mode");
     }
 
-    public String case2() {
-        return "case-2";
+    public String case2(Translet translet) {
+        return translet.getParameter("mode");
+    }
+
+    public String case3(Translet translet) {
+        return translet.getParameter("mode");
     }
 
 }
