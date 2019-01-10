@@ -162,6 +162,11 @@ public class NodeletParser {
         return (T)objectStack.peek(n);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T peekObject(Class<?> target) {
+        return (T)objectStack.peek(target);
+    }
+
     /**
      * Clear object stack.
      */

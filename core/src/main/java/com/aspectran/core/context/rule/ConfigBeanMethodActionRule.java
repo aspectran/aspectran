@@ -104,7 +104,7 @@ public class ConfigBeanMethodActionRule {
         }
     }
 
-    public static ConfigBeanMethodAction newMethodAction(Class<?> configBeanClass, Method method) {
+    public static ConfigBeanMethodAction newConfigBeanMethodAction(Class<?> configBeanClass, Method method) {
         ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
         configBeanMethodActionRule.setConfigBeanClass(configBeanClass);
         configBeanMethodActionRule.setMethod(method);

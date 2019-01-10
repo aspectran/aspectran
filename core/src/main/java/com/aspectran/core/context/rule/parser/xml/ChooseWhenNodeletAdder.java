@@ -28,6 +28,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ChooseWhenNodeletAdder implements NodeletAdder {
 
+    private final boolean hasResponse;
+
+    public ChooseWhenNodeletAdder(boolean hasResponse) {
+        this.hasResponse = hasResponse;
+    }
+
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
@@ -44,7 +50,9 @@ class ChooseWhenNodeletAdder implements NodeletAdder {
             parser.pushObject(chooseWhenRule);
         });
         parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
+        if (hasResponse) {
+            parser.addNodelet(responseInnerNodeletAdder);
+        }
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });
@@ -55,7 +63,9 @@ class ChooseWhenNodeletAdder implements NodeletAdder {
             parser.pushObject(chooseWhenRule);
         });
         parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
+        if (hasResponse) {
+            parser.addNodelet(responseInnerNodeletAdder);
+        }
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });

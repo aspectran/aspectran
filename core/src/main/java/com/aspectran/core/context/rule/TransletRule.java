@@ -411,16 +411,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Response applyResponseRule(TransformRule transformRule) {
-        if (responseRule == null) {
-            responseRule = new ResponseRule();
-        }
-        implicitResponse = true;
-
-        return responseRule.applyResponseRule(transformRule);
-    }
-
-    @Override
     public Response applyResponseRule(DispatchRule dispatchRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule();
@@ -431,13 +421,13 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Response applyResponseRule(RedirectRule redirectRule) {
+    public Response applyResponseRule(TransformRule transformRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule();
         }
         implicitResponse = true;
 
-        return responseRule.applyResponseRule(redirectRule);
+        return responseRule.applyResponseRule(transformRule);
     }
 
     @Override
@@ -448,6 +438,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         implicitResponse = true;
 
         return responseRule.applyResponseRule(forwardRule);
+    }
+
+    @Override
+    public Response applyResponseRule(RedirectRule redirectRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule();
+        }
+        implicitResponse = true;
+
+        return responseRule.applyResponseRule(redirectRule);
     }
 
     public void determineResponseRule() {

@@ -39,4 +39,8 @@ public class TestAction {
         return translet.getParameter("mode");
     }
 
+    public String case4(Translet translet) {
+        return translet.getParameter("mode");
+    }
+
 }

@@ -15,12 +15,15 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
+import com.aspectran.core.context.rule.ChooseRule;
+import com.aspectran.core.context.rule.ChooseRuleMap;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
@@ -39,6 +42,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
+        ChooseWhenNodeletAdder chooseWhenNoResponseNodeletAdder = nodeParser.getChooseWhenNoResponseNodeletAdder();
         ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -53,11 +57,26 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             TransformRule transformRule = TransformRule.newInstance(type, contentType, encoding, defaultResponse, pretty);
             parser.pushObject(transformRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             TransformRule transformRule = parser.popObject();
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(transformRule);
+        });
+        parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/transform/choose");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(TransletRule.class);
+
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            TransformRule transformRule = parser.peekObject();
+            chooseRule.join(transformRule);
         });
         parser.setXpath(xpath + "/transform/template");
         parser.addNodelet(attrs -> {
@@ -101,11 +120,26 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
             parser.pushObject(dispatchRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             DispatchRule dispatchRule = parser.popObject();
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(dispatchRule);
+        });
+        parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/dispatch/choose");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(TransletRule.class);
+
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            DispatchRule dispatchRule = parser.peekObject();
+            chooseRule.join(dispatchRule);
         });
         parser.setXpath(xpath + "/redirect");
         parser.addNodelet(attrs -> {
@@ -120,7 +154,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     excludeEmptyParameters, defaultResponse);
             parser.pushObject(redirectRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             RedirectRule redirectRule = parser.popObject();
 
@@ -132,6 +165,22 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             applicable.applyResponseRule(redirectRule);
 
             assistant.resolveBeanClass(redirectRule.getPathTokens());
+        });
+        parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/redirect/choose");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(TransletRule.class);
+
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            RedirectRule redirectRule = parser.peekObject();
+            chooseRule.join(redirectRule);
         });
         parser.setXpath(xpath + "/redirect/parameters");
         parser.addNodelet(attrs -> {
@@ -164,6 +213,21 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             applicable.applyResponseRule(forwardRule);
         });
         parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/forward/choose");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(TransletRule.class);
+
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            ForwardRule forwardRule = parser.peekObject();
+            chooseRule.join(forwardRule);
+        });
         parser.setXpath(xpath + "/forward/attributes");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();

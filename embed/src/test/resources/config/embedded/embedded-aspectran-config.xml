@@ -224,8 +224,14 @@
             <when test="mode == 'case2-2'">
                 <action id="case2-2" bean="action.TestAction" method="case2"/>
                 <transform type="transform/text">
+                    <choose>
+                        <when test="mode == 'case2-2'">
+                            <action id="case2-4" bean="action.TestAction" method="case4"/>
+                        </when>
+                    </choose>
                     <template style="apon">
                         |Case 2-2: @{case2-2}
+                        |Case 2-4: @{case2-4}
                     </template>
                 </transform>
             </when>

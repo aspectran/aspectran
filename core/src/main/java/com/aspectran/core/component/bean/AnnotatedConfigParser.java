@@ -431,17 +431,17 @@ public class AnnotatedConfigParser {
         for (Method method : beanClass.getMethods()) {
             if (method.isAnnotationPresent(Before.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newConfigBeanMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newConfigBeanMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(Around.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
-                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newMethodAction(beanClass, method));
+                aspectAdviceRule.setExecutableAction(ConfigBeanMethodActionRule.newConfigBeanMethodAction(beanClass, method));
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 Class<? extends Throwable>[] types = exceptionThrownAnno.type();
-                ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newMethodAction(beanClass, method);
+                ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newConfigBeanMethodAction(beanClass, method);
                 ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Dispatch.class)) {

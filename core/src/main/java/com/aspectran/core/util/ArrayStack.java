@@ -110,6 +110,16 @@ public class ArrayStack extends ArrayList<Object> {
         return get(m);
     }
 
+    public Object peek(Class<?> target) throws EmptyStackException {
+        for (int i = size() - 1; i >= 0; i--) {
+            Object item = get(i);
+            if (item.getClass().equals(target)) {
+                return item;
+            }
+        }
+        throw new EmptyStackException();
+    }
+
     /**
      * Pops the top item off of this stack and return it.
      *

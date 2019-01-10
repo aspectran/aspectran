@@ -543,13 +543,13 @@ public class RuleToParamsConverter {
         }
 
         if (exceptionThrownRule.getActionType() == ActionType.BEAN_METHOD) {
-            BeanMethodActionRule beanMethodActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            BeanMethodActionRule beanMethodActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(beanMethodActionRule));
         } else if (exceptionThrownRule.getActionType() == ActionType.ECHO) {
-            EchoActionRule echoActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            EchoActionRule echoActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(echoActionRule));
         } else if (exceptionThrownRule.getActionType() == ActionType.HEADER) {
-            HeaderActionRule headerActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            HeaderActionRule headerActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(headerActionRule));
         }
 

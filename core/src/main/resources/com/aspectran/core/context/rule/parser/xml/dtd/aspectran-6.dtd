@@ -70,7 +70,7 @@
 
 <!ELEMENT exception (description?, thrown+)>
 
-<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect?)*>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
@@ -123,9 +123,9 @@
 <!ELEMENT translet (
   (description?, request?, content*, contents?, response*, exception?) |
   (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, request?, (choose? | action? | include? | echo? | headers?)*, response*, exception?) |
-  (description?, request?, (choose? | action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, parameters*, attributes*, (choose? | action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+  (description?, request?, (choose? | headers? | echo? | action? | include?)*, response*, exception?) |
+  (description?, request?, (choose? | headers? | echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, parameters*, attributes*, (choose? | headers? | echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, exception?)
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -146,7 +146,7 @@
   omittable (true | false) #IMPLIED
 >
 
-<!ELEMENT content (choose? | action? | include? | echo? | headers?)*>
+<!ELEMENT content (choose? | headers? | echo? | action? | include?)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
   omittable (true | false) #IMPLIED
@@ -196,7 +196,7 @@
   encoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((choose? | action? | include? | echo? | headers?)*, (template? | call?))>
+<!ELEMENT transform ((choose? | headers? | echo? | action? | include?)*, (template? | call?))>
 <!ATTLIST transform
   type        CDATA #IMPLIED
   contentType CDATA #IMPLIED
@@ -205,7 +205,7 @@
   pretty      (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch (choose? | action? | include? | echo? | headers?)*>
+<!ELEMENT dispatch (choose? | headers? | echo? | action? | include?)*>
 <!ATTLIST dispatch
   name        CDATA #REQUIRED
   dispatcher  CDATA #IMPLIED
@@ -214,7 +214,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect ((choose? | action? | include? | echo? | headers?)*, parameters*)>
+<!ELEMENT redirect ((choose? | headers? | echo? | action? | include?)*, parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -224,7 +224,7 @@
   default                (true | false) #IMPLIED
 >
 
-<!ELEMENT forward ((choose? | action? | include? | echo? | headers?)*, attributes*)>
+<!ELEMENT forward ((choose? | headers? | echo? | action? | include?)*, attributes*)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED

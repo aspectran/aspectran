@@ -377,7 +377,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     protected void handleException(ExceptionRule exceptionRule) {
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
         if (exceptionThrownRule != null) {
-            Executable action = exceptionThrownRule.getExecutableAction();
+            Executable action = exceptionThrownRule.getAction();
             if (action != null) {
                 executeAdvice(action);
             }

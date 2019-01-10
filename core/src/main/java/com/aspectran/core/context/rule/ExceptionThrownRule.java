@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
-import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
@@ -37,17 +36,17 @@ import java.util.Collection;
  * 
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleApplicable {
+public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleApplicable {
 
     private final AspectAdviceRule aspectAdviceRule;
 
     private String[] exceptionTypes;
 
+    private Executable action;
+
     private ResponseMap responseMap;
 
     private Response defaultResponse;
-
-    private Executable action;
 
     public ExceptionThrownRule() {
         this(null);
@@ -69,6 +68,28 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         this.exceptionTypes = exceptionTypes;
     }
 
+    /**
+     * Returns the executable action.
+     *
+     * @return the executable action
+     */
+    public Executable getAction() {
+        return action;
+    }
+
+    public void setAction(ConfigBeanMethodAction action) {
+        this.action = action;
+    }
+
+    /**
+     * Returns the action type of the executable action.
+     *
+     * @return the action type
+     */
+    public ActionType getActionType() {
+        return (action != null ? action.getActionType() : null);
+    }
+
     public Response getResponse(String contentType) {
         if (contentType != null && responseMap != null) {
             Response response = responseMap.get(contentType);
@@ -87,7 +108,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     public ResponseMap getResponseMap() {
         return responseMap;
     }
-    
+
     private ResponseMap touchResponseMap() {
         if (responseMap == null) {
             responseMap = new ResponseMap();
@@ -105,66 +126,6 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     public void setDefaultResponse(Response response) {
         this.defaultResponse = response;
-    }
-
-    @Override
-    public Response applyResponseRule(TransformRule transformRule) {
-        Response response = TransformResponseFactory.createTransformResponse(transformRule);
-        if (transformRule.getContentType() != null) {
-            touchResponseMap().put(transformRule.getContentType(), response);
-        }
-        if (transformRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && transformRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
-    }
-
-    @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
-        Response response = new DispatchResponse(dispatchRule);
-        if (dispatchRule.getContentType() != null) {
-            touchResponseMap().put(dispatchRule.getContentType(), response);
-        }
-        if (dispatchRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && dispatchRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
-    }
-
-    @Override
-    public Response applyResponseRule(RedirectRule redirectRule) {
-        Response response = new RedirectResponse(redirectRule);
-        if (redirectRule.getContentType() != null) {
-            touchResponseMap().put(redirectRule.getContentType(), response);
-        }
-        if (redirectRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && redirectRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
-    }
-
-    @Override
-    public Response applyResponseRule(ForwardRule forwardRule) {
-        Response response = new ForwardResponse(forwardRule);
-        if (forwardRule.getContentType() != null) {
-            touchResponseMap().put(forwardRule.getContentType(), response);
-        }
-        if (forwardRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && forwardRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
     }
 
     @Override
@@ -213,26 +174,54 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Returns the executable action.
-     *
-     * @return the executable action
-     */
-    public Executable getExecutableAction() {
-        return action;
+    @Override
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        Response response = new DispatchResponse(dispatchRule);
+        if (dispatchRule.getContentType() != null) {
+            touchResponseMap().put(dispatchRule.getContentType(), response);
+        }
+        if (dispatchRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && dispatchRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
     }
 
-    public void setExecutableAction(ConfigBeanMethodAction action) {
-        this.action = action;
+    @Override
+    public Response applyResponseRule(TransformRule transformRule) {
+        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        if (transformRule.getContentType() != null) {
+            touchResponseMap().put(transformRule.getContentType(), response);
+        }
+        if (transformRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && transformRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
     }
 
-    /**
-     * Returns the action type of the executable action.
-     *
-     * @return the action type
-     */
-    public ActionType getActionType() {
-        return (action != null ? action.getActionType() : null);
+    @Override
+    public Response applyResponseRule(ForwardRule forwardRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Response applyResponseRule(RedirectRule redirectRule) {
+        Response response = new RedirectResponse(redirectRule);
+        if (redirectRule.getContentType() != null) {
+            touchResponseMap().put(redirectRule.getContentType(), response);
+        }
+        if (redirectRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && redirectRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
     }
 
     public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, ConfigBeanMethodAction action) {
@@ -244,7 +233,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
             }
             exceptionThrownRule.setExceptionTypes(exceptionTypes);
         }
-        exceptionThrownRule.setExecutableAction(action);
+        exceptionThrownRule.setAction(action);
         return exceptionThrownRule;
     }
 

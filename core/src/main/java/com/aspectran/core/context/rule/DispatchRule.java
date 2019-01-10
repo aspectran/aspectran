@@ -47,8 +47,6 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
 
     private String encoding;
 
-    private Boolean defaultResponse;
-
     private ViewDispatcher viewDispatcher;
 
     /**
@@ -206,7 +204,7 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
         tsb.appendForce("name", name);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
-        tsb.append("default", defaultResponse);
+        tsb.append("default", getDefaultResponse());
         tsb.append("viewDispatcher", viewDispatcher);
         tsb.append("targetName", targetName);
         return tsb.toString();
