@@ -62,8 +62,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private ResponseRule responseRule;
 
-    private boolean implicitResponse;
-
     private List<ResponseRule> responseRuleList;
 
     private ExceptionRule exceptionRule;
@@ -224,11 +222,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.requestRule = requestRule;
     }
 
-    public RequestRule touchRequestRule(boolean implicit) {
+    public RequestRule touchRequestRule(boolean explicit) {
         if (requestRule != null) {
             return requestRule;
         } else {
-            requestRule = RequestRule.newInstance(implicit);
+            requestRule = RequestRule.newInstance(explicit);
             return requestRule;
         }
     }
@@ -334,7 +332,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
      */
     public void setResponseRule(ResponseRule responseRule) {
         this.responseRule = responseRule;
-        this.implicitResponse = false;
     }
 
     public List<ResponseRule> getResponseRuleList() {
@@ -343,7 +340,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     public void setResponseRuleList(List<ResponseRule> responseRuleList) {
         this.responseRuleList = responseRuleList;
-        this.implicitResponse = false;
     }
 
     public void addResponseRule(ResponseRule responseRule) {
@@ -351,56 +347,43 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
             responseRuleList = new ArrayList<>();
         }
         responseRuleList.add(responseRule);
-        implicitResponse = false;
-    }
-
-    public boolean isImplicitResponse() {
-        return implicitResponse;
     }
 
     @Override
     public Response applyResponseRule(DispatchRule dispatchRule) {
         if (responseRule == null) {
-            responseRule = new ResponseRule();
+            responseRule = new ResponseRule(false);
         }
-        implicitResponse = true;
-
         return responseRule.applyResponseRule(dispatchRule);
     }
 
     @Override
     public Response applyResponseRule(TransformRule transformRule) {
         if (responseRule == null) {
-            responseRule = new ResponseRule();
+            responseRule = new ResponseRule(false);
         }
-        implicitResponse = true;
-
         return responseRule.applyResponseRule(transformRule);
     }
 
     @Override
     public Response applyResponseRule(ForwardRule forwardRule) {
         if (responseRule == null) {
-            responseRule = new ResponseRule();
+            responseRule = new ResponseRule(false);
         }
-        implicitResponse = true;
-
         return responseRule.applyResponseRule(forwardRule);
     }
 
     @Override
     public Response applyResponseRule(RedirectRule redirectRule) {
         if (responseRule == null) {
-            responseRule = new ResponseRule();
+            responseRule = new ResponseRule(false);
         }
-        implicitResponse = true;
-
         return responseRule.applyResponseRule(redirectRule);
     }
 
     public void determineResponseRule() {
         if (responseRule == null) {
-            responseRule = new ResponseRule();
+            responseRule = new ResponseRule(false);
         } else {
             String responseName = responseRule.getName();
             if (responseName != null && !responseName.isEmpty()) {
@@ -484,7 +467,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("requestRule", requestRule);
         tsb.append("responseRule", responseRule);
         tsb.append("exceptionRule", exceptionRule);
-        tsb.append("implicitResponse", implicitResponse);
         return tsb.toString();
     }
 

@@ -228,7 +228,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private void dissectTransletRule(TransletRule transletRule) {
         if (transletRule.getRequestRule() == null) {
-            RequestRule requestRule = new RequestRule();
+            RequestRule requestRule = new RequestRule(false);
             transletRule.setRequestRule(requestRule);
         }
 

@@ -89,8 +89,8 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         return tsb.toString();
     }
 
-    public static ContentList newInstance(String name, boolean explicit) {
-        ContentList contentList = new ContentList(explicit);
+    public static ContentList newInstance(String name) {
+        ContentList contentList = new ContentList(true);
         contentList.setName(name);
         return contentList;
     }

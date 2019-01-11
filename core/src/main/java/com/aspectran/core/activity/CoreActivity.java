@@ -490,7 +490,7 @@ public class CoreActivity extends AdviceActivity {
                 String contentType = response.getContentType(this);
                 Response targetResponse = exceptionThrownRule.getResponse(contentType);
                 if (targetResponse != null) {
-                    ResponseRule newResponseRule = new ResponseRule();
+                    ResponseRule newResponseRule = new ResponseRule(false);
                     newResponseRule.setEncoding(responseRule.getEncoding());
                     newResponseRule.setResponse(targetResponse);
 

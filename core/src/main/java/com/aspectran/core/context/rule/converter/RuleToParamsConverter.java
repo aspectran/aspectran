@@ -396,17 +396,7 @@ public class RuleToParamsConverter {
 
         RequestRule requestRule = transletRule.getRequestRule();
         if (requestRule != null) {
-            if (requestRule.isImplicit()) {
-                ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
-                if (parameterItemRuleMap != null) {
-                    toItemHolderParameters(parameterItemRuleMap, transletParameters, TransletParameters.parameters);
-                }
-
-                ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
-                if (attributeItemRuleMap != null) {
-                    toItemHolderParameters(attributeItemRuleMap, transletParameters, TransletParameters.attributes);
-                }
-            } else {
+            if (requestRule.isExplicit()) {
                 RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
                 requestParameters.putValueNonNull(RequestParameters.method, requestRule.getAllowedMethod());
                 requestParameters.putValueNonNull(RequestParameters.encoding, requestRule.getEncoding());
@@ -420,9 +410,18 @@ public class RuleToParamsConverter {
                 if (attributeItemRuleMap != null) {
                     toItemHolderParameters(attributeItemRuleMap, requestParameters, RequestParameters.attributes);
                 }
+            } else {
+                ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
+                if (parameterItemRuleMap != null) {
+                    toItemHolderParameters(parameterItemRuleMap, transletParameters, TransletParameters.parameters);
+                }
+
+                ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+                if (attributeItemRuleMap != null) {
+                    toItemHolderParameters(attributeItemRuleMap, transletParameters, TransletParameters.attributes);
+                }
             }
         }
-
 
         ContentList contentList = transletRule.getContentList();
         if (contentList != null) {
@@ -431,12 +430,14 @@ public class RuleToParamsConverter {
                 contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
                 for (ActionList actionList : contentList) {
                     ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
+                    contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
                     toActionList(actionList, contentParameters, ContentParameters.action);
                 }
             } else {
                 for (ActionList actionList : contentList) {
                     if (actionList.isExplicit()) {
                         ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
+                        contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
                         toActionList(actionList, contentParameters, ContentParameters.action);
                     } else {
                         toActionList(actionList, transletParameters, TransletParameters.action);
@@ -490,7 +491,7 @@ public class RuleToParamsConverter {
         } else {
             ResponseRule responseRule = transletRule.getResponseRule();
             if (responseRule != null) {
-                if (!transletRule.isImplicitResponse()) {
+                if (responseRule.isExplicit()) {
                     transletParameters.putValue(TransletParameters.response, toResponseParameters(responseRule));
                 } else {
                     Response response = responseRule.getResponse();

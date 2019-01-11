@@ -446,20 +446,20 @@ public class AnnotatedConfigParser {
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Dispatch.class)) {
                     Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                    DispatchRule drr = parseDispatchRule(dispatchAnno);
-                    exceptionThrownRule.applyResponseRule(drr);
+                    DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+                    exceptionThrownRule.applyResponseRule(dispatchRule);
                 } else if (method.isAnnotationPresent(Transform.class)) {
                     Transform transformAnno = method.getAnnotation(Transform.class);
-                    TransformRule tr = parseTransformRule(transformAnno);
-                    exceptionThrownRule.applyResponseRule(tr);
+                    TransformRule transformRule = parseTransformRule(transformAnno);
+                    exceptionThrownRule.applyResponseRule(transformRule);
                 } else if (method.isAnnotationPresent(Forward.class)) {
                     Forward forwardAnno = method.getAnnotation(Forward.class);
-                    ForwardRule frr = parseForwardRule(forwardAnno);
-                    exceptionThrownRule.applyResponseRule(frr);
+                    ForwardRule forwardRule = parseForwardRule(forwardAnno);
+                    exceptionThrownRule.applyResponseRule(forwardRule);
                 } else if (method.isAnnotationPresent(Redirect.class)) {
                     Redirect redirectAnno = method.getAnnotation(Redirect.class);
-                    RedirectRule rrr = parseRedirectRule(redirectAnno);
-                    exceptionThrownRule.applyResponseRule(rrr);
+                    RedirectRule redirectRule = parseRedirectRule(redirectAnno);
+                    exceptionThrownRule.applyResponseRule(redirectRule);
                 }
             }
         }
@@ -626,10 +626,10 @@ public class AnnotatedConfigParser {
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
         if (parameters != null) {
-            transletRule.touchRequestRule(true).setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+            transletRule.touchRequestRule(false).setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
         }
         if (attributes != null) {
-            transletRule.touchRequestRule(true).setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+            transletRule.touchRequestRule(false).setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
         }
 
         Action actionAnno = method.getAnnotation(Action.class);
@@ -643,20 +643,20 @@ public class AnnotatedConfigParser {
 
         if (method.isAnnotationPresent(Dispatch.class)) {
             Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-            DispatchRule drr = parseDispatchRule(dispatchAnno);
-            transletRule.setResponseRule(ResponseRule.newInstance(drr));
+            DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+            transletRule.setResponseRule(ResponseRule.newInstance(dispatchRule));
         } else if (method.isAnnotationPresent(Transform.class)) {
             Transform transformAnno = method.getAnnotation(Transform.class);
-            TransformRule tr = parseTransformRule(transformAnno);
-            transletRule.setResponseRule(ResponseRule.newInstance(tr));
+            TransformRule transformRule = parseTransformRule(transformAnno);
+            transletRule.setResponseRule(ResponseRule.newInstance(transformRule));
         } else if (method.isAnnotationPresent(Forward.class)) {
             Forward forwardAnno = method.getAnnotation(Forward.class);
-            ForwardRule frr = parseForwardRule(forwardAnno);
-            transletRule.setResponseRule(ResponseRule.newInstance(frr));
+            ForwardRule forwardRule = parseForwardRule(forwardAnno);
+            transletRule.setResponseRule(ResponseRule.newInstance(forwardRule));
         } else if (method.isAnnotationPresent(Redirect.class)) {
             Redirect redirectAnno = method.getAnnotation(Redirect.class);
-            RedirectRule rrr = parseRedirectRule(redirectAnno);
-            transletRule.setResponseRule(ResponseRule.newInstance(rrr));
+            RedirectRule redirectRule = parseRedirectRule(redirectAnno);
+            transletRule.setResponseRule(ResponseRule.newInstance(redirectRule));
         }
 
         Description descriptionAnno = method.getAnnotation(Description.class);

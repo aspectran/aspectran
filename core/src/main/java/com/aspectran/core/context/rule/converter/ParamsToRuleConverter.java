@@ -422,7 +422,7 @@ public class ParamsToRuleConverter {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
-                RequestRule requestRule = transletRule.touchRequestRule(true);
+                RequestRule requestRule = transletRule.touchRequestRule(false);
                 irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
@@ -432,7 +432,7 @@ public class ParamsToRuleConverter {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
-                RequestRule requestRule = transletRule.touchRequestRule(true);
+                RequestRule requestRule = transletRule.touchRequestRule(false);
                 irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
@@ -440,15 +440,15 @@ public class ParamsToRuleConverter {
 
         ContentsParameters contentsParameters = transletParameters.getParameters(TransletParameters.contents);
         if (contentsParameters != null) {
-            ContentList contentList = convertAsContentList(contentsParameters, true);
+            ContentList contentList = convertAsContentList(contentsParameters);
             transletRule.setContentList(contentList);
         }
 
         List<ContentParameters> contentParametersList = transletParameters.getParametersList(TransletParameters.content);
-        if (contentParametersList != null && !contentParametersList.isEmpty()) {
-            ContentList contentList = new ContentList(true);
+        if (contentParametersList != null) {
+            ContentList contentList = new ContentList(false);
             for (ContentParameters contentParameters : contentParametersList) {
-                ActionList actionList = convertAsActionList(contentParameters, true);
+                ActionList actionList = convertAsActionList(contentParameters);
                 contentList.addActionList(actionList);
             }
             transletRule.setContentList(contentList);
@@ -671,25 +671,25 @@ public class ParamsToRuleConverter {
         return responseRule;
     }
 
-    private ContentList convertAsContentList(ContentsParameters contentsParameters, boolean explicit) throws IllegalRuleException {
+    private ContentList convertAsContentList(ContentsParameters contentsParameters) throws IllegalRuleException {
         String name = contentsParameters.getString(ContentsParameters.name);
         List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
 
-        ContentList contentList = ContentList.newInstance(name, explicit);
+        ContentList contentList = ContentList.newInstance(name);
         if (contentParametersList != null) {
             for (ContentParameters contentParameters : contentParametersList) {
-                ActionList actionList = convertAsActionList(contentParameters, explicit);
+                ActionList actionList = convertAsActionList(contentParameters);
                 contentList.addActionList(actionList);
             }
         }
         return contentList;
     }
 
-    private ActionList convertAsActionList(ContentParameters contentParameters, boolean explicit) throws IllegalRuleException {
+    private ActionList convertAsActionList(ContentParameters contentParameters) throws IllegalRuleException {
         String name = contentParameters.getString(ContentParameters.name);
         List<ActionParameters> actionParametersList = contentParameters.getParametersList(ContentParameters.action);
 
-        ActionList actionList = ActionList.newInstance(name, explicit);
+        ActionList actionList = ActionList.newInstance(name);
         if (actionParametersList != null) {
             for (ActionParameters actionParameters : actionParametersList) {
                 convertAsActionRule(actionParameters, actionList);

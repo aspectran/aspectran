@@ -29,9 +29,9 @@ public class TransletParameters extends AbstractParameters {
     public static final ParameterDefinition request;
     public static final ParameterDefinition parameters;
     public static final ParameterDefinition attributes;
+    public static final ParameterDefinition choose;
     public static final ParameterDefinition contents;
     public static final ParameterDefinition content;
-    public static final ParameterDefinition choose;
     public static final ParameterDefinition action;
     public static final ParameterDefinition response;
     public static final ParameterDefinition transform;
@@ -51,9 +51,9 @@ public class TransletParameters extends AbstractParameters {
         request = new ParameterDefinition("request", RequestParameters.class);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
+        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         contents = new ParameterDefinition("contents", ContentsParameters.class);
         content = new ParameterDefinition("content", ContentParameters.class, true, true);
-        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
         response = new ParameterDefinition("response", ResponseParameters.class, true, true);
         transform = new ParameterDefinition("transform", TransformParameters.class);
@@ -71,9 +71,9 @@ public class TransletParameters extends AbstractParameters {
                 request,
                 parameters,
                 attributes,
+                choose,
                 contents,
                 content,
-                choose,
                 action,
                 response,
                 transform,

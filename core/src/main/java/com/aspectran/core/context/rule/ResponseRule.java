@@ -34,6 +34,8 @@ import java.nio.charset.Charset;
  */
 public class ResponseRule implements ResponseRuleApplicable, Replicable<ResponseRule> {
 
+    private final boolean explicit;
+
     private String name;
 
     /**
@@ -45,8 +47,15 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
     /**
      * Instantiates a new ResponseRule.
+     *
+     * @param explicit whether this response rule is explicit
      */
-    public ResponseRule() {
+    public ResponseRule(boolean explicit) {
+        this.explicit = explicit;
+    }
+
+    public boolean isExplicit() {
+        return explicit;
     }
 
     public String getName() {
@@ -138,38 +147,38 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
             }
         }
 
-        ResponseRule responseRule = new ResponseRule();
+        ResponseRule responseRule = new ResponseRule(true);
         responseRule.setName(name);
         responseRule.setEncoding(encoding);
         return responseRule;
     }
 
-    public static ResponseRule newInstance(DispatchRule drr) {
-        ResponseRule responseRule = new ResponseRule();
-        responseRule.applyResponseRule(drr);
+    public static ResponseRule newInstance(DispatchRule dispatchRule) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.applyResponseRule(dispatchRule);
         return responseRule;
     }
 
-    public static ResponseRule newInstance(TransformRule tr) {
-        ResponseRule responseRule = new ResponseRule();
-        responseRule.applyResponseRule(tr);
+    public static ResponseRule newInstance(TransformRule transformRule) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.applyResponseRule(transformRule);
         return responseRule;
     }
 
-    public static ResponseRule newInstance(ForwardRule frr) {
-        ResponseRule responseRule = new ResponseRule();
-        responseRule.applyResponseRule(frr);
+    public static ResponseRule newInstance(ForwardRule forwardRule) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.applyResponseRule(forwardRule);
         return responseRule;
     }
 
-    public static ResponseRule newInstance(RedirectRule rrr) {
-        ResponseRule responseRule = new ResponseRule();
-        responseRule.applyResponseRule(rrr);
+    public static ResponseRule newInstance(RedirectRule redirectRule) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.applyResponseRule(redirectRule);
         return responseRule;
     }
 
     public static ResponseRule replicate(ResponseRule responseRule) {
-        ResponseRule newResponseRule = new ResponseRule();
+        ResponseRule newResponseRule = new ResponseRule(responseRule.isExplicit());
         newResponseRule.setName(responseRule.getName());
         newResponseRule.setEncoding(responseRule.getEncoding());
         Response response = responseRule.getResponse();

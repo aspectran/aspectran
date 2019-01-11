@@ -33,7 +33,7 @@ public class RequestRule {
 
     public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
 
-    private boolean implicit;
+    private final boolean explicit;
 
     /**
      * The request encoding is the character encoding in which parameters
@@ -47,25 +47,22 @@ public class RequestRule {
 
     private ItemRuleMap attributeItemRuleMap;
 
-    public RequestRule() {
+    /**
+     * Instantiates a new RequestRule.
+     *
+     * @param explicit whether this request rule is explicit
+     */
+    public RequestRule(boolean explicit) {
+        this.explicit = explicit;
     }
 
     /**
-     * Gets whether the request rule is implicitly generated.
+     * Gets whether the request rule is explicitly generated.
      *
-     * @return true if this request rule is implicit; false otherwise
+     * @return true if this request rule is explicit; false otherwise
      */
-    public boolean isImplicit() {
-        return implicit;
-    }
-
-    /**
-     * Sets whether the request rule is implicitly generated.
-     *
-     * @param implicit whether this request rule is implicit
-     */
-    protected void setImplicit(boolean implicit) {
-        this.implicit = implicit;
+    public boolean isExplicit() {
+        return explicit;
     }
 
     /**
@@ -200,10 +197,8 @@ public class RequestRule {
         return tsb.toString();
     }
 
-    public static RequestRule newInstance(boolean implicit) {
-        RequestRule requestRule = new RequestRule();
-        requestRule.setImplicit(implicit);
-        return requestRule;
+    public static RequestRule newInstance(boolean explicit) {
+        return new RequestRule(explicit);
     }
 
     public static RequestRule newInstance(String allowedMethod, String encoding) throws IllegalRuleException {
@@ -223,7 +218,7 @@ public class RequestRule {
             }
         }
 
-        RequestRule requestRule = new RequestRule();
+        RequestRule requestRule = new RequestRule(true);
         requestRule.setAllowedMethod(allowedMethodType);
         requestRule.setEncoding(encoding);
         return requestRule;

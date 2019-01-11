@@ -288,38 +288,38 @@ public class RedirectRule extends AbstractResponseRule implements Replicable<Red
     public static RedirectRule newInstance(String contentType, String path, String encoding,
                                            Boolean excludeNullParameters, Boolean excludeEmptyParameters,
                                            Boolean defaultResponse) {
-        RedirectRule rrr = new RedirectRule();
-        rrr.setContentType(contentType);
+        RedirectRule rr = new RedirectRule();
+        rr.setContentType(contentType);
         if (path != null && path.length() > 0) {
-            rrr.setPath(path);
+            rr.setPath(path);
         }
-        rrr.setEncoding(encoding);
-        rrr.setExcludeNullParameters(excludeNullParameters);
-        rrr.setExcludeEmptyParameters(excludeEmptyParameters);
-        rrr.setDefaultResponse(defaultResponse);
-        return rrr;
+        rr.setEncoding(encoding);
+        rr.setExcludeNullParameters(excludeNullParameters);
+        rr.setExcludeEmptyParameters(excludeEmptyParameters);
+        rr.setDefaultResponse(defaultResponse);
+        return rr;
     }
 
     public static RedirectRule newInstance(String path) throws IllegalRuleException {
         if (path == null) {
             throw new IllegalRuleException("path must not be null");
         }
-        RedirectRule rrr = new RedirectRule();
-        rrr.setPath(path);
-        return rrr;
+        RedirectRule rr = new RedirectRule();
+        rr.setPath(path);
+        return rr;
     }
 
     public static RedirectRule replicate(RedirectRule redirectRule) {
-        RedirectRule rrr = new RedirectRule();
-        rrr.setContentType(redirectRule.getContentType());
-        rrr.setPath(redirectRule.getPath(), redirectRule.getPathTokens());
-        rrr.setEncoding(redirectRule.getEncoding());
-        rrr.setExcludeNullParameters(redirectRule.getExcludeNullParameters());
-        rrr.setExcludeEmptyParameters(redirectRule.getExcludeEmptyParameters());
-        rrr.setParameterItemRuleMap(redirectRule.getParameterItemRuleMap());
-        rrr.setDefaultResponse(redirectRule.getDefaultResponse());
-        rrr.setActionList(redirectRule.getActionList());
-        return rrr;
+        RedirectRule rr = new RedirectRule();
+        rr.setContentType(redirectRule.getContentType());
+        rr.setPath(redirectRule.getPath(), redirectRule.getPathTokens());
+        rr.setEncoding(redirectRule.getEncoding());
+        rr.setExcludeNullParameters(redirectRule.getExcludeNullParameters());
+        rr.setExcludeEmptyParameters(redirectRule.getExcludeEmptyParameters());
+        rr.setParameterItemRuleMap(redirectRule.getParameterItemRuleMap());
+        rr.setDefaultResponse(redirectRule.getDefaultResponse());
+        rr.setActionList(redirectRule.getActionList());
+        return rr;
     }
 
 }

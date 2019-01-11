@@ -130,8 +130,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
         return tsb.toString();
     }
 
-    public static ActionList newInstance(String name, boolean explicit) {
-        ActionList actionList = new ActionList(explicit);
+    public static ActionList newInstance(String name) {
+        ActionList actionList = new ActionList(true);
         actionList.setName(name);
         return actionList;
     }

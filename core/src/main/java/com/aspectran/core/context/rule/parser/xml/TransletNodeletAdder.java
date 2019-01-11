@@ -88,7 +88,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
-            RequestRule requestRule = transletRule.touchRequestRule(true);
+            RequestRule requestRule = transletRule.touchRequestRule(false);
             irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
             requestRule.setParameterItemRuleMap(irm);
         });
@@ -102,7 +102,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
-            RequestRule requestRule = transletRule.touchRequestRule(true);
+            RequestRule requestRule = transletRule.touchRequestRule(false);
             irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
             requestRule.setAttributeItemRuleMap(irm);
         });
@@ -164,7 +164,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
 
-            ContentList contentList = ContentList.newInstance(name, true);
+            ContentList contentList = ContentList.newInstance(name);
             parser.pushObject(contentList);
         });
         parser.addNodeEndlet(text -> {
@@ -178,7 +178,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
 
-            ActionList actionList = ActionList.newInstance(name, true);
+            ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
@@ -208,7 +208,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
 
-            ActionList actionList = ActionList.newInstance(name, true);
+            ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
