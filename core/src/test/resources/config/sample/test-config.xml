@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+        "aspectran-6.dtd">
 <aspectran>
 
     <description>
@@ -237,6 +237,39 @@
             </otherwise>
         </choose>
         <transform type="transform/text">
+            <action id="case3" method="case2" bean="SampleAction"/>
+            <action id="case4" method="case2" bean="SampleAction"/>
+            <template style="apon">
+                |@{case0}
+                |@{case1}
+            </template>
+        </transform>
+    </translet>
+
+
+    <translet name="caseTest2">
+        <request>
+            <attributes>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </attributes>
+        </request>
+        <contents>
+            <content>
+                <action id="case0" method="case0" bean="SampleAction"/>
+                <choose>
+                    <when test="case1">
+                        <action id="case1" method="case1" bean="SampleAction"/>
+                    </when>
+                    <otherwise>
+                        <action id="case2" method="case2" bean="SampleAction"/>
+                    </otherwise>
+                </choose>
+            </content>
+        </contents>
+        <transform type="transform/text">
+            <action id="case3" method="case2" bean="SampleAction"/>
+            <action id="case4" method="case2" bean="SampleAction"/>
             <template style="apon">
                 |@{case0}
                 |@{case1}

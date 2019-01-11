@@ -21,6 +21,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Objects;
 
 /**
  * The Class ProcessResult.
@@ -33,8 +34,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
     private static final long serialVersionUID = 4734650376929217378L;
 
     private String name;
-
-    private boolean omittable;
 
     public ProcessResult() {
         this(5);
@@ -52,14 +51,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
         this.name = name;
     }
 
-    public boolean isOmittable() {
-        return omittable;
-    }
-
-    public void setOmittable(boolean omittable) {
-        this.omittable = omittable;
-    }
-
     /**
      * Adds the content result.
      *
@@ -67,6 +58,15 @@ public class ProcessResult extends ArrayList<ContentResult> {
      */
     protected void addContentResult(ContentResult contentResult) {
         add(contentResult);
+    }
+
+    public ContentResult getContentResult(String name) {
+        for (ContentResult contentResult : this) {
+            if (Objects.equals(name, contentResult.getName())) {
+                return contentResult;
+            }
+        }
+        return null;
     }
 
     /**
@@ -127,7 +127,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
     public String describe() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("omittable", omittable);
         tsb.appendSize("size", this);
         tsb.append("values", this);
         return tsb.toString();

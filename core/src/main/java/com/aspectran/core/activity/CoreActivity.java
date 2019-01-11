@@ -200,9 +200,7 @@ public class CoreActivity extends AdviceActivity {
                 executeAdvice(getBeforeAdviceRuleList(), true);
 
                 if (!isResponseReserved()) {
-                    if (getTransletRule().getContentList() != null) {
-                        produce();
-                    }
+                    produce();
                 }
 
                 forwardRule = response();
@@ -252,19 +250,26 @@ public class CoreActivity extends AdviceActivity {
     private void produce() {
         ContentList contentList = getTransletRule().getContentList();
         if (contentList != null) {
-            ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
-            if (getTransletRule().isExplicitContent()) {
-                processResult.setOmittable(contentList.isOmittable());
-            } else {
-                if (contentList.getVisibleCount() < 2) {
-                    processResult.setOmittable(true);
-                }
+            ProcessResult processResult = translet.getProcessResult();
+            if (processResult == null) {
+                processResult = new ProcessResult(contentList.size());
+                processResult.setName(contentList.getName());
+                translet.setProcessResult(processResult);
             }
+
             for (ActionList actionList : contentList) {
                 execute(actionList);
                 if (isResponseReserved()) {
                     break;
                 }
+            }
+        }
+
+        Response res = getResponse();
+        if (res != null) {
+            ActionList actionList = res.getActionList();
+            if (actionList != null) {
+                execute(actionList);
             }
         }
     }
@@ -276,10 +281,7 @@ public class CoreActivity extends AdviceActivity {
             return null;
         }
 
-        Response res = this.reservedResponse;
-        if (res == null && !isExceptionRaised()) {
-            res = getDeclaredResponse();
-        }
+        Response res = getResponse();
         if (res != null) {
             res.commit(this);
 
@@ -333,6 +335,14 @@ public class CoreActivity extends AdviceActivity {
         } finally {
             removeCurrentActivity();
         }
+    }
+
+    private Response getResponse() {
+        Response res = this.reservedResponse;
+        if (res == null && !isExceptionRaised()) {
+            res = getDeclaredResponse();
+        }
+        return res;
     }
 
     protected void reserveResponse(Response response) {
@@ -473,27 +483,27 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private void handleException(ExceptionThrownRule exceptionThrownRule) {
-        Response response = getDeclaredResponse();
-        if (response != null) {
-            String contentType = response.getContentType(this);
-            Response targetResponse = exceptionThrownRule.getResponse(contentType);
-            if (targetResponse != null) {
-                ResponseRule newResponseRule = new ResponseRule();
-                newResponseRule.setResponse(targetResponse);
-                if (getResponseRule() != null) {
-                    newResponseRule.setEncoding(getResponseRule().getEncoding());
+        ResponseRule responseRule = getResponseRule();
+        if (responseRule != null) {
+            Response response = responseRule.getResponse();
+            if (response != null) {
+                String contentType = response.getContentType(this);
+                Response targetResponse = exceptionThrownRule.getResponse(contentType);
+                if (targetResponse != null) {
+                    ResponseRule newResponseRule = new ResponseRule();
+                    newResponseRule.setEncoding(responseRule.getEncoding());
+                    newResponseRule.setResponse(targetResponse);
+
+                    // Clear produced results. No reflection to ProcessResult.
+                    translet.setProcessResult(null);
+
+                    ActionList actionList = targetResponse.getActionList();
+                    if (actionList != null) {
+                        execute(actionList);
+                    }
+
+                    reserveResponse(targetResponse);
                 }
-
-                // Clear produced results. No reflection to ProcessResult.
-                translet.setProcessResult(null);
-                translet.touchProcessResult(null, 0).setOmittable(true);
-
-                ActionList actionList = targetResponse.getActionList();
-                if (actionList != null) {
-                    execute(actionList);
-                }
-
-                reserveResponse(targetResponse);
             }
         }
     }
@@ -504,16 +514,18 @@ public class CoreActivity extends AdviceActivity {
      * @param actionList the action list
      */
     protected void execute(ActionList actionList) {
-        ContentResult contentResult = null;
-        if (translet.getProcessResult() != null && !actionList.isHidden()) {
-            contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
-            contentResult.setName(actionList.getName());
-            if (getTransletRule().isExplicitContent()) {
-                contentResult.setOmittable(actionList.isOmittable());
-            } else if (actionList.getName() == null && actionList.getVisibleCount() < 2) {
-                contentResult.setOmittable(true);
-            }
+        ProcessResult processResult = translet.getProcessResult();
+        if (processResult == null) {
+            processResult = new ProcessResult(1);
+            translet.setProcessResult(processResult);
         }
+
+        ContentResult contentResult = processResult.getContentResult(actionList.getName());
+        if (contentResult == null) {
+            contentResult = new ContentResult(processResult, actionList.size());
+            contentResult.setName(actionList.getName());
+        }
+
         for (Executable action : actionList) {
             execute(action, contentResult);
             if (isResponseReserved()) {

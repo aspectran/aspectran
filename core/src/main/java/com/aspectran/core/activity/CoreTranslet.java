@@ -141,27 +141,6 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public ProcessResult touchProcessResult() {
-        return touchProcessResult(null);
-    }
-
-    @Override
-    public ProcessResult touchProcessResult(String contentsName) {
-        return touchProcessResult(contentsName, 5);
-    }
-
-    @Override
-    public ProcessResult touchProcessResult(String contentsName, int initialCapacity) {
-        if (processResult == null) {
-            processResult = new ProcessResult(initialCapacity);
-            if (contentsName != null) {
-                processResult.setName(contentsName);
-            }
-        }
-        return processResult;
-    }
-
-    @Override
     public ActivityDataMap getActivityDataMap() {
         if (activityDataMap == null) {
             activityDataMap = new ActivityDataMap(activity);
@@ -393,7 +372,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public boolean hasPathVariable() {
-        return activity.getTransletRule().hasPathVariable();
+        return activity.getTransletRule().hasPathVariables();
     }
 
     //---------------------------------------------------------------------

@@ -121,8 +121,8 @@
 >
 
 <!ELEMENT translet (
-  (description?, request?, content*, contents?, response*, exception?) |
-  (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, request?, (content*, contents?)?, response*, exception?) |
+  (description?, request?, (content*, contents?)?, (transform | dispatch | redirect | forward)?, exception?) |
   (description?, request?, (choose? | headers? | echo? | action? | include?)*, response*, exception?) |
   (description?, request?, (choose? | headers? | echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, exception?) |
   (description?, parameters*, attributes*, (choose? | headers? | echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, exception?)
@@ -143,14 +143,11 @@
 <!ELEMENT contents (content*)>
 <!ATTLIST contents
   name      CDATA #IMPLIED
-  omittable (true | false) #IMPLIED
 >
 
 <!ELEMENT content (choose? | headers? | echo? | action? | include?)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
-  omittable (true | false) #IMPLIED
-  hidden    (true | false) #IMPLIED
 >
 
 <!ELEMENT choose (when*, otherwise?)>

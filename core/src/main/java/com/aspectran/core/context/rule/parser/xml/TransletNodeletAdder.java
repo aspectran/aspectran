@@ -26,7 +26,6 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -164,9 +163,8 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
 
-            ContentList contentList = ContentList.newInstance(name, omittable);
+            ContentList contentList = ContentList.newInstance(name, true);
             parser.pushObject(contentList);
         });
         parser.addNodeEndlet(text -> {
@@ -179,10 +177,8 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/translet/contents/content");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            ActionList actionList = ActionList.newInstance(name, omittable, hidden);
+            ActionList actionList = ActionList.newInstance(name, true);
             parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
@@ -211,19 +207,19 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/translet/content");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
-            Boolean omittable = BooleanUtils.toNullableBooleanObject(attrs.get("omittable"));
-            Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-            ActionList actionList = ActionList.newInstance(name, omittable, hidden);
+            ActionList actionList = ActionList.newInstance(name, true);
             parser.pushObject(actionList);
         });
         parser.addNodelet(actionNodeletAdder);
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
+                ContentList contentList = new ContentList(false);
+                contentList.add(actionList);
+
                 TransletRule transletRule = parser.peekObject();
-                ContentList contentList = transletRule.touchContentList(true, true);
-                contentList.addActionList(actionList);
+                transletRule.setContentList(contentList);
             }
         });
         parser.setXpath(xpath + "/translet/content/choose");

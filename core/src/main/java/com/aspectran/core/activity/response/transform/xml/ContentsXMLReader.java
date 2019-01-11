@@ -156,22 +156,7 @@ public class ContentsXMLReader implements XMLReader {
             ProcessResult processResult = cis.getProcessResult();
             handler.startDocument();
             if (processResult != null && !processResult.isEmpty()) {
-                String contentsName = processResult.getName();
-                if (!processResult.isOmittable()) {
-                    if (contentsName != null) {
-                        handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
-                    } else {
-                        handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
-                    }
-                }
                 parse(processResult);
-                if (!processResult.isOmittable()) {
-                    if (contentsName != null) {
-                        handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
-                    } else {
-                        handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
-                    }
-                }
             } else {
                 handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
                 handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
@@ -191,37 +176,32 @@ public class ContentsXMLReader implements XMLReader {
      * @throws InvocationTargetException the invocation target exception
      */
     private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
+        String contentsName = processResult.getName();
+        if (contentsName != null) {
+            handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
+        }
         for (ContentResult contentResult : processResult) {
             String contentName = contentResult.getName();
-            if (!contentResult.isOmittable()) {
-                if (contentName != null) {
-                    handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
-                } else {
-                    handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
-                }
+            if (contentName != null) {
+                handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
             }
             for (ActionResult actionResult : contentResult) {
                 String actionId = actionResult.getActionId();
                 Object resultValue = actionResult.getResultValue();
-                if (resultValue instanceof ProcessResult) {
-                    parse((ProcessResult) resultValue);
-                } else {
-                    if (actionId != null) {
-                        handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-                    }
-                    parse(resultValue);
-                    if (actionId != null) {
-                        handler.endElement(StringUtils.EMPTY, actionId, actionId);
-                    }
+                if (actionId != null) {
+                    handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
+                }
+                parse(resultValue);
+                if (actionId != null) {
+                    handler.endElement(StringUtils.EMPTY, actionId, actionId);
                 }
             }
-            if (!contentResult.isOmittable()) {
-                if (contentResult.getName() != null) {
-                    handler.endElement(StringUtils.EMPTY, contentName, contentName);
-                } else {
-                    handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
-                }
+            if (contentResult.getName() != null) {
+                handler.endElement(StringUtils.EMPTY, contentName, contentName);
             }
+        }
+        if (contentsName != null) {
+            handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
         }
     }
 

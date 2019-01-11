@@ -168,33 +168,6 @@ public interface Translet extends BeanRegistry, MessageSource {
     void setProcessResult(ProcessResult processResult);
 
     /**
-     * Returns the ProcessResult.
-     * If not yet instantiated then create a new one.
-     *
-     * @return the process result
-     */
-    ProcessResult touchProcessResult();
-
-    /**
-     * Returns the process result with the contents name.
-     * If not yet instantiated then create a new one.
-     *
-     * @param contentsName the contents name
-     * @return the process result
-     */
-    ProcessResult touchProcessResult(String contentsName);
-
-    /**
-     * Returns the process result with the contents name.
-     * If not yet instantiated then create a new one.
-     *
-     * @param contentsName the contents name
-     * @param initialCapacity the initial capacity of the process result
-     * @return the process result
-     */
-    ProcessResult touchProcessResult(String contentsName, int initialCapacity);
-
-    /**
      * Returns an Activity Data Map containing the activity result data.
      *
      * @return the activity data map

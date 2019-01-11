@@ -119,7 +119,7 @@ public class CommandCompleter implements Completer {
                 String dispName = transletName;
                 if (service.isExposable(transletName)) {
                     if (cmd == null || transletName.indexOf(cmd) == 0) {
-                        if (transletRule.hasPathVariable()) {
+                        if (transletRule.hasPathVariables()) {
                             transletName = transletRule.getNamePattern().toString();
                             if (transletRule.getNameTokens().length == 1) {
                                 transletName = transletName.replace(WildcardPattern.STAR_CHAR, ' ');

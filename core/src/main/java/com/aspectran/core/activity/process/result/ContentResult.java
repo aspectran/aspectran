@@ -38,8 +38,6 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     private String name;
 
-    private boolean omittable;
-
     public ContentResult(ProcessResult parent) {
         this(parent, 5);
     }
@@ -76,14 +74,6 @@ public class ContentResult extends ArrayList<ActionResult> {
             }
         }
         return null;
-    }
-
-    public boolean isOmittable() {
-        return omittable;
-    }
-
-    public void setOmittable(boolean omittable) {
-        this.omittable = omittable;
     }
 
     /**

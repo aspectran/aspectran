@@ -76,7 +76,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     protected void prepareAspectAdviceRule(TransletRule transletRule, boolean merge) {
         AspectAdviceRuleRegistry aarr;
-        if (transletRule.hasPathVariable()) {
+        if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
                 JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();

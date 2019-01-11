@@ -16,11 +16,10 @@
 package com.aspectran.core.activity.process;
 
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Objects;
 
 /**
  * The set of Content is called Contents or ContentList.
@@ -32,16 +31,24 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
     /** @serial */
     private static final long serialVersionUID = 2567969961069441527L;
 
+    private final boolean explicit;
+
     private String name;
 
-    private Boolean omittable;
-
-    public ContentList() {
+    public ContentList(boolean explicit) {
         super(3);
+
+        this.explicit = explicit;
     }
 
-    protected ContentList(Collection<ActionList> c) {
-        super(c);
+    protected ContentList(ContentList contentList) {
+        super(contentList);
+
+        this.explicit = contentList.isExplicit();
+    }
+
+    public boolean isExplicit() {
+        return explicit;
     }
 
     public String getName() {
@@ -52,16 +59,13 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         this.name = name;
     }
 
-    public boolean isOmittable() {
-        return BooleanUtils.toBoolean(omittable);
-    }
-
-    public Boolean getOmittable() {
-        return omittable;
-    }
-
-    public void setOmittable(Boolean omittable) {
-        this.omittable = omittable;
+    public ActionList getActionList(String name) {
+        for (ActionList actionList : this) {
+            if (Objects.equals(name, actionList.getName())) {
+                return actionList;
+            }
+        }
+        return null;
     }
 
     public void addActionList(ActionList actionList) {
@@ -70,30 +74,10 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         }
     }
 
-    public ActionList newActionList(boolean omittable) {
-        ActionList actionList = new ActionList();
-        if (omittable) {
-            actionList.setOmittable(Boolean.TRUE);
-        }
-        add(actionList);
-        return actionList;
-    }
-
-    public int getVisibleCount() {
-        int count = 0;
-        for (ActionList actionList : this) {
-            if (!actionList.isHidden()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     @Override
     public ContentList replicate() {
         ContentList contentList = new ContentList(this);
         contentList.setName(name);
-        contentList.setOmittable(omittable);
         return contentList;
     }
 
@@ -101,15 +85,13 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("omittable", omittable);
         tsb.append("contents", this);
         return tsb.toString();
     }
 
-    public static ContentList newInstance(String name, Boolean omittable) {
-        ContentList contentList = new ContentList();
+    public static ContentList newInstance(String name, boolean explicit) {
+        ContentList contentList = new ContentList(explicit);
         contentList.setName(name);
-        contentList.setOmittable(omittable);
         return contentList;
     }
 

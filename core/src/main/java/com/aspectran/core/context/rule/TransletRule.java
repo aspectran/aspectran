@@ -60,8 +60,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private ContentList contentList;
 
-    private boolean explicitContent;
-
     private ResponseRule responseRule;
 
     private boolean implicitResponse;
@@ -251,60 +249,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
      */
     public void setContentList(ContentList contentList) {
         this.contentList = contentList;
-        this.explicitContent = (contentList != null);
     }
 
-    /**
-     * Returns the content list.
-     * If not yet instantiated then create a new one.
-     *
-     * @return the content list
-     */
-    public ContentList touchContentList() {
-        return touchContentList(false, true);
-    }
-
-    /**
-     * Returns the content list.
-     * If not yet instantiated then create a new one.
-     *
-     * @param explicitContent whether the content element is explicitly declared
-     * @param omittable whether the content list can be omitted
-     * @return the content list
-     */
-    public ContentList touchContentList(boolean explicitContent, boolean omittable) {
-        if (contentList == null) {
-            contentList = new ContentList();
-            this.explicitContent = explicitContent;
-            if (omittable) {
-                contentList.setOmittable(Boolean.TRUE);
-            }
-        }
-        return contentList;
-    }
-
-    /**
-     * Returns whether the content element is explicitly declared.
-     *
-     * @return whether the content element is explicitly declared
-     */
-    public boolean isExplicitContent() {
-        return explicitContent;
-    }
-
-    public boolean hasPathVariable() {
+    public boolean hasPathVariables() {
         return (nameTokens != null);
-    }
-
-    /**
-     * Sets the content list.
-     *
-     * @param contentList the content list
-     * @param explicitContent whether the content element is explicitly declared
-     */
-    private void setContentList(ContentList contentList, boolean explicitContent) {
-        this.contentList = contentList;
-        this.explicitContent = explicitContent;
     }
 
     @Override
@@ -349,25 +297,25 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
      * @return the action list
      */
     private ActionList touchActionList() {
-        touchContentList();
-
-        if (contentList.size() == 1) {
-            return contentList.get(0);
-        } else {
-            return contentList.newActionList(!explicitContent);
+        if (contentList != null) {
+            if (contentList.isExplicit() || contentList.size() != 1) {
+                contentList = null;
+            } else {
+                ActionList actionList = contentList.get(0);
+                if (actionList.isExplicit()) {
+                    contentList = null;
+                }
+            }
         }
-    }
-
-    /**
-     * Adds the action list.
-     *
-     * @param actionList the action list
-     */
-    private void addActionList(ActionList actionList) {
-        if (actionList != null) {
-            touchContentList();
+        ActionList actionList;
+        if (contentList == null) {
+            contentList = new ContentList(false);
+            actionList = new ActionList(false);
             contentList.add(actionList);
+        } else {
+            actionList = contentList.get(0);
         }
+        return actionList;
     }
 
     /**
@@ -454,10 +402,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         if (responseRule == null) {
             responseRule = new ResponseRule();
         } else {
-            if (responseRule.getResponse() != null) {
-                addActionList(responseRule.getResponse().getActionList());
-            }
-
             String responseName = responseRule.getName();
             if (responseName != null && !responseName.isEmpty()) {
                 setName(name + responseName);
@@ -540,7 +484,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("requestRule", requestRule);
         tsb.append("responseRule", responseRule);
         tsb.append("exceptionRule", exceptionRule);
-        tsb.append("explicitContent", explicitContent);
         tsb.append("implicitResponse", implicitResponse);
         return tsb.toString();
     }
@@ -589,7 +532,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setRequestRule(transletRule.getRequestRule());
         if (transletRule.getContentList() != null) {
             ContentList contentList = transletRule.getContentList().replicate();
-            tr.setContentList(contentList, transletRule.isExplicitContent());
+            tr.setContentList(contentList);
         }
         tr.setResponseRule(transletRule.getResponseRule());
         tr.setExceptionRule(transletRule.getExceptionRule());

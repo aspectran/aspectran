@@ -27,7 +27,6 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -43,17 +42,21 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     /** @serial */
     private static final long serialVersionUID = 4636431127789162551L;
 
+    private final boolean explicit;
+
     private String name;
-
-    private Boolean hidden;
-
-    private Boolean omittable;
 
     /**
      * Instantiates a new ActionList.
      */
-    public ActionList() {
+    public ActionList(boolean explicit) {
         super(5);
+
+        this.explicit = explicit;
+    }
+
+    public boolean isExplicit() {
+        return explicit;
     }
 
     public String getName() {
@@ -62,30 +65,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isHidden() {
-        return BooleanUtils.toBoolean(hidden);
-    }
-
-    public Boolean getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    public boolean isOmittable() {
-        return BooleanUtils.toBoolean(omittable);
-    }
-
-    public Boolean getOmittable() {
-        return omittable;
-    }
-
-    public void setOmittable(Boolean omittable) {
-        this.omittable = omittable;
     }
 
     public int getVisibleCount() {
@@ -147,17 +126,13 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("hidden", hidden);
-        tsb.append("omittable", omittable);
         tsb.append("actions", this);
         return tsb.toString();
     }
 
-    public static ActionList newInstance(String name, Boolean omittable, Boolean hidden) {
-        ActionList actionList = new ActionList();
+    public static ActionList newInstance(String name, boolean explicit) {
+        ActionList actionList = new ActionList(explicit);
         actionList.setName(name);
-        actionList.setOmittable(omittable);
-        actionList.setHidden(hidden);
         return actionList;
     }
 

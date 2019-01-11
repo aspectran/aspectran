@@ -91,7 +91,7 @@ public abstract class AbstractResponseRule implements ActionRuleApplicable {
      */
     private ActionList touchActionList() {
         if (actionList == null) {
-            actionList = new ActionList();
+            actionList = new ActionList(false);
         }
         return actionList;
     }

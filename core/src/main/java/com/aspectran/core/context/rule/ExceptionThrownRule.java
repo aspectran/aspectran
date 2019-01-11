@@ -69,9 +69,9 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     /**
-     * Returns the executable action.
+     * Returns the advice action.
      *
-     * @return the executable action
+     * @return the advice action
      */
     public Executable getAction() {
         return action;

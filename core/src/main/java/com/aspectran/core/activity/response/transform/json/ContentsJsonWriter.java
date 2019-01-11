@@ -79,6 +79,10 @@ public class ContentsJsonWriter extends JsonWriter {
      * @throws InvocationTargetException the invocation target exception
      */
     private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
+        if (processResult.getName() != null) {
+            openCurlyBracket();
+            writeName(processResult.getName());
+        }
         if (processResult.isEmpty()) {
             writeNull();
         } else if (processResult.size() == 1) {
@@ -96,6 +100,9 @@ public class ContentsJsonWriter extends JsonWriter {
             }
             closeSquareBracket();
         }
+        if (processResult.getName() != null) {
+            closeCurlyBracket();
+        }
     }
 
     /**
@@ -106,15 +113,13 @@ public class ContentsJsonWriter extends JsonWriter {
      * @throws InvocationTargetException the invocation target exception
      */
     private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
-        if (contentResult.isEmpty()) {
-            writeNull();
-            return;
-        }
         if (contentResult.getName() != null) {
             openCurlyBracket();
             writeName(contentResult.getName());
         }
-        if (contentResult.size() == 1) {
+        if (contentResult.isEmpty()) {
+            writeNull();
+        } else if (contentResult.size() == 1) {
             ActionResult actionResult = contentResult.get(0);
             if (actionResult.getActionId() != null) {
                 openCurlyBracket();

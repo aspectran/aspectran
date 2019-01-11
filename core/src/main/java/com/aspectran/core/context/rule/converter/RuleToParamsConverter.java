@@ -423,35 +423,24 @@ public class RuleToParamsConverter {
             }
         }
 
-        if (transletRule.isExplicitContent()) {
-            ContentList contentList = transletRule.getContentList();
-            if (contentList != null) {
-                if (!contentList.isOmittable()) {
-                    ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
-                    contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
-                    contentsParameters.putValueNonNull(ContentsParameters.omittable, contentList.getOmittable());
-                    for (ActionList actionList : contentList) {
-                        ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
-                        contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                        contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
-                        contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
-                        toActionList(actionList, contentParameters, ContentParameters.action);
-                    }
-                } else {
-                    for (ActionList actionList : contentList) {
-                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
-                        contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                        contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
-                        contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
-                        toActionList(actionList, contentParameters, ContentParameters.action);
-                    }
-                }
-            }
-        } else {
-            ContentList contentList = transletRule.getContentList();
-            if (contentList != null) {
+
+        ContentList contentList = transletRule.getContentList();
+        if (contentList != null) {
+            if (contentList.isExplicit()) {
+                ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
+                contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
                 for (ActionList actionList : contentList) {
-                    toActionList(actionList, transletParameters, TransletParameters.action);
+                    ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
+                    toActionList(actionList, contentParameters, ContentParameters.action);
+                }
+            } else {
+                for (ActionList actionList : contentList) {
+                    if (actionList.isExplicit()) {
+                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
+                        toActionList(actionList, contentParameters, ContentParameters.action);
+                    } else {
+                        toActionList(actionList, transletParameters, TransletParameters.action);
+                    }
                 }
             }
         }

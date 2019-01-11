@@ -22,8 +22,6 @@ import com.aspectran.core.util.apon.ParameterValueType;
 public class ContentParameters extends AbstractParameters {
 
     public static final ParameterDefinition name;
-    public static final ParameterDefinition hidden;
-    public static final ParameterDefinition omittable;
     public static final ParameterDefinition choose;
     public static final ParameterDefinition action;
 
@@ -31,15 +29,11 @@ public class ContentParameters extends AbstractParameters {
 
     static {
         name = new ParameterDefinition("name", ParameterValueType.STRING);
-        hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
-        omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
         choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 name,
-                hidden,
-                omittable,
                 choose,
                 action
         };
