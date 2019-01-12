@@ -246,7 +246,6 @@
         </transform>
     </translet>
 
-
     <translet name="caseTest2">
         <request>
             <parameters>
@@ -292,6 +291,59 @@
                 </template>
             </transform>
         </response>
+    </translet>
+
+    <translet name="thrownTest">
+        <request>
+            <parameters>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </parameters>
+            <attributes>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </attributes>
+        </request>
+        <contents name="contents-1">
+            <content name="content-11">
+                <action id="case0" method="case0" bean="SampleAction"/>
+                <choose>
+                    <when test="case1">
+                        <action id="case1" method="case1" bean="SampleAction"/>
+                    </when>
+                    <otherwise>
+                        <action id="case2" method="case2" bean="SampleAction"/>
+                    </otherwise>
+                </choose>
+            </content>
+            <content name="content-12">
+                <action id="case0" method="case0" bean="SampleAction"/>
+                <choose>
+                    <when test="case1">
+                        <action id="case1" method="case1" bean="SampleAction"/>
+                    </when>
+                    <otherwise>
+                        <action id="case2" method="case2" bean="SampleAction"/>
+                    </otherwise>
+                </choose>
+            </content>
+        </contents>
+        <response name="name2">
+            <transform type="transform/text">
+                <action id="case3" method="case2" bean="SampleAction"/>
+                <action id="case4" method="case2" bean="SampleAction"/>
+                <template style="apon">
+                    |@{case0}
+                    |@{case1}
+                </template>
+            </transform>
+        </response>
+        <exception>
+            <thrown>
+                <action id="case4" method="case2" bean="SampleAction"/>
+                <redirect path="/fkdjalsfds"/>
+            </thrown>
+        </exception>
     </translet>
 
 </aspectran>

@@ -15,8 +15,9 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,13 +25,19 @@ import java.util.Map;
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ExceptionRule implements Iterable<ExceptionThrownRule> {
+public class ExceptionRule {
 
-    private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>(8);
+    private final List<ExceptionThrownRule> exceptionThrownRuleList = new ArrayList<>();
+
+    private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>();
 
     private ExceptionThrownRule defaultExceptionThrownRule;
 
     private String description;
+
+    public List<ExceptionThrownRule> getExceptionThrownRuleList() {
+        return exceptionThrownRuleList;
+    }
 
     public Map<String, ExceptionThrownRule> getExceptionThrownRuleMap() {
         return exceptionThrownRuleMap;
@@ -46,6 +53,8 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
      * @param exceptionThrownRule the exception thrown rule
      */
     public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
+        exceptionThrownRuleList.add(exceptionThrownRule);
+
         String[] exceptionTypes = exceptionThrownRule.getExceptionTypes();
         if (exceptionTypes != null) {
             for (String exceptionType : exceptionTypes) {
@@ -111,11 +120,6 @@ public class ExceptionRule implements Iterable<ExceptionThrownRule> {
             return -1;
         }
         return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
-    }
-
-    @Override
-    public Iterator<ExceptionThrownRule> iterator() {
-        return exceptionThrownRuleMap.values().iterator();
     }
 
     /**

@@ -36,8 +36,8 @@ public class TransletParameters extends AbstractParameters {
     public static final ParameterDefinition response;
     public static final ParameterDefinition transform;
     public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition redirect;
     public static final ParameterDefinition forward;
+    public static final ParameterDefinition redirect;
     public static final ParameterDefinition exception;
 
     private static final ParameterDefinition[] parameterDefinitions;
@@ -58,8 +58,8 @@ public class TransletParameters extends AbstractParameters {
         response = new ParameterDefinition("response", ResponseParameters.class, true, true);
         transform = new ParameterDefinition("transform", TransformParameters.class);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
-        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
         forward = new ParameterDefinition("forward", ForwardParameters.class);
+        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
         exception = new ParameterDefinition("exception", ExceptionParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -78,8 +78,8 @@ public class TransletParameters extends AbstractParameters {
                 response,
                 transform,
                 dispatch,
-                redirect,
                 forward,
+                redirect,
                 exception
         };
     }

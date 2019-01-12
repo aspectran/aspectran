@@ -139,15 +139,15 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
-        Response response = new DispatchResponse(dispatchRule);
+    public Response applyResponseRule(TransformRule transformRule) {
+        Response response = TransformResponseFactory.createTransformResponse(transformRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(TransformRule transformRule) {
-        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }

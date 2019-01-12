@@ -25,17 +25,15 @@ public class ExceptionThrownParameters extends AbstractParameters {
     public static final ParameterDefinition action;
     public static final ParameterDefinition transform;
     public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition forward;
     public static final ParameterDefinition redirect;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        type = new ParameterDefinition("type", ParameterValueType.STRING, true, true);
+        type = new ParameterDefinition("type", ParameterValueType.STRING, true);
         action = new ParameterDefinition("action", ActionParameters.class);
         transform = new ParameterDefinition("transform", TransformParameters.class, true, true);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);
-        forward = new ParameterDefinition("forward", ForwardParameters.class, true, true);
         redirect = new ParameterDefinition("redirect", RedirectParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
@@ -43,7 +41,6 @@ public class ExceptionThrownParameters extends AbstractParameters {
                 action,
                 transform,
                 dispatch,
-                forward,
                 redirect
         };
     }

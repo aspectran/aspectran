@@ -141,6 +141,52 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             DispatchRule dispatchRule = parser.peekObject();
             chooseRule.join(dispatchRule);
         });
+        parser.setXpath(xpath + "/forward");
+        parser.addNodelet(attrs -> {
+            String contentType = attrs.get("contentType");
+            String transletName = attrs.get("translet");
+            String method = attrs.get("method");
+            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
+
+            transletName = assistant.applyTransletNamePattern(transletName);
+
+            ForwardRule forwardRule = ForwardRule.newInstance(contentType, transletName, method, defaultResponse);
+            parser.pushObject(forwardRule);
+        });
+        parser.addNodeEndlet(text -> {
+            ForwardRule forwardRule = parser.popObject();
+            ResponseRuleApplicable applicable = parser.peekObject();
+            applicable.applyResponseRule(forwardRule);
+        });
+        parser.addNodelet(actionNodeletAdder);
+        parser.setXpath(xpath + "/forward/choose");
+        parser.addNodelet(attrs -> {
+            TransletRule transletRule = parser.peekObject(TransletRule.class);
+
+            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            ForwardRule forwardRule = parser.peekObject();
+            chooseRule.join(forwardRule);
+        });
+        parser.setXpath(xpath + "/forward/attributes");
+        parser.addNodelet(attrs -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
+            parser.pushObject(irm);
+        });
+        parser.addNodelet(itemNodeletAdder);
+        parser.addNodeEndlet(text -> {
+            ItemRuleMap irm = parser.popObject();
+            ForwardRule forwardRule = parser.peekObject(1);
+            irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
+            forwardRule.setAttributeItemRuleMap(irm);
+        });
         parser.setXpath(xpath + "/redirect");
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
@@ -194,52 +240,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             RedirectRule redirectRule = parser.peekObject(1);
             irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
             redirectRule.setParameterItemRuleMap(irm);
-        });
-        parser.setXpath(xpath + "/forward");
-        parser.addNodelet(attrs -> {
-            String contentType = attrs.get("contentType");
-            String transletName = attrs.get("translet");
-            String method = attrs.get("method");
-            Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
-
-            transletName = assistant.applyTransletNamePattern(transletName);
-
-            ForwardRule forwardRule = ForwardRule.newInstance(contentType, transletName, method, defaultResponse);
-            parser.pushObject(forwardRule);
-        });
-        parser.addNodeEndlet(text -> {
-            ForwardRule forwardRule = parser.popObject();
-            ResponseRuleApplicable applicable = parser.peekObject();
-            applicable.applyResponseRule(forwardRule);
-        });
-        parser.addNodelet(actionNodeletAdder);
-        parser.setXpath(xpath + "/forward/choose");
-        parser.addNodelet(attrs -> {
-            TransletRule transletRule = parser.peekObject(TransletRule.class);
-
-            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
-            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
-
-            parser.pushObject(chooseRule);
-        });
-        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
-        parser.addNodeEndlet(text -> {
-            ChooseRule chooseRule = parser.popObject();
-            ForwardRule forwardRule = parser.peekObject();
-            chooseRule.join(forwardRule);
-        });
-        parser.setXpath(xpath + "/forward/attributes");
-        parser.addNodelet(attrs -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-            parser.pushObject(irm);
-        });
-        parser.addNodelet(itemNodeletAdder);
-        parser.addNodeEndlet(text -> {
-            ItemRuleMap irm = parser.popObject();
-            ForwardRule forwardRule = parser.peekObject(1);
-            irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
-            forwardRule.setAttributeItemRuleMap(irm);
         });
     }
 

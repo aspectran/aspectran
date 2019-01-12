@@ -124,7 +124,7 @@
   description?,
   (request? | (parameters*, attributes*)?)?,
   ((contents? | content?)? | (choose? | headers? | echo? | action? | include?)*)?,
-  (response* | (transform | dispatch | redirect | forward)?)?, exception?
+  (response* | (transform | dispatch | forward | redirect)?)?, exception?
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -151,12 +151,12 @@
 
 <!ELEMENT choose (when*, otherwise?)>
 
-<!ELEMENT when ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
+<!ELEMENT when ((action? | include? | echo? | headers?)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST when
   test    CDATA #IMPLIED
 >
 
-<!ELEMENT otherwise ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
+<!ELEMENT otherwise ((action? | include? | echo? | headers?)*, (transform | dispatch | forward | redirect)?)>
 
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
@@ -186,7 +186,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
+<!ELEMENT response (transform? | dispatch? | forward? | redirect?)>
 <!ATTLIST response
   name     CDATA #IMPLIED
   encoding CDATA #IMPLIED

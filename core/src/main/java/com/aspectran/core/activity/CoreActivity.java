@@ -254,6 +254,7 @@ public class CoreActivity extends AdviceActivity {
             if (processResult == null) {
                 processResult = new ProcessResult(contentList.size());
                 processResult.setName(contentList.getName());
+                processResult.setExplicit(contentList.isExplicit());
                 translet.setProcessResult(processResult);
             }
 
@@ -520,10 +521,13 @@ public class CoreActivity extends AdviceActivity {
             translet.setProcessResult(processResult);
         }
 
-        ContentResult contentResult = processResult.getContentResult(actionList.getName());
+        ContentResult contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
         if (contentResult == null) {
             contentResult = new ContentResult(processResult, actionList.size());
             contentResult.setName(actionList.getName());
+            if (!processResult.isExplicit()) {
+                contentResult.setExplicit(actionList.isExplicit());
+            }
         }
 
         for (Executable action : actionList) {

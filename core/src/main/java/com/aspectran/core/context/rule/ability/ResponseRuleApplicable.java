@@ -27,20 +27,20 @@ import com.aspectran.core.context.rule.TransformRule;
 public interface ResponseRuleApplicable {
 
     /**
-     * Apply the dispatch rule to the response rule.
-     *
-     * @param dispatchRule the dispatch rule
-     * @return the response
-     */
-    Response applyResponseRule(DispatchRule dispatchRule);
-
-    /**
      * Apply the transform rule to the response rule.
      *
      * @param transformRule the transform rule
      * @return the response
      */
     Response applyResponseRule(TransformRule transformRule);
+
+    /**
+     * Apply the dispatch rule to the response rule.
+     *
+     * @param dispatchRule the dispatch rule
+     * @return the response
+     */
+    Response applyResponseRule(DispatchRule dispatchRule);
 
     /**
      * Apply the forward rule to the response rule.

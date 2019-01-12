@@ -91,13 +91,21 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     public Response getResponse(String contentType) {
-        if (contentType != null && responseMap != null) {
+        if (responseMap != null && contentType != null) {
             Response response = responseMap.get(contentType);
             if (response != null) {
                 return response;
             }
         }
         return getDefaultResponse();
+    }
+
+    private Response getDefaultResponse() {
+        if (defaultResponse == null && responseMap != null && responseMap.size() == 1) {
+            return responseMap.getFirst();
+        } else {
+            return defaultResponse;
+        }
     }
 
     /**
@@ -116,18 +124,6 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return responseMap;
     }
 
-    public Response getDefaultResponse() {
-        if (defaultResponse == null && touchResponseMap().size() == 1) {
-            return touchResponseMap().getFirst();
-        } else {
-            return defaultResponse;
-        }
-    }
-
-    public void setDefaultResponse(Response response) {
-        this.defaultResponse = response;
-    }
-
     @Override
     public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
         BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
@@ -140,14 +136,14 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the config bean method action rule to the Exception Thrown Rule");
+        throw new IllegalArgumentException(
+                "Cannot apply the config bean method action rule to the exception thrown rule");
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the include action rule to the Exception Thrown Rule");
+        throw new IllegalArgumentException(
+                "Cannot apply the include action rule to the exception thrown rule");
     }
 
     @Override
@@ -175,26 +171,9 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
-        Response response = new DispatchResponse(dispatchRule);
-        if (dispatchRule.getContentType() != null) {
-            touchResponseMap().put(dispatchRule.getContentType(), response);
-        }
-        if (dispatchRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && dispatchRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
-    }
-
-    @Override
     public Response applyResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.createTransformResponse(transformRule);
-        if (transformRule.getContentType() != null) {
-            touchResponseMap().put(transformRule.getContentType(), response);
-        }
+        touchResponseMap().put(transformRule.getContentType(), response);
         if (transformRule.isDefaultResponse()) {
             defaultResponse = response;
         }
@@ -205,16 +184,28 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        Response response = new DispatchResponse(dispatchRule);
+        touchResponseMap().put(dispatchRule.getContentType(), response);
+        if (dispatchRule.isDefaultResponse()) {
+            defaultResponse = response;
+        }
+        if (defaultResponse == null && dispatchRule.getContentType() == null) {
+            defaultResponse = response;
+        }
+        return response;
+    }
+
+    @Override
     public Response applyResponseRule(ForwardRule forwardRule) {
-        throw new UnsupportedOperationException();
+        throw new IllegalArgumentException(
+                "Cannot apply the forward response rule to the exception thrown rule");
     }
 
     @Override
     public Response applyResponseRule(RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
-        if (redirectRule.getContentType() != null) {
-            touchResponseMap().put(redirectRule.getContentType(), response);
-        }
+        touchResponseMap().put(redirectRule.getContentType(), response);
         if (redirectRule.isDefaultResponse()) {
             defaultResponse = response;
         }

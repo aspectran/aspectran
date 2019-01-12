@@ -79,6 +79,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public void updateContainer(Parameters parameters) {
+        for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
+            parameterValue.setContainer(parameters);
+        }
+    }
+
+    @Override
     public Map<String, ParameterValue> getParameterValueMap() {
         return parameterValueMap;
     }
@@ -140,12 +147,23 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public void putAll(Parameters parameters) {
+        for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
+            parameterValue.setContainer(this);
+        }
+        parameterValueMap.putAll(parameters.getParameterValueMap());
+    }
+
+    @Override
     public void putValue(String name, Object value) {
         Parameter p = getParameter(name);
         if (p == null) {
             p = newParameterValue(name, ParameterValueType.determineValueType(value));
         }
         p.putValue(value);
+        if (value instanceof Parameters) {
+            ((Parameters)value).updateContainer(this);
+        }
     }
 
     @Override
@@ -165,6 +183,23 @@ public abstract class AbstractParameters implements Parameters {
         if (value != null) {
             putValue(parameterDefinition.getName(), value);
         }
+    }
+
+    @Override
+    public void clearValue(String name) {
+        if (addable) {
+            parameterValueMap.remove(name);
+        } else {
+            Parameter p = getParameter(name);
+            if (p != null) {
+                p.clearValue();
+            }
+        }
+    }
+
+    @Override
+    public void clearValue(ParameterDefinition parameterDefinition) {
+        clearValue(parameterDefinition.getName());
     }
 
     @Override

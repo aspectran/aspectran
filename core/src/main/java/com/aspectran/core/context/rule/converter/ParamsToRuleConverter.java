@@ -194,7 +194,7 @@ public class ParamsToRuleConverter {
         }
     }
 
-    private void convertAsDefaultSettings(DefaultSettingsParameters defaultSettingsParameters) throws ClassNotFoundException {
+    private void convertAsDefaultSettings(DefaultSettingsParameters defaultSettingsParameters) {
         if (defaultSettingsParameters == null) {
             return;
         }
@@ -499,16 +499,16 @@ public class ParamsToRuleConverter {
             transletRule.applyResponseRule(dispatchRule);
         }
 
-        RedirectParameters redirectParameters = transletParameters.getParameters(TransletParameters.redirect);
-        if (redirectParameters != null) {
-            RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
-            transletRule.applyResponseRule(redirectRule);
-        }
-
         ForwardParameters forwardParameters = transletParameters.getParameters(TransletParameters.forward);
         if (forwardParameters != null) {
             ForwardRule forwardRule = convertAsForwardRule(forwardParameters);
             transletRule.applyResponseRule(forwardRule);
+        }
+
+        RedirectParameters redirectParameters = transletParameters.getParameters(TransletParameters.redirect);
+        if (redirectParameters != null) {
+            RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
+            transletRule.applyResponseRule(redirectRule);
         }
 
         List<ChooseParameters> chooseParametersList = transletParameters.getParametersList(TransletParameters.choose);
@@ -564,16 +564,16 @@ public class ParamsToRuleConverter {
                         chooseWhenRule.applyResponseRule(dispatchRule);
                     }
 
-                    redirectParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
-                    if (redirectParameters != null) {
-                        RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
-                        chooseWhenRule.applyResponseRule(redirectRule);
-                    }
-
                     forwardParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.forward);
                     if (forwardParameters != null) {
                         ForwardRule forwardRule = convertAsForwardRule(forwardParameters);
                         chooseWhenRule.applyResponseRule(forwardRule);
+                    }
+
+                    redirectParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
+                    if (redirectParameters != null) {
+                        RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
+                        chooseWhenRule.applyResponseRule(redirectRule);
                     }
                 }
             }
@@ -658,14 +658,14 @@ public class ParamsToRuleConverter {
             responseRule.applyResponseRule(convertAsDispatchRule(dispatchParameters));
         }
 
-        RedirectParameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirect);
-        if (redirectParameters != null) {
-            responseRule.applyResponseRule(convertAsRedirectRule(redirectParameters));
-        }
-
         ForwardParameters forwardParameters = responseParameters.getParameters(ResponseParameters.forward);
         if (forwardParameters != null) {
             responseRule.applyResponseRule(convertAsForwardRule(forwardParameters));
+        }
+
+        RedirectParameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirect);
+        if (redirectParameters != null) {
+            responseRule.applyResponseRule(convertAsRedirectRule(redirectParameters));
         }
 
         return responseRule;
@@ -792,11 +792,6 @@ public class ParamsToRuleConverter {
             convertAsRedirectRule(redirectParametersList, exceptionThrownRule);
         }
 
-        List<ForwardParameters> forwardParametersList = exceptionThrownParameters.getParametersList(ExceptionThrownParameters.forward);
-        if (forwardParametersList != null && !forwardParametersList.isEmpty()) {
-            convertAsForwardRule(forwardParametersList, exceptionThrownRule);
-        }
-
         return exceptionThrownRule;
     }
 
@@ -875,42 +870,6 @@ public class ParamsToRuleConverter {
         return dispatchRule;
     }
 
-    private void convertAsRedirectRule(List<RedirectParameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable)
-            throws IllegalRuleException {
-        for (RedirectParameters redirectParameters : redirectParametersList) {
-            RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
-            responseRuleApplicable.applyResponseRule(redirectRule);
-        }
-    }
-
-    private RedirectRule convertAsRedirectRule(RedirectParameters redirectParameters) throws IllegalRuleException {
-        String contentType = redirectParameters.getString(RedirectParameters.contentType);
-        String path = redirectParameters.getString(RedirectParameters.path);
-        List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
-        String encoding = redirectParameters.getString(RedirectParameters.encoding);
-        Boolean excludeNullParameters = redirectParameters.getBoolean(RedirectParameters.excludeNullParameters);
-        Boolean excludeEmptyParameters = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameters);
-        Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
-        List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
-
-        RedirectRule redirectRule = RedirectRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
-        if (parameterItemHolderParametersList != null) {
-            for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
-                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
-                redirectRule.setParameterItemRuleMap(irm);
-            }
-        }
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ActionList actionList = new ActionList(false);
-            for (ActionParameters actionParameters : actionParametersList) {
-                convertAsActionRule(actionParameters, actionList);
-            }
-            redirectRule.setActionList(actionList);
-        }
-        return redirectRule;
-    }
-
     private void convertAsForwardRule(List<ForwardParameters> forwardParametersList, ResponseRuleApplicable responseRuleApplicable)
             throws IllegalRuleException {
         for (ForwardParameters forwardParameters : forwardParametersList) {
@@ -945,6 +904,42 @@ public class ParamsToRuleConverter {
             forwardRule.setActionList(actionList);
         }
         return forwardRule;
+    }
+
+    private void convertAsRedirectRule(List<RedirectParameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
+        for (RedirectParameters redirectParameters : redirectParametersList) {
+            RedirectRule redirectRule = convertAsRedirectRule(redirectParameters);
+            responseRuleApplicable.applyResponseRule(redirectRule);
+        }
+    }
+
+    private RedirectRule convertAsRedirectRule(RedirectParameters redirectParameters) throws IllegalRuleException {
+        String contentType = redirectParameters.getString(RedirectParameters.contentType);
+        String path = redirectParameters.getString(RedirectParameters.path);
+        List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
+        String encoding = redirectParameters.getString(RedirectParameters.encoding);
+        Boolean excludeNullParameters = redirectParameters.getBoolean(RedirectParameters.excludeNullParameters);
+        Boolean excludeEmptyParameters = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameters);
+        Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
+        List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
+
+        RedirectRule redirectRule = RedirectRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
+        if (parameterItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
+                ItemRuleMap irm = convertAsItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
+                redirectRule.setParameterItemRuleMap(irm);
+            }
+        }
+        if (actionParametersList != null && !actionParametersList.isEmpty()) {
+            ActionList actionList = new ActionList(false);
+            for (ActionParameters actionParameters : actionParametersList) {
+                convertAsActionRule(actionParameters, actionList);
+            }
+            redirectRule.setActionList(actionList);
+        }
+        return redirectRule;
     }
 
     private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {

@@ -444,14 +444,14 @@ public class AnnotatedConfigParser {
                 ConfigBeanMethodAction action = ConfigBeanMethodActionRule.newConfigBeanMethodAction(beanClass, method);
                 ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
-                if (method.isAnnotationPresent(Dispatch.class)) {
-                    Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                    DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
-                    exceptionThrownRule.applyResponseRule(dispatchRule);
-                } else if (method.isAnnotationPresent(Transform.class)) {
+                if (method.isAnnotationPresent(Transform.class)) {
                     Transform transformAnno = method.getAnnotation(Transform.class);
                     TransformRule transformRule = parseTransformRule(transformAnno);
                     exceptionThrownRule.applyResponseRule(transformRule);
+                } else if (method.isAnnotationPresent(Dispatch.class)) {
+                    Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
+                    DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+                    exceptionThrownRule.applyResponseRule(dispatchRule);
                 } else if (method.isAnnotationPresent(Forward.class)) {
                     Forward forwardAnno = method.getAnnotation(Forward.class);
                     ForwardRule forwardRule = parseForwardRule(forwardAnno);
@@ -668,14 +668,6 @@ public class AnnotatedConfigParser {
         relater.relay(transletRule);
     }
 
-    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {
-        String name = StringUtils.emptyToNull(dispatchAnno.name());
-        String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
-        String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
-        String encoding = StringUtils.emptyToNull(dispatchAnno.encoding());
-        return DispatchRule.newInstance(name, dispatcher, contentType, encoding);
-    }
-
     private TransformRule parseTransformRule(Transform transformAnno) {
         TransformType transformType = transformAnno.type();
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
@@ -685,6 +677,14 @@ public class AnnotatedConfigParser {
         TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, null, pretty);
         transformRule.setTemplateId(templateId);
         return transformRule;
+    }
+
+    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {
+        String name = StringUtils.emptyToNull(dispatchAnno.name());
+        String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
+        String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
+        String encoding = StringUtils.emptyToNull(dispatchAnno.encoding());
+        return DispatchRule.newInstance(name, dispatcher, contentType, encoding);
     }
 
     private ForwardRule parseForwardRule(Forward forwardAnno) throws IllegalRuleException {

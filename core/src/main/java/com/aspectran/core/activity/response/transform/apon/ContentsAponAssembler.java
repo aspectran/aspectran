@@ -44,17 +44,11 @@ public class ContentsAponAssembler {
             ContentResult contentResult = processResult.get(0);
             if (contentResult.getName() == null && contentResult.size() == 1) {
                 ActionResult actionResult = contentResult.get(0);
-                Object resultValue = actionResult.getResultValue();
                 if (actionResult.getActionId() == null) {
+                    Object resultValue = actionResult.getResultValue();
                     if (resultValue instanceof Parameters) {
                         return (Parameters)resultValue;
-                    } else {
-                        return null;
                     }
-                } else {
-                    Parameters container = new VariableParameters();
-                    putValue(container, actionResult.getActionId(), resultValue);
-                    return container;
                 }
             }
         }
@@ -67,22 +61,29 @@ public class ContentsAponAssembler {
     }
 
     private static void assemble(ContentResult contentResult, Parameters container) throws InvocationTargetException {
-        if (contentResult.isEmpty()) {
-            return;
-        }
         if (contentResult.getName() != null) {
             Parameters p = new VariableParameters();
             container.putValue(contentResult.getName(), p);
             container = p;
         }
-        for (String actionId : contentResult.getActionIds()) {
-            ActionResult actionResult = contentResult.getActionResult(actionId);
+        for (ActionResult actionResult : contentResult) {
             putValue(container, actionResult.getActionId(), actionResult.getResultValue());
         }
     }
 
     private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
-        if (value != null) {
+        if (value == null) {
+            return;
+        }
+        if (name == null) {
+            Object o = assemble(value);
+            if (o instanceof Parameters) {
+                container.putAll((Parameters)o);
+            }
+        } else {
+            if (container.hasParameter(name)) {
+                container.clearValue(name);
+            }
             if (value instanceof Collection<?>) {
                 for (Object o : ((Collection<?>)value)) {
                     if (o != null) {

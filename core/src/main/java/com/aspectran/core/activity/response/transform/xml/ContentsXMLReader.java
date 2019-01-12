@@ -59,7 +59,7 @@ public class ContentsXMLReader implements XMLReader {
 
     private static final Attributes NULL_ATTRS = new AttributesImpl();
 
-    protected ContentHandler handler;
+    private ContentHandler handler;
 
     /**
      * Instantiates a new ContentsXMLReader.
@@ -177,13 +177,21 @@ public class ContentsXMLReader implements XMLReader {
      */
     private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
         String contentsName = processResult.getName();
-        if (contentsName != null) {
-            handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
+        if (processResult.isExplicit()) {
+            if (contentsName != null) {
+                handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
+            } else {
+                handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
+            }
         }
         for (ContentResult contentResult : processResult) {
             String contentName = contentResult.getName();
-            if (contentName != null) {
-                handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
+            if (contentResult.isExplicit()) {
+                if (contentName != null) {
+                    handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
+                } else {
+                    handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
+                }
             }
             for (ActionResult actionResult : contentResult) {
                 String actionId = actionResult.getActionId();
@@ -196,12 +204,20 @@ public class ContentsXMLReader implements XMLReader {
                     handler.endElement(StringUtils.EMPTY, actionId, actionId);
                 }
             }
-            if (contentResult.getName() != null) {
-                handler.endElement(StringUtils.EMPTY, contentName, contentName);
+            if (contentResult.isExplicit()) {
+                if (contentResult.getName() != null) {
+                    handler.endElement(StringUtils.EMPTY, contentName, contentName);
+                } else {
+                    handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+                }
             }
         }
-        if (contentsName != null) {
-            handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
+        if (processResult.isExplicit()) {
+            if (contentsName != null) {
+                handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
+            } else {
+                handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
+            }
         }
     }
 

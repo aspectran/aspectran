@@ -224,6 +224,17 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
+    public void clearValue() {
+        value = null;
+        list = null;
+        assigned = false;
+        if (!predefined) {
+            array = false;
+            bracketed = false;
+        }
+    }
+
+    @Override
     public Object getValue() {
         return (array ? getValueList() : value);
     }
@@ -431,13 +442,6 @@ public class ParameterValue implements Parameter {
         if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType) {
             throw new IncompatibleParameterValueTypeException(this, parameterValueType);
         }
-    }
-
-    @Override
-    public void clearValue() {
-        value = null;
-        list = null;
-        assigned = false;
     }
 
     @Override

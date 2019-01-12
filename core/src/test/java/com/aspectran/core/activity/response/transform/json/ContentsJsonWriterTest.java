@@ -53,6 +53,8 @@ class ContentsJsonWriterTest {
         ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer, false);
         jsonWriter.write(processResult);
 
+        //System.out.println(writer.toString());
+
         assertEquals("{\"action0\":\"value0\",\"action1\":\"value3\"}", writer.toString());
     }
 

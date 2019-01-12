@@ -350,19 +350,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
-        if (responseRule == null) {
-            responseRule = new ResponseRule(false);
-        }
-        return responseRule.applyResponseRule(dispatchRule);
-    }
-
-    @Override
     public Response applyResponseRule(TransformRule transformRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
         }
         return responseRule.applyResponseRule(transformRule);
+    }
+
+    @Override
+    public Response applyResponseRule(DispatchRule dispatchRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule(false);
+        }
+        return responseRule.applyResponseRule(dispatchRule);
     }
 
     @Override

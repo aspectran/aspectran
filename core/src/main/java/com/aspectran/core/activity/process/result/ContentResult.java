@@ -38,6 +38,8 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     private String name;
 
+    private boolean explicit;
+
     public ContentResult(ProcessResult parent) {
         this(parent, 5);
     }
@@ -48,6 +50,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 
         if (parent != null) {
             parent.addContentResult(this);
+            setExplicit(parent.isExplicit());
         }
     }
 
@@ -61,6 +64,14 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isExplicit() {
+        return explicit;
+    }
+
+    public void setExplicit(boolean explicit) {
+        this.explicit = explicit;
     }
 
     public ActionResult getActionResult(String actionId) {

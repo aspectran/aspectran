@@ -28,6 +28,7 @@ import com.aspectran.core.util.logging.LogFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
@@ -42,11 +43,11 @@ public class XmlTransformResponse extends TransformResponse {
 
     private static final String OUTPUT_METHOD_XML = "xml";
 
-    private static final String OUTPUT_INDENT_YES = "yes";
-
     private static final String INDENT_NUMBER_KEY = "indent-number";
 
-    private static final Integer INDENT_NUMBER_VAL = 1;
+    private static final Integer INDENT_NUMBER_VAL = 2;
+
+    private static final String YES = "yes";
 
     private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
 
@@ -57,7 +58,7 @@ public class XmlTransformResponse extends TransformResponse {
     private final boolean pretty;
 
     /**
-     * Instantiates a new XmlTransform.
+     * Instantiates a new XmlTransformResponse.
      *
      * @param transformRule the transform rule
      */
@@ -94,26 +95,9 @@ public class XmlTransformResponse extends TransformResponse {
                 responseAdapter.setContentType(contentType);
             }
 
-            Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            if (pretty) {
-                transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
-            }
-
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
-            if (encoding != null) {
-                transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
-            }
-            if (pretty) {
-                transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
-            }
-
-            ContentsXMLReader xreader = new ContentsXMLReader();
-            ContentsInputSource isource = new ContentsInputSource(processResult);
-            transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
+            Writer writer = responseAdapter.getWriter();
+            transformXml(processResult, writer, encoding, pretty);
         } catch (Exception e) {
             throw new TransformResponseException(transformRule, e);
         }
@@ -128,6 +112,28 @@ public class XmlTransformResponse extends TransformResponse {
     public Response replicate() {
         TransformRule transformRule = getTransformRule().replicate();
         return new XmlTransformResponse(transformRule);
+    }
+
+    public static void transformXml(ProcessResult processResult, Writer writer, String encoding, boolean pretty)
+            throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        if (pretty) {
+            transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
+        }
+
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
+        if (encoding != null) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+        }
+        if (pretty) {
+            transformer.setOutputProperty(OutputKeys.INDENT, YES);
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, YES);
+        }
+
+        ContentsXMLReader xreader = new ContentsXMLReader();
+        ContentsInputSource isource = new ContentsInputSource(processResult);
+        transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
     }
 
 }

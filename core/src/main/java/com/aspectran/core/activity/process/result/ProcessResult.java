@@ -35,6 +35,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
 
     private String name;
 
+    private boolean explicit;
+
     public ProcessResult() {
         this(5);
     }
@@ -51,6 +53,14 @@ public class ProcessResult extends ArrayList<ContentResult> {
         this.name = name;
     }
 
+    public boolean isExplicit() {
+        return explicit;
+    }
+
+    public void setExplicit(boolean explicit) {
+        this.explicit = explicit;
+    }
+
     /**
      * Adds the content result.
      *
@@ -63,6 +73,15 @@ public class ProcessResult extends ArrayList<ContentResult> {
     public ContentResult getContentResult(String name) {
         for (ContentResult contentResult : this) {
             if (Objects.equals(name, contentResult.getName())) {
+                return contentResult;
+            }
+        }
+        return null;
+    }
+
+    public ContentResult getContentResult(String name, boolean explicit) {
+        for (ContentResult contentResult : this) {
+            if (Objects.equals(name, contentResult.getName()) && contentResult.isExplicit() == explicit) {
                 return contentResult;
             }
         }

@@ -73,7 +73,7 @@ public class XslTransformResponse extends TransformResponse {
     private volatile boolean templateLoaded;
 
     /**
-     * Instantiates a new XslTransform.
+     * Instantiates a new XslTransformResponse.
      *
      * @param transformRule the transform rule
      */

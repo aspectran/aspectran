@@ -183,9 +183,9 @@ public class RuleToParamsConverter {
             aspectranParameters.putValue(AspectranParameters.template, p);
         }
 
-        List<RuleAppender> pendingList = assistant.getRuleAppendHandler().getPendingList();
-        if (pendingList != null) {
-            for (RuleAppender appender : pendingList) {
+        List<RuleAppender> appenders = assistant.getRuleAppendHandler().getPendingList();
+        if (appenders != null) {
+            for (RuleAppender appender : appenders) {
                 aspectranParameters.putValue(AspectranParameters.append, toAppendParameters(appender));
             }
         }
@@ -313,7 +313,7 @@ public class RuleToParamsConverter {
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-            for (ExceptionThrownRule etr : exceptionRule) {
+            for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }
         }
@@ -423,29 +423,6 @@ public class RuleToParamsConverter {
             }
         }
 
-        ContentList contentList = transletRule.getContentList();
-        if (contentList != null) {
-            if (contentList.isExplicit()) {
-                ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
-                contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
-                for (ActionList actionList : contentList) {
-                    ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
-                    contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                    toActionList(actionList, contentParameters, ContentParameters.action);
-                }
-            } else {
-                for (ActionList actionList : contentList) {
-                    if (actionList.isExplicit()) {
-                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
-                        contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                        toActionList(actionList, contentParameters, ContentParameters.action);
-                    } else {
-                        toActionList(actionList, transletParameters, TransletParameters.action);
-                    }
-                }
-            }
-        }
-
         if (transletRule.getChooseRuleMap() != null) {
             for (ChooseRule chooseRule : transletRule.getChooseRuleMap().values()) {
                 ChooseParameters chooseParameters = transletParameters.newParameters(TransletParameters.choose);
@@ -476,6 +453,29 @@ public class RuleToParamsConverter {
                                 chooseWhenParameters.putValue(ChooseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        ContentList contentList = transletRule.getContentList();
+        if (contentList != null) {
+            if (contentList.isExplicit()) {
+                ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
+                contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
+                for (ActionList actionList : contentList) {
+                    ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
+                    contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
+                    toActionList(actionList, contentParameters, ContentParameters.action);
+                }
+            } else {
+                for (ActionList actionList : contentList) {
+                    if (actionList.isExplicit()) {
+                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
+                        contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
+                        toActionList(actionList, contentParameters, ContentParameters.action);
+                    } else {
+                        toActionList(actionList, transletParameters, TransletParameters.action);
                     }
                 }
             }
@@ -516,7 +516,7 @@ public class RuleToParamsConverter {
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-            for (ExceptionThrownRule etr : exceptionRule) {
+            for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }
         }
@@ -551,12 +551,11 @@ public class RuleToParamsConverter {
             } else if (response.getResponseType() == ResponseType.DISPATCH) {
                 DispatchResponse dispatchResponse = (DispatchResponse)response;
                 etParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
-            } else if (response.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse)response;
-                etParameters.putValue(ExceptionThrownParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
             } else if (response.getResponseType() == ResponseType.REDIRECT) {
                 RedirectResponse redirectResponse = (RedirectResponse)response;
                 etParameters.putValue(ExceptionThrownParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
+            } else if (response.getResponseType() == ResponseType.FORWARD) {
+                throw new IllegalArgumentException("Cannot apply the forward response rule to the exception thrown rule");
             }
         }
 
