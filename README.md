@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.0.0-SNAPSHOT)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.0.0-S)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![DepShield Badge](https://depshield.sonatype.org/badges/aspectran/aspectran/depshield.svg)](https://depshield.github.io)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
