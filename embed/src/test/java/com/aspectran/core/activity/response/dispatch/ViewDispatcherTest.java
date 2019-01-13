@@ -40,7 +40,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,33 +171,33 @@ class ViewDispatcherTest {
     }
 
     @Test
-    void testFreemarkerViewDispatcher() throws IOException {
+    void testFreemarkerViewDispatcher() {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello");
         params.setParameter("param2", "world");
 
         Translet translet = aspectran.translate("test/freemarker", params);
-        String result = translet.getResponseAdapter().getWriter().toString();
+        String result = translet.toString();
 
         assertEquals("hello world", result);
         //System.out.println(result);
     }
 
     @Test
-    void testEcho() throws IOException {
+    void testEcho() {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello2");
         params.setParameter("param2", "world2");
 
         Translet translet = aspectran.translate("test/appended/echo", params);
-        String result = translet.getResponseAdapter().getWriter().toString();
+        String result = translet.toString();
 
         assertEquals("hello2 world2", result);
         //System.out.println(result);
     }
 
     @Test
-    void testFreemarkerTemplate1() throws IOException {
+    void testFreemarkerTemplate1() {
         List<String> fruits = new ArrayList<>();
         fruits.add("Apple");
         fruits.add("Banana");
@@ -209,19 +208,19 @@ class ViewDispatcherTest {
         attrs.put("fruits", fruits);
 
         Translet translet = aspectran.translate("test/appended/freemarker/template1", attrs);
-        String result = translet.getResponseAdapter().getWriter().toString();
+        String result = translet.toString();
 
         System.out.println(result);
     }
 
     @Test
-    void testPebbleTemplate() throws IOException {
+    void testPebbleTemplate() {
         ParameterMap params = new ParameterMap();
         params.setParameter("param1", "hello");
         params.setParameter("param2", "pebble");
 
         Translet translet = aspectran.translate("test/pebble", params);
-        String result = translet.getResponseAdapter().getWriter().toString();
+        String result = translet.toString();
 
         assertEquals("hello pebble", result);
         //System.out.println(result);

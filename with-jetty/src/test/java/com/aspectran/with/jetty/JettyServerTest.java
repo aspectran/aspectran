@@ -66,7 +66,7 @@ class JettyServerTest {
     @Test
     void testHello() throws IOException {
         Translet translet = aspectran.translate("/hello");
-        String result1 = translet.getResponseAdapter().getWriter().toString();
+        String result1 = translet.toString();
         String result2;
 
         try {

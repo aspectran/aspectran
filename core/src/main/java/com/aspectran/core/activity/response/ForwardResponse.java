@@ -93,8 +93,7 @@ public class ForwardResponse implements Response {
 
     @Override
     public Response replicate() {
-        ForwardRule frr = forwardRule.replicate();
-        return new ForwardResponse(frr);
+        return new ForwardResponse(this.forwardRule.replicate());
     }
 
     /**

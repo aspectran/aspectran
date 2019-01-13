@@ -26,8 +26,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -54,7 +52,7 @@ class EmbeddedAspectranTest {
     }
 
     @Test
-    void test1() throws IOException {
+    void test1() {
         ActivityContext activityContext = aspectran.getActivityContext();
         BeanRegistry beanRegistry = activityContext.getBeanRegistry();
         FirstBean firstBean = beanRegistry.getBean("thirdBean");
@@ -65,12 +63,12 @@ class EmbeddedAspectranTest {
         assertEquals(firstBean.getMessage(), SecondBean.message);
 
         Translet translet = aspectran.translate("echo");
-        System.out.println(translet.getResponseAdapter().getWriter().toString());
+        System.out.println(translet);
 
         ParameterMap params = new ParameterMap();
         params.setParameter("id", "0001");
-        params.setParameter("name", "aspectran");
-        params.setParameter("email", "aspectran@aspectran.com");
+        params.setParameter("name", "tester");
+        params.setParameter("email", "tester@aspectran.com");
 
         String echo = aspectran.template("echo", params);
         System.out.println(echo);
@@ -83,15 +81,15 @@ class EmbeddedAspectranTest {
     }
 
     @Test
-    void test2() throws IOException {
+    void test2() {
         Translet translet = aspectran.translate("attr-test");
-        System.out.println(translet.getResponseAdapter().getWriter().toString());
+        System.out.println(translet);
     }
 
     @Test
-    void includeTest() throws IOException {
+    void includeTest() {
         Translet translet = aspectran.translate("include-test");
-        System.out.println(translet.getResponseAdapter().getWriter().toString());
+        System.out.println(translet);
     }
 
     @Test
@@ -103,13 +101,13 @@ class EmbeddedAspectranTest {
     }
 
     @Test
-    void testEcho123() throws IOException {
+    void testEcho123() {
         Translet translet = aspectran.translate("echo123");
-        System.out.println(translet.getResponseAdapter().getWriter().toString());
+        System.out.println(translet);
     }
 
     @Test
-    void testChooseWhen() throws IOException {
+    void testChooseWhen() {
         String mode = "case2-2";
 
         ParameterMap params = new ParameterMap();
@@ -117,13 +115,55 @@ class EmbeddedAspectranTest {
 
         Translet translet = aspectran.translate("chooseWhenTest", params);
         ActivityDataMap dataMap = translet.getActivityDataMap();
-        String response = translet.getResponseAdapter().getWriter().toString();
+        String response = translet.toString();
 
         System.out.println("Mode: " + mode);
         System.out.println("Action Result: " + dataMap.get(mode));
         System.out.println("Response: " + response);
 
         assertEquals(mode, dataMap.get(mode));
+    }
+
+    @Test
+    void thrown1Test() {
+        String mode = "thrown1";
+
+        ParameterMap params = new ParameterMap();
+        params.setParameter("mode", mode);
+
+        Translet translet = aspectran.translate("thrownTest", params);
+        String response = translet.toString();
+
+        assertEquals("thrown1 - thrown NullPointerException", response);
+        System.out.println(response);
+    }
+
+    @Test
+    void thrown2Test() {
+        String mode = "thrown2";
+
+        ParameterMap params = new ParameterMap();
+        params.setParameter("mode", mode);
+
+        Translet translet = aspectran.translate("thrownTest", params);
+        String response = translet.toString();
+
+        assertEquals("thrown2 - thrown IllegalArgumentException", response);
+        System.out.println(response);
+    }
+
+    @Test
+    void thrown3Test() {
+        String mode = "thrown3";
+
+        ParameterMap params = new ParameterMap();
+        params.setParameter("mode", mode);
+
+        Translet translet = aspectran.translate("thrownTest", params);
+        String response = translet.toString();
+
+        assertEquals("thrown3 - thrown UnsupportedOperationException", response);
+        System.out.println(response);
     }
 
 }

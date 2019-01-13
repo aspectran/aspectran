@@ -123,8 +123,7 @@ public class XslTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        TransformRule transformRule = getTransformRule().replicate();
-        return new XslTransformResponse(transformRule);
+        return new XslTransformResponse(getTransformRule().replicate());
     }
 
     private void loadTemplate(Environment environment) throws TransformerConfigurationException, IOException {

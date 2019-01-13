@@ -107,8 +107,7 @@ public class DispatchResponse implements Response {
 
     @Override
     public Response replicate() {
-        DispatchRule drr = dispatchRule.replicate();
-        return new DispatchResponse(drr);
+        return new DispatchResponse(dispatchRule.replicate());
     }
 
     /**

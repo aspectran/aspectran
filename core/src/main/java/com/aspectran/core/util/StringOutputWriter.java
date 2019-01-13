@@ -67,7 +67,7 @@ public class StringOutputWriter extends Writer {
 
     @Override
     public void write(String str, int off, int len)  {
-        buffer.append(str.substring(off, off + len));
+        buffer.append(str, off, off + len);
     }
 
     @Override

@@ -119,8 +119,7 @@ public class TextTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        TransformRule transformRule = getTransformRule().replicate();
-        return new TextTransformResponse(transformRule);
+        return new TextTransformResponse(getTransformRule().replicate());
     }
 
 }

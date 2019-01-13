@@ -75,6 +75,8 @@ public class CoreActivity extends AdviceActivity {
 
     private Response reservedResponse;
 
+    private Response desiredResponse;
+
     private boolean committed;
 
     private Set<Integer> processedChooses;
@@ -348,6 +350,10 @@ public class CoreActivity extends AdviceActivity {
 
     protected void reserveResponse(Response response) {
         this.reservedResponse = response;
+
+        if (response != null && !isExceptionRaised()) {
+            this.desiredResponse = response;
+        }
     }
 
     protected void reserveResponse() {
@@ -359,6 +365,10 @@ public class CoreActivity extends AdviceActivity {
     @Override
     public boolean isResponseReserved() {
         return (this.reservedResponse != null);
+    }
+
+    protected Response getDesiredResponse() {
+        return (this.desiredResponse != null ? this.desiredResponse : getDeclaredResponse());
     }
 
     /**
@@ -484,28 +494,19 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private void handleException(ExceptionThrownRule exceptionThrownRule) {
-        ResponseRule responseRule = getResponseRule();
-        if (responseRule != null) {
-            Response response = responseRule.getResponse();
-            if (response != null) {
-                String contentType = response.getContentType(this);
-                Response targetResponse = exceptionThrownRule.getResponse(contentType);
-                if (targetResponse != null) {
-                    ResponseRule newResponseRule = new ResponseRule(false);
-                    newResponseRule.setEncoding(responseRule.getEncoding());
-                    newResponseRule.setResponse(targetResponse);
+        Response response = getDesiredResponse();
+        String contentType = (response != null ? response.getContentType() : null);
+        Response targetResponse = exceptionThrownRule.getResponse(contentType);
+        if (targetResponse != null) {
+            // Clear produced results. No reflection to ProcessResult.
+            translet.setProcessResult(null);
 
-                    // Clear produced results. No reflection to ProcessResult.
-                    translet.setProcessResult(null);
-
-                    ActionList actionList = targetResponse.getActionList();
-                    if (actionList != null) {
-                        execute(actionList);
-                    }
-
-                    reserveResponse(targetResponse);
-                }
+            ActionList actionList = targetResponse.getActionList();
+            if (actionList != null) {
+                execute(actionList);
             }
+
+            reserveResponse(targetResponse);
         }
     }
 
@@ -606,7 +607,7 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("newActivity");
     }
 
     /**

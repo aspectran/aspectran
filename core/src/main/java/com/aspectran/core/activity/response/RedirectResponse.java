@@ -98,8 +98,7 @@ public class RedirectResponse implements Response {
 
     @Override
     public Response replicate() {
-        RedirectRule rrr = redirectRule.replicate();
-        return new RedirectResponse(rrr);
+        return new RedirectResponse(redirectRule.replicate());
     }
 
     /**

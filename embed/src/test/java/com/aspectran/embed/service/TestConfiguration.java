@@ -23,9 +23,12 @@ import com.aspectran.core.component.bean.annotation.Qualifier;
 @Component
 public class TestConfiguration {
 
-    @Autowired
-    @Qualifier("FirstBean")
     private FirstBean firstBean;
+
+    @Autowired
+    public TestConfiguration(@Qualifier("FirstBean") FirstBean firstBean) {
+        this.firstBean = firstBean;
+    }
 
     @Bean(id = "thirdBean", lazyInit = true)
     public FirstBean getThirdBean() {

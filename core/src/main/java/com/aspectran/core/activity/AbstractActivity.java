@@ -164,7 +164,7 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public boolean isExceptionRaised() {
-        return (this.raisedException != null);
+        return (raisedException != null);
     }
 
     @Override

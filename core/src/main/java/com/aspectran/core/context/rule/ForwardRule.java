@@ -164,12 +164,12 @@ public class ForwardRule extends AbstractResponseRule implements Replicable<Forw
             }
         }
 
-        ForwardRule frr = new ForwardRule();
-        frr.setContentType(contentType);
-        frr.setTransletName(transletName);
-        frr.setRequestMethod(requestMethod);
-        frr.setDefaultResponse(defaultResponse);
-        return frr;
+        ForwardRule fr = new ForwardRule();
+        fr.setContentType(contentType);
+        fr.setTransletName(transletName);
+        fr.setRequestMethod(requestMethod);
+        fr.setDefaultResponse(defaultResponse);
+        return fr;
     }
 
     /**
@@ -184,19 +184,19 @@ public class ForwardRule extends AbstractResponseRule implements Replicable<Forw
             throw new IllegalRuleException("transletName must not be null");
         }
 
-        ForwardRule frr = new ForwardRule();
-        frr.setTransletName(transletName);
-        return frr;
+        ForwardRule fr = new ForwardRule();
+        fr.setTransletName(transletName);
+        return fr;
     }
 
     public static ForwardRule replicate(ForwardRule forwardRule) {
-        ForwardRule frr = new ForwardRule();
-        frr.setContentType(forwardRule.getContentType());
-        frr.setTransletName(forwardRule.getTransletName());
-        frr.setAttributeItemRuleMap(forwardRule.getAttributeItemRuleMap());
-        frr.setDefaultResponse(forwardRule.getDefaultResponse());
-        frr.setActionList(forwardRule.getActionList());
-        return frr;
+        ForwardRule fr = new ForwardRule();
+        fr.setContentType(forwardRule.getContentType());
+        fr.setTransletName(forwardRule.getTransletName());
+        fr.setAttributeItemRuleMap(forwardRule.getAttributeItemRuleMap());
+        fr.setDefaultResponse(forwardRule.getDefaultResponse());
+        fr.setActionList(forwardRule.getActionList());
+        return fr;
     }
 
 }

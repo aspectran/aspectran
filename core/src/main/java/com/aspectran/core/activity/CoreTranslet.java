@@ -35,6 +35,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.StringUtils;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -273,10 +274,10 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void dispatch(String name, String dispatcherName) {
-        DispatchRule drr = new DispatchRule();
-        drr.setName(name, null);
-        drr.setDispatcherName(dispatcherName);
-        dispatch(drr);
+        DispatchRule dispatchRule = new DispatchRule();
+        dispatchRule.setName(name, null);
+        dispatchRule.setDispatcherName(dispatcherName);
+        dispatch(dispatchRule);
     }
 
     @Override
@@ -287,9 +288,9 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void forward(String transletName) {
-        ForwardRule frr = new ForwardRule();
-        frr.setTransletName(transletName);
-        forward(frr);
+        ForwardRule forwardRule = new ForwardRule();
+        forwardRule.setTransletName(transletName);
+        forward(forwardRule);
     }
 
     @Override
@@ -308,10 +309,10 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void redirect(String path, Map<String, String> parameters) {
-        RedirectRule rrr = new RedirectRule();
-        rrr.setPath(path, null);
-        rrr.setParameters(parameters);
-        redirect(rrr);
+        RedirectRule redirectRule = new RedirectRule();
+        redirectRule.setPath(path, null);
+        redirectRule.setParameters(parameters);
+        redirect(redirectRule);
     }
 
     @Override
@@ -373,6 +374,18 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public boolean hasPathVariable() {
         return activity.getTransletRule().hasPathVariables();
+    }
+
+    @Override
+    public String toString() {
+        if (getResponseAdapter().getAdaptee() == null) {
+            try {
+                return getResponseAdapter().getWriter().toString();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+        return super.toString();
     }
 
     //---------------------------------------------------------------------

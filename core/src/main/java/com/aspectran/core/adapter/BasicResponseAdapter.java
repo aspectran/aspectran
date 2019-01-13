@@ -181,7 +181,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException {
+    public OutputStream getOutputStream() {
         if (outputStream == null) {
             throw new UnsupportedOperationException();
         }
@@ -193,7 +193,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public Writer getWriter() throws IOException {
+    public Writer getWriter() {
         if (writer == null) {
             throw new UnsupportedOperationException();
         }
@@ -215,7 +215,8 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void redirect(String path) throws IOException {
+    public void redirect(String path) {
+        throw new UnsupportedOperationException("redirect");
     }
 
     @Override

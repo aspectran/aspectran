@@ -66,7 +66,7 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
     public void setTransformType(TransformType transformType) {
         this.transformType = transformType;
 
-        if (contentType == null) {
+        if (contentType == null && transformType != null) {
             if (transformType == TransformType.TEXT) {
                 contentType = ContentType.TEXT_PLAIN.toString();
             } else if (transformType == TransformType.JSON) {
@@ -181,6 +181,9 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
     public void setTemplateRule(TemplateRule templateRule) {
         this.templateRule = templateRule;
         if (templateRule != null) {
+            if (this.transformType == null) {
+                setTransformType(TransformType.TEXT);
+            }
             if (templateRule.getEncoding() != null && this.encoding == null) {
                 this.encoding = templateRule.getEncoding();
             }

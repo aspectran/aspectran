@@ -169,8 +169,12 @@
     </translet>
 
     <translet name="include-target">
+        <parameters>
+            <item name="mode">param1</item>
+        </parameters>
+        <action id="case1-1" bean="action.TestAction" method="case1"/>
         <transform type="transform/text" contentType="text/plain">
-            <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
+            <template>abc@{attr-1}@{attr-2}@{attr-3}-@{case1-1}</template>
         </transform>
     </translet>
 
@@ -244,6 +248,42 @@
                 </transform>
             </otherwise>
         </choose>
+    </translet>
+
+    <translet name="thrownTest">
+        <choose>
+            <when test="mode == 'thrown1'">
+                <action bean="action.TestAction" method="thrown1"/>
+            </when>
+            <when test="mode == 'thrown2'">
+                <action bean="action.TestAction" method="thrown2"/>
+            </when>
+            <otherwise>
+                <action bean="action.TestAction" method="thrown3"/>
+            </otherwise>
+        </choose>
+        <exception>
+            <thrown type="java.lang.NullPointerException">
+                <transform>
+                    <template>${mode} - thrown NullPointerException</template>
+                </transform>
+            </thrown>
+            <thrown type="java.lang.IllegalArgumentException">
+                <transform type="transform/text">
+                    <template>${mode} - thrown IllegalArgumentException</template>
+                </transform>
+            </thrown>
+            <thrown type="java.lang.UnsupportedOperationException">
+                <transform type="transform/text">
+                    <template>${mode} - thrown UnsupportedOperationException</template>
+                </transform>
+            </thrown>
+            <thrown>
+                <transform>
+                    <template>unknown exception type</template>
+                </transform>
+            </thrown>
+        </exception>
     </translet>
 
 </aspectran>

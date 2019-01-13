@@ -222,13 +222,13 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
      */
     public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
                                            String encoding, Boolean defaultResponse) {
-        DispatchRule drr = new DispatchRule();
-        drr.setName(name);
-        drr.setDispatcherName(dispatcherName);
-        drr.setContentType(contentType);
-        drr.setEncoding(encoding);
-        drr.setDefaultResponse(defaultResponse);
-        return drr;
+        DispatchRule dr = new DispatchRule();
+        dr.setName(name);
+        dr.setDispatcherName(dispatcherName);
+        dr.setContentType(contentType);
+        dr.setEncoding(encoding);
+        dr.setDefaultResponse(defaultResponse);
+        return dr;
     }
 
     /**
@@ -255,9 +255,9 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
         if (name == null) {
             throw new IllegalRuleException("name must not be null");
         }
-        DispatchRule drr = new DispatchRule();
-        drr.setName(name);
-        return drr;
+        DispatchRule dr = new DispatchRule();
+        dr.setName(name);
+        return dr;
     }
 
     /**
@@ -267,13 +267,13 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
      * @return the dispatch rule
      */
     public static DispatchRule replicate(DispatchRule dispatchRule) {
-        DispatchRule drr = new DispatchRule();
-        drr.setName(dispatchRule.getName(), dispatchRule.getNameTokens());
-        drr.setContentType(dispatchRule.getContentType());
-        drr.setEncoding(dispatchRule.getEncoding());
-        drr.setDefaultResponse(dispatchRule.getDefaultResponse());
-        drr.setActionList(dispatchRule.getActionList());
-        return drr;
+        DispatchRule dr = new DispatchRule();
+        dr.setName(dispatchRule.getName(), dispatchRule.getNameTokens());
+        dr.setContentType(dispatchRule.getContentType());
+        dr.setEncoding(dispatchRule.getEncoding());
+        dr.setDefaultResponse(dispatchRule.getDefaultResponse());
+        dr.setActionList(dispatchRule.getActionList());
+        return dr;
     }
 
 }

@@ -122,8 +122,7 @@ public class JsonTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        TransformRule transformRule = getTransformRule().replicate();
-        return new JsonTransformResponse(transformRule);
+        return new JsonTransformResponse(getTransformRule().replicate());
     }
 
 }

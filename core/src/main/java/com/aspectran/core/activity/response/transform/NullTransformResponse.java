@@ -64,8 +64,7 @@ public class NullTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        TransformRule transformRule = getTransformRule().replicate();
-        return new NullTransformResponse(transformRule);
+        return new NullTransformResponse(getTransformRule().replicate());
     }
 
 }

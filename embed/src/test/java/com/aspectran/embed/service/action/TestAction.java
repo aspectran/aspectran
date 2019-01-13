@@ -43,4 +43,16 @@ public class TestAction {
         return translet.getParameter("mode");
     }
 
+    public void thrown1() {
+        throw new NullPointerException();
+    }
+
+    public void thrown2() {
+        throw new IllegalArgumentException();
+    }
+
+    public void thrown3() {
+        throw new UnsupportedOperationException();
+    }
+
 }

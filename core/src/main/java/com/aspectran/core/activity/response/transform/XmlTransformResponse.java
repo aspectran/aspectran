@@ -110,8 +110,7 @@ public class XmlTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        TransformRule transformRule = getTransformRule().replicate();
-        return new XmlTransformResponse(transformRule);
+        return new XmlTransformResponse(getTransformRule().replicate());
     }
 
     public static void transformXml(ProcessResult processResult, Writer writer, String encoding, boolean pretty)
