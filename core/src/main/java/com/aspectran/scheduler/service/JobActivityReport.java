@@ -17,6 +17,8 @@ package com.aspectran.scheduler.service;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.util.ExceptionUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.quartz.JobDetail;
@@ -56,8 +58,12 @@ public class JobActivityReport {
             String jobGroup = key.getGroup();
 
             StringBuilder sb = new StringBuilder(720);
-            sb.append("Result of job execution").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+            sb.append("Result of job execution");
+            if (jobException != null) {
+                sb.append(" (Failed)");
+            }
+            sb.append(ActivityContext.LINE_SEPARATOR);
+            sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Job Name            : ").append(jobName).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(ActivityContext.LINE_SEPARATOR);
@@ -67,24 +73,21 @@ public class JobActivityReport {
             sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? jobExecutionContext.getNextFireTime() : "N/A").append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
-
-            if (jobException != null) {
-                sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
-                sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
-            }
-            sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+            sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 
             if (activity != null) {
                 Writer writer = activity.getResponseAdapter().getWriter();
                 String output = writer.toString();
-                if (!output.isEmpty()) {
+                if (!StringUtils.hasLength(output)) {
                     sb.append(output).append(ActivityContext.LINE_SEPARATOR);
-                    sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+                    sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
                 }
             }
 
             if (jobException != null) {
-                log.error(sb.toString(), jobException);
+                String msg = ExceptionUtils.getRootCause(jobException).getMessage();
+                sb.append("[ERROR] ").append(msg.trim()).append(ActivityContext.LINE_SEPARATOR);
+                log.error(sb.toString().trim(), jobException);
             } else {
                 log.debug(sb.toString());
             }
