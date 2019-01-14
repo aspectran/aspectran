@@ -139,6 +139,12 @@ public abstract class AbstractServiceController implements ServiceController {
             }
 
             if (!isDerived()) {
+                if (derivedServices != null) {
+                    for (ServiceController serviceController : derivedServices) {
+                        serviceController.stop();
+                    }
+                }
+
                 active = false;
                 doStop();
                 doStart();
@@ -146,7 +152,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
                 if (derivedServices != null) {
                     for (ServiceController serviceController : derivedServices) {
-                        serviceController.restart();
+                        serviceController.start();
                     }
                 }
             }
@@ -250,10 +256,6 @@ public abstract class AbstractServiceController implements ServiceController {
                 return;
             }
 
-            if (!isDerived()) {
-                log.info("Stopping the " + getServiceName());
-            }
-
             if (serviceStateListener != null) {
                 try {
                     serviceStateListener.stopped();
@@ -270,7 +272,10 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
 
                 try {
+                    log.info("Stopping the " + getServiceName());
+
                     doStop();
+
                     log.info(getServiceName() + " stopped successfully");
                 } catch (Exception e) {
                     log.error(getServiceName() + " was not stopped normally", e);

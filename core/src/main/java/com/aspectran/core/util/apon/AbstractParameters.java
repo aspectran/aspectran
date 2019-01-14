@@ -255,7 +255,11 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public int getInt(String name, int defaultValue) {
         Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsInt() : defaultValue);
+        if (p != null) {
+            Integer val = p.getValueAsInt();
+            return (val != null ? val : defaultValue);
+        }
+        return defaultValue;
     }
 
     @Override
@@ -299,13 +303,11 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public long getLong(String name, long defaultValue) {
         Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsLong() : defaultValue);
-    }
-
-    @Override
-    public Long[] getLongArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsLongArray() : null);
+        if (p != null) {
+            Long val = p.getValueAsLong();
+            return (val != null ? val : defaultValue);
+        }
+        return defaultValue;
     }
 
     @Override
@@ -315,7 +317,13 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public long getLong(ParameterDefinition parameterDefinition, long defaultValue) {
-        return getLong(parameterDefinition.getName());
+        return getLong(parameterDefinition.getName(), defaultValue);
+    }
+
+    @Override
+    public Long[] getLongArray(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueAsLongArray() : null);
     }
 
     @Override
@@ -343,13 +351,11 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public float getFloat(String name, float defaultValue) {
         Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsFloat() : defaultValue);
-    }
-
-    @Override
-    public Float[] getFloatArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsFloatArray() : null);
+        if (p != null) {
+            Float val = p.getValueAsFloat();
+            return (val != null ? val : defaultValue);
+        }
+        return defaultValue;
     }
 
     @Override
@@ -360,6 +366,12 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public float getFloat(ParameterDefinition parameterDefinition, float defaultValue) {
         return getFloat(parameterDefinition.getName(), defaultValue);
+    }
+
+    @Override
+    public Float[] getFloatArray(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueAsFloatArray() : null);
     }
 
     @Override
@@ -387,13 +399,11 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public double getDouble(String name, double defaultValue) {
         Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsDouble() : defaultValue);
-    }
-
-    @Override
-    public Double[] getDoubleArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsDoubleArray() : null);
+        if (p != null) {
+            Double val = p.getValueAsDouble();
+            return (val != null ? val : defaultValue);
+        }
+        return defaultValue;
     }
 
     @Override
@@ -404,6 +414,12 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public double getDouble(ParameterDefinition parameterDefinition, double defaultValue) {
         return getDouble(parameterDefinition.getName(), defaultValue);
+    }
+
+    @Override
+    public Double[] getDoubleArray(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueAsDoubleArray() : null);
     }
 
     @Override
@@ -435,12 +451,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Boolean[] getBooleanArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsBooleanArray() : null);
-    }
-
-    @Override
     public Boolean getBoolean(ParameterDefinition parameterDefinition) {
         return getBoolean(parameterDefinition.getName());
     }
@@ -448,6 +458,12 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public boolean getBoolean(ParameterDefinition parameterDefinition, boolean defaultValue) {
         return getBoolean(parameterDefinition.getName(), defaultValue);
+    }
+
+    @Override
+    public Boolean[] getBooleanArray(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueAsBooleanArray() : null);
     }
 
     @Override

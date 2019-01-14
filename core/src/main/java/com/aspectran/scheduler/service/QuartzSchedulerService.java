@@ -16,6 +16,7 @@
 package com.aspectran.scheduler.service;
 
 import com.aspectran.core.activity.process.action.ActionExecutionException;
+import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
@@ -152,11 +153,12 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     private void startSchedulerService() throws SchedulerServiceException {
-        if (coreService.getActivityContext().getScheduleRuleRegistry() == null) {
+        ScheduleRuleRegistry scheduleRuleRegistry = coreService.getActivityContext().getScheduleRuleRegistry();
+        if (scheduleRuleRegistry == null) {
             return;
         }
 
-        Collection<ScheduleRule> scheduleRules = coreService.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
+        Collection<ScheduleRule> scheduleRules = scheduleRuleRegistry.getScheduleRules();
         if (scheduleRules == null || scheduleRules.isEmpty()) {
             return;
         }

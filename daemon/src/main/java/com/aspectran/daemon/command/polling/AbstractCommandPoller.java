@@ -42,7 +42,7 @@ public abstract class AbstractCommandPoller implements CommandPoller {
 
         this.pollingInterval = pollerConfig.getLong(DaemonPollerConfig.pollingInterval, DEFAULT_POLLING_INTERVAL);
         this.maxThreads = pollerConfig.getInt(DaemonPollerConfig.maxThreads, DEFAULT_MAX_THREADS);
-        this.requeue = pollerConfig.getBoolean(DaemonPollerConfig.requeue);
+        this.requeue = pollerConfig.getBoolean(DaemonPollerConfig.requeue, false);
 
         this.executor = new CommandExecutor(daemon, maxThreads);
     }
