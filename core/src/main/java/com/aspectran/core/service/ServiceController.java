@@ -35,13 +35,6 @@ public interface ServiceController {
     void setServiceStateListener(ServiceStateListener serviceStateListener);
 
     /**
-     * Returns whether this service is derived from another root service.
-     *
-     * @return whether this service is derived
-     */
-    boolean isDerived();
-
-    /**
      * Starts the service.
      *
      * @throws Exception if the service control fails

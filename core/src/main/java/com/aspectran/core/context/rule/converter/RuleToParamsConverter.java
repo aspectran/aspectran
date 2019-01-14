@@ -181,9 +181,9 @@ public class RuleToParamsConverter {
             aspectranParameters.putValue(AspectranParameters.template, p);
         }
 
-        List<RuleAppender> pendingList = assistant.getRuleAppendHandler().getPendingList();
-        if (pendingList != null) {
-            for (RuleAppender appender : pendingList) {
+        List<RuleAppender> appenders = assistant.getRuleAppendHandler().getPendingList();
+        if (appenders != null) {
+            for (RuleAppender appender : appenders) {
                 aspectranParameters.putValue(AspectranParameters.append, toAppendParameters(appender));
             }
         }
@@ -311,7 +311,7 @@ public class RuleToParamsConverter {
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-            for (ExceptionThrownRule etr : exceptionRule) {
+            for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }
         }
@@ -491,7 +491,7 @@ public class RuleToParamsConverter {
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
             exceptionParameters.putValueNonNull(ExceptionParameters.description, exceptionRule.getDescription());
-            for (ExceptionThrownRule etr : exceptionRule) {
+            for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }
         }
@@ -508,13 +508,13 @@ public class RuleToParamsConverter {
         }
 
         if (exceptionThrownRule.getActionType() == ActionType.BEAN_METHOD) {
-            BeanMethodActionRule beanMethodActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            BeanMethodActionRule beanMethodActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(beanMethodActionRule));
         } else if (exceptionThrownRule.getActionType() == ActionType.ECHO) {
-            EchoActionRule echoActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            EchoActionRule echoActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(echoActionRule));
         } else if (exceptionThrownRule.getActionType() == ActionType.HEADER) {
-            HeaderActionRule headerActionRule = exceptionThrownRule.getExecutableAction().getActionRule();
+            HeaderActionRule headerActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(headerActionRule));
         }
 

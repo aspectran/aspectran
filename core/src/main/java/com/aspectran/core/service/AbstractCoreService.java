@@ -57,9 +57,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private AspectranConfig aspectranConfig;
 
-    private SchedulerConfig schedulerConfig;
-
     private ActivityContextBuilder activityContextBuilder;
+
+    private SchedulerService schedulerService;
 
     private PluralWildcardPattern exposableTransletNamesPattern;
 
@@ -68,6 +68,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     private FileLocker fileLocker;
 
     public AbstractCoreService(ApplicationAdapter applicationAdapter) {
+        super(true);
+
         if (applicationAdapter == null) {
             throw new IllegalArgumentException("applicationAdapter must not be null");
         }
@@ -78,6 +80,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     public AbstractCoreService(CoreService rootService) {
+        super(true);
+
         if (rootService == null) {
             throw new IllegalArgumentException("rootService must not be null");
         }
@@ -165,7 +169,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
         try {
             this.aspectranConfig = aspectranConfig;
-            this.schedulerConfig = aspectranConfig.getSchedulerConfig();
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
@@ -187,6 +190,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             activityContextBuilder.setBasePath(getBasePath());
             activityContextBuilder.setContextConfig(contextConfig);
             activityContextBuilder.setServiceController(this);
+
+            schedulerService = createSchedulerService(aspectranConfig.getSchedulerConfig());
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
         }
@@ -224,35 +229,40 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         activityContextBuilder.destroy();
     }
 
-    protected void createSchedulerService() {
-        if (this.schedulerConfig == null) {
-            return;
+    public SchedulerService getSchedulerService() {
+        return schedulerService;
+    }
+
+    private SchedulerService createSchedulerService(SchedulerConfig schedulerConfig) {
+        if (schedulerConfig == null) {
+            return null;
         }
 
-        boolean schedulerStartup = this.schedulerConfig.getBoolean(SchedulerConfig.startup);
-        int startDelaySeconds = this.schedulerConfig.getInt(SchedulerConfig.startDelaySeconds.getName(), -1);
-        boolean waitOnShutdown = this.schedulerConfig.getBoolean(SchedulerConfig.waitOnShutdown);
-        ExposalsConfig exposalsConfig = this.schedulerConfig.getExposalsConfig();
-
-        if (schedulerStartup) {
-            if (startDelaySeconds == -1) {
-                log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
-                startDelaySeconds = 5;
-            }
-
-            SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
-            if (waitOnShutdown) {
-                schedulerService.setWaitOnShutdown(true);
-            }
-            schedulerService.setStartDelaySeconds(startDelaySeconds);
-            if (exposalsConfig != null) {
-                String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-                String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
-                schedulerService.setExposals(includePatterns, excludePatterns);
-            }
-
-            joinDerivedService(schedulerService);
+        boolean schedulerStartup = schedulerConfig.getBoolean(SchedulerConfig.startup);
+        if (!schedulerStartup) {
+            return null;
         }
+
+        int startDelaySeconds = schedulerConfig.getInt(SchedulerConfig.startDelaySeconds.getName(), -1);
+        boolean waitOnShutdown = schedulerConfig.getBoolean(SchedulerConfig.waitOnShutdown);
+        ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
+
+        if (startDelaySeconds == -1) {
+            log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
+            startDelaySeconds = 5;
+        }
+
+        SchedulerService schedulerService = new QuartzSchedulerService(this);
+        if (waitOnShutdown) {
+            schedulerService.setWaitOnShutdown(true);
+        }
+        schedulerService.setStartDelaySeconds(startDelaySeconds);
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            schedulerService.setExposals(includePatterns, excludePatterns);
+        }
+        return schedulerService;
     }
 
     private boolean checkSingletonLock() throws Exception {

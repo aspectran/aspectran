@@ -48,10 +48,6 @@ public class JobActivityReport {
     }
 
     public void reporting(Activity activity) {
-        if (!log.isDebugEnabled()) {
-            return;
-        }
-
         try {
             JobDetail jobDetail = jobExecutionContext.getJobDetail();
             JobKey key = jobDetail.getKey();
@@ -60,36 +56,38 @@ public class JobActivityReport {
             String jobGroup = key.getGroup();
 
             StringBuilder sb = new StringBuilder(720);
-            sb.append("Result of the job [").append(jobName).append("]").append(ActivityContext.LINE_SEPARATOR);
+            sb.append("Result of job execution").append(ActivityContext.LINE_SEPARATOR);
             sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Job Name            : ").append(jobName).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime()).append(ActivityContext.LINE_SEPARATOR);
+            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime() != null ? jobExecutionContext.getPreviousFireTime() : "N/A").append(ActivityContext.LINE_SEPARATOR);
+            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? jobExecutionContext.getNextFireTime() : "N/A").append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
             sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
 
             if (jobException != null) {
                 sb.append("- An error occurred running job -----------------------------------------").append(ActivityContext.LINE_SEPARATOR);
                 sb.append(jobException).append(ActivityContext.LINE_SEPARATOR);
-                sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
-            } else {
-                sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
             }
+            sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
 
             if (activity != null) {
                 Writer writer = activity.getResponseAdapter().getWriter();
                 String output = writer.toString();
                 if (!output.isEmpty()) {
                     sb.append(output).append(ActivityContext.LINE_SEPARATOR);
-                    sb.append("=========================================================================").append(ActivityContext.LINE_SEPARATOR);
+                    sb.append("-------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
                 }
             }
 
-            log.debug(sb.toString());
+            if (jobException != null) {
+                log.error(sb.toString(), jobException);
+            } else {
+                log.debug(sb.toString());
+            }
         } catch(IOException e) {
             log.warn("Job activity reporting failed", e);
         }

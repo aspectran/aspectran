@@ -257,6 +257,14 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
         }
+
+        Response res = getResponse();
+        if (res != null) {
+            ActionList actionList = res.getActionList();
+            if (actionList != null) {
+                execute(actionList);
+            }
+        }
     }
 
     private ForwardResponseRule response() {
@@ -266,10 +274,7 @@ public class CoreActivity extends AdviceActivity {
             return null;
         }
 
-        Response res = this.reservedResponse;
-        if (res == null && !isExceptionRaised()) {
-            res = getDeclaredResponse();
-        }
+        Response res = getResponse();
         if (res != null) {
             res.commit(this);
 
@@ -323,6 +328,14 @@ public class CoreActivity extends AdviceActivity {
         } finally {
             removeCurrentActivity();
         }
+    }
+
+    private Response getResponse() {
+        Response res = this.reservedResponse;
+        if (res == null && !isExceptionRaised()) {
+            res = getDeclaredResponse();
+        }
+        return res;
     }
 
     protected void reserveResponse(Response response) {
@@ -452,7 +465,7 @@ public class CoreActivity extends AdviceActivity {
     public void handleException(ExceptionRule exceptionRule) {
         ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
         if (exceptionThrownRule != null) {
-            Executable action = exceptionThrownRule.getExecutableAction();
+            Executable action = exceptionThrownRule.getAction();
             if (action != null) {
                 executeAdvice(action);
             }
@@ -464,27 +477,18 @@ public class CoreActivity extends AdviceActivity {
 
     private void handleException(ExceptionThrownRule exceptionThrownRule) {
         Response response = getDeclaredResponse();
-        if (response != null) {
-            String contentType = response.getContentType(this);
-            Response targetResponse = exceptionThrownRule.getResponse(contentType);
-            if (targetResponse != null) {
-                ResponseRule newResponseRule = new ResponseRule();
-                newResponseRule.setResponse(targetResponse);
-                if (getResponseRule() != null) {
-                    newResponseRule.setEncoding(getResponseRule().getEncoding());
-                }
+        String contentType = (response != null ? response.getContentType() : null);
+        Response targetResponse = exceptionThrownRule.getResponse(contentType);
+        if (targetResponse != null) {
+            // Clear produced results. No reflection to ProcessResult.
+            translet.setProcessResult(null);
 
-                // Clear produced results. No reflection to ProcessResult.
-                translet.setProcessResult(null);
-                translet.touchProcessResult(null, 0).setOmittable(true);
-
-                ActionList actionList = targetResponse.getActionList();
-                if (actionList != null) {
-                    execute(actionList);
-                }
-
-                reserveResponse(targetResponse);
+            ActionList actionList = targetResponse.getActionList();
+            if (actionList != null) {
+                execute(actionList);
             }
+
+            reserveResponse(targetResponse);
         }
     }
 

@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -57,11 +58,11 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
-    private final ActivityContext context;
-
     private final Set<Scheduler> schedulerSet = new HashSet<>();
 
     private final Map<String, Scheduler> schedulerMap = new HashMap<>();
+
+    private final CoreService coreService;
 
     private int startDelaySeconds = 0;
 
@@ -69,8 +70,10 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private PluralWildcardPattern exposableTransletNamesPattern;
 
-    public QuartzSchedulerService(ActivityContext context) {
-        this.context = context;
+    public QuartzSchedulerService(CoreService coreService) {
+        super(false);
+
+        this.coreService = coreService;
     }
 
     @Override
@@ -108,17 +111,11 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     @Override
     public boolean isDerived() {
-        return true;
+        return false;
     }
 
     @Override
     protected void doStart() throws Exception {
-        startSchedulerService();
-    }
-
-    @Override
-    protected void doRestart() throws Exception {
-        stopSchedulerService();
         startSchedulerService();
     }
 
@@ -155,11 +152,11 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     private void startSchedulerService() throws SchedulerServiceException {
-        if (context.getScheduleRuleRegistry() == null) {
+        if (coreService.getActivityContext().getScheduleRuleRegistry() == null) {
             return;
         }
 
-        Collection<ScheduleRule> scheduleRules = context.getScheduleRuleRegistry().getScheduleRules();
+        Collection<ScheduleRule> scheduleRules = coreService.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
         if (scheduleRules == null || scheduleRules.isEmpty()) {
             return;
         }
@@ -242,9 +239,9 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
         Scheduler scheduler = null;
         if (scheduleRule.getSchedulerBeanClass() != null) {
-            scheduler = (Scheduler)context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
+            scheduler = (Scheduler)coreService.getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
         } else if (scheduleRule.getSchedulerBeanId() != null) {
-            scheduler = context.getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
+            scheduler = coreService.getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
         }
         if (scheduler == null) {
             throw new ActionExecutionException("No such Scheduler bean; Invalid ScheduleRule " + scheduleRule);
@@ -278,7 +275,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         String jobGroup = scheduleJobRule.getScheduleRule().getId();
 
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, context);
+        jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, coreService.getActivityContext());
 
         return JobBuilder.newJob(ActivityLauncherJob.class)
                 .withIdentity(jobName, jobGroup)

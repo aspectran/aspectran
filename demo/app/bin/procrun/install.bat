@@ -32,6 +32,11 @@ set PR_LOGLEVEL=Debug
 
 rem Path to java installation
 set PR_JVM=%JAVA_HOME%\jre\bin\server\jvm.dll
+if exist "%PR_JVM%" goto jvm-detected
+set PR_JVM=%JAVA_HOME%\bin\server\jvm.dll
+:jvm-detected
+if not exist "%PR_JVM%" goto invalid-jvm
+
 set PR_CLASSPATH=%BASE_DIR%\lib\*
 
 rem Startup configuration
@@ -76,14 +81,18 @@ rem Install service
   --StopMode="%PR_STOPMODE%" ^
   --StopClass="%PR_STOPCLASS%" ^
   --StopMethod="%PR_STOPMETHOD%"
- 
+
 if not errorlevel 1 goto installed
 echo Failed to install "%SERVICE_NAME%" service.
 echo Refer to log in %PR_LOGPATH%
 goto end
 
 :java-not-set
-echo 'JAVA_HOME environment variable missing. Please set it before using the script.
+echo JAVA_HOME environment variable missing. Please set it before using the script.
+goto end
+
+:invalid-jvm
+echo Could not find the jvm.dll %PR_JVM%
 goto end
 
 :invalid-installer

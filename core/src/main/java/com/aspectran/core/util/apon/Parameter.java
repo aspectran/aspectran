@@ -124,6 +124,11 @@ public interface Parameter {
     void putValue(Object value);
 
     /**
+     * Clears the parameter value.
+     */
+    void clearValue();
+
+    /**
      * Returns a value as an {@code Object} array.
      *
      * @return an array of {@code Object}
@@ -292,10 +297,5 @@ public interface Parameter {
      * @return a {@code Parameters}
      */
     Parameters newParameters(Parameter identifier);
-
-    /**
-     * Clears the parameter value.
-     */
-    void clearValue();
 
 }

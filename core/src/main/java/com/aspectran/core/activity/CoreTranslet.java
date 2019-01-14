@@ -35,6 +35,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.StringUtils;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -394,6 +395,18 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public boolean hasPathVariable() {
         return activity.getTransletRule().hasPathVariable();
+    }
+
+    @Override
+    public String toString() {
+        if (getResponseAdapter().getAdaptee() == null) {
+            try {
+                return getResponseAdapter().getWriter().toString();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+        return super.toString();
     }
 
     //---------------------------------------------------------------------

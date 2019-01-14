@@ -24,6 +24,8 @@ import java.util.Set;
  */
 public interface Parameters {
 
+    void updateContainer(Parameters parameters);
+
     /**
      * Returns a map of the {@code ParameterValue}s.
      *
@@ -144,6 +146,8 @@ public interface Parameters {
      */
     Object getValue(ParameterDefinition parameterDefinition);
 
+    void putAll(Parameters parameters);
+
     /**
      * Put a value of the parameter corresponding to the given name.
      *
@@ -177,6 +181,10 @@ public interface Parameters {
      * @param value the value of parameter
      */
     void putValueNonNull(ParameterDefinition parameterDefinition, Object value);
+
+    void clearValue(String name);
+
+    void clearValue(ParameterDefinition parameterDefinition);
 
     /**
      * Return the value for the specified parameter,

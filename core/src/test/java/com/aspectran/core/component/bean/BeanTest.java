@@ -47,7 +47,7 @@ class BeanTest {
 
     @BeforeAll
     void ready() throws IOException, ActivityContextBuilderException {
-        File baseDir = ResourceUtils.getResourceAsFile("");
+        File baseDir = ResourceUtils.getResourceAsFile(".");
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());

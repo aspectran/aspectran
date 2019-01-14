@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
-import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
@@ -108,9 +107,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     @Override
     public Response applyResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.createTransformResponse(transformRule);
-        if (transformRule.getContentType() != null) {
-            touchResponseMap().put(transformRule.getContentType(), response);
-        }
+        touchResponseMap().put(transformRule.getContentType(), response);
         if (transformRule.isDefaultResponse()) {
             defaultResponse = response;
         }
@@ -123,9 +120,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     @Override
     public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
         Response response = new DispatchResponse(dispatchResponseRule);
-        if (dispatchResponseRule.getContentType() != null) {
-            touchResponseMap().put(dispatchResponseRule.getContentType(), response);
-        }
+        touchResponseMap().put(dispatchResponseRule.getContentType(), response);
         if (dispatchResponseRule.isDefaultResponse()) {
             defaultResponse = response;
         }
@@ -138,9 +133,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
     @Override
     public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
         Response response = new RedirectResponse(redirectResponseRule);
-        if (redirectResponseRule.getContentType() != null) {
-            touchResponseMap().put(redirectResponseRule.getContentType(), response);
-        }
+        touchResponseMap().put(redirectResponseRule.getContentType(), response);
         if (redirectResponseRule.isDefaultResponse()) {
             defaultResponse = response;
         }
@@ -152,17 +145,8 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     @Override
     public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
-        Response response = new ForwardResponse(forwardResponseRule);
-        if (forwardResponseRule.getContentType() != null) {
-            touchResponseMap().put(forwardResponseRule.getContentType(), response);
-        }
-        if (forwardResponseRule.isDefaultResponse()) {
-            defaultResponse = response;
-        }
-        if (defaultResponse == null && forwardResponseRule.getContentType() == null) {
-            defaultResponse = response;
-        }
-        return response;
+        throw new IllegalArgumentException(
+                "Cannot apply the forward response rule to the exception thrown rule");
     }
 
     @Override
@@ -176,13 +160,13 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
 
     @Override
     public void applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        throw new UnsupportedOperationException(
+        throw new IllegalArgumentException(
                 "Cannot apply the Config Bean Method Action Rule to the Exception Thrown Rule");
     }
 
     @Override
     public void applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException(
+        throw new IllegalArgumentException(
                 "Cannot apply the Include Action Rule to the Exception Thrown Rule");
     }
 
@@ -201,7 +185,7 @@ public class ExceptionThrownRule implements ResponseRuleApplicable, ActionRuleAp
      *
      * @return the executable action
      */
-    public Executable getExecutableAction() {
+    public Executable getAction() {
         return action;
     }
 

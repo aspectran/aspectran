@@ -61,15 +61,12 @@ public class AspectranCoreService extends AbstractCoreService {
     protected void doStart() throws Exception {
         startAspectranService();
 
+        if (getSchedulerService() != null) {
+            joinDerivedService(getSchedulerService());
+        }
         if (!isDerived()) {
             registerShutdownTask();
         }
-    }
-
-    @Override
-    protected void doRestart() throws Exception {
-        stopAspectranService();
-        startAspectranService();
     }
 
     @Override
@@ -86,6 +83,7 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     protected void doStop() {
+        clearDerivedService();
         stopAspectranService();
         removeShutdownTask();
     }
@@ -93,7 +91,6 @@ public class AspectranCoreService extends AbstractCoreService {
     private void startAspectranService() throws Exception {
         loadActivityContext();
         afterContextLoaded();
-        createSchedulerService();
     }
 
     /**
