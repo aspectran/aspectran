@@ -5,7 +5,6 @@
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.0.0-S)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![DepShield Badge](https://depshield.sonatype.org/badges/aspectran/aspectran/depshield.svg)](https://depshield.github.io)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
