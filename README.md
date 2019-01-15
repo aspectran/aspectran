@@ -11,10 +11,10 @@
 
 [![asciicast](https://asciinema.org/a/213874.png)](https://asciinema.org/a/213874)
 
-Aspectran is a Java framework for building Web and command-line applications.  
-Aspectran will grow into a next-generation Java application framework that supports most of the functionality required in an enterprise environment.
+Aspectran is a concise, easy-to-use Java application framework.
+Some of the widely used Java application frameworks are becoming more and more complex with more features as they mature. A typical example would be the Spring Framework. Aspectran is a single-structure, next-generation framework that incorporates some of the key features of the Spring Framework with new perspectives.
 
-The main features of Aspectran are as follows:
+Aspectran consists of the following core functions:
 
 * **Support multiple execution environments with identical configuration settings**  
   You can share the same configuration settings in different execution environments, such as Web and CLI-based applications.
@@ -32,6 +32,8 @@ The main features of Aspectran are as follows:
   Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
 * **Support building RESTful Web Services**  
   Aspectran is designed to be suitable for building RESTful Web Services.
+
+Aspectran provides the environment to build web application server and shell application easily based on the above core functions. In addition, it enables rapid execution and deployment. Java code written in POJO with Aspectran's powerful and concise configuration settings facilitates testing and maximizes code reuse when developing applications in other execution environments.
 
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
