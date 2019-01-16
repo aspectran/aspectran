@@ -54,7 +54,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     public void pending(AppendRule appendRule) {
         RuleAppender appender = null;
         if (appendRule.getAspectranParameters() != null) {
-            appender = new ParametersRuleAppender(appendRule.getAspectranParameters());
+            appender = new ParametersRuleAppender();
         } else if (StringUtils.hasText(appendRule.getFile())) {
             appender = new FileRuleAppender(assistant.getBasePath(), appendRule.getFile());
         } else if (StringUtils.hasText(appendRule.getResource())) {
@@ -72,7 +72,6 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         if (pendingList == null) {
             pendingList = new ArrayList<>();
         }
-
         pendingList.add(appender);
 
         if (log.isTraceEnabled()) {

@@ -87,7 +87,8 @@ public class FileRuleAppender extends AbstractRuleAppender {
             setLastModified(file.lastModified());
             return new FileInputStream(file);
         } catch (IOException e) {
-            throw new IOException("Failed to create input stream from rule file: " + getFile().getAbsolutePath(), e);
+            throw new IOException("Failed to create input stream from rule file: " +
+                    getFile().getAbsolutePath(), e);
         }
     }
 

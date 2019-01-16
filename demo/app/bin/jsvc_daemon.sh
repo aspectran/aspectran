@@ -120,9 +120,13 @@ case "$1" in
             -Daspectran.baseDir="$BASE_DIR" \
             $DAEMON_MAIN \
             "$ASPECTRAN_CONFIG"
+        if [ -e "$DAEMON_OUT" ]; then
+            cat "$DAEMON_OUT"
+        fi
         exit $?
     ;;
     stop    )
+        > "$DAEMON_OUT"
         "$JSVC" \
             $JAVA_OPTS \
             -stop \
@@ -131,6 +135,9 @@ case "$1" in
             -classpath "$CLASSPATH" \
             -Djava.io.tmpdir="$TMP_DIR" \
             $DAEMON_MAIN
+        if [ -e "$DAEMON_OUT" ]; then
+            cat "$DAEMON_OUT"
+        fi
         exit $?
     ;;
     version  )

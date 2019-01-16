@@ -78,6 +78,11 @@ public interface ActionRuleApplicable {
      */
     void applyActionRule(Executable action);
 
+    /**
+     * Adds a list of action instances that can be executed.
+     *
+     * @param actionList a list of action instances
+     */
     void applyActionRule(Collection<Executable> actionList);
 
 }

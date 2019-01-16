@@ -34,6 +34,12 @@ public interface CoreService {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    /**
+     * Returns whether the service should be started separately
+     * late after the root service is started.
+     *
+     * @return true if the service should start separately late; false otherwise
+     */
     boolean isLateStart();
 
     /**

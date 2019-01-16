@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AppenderFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -31,7 +30,7 @@ import java.io.Reader;
  */
 public class ParametersRuleAppender extends AbstractRuleAppender {
 
-    public ParametersRuleAppender(AspectranParameters aspectranParameters) {
+    public ParametersRuleAppender() {
         super(AppenderType.PARAMETERS);
 
         setAppenderFileFormatType(AppenderFileFormatType.APON);

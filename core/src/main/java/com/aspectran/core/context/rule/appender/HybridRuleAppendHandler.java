@@ -119,7 +119,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     }
 
     private void saveAsAponFormatted(FileRuleAppender fileRuleAppender) {
-        log.info("Save as APON formatted " + fileRuleAppender);
+        log.info("Save as APON formatted: " + fileRuleAppender);
 
         File aponFile = null;
         try {
@@ -157,7 +157,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
             aponFile.setLastModified(fileRuleAppender.getLastModified());
         } catch (Exception e) {
-            log.error("Failed to save the converted APON format to file: " + aponFile, e);
+            log.error("Failed to save converted to APON format file: " + aponFile, e);
         }
     }
 

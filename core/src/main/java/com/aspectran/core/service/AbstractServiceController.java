@@ -26,7 +26,7 @@ import java.util.List;
  */
 public abstract class AbstractServiceController implements ServiceController {
 
-    private static final Log log = LogFactory.getLog(AbstractServiceController.class);
+    private final Log log = LogFactory.getLog(getClass());
 
     private final Object lock = new Object();
 

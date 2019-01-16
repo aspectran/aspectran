@@ -38,8 +38,8 @@ import java.util.Map;
  */
 public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveModel {
 
-    @SuppressWarnings("rawtypes")
     @Override
+    @SuppressWarnings("rawtypes")
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
             throws TemplateException, IOException {
         if (body == null) {

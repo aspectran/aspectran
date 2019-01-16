@@ -32,8 +32,16 @@
             <pattern>%-5level [%thread] %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="DAEMON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] %msg%n</pattern>
+        </encoder>
+    </appender>
     <logger name="com.aspectran" level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.aspectran.daemon" level="info" additivity="false">
+        <appender-ref ref="DAEMON"/>
     </logger>
     <logger name="com.aspectran.scheduler.service.JobActivityReport" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
@@ -48,5 +56,6 @@
     </logger>
     <root level="info">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="DAEMON"/>
     </root>
 </configuration>

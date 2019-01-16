@@ -61,7 +61,12 @@
     </bean>
 
     <bean id="jetty.mainHandler" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
-        <properties>
+        <properties profile="dev">
+            <item name="handlers" type="array">
+                <value><call bean="jetty.gzipHandler"/></value>
+            </item>
+        </properties>
+        <properties profile="!dev">
             <item name="handlers" type="array">
                 <value><call bean="jetty.gzipHandler"/></value>
                 <value><call bean="jetty.requestLog"/></value>

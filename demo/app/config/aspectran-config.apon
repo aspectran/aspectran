@@ -8,6 +8,9 @@ context: {
         com.aspectran.demo
     ]
     profiles: {
+        active: [
+            dev
+        ]
     }
     hybridLoad: false
     autoReload: {

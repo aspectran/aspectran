@@ -24,8 +24,8 @@ public enum ResponseType {
 
     TRANSFORM("transform"),
     DISPATCH("dispatch"),
-    REDIRECT("redirect"),
-    FORWARD("forward");
+    FORWARD("forward"),
+    REDIRECT("redirect");
 
     private final String alias;
 
