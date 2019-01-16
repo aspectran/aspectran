@@ -83,9 +83,6 @@ public class SampleStatistic {
         max.accumulate(sample);
     }
 
-    /**
-     * @return the max value
-     */
     public long getMax() {
         return max.get();
     }

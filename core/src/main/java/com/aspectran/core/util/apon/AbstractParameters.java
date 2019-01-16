@@ -25,17 +25,15 @@ import java.util.Set;
 
 public abstract class AbstractParameters implements Parameters {
 
-    private Map<String, ParameterValue> parameterValueMap;
-
-    private Parameter identifier;
+    private final Map<String, ParameterValue> parameterValueMap = new LinkedHashMap<>();
 
     private final boolean addable;
+
+    private Parameter identifier;
 
     private String indentString;
 
     protected AbstractParameters(ParameterDefinition[] parameterDefinitions) {
-        this.parameterValueMap = new LinkedHashMap<>();
-
         if (parameterDefinitions != null) {
             for (ParameterDefinition pd : parameterDefinitions) {
                 ParameterValue pv = pd.newParameterValue();

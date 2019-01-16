@@ -32,7 +32,7 @@ public class ExceptionUtils {
      * Method that can be used to find the "root cause", innermost
      * of chained (wrapped) exceptions.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @return the root cause
      */
     public static Throwable getRootCause(Throwable t) {
@@ -74,7 +74,7 @@ public class ExceptionUtils {
      * Helper method that will check if argument is an {@link Error},
      * and if so, (re)throw it; otherwise just return.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @return the Throwable
      */
     public static Throwable throwIfError(Throwable t) {
@@ -88,7 +88,7 @@ public class ExceptionUtils {
      * Helper method that will check if argument is an {@link RuntimeException},
      * and if so, (re)throw it; otherwise just return.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @return the Throwable
      */
     public static Throwable throwIfRTE(Throwable t) {
@@ -102,7 +102,7 @@ public class ExceptionUtils {
      * Helper method that will check if argument is an {@link IOException},
      * and if so, (re)throw it; otherwise just return.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @return the Throwable
      * @throws IOException rethrow the IOException
      */
@@ -115,10 +115,9 @@ public class ExceptionUtils {
 
     /**
      * Method that works like by calling {@link #getRootCause} and then
-     * either throwing it (if instanceof {@link IOException}), or
-     * return.
+     * either throwing it (if instanceof {@link IOException}), or return.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @return the Throwable
      * @throws IOException rethrow the IOException
      */
@@ -130,7 +129,7 @@ public class ExceptionUtils {
      * Method that will wrap 't' as an {@link IllegalArgumentException} if it
      * is a checked exception; otherwise (runtime exception or error) throw as is.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      */
     public static void throwAsIAE(Throwable t) {
         throwAsIAE(t, t.getMessage());
@@ -141,7 +140,7 @@ public class ExceptionUtils {
      * specified message) if it is a checked exception; otherwise (runtime exception or error)
      * throw as is.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @param msg the detail message
      */
     public static void throwAsIAE(Throwable t, String msg) {
@@ -153,9 +152,9 @@ public class ExceptionUtils {
     /**
      * Method that will locate the innermost exception for given Throwable;
      * and then wrap it as an {@link IllegalArgumentException} if it
-     * is a checked exception; otherwise (runtime exception or error) throw as is
+     * is a checked exception; otherwise (runtime exception or error) throw as is.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      */
     public static void unwrapAndThrowAsIAE(Throwable t) {
         throwAsIAE(getRootCause(t));
@@ -164,9 +163,9 @@ public class ExceptionUtils {
     /**
      * Method that will locate the innermost exception for given Throwable;
      * and then wrap it as an {@link IllegalArgumentException} if it
-     * is a checked exception; otherwise (runtime exception or error) throw as is
+     * is a checked exception; otherwise (runtime exception or error) throw as is.
      *
-     * @param t  the Throwable to possibly propagate
+     * @param t the Throwable to possibly propagate
      * @param msg the detail msg
      */
     public static void unwrapAndThrowAsIAE(Throwable t, String msg) {

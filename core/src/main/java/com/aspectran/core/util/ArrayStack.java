@@ -162,7 +162,8 @@ public class ArrayStack extends ArrayList<Object> {
         int n = 1; // Current distance
         while (i >= 0) {
             Object current = get(i);
-            if ((object == null && current == null) || (object != null && object.equals(current))) {
+            if ((object == null && current == null) ||
+                    (object != null && object.equals(current))) {
                 return n;
             }
             i--;

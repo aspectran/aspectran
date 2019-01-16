@@ -178,7 +178,8 @@ public class ParameterValue implements Parameter {
     @Override
     public void arraylize() {
         if (assigned) {
-            throw new IllegalStateException("Can not change to an array type because a variable is already assigned a value");
+            throw new IllegalStateException(
+                    "This parameter can not be converted to an array type because it already has a value assigned to it");
         }
         array = true;
         bracketed = true;

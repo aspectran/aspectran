@@ -71,10 +71,6 @@ public class CounterStatistic {
         }
     }
 
-    /**
-     * @param delta the amount to add to the count
-     * @return the new value
-     */
     public long add(final long delta) {
         long value = current.addAndGet(delta);
         if (delta > 0) {
@@ -84,10 +80,6 @@ public class CounterStatistic {
         return value;
     }
 
-    /**
-     * increment the value by one
-     * @return the new value, post increment
-     */
     public long increment() {
         long value = current.incrementAndGet();
         total.increment();
@@ -95,31 +87,18 @@ public class CounterStatistic {
         return value;
     }
 
-    /**
-     * decrement by 1
-     * @return the new value, post-decrement
-     */
     public long decrement() {
         return current.decrementAndGet();
     }
 
-    /**
-     * @return max value
-     */
     public long getMax() {
         return max.get();
     }
 
-    /**
-     * @return current value
-     */
     public long getCurrent() {
         return current.get();
     }
 
-    /**
-     * @return total value
-     */
     public long getTotal() {
         return total.sum();
     }
