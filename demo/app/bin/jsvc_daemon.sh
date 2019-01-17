@@ -119,6 +119,7 @@ do_start() {
         -Djava.io.tmpdir="$TMP_DIR" \
         -Dlogback.configurationFile="$LOGGING_CONFIG" \
         -Daspectran.baseDir="$BASE_DIR" \
+        ${ASPECTRAN_OPTS} \
         $DAEMON_MAIN \
         "$ASPECTRAN_CONFIG"
     if [ -e "$DAEMON_OUT" ]; then
