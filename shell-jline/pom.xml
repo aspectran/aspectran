@@ -27,6 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Shell using JLine</name>
+    <description>Aspectran Shell for providing a rich command line using JLine</description>
 
     <licenses>
         <license>
