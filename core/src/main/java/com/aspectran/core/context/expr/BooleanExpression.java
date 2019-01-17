@@ -7,7 +7,12 @@ import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 
 /**
+ * It supports expressions in the CHOOSE-WHEN statement,
+ * and evaluates the expression as a boolean result.
+ *
  * <p>Created: 2019-01-06</p>
+ *
+ * @since 6.0.0
  */
 public class BooleanExpression {
 

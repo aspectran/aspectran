@@ -9,13 +9,18 @@ import ognl.OgnlException;
 
 import java.util.Map;
 
+/**
+ * Support for expressions using OGNL.
+ *
+ * @since 6.0.0
+ */
 public class OgnlSupport {
 
     private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
     private static final DefaultClassResolver CLASS_RESOLVER = new DefaultClassResolver();
 
-    private static final Map<String, Object> expressionCache = new ConcurrentReferenceHashMap<>();
+    private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
 
     private OgnlSupport() {
     }
@@ -25,10 +30,10 @@ public class OgnlSupport {
             return null;
         }
         try {
-            Object node = expressionCache.get(expression);
+            Object node = cache.get(expression);
             if (node == null) {
                 node = Ognl.parseExpression(expression);
-                Object existing = expressionCache.putIfAbsent(expression, node);
+                Object existing = cache.putIfAbsent(expression, node);
                 if (existing != null) {
                     node = existing;
                 }
