@@ -95,64 +95,73 @@ test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
 test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/jsvc_daemon.pid"
 DAEMON_OUT="$BASE_DIR/logs/jsvc_daemon.out"
-DAEMON_ERR="$BASE_DIR/logs/jsvc_daemon.err"
+DAEMON_ERR="$BASE_DIR/logs/jsvc_daemon.out"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
+
+do_start() {
+    echo "Starting the Aspectran daemon..."
+    rm -f "$DAEMON_OUT"
+    rm -f "$DAEMON_ERR"
+    "$JSVC" \
+        $JAVA_OPTS \
+        $DAEMON_USER \
+        -jvm server \
+        -java-home "$JAVA_HOME" \
+        -pidfile "$DAEMON_PID" \
+        -wait "$SERVICE_START_WAIT_TIME" \
+        -outfile "$DAEMON_OUT" \
+        -errfile "$DAEMON_ERR" \
+        -classpath "$CLASSPATH" \
+        -Djava.io.tmpdir="$TMP_DIR" \
+        -Dlogback.configurationFile="$LOGGING_CONFIG" \
+        -Daspectran.baseDir="$BASE_DIR" \
+        $DAEMON_MAIN \
+        "$ASPECTRAN_CONFIG"
+    if [ -e "$DAEMON_OUT" ]; then
+        cat "$DAEMON_OUT"
+    fi
+}
+
+do_stop() {
+    echo "Stopping the Aspectran daemon..."
+    > "$DAEMON_OUT"
+    "$JSVC" \
+        $JAVA_OPTS \
+        -stop \
+        -jvm server \
+        -pidfile "$DAEMON_PID" \
+        -classpath "$CLASSPATH" \
+        -Djava.io.tmpdir="$TMP_DIR" \
+        $DAEMON_MAIN
+    if [ -e "$DAEMON_OUT" ]; then
+        cat "$DAEMON_OUT"
+    fi
+}
+
+do_version() {
+    "$JAVA_BIN" \
+        -classpath "$CLASSPATH" \
+        -Dlogback.configurationFile="$LOGGING_CONFIG" \
+        -Daspectran.baseDir="$BASE_DIR" \
+        com.aspectran.core.util.Aspectran
+}
+
 case "$1" in
-    start     )
-        rm -f "$DAEMON_OUT"
-        rm -f "$DAEMON_ERR"
-        "$JSVC" \
-            $JAVA_OPTS \
-            $DAEMON_USER \
-            -jvm server \
-            -java-home "$JAVA_HOME" \
-            -pidfile "$DAEMON_PID" \
-            -wait "$SERVICE_START_WAIT_TIME" \
-            -outfile "$DAEMON_OUT" \
-            -errfile "$DAEMON_ERR" \
-            -classpath "$CLASSPATH" \
-            -Djava.io.tmpdir="$TMP_DIR" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG" \
-            -Daspectran.baseDir="$BASE_DIR" \
-            $DAEMON_MAIN \
-            "$ASPECTRAN_CONFIG"
-        if [ -e "$DAEMON_OUT" ]; then
-            cat "$DAEMON_OUT"
-        fi
-        exit $?
-    ;;
-    stop    )
-        > "$DAEMON_OUT"
-        "$JSVC" \
-            $JAVA_OPTS \
-            -stop \
-            -jvm server \
-            -pidfile "$DAEMON_PID" \
-            -classpath "$CLASSPATH" \
-            -Djava.io.tmpdir="$TMP_DIR" \
-            $DAEMON_MAIN
-        if [ -e "$DAEMON_OUT" ]; then
-            cat "$DAEMON_OUT"
-        fi
-        exit $?
-    ;;
-    version  )
-        "$JAVA_BIN" \
-            -classpath "$CLASSPATH" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG" \
-            -Daspectran.baseDir="$BASE_DIR" \
-            com.aspectran.core.util.Aspectran
-    ;;
-    *       )
-        echo "Usage: jsvc_daemon.sh ( commands ... )"
+    start  ) do_start ;;
+    stop   ) do_stop ;;
+    restart) do_stop; do_start ;;
+    version) do_version ;;
+    *      )
+        echo "Usage: jsvc_daemon.sh <command>"
         echo "commands:"
-        echo "  start     Start Aspectran Daemon"
-        echo "  stop      Stop Aspectran Daemon"
+        echo "  start     Start Aspectran daemon"
+        echo "  stop      Stop Aspectran daemon"
+        echo "  restart   Restart Aspectran daemon"
         echo "  version   What version of aspectran are you running?"
-        exit 1
+        exit 3
     ;;
 esac

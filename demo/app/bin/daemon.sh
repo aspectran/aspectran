@@ -73,53 +73,64 @@ DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"
 DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 
-case "$1" in
-    start     )
-        sleep 0.5
-        if [ -f "$LOCK_FILE" ]; then
-            echo "Aspectran Daemon is already running."
-        else
-            echo "Starting the Aspectran Daemon..."
-            nohup "$JAVA_BIN" \
-                $JAVA_OPTS \
-                -classpath "$CLASSPATH" \
-                -Djava.io.tmpdir="$TMP_DIR" \
-                -Dlogback.configurationFile="$LOGGING_CONFIG" \
-                -Daspectran.baseDir="$BASE_DIR" \
-                $DAEMON_MAIN \
-                "$ASPECTRAN_CONFIG" \
-                > "$DAEMON_OUT" 2>&1 &
-            sleep 2
-            echo "The Aspectran Daemon has started."
-        fi
-        sleep 0.5
-    ;;
-    stop    )
-        sleep 0.5
-        if [ ! -f "$LOCK_FILE" ]; then
-            echo "Service not running, will do nothing."
-        else
-            echo "Stopping the Aspectran Daemon..."
-            echo "command: quit" > "$BASE_DIR/inbound/99-quit.apon"
-            while [ -f "$LOCK_FILE" ]; do
-                sleep 0.5
-            done
-            echo "The Aspectran Daemon has stopped."
-        fi
-        sleep 0.5
-    ;;
-    version  )
-        "$JAVA_BIN" \
-            -classpath "$CLASSPATH" \
-            -Dlogback.configurationFile="$LOGGING_CONFIG" \
-            com.aspectran.core.util.Aspectran
-    ;;
-    *       )
-        echo "Usage: daemon.sh ( commands ... )"
-        echo "commands:"
-        echo "  start     Start Aspectran Daemon"
-        echo "  stop      Stop Aspectran Daemon"
-        echo "  version   What version of aspectran are you running?"
+do_start() {
+    sleep 0.5
+    if [ -f "$LOCK_FILE" ]; then
+        echo "Aspectran daemon is already running."
         exit 1
+    else
+        echo "Starting the Aspectran daemon..."
+        rm -f "$DAEMON_OUT"
+        nohup "$JAVA_BIN" \
+            $JAVA_OPTS \
+            -classpath "$CLASSPATH" \
+            -Djava.io.tmpdir="$TMP_DIR" \
+            -Dlogback.configurationFile="$LOGGING_CONFIG" \
+            -Daspectran.baseDir="$BASE_DIR" \
+            $DAEMON_MAIN \
+            "$ASPECTRAN_CONFIG" \
+            > "$DAEMON_OUT" 2>&1 &
+        until cat "$DAEMON_OUT" | grep "AspectranDaemonService started\|Failed to initialize daemon" -C 600; do sleep 1; done
+        #echo "The Aspectran Daemon has started."
+    fi
+    sleep 0.5
+}
+
+do_stop() {
+    sleep 0.5
+    if [ ! -f "$LOCK_FILE" ]; then
+        echo "Aspectran daemon not running, will do nothing."
+        exit 1
+    else
+        echo "Stopping the Aspectran daemon..."
+        echo "command: quit" > "$BASE_DIR/inbound/99-quit.apon"
+        while [ -f "$LOCK_FILE" ]; do
+            sleep 0.5
+        done
+        echo "The Aspectran daemon has stopped."
+    fi
+    sleep 0.5
+}
+
+do_version() {
+    "$JAVA_BIN" \
+        -classpath "$CLASSPATH" \
+        -Dlogback.configurationFile="$LOGGING_CONFIG" \
+        com.aspectran.core.util.Aspectran
+}
+
+case "$1" in
+    start  ) do_start ;;
+    stop   ) do_stop ;;
+    restart) do_stop; do_start ;;
+    version) do_version ;;
+    *      )
+        echo "Usage: daemon.sh <command>"
+        echo "commands:"
+        echo "  start     Start Aspectran daemon"
+        echo "  stop      Stop Aspectran daemon"
+        echo "  restart   Restart Aspectran daemon"
+        echo "  version   What version of aspectran are you running?"
+        exit 3
     ;;
 esac

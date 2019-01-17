@@ -18,7 +18,6 @@ package com.aspectran.daemon;
 import com.aspectran.core.context.config.AspectranConfig;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonInitException;
 
 import java.io.File;
 
@@ -34,7 +33,7 @@ public class JsvcDaemon implements Daemon {
     private DefaultDaemon defaultDaemon;
 
     @Override
-    public void init(DaemonContext daemonContext) throws DaemonInitException {
+    public void init(DaemonContext daemonContext) throws Exception {
         if (defaultDaemon == null) {
             String[] args = daemonContext.getArguments();
             String basePath = AspectranConfig.determineBasePath(args);
@@ -45,7 +44,7 @@ public class JsvcDaemon implements Daemon {
                 defaultDaemon.init(basePath, aspectranConfigFile);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                throw new DaemonInitException("Failed to initialize daemon", e);
+                throw e;
             }
         }
     }
@@ -53,13 +52,19 @@ public class JsvcDaemon implements Daemon {
     @Override
     public void start() throws Exception {
         if (defaultDaemon != null) {
+            if (defaultDaemon.isActive()) {
+                throw new Exception("Aspectran daemon is already running");
+            }
             defaultDaemon.start();
         }
     }
 
     @Override
-    public void stop() {
+    public void stop() throws Exception {
         if (defaultDaemon != null) {
+            if (!defaultDaemon.isActive()) {
+                throw new Exception("Aspectran daemon not running, will do nothing");
+            }
             defaultDaemon.stop();
         }
     }
