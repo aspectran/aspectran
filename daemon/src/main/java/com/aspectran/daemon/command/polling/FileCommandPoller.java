@@ -157,7 +157,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
     private File[] getCommandFiles(File dir) {
         File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files != null && files.length > 0) {
-            Arrays.sort(files, Comparator.comparing(f -> f.getName()));
+            Arrays.sort(files, Comparator.comparing(File::getName));
         }
         return files;
     }

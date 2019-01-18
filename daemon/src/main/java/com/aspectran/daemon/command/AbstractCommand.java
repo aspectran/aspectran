@@ -15,9 +15,14 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.util.ExceptionUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.service.DaemonService;
 
 public abstract class AbstractCommand implements Command {
+
+    private final Log log = LogFactory.getLog(getClass());
 
     private final CommandRegistry registry;
 
@@ -31,6 +36,26 @@ public abstract class AbstractCommand implements Command {
 
     public CommandRegistry getCommandRegistry() {
         return registry;
+    }
+
+    protected String info(String message) {
+        log.info(message);
+        return message;
+    }
+
+    protected String warn(String message) {
+        log.warn(message);
+        return message;
+    }
+
+    protected String failed(String message) {
+        log.error(message);
+        return "[FAILED] " + message;
+    }
+
+    protected String failed(Throwable throwable) {
+        log.error(throwable.getMessage(), throwable);
+        return "[FAILED] " + ExceptionUtils.getStacktrace(throwable);
     }
 
 }

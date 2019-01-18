@@ -28,9 +28,8 @@ public interface Command {
      *
      * @param parameters the command parameters
      * @return the message output to the console as a result of an executed command
-     * @throws Exception if an error occurs during command execution
      */
-    String execute(CommandParameters parameters) throws Exception;
+    String execute(CommandParameters parameters);
 
     /**
      * This method returns an instance of Command.Descriptor.

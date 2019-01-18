@@ -44,6 +44,8 @@ public class AbstractDaemon implements Daemon, Runnable {
 
     private CommandRegistry commandRegistry;
 
+    private boolean wait;
+
     private volatile boolean active;
 
     @Override
@@ -69,6 +71,11 @@ public class AbstractDaemon implements Daemon, Runnable {
     @Override
     public CommandRegistry getCommandRegistry() {
         return commandRegistry;
+    }
+
+    @Override
+    public boolean isWait() {
+        return wait;
     }
 
     @Override
@@ -117,6 +124,7 @@ public class AbstractDaemon implements Daemon, Runnable {
 
     protected void start(boolean wait) throws Exception {
         if (!active) {
+            this.wait = wait;
             if (name == null) {
                 name = this.getClass().getSimpleName();
             }
@@ -154,7 +162,8 @@ public class AbstractDaemon implements Daemon, Runnable {
         }
     }
 
-    protected void destroy() {
+    @Override
+    public void destroy() {
         stop();
 
         if (commandPoller != null) {

@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.ognl;
+package com.aspectran.shell.command.option;
 
-import ognl.MemberAccess;
+import java.util.LinkedHashMap;
 
-import java.lang.reflect.Member;
-import java.util.Map;
+/**
+ * <p>Created: 2019-01-18</p>
+ */
+public class Arguments extends LinkedHashMap<String, String> {
 
-public class OgnlMemberAccess implements MemberAccess {
+    private String title;
 
-    @Override
-    public Object setup(Map context, Object target, Member member, String propertyName) {
-        return null;
+    public Arguments() {
+        super();
     }
 
-    @Override
-    public void restore(Map context, Object target, Member member, String propertyName, Object state) {
+    public String getTitle() {
+        return title;
     }
 
-    @Override
-    public boolean isAccessible(Map context, Object target, Member member, String propertyName) {
-        return false;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

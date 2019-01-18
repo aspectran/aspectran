@@ -129,12 +129,12 @@ public class OptionGroup implements Serializable {
         Iterator<Option> iter = getOptions().iterator();
         while (iter.hasNext()) {
             Option option = iter.next();
-            if (option.getOpt() != null) {
+            if (option.getName() != null) {
                 buff.append("-");
-                buff.append(option.getOpt());
+                buff.append(option.getName());
             } else {
                 buff.append("--");
-                buff.append(option.getLongOpt());
+                buff.append(option.getLongName());
             }
             if (option.getDescription() != null) {
                 buff.append(" ");

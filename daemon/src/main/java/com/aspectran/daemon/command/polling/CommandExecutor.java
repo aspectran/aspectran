@@ -81,9 +81,7 @@ public class CommandExecutor {
     }
 
     public void shutdown() {
-        if (log.isDebugEnabled()) {
-            log.debug("Shutting down executor...");
-        }
+        log.info("Shutting down executor...");
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             while (true) {
@@ -92,11 +90,11 @@ public class CommandExecutor {
                     break;
                 }
                 try {
-                    if (executorService.awaitTermination(5000L, TimeUnit.MILLISECONDS)) {
+                    if (executorService.awaitTermination(3000L, TimeUnit.MILLISECONDS)) {
                         break;
                     }
                 } catch (InterruptedException ignored) {
-                    // ignore
+                    break;
                 }
             }
         }

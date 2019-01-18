@@ -1,7 +1,7 @@
 command: pollingInterval
 arguments: {
     item: {
-        value: 2000
+        value: 4000
         valueType: long
     }
 }

@@ -27,6 +27,7 @@ scheduler: {
 }
 daemon: {
     commands: [
+        com.aspectran.daemon.command.builtins.JettyCommand
         com.aspectran.daemon.command.builtins.BeanMethodActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.TemplateCommand

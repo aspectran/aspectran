@@ -1,2 +1,12 @@
-command: translet
-translet: jetty start
+command: jetty
+arguments: {
+    item: {
+        value: start
+    }
+}
+parameters: {
+    item: {
+        name: server
+        value: jetty.server
+    }
+}

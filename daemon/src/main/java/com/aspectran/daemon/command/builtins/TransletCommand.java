@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -40,29 +39,33 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) throws Exception {
+    public String execute(CommandParameters parameters) {
         String transletName = parameters.getTransletName();
         if (transletName == null) {
-            throw new IllegalRuleException("'translet' parameter is not specified");
+            return failed("'translet' parameter is not specified");
         }
 
-        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+        try {
+            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+            ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
 
-        ParameterMap parameterMap = null;
-        Map<String, Object> attributeMap = null;
-        if (parameterItemRuleMap != null || attributeItemRuleMap != null) {
-            ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
-            if (parameterItemRuleMap != null) {
-                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+            ParameterMap parameterMap = null;
+            Map<String, Object> attributeMap = null;
+            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) || (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
+                ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+                    parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+                }
+                if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+                    attributeMap = evaluator.evaluate(attributeItemRuleMap);
+                }
             }
-            if (attributeItemRuleMap != null) {
-                attributeMap = evaluator.evaluate(attributeItemRuleMap);
-            }
+
+            Translet translet = getService().translate(transletName, parameterMap, attributeMap);
+            return translet.getResponseAdapter().getWriter().toString();
+        } catch (Exception e) {
+            return failed(e);
         }
-
-        Translet translet = getService().translate(transletName, parameterMap, attributeMap);
-        return translet.getResponseAdapter().getWriter().toString();
     }
 
     @Override

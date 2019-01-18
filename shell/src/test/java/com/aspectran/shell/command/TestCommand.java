@@ -32,10 +32,10 @@ public class TestCommand extends AbstractCommand {
     public TestCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("i").longOpt("input").hasArgs().valueSeparator().desc("The string to encrypt").build());
-        addOption(Option.builder("p").longOpt("password").hasArgs().valueSeparator().desc("The password to be used for encryption").build());
-        addOption(Option.builder("h").longOpt("help").desc("Display this help").build());
-        addOption(Option.builder("D").hasArgs().desc("Dkey=value").build());
+        addOption(Option.builder("i").longName("input").valueSeparator().valueName("input_string").required().desc("The string to encrypt").build());
+        addOption(Option.builder("p").longName("password").valueSeparator().valueName("password").required().desc("The password to be used for encryption").build());
+        addOption(Option.builder("h").longName("help").desc("Display this help").build());
+        addOption(Option.builder("D").hasValues().desc("Dkey=value").build());
         addOption(Option.builder("X").desc("XYZ").build());
         addOption(Option.builder("Y").desc("XYZ").build());
         addOption(Option.builder("Z").desc("XYZ").build());

@@ -19,6 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 
@@ -40,20 +41,31 @@ public class VerboseCommand extends AbstractCommand {
     public VerboseCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(new Option("on", "Enable verbose output"));
-        addOption(new Option("off", "Disable verbose output"));
-        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
+        Arguments arguments = touchArguments();
+        arguments.setTitle("Commands:");
+        arguments.put("on", "Enable verbose output");
+        arguments.put("off", "Disable verbose output");
     }
 
     @Override
     public String execute(String[] args) throws Exception {
         ParsedOptions options = parse(args);
-        if (options.hasOption("on")) {
-            getService().setVerbose(true);
-            getConsole().writeLine("Enabled verbose mode");
-        } else if (options.hasOption("off")) {
-            getService().setVerbose(false);
-            getConsole().writeLine("Disabled verbose mode");
+        String command = null;
+        if (options.hasArgs()) {
+            String[] optArgs = options.getArgs();
+            if (optArgs.length > 0) {
+                command = optArgs[0];
+            }
+            if ("on".equals(command)) {
+                getService().setVerbose(true);
+                getConsole().writeLine("Enabled verbose mode");
+            } else if ("off".equals(command)) {
+                getService().setVerbose(false);
+                getConsole().writeLine("Disabled verbose mode");
+            } else {
+                getConsole().writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
+                printUsage();
+            }
         } else {
             printUsage();
         }
@@ -84,7 +96,7 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "verbose [OPTION]";
+            return "verbose <command>";
         }
 
         @Override

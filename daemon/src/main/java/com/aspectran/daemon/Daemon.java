@@ -34,8 +34,11 @@ public interface Daemon {
 
     CommandRegistry getCommandRegistry();
 
+    boolean isWait();
+
     boolean isActive();
 
     void stop();
 
+    void destroy();
 }

@@ -15,8 +15,6 @@
  */
 package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -37,20 +35,27 @@ public class PollingIntervalCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) throws Exception {
-        long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
-        long pollingInterval = 0L;
-        ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
-        if (!itemRuleList.isEmpty()) {
-            Activity activity = new InstantActivity(getService().getActivityContext());
-            ItemEvaluator evaluator = new ItemExpression(activity);
-            pollingInterval = evaluator.evaluate(itemRuleList.get(0));
-        }
-        if (pollingInterval != 0L) {
-            getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
-            return "The polling interval is changed from " + oldPollingInterval + " to " + pollingInterval;
-        } else {
-            return "The polling interval is not changed";
+    public String execute(CommandParameters parameters) {
+        try {
+            long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
+            long pollingInterval = 0L;
+
+            ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
+            if (!itemRuleList.isEmpty()) {
+                ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+                pollingInterval = evaluator.evaluate(itemRuleList.get(0));
+            }
+
+            if (pollingInterval > 0L) {
+                getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
+                return info("The polling interval is changed from " + oldPollingInterval + "ms to " + pollingInterval + "ms");
+            } else if (pollingInterval < 0L) {
+                return warn("The polling interval can not be negative: " + pollingInterval);
+            } else {
+                return warn("The polling interval is not changed");
+            }
+        } catch (Exception e) {
+            return failed(e);
         }
     }
 

@@ -15,55 +15,21 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.Console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A formatter of help messages for command line options.
- *
- * <p>Example:</p>
- * 
- * <pre>
- * Options options = new Options();
- * options.addOption(OptionBuilder.withLongOpt("file")
- *                                .withDescription("The file to be processed")
- *                                .hasArg()
- *                                .withArgName("FILE")
- *                                .isRequired()
- *                                .create('f'));
- * options.addOption(OptionBuilder.withLongOpt("version")
- *                                .withDescription("Print the version of the application")
- *                                .create('v'));
- * options.addOption(OptionBuilder.withLongOpt("help").create('h'));
- * 
- * String header = "Do something useful with an input file\n\n";
- * String footer = "\nPlease report issues at http://example.com/issues";
- * 
- * HelpFormatter formatter = new HelpFormatter();
- * formatter.printHelp("myapp", header, options, footer, true);
- * </pre>
- * 
- * This produces the following output:
- * 
- * <pre>
- * usage: myapp -f &lt;FILE&gt; [-h] [-v]
- * Do something useful with an input file
- * 
- *  -f,--file &lt;FILE&gt;   The file to be processed
- *  -h,--help
- *  -v,--version       Print the version of the application
- * 
- * Please report issues at http://example.com/issues
- * </pre>
  */
 public class HelpFormatter {
 
@@ -111,7 +77,7 @@ public class HelpFormatter {
      * Comparator used to sort the options when they output in help text.
      * Defaults to case-insensitive alphabetical sorting by option key.
      */
-    protected Comparator<Option> optionComparator = new OptionComparator();
+    protected Comparator<Option> optionComparator;
 
     /** The separator displayed between the long option and its value. */
     private String longOptSeparator = DEFAULT_LONG_OPT_SEPARATOR;
@@ -444,9 +410,7 @@ public class HelpFormatter {
         if (header != null && header.trim().length() > 0) {
             printWrapped(width, header);
         }
-        if (!options.isEmpty()) {
-            printOptions(width, options, leftPad, descPad);
-        }
+        printOptions(width, options, leftPad, descPad);
         if (footer != null && footer.trim().length() > 0) {
             printWrapped(width, footer);
         }
@@ -548,15 +512,15 @@ public class HelpFormatter {
         if (!required) {
             sb.append("[");
         }
-        if (option.getOpt() != null) {
-            sb.append("-").append(option.getOpt());
+        if (option.getName() != null) {
+            sb.append("-").append(option.getName());
         } else {
-            sb.append("--").append(option.getLongOpt());
+            sb.append("--").append(option.getLongName());
         }
         // if the Option has a value and a non blank arg name
-        if (option.hasArg() && (option.getArgName() == null || option.getArgName().length() != 0)) {
+        if (option.hasValue() && (option.getValueName() == null || option.getValueName().length() != 0)) {
             sb.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
-            sb.append("<").append(option.getArgName() != null ? option.getArgName() : getArgName()).append(">");
+            sb.append("<").append(option.getValueName() != null ? option.getValueName() : getArgName()).append(">");
         }
         // if the Option is not a required option
         if (!required) {
@@ -587,8 +551,27 @@ public class HelpFormatter {
      */
     public void printOptions(int width, Options options, int leftPad, int descPad) {
         StringBuilder sb = new StringBuilder();
-        renderOptions(sb, width, options, leftPad, descPad);
-        console.writeLine(sb.toString());
+        if (!options.isEmpty()) {
+            renderOptions(sb, width, options, leftPad, descPad);
+            if (sb.length() > 0) {
+                if (StringUtils.hasLength(options.getTitle())) {
+                    console.writeLine(options.getTitle());
+                }
+                console.writeLine(sb.toString());
+            }
+        }
+        if (options.getArgumentsList() != null) {
+            for (Arguments arguments : options.getArgumentsList()) {
+                sb.setLength(0);
+                renderArguments(sb, width, arguments, leftPad, descPad);
+                if (sb.length() > 0) {
+                    if (StringUtils.hasLength(arguments.getTitle())) {
+                        console.writeLine(arguments.getTitle());
+                    }
+                    console.write(sb.toString());
+                }
+            }
+        }
     }
 
     /**
@@ -641,22 +624,22 @@ public class HelpFormatter {
         }
         for (Option option : optList) {
             StringBuilder optBuf = new StringBuilder();
-            if (option.getOpt() == null) {
-                optBuf.append(lpad).append("   ").append(getLongOptPrefix()).append(option.getLongOpt());
+            if (option.getName() == null) {
+                optBuf.append(lpad).append("   ").append(getLongOptPrefix()).append(option.getLongName());
             } else {
-                optBuf.append(lpad).append(getOptPrefix()).append(option.getOpt());
-                if (option.hasLongOpt()) {
-                    optBuf.append(',').append(getLongOptPrefix()).append(option.getLongOpt());
+                optBuf.append(lpad).append(getOptPrefix()).append(option.getName());
+                if (option.hasLongName()) {
+                    optBuf.append(',').append(getLongOptPrefix()).append(option.getLongName());
                 }
             }
-            if (option.hasArg()) {
-                final String argName = option.getArgName();
+            if (option.hasValue()) {
+                final String argName = option.getValueName();
                 if (argName != null && argName.length() == 0) {
                     // if the option has a blank arg name
                     optBuf.append(' ');
                 } else {
                     optBuf.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
-                    optBuf.append("<").append(argName != null ? option.getArgName() : getArgName()).append(">");
+                    optBuf.append("<").append(argName != null ? option.getValueName() : getArgName()).append(">");
                 }
             }
             prefixList.add(optBuf);
@@ -679,6 +662,32 @@ public class HelpFormatter {
             if (it.hasNext()) {
                 sb.append(getNewLine());
             }
+        }
+        return sb;
+    }
+
+    protected StringBuilder renderArguments(StringBuilder sb, int width, Arguments arguments, int leftPad, int descPad) {
+        String lpad = OptionUtils.createPadding(leftPad);
+        String dpad = OptionUtils.createPadding(descPad);
+
+        int max = 0;
+        for (String arg : arguments.keySet()) {
+            if (arg.length() > max) {
+                max = arg.length();
+            }
+        }
+
+        for (Map.Entry<String, String> entry : arguments.entrySet()) {
+            String name = entry.getKey();
+            StringBuilder buf = new StringBuilder(lpad);
+            buf.append(name);
+            if (name.length() < max) {
+                buf.append(OptionUtils.createPadding(max - name.length()));
+            }
+            buf.append(dpad);
+            buf.append(entry.getValue());
+            renderWrappedText(sb, width, max + descPad, buf.toString());
+            sb.append(getNewLine());
         }
         return sb;
     }
@@ -746,32 +755,6 @@ public class HelpFormatter {
             // ignore
         }
         return sb;
-    }
-
-    /**
-     * This class implements the {@code Comparator} interface
-     * for comparing Options.
-     */
-    private static class OptionComparator implements Comparator<Option>, Serializable {
-
-        private static final long serialVersionUID = -4277822882012181887L;
-
-        /**
-         * Compares its two arguments for order. Returns a negative
-         * integer, zero, or a positive integer as the first argument
-         * is less than, equal to, or greater than the second.
-         *
-         * @param opt1 the first Option to be compared
-         * @param opt2 the second Option to be compared
-         * @return a negative integer, zero, or a positive integer as
-         *         the first argument is less than, equal to, or greater than the
-         *         second
-         */
-        @Override
-        public int compare(Option opt1, Option opt2) {
-            return opt1.getKey().compareToIgnoreCase(opt2.getKey());
-        }
-
     }
 
 }

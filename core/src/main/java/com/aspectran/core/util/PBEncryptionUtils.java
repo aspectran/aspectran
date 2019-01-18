@@ -50,6 +50,10 @@ public class PBEncryptionUtils {
         return algorithm;
     }
 
+    public static String getPassword() {
+        return password;
+    }
+
     /**
      * Encrypts the inputString using the encryption password.
      *

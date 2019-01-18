@@ -38,9 +38,9 @@ public class PBEncryptCommand extends AbstractCommand {
     public PBEncryptCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("i").longOpt("input").valueSeparator().desc("The string to encrypt").build());
-        addOption(Option.builder("p").longOpt("password").valueSeparator().desc("The password to be used for encryption").build());
-        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
+        addOption(Option.builder("i").longName("input").valueSeparator().valueName("input_string").required().desc("The string to encrypt").build());
+        addOption(Option.builder("p").longName("password").valueSeparator().valueName("password").desc("The password to be used for encryption").build());
+        addOption(Option.builder("h").longName("help").desc("Display help for this command").build());
     }
 
     @Override
@@ -48,6 +48,13 @@ public class PBEncryptCommand extends AbstractCommand {
         ParsedOptions options = parse(args);
         String input = options.getTypedValue("input");
         String password = options.getTypedValue("password");
+
+        boolean implicitPassword = false;
+        if (!StringUtils.hasText(password)) {
+            password = PBEncryptionUtils.getPassword();
+            implicitPassword = true;
+        }
+
         if (!StringUtils.hasText(input) || !StringUtils.hasText(password)) {
             printUsage();
             return null;
@@ -61,9 +68,11 @@ public class PBEncryptCommand extends AbstractCommand {
         }
 
         getConsole().writeLine("--------------------------------------------------");
-        getConsole().writeLine("   %1$-10s: %2$s", "input", input);
-        getConsole().writeLine("   %1$-10s: %2$s", "password", password);
         getConsole().writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+        if (!implicitPassword) {
+            getConsole().writeLine("   %1$-10s: %2$s", "password", password);
+        }
+        getConsole().writeLine("   %1$-10s: %2$s", "input", input);
         getConsole().writeLine("   %1$-10s: %2$s", "output", output);
         getConsole().writeLine("--------------------------------------------------");
         return null;
@@ -93,7 +102,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "encrypt -i=<INPUT_STRING> -p=<PASSWORD>";
+            return "encrypt -i=<input_string> -p=<password>";
         }
 
         @Override

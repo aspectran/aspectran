@@ -32,9 +32,14 @@ public class RestartCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) throws Exception {
-        getCommandRegistry().getDaemon().getService().getServiceController().restart();
-        return null;
+    public String execute(CommandParameters parameters) {
+        try {
+            info("Restarting Now. See you soon.");
+            getCommandRegistry().getDaemon().getService().getServiceController().restart();
+            return info("Successful restart command");
+        } catch (Exception e) {
+            return failed(e);
+        }
     }
 
     @Override

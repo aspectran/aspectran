@@ -18,6 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.with.jetty.JettyServer;
@@ -39,58 +40,79 @@ public class JettyCommand extends AbstractCommand {
     public JettyCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(new Option("status", "Displays a brief status report"));
-        addOption(new Option("start", "Start the Jetty Server"));
-        addOption(new Option("restart", "Restart the Jetty Server"));
-        addOption(new Option("stop", "Stops the Jetty Server"));
-        addOption(Option.builder("h").longOpt("help").desc("Display help for this command").build());
+        addOption(Option.builder("server").valueSeparator().valueName("name").desc("ID of bean that defined Jetty server").build());
+        addOption(Option.builder("h").longName("help").desc("Display help for this command").build());
+
+        Arguments arguments = touchArguments();
+        arguments.setTitle("Commands:");
+        arguments.put("start", "Start Jetty server");
+        arguments.put("stop", "Stop Jetty server");
+        arguments.put("restart", "Restart Jetty server");
+        arguments.put("status", "Display a brief status report");
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        BeanRegistry beanRegistry = getService().getActivityContext().getBeanRegistry();
-        JettyServer jettyServer;
-        try {
-            jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, "jetty.server");
-        } catch (Exception e) {
-            getConsole().writeLine("Jetty Server is not available. Cause: " + e.getMessage());
+        if (getService() == null) {
+            getConsole().writeLine("SERVICE NOT AVAILABLE");
             return null;
         }
 
         ParsedOptions options = parse(args);
-        if (options.hasOption("status")) {
-            printStatus(jettyServer);
-        } else if (options.hasOption("start")) {
-            if (jettyServer.isRunning()) {
-                getConsole().writeLine("Jetty Server is already running");
-                return null;
+        String serverName = options.getValue("server", "jetty.server");
+
+        BeanRegistry beanRegistry = getService().getActivityContext().getBeanRegistry();
+        JettyServer jettyServer;
+        try {
+            jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
+        } catch (Exception e) {
+            getConsole().writeLine("Jetty server is not available. Cause: " + e.getMessage());
+            return null;
+        }
+
+        String command = null;
+        if (options.hasArgs()) {
+            String[] optArgs = options.getArgs();
+            if (optArgs.length > 0) {
+                command = optArgs[0];
             }
-            try {
-                jettyServer.start();
-                printStatus(jettyServer);
-            } catch (BindException e) {
-                getConsole().writeLine("Jetty Server Error - Port already in use");
-            }
-        } else if (options.hasOption("restart")) {
-            try {
+            if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
-                    jettyServer.stop();
+                    getConsole().writeLine("Jetty server is already running");
+                    return null;
                 }
-                jettyServer.start();
+                try {
+                    jettyServer.start();
+                    printStatus(jettyServer);
+                } catch (BindException e) {
+                    getConsole().writeLine("Jetty Server Error - Port already in use");
+                }
+            } else if ("stop".equals(command)) {
+                if (!jettyServer.isRunning()) {
+                    getConsole().writeLine("Jetty Server is not running");
+                    return null;
+                }
+                try {
+                    jettyServer.stop();
+                    printStatus(jettyServer);
+                } catch (BindException e) {
+                    getConsole().writeLine("Jetty Server Error - " + e.getMessage());
+                }
+            } else if ("restart".equals(command)) {
+                try {
+                    if (jettyServer.isRunning()) {
+                        jettyServer.stop();
+                    }
+                    jettyServer.start();
+                    printStatus(jettyServer);
+                } catch (BindException e) {
+                    getConsole().writeLine("Jetty Server Error - Port already in use");
+                }
+            } else if ("status".equals(command)) {
                 printStatus(jettyServer);
-            } catch (BindException e) {
-                getConsole().writeLine("Jetty Server Error - Port already in use");
-            }
-        } else if (options.hasOption("stop")) {
-            if (!jettyServer.isRunning()) {
-                getConsole().writeLine("Jetty Server is not running");
-                return null;
-            }
-            try {
-                jettyServer.stop();
-                printStatus(jettyServer);
-            } catch (BindException e) {
-                getConsole().writeLine("Jetty Server Error - " + e.getMessage());
+            } else {
+                getConsole().writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
+                printUsage();
             }
         } else {
             printUsage();
@@ -124,12 +146,12 @@ public class JettyCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Use the command 'jetty' to control the Jetty Server";
+            return "Use the command 'jetty' to control the Jetty server";
         }
 
         @Override
         public String getUsage() {
-            return "jetty [OPTION]";
+            return "jetty [-server=<serverName>] <start | stop | restart | status>";
         }
 
         @Override

@@ -33,8 +33,13 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public String execute(CommandParameters parameters) {
+        if (!getCommandRegistry().getDaemon().isWait()) {
+            return failed("This command is only available for DefaultDaemon");
+        }
+
+        info("Shutting down the " + getCommandRegistry().getDaemon().getName());
         getCommandRegistry().getDaemon().stop();
-        return null;
+        return info("Goodbye.");
     }
 
     @Override

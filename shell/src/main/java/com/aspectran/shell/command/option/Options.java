@@ -53,6 +53,18 @@ public class Options implements Serializable {
     /** A map of the option groups */
     private final Map<String, OptionGroup> optionGroups = new LinkedHashMap<>();
 
+    private final List<Arguments> argumentsList = new ArrayList<>();
+
+    private String title = "Options:";
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     /**
      * Add the specified option group.
      *
@@ -90,12 +102,12 @@ public class Options implements Serializable {
      * The option does not take an argument.
      * </p>
      *
-     * @param opt Short single-character name of the option.
+     * @param name Short single-character name of the option.
      * @param description Self-documenting description
      * @return the resulting Options instance
      */
-    public Options addOption(String opt, String description) {
-        addOption(opt, null, false, description);
+    public Options addOption(String name, String description) {
+        addOption(name, null, false, description);
         return this;
     }
 
@@ -104,13 +116,13 @@ public class Options implements Serializable {
      *
      * <p>It may be specified as requiring an argument.</p>
      *
-     * @param opt Short single-character name of the option.
+     * @param name Short single-character name of the option.
      * @param hasArg flag signalling if an argument is required after this option
      * @param description Self-documenting description
      * @return the resulting Options instance
      */
-    public Options addOption(String opt, boolean hasArg, String description) {
-        addOption(opt, null, hasArg, description);
+    public Options addOption(String name, boolean hasArg, String description) {
+        addOption(name, null, hasArg, description);
         return this;
     }
 
@@ -119,14 +131,14 @@ public class Options implements Serializable {
      *
      * <p>It may be specified as requiring an argument.</p>
      *
-     * @param opt Short single-character name of the option.
-     * @param longOpt Long multi-character name of the option.
+     * @param name Short single-character name of the option.
+     * @param longName Long multi-character name of the option.
      * @param hasArg flag signalling if an argument is required after this option
      * @param description Self-documenting description
      * @return the resulting Options instance
      */
-    public Options addOption(String opt, String longOpt, boolean hasArg, String description) {
-        addOption(new Option(opt, longOpt, hasArg, description));
+    public Options addOption(String name, String longName, boolean hasArg, String description) {
+        addOption(new Option(name, longName, hasArg, description));
         return this;
     }
 
@@ -138,20 +150,20 @@ public class Options implements Serializable {
      *
      * <pre>
      * {@code
-     * Options option = new Option(opt, longOpt, hasArg, description);
+     * Options option = new Option(name, longName, hasArg, description);
      * option.setRequired(true);
      * options.add(option);
      * }
      * </pre>
      *
-     * @param opt short single-character name of the option
-     * @param longOpt long multi-character name of the option
+     * @param name short single-character name of the option
+     * @param longName long multi-character name of the option
      * @param hasArg flag signalling if an argument is required after this option
      * @param description Self-documenting description
      * @return the resulting Options instance
      */
-    public Options addRequiredOption(String opt, String longOpt, boolean hasArg, String description) {
-        final Option option = new Option(opt, longOpt, hasArg, description);
+    public Options addRequiredOption(String name, String longName, boolean hasArg, String description) {
+        final Option option = new Option(name, longName, hasArg, description);
         option.setRequired(true);
         addOption(option);
         return this;
@@ -167,8 +179,8 @@ public class Options implements Serializable {
         String key = opt.getKey();
 
         // add it to the long option list
-        if (opt.hasLongOpt()) {
-            longOpts.put(opt.getLongOpt(), opt);
+        if (opt.hasLongName()) {
+            longOpts.put(opt.getLongName(), opt);
         }
 
         // if the option is required add it to the required list
@@ -223,30 +235,30 @@ public class Options implements Serializable {
      * Retrieve the {@link Option} matching the long or short name specified.
      * <p>The leading hyphens in the name are ignored (up to 2).</p>
      *
-     * @param opt short or long name of the {@link Option}
-     * @return the option represented by opt
+     * @param name short or long name of the {@link Option}
+     * @return the option represented by name
      */
-    public Option getOption(String opt) {
-        if (shortOpts.containsKey(opt)) {
-            return shortOpts.get(opt);
+    public Option getOption(String name) {
+        if (shortOpts.containsKey(name)) {
+            return shortOpts.get(name);
         }
-        return longOpts.get(opt);
+        return longOpts.get(name);
     }
 
     /**
      * Returns the options with a long name starting with the name specified.
      * 
-     * @param opt the partial name of the option
+     * @param name the partial name of the option
      * @return the options matching the partial name specified, or an empty list if none matches
      */
-    public List<String> getMatchingOptions(String opt) {
+    public List<String> getMatchingOptions(String name) {
         List<String> matchingOpts = new ArrayList<>();
         // for a perfect match return the single option only
-        if (longOpts.keySet().contains(opt)) {
-            return Collections.singletonList(opt);
+        if (longOpts.keySet().contains(name)) {
+            return Collections.singletonList(name);
         }
         for (String longOpt : longOpts.keySet()) {
-            if (longOpt.startsWith(opt)) {
+            if (longOpt.startsWith(name)) {
                 matchingOpts.add(longOpt);
             }
         }
@@ -256,31 +268,31 @@ public class Options implements Serializable {
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
      *
-     * @param opt short or long name of the {@link Option}
+     * @param name short or long name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
-    public boolean hasOption(String opt) {
-        return (shortOpts.containsKey(opt) || longOpts.containsKey(opt));
+    public boolean hasOption(String name) {
+        return (shortOpts.containsKey(name) || longOpts.containsKey(name));
     }
 
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
      *
-     * @param opt long name of the {@link Option}
+     * @param name long name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
-    public boolean hasLongOption(String opt) {
-        return longOpts.containsKey(opt);
+    public boolean hasLongOption(String name) {
+        return longOpts.containsKey(name);
     }
 
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
      *
-     * @param opt short name of the {@link Option}
+     * @param name short name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
-    public boolean hasShortOption(String opt) {
-        return shortOpts.containsKey(opt);
+    public boolean hasShortOption(String name) {
+        return shortOpts.containsKey(name);
     }
 
     /**
@@ -291,6 +303,14 @@ public class Options implements Serializable {
      */
     public OptionGroup getOptionGroup(Option opt) {
         return optionGroups.get(opt.getKey());
+    }
+
+    public List<Arguments> getArgumentsList() {
+        return argumentsList;
+    }
+
+    public void addArguments(Arguments arguments) {
+        argumentsList.add(arguments);
     }
 
     /**

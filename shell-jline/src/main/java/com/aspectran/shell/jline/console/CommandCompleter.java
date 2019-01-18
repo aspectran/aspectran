@@ -84,12 +84,12 @@ public class CommandCompleter implements Completer {
             if (command != null && command.getDescriptor().getOptions() != null) {
                 for (Option option : command.getDescriptor().getOptions()) {
                     String optName = null;
-                    if (option.getOpt() != null) {
-                        optName = HelpFormatter.DEFAULT_OPT_PREFIX + option.getOpt();
+                    if (option.getName() != null) {
+                        optName = HelpFormatter.DEFAULT_OPT_PREFIX + option.getName();
                     }
                     String longOptName = null;
-                    if (option.getLongOpt() != null) {
-                        longOptName = HelpFormatter.DEFAULT_LONG_OPT_PREFIX + option.getLongOpt();
+                    if (option.getLongName() != null) {
+                        longOptName = HelpFormatter.DEFAULT_LONG_OPT_PREFIX + option.getLongName();
                     }
                     String dispName;
                     if (optName != null && longOptName != null) {

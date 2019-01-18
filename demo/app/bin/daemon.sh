@@ -126,11 +126,11 @@ case "$1" in
     version) do_version ;;
     *      )
         echo "Usage: daemon.sh <command>"
-        echo "commands:"
+        echo "Commands:"
         echo "  start     Start Aspectran daemon"
         echo "  stop      Stop Aspectran daemon"
         echo "  restart   Restart Aspectran daemon"
-        echo "  version   What version of aspectran are you running?"
+        echo "  version   Display version information"
         exit 3
     ;;
 esac

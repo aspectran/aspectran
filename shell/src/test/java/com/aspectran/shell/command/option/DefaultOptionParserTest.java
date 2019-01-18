@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * <p>Created: 2017. 11. 12.</p>
  */
-public class DefaultOptionParserTest {
+class DefaultOptionParserTest {
 
     @Test
     void testLS() {
@@ -34,10 +34,10 @@ public class DefaultOptionParserTest {
         options.addOption("a", "all", false, "do not hide entries starting with .");
         options.addOption("A", "almost-all", false, "do not list implied . and ..");
         options.addOption("b", "escape", false, "print octal escapes for nongraphic characters");
-        options.addOption(Option.builder().longOpt("block-size")
+        options.addOption(Option.builder().longName("block-size")
                 .desc("use SIZE-byte blocks")
-                .hasArg()
-                .argName("SIZE")
+                .hasValue()
+                .valueName("SIZE")
                 .valueType(OptionValueType.INT)
                 .build());
         options.addOption("B", "ignore-backups", false, "do not list implied entried ending with ~");
@@ -48,14 +48,14 @@ public class DefaultOptionParserTest {
         options.addOption("C", false, "list entries by columns");
         options.addOption(Option.builder("f")
                 .desc("files")
-                .hasArgs()
-                .argName("FILE")
+                .hasValues()
+                .valueName("FILE")
                 .valueSeparator(' ')
                 .build());
         options.addOption(Option.builder("z")
                 .desc("files2")
-                .hasArgs()
-                .argName("FILE2")
+                .hasValues()
+                .valueName("FILE2")
                 .valueSeparator(' ')
                 .build());
 
@@ -91,7 +91,7 @@ public class DefaultOptionParserTest {
             System.out.println("------------------");
 */
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
-            formatter.printHelp("ls [OPTION]... [FILE]...", options);
+            formatter.printHelp("ls [options] [<file(s)>]", options);
         } catch(OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }

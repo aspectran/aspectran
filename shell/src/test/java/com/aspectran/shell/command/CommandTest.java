@@ -15,7 +15,9 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.shell.command.builtins.HelpCommand;
+import com.aspectran.shell.command.builtins.JettyCommand;
 import com.aspectran.shell.command.builtins.PBDecryptCommand;
 import com.aspectran.shell.command.builtins.PBEncryptCommand;
 import com.aspectran.shell.command.builtins.SysInfoCommand;
@@ -59,7 +61,8 @@ class CommandTest {
         PBEncryptCommand command = new PBEncryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-i=aaa", "-p=bbb"});
+        command.execute(new String[] {"-i=aaa ccc d", "-p=bbb"});
+        command.execute(new String[] {"-i", "aaa ccc d", "-p", "bbb"});
     }
 
     @Test
@@ -72,12 +75,42 @@ class CommandTest {
     }
 
     @Test
+    void testPBEncryptCommand2() throws Exception {
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "password");
+
+        Console console = new DefaultConsole();
+        PBEncryptCommand command = new PBEncryptCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+        command.execute(new String[] {"-i", "input1", "input2"});
+    }
+
+    @Test
+    void testPBDecryptCommand2() throws Exception {
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "password");
+
+        Console console = new DefaultConsole();
+        PBDecryptCommand command = new PBDecryptCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
+        command.execute(new String[] {"-i=KuSJkQVYRydcVTNdm5oTJg=="});
+    }
+
+    @Test
     void testTestCommand() throws Exception {
         Console console = new DefaultConsole();
         TestCommand command = new TestCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
         command.execute(new String[] {"-Dkey=123", "-i=aaa", "-p=bbb", "-XYZ"});
+    }
+
+    @Test
+    void testJettyCommand() {
+        Console console = new DefaultConsole();
+        JettyCommand command = new JettyCommand(null);
+        console.writeLine(command.getDescriptor().getDescription());
+        command.printUsage(console);
     }
 
 }

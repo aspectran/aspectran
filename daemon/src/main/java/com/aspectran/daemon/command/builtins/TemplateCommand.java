@@ -20,7 +20,6 @@ import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -41,30 +40,34 @@ public class TemplateCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) throws Exception {
+    public String execute(CommandParameters parameters) {
         String templateName = parameters.getTemplateName();
         if (templateName == null) {
-            throw new IllegalRuleException("'template' parameter is not specified");
+            return failed("'template' parameter is not specified");
         }
 
-        ParameterMap parameterMap = null;
-        Map<String, Object> attrs = null;
+        try {
+            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+            ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
 
-        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
-        if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
-                (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
-            Activity activity = new InstantActivity(getService().getActivityContext());
-            ItemEvaluator evaluator = new ItemExpression(activity);
-            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+            ParameterMap parameterMap = null;
+            Map<String, Object> attributeMap = null;
+            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
+                    (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
+                Activity activity = new InstantActivity(getService().getActivityContext());
+                ItemEvaluator evaluator = new ItemExpression(activity);
+                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+                    parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+                }
+                if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+                    attributeMap = evaluator.evaluate(attributeItemRuleMap);
+                }
             }
-            if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                attrs = evaluator.evaluate(attributeItemRuleMap);
-            }
+
+            return getService().template(templateName, parameterMap, attributeMap);
+        } catch (Exception e) {
+            return failed(e);
         }
-
-        return getService().template(templateName, parameterMap, attrs);
     }
 
     @Override
