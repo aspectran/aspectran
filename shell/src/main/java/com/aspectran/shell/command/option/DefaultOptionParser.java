@@ -225,7 +225,7 @@ public class DefaultOptionParser implements OptionParser {
      * didn't receive the number of arguments expected.
      */
     private void checkRequiredArgs() throws OptionParserException {
-        if (currentOption != null && currentOption.requiresArg()) {
+        if (currentOption != null && currentOption.requiresValue()) {
             throw new MissingArgumentException(currentOption);
         }
     }
@@ -242,7 +242,7 @@ public class DefaultOptionParser implements OptionParser {
             parsedOptions.addArg(token);
         } else if ("--".equals(token)) {
             skipParsing = true;
-        } else if (currentOption != null && currentOption.acceptsArg() && isArgument(token)) {
+        } else if (currentOption != null && currentOption.acceptsValue() && isArgument(token)) {
             String t = OptionUtils.stripLeadingAndTrailingQuotes(token);
             currentOption.addValue(t);
         } else if (token.startsWith("--")) {
@@ -254,7 +254,7 @@ public class DefaultOptionParser implements OptionParser {
         } else {
             handleUnknownToken(token);
         }
-        if (currentOption != null && !currentOption.acceptsArg()) {
+        if (currentOption != null && !currentOption.acceptsValue()) {
             currentOption = null;
         }
     }
@@ -425,7 +425,7 @@ public class DefaultOptionParser implements OptionParser {
         } else {
             String key = (options.hasLongOption(name) ? name : matchingOpts.get(0));
             Option option = options.getOption(key);
-            if (option.acceptsArg()) {
+            if (option.acceptsValue()) {
                 handleOption(option);
                 currentOption.addValue(value);
                 currentOption = null;
@@ -477,7 +477,7 @@ public class DefaultOptionParser implements OptionParser {
             } else {
                 // look for a long prefix (-Xmx512m)
                 String name = getLongPrefix(token);
-                if (name != null && options.getOption(name).acceptsArg()) {
+                if (name != null && options.getOption(name).acceptsValue()) {
                     handleOption(options.getOption(name));
                     currentOption.addValue(token.substring(name.length()));
                     currentOption = null;
@@ -497,7 +497,7 @@ public class DefaultOptionParser implements OptionParser {
             String value = token.substring(pos + 1);
             // -S=V
             Option option = options.getOption(name);
-            if (option != null && option.acceptsArg()) {
+            if (option != null && option.acceptsValue()) {
                 handleOption(option);
                 currentOption.addValue(value);
                 currentOption = null;
