@@ -22,6 +22,7 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
+    public CommandResult execute(CommandParameters parameters) {
         String transletName = parameters.getTransletName();
         if (transletName == null) {
             return failed("'translet' parameter is not specified");
@@ -51,7 +52,8 @@ public class TransletCommand extends AbstractCommand {
 
             ParameterMap parameterMap = null;
             Map<String, Object> attributeMap = null;
-            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) || (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
+            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
+                    (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
                 ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
                 if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
                     parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
@@ -62,7 +64,8 @@ public class TransletCommand extends AbstractCommand {
             }
 
             Translet translet = getService().translate(transletName, parameterMap, attributeMap);
-            return translet.getResponseAdapter().getWriter().toString();
+            String result = translet.getResponseAdapter().getWriter().toString();
+            return success(result, true);
         } catch (Exception e) {
             return failed(e);
         }

@@ -20,6 +20,7 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class PollingIntervalCommand extends AbstractCommand {
@@ -35,7 +36,7 @@ public class PollingIntervalCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
+    public CommandResult execute(CommandParameters parameters) {
         try {
             long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
             long pollingInterval = 0L;
@@ -48,11 +49,11 @@ public class PollingIntervalCommand extends AbstractCommand {
 
             if (pollingInterval > 0L) {
                 getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
-                return info("The polling interval is changed from " + oldPollingInterval + "ms to " + pollingInterval + "ms");
+                return success(info("The polling interval is changed from " + oldPollingInterval + "ms to " + pollingInterval + "ms"));
             } else if (pollingInterval < 0L) {
-                return warn("The polling interval can not be negative: " + pollingInterval);
+                return failed(warn("The polling interval can not be negative: " + pollingInterval), true);
             } else {
-                return warn("The polling interval is not changed");
+                return failed(warn("The polling interval is not changed"), true);
             }
         } catch (Exception e) {
             return failed(e);

@@ -61,7 +61,7 @@ public class ExceptionUtils {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
         throwable.printStackTrace(pw);
-        return sw.getBuffer().toString();
+        return sw.getBuffer().toString().trim();
     }
 
     /*

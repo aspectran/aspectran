@@ -29,7 +29,7 @@ public interface Command {
      * @param parameters the command parameters
      * @return the message output to the console as a result of an executed command
      */
-    String execute(CommandParameters parameters);
+    CommandResult execute(CommandParameters parameters);
 
     /**
      * This method returns an instance of Command.Descriptor.

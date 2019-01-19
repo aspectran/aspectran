@@ -31,7 +31,11 @@ public abstract class AbstractCommand implements Command {
     }
 
     public DaemonService getService() {
-        return registry.getDaemon().getService();
+        DaemonService service = registry.getDaemon().getService();
+        if (service == null || !service.getServiceController().isActive()) {
+            throw new IllegalStateException("SERVICE NOT AVAILABLE");
+        }
+        return service;
     }
 
     public CommandRegistry getCommandRegistry() {
@@ -48,14 +52,31 @@ public abstract class AbstractCommand implements Command {
         return message;
     }
 
-    protected String failed(String message) {
-        log.error(message);
-        return "[FAILED] " + message;
+    protected CommandResult success(String message) {
+        return success(message, false);
     }
 
-    protected String failed(Throwable throwable) {
+    protected CommandResult success(String message, boolean noLogging) {
+        if (!noLogging) {
+            log.info(message);
+        }
+        return new CommandResult(true, message);
+    }
+
+    protected CommandResult failed(String message) {
+        return failed(message, false);
+    }
+
+    protected CommandResult failed(String message, boolean noLogging) {
+        if (!noLogging) {
+            log.error(message);
+        }
+        return new CommandResult(false, message);
+    }
+
+    protected CommandResult failed(Throwable throwable) {
         log.error(throwable.getMessage(), throwable);
-        return "[FAILED] " + ExceptionUtils.getStacktrace(throwable);
+        return new CommandResult(false, ExceptionUtils.getStacktrace(throwable));
     }
 
 }

@@ -57,15 +57,15 @@ class CommandTest {
     }
 
     @Test
-    void testVerboseCommand() throws Exception {
+    void testVerboseCommand() {
         CommandParameters parameters = new CommandParameters();
         parameters.setCommandName("beanMethodAction");
         parameters.setBeanName("class:com.aspectran.daemon.command.CommandTestBean");
         parameters.setMethodName("command1");
 
         Command command = new BeanMethodActionCommand(commandRegistry);
-        String result = command.execute(parameters);
-        assertEquals("<<command1>>", result);
+        CommandResult result = command.execute(parameters);
+        assertEquals("<<command1>>", result.getMessage());
     }
 
 }

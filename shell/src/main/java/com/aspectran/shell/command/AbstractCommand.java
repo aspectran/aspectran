@@ -38,7 +38,11 @@ public abstract class AbstractCommand implements Command {
     }
 
     public ShellService getService() {
-        return (registry != null ? registry.getService() : null);
+        ShellService service = registry.getService();
+        if (service == null || !service.getServiceController().isActive()) {
+            throw new IllegalStateException("SERVICE NOT AVAILABLE");
+        }
+        return service;
     }
 
     public Console getConsole() {

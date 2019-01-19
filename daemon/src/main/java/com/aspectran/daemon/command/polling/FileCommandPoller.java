@@ -28,6 +28,7 @@ import com.aspectran.daemon.Daemon;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -48,6 +49,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     private static final String INBOUND_FAILED_DIR = "failed";
 
+    private final Object lock = new Object();
+
     private final File inboundDir;
 
     private final File queuedDir;
@@ -55,8 +58,6 @@ public class FileCommandPoller extends AbstractCommandPoller {
     private final File completedDir;
 
     private final File failedDir;
-
-    private final Object lock = new Object();
 
     public FileCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) throws Exception {
         super(daemon, pollerConfig);
@@ -143,13 +144,17 @@ public class FileCommandPoller extends AbstractCommandPoller {
             @Override
             public void success() {
                 removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(completedDir, (inboundFileName != null ? inboundFileName : queuedFileName), parameters);
+                writeCommandFile(completedDir, makeFileName(), parameters);
             }
 
             @Override
             public void failure() {
                 removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(failedDir, (inboundFileName != null ? inboundFileName : queuedFileName), parameters);
+                writeCommandFile(failedDir, makeFileName(), parameters);
+            }
+
+            private String makeFileName() {
+                return "[" + LocalDateTime.now() + "]" + (inboundFileName != null ? inboundFileName : queuedFileName);
             }
         });
     }
@@ -188,7 +193,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
             }
             AponWriter aponWriter = new AponWriter(file);
             aponWriter.setPrettyPrint(true);
-            aponWriter.setIndentString("  ");
+            aponWriter.setIndentString("    ");
             aponWriter.write(parameters);
             aponWriter.close();
             return file.getName();

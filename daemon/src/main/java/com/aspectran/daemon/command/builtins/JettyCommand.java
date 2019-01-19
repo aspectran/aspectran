@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.with.jetty.JettyServer;
 
@@ -45,11 +46,7 @@ public class JettyCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
-        if (getService() == null) {
-            return failed("SERVICE NOT AVAILABLE");
-        }
-
+    public CommandResult execute(CommandParameters parameters) {
         try {
             ClassLoader classLoader = getService().getActivityContext().getEnvironment().getClassLoader();
             classLoader.loadClass("com.aspectran.with.jetty.JettyServer");
@@ -97,7 +94,7 @@ public class JettyCommand extends AbstractCommand {
                     }
                     try {
                         jettyServer.start();
-                        return info(getStatus(jettyServer));
+                        return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
                         return failed("Jetty Server Error - Port already in use");
                     }
@@ -107,7 +104,7 @@ public class JettyCommand extends AbstractCommand {
                             jettyServer.stop();
                         }
                         jettyServer.start();
-                        return info(getStatus(jettyServer));
+                        return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
                         return failed("Jetty Server Error - Port already in use");
                     }
@@ -117,12 +114,12 @@ public class JettyCommand extends AbstractCommand {
                     }
                     try {
                         jettyServer.stop();
-                        return info(getStatus(jettyServer));
+                        return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
                         return failed("Jetty Server Error - " + e.getMessage());
                     }
                 case "status":
-                    return getStatus(jettyServer);
+                    return success(getStatus(jettyServer), true);
                 default:
                     return failed("Unknown command '" + arg + "'");
             }

@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class BeanMethodActionCommand extends AbstractCommand {
@@ -38,7 +39,7 @@ public class BeanMethodActionCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
+    public CommandResult execute(CommandParameters parameters) {
         try {
             String beanName = parameters.getBeanName();
             String methodName = parameters.getMethodName();
@@ -67,7 +68,7 @@ public class BeanMethodActionCommand extends AbstractCommand {
             Activity activity = new InstantActivity(getService().getActivityContext());
             BeanMethodAction beanMethodAction = new BeanMethodAction(beanMethodActionRule, null);
             Object result = beanMethodAction.execute(activity);
-            return (result != null ? result.toString() : null);
+            return success(result != null ? result.toString() : null, true);
         } catch (Exception e) {
             return failed(e);
         }

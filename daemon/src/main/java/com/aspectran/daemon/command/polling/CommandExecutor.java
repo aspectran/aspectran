@@ -20,6 +20,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.Command;
+import com.aspectran.daemon.command.CommandResult;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -59,21 +60,47 @@ public class CommandExecutor {
             if (command != null) {
                 try {
                     queueSize.incrementAndGet();
-                    String result = command.execute(parameters);
-                    parameters.setOutput(result);
-                    callback.success();
-                } catch (Exception e) {
-                    parameters.setOutput(ExceptionUtils.getStacktrace(e));
-                    callback.failure();
+                    boolean success = execute(command, parameters);
+                    try {
+                        if (success) {
+                            callback.success();
+                        } else {
+                            callback.failure();
+                        }
+                    } catch (Exception e) {
+                        log.error("Failed to execute callback", e);
+                    }
                 } finally {
                     queueSize.decrementAndGet();
                 }
             } else {
                 parameters.setOutput("No command mapped to '" + commandName + "'");
-                callback.failure();
+                try {
+                    callback.failure();
+                } catch (Exception e) {
+                    log.error("Failed to execute callback", e);
+                }
             }
         };
         executorService.execute(runnable);
+    }
+
+    private boolean execute(Command command, CommandParameters parameters) {
+        try {
+            CommandResult result = command.execute(parameters);
+            if (result.isSuccess()) {
+                parameters.setOutput(result.getMessage());
+                return true;
+            } else {
+                parameters.setOutput("[FAILED] " + result.getMessage());
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Failed to execute command", e);
+            parameters.setOutput("[FAILED] Failed to execute command" +
+                    ExceptionUtils.getStacktrace(e));
+            return false;
+        }
     }
 
     public int getQueueSize() {

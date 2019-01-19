@@ -23,6 +23,7 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
 import java.util.Map;
@@ -40,7 +41,7 @@ public class TemplateCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(CommandParameters parameters) {
+    public CommandResult execute(CommandParameters parameters) {
         String templateName = parameters.getTemplateName();
         if (templateName == null) {
             return failed("'template' parameter is not specified");
@@ -64,7 +65,8 @@ public class TemplateCommand extends AbstractCommand {
                 }
             }
 
-            return getService().template(templateName, parameterMap, attributeMap);
+            String result = getService().template(templateName, parameterMap, attributeMap);
+            return success(result, true);
         } catch (Exception e) {
             return failed(e);
         }
