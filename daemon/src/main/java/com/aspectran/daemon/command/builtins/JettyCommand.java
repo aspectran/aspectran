@@ -51,7 +51,7 @@ public class JettyCommand extends AbstractCommand {
             ClassLoader classLoader = getService().getActivityContext().getEnvironment().getClassLoader();
             classLoader.loadClass("com.aspectran.with.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.with.jetty.JettyServer due to missing dependency 'aspectran-with-jetty'");
+            return failed("Unable to load class com.aspectran.with.jetty.JettyServer due to missing dependency 'aspectran-with-jetty'", e);
         }
 
         try {
@@ -73,7 +73,7 @@ public class JettyCommand extends AbstractCommand {
             try {
                 jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
             } catch (Exception e) {
-                throw new IllegalStateException("Jetty server is not available", e);
+                return failed("Jetty server is not available", e);
             }
 
             String arg = null;
@@ -90,13 +90,13 @@ public class JettyCommand extends AbstractCommand {
             switch (arg) {
                 case "start":
                     if (jettyServer.isRunning()) {
-                        return failed("Jetty server is already running");
+                        return failed(warn("Jetty server is already running"));
                     }
                     try {
                         jettyServer.start();
                         return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
-                        return failed("Jetty Server Error - Port already in use");
+                        return failed("Jetty Server Error - Port already in use", e);
                     }
                 case "restart":
                     try {
@@ -110,18 +110,18 @@ public class JettyCommand extends AbstractCommand {
                     }
                 case "stop":
                     if (!jettyServer.isRunning()) {
-                        return failed("Jetty Server is not running");
+                        return failed(warn("Jetty Server is not running"));
                     }
                     try {
                         jettyServer.stop();
                         return success(info(getStatus(jettyServer)));
-                    } catch (BindException e) {
-                        return failed("Jetty Server Error - " + e.getMessage());
+                    } catch (Exception e) {
+                        return failed("Jetty Server Stop Failed", e);
                     }
                 case "status":
-                    return success(getStatus(jettyServer), true);
+                    return success(getStatus(jettyServer));
                 default:
-                    return failed("Unknown command '" + arg + "'");
+                    return failed(error("Unknown command '" + arg + "'"));
             }
         } catch (Exception e) {
             return failed(e);

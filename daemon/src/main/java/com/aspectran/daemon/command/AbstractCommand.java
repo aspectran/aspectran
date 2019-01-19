@@ -26,8 +26,24 @@ public abstract class AbstractCommand implements Command {
 
     private final CommandRegistry registry;
 
+    private final boolean isolated;
+
     public AbstractCommand(CommandRegistry registry) {
+        this(registry, false);
+    }
+
+    public AbstractCommand(CommandRegistry registry, boolean isolated) {
         this.registry = registry;
+        this.isolated = isolated;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return registry;
+    }
+
+    @Override
+    public boolean isIsolated() {
+        return isolated;
     }
 
     public DaemonService getService() {
@@ -38,8 +54,9 @@ public abstract class AbstractCommand implements Command {
         return service;
     }
 
-    public CommandRegistry getCommandRegistry() {
-        return registry;
+    protected String debug(String message) {
+        log.debug(message);
+        return message;
     }
 
     protected String info(String message) {
@@ -52,26 +69,23 @@ public abstract class AbstractCommand implements Command {
         return message;
     }
 
-    protected CommandResult success(String message) {
-        return success(message, false);
+    protected String error(String message) {
+        log.error(message);
+        return message;
     }
 
-    protected CommandResult success(String message, boolean noLogging) {
-        if (!noLogging) {
-            log.info(message);
-        }
+    protected CommandResult success(String message) {
         return new CommandResult(true, message);
     }
 
     protected CommandResult failed(String message) {
-        return failed(message, false);
+        return new CommandResult(false, message);
     }
 
-    protected CommandResult failed(String message, boolean noLogging) {
-        if (!noLogging) {
-            log.error(message);
-        }
-        return new CommandResult(false, message);
+    protected CommandResult failed(String message, Throwable throwable) {
+        log.error(message, throwable);
+        return new CommandResult(false, message + System.lineSeparator() +
+                ExceptionUtils.getStacktrace(throwable));
     }
 
     protected CommandResult failed(Throwable throwable) {

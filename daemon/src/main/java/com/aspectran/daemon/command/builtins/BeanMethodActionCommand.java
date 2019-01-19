@@ -47,10 +47,10 @@ public class BeanMethodActionCommand extends AbstractCommand {
             ItemRuleMap propertyItemRuleMap = parameters.getPropertyItemRuleMap();
 
             if (beanName == null) {
-                return failed("'bean' parameter is not specified");
+                return failed(error("'bean' parameter is not specified"));
             }
             if (methodName == null) {
-                return failed("'method' parameter is not specified");
+                return failed(error("'method' parameter is not specified"));
             }
 
             BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
@@ -68,7 +68,7 @@ public class BeanMethodActionCommand extends AbstractCommand {
             Activity activity = new InstantActivity(getService().getActivityContext());
             BeanMethodAction beanMethodAction = new BeanMethodAction(beanMethodActionRule, null);
             Object result = beanMethodAction.execute(activity);
-            return success(result != null ? result.toString() : null, true);
+            return success(result != null ? result.toString() : null);
         } catch (Exception e) {
             return failed(e);
         }

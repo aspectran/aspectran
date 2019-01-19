@@ -53,7 +53,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
     private SessionManager sessionManager;
 
-    private long pauseTimeout = -1L;
+    private volatile long pauseTimeout = -1L;
 
     public AspectranDaemonService() {
         super(new DaemonApplicationAdapter());
@@ -113,7 +113,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranDaemonService is paused, so did not execute the translet: " + name);
+                    log.debug("AspectranDaemonService is paused, so did not execute translet: " + name);
                 }
                 return null;
             } else {
@@ -136,7 +136,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing the daemon activity", e);
+            throw new AspectranRuntimeException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -155,6 +155,17 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
      */
     @Override
     public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("AspectranDaemonService is paused, so did not execute template: " + templateId);
+                }
+                return null;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
             activity.setSessionAdapter(newSessionAdapter());
@@ -163,7 +174,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing a template", e);
+            throw new AspectranRuntimeException("An error occurred while processing template: " + templateId, e);
         }
     }
 

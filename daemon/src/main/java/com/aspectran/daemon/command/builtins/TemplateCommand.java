@@ -44,7 +44,7 @@ public class TemplateCommand extends AbstractCommand {
     public CommandResult execute(CommandParameters parameters) {
         String templateName = parameters.getTemplateName();
         if (templateName == null) {
-            return failed("'template' parameter is not specified");
+            return failed(error("'template' parameter is not specified"));
         }
 
         try {
@@ -66,7 +66,7 @@ public class TemplateCommand extends AbstractCommand {
             }
 
             String result = getService().template(templateName, parameterMap, attributeMap);
-            return success(result, true);
+            return success(result);
         } catch (Exception e) {
             return failed(e);
         }

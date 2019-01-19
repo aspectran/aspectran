@@ -140,7 +140,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing the web activity", e);
+            log.error("An error occurred while processing request: " + requestUri, e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (activity != null) {

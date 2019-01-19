@@ -39,7 +39,7 @@ daemon: {
         pollingInterval: 5000
         maxThreads: 5
         inbound: /inbound
-        requeue: false
+        requeue: true
     }
     exposals: {
         -: /**

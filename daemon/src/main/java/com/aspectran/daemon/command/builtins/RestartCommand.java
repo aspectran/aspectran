@@ -29,7 +29,7 @@ public class RestartCommand extends AbstractCommand {
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public RestartCommand(CommandRegistry registry) {
-        super(registry);
+        super(registry, true);
     }
 
     @Override

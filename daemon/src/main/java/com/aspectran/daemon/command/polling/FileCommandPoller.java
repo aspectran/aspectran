@@ -107,7 +107,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 for (File file : queuedFiles) {
                     CommandParameters parameters = readCommandFile(file);
                     if (parameters != null) {
-                        executeQueuedCommand(parameters, file.getName(), null);
+                        writeCommandFile(inboundDir, file.getName(), parameters);
+                        removeCommandFile(queuedDir, file.getName());
                     }
                 }
             } else {
@@ -129,18 +130,22 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 if (parameters != null) {
                     String inboundFileName = file.getName();
                     String queuedFileName = writeCommandFile(queuedDir, inboundFileName, parameters);
-                    removeCommandFile(inboundDir, inboundFileName);
                     if (queuedFileName != null) {
-                        executeQueuedCommand(parameters, queuedFileName, inboundFileName);
+                        boolean queued = executeQueuedCommand(parameters, queuedFileName, inboundFileName);
+                        if (queued) {
+                            removeCommandFile(inboundDir, inboundFileName);
+                        } else {
+                            removeCommandFile(queuedDir, queuedFileName);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName,
+    private boolean executeQueuedCommand(final CommandParameters parameters, final String queuedFileName,
                                       final String inboundFileName) {
-        getExecutor().execute(parameters, new CommandExecutor.Callback() {
+        return getExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
                 removeCommandFile(queuedDir, queuedFileName);

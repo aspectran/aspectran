@@ -119,7 +119,7 @@ public class AspectranShellService extends AbstractShellService {
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing the command", e);
+            log.error("An error occurred while processing translet: " + commandLineParser.getCommandName(), e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {

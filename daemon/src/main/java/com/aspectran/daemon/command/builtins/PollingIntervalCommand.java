@@ -51,9 +51,9 @@ public class PollingIntervalCommand extends AbstractCommand {
                 getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
                 return success(info("The polling interval is changed from " + oldPollingInterval + "ms to " + pollingInterval + "ms"));
             } else if (pollingInterval < 0L) {
-                return failed(warn("The polling interval can not be negative: " + pollingInterval), true);
+                return failed(error("The polling interval can not be negative: " + pollingInterval));
             } else {
-                return failed(warn("The polling interval is not changed"), true);
+                return failed(warn("The polling interval is not changed"));
             }
         } catch (Exception e) {
             return failed(e);

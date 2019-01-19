@@ -167,7 +167,7 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
                 }
             }
         } catch (Exception e) {
-            throw new TemplateProcessorException("An error occurred while processing a template", templateRule, e);
+            throw new TemplateProcessorException("An error occurred while processing template", templateRule, e);
         }
     }
 

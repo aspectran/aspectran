@@ -29,7 +29,7 @@ public class QuitCommand extends AbstractCommand {
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
     public QuitCommand(CommandRegistry registry) {
-        super(registry);
+        super(registry, true);
     }
 
     @Override

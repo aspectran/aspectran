@@ -24,9 +24,11 @@ import com.aspectran.daemon.command.CommandResult;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandExecutor {
@@ -41,6 +43,8 @@ public class CommandExecutor {
 
     private final AtomicInteger queueSize = new AtomicInteger();
 
+    private final AtomicBoolean isolated = new AtomicBoolean();
+
     public CommandExecutor(Daemon daemon, int maxThreads) {
         this.daemon = daemon;
         this.workQueue = new SynchronousQueue<>();
@@ -53,36 +57,73 @@ public class CommandExecutor {
         );
     }
 
-    public void execute(final CommandParameters parameters, final Callback callback) {
+    public boolean execute(final CommandParameters parameters, final Callback callback) {
+        final String commandName = parameters.getCommandName();
+
+        if (isolated.get()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Holds '" + commandName + "' command until the end of the command " +
+                        "requiring a single execution guarantee.");
+            }
+            return false;
+        }
+
+        Command command = daemon.getCommandRegistry().getCommand(commandName);
+        if (command == null) {
+            parameters.setOutput("No command mapped to '" + commandName + "'");
+            try {
+                callback.failure();
+            } catch (Exception e) {
+                log.error("Failed to execute callback", e);
+            }
+            return false;
+        }
+
+        if (command.isIsolated() && queueSize.get() > 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("'" + commandName + "' command requires a single execution guarantee, " +
+                        "so it is held until another command completes");
+            }
+            return false;
+        }
+
         Runnable runnable = () -> {
-            String commandName = parameters.getCommandName();
-            Command command = daemon.getCommandRegistry().getCommand(commandName);
-            if (command != null) {
-                try {
-                    queueSize.incrementAndGet();
-                    boolean success = execute(command, parameters);
-                    try {
-                        if (success) {
-                            callback.success();
-                        } else {
-                            callback.failure();
-                        }
-                    } catch (Exception e) {
-                        log.error("Failed to execute callback", e);
-                    }
-                } finally {
-                    queueSize.decrementAndGet();
+            Thread currentThread = Thread.currentThread();
+            String oldThreadName = currentThread.getName();
+            try {
+                String threadName = "command-" + commandName + "-" + queueSize;
+                currentThread.setName(threadName);
+
+                if (command.isIsolated()) {
+                    isolated.set(true);
                 }
-            } else {
-                parameters.setOutput("No command mapped to '" + commandName + "'");
+
+                boolean success = execute(command, parameters);
                 try {
-                    callback.failure();
+                    if (success) {
+                        callback.success();
+                    } else {
+                        callback.failure();
+                    }
                 } catch (Exception e) {
                     log.error("Failed to execute callback", e);
                 }
+            } finally {
+                currentThread.setName(oldThreadName);
+                isolated.compareAndSet(true, false);
+                queueSize.decrementAndGet();
             }
         };
-        executorService.execute(runnable);
+
+        queueSize.incrementAndGet();
+        try {
+            executorService.execute(runnable);
+            return true;
+        } catch (RejectedExecutionException e) {
+            log.error("Failed to execute command", e);
+            queueSize.decrementAndGet();
+            return false;
+        }
     }
 
     private boolean execute(Command command, CommandParameters parameters) {

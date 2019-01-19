@@ -22,6 +22,8 @@ import com.aspectran.daemon.command.polling.CommandParameters;
  */
 public interface Command {
 
+    boolean isIsolated();
+
     /**
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.

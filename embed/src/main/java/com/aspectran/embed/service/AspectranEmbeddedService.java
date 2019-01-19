@@ -53,7 +53,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
 
     private SessionManager sessionManager;
 
-    private long pauseTimeout = -1L;
+    private volatile long pauseTimeout = -1L;
 
     public AspectranEmbeddedService() {
         super(new EmbeddedApplicationAdapter());
@@ -185,7 +185,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranEmbeddedService is paused, so did not execute the translet: " + name);
+                    log.debug("AspectranEmbeddedService is paused, so did not execute translet: " + name);
                 }
                 return null;
             } else {
@@ -208,7 +208,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing an activity", e);
+            throw new AspectranRuntimeException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -262,6 +262,17 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
      */
     @Override
     public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("AspectranEmbeddedService is paused, so did not execute template: " + templateId);
+                }
+                return null;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+
         try {
             InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
             activity.setSessionAdapter(newSessionAdapter());
@@ -270,7 +281,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing a template", e);
+            throw new AspectranRuntimeException("An error occurred while processing template: " + templateId, e);
         }
     }
 

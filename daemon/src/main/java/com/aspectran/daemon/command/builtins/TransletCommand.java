@@ -43,7 +43,7 @@ public class TransletCommand extends AbstractCommand {
     public CommandResult execute(CommandParameters parameters) {
         String transletName = parameters.getTransletName();
         if (transletName == null) {
-            return failed("'translet' parameter is not specified");
+            return failed(error("'translet' parameter is not specified"));
         }
 
         try {
@@ -65,7 +65,7 @@ public class TransletCommand extends AbstractCommand {
 
             Translet translet = getService().translate(transletName, parameterMap, attributeMap);
             String result = translet.getResponseAdapter().getWriter().toString();
-            return success(result, true);
+            return success(result);
         } catch (Exception e) {
             return failed(e);
         }
