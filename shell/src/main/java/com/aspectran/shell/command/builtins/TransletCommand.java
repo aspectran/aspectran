@@ -64,8 +64,10 @@ public class TransletCommand extends AbstractCommand {
             listTranslets(keywords.length > 0 ? keywords : null);
         } else {
             printUsage();
-            writeLine("Available translets:");
-            listTranslets(null);
+            if (!options.hasOption("h")) {
+                writeLine("Available translets:");
+                listTranslets(null);
+            }
         }
         return null;
     }
