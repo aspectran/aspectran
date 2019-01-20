@@ -28,33 +28,33 @@ public interface OptionParser {
      * Parse the arguments according to the specified options.
      *
      * @param options the specified Options
-     * @param arguments the command line arguments
+     * @param args the command line arguments
      * @return the list of atomic option and value tokens
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments) throws OptionParserException;
+    ParsedOptions parse(Options options, String[] args) throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options and
      * properties.
      *
      * @param options the specified Options
-     * @param arguments the command line arguments
+     * @param args the command line arguments
      * @param properties command line option name-value pairs
      * @return the list of atomic option and value tokens
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, Properties properties)
+    ParsedOptions parse(Options options, String[] args, Properties properties)
             throws OptionParserException;
 
     /**
      * Parse the arguments according to the specified options.
      *
      * @param options the specified Options
-     * @param arguments the command line arguments
-     * @param stopAtNonOption if {@code true} an unrecognized argument stops
+     * @param args the command line arguments
+     * @param skipParsingAtNonOption if {@code true} an unrecognized argument stops
      *      the parsing and the remaining arguments are added to the
      *      {@link ParsedOptions}s args list. If {@code false} an unrecognized
      *      argument triggers a ParseException.
@@ -62,7 +62,7 @@ public interface OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, boolean stopAtNonOption)
+    ParsedOptions parse(Options options, String[] args, boolean skipParsingAtNonOption)
             throws OptionParserException;
 
     /**
@@ -70,9 +70,9 @@ public interface OptionParser {
      * properties.
      *
      * @param options the specified Options
-     * @param arguments the command line arguments
+     * @param args the command line arguments
      * @param properties command line option name-value pairs
-     * @param stopAtNonOption if {@code true} an unrecognized argument stops
+     * @param skipParsingAtNonOption if {@code true} an unrecognized argument stops
      *      the parsing and the remaining arguments are added to the
      *      {@link ParsedOptions}s args list. If {@code false} an unrecognized
      *      argument triggers a ParseException.
@@ -80,7 +80,7 @@ public interface OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    ParsedOptions parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
+    ParsedOptions parse(Options options, String[] args, Properties properties, boolean skipParsingAtNonOption)
             throws OptionParserException;
 
 }

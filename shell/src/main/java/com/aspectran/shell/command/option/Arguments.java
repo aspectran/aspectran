@@ -24,6 +24,8 @@ public class Arguments extends LinkedHashMap<String, String> {
 
     private String title;
 
+    private boolean required;
+
     public Arguments() {
         super();
     }
@@ -34,6 +36,14 @@ public class Arguments extends LinkedHashMap<String, String> {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
 }

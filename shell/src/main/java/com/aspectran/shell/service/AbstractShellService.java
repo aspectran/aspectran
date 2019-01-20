@@ -69,7 +69,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("SHL");
+        sessionManager.setGroupName("SH");
         SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);

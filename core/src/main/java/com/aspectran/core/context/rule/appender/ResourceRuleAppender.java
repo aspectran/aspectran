@@ -72,7 +72,7 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("appenderType", getAppenderType());
+        tsb.append("type", getAppenderType());
         tsb.append("resource", resource);
         tsb.append("format", getAppenderFileFormatType());
         tsb.append("profile", getProfiles());

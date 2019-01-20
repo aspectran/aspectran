@@ -77,7 +77,9 @@ public class ShellCommander {
                     } catch (ConsoleTerminatedException e) {
                         throw e;
                     } catch (OptionParserException e) {
+                        console.setStyle("RED");
                         console.writeLine(e.getMessage());
+                        console.offStyle();
                         command.printUsage();
                     } catch (Exception e) {
                         log.error("Command execution failed", e);

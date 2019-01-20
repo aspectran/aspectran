@@ -16,6 +16,7 @@
 package com.aspectran.shell.command.option;
 
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.shell.command.Command;
 import com.aspectran.shell.console.Console;
 
 import java.io.BufferedReader;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class HelpFormatter {
 
     /** Default number of characters per line */
-    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_WIDTH = 79;
 
     /** Default padding to the left of each line */
     public static final int DEFAULT_LEFT_PAD = 3;
@@ -77,7 +78,7 @@ public class HelpFormatter {
      * Comparator used to sort the options when they output in help text.
      * Defaults to case-insensitive alphabetical sorting by option key.
      */
-    protected Comparator<Option> optionComparator;
+    private Comparator<Option> optionComparator;
 
     /** The separator displayed between the long option and its value. */
     private String longOptSeparator = DEFAULT_LONG_OPT_SEPARATOR;
@@ -283,10 +284,10 @@ public class HelpFormatter {
      * System.out.
      *
      * @param cmdLineSyntax the syntax for this application
-     * @param options the Options instance
+     * @param command the Command instance
      */
-    public void printHelp(String cmdLineSyntax, Options options) {
-        printHelp(getWidth(), cmdLineSyntax, null, options, null, false);
+    public void printHelp(String cmdLineSyntax, Command command) {
+        printHelp(getWidth(), cmdLineSyntax, null, command, null, false);
     }
 
     /**
@@ -295,11 +296,11 @@ public class HelpFormatter {
      * System.out.
      *
      * @param cmdLineSyntax the syntax for this application
-     * @param options the Options instance
+     * @param command the Command instance
      * @param autoUsage whether to print an automatically generated usage statement
      */
-    public void printHelp(String cmdLineSyntax, Options options, boolean autoUsage) {
-        printHelp(getWidth(), cmdLineSyntax, null, options, null, autoUsage);
+    public void printHelp(String cmdLineSyntax, Command command, boolean autoUsage) {
+        printHelp(getWidth(), cmdLineSyntax, null, command, null, autoUsage);
     }
 
     /**
@@ -309,11 +310,11 @@ public class HelpFormatter {
      *
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param footer the banner to display at the end of the help
      */
-    public void printHelp(String cmdLineSyntax, String header, Options options, String footer) {
-        printHelp(cmdLineSyntax, header, options, footer, false);
+    public void printHelp(String cmdLineSyntax, String header, Command command, String footer) {
+        printHelp(cmdLineSyntax, header, command, footer, false);
     }
 
     /**
@@ -323,12 +324,12 @@ public class HelpFormatter {
      *
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param footer the banner to display at the end of the help
      * @param autoUsage whether to print an automatically generated usage statement
      */
-    public void printHelp(String cmdLineSyntax, String header, Options options, String footer, boolean autoUsage) {
-        printHelp(getWidth(), cmdLineSyntax, header, options, footer, autoUsage);
+    public void printHelp(String cmdLineSyntax, String header, Command command, String footer, boolean autoUsage) {
+        printHelp(getWidth(), cmdLineSyntax, header, command, footer, autoUsage);
     }
 
     /**
@@ -339,11 +340,11 @@ public class HelpFormatter {
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param footer the banner to display at the end of the help
      */
-    public void printHelp(int width, String cmdLineSyntax, String header, Options options, String footer) {
-        printHelp(width, cmdLineSyntax, header, options, footer, false);
+    public void printHelp(int width, String cmdLineSyntax, String header, Command command, String footer) {
+        printHelp(width, cmdLineSyntax, header, command, footer, false);
     }
 
     /**
@@ -354,13 +355,13 @@ public class HelpFormatter {
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param footer the banner to display at the end of the help
      * @param autoUsage whether to print an automatically generated usage statement
      */
     public void printHelp(int width, String cmdLineSyntax, String header,
-                          Options options, String footer, boolean autoUsage) {
-        printHelp(width, cmdLineSyntax, header, options, getLeftPadding(), getDescPadding(), footer, autoUsage);
+                          Command command, String footer, boolean autoUsage) {
+        printHelp(width, cmdLineSyntax, header, command, getLeftPadding(), getDescPadding(), footer, autoUsage);
     }
 
     /**
@@ -370,16 +371,16 @@ public class HelpFormatter {
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
      * @param footer the banner to display at the end of the help
      * @throws IllegalStateException if there is no room to print a line
      */
     public void printHelp(int width, String cmdLineSyntax,
-                          String header, Options options, int leftPad,
+                          String header, Command command, int leftPad,
                           int descPad, String footer) {
-        printHelp(width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
+        printHelp(width, cmdLineSyntax, header, command, leftPad, descPad, footer, false);
     }
 
     /**
@@ -389,7 +390,7 @@ public class HelpFormatter {
      * @param width the number of characters to be displayed on each line
      * @param cmdLineSyntax the syntax for this application
      * @param header the banner to display at the beginning of the help
-     * @param options the Options instance
+     * @param command the Command instance
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
      * @param footer the banner to display at the end of the help
@@ -397,20 +398,21 @@ public class HelpFormatter {
      * @throws IllegalStateException if there is no room to print a line
      */
     public void printHelp(int width, String cmdLineSyntax,
-                          String header, Options options, int leftPad,
+                          String header, Command command, int leftPad,
                           int descPad, String footer, boolean autoUsage) {
         if (cmdLineSyntax == null || cmdLineSyntax.length() == 0) {
             throw new IllegalArgumentException("cmdLineSyntax not provided");
         }
         if (autoUsage) {
-            printUsage(width, cmdLineSyntax, options);
+            printUsage(width, cmdLineSyntax, command);
         } else {
             printUsage(width, cmdLineSyntax);
         }
         if (header != null && header.trim().length() > 0) {
             printWrapped(width, header);
         }
-        printOptions(width, options, leftPad, descPad);
+        printOptions(width, command.getOptions(), leftPad, descPad);
+        printArguments(width, command.getArgumentsList(), leftPad, descPad);
         if (footer != null && footer.trim().length() > 0) {
             printWrapped(width, footer);
         }
@@ -421,18 +423,20 @@ public class HelpFormatter {
      *
      * @param width the number of characters to display per line
      * @param commandName the command name
-     * @param options the command line Options
+     * @param command the Command instance
      */
-    public void printUsage(int width, String commandName, Options options) {
+    public void printUsage(int width, String commandName, Command command) {
         // initialise the string builder
         StringBuilder sb = new StringBuilder(getSyntaxPrefix()).append(commandName).append(" ");
 
         // create a list for processed option groups
         Collection<OptionGroup> processedGroups = new ArrayList<>();
 
-        List<Option> optList = new ArrayList<>(options.getOptions());
+        Collection<Option> optList = command.getOptions().getAllOptions();
         if (optList.size() > 1 && getOptionComparator() != null) {
-            optList.sort(getOptionComparator());
+            List<Option> optList2 = new ArrayList<>(optList);
+            optList2.sort(getOptionComparator());
+            optList = optList2;
         }
 
         // iterate over the options
@@ -441,7 +445,7 @@ public class HelpFormatter {
             Option option = it.next();
 
             // check if the option is part of an OptionGroup
-            OptionGroup group = options.getOptionGroup(option);
+            OptionGroup group = command.getOptions().getOptionGroup(option);
 
             // if the option is part of a group 
             if (group != null) {
@@ -467,8 +471,13 @@ public class HelpFormatter {
             }
         }
 
+        for (Arguments arguments : command.getArgumentsList()) {
+            sb.append(" ");
+            appendArguments(sb, arguments);
+        }
+
         // call printWrapped
-        printWrapped(width, sb.toString().indexOf(' ') + 1, sb.toString());
+        printWrapped(width, getSyntaxPrefix().length() + commandName.length() + 1, sb.toString());
     }
 
     /**
@@ -519,11 +528,27 @@ public class HelpFormatter {
         }
         // if the Option has a value and a non blank arg name
         if (option.hasValue() && (option.getValueName() == null || option.getValueName().length() != 0)) {
-            sb.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
+            sb.append(option.isWithEqualSign() ? '=' : longOptSeparator);
             sb.append("<").append(option.getValueName() != null ? option.getValueName() : getArgName()).append(">");
         }
-        // if the Option is not a required option
         if (!required) {
+            sb.append("]");
+        }
+    }
+
+    private void appendArguments(StringBuilder sb, Arguments arguments) {
+        if (!arguments.isRequired()) {
+            sb.append("[");
+        }
+        sb.append("<");
+        for (Iterator<String> it = arguments.keySet().iterator(); it.hasNext();) {
+            sb.append(it.next());
+            if (it.hasNext()) {
+                sb.append("|");
+            }
+        }
+        sb.append(">");
+        if (!arguments.isRequired()) {
             sb.append("]");
         }
     }
@@ -545,14 +570,15 @@ public class HelpFormatter {
      * using the specified width, left padding and description padding.
      *
      * @param width the number of characters to display per line
-     * @param options the command line Options
+     * @param options the Options instance
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
      */
     public void printOptions(int width, Options options, int leftPad, int descPad) {
+        Collection<Option> optList = options.getAllOptions();
         StringBuilder sb = new StringBuilder();
         if (!options.isEmpty()) {
-            renderOptions(sb, width, options, leftPad, descPad);
+            renderOptions(sb, width, optList, leftPad, descPad);
             if (sb.length() > 0) {
                 if (StringUtils.hasLength(options.getTitle())) {
                     console.writeLine(options.getTitle());
@@ -560,16 +586,18 @@ public class HelpFormatter {
                 console.writeLine(sb.toString());
             }
         }
-        if (options.getArgumentsList() != null) {
-            for (Arguments arguments : options.getArgumentsList()) {
-                sb.setLength(0);
-                renderArguments(sb, width, arguments, leftPad, descPad);
-                if (sb.length() > 0) {
-                    if (StringUtils.hasLength(arguments.getTitle())) {
-                        console.writeLine(arguments.getTitle());
-                    }
-                    console.write(sb.toString());
+    }
+
+    public void printArguments(int width, List<Arguments> argumentsList, int leftPad, int descPad) {
+        StringBuilder sb = new StringBuilder();
+        for (Arguments arguments : argumentsList) {
+            sb.setLength(0);
+            renderArguments(sb, width, arguments, leftPad, descPad);
+            if (sb.length() > 0) {
+                if (StringUtils.hasLength(arguments.getTitle())) {
+                    console.writeLine(arguments.getTitle());
                 }
+                console.write(sb.toString());
             }
         }
     }
@@ -608,7 +636,7 @@ public class HelpFormatter {
      * @param descPad the number of characters of padding to be prefixed to each description line
      * @return the StringBuilder with the rendered Options contents
      */
-    protected StringBuilder renderOptions(StringBuilder sb, int width, Options options, int leftPad, int descPad) {
+    protected StringBuilder renderOptions(StringBuilder sb, int width, Collection<Option> options, int leftPad, int descPad) {
         String lpad = OptionUtils.createPadding(leftPad);
         String dpad = OptionUtils.createPadding(descPad);
 
@@ -618,9 +646,11 @@ public class HelpFormatter {
         // sort options ascending
         int max = 0;
         List<StringBuilder> prefixList = new ArrayList<>();
-        List<Option> optList = options.helpOptions();
+        Collection<Option> optList = options;
         if (optList.size() > 1 && getOptionComparator() != null) {
-            optList.sort(getOptionComparator());
+            List<Option> optList2 = new ArrayList<>(optList);
+            optList2.sort(getOptionComparator());
+            optList = optList2;
         }
         for (Option option : optList) {
             StringBuilder optBuf = new StringBuilder();
@@ -634,11 +664,11 @@ public class HelpFormatter {
             }
             if (option.hasValue()) {
                 final String argName = option.getValueName();
-                if (argName != null && argName.length() == 0) {
+                if (argName != null && argName.isEmpty()) {
                     // if the option has a blank arg name
                     optBuf.append(' ');
                 } else {
-                    optBuf.append(option.hasValueSeparator() ? option.getValueSeparator() : longOptSeparator);
+                    optBuf.append(option.isWithEqualSign() ? '=' : longOptSeparator);
                     optBuf.append("<").append(argName != null ? option.getValueName() : getArgName()).append(">");
                 }
             }

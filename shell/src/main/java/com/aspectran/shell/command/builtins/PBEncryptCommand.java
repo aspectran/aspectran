@@ -22,7 +22,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Encrypts the input string using the encryption password.
@@ -38,16 +38,23 @@ public class PBEncryptCommand extends AbstractCommand {
     public PBEncryptCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("i").longName("input").valueSeparator().valueName("input_string").required().desc("The string to encrypt").build());
-        addOption(Option.builder("p").longName("password").valueSeparator().valueName("password").desc("The password to be used for encryption").build());
-        addOption(Option.builder("h").longName("help").desc("Display help for this command").build());
+        addOption(Option.builder("p")
+                .longName("password")
+                .valueName("password")
+                .withEqualSign()
+                .desc("The password to be used for encryption")
+                .build());
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
     public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args);
-        String input = options.getTypedValue("input");
-        String password = options.getTypedValue("password");
+        ParsedOptions options = parse(args, true);
+        String password = options.getValue("password");
+        List<String> inputValues = options.getArgList();
 
         boolean implicitPassword = false;
         if (!StringUtils.hasText(password)) {
@@ -55,26 +62,38 @@ public class PBEncryptCommand extends AbstractCommand {
             implicitPassword = true;
         }
 
-        if (!StringUtils.hasText(input) || !StringUtils.hasText(password)) {
+        if (!StringUtils.hasText(password)) {
+            setStyle("RED");
+            writeLine("A password is required to attempt password-based encryption or decryption.");
+            offStyle();
+            return null;
+        }
+
+        if (inputValues.isEmpty()) {
+            setStyle("RED");
+            writeLine("Please enter a string to decrypt.");
+            offStyle();
             printUsage();
             return null;
         }
 
-        String output;
-        try {
-            output = PBEncryptionUtils.encrypt(input, password);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
-        }
-
-        getConsole().writeLine("--------------------------------------------------");
-        getConsole().writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+        writeLine("--------------------------------------------------------------");
         if (!implicitPassword) {
-            getConsole().writeLine("   %1$-10s: %2$s", "password", password);
+            writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+            writeLine("   %1$-10s: %2$s", "password", password);
         }
-        getConsole().writeLine("   %1$-10s: %2$s", "input", input);
-        getConsole().writeLine("   %1$-10s: %2$s", "output", output);
-        getConsole().writeLine("--------------------------------------------------");
+        for (String input : inputValues) {
+            String output;
+            try {
+                output = PBEncryptionUtils.encrypt(input, password);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
+            }
+
+            writeLine("   %1$-10s: %2$s", "input", input);
+            writeLine("   %1$-10s: %2$s", "output", output);
+            writeLine("--------------------------------------------------------------");
+        }
         return null;
     }
 
@@ -102,12 +121,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "encrypt -i=<input_string> -p=<password>";
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
+            return "encrypt [-p=<password>] <input_string>";
         }
 
     }

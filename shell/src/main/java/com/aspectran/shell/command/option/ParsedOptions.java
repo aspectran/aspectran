@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.core.util.StringUtils;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -237,25 +239,6 @@ public class ParsedOptions implements Serializable {
     }
 
     /**
-     * Retrieves the option object given the long or short option as a String.
-     *
-     * @param name the short or long name of the option
-     * @return the canonicalized option
-     */
-    private Option resolveOption(String name) {
-        name = OptionUtils.stripLeadingHyphens(name);
-        for (Option option : options) {
-            if (name.equals(option.getName())) {
-                return option;
-            }
-            if (name.equals(option.getLongName())) {
-                return option;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Retrieves the array of values, if any, of an option.
      *
      * @param opt character name of the option
@@ -304,6 +287,25 @@ public class ParsedOptions implements Serializable {
      */
     public String getValue(char name, String defaultValue) {
         return getValue(String.valueOf(name), defaultValue);
+    }
+
+    /**
+     * Retrieves the option object given the long or short option as a String.
+     *
+     * @param name the short or long name of the option
+     * @return the canonicalized option
+     */
+    private Option resolveOption(String name) {
+        name = OptionUtils.stripLeadingHyphens(name);
+        for (Option option : options) {
+            if (name.equals(option.getName())) {
+                return option;
+            }
+            if (name.equals(option.getLongName())) {
+                return option;
+            }
+        }
+        return null;
     }
 
     /**
@@ -411,6 +413,10 @@ public class ParsedOptions implements Serializable {
         return args.toArray(new String[0]);
     }
 
+    public String getFirstArg() {
+        return (!args.isEmpty() ? args.get(0) : null);
+    }
+
     /**
      * Retrieve any left-over non-recognized options and arguments.
      *
@@ -426,7 +432,9 @@ public class ParsedOptions implements Serializable {
      * @param arg the unrecognized option/argument
      */
     protected void addArg(String arg) {
-        args.add(arg);
+        if (StringUtils.hasLength(arg)) {
+            args.add(arg);
+        }
     }
 
 }

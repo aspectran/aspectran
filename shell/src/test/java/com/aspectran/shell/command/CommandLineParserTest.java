@@ -18,6 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,6 +57,12 @@ class CommandLineParserTest {
         assertEquals(list.get(0).getOperand(), "'<abcde>'");
         assertEquals(list.get(1).getOperator(), CommandLineRedirection.Operator.APPEND_OUT);
         assertEquals(list.get(1).getOperand(), "12345");
+    }
+
+    @Test
+    void testQuotes() {
+        CommandLineParser parser = CommandLineParser.parse("encrypt -p=password \" a b c \" e 'f - g          '");
+        System.out.println(Arrays.toString(parser.getArgs()));
     }
 
 }

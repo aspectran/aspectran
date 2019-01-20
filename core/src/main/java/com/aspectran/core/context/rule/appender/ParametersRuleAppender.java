@@ -59,7 +59,7 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("appenderType", getAppenderType());
+        tsb.append("type", getAppenderType());
         tsb.append("format", getAppenderFileFormatType());
         tsb.append("profile", getProfiles());
         return tsb.toString();

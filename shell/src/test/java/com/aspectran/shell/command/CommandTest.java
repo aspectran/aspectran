@@ -61,8 +61,7 @@ class CommandTest {
         PBEncryptCommand command = new PBEncryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-i=aaa ccc d", "-p=bbb"});
-        command.execute(new String[] {"-i", "aaa ccc d", "-p", "bbb"});
+        command.execute(new String[] {"aaa ccc d", "-p=bbb"});
     }
 
     @Test
@@ -102,7 +101,7 @@ class CommandTest {
         TestCommand command = new TestCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-Dkey=123", "-i=aaa", "-p=bbb", "-XYZ"});
+        command.execute(new String[] {"-D=123", "-i=aaa", "-p=bbb", "-X", "-Y", "-Z"});
     }
 
     @Test

@@ -17,9 +17,6 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.command.option.Option;
-
-import java.util.Collection;
 
 /**
  * Clear the terminal screen.
@@ -66,11 +63,6 @@ public class ClearCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return null;
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
             return null;
         }
 

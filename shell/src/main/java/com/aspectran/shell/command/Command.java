@@ -15,15 +15,20 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.command.option.Option;
+import com.aspectran.shell.command.option.Arguments;
+import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.console.Console;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * The Command interface is there to allow Commander to delegate tasks.
  */
 public interface Command {
+
+    Options getOptions();
+
+    List<Arguments> getArgumentsList();
 
     /**
      * This method will be called as the starting point to execute the logic
@@ -95,13 +100,6 @@ public interface Command {
          * @return Usage of command
          */
         String getUsage();
-
-        /**
-         * Use this method is to provide a map of the command arguments.
-         *
-         * @return a map of the command arguments
-         */
-        Collection<Option> getOptions();
 
     }
 

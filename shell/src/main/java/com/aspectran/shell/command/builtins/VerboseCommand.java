@@ -15,22 +15,15 @@
  */
 package com.aspectran.shell.command.builtins;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
-import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-
-import java.util.Collection;
 
 /**
  * Turns verbose mode on or off.
  */
 public class VerboseCommand extends AbstractCommand {
-
-    private static final Log log = LogFactory.getLog(VerboseCommand.class);
 
     private static final String NAMESPACE = "builtins";
 
@@ -58,12 +51,12 @@ public class VerboseCommand extends AbstractCommand {
             }
             if ("on".equals(command)) {
                 getService().setVerbose(true);
-                getConsole().writeLine("Enabled verbose mode");
+                writeLine("Enabled verbose mode");
             } else if ("off".equals(command)) {
                 getService().setVerbose(false);
-                getConsole().writeLine("Disabled verbose mode");
+                writeLine("Disabled verbose mode");
             } else {
-                getConsole().writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
+                writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
                 printUsage();
             }
         } else {
@@ -96,12 +89,7 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "verbose <command>";
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
+            return null;
         }
 
     }

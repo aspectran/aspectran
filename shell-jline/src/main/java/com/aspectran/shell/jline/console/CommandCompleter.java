@@ -19,6 +19,7 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.shell.command.Command;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.service.ShellService;
@@ -62,7 +63,7 @@ public class CommandCompleter implements Completer {
             makeTransletCandidates(line.word(), candidates);
         } else if (line.wordIndex() > 0) {
             String cmd = line.words().get(0);
-            makeOptionCandidates(cmd, line.word(), candidates);
+            makeArgumentsCandidates(cmd, line.word(), candidates);
         }
     }
 
@@ -78,33 +79,39 @@ public class CommandCompleter implements Completer {
         }
     }
 
-    private void makeOptionCandidates(String cmd, String opt, List<Candidate> candidates) {
+    private void makeArgumentsCandidates(String cmd, String opt, List<Candidate> candidates) {
         if (service != null && service.getCommandRegistry() != null) {
             Command command = service.getCommandRegistry().getCommand(cmd);
-            if (command != null && command.getDescriptor().getOptions() != null) {
-                for (Option option : command.getDescriptor().getOptions()) {
-                    String optName = null;
+            if (command != null) {
+                for (Option option : command.getOptions().getAllOptions()) {
+                    String shortName = null;
                     if (option.getName() != null) {
-                        optName = HelpFormatter.DEFAULT_OPT_PREFIX + option.getName();
+                        shortName = HelpFormatter.DEFAULT_OPT_PREFIX + option.getName();
                     }
-                    String longOptName = null;
+                    String longName = null;
                     if (option.getLongName() != null) {
-                        longOptName = HelpFormatter.DEFAULT_LONG_OPT_PREFIX + option.getLongName();
+                        longName = HelpFormatter.DEFAULT_LONG_OPT_PREFIX + option.getLongName();
                     }
                     String dispName;
-                    if (optName != null && longOptName != null) {
-                        dispName = optName + "," + longOptName;
-                    } else if (optName != null) {
-                        dispName = optName;
+                    if (shortName != null && longName != null) {
+                        dispName = shortName + "," + longName;
+                    } else if (shortName != null) {
+                        dispName = shortName;
                     } else {
-                        dispName = longOptName;
+                        dispName = longName;
                     }
-                    if (optName != null && (opt == null || optName.indexOf(opt) == 0)) {
-                        candidates.add(new Candidate(optName, dispName,
-                                null, null, null, longOptName, false));
-                    } else if (longOptName != null && (opt == null || longOptName.indexOf(opt) == 0)) {
-                        candidates.add(new Candidate(longOptName, dispName,
-                                null, null, null, null, false));
+                    if (shortName != null && (opt == null || shortName.indexOf(opt) == 0)) {
+                        candidates.add(new Candidate(shortName, dispName,
+                                command.getOptions().getTitle(), null, null, longName, false));
+                    } else if (longName != null && (opt == null || longName.indexOf(opt) == 0)) {
+                        candidates.add(new Candidate(longName, dispName,
+                                command.getOptions().getTitle(), null, null, null, false));
+                    }
+                }
+                for (Arguments arguments : command.getArgumentsList()) {
+                    for (String name : arguments.keySet()) {
+                        candidates.add(new Candidate(name, name,
+                                arguments.getTitle(), null, null, null, false));
                     }
                 }
             }

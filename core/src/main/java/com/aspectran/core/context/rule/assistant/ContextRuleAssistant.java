@@ -396,10 +396,10 @@ public class ContextRuleAssistant {
      * @param itemRule the item rule
      */
     public void resolveBeanClass(ItemRule itemRule) {
-        Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
-        if (iter != null) {
-            while (iter.hasNext()) {
-                Token[] tokens = iter.next();
+        Iterator<Token[]> it = ItemRule.tokenIterator(itemRule);
+        if (it != null) {
+            while (it.hasNext()) {
+                Token[] tokens = it.next();
                 if (tokens != null) {
                     for (Token token : tokens) {
                         resolveBeanClass(token);

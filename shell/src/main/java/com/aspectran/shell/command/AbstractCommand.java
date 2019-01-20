@@ -27,11 +27,16 @@ import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractCommand implements Command {
 
     private final CommandRegistry registry;
 
-    protected final Options options = new Options();
+    private final Options options = new Options();
+
+    protected final List<Arguments> argumentsList = new ArrayList<>();
 
     public AbstractCommand(CommandRegistry registry) {
         this.registry = registry;
@@ -57,16 +62,12 @@ public abstract class AbstractCommand implements Command {
         return registry;
     }
 
-    public Options getOptions() {
-        return options;
-    }
-
     protected void addOption(Option option) {
         options.addOption(option);
     }
 
     protected void addArguments(Arguments arguments) {
-        options.addArguments(arguments);
+        argumentsList.add(arguments);
     }
 
     protected Arguments touchArguments() {
@@ -76,7 +77,11 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected ParsedOptions parse(String[] args) throws OptionParserException {
-        return getParser().parse(options, args);
+        return parse(args, false);
+    }
+
+    protected ParsedOptions parse(String[] args, boolean skipParsingAtNonOption) throws OptionParserException {
+        return getParser().parse(options, args, skipParsingAtNonOption);
     }
 
     protected OptionParser getParser() {
@@ -85,6 +90,36 @@ public abstract class AbstractCommand implements Command {
         } else {
             return new DefaultOptionParser();
         }
+    }
+
+    protected void writeLine(String string) {
+        getConsole().writeLine(string);
+    }
+
+    protected void writeLine(String format, Object... args) {
+        getConsole().writeLine(format, args);
+    }
+
+    protected void writeLine() {
+        getConsole().writeLine();
+    }
+
+    protected void setStyle(String... styles) {
+        getConsole().setStyle(styles);
+    }
+
+    protected void offStyle() {
+        getConsole().offStyle();
+    }
+
+    @Override
+    public Options getOptions() {
+        return options;
+    }
+
+    @Override
+    public List<Arguments> getArgumentsList() {
+        return argumentsList;
     }
 
     @Override
@@ -96,9 +131,9 @@ public abstract class AbstractCommand implements Command {
     public void printUsage(Console console) {
         HelpFormatter formatter = new HelpFormatter(console);
         if (getDescriptor().getUsage() != null && getDescriptor().getUsage().length() > 0) {
-            formatter.printHelp(getDescriptor().getUsage(), options, false);
+            formatter.printHelp(getDescriptor().getUsage(), this, false);
         } else {
-            formatter.printHelp(getDescriptor().getName(), options, true);
+            formatter.printHelp(getDescriptor().getName(), this, true);
         }
     }
 

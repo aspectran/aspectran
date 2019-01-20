@@ -19,11 +19,8 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.HelpFormatter;
-import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
-
-import java.util.Collection;
 
 /**
  * Display information about builtin commands.
@@ -53,16 +50,16 @@ public class HelpCommand extends AbstractCommand {
         } else if (filteredCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(filteredCommands[0]);
             if (command != null) {
-                getConsole().writeLine(command.getDescriptor().getDescription());
+                writeLine(command.getDescriptor().getDescription());
                 command.printUsage();
             } else {
-                getConsole().writeLine("No command mapped to '"
+                writeLine("No command mapped to '"
                         + filteredCommands[0] +  "'");
             }
         } else {
-            getConsole().setStyle("bold");
-            getConsole().writeLine("Built-in commands used in this application:");
-            getConsole().offStyle();
+            setStyle("bold");
+            writeLine("Built-in commands used in this application:");
+            offStyle();
             printHelp(filteredCommands);
         }
         return null;
@@ -78,7 +75,7 @@ public class HelpCommand extends AbstractCommand {
             if (commandWidth == 0 || filteredCommands == null || contains(name, filteredCommands)) {
                 String line = renderCommand(command, lineWidth, commandWidth, lpad, dpad);
                 if (line != null) {
-                    getConsole().writeLine(line);
+                    writeLine(line);
                 }
             }
         }
@@ -179,11 +176,6 @@ public class HelpCommand extends AbstractCommand {
         @Override
         public String getUsage() {
             return "help [<commands>]";
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
         }
 
     }

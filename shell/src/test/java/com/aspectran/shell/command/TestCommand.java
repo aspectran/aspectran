@@ -19,8 +19,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 
-import java.util.Collection;
-
 public class TestCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "test";
@@ -32,10 +30,27 @@ public class TestCommand extends AbstractCommand {
     public TestCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("i").longName("input").valueSeparator().valueName("input_string").required().desc("The string to encrypt").build());
-        addOption(Option.builder("p").longName("password").valueSeparator().valueName("password").required().desc("The password to be used for encryption").build());
-        addOption(Option.builder("h").longName("help").desc("Display this help").build());
-        addOption(Option.builder("D").hasValues().desc("Dkey=value").build());
+        addOption(Option.builder("i")
+                .longName("input")
+                .valueName("input_string")
+                .withEqualSign()
+                .required()
+                .desc("The string to encrypt")
+                .build());
+        addOption(Option.builder("p")
+                .longName("password")
+                .valueName("password")
+                .withEqualSign()
+                .desc("The password to be used for encryption")
+                .build());
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display this help")
+                .build());
+        addOption(Option.builder("D")
+                .hasValues()
+                .desc("Dkey=value")
+                .build());
         addOption(Option.builder("X").desc("XYZ").build());
         addOption(Option.builder("Y").desc("XYZ").build());
         addOption(Option.builder("Z").desc("XYZ").build());
@@ -84,11 +99,6 @@ public class TestCommand extends AbstractCommand {
         @Override
         public String getUsage() {
             return null;
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
         }
 
     }

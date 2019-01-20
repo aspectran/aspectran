@@ -56,6 +56,9 @@ public class Option implements Cloneable, Serializable {
     /** The name of the argument value for this option */
     private String valueName;
 
+    /** The Option will use '=' as a means to separate argument value */
+    private boolean withEqualSign;
+
     /** Description of the option */
     private String description;
 
@@ -74,9 +77,6 @@ public class Option implements Cloneable, Serializable {
     /** The list of argument values **/
     private List<String> values = new ArrayList<>();
 
-    /** The character that is the value separator */
-    private char valueSeparator;
-
     /**
      * Private constructor used by the nested Builder class.
      * 
@@ -87,7 +87,7 @@ public class Option implements Cloneable, Serializable {
         this.longName = builder.longName;
         this.valueName = builder.valueName;
         this.valueType = builder.valueType;
-        this.valueSeparator = builder.valueSeparator;
+        this.withEqualSign = builder.withEqualSign;
         this.numberOfValues = builder.numberOfValues;
         this.optionalValue = builder.optionalValue;
         this.required = builder.required;
@@ -273,34 +273,6 @@ public class Option implements Cloneable, Serializable {
     }
 
     /**
-     * Returns the value separator character.
-     *
-     * @return the value separator character
-     */
-    public char getValueSeparator() {
-        return valueSeparator;
-    }
-
-    /**
-     * Sets the value separator.  For example if the argument value
-     * was a Java property, the value separator would be '='.
-     *
-     * @param valueSeparator the value separator
-     */
-    public void setValueSeparator(char valueSeparator) {
-        this.valueSeparator = valueSeparator;
-    }
-
-    /**
-     * Return whether this Option has specified a value separator.
-     *
-     * @return whether this Option has specified a value separator
-     */
-    public boolean hasValueSeparator() {
-        return (valueSeparator > 0);
-    }
-
-    /**
      * Returns the number of argument values this Option can take.
      *
      * <p>
@@ -343,6 +315,18 @@ public class Option implements Cloneable, Serializable {
      */
     public boolean hasValues() {
         return (numberOfValues > 1 || numberOfValues == UNLIMITED_VALUES);
+    }
+
+    public void withEqualSign() {
+        setWithEqualSign(true);
+    }
+
+    public boolean isWithEqualSign() {
+        return withEqualSign;
+    }
+
+    public void setWithEqualSign(boolean withEqualSign) {
+        this.withEqualSign = withEqualSign;
     }
 
     /**
@@ -571,8 +555,7 @@ public class Option implements Cloneable, Serializable {
      * @return false if the maximum number of arguments is reached
      */
     boolean acceptsValue() {
-        return (hasValue() || hasValues() || hasOptionalValue()) &&
-                (numberOfValues <= 0 || values.size() < numberOfValues);
+        return (hasValue() && (numberOfValues <= 0 || values.size() < numberOfValues));
     }
 
     /**
@@ -638,6 +621,8 @@ public class Option implements Cloneable, Serializable {
         /** The name of the argument value for this option */
         private String valueName;
 
+        private boolean withEqualSign;
+
         /** Specifies whether this option is required to be present */
         private boolean required;
 
@@ -649,9 +634,6 @@ public class Option implements Cloneable, Serializable {
 
         /** The type of this Option */
         private OptionValueType valueType = OptionValueType.STRING;
-
-        /** The character that is the value separator */
-        private char valueSeparator;
 
         /**
          * Constructs a new {@code Builder} with the minimum
@@ -703,37 +685,9 @@ public class Option implements Cloneable, Serializable {
          *
          * @return this builder, to allow method chaining
          */
-        public Builder valueSeparator() {
-            return valueSeparator('=');
-        }
-
-        /**
-         * The Option will use <code>sep</code> as a means to
-         * separate argument values.
-         * <p>
-         * <b>Example:</b>
-         * <pre>
-         * Option opt = Option.builder("D").hasValues()
-         *                                 .valueSeparator('=')
-         *                                 .build();
-         * Options options = new Options();
-         * options.addOption(opt);
-         * String[] args = {"-Dkey=value"};
-         * CommandLineParser parser = new DefaultParser();
-         * CommandLine line = parser.parse(options, args);
-         * String propertyName = line.getOptionValues("D")[0];  // will be "key"
-         * String propertyValue = line.getOptionValues("D")[1]; // will be "value"
-         * </pre>
-         *
-         * @param valueSeparator the value separator.
-         * @return this builder, to allow method chaining
-         */
-        public Builder valueSeparator(char valueSeparator) {
-            this.valueSeparator = valueSeparator;
-            if (numberOfValues == UNINITIALIZED) {
-                numberOfValues = 1;
-            }
-            return this;
+        public Builder withEqualSign() {
+            this.withEqualSign = true;
+            return hasValue();
         }
 
         /**
@@ -779,14 +733,12 @@ public class Option implements Cloneable, Serializable {
         }
 
         /**
-         * Sets whether the Option can have an optional argument.
+         * Sets whether the Option can have an optional argument value.
          *
-         * @param optional specifies whether the Option can have
-         *      an optional argument value
          * @return this builder, to allow method chaining
          */
-        public Builder optionalValues(boolean optional) {
-            this.optionalValue = optional;
+        public Builder optionalValue() {
+            this.optionalValue = true;
             return this;
         }
 

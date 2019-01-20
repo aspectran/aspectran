@@ -24,7 +24,6 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -41,11 +40,26 @@ public class SysInfoCommand extends AbstractCommand {
     public SysInfoCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("props").longName("system-properties").desc("Displays the JVM's system properties").build());
-        addOption(Option.builder("cp").longName("class-path").desc("Displays JVM classpath information").build());
-        addOption(Option.builder("mem").longName("memory-usage").desc("Displays memory information about current JVM").build());
-        addOption(Option.builder("gc").longName("garbage-collection").desc("Performs garbage collection").build());
-        addOption(Option.builder("h").longName("help").desc("Display help for this command").build());
+        addOption(Option.builder("props")
+                .longName("system-properties")
+                .desc("Displays the JVM's system properties")
+                .build());
+        addOption(Option.builder("cp")
+                .longName("class-path")
+                .desc("Displays JVM classpath information")
+                .build());
+        addOption(Option.builder("mem")
+                .longName("memory-usage")
+                .desc("Displays memory information about current JVM")
+                .build());
+        addOption(Option.builder("gc")
+                .longName("garbage-collection")
+                .desc("Performs garbage collection")
+                .build());
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
@@ -67,14 +81,14 @@ public class SysInfoCommand extends AbstractCommand {
 
     private void printSysProperties() {
         for(Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
-            getConsole().writeLine("%1$30s   %2$s", entry.getKey(), entry.getValue());
+            writeLine("%1$30s   %2$s", entry.getKey(), entry.getValue());
         }
     }
 
     private void printClasspath() {
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
-            getConsole().writeLine(line);
+            writeLine(line);
         }
     }
 
@@ -87,8 +101,8 @@ public class SysInfoCommand extends AbstractCommand {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
 
-        getConsole().writeLine("%-24s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
-        getConsole().writeLine("%-24s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - before));
+        writeLine("%-24s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
+        writeLine("%-24s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - before));
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -103,11 +117,11 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            getConsole().writeLine("%-24s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(before));
-            getConsole().writeLine("%-24s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
-            getConsole().writeLine("%-24s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - before));
+            writeLine("%-24s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(before));
+            writeLine("%-24s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
+            writeLine("%-24s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - before));
         } else {
-            getConsole().writeLine("%-24s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(before));
+            writeLine("%-24s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(before));
         }
     }
 
@@ -135,12 +149,7 @@ public class SysInfoCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "sysinfo [options]";
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
+            return null;
         }
 
     }

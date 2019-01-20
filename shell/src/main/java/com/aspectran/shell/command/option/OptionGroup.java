@@ -72,7 +72,7 @@ public class OptionGroup implements Serializable {
      *
      * @param option the option that is selected
      * @throws AlreadySelectedException if an option from this group has
-     * already been selected.
+     *      already been selected.
      */
     public void setSelected(Option option) throws AlreadySelectedException {
         if (option == null) {
@@ -126,9 +126,9 @@ public class OptionGroup implements Serializable {
         StringBuilder buff = new StringBuilder();
         buff.append("[");
 
-        Iterator<Option> iter = getOptions().iterator();
-        while (iter.hasNext()) {
-            Option option = iter.next();
+        Iterator<Option> it = getOptions().iterator();
+        while (it.hasNext()) {
+            Option option = it.next();
             if (option.getName() != null) {
                 buff.append("-");
                 buff.append(option.getName());
@@ -140,7 +140,7 @@ public class OptionGroup implements Serializable {
                 buff.append(" ");
                 buff.append(option.getDescription());
             }
-            if (iter.hasNext()) {
+            if (it.hasNext()) {
                 buff.append(", ");
             }
         }

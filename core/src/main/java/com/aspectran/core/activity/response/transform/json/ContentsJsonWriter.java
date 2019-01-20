@@ -90,11 +90,11 @@ public class ContentsJsonWriter extends JsonWriter {
             write(contentResult);
         } else {
             openSquareBracket();
-            Iterator<ContentResult> iter = processResult.iterator();
-            while (iter.hasNext()) {
-                ContentResult contentResult = iter.next();
+            Iterator<ContentResult> it = processResult.iterator();
+            while (it.hasNext()) {
+                ContentResult contentResult = it.next();
                 write(contentResult);
-                if (iter.hasNext()) {
+                if (it.hasNext()) {
                     writeComma();
                 }
             }

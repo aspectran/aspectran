@@ -18,7 +18,10 @@ package com.aspectran.shell.command.option;
 import com.aspectran.shell.console.DefaultConsole;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -27,36 +30,62 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultOptionParserTest {
 
     @Test
-    void testLS() {
+    void testOptions() {
         OptionParser parser = new DefaultOptionParser();
 
         Options options = new Options();
-        options.addOption("a", "all", false, "do not hide entries starting with .");
-        options.addOption("A", "almost-all", false, "do not list implied . and ..");
-        options.addOption("b", "escape", false, "print octal escapes for nongraphic characters");
+        options.addOption(Option.builder("a")
+                .longName("all")
+                .desc("do not hide entries starting with .")
+                .build());
+        options.addOption(Option.builder("A")
+                .longName("almost-all")
+                .desc("do not list implied . and ..")
+                .build());
+        options.addOption(Option.builder("b")
+                .longName("escape")
+                .desc("print octal escapes for nongraphic characters")
+                .build());
+        options.addOption(Option.builder("B")
+                .longName("ignore-backups")
+                .desc("do not list implied entried ending with ~")
+                .build());
+        options.addOption(Option.builder("c")
+                .desc("with -lt: sort by, and show, ctime (time of last "
+                        + "modification of file status information) with "
+                        + "-l:show ctime and sort by name otherwise: sort "
+                        + "by ctime")
+                .build());
+        options.addOption(Option.builder("C")
+                .desc("list entries by columns")
+                .build());
         options.addOption(Option.builder().longName("block-size")
                 .desc("use SIZE-byte blocks")
-                .hasValue()
                 .valueName("SIZE")
                 .valueType(OptionValueType.INT)
+                .withEqualSign()
                 .build());
-        options.addOption("B", "ignore-backups", false, "do not list implied entried ending with ~");
-        options.addOption("c", false, "with -lt: sort by, and show, ctime (time of last "
-                + "modification of file status information) with "
-                + "-l:show ctime and sort by name otherwise: sort "
-                + "by ctime");
-        options.addOption("C", false, "list entries by columns");
         options.addOption(Option.builder("f")
                 .desc("files")
                 .hasValues()
-                .valueName("FILE")
-                .valueSeparator(' ')
+                .valueName("file")
                 .build());
         options.addOption(Option.builder("z")
                 .desc("files2")
                 .hasValues()
-                .valueName("FILE2")
-                .valueSeparator(' ')
+                .valueName("files")
+                .build());
+        options.addOption(Option.builder().longName("target")
+                .desc("target")
+                .valueName("target")
+                .withEqualSign()
+                .optionalValue()
+                .build());
+        options.addOption(Option.builder("p")
+                .desc("pause")
+                .valueName("pause")
+                .withEqualSign()
+                .optionalValue()
                 .build());
 
         String[] args = new String[] {
@@ -67,11 +96,23 @@ class DefaultOptionParserTest {
                 "-z",
                 "C.txt",
                 "D.txt",
-                "-b"
+                "-b",
+                "--target",
+                "args",
+                "-pyes"
         };
 
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
+
+            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
+            formatter.printOptions(90, options, 3, 3);
+
+            System.out.println(Arrays.toString(parsedOptions.getValues("block-size")));
+            System.out.println(Arrays.toString(parsedOptions.getValues("f")));
+            System.out.println(Arrays.toString(parsedOptions.getValues("z")));
+            System.out.println(Arrays.toString(parsedOptions.getValues("p")));
+            System.out.println(Arrays.toString(parsedOptions.getArgs()));
 
             assertEquals(parsedOptions.getTypedValue("block-size"), Integer.valueOf(10));
             assertEquals("A.txt", parsedOptions.getValues("f")[0]);
@@ -79,19 +120,107 @@ class DefaultOptionParserTest {
             assertEquals("C.txt", parsedOptions.getValues("z")[0]);
             assertEquals("D.txt", parsedOptions.getValues("z")[1]);
             assertTrue(parsedOptions.hasOption("b"));
-/*
-            System.out.println("------------------");
-            for (String s : parsedOptions.getValues("f")) {
-                System.out.println(s);
-            }
-            System.out.println("------------------");
-            for (String s : parsedOptions.getValues("z")) {
-                System.out.println(s);
-            }
-            System.out.println("------------------");
-*/
+            assertNull(parsedOptions.getValues("target"));
+        } catch(OptionParserException exp) {
+            System.out.println( "Unexpected exception: " + exp.getMessage() );
+        }
+    }
+
+    @Test
+    void testOptionGroup() {
+        OptionParser parser = new DefaultOptionParser();
+
+        OptionGroup og1 = new OptionGroup();
+        og1.addOption(Option.builder("a")
+                .longName("all")
+                .desc("do not hide entries starting with .")
+                .build());
+        og1.addOption(Option.builder("A")
+                .longName("almost-all")
+                .desc("do not list implied . and ..")
+                .build());
+
+        OptionGroup og2 = new OptionGroup();
+        og2.addOption(Option.builder("b")
+                .longName("escape")
+                .desc("print octal escapes for nongraphic characters")
+                .build());
+        og2.addOption(Option.builder("B")
+                .longName("ignore-backups")
+                .desc("do not list implied entries ending with ~")
+                .build());
+
+        OptionGroup og3 = new OptionGroup();
+        og3.addOption(Option.builder("c")
+                .desc("with -lt: sort by, and show, ctime (time of last "
+                        + "modification of file status information) with "
+                        + "-l:show ctime and sort by name otherwise: sort "
+                        + "by ctime")
+                .build());
+        og3.addOption(Option.builder("C")
+                .desc("list entries by columns")
+                .build());
+
+        String[] args = new String[] {
+                "-a",
+                "-b",
+                "-c"
+        };
+
+        Options options = new Options();
+        options.setTitle("Grouped options");
+        options.addOptionGroup(og1);
+        options.addOptionGroup(og2);
+        options.addOptionGroup(og3);
+
+        try {
+            ParsedOptions parsedOptions = parser.parse(options, args);
+
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
-            formatter.printHelp("ls [options] [<file(s)>]", options);
+            formatter.printOptions(90, options, 3, 3);
+
+            assertTrue(parsedOptions.hasOption("a"));
+            assertTrue(parsedOptions.hasOption("b"));
+            assertTrue(parsedOptions.hasOption("c"));
+        } catch(OptionParserException exp) {
+            System.out.println( "Unexpected exception: " + exp.getMessage() );
+        }
+    }
+
+    @Test
+    void testOptions2() {
+        OptionParser parser = new DefaultOptionParser();
+
+        Options options = new Options();
+        options.addOption(Option.builder("p")
+                .longName("password")
+                .desc("password")
+                .valueName("password")
+                .withEqualSign()
+                .optionalValue()
+                .build());
+        options.addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help")
+                .build());
+
+        String[] args = new String[] {
+                "-pyes",
+                "-passwordyes",
+                "-jfkdlsafds",
+                "-h",
+                "-help"
+        };
+
+        try {
+            ParsedOptions parsedOptions = parser.parse(options, args, true);
+
+            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
+            formatter.printOptions(90, options, 3, 3);
+
+            System.out.println(Arrays.toString(parsedOptions.getValues("password")));
+            System.out.println(parsedOptions.hasOption("help"));
+            System.out.println(Arrays.toString(parsedOptions.getArgs()));
         } catch(OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }

@@ -114,16 +114,16 @@ public class JsonWriter implements Flushable {
             openCurlyBracket();
 
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
-            Iterator<ParameterValue> iter = params.values().iterator();
-            while (iter.hasNext()) {
-                Parameter p = iter.next();
+            Iterator<ParameterValue> it = params.values().iterator();
+            while (it.hasNext()) {
+                Parameter p = it.next();
                 String name = p.getName();
                 Object value = p.getValue();
                 checkCircularReference(object, value);
 
                 writeName(name);
                 write(value);
-                if (iter.hasNext()) {
+                if (it.hasNext()) {
                     writeComma();
                 }
             }
@@ -133,16 +133,16 @@ public class JsonWriter implements Flushable {
             openCurlyBracket();
 
             @SuppressWarnings("unchecked")
-            Iterator<Map.Entry<Object, Object>> iter = ((Map<Object, Object>)object).entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry<Object, Object> entry = iter.next();
+            Iterator<Map.Entry<Object, Object>> it = ((Map<Object, Object>)object).entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Object, Object> entry = it.next();
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
 
                 writeName(name);
                 write(value);
-                if (iter.hasNext()) {
+                if (it.hasNext()) {
                     writeComma();
                 }
             }
@@ -152,13 +152,13 @@ public class JsonWriter implements Flushable {
             openSquareBracket();
 
             @SuppressWarnings("unchecked")
-            Iterator<Object> iter = ((Collection<Object>)object).iterator();
-            while (iter.hasNext()) {
-                Object value = iter.next();
+            Iterator<Object> it = ((Collection<Object>)object).iterator();
+            while (it.hasNext()) {
+                Object value = it.next();
                 checkCircularReference(object, value);
 
                 write(value);
-                if (iter.hasNext()) {
+                if (it.hasNext()) {
                     writeComma();
                 }
             }

@@ -17,7 +17,6 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.Console;
 
 import java.io.File;
@@ -276,7 +275,18 @@ public class CommandLineParser {
     }
 
     public static String[] splitCommandLine(String commandLine) {
-        return StringUtils.tokenize(commandLine, " \n\t", true);
+        List<String> list = new ArrayList<>();
+        Matcher m = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)").matcher(commandLine);
+        while (m.find()) {
+            if (m.group(1) != null) {
+                list.add(m.group(1));
+            } else if (m.group(2) != null) {
+                list.add(m.group(2));
+            } else {
+                list.add(m.group(3));
+            }
+        }
+        return list.toArray(new String[0]);
     }
 
 }

@@ -53,8 +53,6 @@ public class Options implements Serializable {
     /** A map of the option groups */
     private final Map<String, OptionGroup> optionGroups = new LinkedHashMap<>();
 
-    private final List<Arguments> argumentsList = new ArrayList<>();
-
     private String title = "Options:";
 
     public String getTitle() {
@@ -93,80 +91,6 @@ public class Options implements Serializable {
      */
     Collection<OptionGroup> getOptionGroups() {
         return new HashSet<>(optionGroups.values());
-    }
-
-    /**
-     * Add an option that only contains a short name.
-     * 
-     * <p>
-     * The option does not take an argument.
-     * </p>
-     *
-     * @param name Short single-character name of the option.
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addOption(String name, String description) {
-        addOption(name, null, false, description);
-        return this;
-    }
-
-    /**
-     * Add an option that only contains a short-name.
-     *
-     * <p>It may be specified as requiring an argument.</p>
-     *
-     * @param name Short single-character name of the option.
-     * @param hasArg flag signalling if an argument is required after this option
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addOption(String name, boolean hasArg, String description) {
-        addOption(name, null, hasArg, description);
-        return this;
-    }
-
-    /**
-     * Add an option that contains a short-name and a long-name.
-     *
-     * <p>It may be specified as requiring an argument.</p>
-     *
-     * @param name Short single-character name of the option.
-     * @param longName Long multi-character name of the option.
-     * @param hasArg flag signalling if an argument is required after this option
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addOption(String name, String longName, boolean hasArg, String description) {
-        addOption(new Option(name, longName, hasArg, description));
-        return this;
-    }
-
-    /**
-     * Add an option that contains a short-name and a long-name.
-     * 
-     * <p>The added option is set as required. It may be specified as requiring an argument.
-     * This method is a shortcut for:</p>
-     *
-     * <pre>
-     * {@code
-     * Options option = new Option(name, longName, hasArg, description);
-     * option.setRequired(true);
-     * options.add(option);
-     * }
-     * </pre>
-     *
-     * @param name short single-character name of the option
-     * @param longName long multi-character name of the option
-     * @param hasArg flag signalling if an argument is required after this option
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addRequiredOption(String name, String longName, boolean hasArg, String description) {
-        final Option option = new Option(name, longName, hasArg, description);
-        option.setRequired(true);
-        addOption(option);
-        return this;
     }
 
     /**
@@ -209,8 +133,8 @@ public class Options implements Serializable {
      *
      * @return read-only Collection of {@link Option} objects in this descriptor
      */
-    public Collection<Option> getOptions() {
-        return Collections.unmodifiableCollection(helpOptions());
+    public Collection<Option> getAllOptions() {
+        return Collections.unmodifiableCollection(shortOpts.values());
     }
 
     /**
@@ -218,7 +142,7 @@ public class Options implements Serializable {
      *
      * @return the List of Options
      */
-    List<Option> helpOptions() {
+    public List<Option> getHelpOptions() {
         return new ArrayList<>(shortOpts.values());
     }
 
@@ -303,14 +227,6 @@ public class Options implements Serializable {
      */
     public OptionGroup getOptionGroup(Option opt) {
         return optionGroups.get(opt.getKey());
-    }
-
-    public List<Arguments> getArgumentsList() {
-        return argumentsList;
-    }
-
-    public void addArguments(Arguments arguments) {
-        argumentsList.add(arguments);
     }
 
     /**

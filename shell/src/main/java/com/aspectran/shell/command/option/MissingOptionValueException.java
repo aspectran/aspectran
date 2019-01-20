@@ -16,40 +16,39 @@
 package com.aspectran.shell.command.option;
 
 /**
- * Thrown when an option requiring an argument
- * is not provided with an argument.
+ * Thrown when an option requiring a value is not provided with a value.
  */
-public class MissingArgumentException extends OptionParserException {
+public class MissingOptionValueException extends OptionParserException {
 
     /** @serial */
     private static final long serialVersionUID = 3097819241980741135L;
 
-    /** The option requiring additional arguments */
+    /** The option requiring additional values */
     private Option option;
 
     /**
-     * Construct a new {@code MissingArgumentException}
+     * Construct a new {@code MissingOptionValueException}
      * with the specified detail message.
      *
      * @param message the detail message
      */
-    public MissingArgumentException(String message) {
+    public MissingOptionValueException(String message) {
         super(message);
     }
 
     /**
-     * Construct a new {@code MissingArgumentException}
+     * Construct a new {@code MissingOptionValueException}
      * with the specified detail message.
      *
      * @param option the option requiring an argument
      */
-    public MissingArgumentException(Option option) {
-        this("Missing argument for option: " + option.getKey());
+    public MissingOptionValueException(Option option) {
+        this("Missing value for option: " + option.getKey());
         this.option = option;
     }
 
     /**
-     * Return the option requiring an argument that wasn't provided
+     * Return the option requiring a value that wasn't provided
      * on the command line.
      *
      * @return the related option

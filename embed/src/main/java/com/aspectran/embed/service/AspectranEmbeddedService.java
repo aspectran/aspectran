@@ -64,7 +64,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
     @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("EMB");
+        sessionManager.setGroupName("EM");
 
         SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
         if (sessionConfig != null) {

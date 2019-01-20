@@ -540,9 +540,9 @@ public class ItemRule {
             if (tokensMap == null || tokensMap.isEmpty()) {
                 return null;
             } else if (tokensMap.size() == 1) {
-                Iterator iter = tokensMap.values().iterator();
-                if (iter.hasNext()) {
-                    return (Token[])iter.next();
+                Iterator it = tokensMap.values().iterator();
+                if (it.hasNext()) {
+                    return (Token[])it.next();
                 } else {
                     return new Token[0];
                 }
@@ -750,16 +750,16 @@ public class ItemRule {
      * @return the iterator for tokens
      */
     public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
-        Iterator<Token[]> iter = null;
+        Iterator<Token[]> it = null;
         if (itemRule.isListableType()) {
             List<Token[]> list = itemRule.getTokensList();
             if (list != null) {
-                iter = list.iterator();
+                it = list.iterator();
             }
         } else if (itemRule.isMappableType()) {
             Map<String, Token[]> map = itemRule.getTokensMap();
             if (map != null) {
-                iter = map.values().iterator();
+                it = map.values().iterator();
             }
         } else {
             return new Iterator<Token[]>() {
@@ -778,7 +778,7 @@ public class ItemRule {
                 }
             };
         }
-        return iter;
+        return it;
     }
 
     /**

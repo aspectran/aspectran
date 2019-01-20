@@ -38,8 +38,14 @@ public class TransletCommand extends AbstractCommand {
     public TransletCommand(CommandRegistry registry) {
         super(registry);
 
-        addOption(Option.builder("l").longName("list").desc("Prints all translets or those filtered by the given name").build());
-        addOption(Option.builder("h").longName("help").desc("Display help for this command").build());
+        addOption(Option.builder("l")
+                .longName("list")
+                .desc("Prints all translets or those filtered by the given name")
+                .build());
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
@@ -49,16 +55,16 @@ public class TransletCommand extends AbstractCommand {
             String commandLine = String.join(" ", options.getArgs());
             try {
                 getService().execute(commandLine);
-                getConsole().writeLine();
+                writeLine();
             } catch (TransletNotFoundException e) {
-                getConsole().writeLine("No translet mapped to '" + commandLine + "'");
+                writeLine("No translet mapped to '" + commandLine + "'");
             }
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
             listTranslets(keywords.length > 0 ? keywords : null);
         } else {
             printUsage();
-            getConsole().writeLine("Available translets:");
+            writeLine("Available translets:");
             listTranslets(null);
         }
         return null;
@@ -67,11 +73,11 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        getConsole().writeLine("-%-20s-+-%-70s-", "--------------------",
-                "----------------------------------------------------------------------");
-        getConsole().writeLine(" %-20s | %-70s ", "Translet Name", "Description");
-        getConsole().writeLine("-%-20s-+-%-70s-", "--------------------",
-                "----------------------------------------------------------------------");
+        writeLine("-%-20s-+-%-63s-", "--------------------",
+                "---------------------------------------------------------------");
+        writeLine(" %-20s | %-63s ", "Translet Name", "Description");
+        writeLine("-%-20s-+-%-63s-", "--------------------",
+                "---------------------------------------------------------------");
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
             String desc = StringUtils.trimWhitespace(transletRule.getDescription());
@@ -97,18 +103,18 @@ public class TransletCommand extends AbstractCommand {
                         sb.append(transletRule.getAllowedMethods()[i].toString());
                     }
                     sb.append("] ");
-                    getConsole().writeLine(" %-20s | %-70s ", sb, StringUtils.EMPTY);
+                    writeLine(" %-20s | %-63s ", sb, StringUtils.EMPTY);
                 }
                 if (desc != null && desc.contains(ActivityContext.LINE_SEPARATOR)) {
                     String[] arr = StringUtils.split(desc, ActivityContext.LINE_SEPARATOR);
                     for (int i = 0; i < arr.length; i++) {
-                        getConsole().writeLine(" %-20s | %-70s ", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
+                        writeLine(" %-20s | %-63s ", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
                     }
                 } else {
-                    getConsole().writeLine(" %-20s | %-70s ", name, StringUtils.nullToEmpty(desc));
+                    writeLine(" %-20s | %-63s ", name, StringUtils.nullToEmpty(desc));
                 }
-                getConsole().writeLine("-%-20s-+-%-70s-", "--------------------",
-                        "----------------------------------------------------------------------");
+                writeLine("-%-20s-+-%-63s-", "--------------------",
+                        "---------------------------------------------------------------");
             }
         }
     }
@@ -137,12 +143,7 @@ public class TransletCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "translet [-l] [<translet_name>]";
-        }
-
-        @Override
-        public Collection<Option> getOptions() {
-            return options.getOptions();
+            return null;
         }
 
     }

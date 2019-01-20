@@ -66,11 +66,11 @@ public class SimpleFileUploadAction {
             log.debug("Uploaded File " + uploadedFile);
 
             if (uploadedFiles.size() > this.maxFiles) {
-                Iterator<String> iter = uploadedFiles.keySet().iterator();
+                Iterator<String> it = uploadedFiles.keySet().iterator();
                 int cnt = uploadedFiles.size() - this.maxFiles;
                 while (cnt-- > 0) {
-                    if (iter.hasNext()) {
-                        UploadedFile removedFile = uploadedFiles.remove(iter.next());
+                    if (it.hasNext()) {
+                        UploadedFile removedFile = uploadedFiles.remove(it.next());
                         log.debug("Remove Old File " + removedFile);
                     }
                 }
