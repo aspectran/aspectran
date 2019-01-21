@@ -23,6 +23,8 @@ import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
+import java.util.Arrays;
+
 /**
  * The Shell Command Handler.
  *
@@ -58,14 +60,18 @@ public class ShellCommander {
                 if (commandLine == null) {
                     continue;
                 }
-                commandLine = commandLine.trim();
-                if (commandLine.isEmpty()) {
+                String[] args = CommandLineParser.splitCommandLine(commandLine);
+                if (args.length == 0) {
                     continue;
                 }
 
-                CommandLineParser commandLineParser = CommandLineParser.parse(commandLine);
-                String commandName = commandLineParser.getCommandName();
-                String[] args = commandLineParser.getArgs();
+                String commandName = args[0];
+                if (args.length > 1) {
+                    args = Arrays.copyOfRange(args, 1, args.length);
+                } else {
+                    args = new String[0];
+                }
+
                 Command command = commandRegistry.getCommand(commandName);
                 if (command != null) {
                     String result;
@@ -82,7 +88,7 @@ public class ShellCommander {
                         console.offStyle();
                         command.printUsage();
                     } catch (Exception e) {
-                        log.error("Command execution failed", e);
+                        log.error("Failed to execute command: " + commandLine, e);
                     }
                 } else {
                     try {
@@ -94,7 +100,7 @@ public class ShellCommander {
                     } catch (ConsoleTerminatedException e) {
                         throw e;
                     } catch (Exception e) {
-                        log.error("Command execution failed", e);
+                        log.error("Failed to execute command: " + commandLine, e);
                     }
                 }
             }

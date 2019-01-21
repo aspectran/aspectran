@@ -41,9 +41,11 @@ public class CommandLineParser {
 
     private static final Pattern REDIRECTION_OPERATOR_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
+    private static final Pattern ARGS_SPLITTING_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)");
+
     private static final char ESCAPE = '\\';
 
-    private final boolean parseArgs;
+    private final boolean argsParsable;
 
     private MethodType requestMethod;
 
@@ -55,12 +57,12 @@ public class CommandLineParser {
 
     private List<CommandLineRedirection> redirectionList;
 
-    private CommandLineParser(boolean parseArgs) {
-        this.parseArgs = parseArgs;
+    private CommandLineParser(boolean argsParsable) {
+        this.argsParsable = argsParsable;
     }
 
-    public boolean isParseArgs() {
-        return parseArgs;
+    public boolean isArgsParsable() {
+        return argsParsable;
     }
 
     /**
@@ -172,7 +174,7 @@ public class CommandLineParser {
             commandName = commandLine;
         }
         parseRedirection(commandName);
-        if (parseArgs) {
+        if (argsParsable) {
             tokens = splitCommandLine(commandName);
             if (tokens.length > 1) {
                 commandName = tokens[0];
@@ -190,17 +192,17 @@ public class CommandLineParser {
     /**
      * Parse translet name and find all {@code CommandRedirection}s.
      *
-     * @param buffer the translet name to parse
+     * @param str the translet name to parse
      */
-    private void parseRedirection(String buffer) {
-        Matcher matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
+    private void parseRedirection(String str) {
+        Matcher matcher = REDIRECTION_OPERATOR_PATTERN.matcher(str);
         List<CommandLineRedirection> redirectionList = new ArrayList<>();
         CommandLineRedirection prevRedirectionOperation = null;
         boolean haveDoubleQuote = false;
         boolean haveSingleQuote = false;
         while (matcher.find()) {
             if (matcher.group(1) != null && !haveDoubleQuote && !haveSingleQuote) {
-                String string = buffer.substring(0, matcher.start(1)).trim();
+                String string = str.substring(0, matcher.start(1)).trim();
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
@@ -208,11 +210,11 @@ public class CommandLineParser {
                 }
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.APPEND_OUT);
                 redirectionList.add(prevRedirectionOperation);
-                buffer = buffer.substring(matcher.end(1));
-                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
+                str = str.substring(matcher.end(1));
+                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(str);
             }
             else if (matcher.group(2) != null && !haveDoubleQuote && !haveSingleQuote) {
-                String string = buffer.substring(0, matcher.start(2)).trim();
+                String string = str.substring(0, matcher.start(2)).trim();
                 if (prevRedirectionOperation != null) {
                     prevRedirectionOperation.setOperand(string);
                 } else {
@@ -220,24 +222,24 @@ public class CommandLineParser {
                 }
                 prevRedirectionOperation = new CommandLineRedirection(CommandLineRedirection.Operator.OVERWRITE_OUT);
                 redirectionList.add(prevRedirectionOperation);
-                buffer = buffer.substring(matcher.end(2));
-                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(buffer);
+                str = str.substring(matcher.end(2));
+                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(str);
             }
             else if (matcher.group(3) != null) {
-                if ((matcher.start(3) == 0 || buffer.charAt(matcher.start(3) - 1) != ESCAPE) &&
+                if ((matcher.start(3) == 0 || str.charAt(matcher.start(3) - 1) != ESCAPE) &&
                         !haveSingleQuote) {
                     haveDoubleQuote = !haveDoubleQuote;
                 }
             }
             else if (matcher.group(4) != null) {
-                if ((matcher.start(4) == 0 || buffer.charAt(matcher.start(4) - 1) != ESCAPE) &&
+                if ((matcher.start(4) == 0 || str.charAt(matcher.start(4) - 1) != ESCAPE) &&
                         !haveDoubleQuote) {
                     haveSingleQuote = !haveSingleQuote;
                 }
             }
         }
         if (prevRedirectionOperation != null) {
-            prevRedirectionOperation.setOperand(buffer.trim());
+            prevRedirectionOperation.setOperand(str.trim());
         }
         this.redirectionList = (redirectionList.size() > 0 ? redirectionList : null);
     }
@@ -254,8 +256,8 @@ public class CommandLineParser {
         return parser;
     }
 
-    public static CommandLineParser parse(String commandLine, boolean parseArgs) {
-        CommandLineParser parser = new CommandLineParser(parseArgs);
+    public static CommandLineParser parse(String commandLine, boolean argsParsable) {
+        CommandLineParser parser = new CommandLineParser(argsParsable);
         parser.parseCommandLine(commandLine);
         return parser;
     }
@@ -276,7 +278,7 @@ public class CommandLineParser {
 
     public static String[] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
-        Matcher m = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)").matcher(commandLine);
+        Matcher m = ARGS_SPLITTING_PATTERN.matcher(commandLine);
         while (m.find()) {
             if (m.group(1) != null) {
                 list.add(m.group(1));

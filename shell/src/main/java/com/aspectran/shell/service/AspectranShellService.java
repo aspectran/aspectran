@@ -16,11 +16,13 @@
 package com.aspectran.shell.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
@@ -101,13 +103,18 @@ public class AspectranShellService extends AbstractShellService {
             }
         }
 
+        boolean procedural = !commandLineParser.hasParameters();
+        ParameterMap params = commandLineParser.extractParameters();
+        String commandName = commandLineParser.getCommandName();
+        MethodType requestMethod = commandLineParser.getRequestMethod();
+
         ShellActivity activity = null;
         try {
             activity = new ShellActivity(this);
-            activity.setProcedural(!commandLineParser.hasParameters());
-            activity.setParameterMap(commandLineParser.extractParameters());
+            activity.setProcedural(procedural);
+            activity.setParameterMap(params);
             activity.setRedirectionWriters(redirectionWriters);
-            activity.prepare(commandLineParser.getCommandName(), commandLineParser.getRequestMethod());
+            activity.prepare(commandName, requestMethod);
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isTraceEnabled()) {
