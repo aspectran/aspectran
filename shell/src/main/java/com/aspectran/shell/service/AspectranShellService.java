@@ -31,7 +31,8 @@ import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
-import com.aspectran.shell.command.CommandLineParser;
+import com.aspectran.shell.command.TransletCommandLine;
+import com.aspectran.shell.command.TransletOutputRedirection;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 
@@ -58,18 +59,9 @@ public class AspectranShellService extends AbstractShellService {
     }
 
     @Override
-    public void execute(String commandLine) {
-        CommandLineParser commandLineParser = CommandLineParser.parse(commandLine, true);
-        if (!commandLineParser.hasParameters()) {
-            commandLineParser = CommandLineParser.parse(commandLine, false);
-        }
-        execute(commandLineParser);
-    }
-
-    @Override
-    public void execute(CommandLineParser commandLineParser) {
-        if (!isExposable(commandLineParser.getCommandName())) {
-            getConsole().writeLine("Unexposable translet: " + commandLineParser.getCommandName());
+    public void execute(TransletCommandLine transletCommandLine) {
+        if (!isExposable(transletCommandLine.getTransletName())) {
+            getConsole().writeLine("Unexposable translet: " + transletCommandLine.getTransletName());
             return;
         }
 
@@ -93,32 +85,32 @@ public class AspectranShellService extends AbstractShellService {
         }
 
         Writer[] redirectionWriters = null;
-        if (commandLineParser.getRedirectionList() != null) {
+        if (transletCommandLine.getRedirectionList() != null) {
             try {
-                redirectionWriters = commandLineParser.getRedirectionWriters(getConsole());
+                redirectionWriters = transletCommandLine.getRedirectionWriters(getConsole());
             } catch (Exception e) {
                 getConsole().writeLine("Invalid Redirection: " +
-                        CommandLineParser.serialize(commandLineParser.getRedirectionList()), e);
+                        TransletOutputRedirection.serialize(transletCommandLine.getRedirectionList()), e);
                 return;
             }
         }
 
-        boolean procedural = !commandLineParser.hasParameters();
-        ParameterMap params = commandLineParser.extractParameters();
-        String commandName = commandLineParser.getCommandName();
-        MethodType requestMethod = commandLineParser.getRequestMethod();
+        boolean procedural = (transletCommandLine.getParameterMap() == null);
+        ParameterMap parameterMap = transletCommandLine.getParameterMap();
+        String transletName = transletCommandLine.getTransletName();
+        MethodType requestMethod = transletCommandLine.getRequestMethod();
 
         ShellActivity activity = null;
         try {
             activity = new ShellActivity(this);
             activity.setProcedural(procedural);
-            activity.setParameterMap(params);
+            activity.setParameterMap(parameterMap);
             activity.setRedirectionWriters(redirectionWriters);
-            activity.prepare(commandName, requestMethod);
+            activity.prepare(transletName, requestMethod);
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isTraceEnabled()) {
-                log.trace("Unknown translet: " + commandLineParser.getCommandName());
+                log.trace("Unknown translet: " + transletName);
             }
             throw e;
         } catch (ActivityTerminatedException e) {
@@ -126,7 +118,7 @@ public class AspectranShellService extends AbstractShellService {
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing translet: " + commandLineParser.getCommandName(), e);
+            log.error("An error occurred while processing translet: " + transletName, e);
         } finally {
             if (redirectionWriters != null) {
                 for (Writer writer : redirectionWriters) {

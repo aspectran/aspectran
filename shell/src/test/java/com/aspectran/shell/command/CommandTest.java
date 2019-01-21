@@ -48,11 +48,13 @@ class CommandTest {
     }
 
     @Test
-    void testSysInfoCommand() {
+    void testSysInfoCommand() throws Exception {
         Console console = new DefaultConsole();
         Command command = new SysInfoCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
+        CommandLineParser lineParser = new CommandLineParser("sysinfo -mem");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test
@@ -61,7 +63,8 @@ class CommandTest {
         PBEncryptCommand command = new PBEncryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"aaa ccc d", "-p=bbb"});
+        CommandLineParser lineParser = new CommandLineParser("encrypt \"aaa ccc d\" -p=bbb");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test
@@ -70,7 +73,8 @@ class CommandTest {
         PBDecryptCommand command = new PBDecryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-i=RYr6VMzCxBuY9MoXYBV64w==", "-p=bbb"});
+        CommandLineParser lineParser = new CommandLineParser("decrypt -p=bbb RYr6VMzCxBuY9MoXYBV64w==");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test
@@ -81,7 +85,8 @@ class CommandTest {
         PBEncryptCommand command = new PBEncryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-i", "input1", "input2"});
+        CommandLineParser lineParser = new CommandLineParser("decrypt input1 input2");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test
@@ -91,8 +96,8 @@ class CommandTest {
         Console console = new DefaultConsole();
         PBDecryptCommand command = new PBDecryptCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
-        command.printUsage(console);
-        command.execute(new String[] {"-i=KuSJkQVYRydcVTNdm5oTJg=="});
+        CommandLineParser lineParser = new CommandLineParser("encrypt KuSJkQVYRydcVTNdm5oTJg==");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test
@@ -101,7 +106,8 @@ class CommandTest {
         TestCommand command = new TestCommand(null);
         console.writeLine(command.getDescriptor().getDescription());
         command.printUsage(console);
-        command.execute(new String[] {"-D=123", "-i=aaa", "-p=bbb", "-X", "-Y", "-Z"});
+        CommandLineParser lineParser = new CommandLineParser("test -i=aaa -D=123 -p=bbb -X -Y -Z");
+        command.execute(lineParser.getParsedOptions(command.getOptions()));
     }
 
     @Test

@@ -59,8 +59,7 @@ public class JettyCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args);
+    public String execute(ParsedOptions options) throws Exception {
         String serverName = options.getValue("server", "jetty.server");
 
         BeanRegistry beanRegistry = getService().getActivityContext().getBeanRegistry();

@@ -76,6 +76,10 @@ public abstract class AbstractCommand implements Command {
         return arguments;
     }
 
+    protected void skipParsingAtNonOption() {
+        options.setSkipParsingAtNonOption(true);
+    }
+
     protected ParsedOptions parse(String[] args) throws OptionParserException {
         return parse(args, false);
     }

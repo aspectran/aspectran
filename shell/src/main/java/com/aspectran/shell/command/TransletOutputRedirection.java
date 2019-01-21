@@ -17,16 +17,18 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.util.Collection;
+
 /**
  * <p>Created: 2017. 3. 8.</p>
  */
-public class CommandLineRedirection {
+public class TransletOutputRedirection {
 
     private final Operator operator;
 
     private String operand;
 
-    public CommandLineRedirection(Operator operator) {
+    public TransletOutputRedirection(Operator operator) {
         this.operator = operator;
     }
 
@@ -47,8 +49,8 @@ public class CommandLineRedirection {
         if (this == o) {
             return true;
         }
-        if (o instanceof CommandLineRedirection) {
-            CommandLineRedirection cr = (CommandLineRedirection)o;
+        if (o instanceof TransletOutputRedirection) {
+            TransletOutputRedirection cr = (TransletOutputRedirection)o;
             if (cr.getOperand().equals(operand) &&
                     cr.getOperator().equals(operator)) {
                 return true;
@@ -74,8 +76,22 @@ public class CommandLineRedirection {
         return tsb.toString();
     }
 
+    public static String serialize(Collection<TransletOutputRedirection> redirectionList) {
+        StringBuilder sb = new StringBuilder();
+        if (redirectionList != null) {
+            for (TransletOutputRedirection redirection : redirectionList) {
+                if (sb.length() > 0) {
+                    sb.append(" ");
+                }
+                sb.append(redirection.getOperator()).append(" ");
+                sb.append(redirection.getOperand());
+            }
+        }
+        return sb.toString();
+    }
+
     /**
-     * Command redirection operators.
+     * Translet output redirection operators.
      */
     public enum Operator {
 

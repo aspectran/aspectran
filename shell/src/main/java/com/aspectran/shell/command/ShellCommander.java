@@ -16,14 +16,14 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.component.translet.TransletNotFoundException;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
+import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
-
-import java.util.Arrays;
 
 /**
  * The Shell Command Handler.
@@ -57,26 +57,20 @@ public class ShellCommander {
         try {
             for (;;) {
                 String commandLine = console.readCommandLine();
-                if (commandLine == null) {
-                    continue;
-                }
-                String[] args = CommandLineParser.splitCommandLine(commandLine);
-                if (args.length == 0) {
+                if (!StringUtils.hasLength(commandLine)) {
                     continue;
                 }
 
-                String commandName = args[0];
-                if (args.length > 1) {
-                    args = Arrays.copyOfRange(args, 1, args.length);
-                } else {
-                    args = new String[0];
+                CommandLineParser lineParser = new CommandLineParser(commandLine);
+                if (lineParser.getCommandName() == null) {
+                    continue;
                 }
 
-                Command command = commandRegistry.getCommand(commandName);
+                Command command = commandRegistry.getCommand(lineParser.getCommandName());
                 if (command != null) {
-                    String result;
                     try {
-                        result = command.execute(args);
+                        ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
+                        String result = command.execute(options);
                         if (result != null) {
                             console.writeLine(result);
                         }
@@ -91,16 +85,20 @@ public class ShellCommander {
                         log.error("Failed to execute command: " + commandLine, e);
                     }
                 } else {
-                    try {
-                        service.execute(commandLine);
-                        console.writeLine();
-                    } catch (TransletNotFoundException e) {
-                        console.writeLine("No command or executable translet mapped to '"
-                                + e.getTransletName() +  "'");
-                    } catch (ConsoleTerminatedException e) {
-                        throw e;
-                    } catch (Exception e) {
-                        log.error("Failed to execute command: " + commandLine, e);
+                    TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
+                    if (transletCommandLine.getTransletName() != null) {
+                        try {
+                            service.execute(transletCommandLine);
+                            console.writeLine();
+                        } catch (TransletNotFoundException e) {
+                            console.writeLine("No command or translet mapped to '" + e.getTransletName() + "'");
+                        } catch (ConsoleTerminatedException e) {
+                            throw e;
+                        } catch (Exception e) {
+                            log.error("Failed to execute command: " + commandLine, e);
+                        }
+                    } else {
+                        console.writeLine("No command or translet mapped to '" + commandLine + "'");
                     }
                 }
             }

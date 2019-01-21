@@ -41,7 +41,11 @@ public class MultiWriter extends Writer {
     @Override
     public void flush() throws IOException {
         for (Writer writer : writers) {
-            writer.flush();
+            try {
+                writer.flush();
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 

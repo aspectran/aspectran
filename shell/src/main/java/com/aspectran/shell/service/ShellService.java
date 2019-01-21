@@ -18,8 +18,8 @@ package com.aspectran.shell.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.Console;
 
 import java.io.File;
@@ -92,16 +92,9 @@ public interface ShellService extends CoreService {
     /**
      * Executes a Shell Activity.
      *
-     * @param command the command
+     * @param transletCommandLine the translet command line
      */
-    void execute(String command);
-
-    /**
-     * Executes a Shell Activity.
-     *
-     * @param commandLineParser the command line parser
-     */
-    void execute(CommandLineParser commandLineParser);
+    void execute(TransletCommandLine transletCommandLine);
 
     /**
      * Stop the service and release all allocated resources.

@@ -41,8 +41,7 @@ public class VerboseCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args);
+    public String execute(ParsedOptions options) throws Exception {
         String command = null;
         if (options.hasArgs()) {
             String[] optArgs = options.getArgs();

@@ -48,11 +48,11 @@ public class PBDecryptCommand extends AbstractCommand {
                 .longName("help")
                 .desc("Display help for this command")
                 .build());
+        skipParsingAtNonOption();
     }
 
     @Override
-    public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args, true);
+    public String execute(ParsedOptions options) throws Exception {
         if (options.hasOption("help")) {
             printUsage();
             return null;

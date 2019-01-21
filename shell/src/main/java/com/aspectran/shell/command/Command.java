@@ -17,6 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Options;
+import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
 import java.util.List;
@@ -34,11 +35,11 @@ public interface Command {
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.
      *
-     * @param args the command line arguments
+     * @param options the parsed options
      * @return the message output to the console as a result of an executed command
      * @throws Exception if an error occurs during command execution
      */
-    String execute(String[] args) throws Exception;
+    String execute(ParsedOptions options) throws Exception;
 
     /**
      * Prints the usage statement for the specified command.

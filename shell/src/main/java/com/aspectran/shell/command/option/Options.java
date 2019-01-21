@@ -55,12 +55,30 @@ public class Options implements Serializable {
 
     private String title = "Options:";
 
+    private boolean skipParsingAtNonOption;
+
+    public Options() {
+        this(false);
+    }
+
+    public Options(boolean skipParsingAtNonOption) {
+        this.skipParsingAtNonOption = skipParsingAtNonOption;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isSkipParsingAtNonOption() {
+        return skipParsingAtNonOption;
+    }
+
+    public void setSkipParsingAtNonOption(boolean skipParsingAtNonOption) {
+        this.skipParsingAtNonOption = skipParsingAtNonOption;
     }
 
     /**

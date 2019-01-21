@@ -38,8 +38,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(String[] args) throws Exception {
-        ParsedOptions options = parse(args);
+    public String execute(ParsedOptions options) throws Exception {
         String[] filteredCommands = null;
         if (options.hasArgs()) {
             filteredCommands = options.getArgs();
