@@ -26,13 +26,13 @@ import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
 /**
- * The Shell Command Handler.
+ * The Shell Command Interpreter.
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ShellCommander {
+public class ShellCommandInterpreter {
 
-    private static final Log log = LogFactory.getLog(ShellCommander.class);
+    private static final Log log = LogFactory.getLog(ShellCommandInterpreter.class);
 
     private final ShellService service;
 
@@ -40,16 +40,16 @@ public class ShellCommander {
 
     private final CommandRegistry commandRegistry;
 
-    public ShellCommander(ShellService service) {
+    public ShellCommandInterpreter(ShellService service) {
         this.service = service;
         this.console = service.getConsole();
         if (service.getCommandRegistry() != null) {
             this.commandRegistry = service.getCommandRegistry();
         } else {
             this.commandRegistry = new CommandRegistry(service);
-            if (this.commandRegistry.getCommand(QuitCommand.class) == null) {
-                this.commandRegistry.addCommand(QuitCommand.class);
-            }
+        }
+        if (this.commandRegistry.getCommand(QuitCommand.class) == null) {
+            this.commandRegistry.addCommand(QuitCommand.class);
         }
     }
 
@@ -68,38 +68,10 @@ public class ShellCommander {
 
                 Command command = commandRegistry.getCommand(lineParser.getCommandName());
                 if (command != null) {
-                    try {
-                        ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
-                        String result = command.execute(options);
-                        if (result != null) {
-                            console.writeLine(result);
-                        }
-                    } catch (ConsoleTerminatedException e) {
-                        throw e;
-                    } catch (OptionParserException e) {
-                        console.setStyle("RED");
-                        console.writeLine(e.getMessage());
-                        console.offStyle();
-                        command.printUsage();
-                    } catch (Exception e) {
-                        log.error("Failed to execute command: " + commandLine, e);
-                    }
+                    execute(command, lineParser);
                 } else {
                     TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-                    if (transletCommandLine.getTransletName() != null) {
-                        try {
-                            service.execute(transletCommandLine);
-                            console.writeLine();
-                        } catch (TransletNotFoundException e) {
-                            console.writeLine("No command or translet mapped to '" + e.getTransletName() + "'");
-                        } catch (ConsoleTerminatedException e) {
-                            throw e;
-                        } catch (Exception e) {
-                            log.error("Failed to execute command: " + commandLine, e);
-                        }
-                    } else {
-                        console.writeLine("No command or translet mapped to '" + commandLine + "'");
-                    }
+                    execute(transletCommandLine);
                 }
             }
         } catch (ConsoleTerminatedException e) {
@@ -112,6 +84,55 @@ public class ShellCommander {
                     log.debug("Do not terminate this application while releasing all resources");
                 }
             }
+        }
+    }
+
+    /**
+     * Executes a command built into Aspectran Shell.
+     *
+     * @param command an instance of the built-in command to be executed
+     * @param lineParser the command line parser
+     */
+    private void execute(Command command, CommandLineParser lineParser) {
+        try {
+            ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
+            String result = command.execute(options);
+            if (result != null) {
+                console.writeLine(result);
+            }
+        } catch (ConsoleTerminatedException e) {
+            throw e;
+        } catch (OptionParserException e) {
+            console.setStyle("RED");
+            console.writeLine(e.getMessage());
+            console.offStyle();
+            command.printUsage();
+        } catch (Exception e) {
+            log.error("Failed to execute command: " + lineParser.getCommandLine(), e);
+        }
+    }
+
+    /**
+     * Executes a Translet defined in Aspectran.
+     *
+     * @param transletCommandLine the {@code TransletCommandLine} instance
+     */
+    private void execute(TransletCommandLine transletCommandLine) {
+        if (transletCommandLine.getTransletName() != null) {
+            try {
+                service.execute(transletCommandLine);
+                console.writeLine();
+            } catch (TransletNotFoundException e) {
+                console.writeLine("No command or translet mapped to '" + e.getTransletName() + "'");
+            } catch (ConsoleTerminatedException e) {
+                throw e;
+            } catch (Exception e) {
+                log.error("Failed to execute command: " +
+                        transletCommandLine.getLineParser().getCommandLine(), e);
+            }
+        } else {
+            console.writeLine("No command or translet mapped to '" +
+                    transletCommandLine.getLineParser().getCommandLine() + "'");
         }
     }
 

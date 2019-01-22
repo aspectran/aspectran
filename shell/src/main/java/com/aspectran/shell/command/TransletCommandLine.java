@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The Command Line Parser.
+ * Parses the command line entered to execute the Translet.
  */
 public class TransletCommandLine {
 
@@ -59,7 +59,17 @@ public class TransletCommandLine {
     }
 
     /**
-     * Gets the request method.
+     * Returns the command line parser.
+     *
+     * @return the command line parser
+     */
+    public CommandLineParser getLineParser() {
+        return lineParser;
+    }
+
+    /**
+     * Returns the request method of the target Translet
+     * extracted from the command line.
      *
      * @return the request method
      */
@@ -68,7 +78,8 @@ public class TransletCommandLine {
     }
 
     /**
-     * Gets the translet name.
+     * Returns the name of the target Translet extracted
+     * from the command line.
      *
      * @return the translet name
      */
@@ -77,19 +88,35 @@ public class TransletCommandLine {
     }
 
     /**
-     * Gets the command parameters.
+     * Returns the parameters to pass to the execution target
+     * Translet extracted from the command line.
      *
-     * @return the command arguments
+     * @return the parameter map
      */
     public ParameterMap getParameterMap() {
         return parameterMap;
     }
 
+    /**
+     * Returns a list of Translet output redirection extracted
+     * from the command line.
+     *
+     * @return a list of Translet output redirection
+     */
     public List<TransletOutputRedirection> getRedirectionList() {
         return redirectionList;
     }
 
-    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException, UnsupportedEncodingException {
+    /**
+     * Returns the {@code OutputStreamWriter} instances for translet output redirection.
+     *
+     * @param console the Console instance
+     * @return an array of the {@code OutputStreamWriter} instances
+     * @throws FileNotFoundException if the file has an invalid path
+     * @throws UnsupportedEncodingException if the named encoding is not supported
+     */
+    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException,
+            UnsupportedEncodingException {
         if (redirectionList != null) {
             List<Writer> writerList = new ArrayList<>(redirectionList.size());
             for (TransletOutputRedirection redirection : redirectionList) {
@@ -124,7 +151,7 @@ public class TransletCommandLine {
     }
 
     private ParameterMap extractParameterMap() {
-        if (lineParser.getArgs().length == 0) {
+        if (!lineParser.hasArgs()) {
             return null;
         }
         ParameterMap params = new ParameterMap();
@@ -166,7 +193,7 @@ public class TransletCommandLine {
     }
 
     private List<TransletOutputRedirection> extractRedirectionList() {
-        if (!StringUtils.hasLength(lineParser.getCommandLine())) {
+        if (!StringUtils.hasLength(lineParser.getCommandLine()) && !lineParser.hasArgs()) {
             return null;
         }
         String line = lineParser.getCommandLine();

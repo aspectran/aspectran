@@ -28,8 +28,20 @@ class CommandLineParserTest {
 
     @Test
     void testQuotes() {
-        CommandLineParser lineParser = new CommandLineParser("encrypt -p=password \" a b c \" e 'f - g          '");
-        assertEquals("[-p=password,  a b c , e, f - g          ]", Arrays.toString(lineParser.getArgs()));
+        CommandLineParser lineParser = new CommandLineParser("encrypt -p=password \" a b c \" ' ? ' e 'f - g          '");
+        assertEquals("[-p=password,  a b c ,  ? , e, f - g          ]", Arrays.toString(lineParser.getArgs()));
+    }
+
+    @Test
+    void testShift() {
+        CommandLineParser lineParser = new CommandLineParser("command arg1 arg2 arg3");
+        assertEquals("command", lineParser.getCommandName());
+        lineParser.shift();
+        assertEquals("arg1", lineParser.getCommandName());
+        lineParser.shift();
+        assertEquals("arg2", lineParser.getCommandName());
+        lineParser.shift();
+        assertEquals("arg3", lineParser.getCommandName());
     }
 
 }

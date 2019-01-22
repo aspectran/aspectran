@@ -16,13 +16,9 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.Arguments;
-import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
-import com.aspectran.shell.command.option.OptionParser;
-import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
-import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
@@ -36,7 +32,7 @@ public abstract class AbstractCommand implements Command {
 
     private final Options options = new Options();
 
-    protected final List<Arguments> argumentsList = new ArrayList<>();
+    private final List<Arguments> argumentsList = new ArrayList<>();
 
     public AbstractCommand(CommandRegistry registry) {
         this.registry = registry;
@@ -78,22 +74,6 @@ public abstract class AbstractCommand implements Command {
 
     protected void skipParsingAtNonOption() {
         options.setSkipParsingAtNonOption(true);
-    }
-
-    protected ParsedOptions parse(String[] args) throws OptionParserException {
-        return parse(args, false);
-    }
-
-    protected ParsedOptions parse(String[] args, boolean skipParsingAtNonOption) throws OptionParserException {
-        return getParser().parse(options, args, skipParsingAtNonOption);
-    }
-
-    protected OptionParser getParser() {
-        if (registry != null) {
-            return registry.getParser();
-        } else {
-            return new DefaultOptionParser();
-        }
     }
 
     protected void writeLine(String string) {

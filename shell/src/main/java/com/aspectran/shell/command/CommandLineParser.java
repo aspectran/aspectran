@@ -58,7 +58,7 @@ public class CommandLineParser {
     }
 
     public void shift() {
-        if (args.length > 0) {
+        if (args != null && args.length > 0) {
             if (!StringUtils.hasLength(args[0])) {
                 shift();
             } else {
@@ -88,12 +88,16 @@ public class CommandLineParser {
         return args;
     }
 
+    public boolean hasArgs() {
+        return (args != null && args.length > 0);
+    }
+
     public ParsedOptions getParsedOptions(Options options) throws OptionParserException {
         OptionParser parser = new DefaultOptionParser();
         return parser.parse(options, args);
     }
 
-    private static String[] splitCommandLine(String commandLine) {
+    private String[] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
         Matcher m = ARGS_SPLITTING_PATTERN.matcher(commandLine);
         while (m.find()) {

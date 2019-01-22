@@ -19,7 +19,7 @@ import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
@@ -28,6 +28,9 @@ import java.io.File;
 
 /**
  * Main entry point for the Aspectran Shell.
+ * <P>Aspectran Shell is a command interpreter that allows you to
+ * run the built-in commands and translets provided by Aspectran
+ * in the console environment.</P>
  *
  * @since 2016. 1. 17.
  */
@@ -41,14 +44,14 @@ public class AspectranShell {
     }
 
     public static void bootstrap(File aspectranConfigFile, Console console) {
-        ShellService shellService = null;
+        ShellService service = null;
         int exitStatus = 0;
 
         try {
             Aspectran.printPrettyAboutMe(System.out);
-            shellService = ShellService.run(aspectranConfigFile, console);
-            ShellCommander commander = new ShellCommander(shellService);
-            commander.perform();
+            service = ShellService.run(aspectranConfigFile, console);
+            ShellCommandInterpreter interpreter = new ShellCommandInterpreter(service);
+            interpreter.perform();
         } catch (Exception e) {
             Throwable t = ExceptionUtils.getRootCause(e);
             if (t instanceof InsufficientEnvironmentException) {
@@ -58,8 +61,8 @@ public class AspectranShell {
             }
             exitStatus = 1;
         } finally {
-            if (shellService != null) {
-                shellService.release();
+            if (service != null) {
+                service.release();
             }
         }
 

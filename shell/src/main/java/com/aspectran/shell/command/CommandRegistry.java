@@ -17,8 +17,6 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.shell.command.option.DefaultOptionParser;
-import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.service.ShellService;
 
 import java.util.Collection;
@@ -26,13 +24,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * A registry that contains the commands known by a shell.
+ *
  * <p>Created: 2017. 10. 25.</p>
  */
 public class CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
-
-    private final OptionParser parser = new DefaultOptionParser();
 
     private ShellService service;
 
@@ -42,10 +40,6 @@ public class CommandRegistry {
 
     public ShellService getService() {
         return service;
-    }
-
-    public OptionParser getParser() {
-        return parser;
     }
 
     public Command getCommand(String commandName) {

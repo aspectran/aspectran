@@ -16,7 +16,7 @@
 package com.aspectran.shell;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class AspectranShellTest {
         try {
             File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config.apon");
             service = ShellService.run(aspectranConfigFile);
-            ShellCommander commander = new ShellCommander(service);
+            ShellCommandInterpreter commander = new ShellCommandInterpreter(service);
             commander.perform();
         } catch (Exception e) {
             e.printStackTrace();

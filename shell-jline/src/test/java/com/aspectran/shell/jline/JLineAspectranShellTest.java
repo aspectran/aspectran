@@ -16,7 +16,7 @@
 package com.aspectran.shell.jline;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 import com.aspectran.shell.jline.console.JLineConsole;
 import com.aspectran.shell.service.ShellService;
 
@@ -34,7 +34,7 @@ class JLineAspectranShellTest {
         try {
             File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
             service = ShellService.run(aspectranConfigFile, new JLineConsole());
-            ShellCommander commander = new ShellCommander(service);
+            ShellCommandInterpreter commander = new ShellCommandInterpreter(service);
             commander.perform();
         } catch (Exception e) {
             e.printStackTrace();
