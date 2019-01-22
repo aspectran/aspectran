@@ -179,6 +179,7 @@ public class AbstractDaemon implements Daemon {
                 if (pollingThread.getState() == Thread.State.TIMED_WAITING) {
                     pollingThread.interrupt();
                 }
+                pollingThread = null;
             }
         }
     }
