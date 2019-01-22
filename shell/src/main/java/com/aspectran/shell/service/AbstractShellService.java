@@ -33,7 +33,6 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.adapter.ShellApplicationAdapter;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
-import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.console.Console;
 
 /**
@@ -45,13 +44,9 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private static final Log log = LogFactory.getLog(AbstractShellService.class);
 
+    private final Console console;
+
     private SessionManager sessionManager;
-
-    private Console console;
-
-    private String[] commands;
-
-    private ShellCommandRegistry commandRegistry;
 
     /** If verbose mode is on, a detailed description is printed each time the command is executed. */
     private boolean verbose;
@@ -60,8 +55,10 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private Token[] greetingsTokens;
 
-    protected AbstractShellService() {
+    protected AbstractShellService(Console console) {
         super(new ShellApplicationAdapter());
+
+        this.console = console;
 
         determineBasePath();
     }
@@ -75,12 +72,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             sessionManager.setSessionConfig(sessionConfig);
         }
         sessionManager.initialize();
-
-        if (commands != null) {
-            ShellCommandRegistry commandRegistry = new ShellCommandRegistry(this);
-            commandRegistry.addCommand(commands);
-            setCommandRegistry(commandRegistry);
-        }
 
         parseGreetings();
     }
@@ -100,29 +91,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public Console getConsole() {
         return console;
-    }
-
-    protected void setConsole(Console console) {
-        this.console = console;
-        console.setService(this);
-    }
-
-    @Override
-    public String[] getCommands() {
-        return commands;
-    }
-
-    protected void setCommands(String[] commands) {
-        this.commands = commands;
-    }
-
-    @Override
-    public ShellCommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    private void setCommandRegistry(ShellCommandRegistry commandRegistry) {
-        this.commandRegistry = commandRegistry;
     }
 
     @Override

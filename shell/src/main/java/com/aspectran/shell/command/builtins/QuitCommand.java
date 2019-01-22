@@ -16,8 +16,8 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ConsoleTerminatedException;
-import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
 
 /**
@@ -31,7 +31,7 @@ public class QuitCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public QuitCommand(ShellCommandRegistry registry) {
+    public QuitCommand(CommandRegistry registry) {
         super(registry);
     }
 

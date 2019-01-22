@@ -75,6 +75,23 @@ public abstract class ClassUtils {
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();
         }
+        return createInstance(cls, args, argTypes);
+    }
+
+    /**
+     * Method that can be called to try to create an instantiate of
+     * specified type.
+     *
+     * @param <T> the generic type
+     * @param cls the class to check
+     * @param args the arguments
+     * @param argTypes the argument types of the desired constructor
+     * @return an instantiated object
+     * @throws IllegalArgumentException if instantiation fails for any reason;
+     *      except for cases where constructor throws an unchecked exception
+     *      (which will be passed as is)
+     */
+    public static <T> T createInstance(Class<T> cls, Object[] args, Class<?>[] argTypes) {
         Constructor<T> ctor;
         try {
             ctor = findConstructor(cls, argTypes);
@@ -95,16 +112,16 @@ public abstract class ClassUtils {
      * Obtain an accessible constructor for the given class and parameters.
      *
      * @param cls the class to check
-     * @param parameterTypes the parameter types of the desired constructor
+     * @param argTypes the argument types of the desired constructor
      * @param <T> the generic type
      * @return the constructor reference
      * @throws NoSuchMethodException if no such constructor exists
      */
-    public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... parameterTypes)
+    public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... argTypes)
             throws NoSuchMethodException {
         Constructor<T> ctor;
         try {
-            ctor = cls.getDeclaredConstructor(parameterTypes);
+            ctor = cls.getDeclaredConstructor(argTypes);
         } catch (NoSuchMethodException e) {
             throw e;
         } catch (Exception e) {

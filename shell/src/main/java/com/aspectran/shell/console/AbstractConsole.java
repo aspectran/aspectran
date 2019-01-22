@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -27,18 +27,9 @@ import java.io.Writer;
  */
 public abstract class AbstractConsole implements Console {
 
-    private final String defaultPath;
-
     private String commandPrompt = DEFAULT_COMMAND_PROMPT;
 
-    public AbstractConsole(String defaultPath) {
-        this.defaultPath = defaultPath;
-    }
-
-    @Override
-    public String getDefaultPath() {
-        return defaultPath;
-    }
+    private ShellCommandInterpreter interpreter;
 
     @Override
     public String getCommandPrompt() {
@@ -56,8 +47,13 @@ public abstract class AbstractConsole implements Console {
     }
 
     @Override
-    public void setService(ShellService service) {
-        // Nothing to do
+    public ShellCommandInterpreter getInterpreter() {
+        return interpreter;
+    }
+
+    @Override
+    public void setInterpreter(ShellCommandInterpreter interpreter) {
+        this.interpreter = interpreter;
     }
 
 }

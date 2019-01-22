@@ -28,13 +28,13 @@ import java.util.List;
 
 public abstract class AbstractCommand implements Command {
 
-    private final ShellCommandRegistry registry;
+    private final CommandRegistry registry;
 
     private final Options options = new Options();
 
     private final List<Arguments> argumentsList = new ArrayList<>();
 
-    public AbstractCommand(ShellCommandRegistry registry) {
+    public AbstractCommand(CommandRegistry registry) {
         this.registry = registry;
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    public ShellCommandRegistry getCommandRegistry() {
+    public CommandRegistry getCommandRegistry() {
         return registry;
     }
 

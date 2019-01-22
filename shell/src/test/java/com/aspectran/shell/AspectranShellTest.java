@@ -16,10 +16,10 @@
 package com.aspectran.shell;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.command.ShellCommandInterpreter;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.shell.console.DefaultConsole;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Testcase for Aspectran Shell.
@@ -28,25 +28,9 @@ import java.io.File;
  */
 public class AspectranShellTest {
 
-    public static void main(String[] args) {
-        ShellService service = null;
-        int exitStatus = 0;
-
-        try {
-            File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config.apon");
-            service = ShellService.run(aspectranConfigFile);
-            ShellCommandInterpreter commander = new ShellCommandInterpreter(service);
-            commander.perform();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exitStatus = 1;
-        } finally {
-            if (service != null) {
-                service.release();
-            }
-        }
-
-        System.exit(exitStatus);
+    public static void main(String[] args) throws IOException {
+        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config.apon");
+        AspectranShell.bootstrap(aspectranConfigFile, new DefaultConsole());
     }
 
 }

@@ -24,20 +24,20 @@ public abstract class AbstractCommand implements Command {
 
     private final Log log = LogFactory.getLog(getClass());
 
-    private final DaemonCommandRegistry registry;
+    private final CommandRegistry registry;
 
     private final boolean isolated;
 
-    public AbstractCommand(DaemonCommandRegistry registry) {
+    public AbstractCommand(CommandRegistry registry) {
         this(registry, false);
     }
 
-    public AbstractCommand(DaemonCommandRegistry registry, boolean isolated) {
+    public AbstractCommand(CommandRegistry registry, boolean isolated) {
         this.registry = registry;
         this.isolated = isolated;
     }
 
-    public DaemonCommandRegistry getCommandRegistry() {
+    public CommandRegistry getCommandRegistry() {
         return registry;
     }
 

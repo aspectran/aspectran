@@ -36,8 +36,8 @@ public class JLineAspectranShell {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         try {
-            Console console = new JLineConsole(basePath);
-            AspectranShell.bootstrap(aspectranConfigFile, console);
+            Console console = new JLineConsole();
+            AspectranShell.bootstrap(basePath, aspectranConfigFile, console);
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

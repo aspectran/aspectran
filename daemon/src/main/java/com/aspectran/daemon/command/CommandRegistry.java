@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon;
+package com.aspectran.daemon.command;
 
-import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.daemon.Daemon;
 
-/**
- * The Interface Daemon.
- */
-public interface Daemon {
+import java.util.Collection;
 
-    String getName();
+public interface CommandRegistry {
 
-    void setName(String name);
+    Daemon getDaemon();
 
-    DaemonService getService();
+    Command getCommand(String commandName);
 
-    CommandPoller getCommandPoller();
+    Command getCommand(Class<? extends Command> commandClass);
 
-    CommandRegistry getCommandRegistry();
+    Collection<Command> getAllCommands();
 
-    boolean isWait();
-
-    boolean isActive();
-
-    void stop();
-
-    void destroy();
 }

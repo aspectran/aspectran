@@ -32,11 +32,11 @@ public class AspectranDemoTest {
 
     public static void main(String[] args) {
         try {
-            File current = ResourceUtils.getResourceAsFile("");
+            File current = ResourceUtils.getResourceAsFile(".");
             File root = new File(current, "../../app");
             File aspectranConfigFile = new File(root, "config/aspectran-config.apon");
-            Console console = new JLineConsole(root.getCanonicalPath());
-            AspectranShell.bootstrap(aspectranConfigFile, console);
+            Console console = new JLineConsole();
+            AspectranShell.bootstrap(root.getCanonicalPath(), aspectranConfigFile, console);
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

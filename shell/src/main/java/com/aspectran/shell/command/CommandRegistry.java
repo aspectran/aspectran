@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon;
+package com.aspectran.shell.command;
 
-import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.shell.service.ShellService;
+
+import java.util.Collection;
 
 /**
- * The Interface Daemon.
+ * A registry that contains the commands known by a shell.
+ *
+ * <p>Created: 2017. 10. 25.</p>
  */
-public interface Daemon {
+public interface CommandRegistry {
 
-    String getName();
+    ShellService getService();
 
-    void setName(String name);
+    Command getCommand(String commandName);
 
-    DaemonService getService();
+    Command getCommand(Class<? extends Command> commandClass);
 
-    CommandPoller getCommandPoller();
+    Collection<Command> getAllCommands();
 
-    CommandRegistry getCommandRegistry();
-
-    boolean isWait();
-
-    boolean isActive();
-
-    void stop();
-
-    void destroy();
 }

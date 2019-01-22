@@ -19,7 +19,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.DaemonCommandRegistry;
+import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
@@ -31,7 +31,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public PollingIntervalCommand(DaemonCommandRegistry registry) {
+    public PollingIntervalCommand(CommandRegistry registry) {
         super(registry);
     }
 

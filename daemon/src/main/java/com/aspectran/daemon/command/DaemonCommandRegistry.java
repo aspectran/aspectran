@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DaemonCommandRegistry {
+public class DaemonCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
@@ -33,14 +33,17 @@ public class DaemonCommandRegistry {
         this.daemon = daemon;
     }
 
+    @Override
     public Daemon getDaemon() {
         return daemon;
     }
 
+    @Override
     public Command getCommand(String commandName) {
         return commands.get(commandName);
     }
 
+    @Override
     public Command getCommand(Class<? extends Command> commandClass) {
         for (Command command : commands.values()) {
             if (command.getClass().equals(commandClass)) {
@@ -49,6 +52,12 @@ public class DaemonCommandRegistry {
         }
         return null;
     }
+
+    @Override
+    public Collection<Command> getAllCommands() {
+        return commands.values();
+    }
+
     public void addCommand(String... classNames) {
         if (classNames != null) {
             for (String className : classNames) {
@@ -65,16 +74,14 @@ public class DaemonCommandRegistry {
     }
 
     public void addCommand(Class<? extends Command> commandClass) {
-        Command command = ClassUtils.createInstance(commandClass, this);
+        Object[] args = { this };
+        Class<?>[] argTypes = { CommandRegistry.class };
+        Command command = ClassUtils.createInstance(commandClass, args, argTypes);
         assert command != null : "command is null";
         if (command.getDescriptor() == null) {
             throw new NullPointerException("A command without a descriptor");
         }
         commands.put(command.getDescriptor().getName(), command);
-    }
-
-    public Collection<Command> getAllCommands() {
-        return commands.values();
     }
 
 }

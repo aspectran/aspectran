@@ -17,9 +17,9 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
-import com.aspectran.shell.service.ShellService;
 import org.jline.builtins.Options;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -66,12 +66,6 @@ public class JLineConsole extends AbstractConsole {
     private AttributedStyle style;
 
     public JLineConsole() throws IOException {
-        this(null);
-    }
-
-    public JLineConsole(String defaultPath) throws IOException {
-        super(defaultPath);
-
         DefaultParser parser = new DefaultParser();
         //It will be applied from jline 3.9.1
         //parser.setEscapeChars(null);
@@ -326,8 +320,12 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public void setService(ShellService service) {
-        commandCompleter.setService(service);
+    public void setInterpreter(ShellCommandInterpreter interpreter) {
+        super.setInterpreter(interpreter);
+        if (interpreter != null) {
+            commandCompleter.setCommandRegistry(interpreter.getCommandRegistry());
+            commandCompleter.setService(interpreter.getService());
+        }
     }
 
 }

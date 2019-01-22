@@ -19,7 +19,6 @@ import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
@@ -34,23 +33,38 @@ public class ShellCommandInterpreter {
 
     private static final Log log = LogFactory.getLog(ShellCommandInterpreter.class);
 
-    private final ShellService service;
-
     private final Console console;
 
-    private final ShellCommandRegistry commandRegistry;
+    private CommandRegistry commandRegistry;
 
-    public ShellCommandInterpreter(ShellService service) {
+    private ShellService service;
+
+    public ShellCommandInterpreter(Console console) {
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
+
+        this.console = console;
+    }
+
+    public Console getConsole() {
+        return console;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    public void setCommandRegistry(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
+    }
+
+    public ShellService getService() {
+        return service;
+    }
+
+    public void setService(ShellService service) {
         this.service = service;
-        this.console = service.getConsole();
-        if (service.getCommandRegistry() != null) {
-            this.commandRegistry = service.getCommandRegistry();
-        } else {
-            this.commandRegistry = new ShellCommandRegistry(service);
-        }
-        if (this.commandRegistry.getCommand(QuitCommand.class) == null) {
-            this.commandRegistry.addCommand(QuitCommand.class);
-        }
     }
 
     public void perform() {
@@ -66,12 +80,17 @@ public class ShellCommandInterpreter {
                     continue;
                 }
 
-                Command command = commandRegistry.getCommand(lineParser.getCommandName());
+                Command command = null;
+                if (commandRegistry != null) {
+                    command = commandRegistry.getCommand(lineParser.getCommandName());
+                }
                 if (command != null) {
                     execute(command, lineParser);
-                } else {
+                } else if (service != null) {
                     TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
                     execute(transletCommandLine);
+                } else {
+                    console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
                 }
             }
         } catch (ConsoleTerminatedException e) {
@@ -79,7 +98,7 @@ public class ShellCommandInterpreter {
         } catch (Exception e) {
             log.error("Error occurred while processing shell command", e);
         } finally {
-            if (service.getServiceController().isActive()) {
+            if (service != null && service.getServiceController().isActive()) {
                 if (log.isDebugEnabled()) {
                     log.debug("Do not terminate this application while releasing all resources");
                 }

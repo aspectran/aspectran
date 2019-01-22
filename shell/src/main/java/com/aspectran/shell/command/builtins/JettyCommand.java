@@ -17,7 +17,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.ShellCommandRegistry;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
@@ -36,7 +36,7 @@ public class JettyCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public JettyCommand(ShellCommandRegistry registry) {
+    public JettyCommand(CommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("server")

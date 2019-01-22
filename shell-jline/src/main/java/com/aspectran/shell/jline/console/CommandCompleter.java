@@ -19,6 +19,7 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.shell.command.Command;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
@@ -39,17 +40,15 @@ import java.util.List;
  */
 public class CommandCompleter implements Completer {
 
+    private CommandRegistry commandRegistry;
+
     private ShellService service;
 
     public CommandCompleter() {
     }
 
-    public CommandCompleter(ShellService service) {
-        this.service = service;
-    }
-
-    public ShellService getService() {
-        return service;
+    public void setCommandRegistry(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
     }
 
     public void setService(ShellService service) {
@@ -68,8 +67,8 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeCommandCandidates(String cmd, List<Candidate> candidates) {
-        if (service != null && service.getCommandRegistry() != null) {
-            for (Command command : service.getCommandRegistry().getAllCommands()) {
+        if (commandRegistry != null) {
+            for (Command command : commandRegistry.getAllCommands()) {
                 String commandName = command.getDescriptor().getName();
                 if (cmd == null || commandName.indexOf(cmd) == 0) {
                     candidates.add(new Candidate(commandName, commandName, command.getDescriptor().getNamespace(),
@@ -80,8 +79,8 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeArgumentsCandidates(String cmd, String opt, List<Candidate> candidates) {
-        if (service != null && service.getCommandRegistry() != null) {
-            Command command = service.getCommandRegistry().getCommand(cmd);
+        if (commandRegistry != null) {
+            Command command = commandRegistry.getCommand(cmd);
             if (command != null) {
                 for (Option option : command.getOptions().getAllOptions()) {
                     String shortName = null;
@@ -119,26 +118,28 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeTransletCandidates(String cmd, List<Candidate> candidates) {
-        if (service != null) {
-            TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
-            for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-                String transletName = transletRule.getName();
-                String dispName = transletName;
-                if (service.isExposable(transletName)) {
-                    if (cmd == null || transletName.indexOf(cmd) == 0) {
-                        if (transletRule.hasPathVariables()) {
-                            transletName = transletRule.getNamePattern().toString();
-                            if (transletRule.getNameTokens().length == 1) {
-                                transletName = transletName.replace(WildcardPattern.STAR_CHAR, ' ');
-                                transletName = transletName.replace(WildcardPattern.PLUS_CHAR, ' ');
-                                transletName = transletName.replace(WildcardPattern.QUESTION_CHAR, ' ');
-                                transletName = transletName.trim();
-                            }
+        if (service == null ||
+                !service.getServiceController().isActive()) {
+            return;
+        }
+        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+        for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
+            String transletName = transletRule.getName();
+            String dispName = transletName;
+            if (service.isExposable(transletName)) {
+                if (cmd == null || transletName.indexOf(cmd) == 0) {
+                    if (transletRule.hasPathVariables()) {
+                        transletName = transletRule.getNamePattern().toString();
+                        if (transletRule.getNameTokens().length == 1) {
+                            transletName = transletName.replace(WildcardPattern.STAR_CHAR, ' ');
+                            transletName = transletName.replace(WildcardPattern.PLUS_CHAR, ' ');
+                            transletName = transletName.replace(WildcardPattern.QUESTION_CHAR, ' ');
+                            transletName = transletName.trim();
                         }
-                        if (!transletName.isEmpty()) {
-                            candidates.add(new Candidate(transletName, dispName, "translets",
-                                    null, null, null, true));
-                        }
+                    }
+                    if (!transletName.isEmpty()) {
+                        candidates.add(new Candidate(transletName, dispName, "translets",
+                                null, null, null, true));
                     }
                 }
             }

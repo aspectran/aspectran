@@ -16,13 +16,9 @@
 package com.aspectran.shell.service;
 
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.Console;
-
-import java.io.File;
 
 /**
  * The Interface ShellService.
@@ -44,10 +40,6 @@ public interface ShellService extends CoreService {
      * @return the console
      */
     Console getConsole();
-
-    String[] getCommands();
-
-    ShellCommandRegistry getCommandRegistry();
 
     /**
      * Tests if the verbose mode is enabled.
@@ -95,39 +87,5 @@ public interface ShellService extends CoreService {
      * @param transletCommandLine the translet command line
      */
     void execute(TransletCommandLine transletCommandLine);
-
-    /**
-     * Stop the service and release all allocated resources.
-     */
-    void release();
-
-    /**
-     * Creates and starts a new Aspectran Shell Service.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code ShellService}
-     */
-    static ShellService run(File aspectranConfigFile) {
-        return run(aspectranConfigFile, null);
-    }
-
-    /**
-     * Creates and starts a new Aspectran Shell Service.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @param console the console
-     * @return the instance of {@code ShellService}
-     */
-    static ShellService run(File aspectranConfigFile, Console console) {
-        try {
-            AspectranShellService shellService = AspectranShellService.create(aspectranConfigFile, console);
-            shellService.start();
-            return shellService;
-        } catch (AspectranServiceException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new AspectranServiceException("ShellService run failed with " + aspectranConfigFile, e);
-        }
-    }
 
 }

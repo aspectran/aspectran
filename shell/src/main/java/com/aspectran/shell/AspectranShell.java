@@ -17,12 +17,16 @@ package com.aspectran.shell;
 
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.shell.command.ShellCommandInterpreter;
+import com.aspectran.shell.command.ShellCommandRegistry;
+import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.DefaultConsole;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.shell.service.AspectranShellService;
 
 import java.io.File;
 
@@ -39,18 +43,59 @@ public class AspectranShell {
     public static void main(String[] args) {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
-        Console console = new DefaultConsole(basePath);
-        bootstrap(aspectranConfigFile, console);
+        Console console = new DefaultConsole();
+        bootstrap(basePath, aspectranConfigFile, console);
     }
 
     public static void bootstrap(File aspectranConfigFile, Console console) {
-        ShellService service = null;
+        bootstrap(null, aspectranConfigFile, console);
+    }
+
+    public static void bootstrap(String basePath, File aspectranConfigFile, Console console) {
+        if (aspectranConfigFile == null) {
+            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+        }
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
+
+        AspectranShellService service = null;
         int exitStatus = 0;
 
         try {
             Aspectran.printPrettyAboutMe(System.out);
-            service = ShellService.run(aspectranConfigFile, console);
-            ShellCommandInterpreter interpreter = new ShellCommandInterpreter(service);
+
+            AspectranConfig aspectranConfig = new AspectranConfig();
+            try {
+                AponReader.parse(aspectranConfigFile, aspectranConfig);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to parse aspectran config file: " +
+                        aspectranConfigFile, e);
+            }
+            if (basePath != null) {
+                aspectranConfig.updateBasePath(basePath);
+            }
+
+            ShellConfig shellConfig = aspectranConfig.touchShellConfig();
+            String commandPrompt = shellConfig.getString(ShellConfig.prompt);
+            if (commandPrompt != null) {
+                console.setCommandPrompt(commandPrompt);
+            }
+
+            ShellCommandInterpreter interpreter = new ShellCommandInterpreter(console);
+            console.setInterpreter(interpreter);
+
+            service = AspectranShellService.create(aspectranConfig, console);
+            service.start();
+            interpreter.setService(service);
+
+            ShellCommandRegistry commandRegistry = new ShellCommandRegistry(service);
+            commandRegistry.addCommand(shellConfig.getStringArray(ShellConfig.commands));
+            if (commandRegistry.getCommand(QuitCommand.class) == null) {
+                commandRegistry.addCommand(QuitCommand.class);
+            }
+            interpreter.setCommandRegistry(commandRegistry);
+
             interpreter.perform();
         } catch (Exception e) {
             Throwable t = ExceptionUtils.getRootCause(e);
@@ -62,7 +107,7 @@ public class AspectranShell {
             exitStatus = 1;
         } finally {
             if (service != null) {
-                service.release();
+                service.stop();
             }
         }
 

@@ -16,36 +16,20 @@
 package com.aspectran.shell.jline;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.command.ShellCommandInterpreter;
+import com.aspectran.shell.AspectranShell;
 import com.aspectran.shell.jline.console.JLineConsole;
-import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * <p>Created: 2017. 3. 26.</p>
  */
 class JLineAspectranShellTest {
 
-    public static void main(String[] args) {
-        ShellService service = null;
-        int exitStatus = 0;
-
-        try {
-            File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
-            service = ShellService.run(aspectranConfigFile, new JLineConsole());
-            ShellCommandInterpreter commander = new ShellCommandInterpreter(service);
-            commander.perform();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exitStatus = 1;
-        } finally {
-            if (service != null) {
-                service.release();
-            }
-        }
-
-        System.exit(exitStatus);
+    public static void main(String[] args) throws IOException {
+        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
+        AspectranShell.bootstrap(aspectranConfigFile, new JLineConsole());
     }
 
 }

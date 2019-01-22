@@ -19,6 +19,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.builtins.QuitCommand;
 import com.aspectran.daemon.command.polling.CommandPoller;
@@ -43,7 +44,7 @@ public class AbstractDaemon implements Daemon {
 
     private CommandPoller commandPoller;
 
-    private DaemonCommandRegistry commandRegistry;
+    private CommandRegistry commandRegistry;
 
     private boolean wait;
 
@@ -72,7 +73,7 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
-    public DaemonCommandRegistry getCommandRegistry() {
+    public CommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 

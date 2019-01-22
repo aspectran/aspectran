@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * <p>Created: 2017. 10. 25.</p>
  */
-public class ShellCommandRegistry {
+public class ShellCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
@@ -38,14 +38,17 @@ public class ShellCommandRegistry {
         this.service = service;
     }
 
+    @Override
     public ShellService getService() {
         return service;
     }
 
+    @Override
     public Command getCommand(String commandName) {
         return commands.get(commandName);
     }
 
+    @Override
     public Command getCommand(Class<? extends Command> commandClass) {
         for (Command command : commands.values()) {
             if (command.getClass().equals(commandClass)) {
@@ -53,6 +56,11 @@ public class ShellCommandRegistry {
             }
         }
         return null;
+    }
+
+    @Override
+    public Collection<Command> getAllCommands() {
+        return commands.values();
     }
 
     public void addCommand(String... classNames) {
@@ -71,12 +79,10 @@ public class ShellCommandRegistry {
     }
 
     public void addCommand(Class<? extends Command> commandClass) {
-        Command command = ClassUtils.createInstance(commandClass, this);
+        Object[] args = { this };
+        Class<?>[] argTypes = { CommandRegistry.class };
+        Command command = ClassUtils.createInstance(commandClass, args, argTypes);
         commands.put(command.getDescriptor().getName(), command);
-    }
-
-    public Collection<Command> getAllCommands() {
-        return commands.values();
     }
 
 }

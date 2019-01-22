@@ -23,20 +23,16 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.command.TransletOutputRedirection;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.DefaultConsole;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -54,8 +50,8 @@ public class AspectranShellService extends AbstractShellService {
 
     private long pauseTimeout = -1L;
 
-    private AspectranShellService() {
-        super();
+    private AspectranShellService(Console console) {
+        super(console);
     }
 
     @Override
@@ -135,81 +131,41 @@ public class AspectranShellService extends AbstractShellService {
         }
     }
 
-    @Override
-    public void release() {
-        stop();
-    }
-
     /**
      * Returns a new instance of {@code AspectranShellService}.
      *
-     * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code AspectranShellService}
-     */
-    public static AspectranShellService create(File aspectranConfigFile) {
-        return create(aspectranConfigFile, null);
-    }
-
-    /**
-     * Returns a new instance of {@code AspectranShellService}.
-     *
-     * @param aspectranConfigFile the aspectran configuration file
+     * @param aspectranConfig the aspectran configuration
      * @param console the console
      * @return the instance of {@code AspectranShellService}
      */
-    public static AspectranShellService create(File aspectranConfigFile, Console console) {
-        AspectranConfig aspectranConfig = new AspectranConfig();
-        if (aspectranConfigFile != null) {
-            try {
-                AponReader.parse(aspectranConfigFile, aspectranConfig);
-            } catch (Exception e) {
-                throw new AspectranServiceException("Failed to parse aspectran config file: " +
-                        aspectranConfigFile, e);
-            }
-        }
-
+    public static AspectranShellService create(AspectranConfig aspectranConfig, Console console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String appConfigRootFile = contextConfig.getString(ContextConfig.root);
         if (!StringUtils.hasText(appConfigRootFile)) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
+            if (contextConfig.getParameter(ContextConfig.parameters) == null) {
+                contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
+            }
         }
 
-        AspectranShellService service = new AspectranShellService();
-        if (console != null && console.getDefaultPath() != null) {
-            service.setBasePath(console.getDefaultPath());
-        }
-        service.prepare(aspectranConfig);
+        AspectranShellService service = new AspectranShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
-            if (console != null) {
-                service.setConsole(console);
-            } else {
-                service.setConsole(new DefaultConsole());
-            }
-            String commandPrompt = shellConfig.getString(ShellConfig.prompt);
-            if (commandPrompt != null) {
-                service.getConsole().setCommandPrompt(commandPrompt);
-            }
-            String[] commands = shellConfig.getStringArray(ShellConfig.commands);
-            if (commands != null && commands.length > 0) {
-                service.setCommands(commands);
-            }
-            service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
-            service.setGreetings(shellConfig.getString(ShellConfig.greetings));
-            ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
-            if (exposalsConfig != null) {
-                String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-                String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
-                service.setExposals(includePatterns, excludePatterns);
-            }
-        } else {
-            shellConfig = new ShellConfig();
-            aspectranConfig.putShellConfig(shellConfig);
-            service.setConsole(new DefaultConsole());
+            applyShellConfig(service, shellConfig);
         }
-
+        service.prepare(aspectranConfig);
         setServiceStateListener(service);
         return service;
+    }
+
+    private static void applyShellConfig(AspectranShellService service, ShellConfig shellConfig) {
+        service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
+        service.setGreetings(shellConfig.getString(ShellConfig.greetings));
+        ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            service.setExposals(includePatterns, excludePatterns);
+        }
     }
 
     private static void setServiceStateListener(final AspectranShellService service) {
@@ -248,7 +204,6 @@ public class AspectranShellService extends AbstractShellService {
             @Override
             public void stopped() {
                 paused();
-                service.getConsole().setService(null);
             }
         });
     }

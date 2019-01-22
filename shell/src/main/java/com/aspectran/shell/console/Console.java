@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.shell.command.ShellCommandInterpreter;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -31,8 +31,6 @@ import java.io.Writer;
 public interface Console {
 
     String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
-
-    String getDefaultPath();
 
     String getCommandPrompt();
 
@@ -88,7 +86,9 @@ public interface Console {
 
     boolean confirmQuit();
 
-    void setService(ShellService service);
+    ShellCommandInterpreter getInterpreter();
+
+    void setInterpreter(ShellCommandInterpreter interpreter);
 
 }
 

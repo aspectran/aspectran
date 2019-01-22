@@ -17,7 +17,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
-import com.aspectran.shell.command.ShellCommandRegistry;
+import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
@@ -33,7 +33,7 @@ public class HelpCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public HelpCommand(ShellCommandRegistry registry) {
+    public HelpCommand(CommandRegistry registry) {
         super(registry);
     }
 

@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.DaemonCommandRegistry;
+import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
@@ -28,7 +28,7 @@ public class RestartCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public RestartCommand(DaemonCommandRegistry registry) {
+    public RestartCommand(CommandRegistry registry) {
         super(registry, true);
     }
 
@@ -36,7 +36,7 @@ public class RestartCommand extends AbstractCommand {
     public CommandResult execute(CommandParameters parameters) {
         try {
             info("Restarting Now. See you soon.");
-            getCommandRegistry().getDaemon().getService().getServiceController().restart();
+            getService().getServiceController().restart();
             return success(info("Successful restart command"));
         } catch (Exception e) {
             return failed(e);
