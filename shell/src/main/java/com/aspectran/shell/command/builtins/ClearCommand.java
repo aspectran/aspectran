@@ -16,7 +16,7 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
 
 /**
@@ -30,7 +30,7 @@ public class ClearCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public ClearCommand(CommandRegistry registry) {
+    public ClearCommand(ShellCommandRegistry registry) {
         super(registry);
     }
 

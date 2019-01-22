@@ -38,6 +38,10 @@ public abstract class AbstractCommandPoller implements CommandPoller {
     private boolean requeue;
 
     public AbstractCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
+        if (daemon == null) {
+            throw new IllegalArgumentException("daemon must not be null");
+        }
+
         this.daemon = daemon;
 
         this.pollingInterval = pollerConfig.getLong(DaemonPollerConfig.pollingInterval, DEFAULT_POLLING_INTERVAL);

@@ -46,6 +46,10 @@ public class CommandExecutor {
     private final AtomicBoolean isolated = new AtomicBoolean();
 
     public CommandExecutor(Daemon daemon, int maxThreads) {
+        if (daemon == null) {
+            throw new IllegalArgumentException("daemon must not be null");
+        }
+
         this.daemon = daemon;
         this.workQueue = new SynchronousQueue<>();
         this.executorService = new ThreadPoolExecutor(

@@ -15,30 +15,32 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.daemon.command.DaemonCommandRegistry;
-import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.core.context.config.DaemonConfig;
 
 /**
- * The Interface Daemon.
+ * SimpleDaemon does not run Aspectran Service internally,
+ * so only shell commands are available.
+ *
+ * <p>Created: 2019. 01. 22.</p>
+ *
+ * @since 6.0.0
  */
-public interface Daemon {
+public class SimpleDaemon extends AbstractDaemon {
 
-    String getName();
+    public void init(DaemonConfig daemonConfig) throws Exception {
+        super.init(daemonConfig);
+    }
 
-    void setName(String name);
+    public void start() throws Exception {
+        super.start();
+    }
 
-    DaemonService getService();
+    public void start(boolean wait) throws Exception {
+        super.start(wait);
+    }
 
-    CommandPoller getCommandPoller();
+    public void start(long wait) throws Exception {
+        super.start(wait);
+    }
 
-    DaemonCommandRegistry getCommandRegistry();
-
-    boolean isWait();
-
-    boolean isActive();
-
-    void stop();
-
-    void destroy();
 }

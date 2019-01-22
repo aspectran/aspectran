@@ -13,32 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command;
+package com.aspectran.shell.command;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.daemon.Daemon;
+import com.aspectran.shell.service.ShellService;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CommandRegistry {
+/**
+ * A registry that contains the commands known by a shell.
+ *
+ * <p>Created: 2017. 10. 25.</p>
+ */
+public class ShellCommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final Daemon daemon;
+    private ShellService service;
 
-    public CommandRegistry(Daemon daemon) {
-        this.daemon = daemon;
+    public ShellCommandRegistry(ShellService service) {
+        this.service = service;
     }
 
-    public Daemon getDaemon() {
-        return daemon;
+    public ShellService getService() {
+        return service;
     }
 
     public Command getCommand(String commandName) {
         return commands.get(commandName);
+    }
+
+    public Command getCommand(Class<? extends Command> commandClass) {
+        for (Command command : commands.values()) {
+            if (command.getClass().equals(commandClass)) {
+                return command;
+            }
+        }
+        return null;
     }
 
     public void addCommand(String... classNames) {
@@ -58,10 +72,6 @@ public class CommandRegistry {
 
     public void addCommand(Class<? extends Command> commandClass) {
         Command command = ClassUtils.createInstance(commandClass, this);
-        assert command != null : "command is null";
-        if (command.getDescriptor() == null) {
-            throw new NullPointerException("A command without a descriptor");
-        }
         commands.put(command.getDescriptor().getName(), command);
     }
 

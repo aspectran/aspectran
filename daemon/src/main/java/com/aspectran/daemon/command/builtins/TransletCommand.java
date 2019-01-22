@@ -21,7 +21,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
@@ -35,7 +35,7 @@ public class TransletCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public TransletCommand(CommandRegistry registry) {
+    public TransletCommand(DaemonCommandRegistry registry) {
         super(registry);
     }
 

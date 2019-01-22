@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
@@ -28,7 +28,7 @@ public class RestartCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public RestartCommand(CommandRegistry registry) {
+    public RestartCommand(DaemonCommandRegistry registry) {
         super(registry, true);
     }
 

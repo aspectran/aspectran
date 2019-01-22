@@ -19,7 +19,8 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.DaemonCommandRegistry;
+import com.aspectran.daemon.command.builtins.QuitCommand;
 import com.aspectran.daemon.command.polling.CommandPoller;
 import com.aspectran.daemon.command.polling.FileCommandPoller;
 import com.aspectran.daemon.service.AspectranDaemonService;
@@ -34,7 +35,7 @@ import java.io.File;
  *
  * @since 5.1.0
  */
-public class AbstractDaemon implements Daemon, Runnable {
+public class AbstractDaemon implements Daemon {
 
     private String name;
 
@@ -42,9 +43,11 @@ public class AbstractDaemon implements Daemon, Runnable {
 
     private CommandPoller commandPoller;
 
-    private CommandRegistry commandRegistry;
+    private DaemonCommandRegistry commandRegistry;
 
     private boolean wait;
+
+    private Thread pollingThread;
 
     private volatile boolean active;
 
@@ -69,7 +72,7 @@ public class AbstractDaemon implements Daemon, Runnable {
     }
 
     @Override
-    public CommandRegistry getCommandRegistry() {
+    public DaemonCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
@@ -102,16 +105,24 @@ public class AbstractDaemon implements Daemon, Runnable {
         try {
             this.service = AspectranDaemonService.create(aspectranConfig);
             this.service.start();
+        } catch (Exception e) {
+            throw new Exception("Failed to initialize daemon", e);
+        }
 
-            DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
+        init(aspectranConfig.touchDaemonConfig());
+    }
+
+    protected void init(DaemonConfig daemonConfig) throws Exception {
+        try {
             DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();
 
-            CommandPoller commandPoller = new FileCommandPoller(this, pollerConfig);
+            this.commandPoller = new FileCommandPoller(this, pollerConfig);
 
-            CommandRegistry commandRegistry = new CommandRegistry(this);
+            DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
             commandRegistry.addCommand(daemonConfig.getStringArray(DaemonConfig.commands));
-
-            this.commandPoller = commandPoller;
+            if (commandRegistry.getCommand(QuitCommand.class) == null) {
+                commandRegistry.addCommand(QuitCommand.class);
+            }
             this.commandRegistry = commandRegistry;
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);
@@ -123,33 +134,39 @@ public class AbstractDaemon implements Daemon, Runnable {
     }
 
     protected void start(boolean wait) throws Exception {
-        if (!active) {
-            this.wait = wait;
-            if (name == null) {
-                name = this.getClass().getSimpleName();
-            }
-            Thread thread = new Thread(this, name);
-            thread.start();
-            if (wait) {
-                thread.join();
-            }
+        if (wait) {
+            start(0L);
+        } else {
+            start(-1L);
         }
     }
 
-    @Override
-    public void run() {
+    protected void start(long wait) throws Exception {
         if (!active) {
-            active = true;
+            this.wait = (wait >= 0L);
+            if (name == null) {
+                name = this.getClass().getSimpleName();
+            }
 
-            getCommandPoller().requeue();
-
-            while (active) {
-                try {
-                    getCommandPoller().polling();
-                    Thread.sleep(getCommandPoller().getPollingInterval());
-                } catch (InterruptedException ie) {
-                    active = false;
+            Runnable runnable = () -> {
+                if (!active) {
+                    active = true;
+                    getCommandPoller().requeue();
+                    while (active) {
+                        try {
+                            getCommandPoller().polling();
+                            Thread.sleep(getCommandPoller().getPollingInterval());
+                        } catch (InterruptedException ie) {
+                            active = false;
+                        }
+                    }
                 }
+            };
+
+            pollingThread = new Thread(runnable, name);
+            pollingThread.start();
+            if (wait >= 0L) {
+                pollingThread.join(wait);
             }
         }
     }
@@ -158,7 +175,11 @@ public class AbstractDaemon implements Daemon, Runnable {
     public void stop() {
         if (active) {
             active = false;
-            Thread.currentThread().interrupt();
+            if (pollingThread != null) {
+                if (pollingThread.getState() == Thread.State.TIMED_WAITING) {
+                    pollingThread.interrupt();
+                }
+            }
         }
     }
 

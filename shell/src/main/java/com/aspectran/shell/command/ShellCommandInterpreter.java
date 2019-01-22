@@ -38,7 +38,7 @@ public class ShellCommandInterpreter {
 
     private final Console console;
 
-    private final CommandRegistry commandRegistry;
+    private final ShellCommandRegistry commandRegistry;
 
     public ShellCommandInterpreter(ShellService service) {
         this.service = service;
@@ -46,7 +46,7 @@ public class ShellCommandInterpreter {
         if (service.getCommandRegistry() != null) {
             this.commandRegistry = service.getCommandRegistry();
         } else {
-            this.commandRegistry = new CommandRegistry(service);
+            this.commandRegistry = new ShellCommandRegistry(service);
         }
         if (this.commandRegistry.getCommand(QuitCommand.class) == null) {
             this.commandRegistry.addCommand(QuitCommand.class);

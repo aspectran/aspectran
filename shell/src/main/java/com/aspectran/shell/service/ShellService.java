@@ -18,7 +18,7 @@ package com.aspectran.shell.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.Console;
 
@@ -47,7 +47,7 @@ public interface ShellService extends CoreService {
 
     String[] getCommands();
 
-    CommandRegistry getCommandRegistry();
+    ShellCommandRegistry getCommandRegistry();
 
     /**
      * Tests if the verbose mode is enabled.

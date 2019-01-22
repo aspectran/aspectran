@@ -26,7 +26,7 @@ public class TestCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public TestCommand(CommandRegistry registry) {
+    public TestCommand(ShellCommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("i")

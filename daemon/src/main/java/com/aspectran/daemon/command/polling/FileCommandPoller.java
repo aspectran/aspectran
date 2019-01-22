@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -63,7 +64,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
         super(daemon, pollerConfig);
 
         try {
-            String basePath = getDaemon().getService().getBasePath();
+            String basePath = (getDaemon().getService() != null ? getDaemon().getService().getBasePath() : null);
             String inboundPath = pollerConfig.getString(DaemonPollerConfig.inbound, DEFAULT_INBOUND_PATH);
             File inboundDir;
             if (inboundPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
@@ -71,7 +72,11 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 URI uri = URI.create(inboundPath);
                 inboundDir = new File(uri);
             } else {
-                inboundDir = new File(basePath, inboundPath);
+                if (basePath != null) {
+                    inboundDir = new File(basePath, inboundPath);
+                } else {
+                    inboundDir = new File(inboundPath);
+                }
             }
             inboundDir.mkdirs();
             this.inboundDir = inboundDir;
@@ -97,6 +102,22 @@ public class FileCommandPoller extends AbstractCommandPoller {
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon command poller", e);
         }
+    }
+
+    public File getInboundDir() {
+        return inboundDir;
+    }
+
+    public File getQueuedDir() {
+        return queuedDir;
+    }
+
+    public File getCompletedDir() {
+        return completedDir;
+    }
+
+    public File getFailedDir() {
+        return failedDir;
     }
 
     @Override
@@ -159,7 +180,9 @@ public class FileCommandPoller extends AbstractCommandPoller {
             }
 
             private String makeFileName() {
-                return "[" + LocalDateTime.now() + "]" + (inboundFileName != null ? inboundFileName : queuedFileName);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmssSSS");
+                String datetime = formatter.format(LocalDateTime.now());
+                return datetime + "_" + (inboundFileName != null ? inboundFileName : queuedFileName);
             }
         });
     }

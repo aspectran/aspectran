@@ -16,7 +16,7 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
 
 /**
@@ -30,7 +30,7 @@ public class ResumeCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public ResumeCommand(CommandRegistry registry) {
+    public ResumeCommand(ShellCommandRegistry registry) {
         super(registry);
     }
 

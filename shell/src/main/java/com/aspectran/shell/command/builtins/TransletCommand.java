@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandLineParser;
-import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
@@ -37,7 +37,7 @@ public class TransletCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public TransletCommand(CommandRegistry registry) {
+    public TransletCommand(ShellCommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("l")

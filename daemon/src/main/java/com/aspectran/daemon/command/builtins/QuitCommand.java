@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 
@@ -28,18 +28,19 @@ public class QuitCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public QuitCommand(CommandRegistry registry) {
+    public QuitCommand(DaemonCommandRegistry registry) {
         super(registry, true);
     }
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
         if (!getCommandRegistry().getDaemon().isWait()) {
-            return failed("This command is only available for DefaultDaemon");
+            return failed(getCommandRegistry().getDaemon().getName() + " does not support the quit command");
         }
 
         info("Shutting down the " + getCommandRegistry().getDaemon().getName());
         getCommandRegistry().getDaemon().stop();
+
         return success(info("Goodbye."));
     }
 

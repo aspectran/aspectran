@@ -35,7 +35,7 @@ class CommandTest {
 
     private TestDaemon daemon;
 
-    private CommandRegistry commandRegistry;
+    private DaemonCommandRegistry commandRegistry;
 
     @BeforeAll
     void ready() throws Exception {
@@ -46,7 +46,7 @@ class CommandTest {
         daemon.run(args);
 
         this.daemon = daemon;
-        this.commandRegistry = new CommandRegistry(daemon);
+        this.commandRegistry = new DaemonCommandRegistry(daemon);
     }
 
     @AfterAll

@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.daemon.command.AbstractCommand;
-import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.with.jetty.JettyServer;
@@ -41,7 +41,7 @@ public class JettyCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public JettyCommand(CommandRegistry registry) {
+    public JettyCommand(DaemonCommandRegistry registry) {
         super(registry);
     }
 

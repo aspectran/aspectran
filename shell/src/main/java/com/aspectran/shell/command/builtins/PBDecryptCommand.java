@@ -18,7 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
-import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 
@@ -35,7 +35,7 @@ public class PBDecryptCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public PBDecryptCommand(CommandRegistry registry) {
+    public PBDecryptCommand(ShellCommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("p")
