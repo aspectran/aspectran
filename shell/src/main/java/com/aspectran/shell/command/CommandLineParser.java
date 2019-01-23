@@ -21,7 +21,15 @@ import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +41,9 @@ import java.util.regex.Pattern;
  */
 public class CommandLineParser {
 
-    private static final Pattern ARGS_SPLITTING_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)");
+    private static final Pattern ARGS_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)");
+
+    private static final Pattern REDIRECTION_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
     private final String commandLine;
 
@@ -41,19 +51,19 @@ public class CommandLineParser {
 
     private String[] args;
 
+    private List<OutputRedirection> redirectionList;
+
     public CommandLineParser(String commandLine) {
-        this.commandLine = commandLine;
-        parse();
+        this.commandLine = parseOutputRedirection(commandLine);
+        if (StringUtils.hasLength(this.commandLine)) {
+            this.args = splitCommandLine(this.commandLine);
+        }
+        shift();
     }
 
     public CommandLineParser(String[] args) {
         this.commandLine = null;
         this.args = args;
-        shift();
-    }
-
-    private void parse() {
-        args = splitCommandLine(commandLine);
         shift();
     }
 
@@ -97,9 +107,43 @@ public class CommandLineParser {
         return parser.parse(options, args);
     }
 
+    /**
+     * Returns a list of the output redirection extracted
+     * from the command line.
+     *
+     * @return a list of the output redirection
+     */
+    public List<OutputRedirection> getRedirectionList() {
+        return redirectionList;
+    }
+
+    /**
+     * Returns the {@code OutputStreamWriter} instances for translet output redirection.
+     *
+     * @param console the Console instance
+     * @return an array of the {@code OutputStreamWriter} instances
+     * @throws FileNotFoundException if the file has an invalid path
+     * @throws UnsupportedEncodingException if the named encoding is not supported
+     */
+    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException,
+            UnsupportedEncodingException {
+        if (redirectionList != null) {
+            List<Writer> writerList = new ArrayList<>(redirectionList.size());
+            for (OutputRedirection redirection : redirectionList) {
+                File file = new File(redirection.getOperand());
+                boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
+                OutputStream stream = new FileOutputStream(file, append);
+                writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
+            }
+            return writerList.toArray(new Writer[0]);
+        } else {
+            return null;
+        }
+    }
+
     private String[] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
-        Matcher m = ARGS_SPLITTING_PATTERN.matcher(commandLine);
+        Matcher m = ARGS_PATTERN.matcher(commandLine);
         while (m.find()) {
             if (m.group(1) != null) {
                 list.add(m.group(1));
@@ -110,6 +154,71 @@ public class CommandLineParser {
             }
         }
         return list.toArray(new String[0]);
+    }
+
+    private String parseOutputRedirection(String line) {
+        if (!StringUtils.hasLength(line)) {
+            return null;
+        }
+        String commandLine = line;
+        Matcher matcher = REDIRECTION_PATTERN.matcher(line);
+        List<OutputRedirection> redirectionList = new ArrayList<>();
+        OutputRedirection prevRedirection = null;
+        boolean hasDoubleQuote = false;
+        boolean hasSingleQuote = false;
+        while (matcher.find()) {
+            if (matcher.group(1) != null && !hasDoubleQuote && !hasSingleQuote) {
+                String str = line.substring(0, matcher.start(1)).trim();
+                if (prevRedirection != null) {
+                    prevRedirection.setOperand(stripQuotes(str));
+                } else {
+                    commandLine = str;
+                }
+                prevRedirection = new OutputRedirection(OutputRedirection.Operator.APPEND_OUT);
+                redirectionList.add(prevRedirection);
+                line = line.substring(matcher.end(1));
+                matcher = REDIRECTION_PATTERN.matcher(line);
+            }
+            else if (matcher.group(2) != null && !hasDoubleQuote && !hasSingleQuote) {
+                String str = line.substring(0, matcher.start(2)).trim();
+                if (prevRedirection != null) {
+                    prevRedirection.setOperand(stripQuotes(str));
+                } else {
+                    commandLine = str;
+                }
+                prevRedirection = new OutputRedirection(OutputRedirection.Operator.OVERWRITE_OUT);
+                redirectionList.add(prevRedirection);
+                line = line.substring(matcher.end(2));
+                matcher = REDIRECTION_PATTERN.matcher(line);
+            }
+            else if (matcher.group(3) != null) {
+                hasDoubleQuote = !hasDoubleQuote;
+            }
+            else if (matcher.group(4) != null) {
+                hasSingleQuote = !hasSingleQuote;
+            }
+        }
+        if (prevRedirection != null) {
+            prevRedirection.setOperand(stripQuotes(line.trim()));
+        }
+        if (!redirectionList.isEmpty()) {
+            this.redirectionList = redirectionList;
+        }
+        if (StringUtils.hasLength(commandLine)) {
+            return commandLine;
+        } else {
+            return null;
+        }
+    }
+
+    private String stripQuotes(String str) {
+        if (str.length() > 1 &&
+                (str.startsWith("\"") && str.endsWith("\"") ||
+                        str.startsWith("'") && str.endsWith("'"))) {
+            return str.substring(1, str.length() - 1);
+        } else {
+            return str;
+        }
     }
 
 }

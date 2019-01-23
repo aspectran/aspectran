@@ -74,6 +74,8 @@ public interface Console {
 
     Writer getUnclosableWriter() throws UnsupportedEncodingException;
 
+    String[] getStyles();
+
     void setStyle(String... styles);
 
     void offStyle();

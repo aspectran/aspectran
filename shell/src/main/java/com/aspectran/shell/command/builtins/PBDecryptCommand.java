@@ -52,10 +52,10 @@ public class PBDecryptCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         if (options.hasOption("help")) {
             printUsage();
-            return null;
+            return;
         }
 
         String password = options.getValue("password");
@@ -66,20 +66,16 @@ public class PBDecryptCommand extends AbstractCommand {
         }
 
         if (!StringUtils.hasText(password)) {
-            setStyle("RED");
-            writeLine("A password is required to attempt password-based encryption or decryption.");
-            offStyle();
+            writeError("A password is required to attempt password-based encryption or decryption.");
             printUsage();
-            return null;
+            return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
-            setStyle("RED");
-            writeLine("Please enter a string to encrypt.");
-            offStyle();
+            writeError("Please enter a string to encrypt.");
             printUsage();
-            return null;
+            return;
         }
 
         if (!implicitPassword) {
@@ -91,17 +87,14 @@ public class PBDecryptCommand extends AbstractCommand {
             try {
                 output = PBEncryptionUtils.decrypt(input, password);
             } catch (Exception e) {
-                setStyle("RED");
-                writeLine("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
-                writeLine("Please make sure that the input string is encrypted with the password you entered.");
-                offStyle();
-                return null;
+                writeError("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
+                writeError("Please make sure that the input string is encrypted with the password you entered.");
+                return;
             }
 
             writeLine("%1$-10s: %2$s", "input", input);
             writeLine("%1$-10s: %2$s", "output", output);
         }
-        return null;
     }
 
     @Override

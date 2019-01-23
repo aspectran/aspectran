@@ -63,7 +63,7 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         if (options.hasOption("props")) {
             printSysProperties();
         } else if (options.hasOption("cp")) {
@@ -75,7 +75,6 @@ public class SysInfoCommand extends AbstractCommand {
         } else {
             printUsage();
         }
-        return null;
     }
 
     private void printSysProperties() {

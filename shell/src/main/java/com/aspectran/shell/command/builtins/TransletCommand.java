@@ -52,7 +52,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         ShellService service = getService();
         if (!options.hasOptions() && options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getArgs());
@@ -61,7 +61,7 @@ public class TransletCommand extends AbstractCommand {
                 service.execute(transletCommandLine);
                 writeLine();
             } catch (TransletNotFoundException e) {
-                writeLine("No translet mapped to '" + e.getTransletName() + "'");
+                writeError("No translet mapped to '" + e.getTransletName() + "'");
             }
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
@@ -73,7 +73,6 @@ public class TransletCommand extends AbstractCommand {
                 listTranslets(service, null);
             }
         }
-        return null;
     }
 
     private void listTranslets(ShellService service, String[] keywords) {

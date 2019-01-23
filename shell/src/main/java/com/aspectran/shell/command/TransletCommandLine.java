@@ -17,22 +17,8 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.shell.command.TransletOutputRedirection.Operator;
-import com.aspectran.shell.console.Console;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Parses the command line entered to execute the Translet.
@@ -41,17 +27,11 @@ public class TransletCommandLine {
 
     private static final String PARAM_NAME_PREFIX = "--";
 
-    private static final char ESCAPE = '\\';
-
-    private static final Pattern REDIRECTION_OPERATOR_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
-
     private final CommandLineParser lineParser;
 
     private MethodType requestMethod;
 
     private ParameterMap parameterMap;
-
-    private List<TransletOutputRedirection> redirectionList;
 
     public TransletCommandLine(CommandLineParser lineParser) {
         this.lineParser = lineParser;
@@ -97,40 +77,6 @@ public class TransletCommandLine {
         return parameterMap;
     }
 
-    /**
-     * Returns a list of Translet output redirection extracted
-     * from the command line.
-     *
-     * @return a list of Translet output redirection
-     */
-    public List<TransletOutputRedirection> getRedirectionList() {
-        return redirectionList;
-    }
-
-    /**
-     * Returns the {@code OutputStreamWriter} instances for translet output redirection.
-     *
-     * @param console the Console instance
-     * @return an array of the {@code OutputStreamWriter} instances
-     * @throws FileNotFoundException if the file has an invalid path
-     * @throws UnsupportedEncodingException if the named encoding is not supported
-     */
-    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException,
-            UnsupportedEncodingException {
-        if (redirectionList != null) {
-            List<Writer> writerList = new ArrayList<>(redirectionList.size());
-            for (TransletOutputRedirection redirection : redirectionList) {
-                File file = new File(redirection.getOperand());
-                boolean append = (redirection.getOperator() == Operator.APPEND_OUT);
-                OutputStream stream = new FileOutputStream(file, append);
-                writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
-            }
-            return writerList.toArray(new Writer[0]);
-        } else {
-            return null;
-        }
-    }
-
     private void parse() {
         if (lineParser.getCommandName() == null) {
             return;
@@ -145,9 +91,7 @@ public class TransletCommandLine {
             lineParser.setCommandName(commandName);
             return;
         }
-
         parameterMap = extractParameterMap();
-        redirectionList = extractRedirectionList();
     }
 
     private ParameterMap extractParameterMap() {
@@ -190,56 +134,6 @@ public class TransletCommandLine {
             }
         }
         return (!params.isEmpty() ? params : null);
-    }
-
-    private List<TransletOutputRedirection> extractRedirectionList() {
-        if (!StringUtils.hasLength(lineParser.getCommandLine()) && !lineParser.hasArgs()) {
-            return null;
-        }
-        String line = lineParser.getCommandLine();
-        Matcher matcher = REDIRECTION_OPERATOR_PATTERN.matcher(line);
-        List<TransletOutputRedirection> redirectionList = new ArrayList<>();
-        TransletOutputRedirection prevRedirection = null;
-        boolean hasDoubleQuote = false;
-        boolean hasSingleQuote = false;
-        while (matcher.find()) {
-            if (matcher.group(1) != null && !hasDoubleQuote && !hasSingleQuote) {
-                String str = line.substring(0, matcher.start(1)).trim();
-                if (prevRedirection != null) {
-                    prevRedirection.setOperand(str);
-                }
-                prevRedirection = new TransletOutputRedirection(Operator.APPEND_OUT);
-                redirectionList.add(prevRedirection);
-                line = line.substring(matcher.end(1));
-                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(line);
-            }
-            else if (matcher.group(2) != null && !hasDoubleQuote && !hasSingleQuote) {
-                String str = line.substring(0, matcher.start(2)).trim();
-                if (prevRedirection != null) {
-                    prevRedirection.setOperand(str);
-                }
-                prevRedirection = new TransletOutputRedirection(Operator.OVERWRITE_OUT);
-                redirectionList.add(prevRedirection);
-                line = line.substring(matcher.end(2));
-                matcher = REDIRECTION_OPERATOR_PATTERN.matcher(line);
-            }
-            else if (matcher.group(3) != null) {
-                if ((matcher.start(3) == 0 || line.charAt(matcher.start(3) - 1) != ESCAPE) &&
-                        !hasSingleQuote) {
-                    hasDoubleQuote = !hasDoubleQuote;
-                }
-            }
-            else if (matcher.group(4) != null) {
-                if ((matcher.start(4) == 0 || line.charAt(matcher.start(4) - 1) != ESCAPE) &&
-                        !hasDoubleQuote) {
-                    hasSingleQuote = !hasSingleQuote;
-                }
-            }
-        }
-        if (prevRedirection != null) {
-            prevRedirection.setOperand(line.trim());
-        }
-        return (!redirectionList.isEmpty() ? redirectionList : null);
     }
 
 }

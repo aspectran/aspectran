@@ -50,7 +50,6 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");
         }
-
         this.console = console;
     }
 
@@ -154,10 +153,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(Command command, CommandLineParser lineParser) {
         try {
             ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
-            String result = command.execute(options);
-            if (result != null) {
-                console.writeLine(result);
-            }
+            command.execute(options);
         } catch (ConsoleTerminatedException e) {
             throw e;
         } catch (OptionParserException e) {

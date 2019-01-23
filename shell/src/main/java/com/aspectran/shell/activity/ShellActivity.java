@@ -39,11 +39,8 @@ import com.aspectran.shell.console.MultiWriter;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -105,13 +102,12 @@ public class ShellActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             Writer outputWriter;
-            if (redirectionWriters == null) {
+            if (redirectionWriters == null || redirectionWriters.length == 0) {
                 outputWriter = console.getUnclosableWriter();
+            } else if (redirectionWriters.length == 1) {
+                outputWriter = redirectionWriters[0];
             } else {
-                List<Writer> writerList = new ArrayList<>(redirectionWriters.length + 1);
-                writerList.add(console.getUnclosableWriter());
-                Collections.addAll(writerList, redirectionWriters);
-                outputWriter = new MultiWriter(writerList.toArray(new Writer[0]));
+                outputWriter = new MultiWriter(redirectionWriters);
             }
 
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
@@ -120,7 +116,7 @@ public class ShellActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters required for shell service activity", e);
+            throw new AdapterException("Failed to prepare adapters required for shell service activity", e);
         }
     }
 

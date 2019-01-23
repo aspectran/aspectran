@@ -57,7 +57,7 @@ public class TestCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         String input = options.getTypedValue("input");
         String password = options.getTypedValue("password");
         String D = options.getValue("D");
@@ -70,7 +70,6 @@ public class TestCommand extends AbstractCommand {
         getConsole().writeLine("   %1$-11s: %2$s", "Y", options.hasOption("Y"));
         getConsole().writeLine("   %1$-11s: %2$s", "Z", options.hasOption("X"));
         getConsole().writeLine("---------------------------------------------");
-        return null;
     }
 
     @Override

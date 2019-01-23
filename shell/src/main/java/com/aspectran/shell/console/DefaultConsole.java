@@ -238,6 +238,11 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
+    public String[] getStyles() {
+        return null;
+    }
+
+    @Override
     public void setStyle(String... styles) {
         // Nothing to do
     }

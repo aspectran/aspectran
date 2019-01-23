@@ -35,9 +35,8 @@ public class ResumeCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         getService().getServiceController().resume();
-        return null;
     }
 
     @Override

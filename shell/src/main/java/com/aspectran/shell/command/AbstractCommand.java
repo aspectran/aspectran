@@ -98,6 +98,28 @@ public abstract class AbstractCommand implements Command {
         getConsole().writeLine();
     }
 
+    protected void writeError(String string) {
+        String[] oldStyles = getConsole().getStyles();
+        setStyle("RED");
+        getConsole().writeLine(string);
+        if (oldStyles != null) {
+            setStyle(oldStyles);
+        } else {
+            offStyle();
+        }
+    }
+
+    protected void writeError(String format, Object... args) {
+        String[] oldStyles = getConsole().getStyles();
+        setStyle("RED");
+        getConsole().writeLine(format, args);
+        if (oldStyles != null) {
+            setStyle(oldStyles);
+        } else {
+            offStyle();
+        }
+    }
+
     protected void setStyle(String... styles) {
         getConsole().setStyle(styles);
     }

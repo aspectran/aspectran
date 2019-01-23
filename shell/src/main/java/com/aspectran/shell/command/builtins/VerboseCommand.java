@@ -41,7 +41,7 @@ public class VerboseCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         String command = null;
         if (options.hasArgs()) {
             String[] optArgs = options.getArgs();
@@ -55,13 +55,12 @@ public class VerboseCommand extends AbstractCommand {
                 getService().setVerbose(false);
                 writeLine("Disabled verbose mode");
             } else {
-                writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
+                writeError("Unknown command '" + String.join(" ", optArgs) + "'");
                 printUsage();
             }
         } else {
             printUsage();
         }
-        return null;
     }
 
     @Override

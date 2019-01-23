@@ -36,10 +36,9 @@ public interface Command {
      * for the action mapped to this command.
      *
      * @param options the parsed options
-     * @return the message output to the console as a result of an executed command
      * @throws Exception if an error occurs during command execution
      */
-    String execute(ParsedOptions options) throws Exception;
+    void execute(ParsedOptions options) throws Exception;
 
     /**
      * Prints the usage statement for the specified command.

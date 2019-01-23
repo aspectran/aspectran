@@ -38,7 +38,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         String[] targetCommands = null;
         if (options.hasArgs()) {
             targetCommands = options.getArgs();
@@ -63,7 +63,6 @@ public class HelpCommand extends AbstractCommand {
             offStyle();
             printHelp(targetCommands);
         }
-        return null;
     }
 
     private void printHelp(String[] targetCommands) {

@@ -28,18 +28,18 @@ import com.aspectran.shell.console.Console;
 public interface ShellService extends CoreService {
 
     /**
-     * Creates a new session adapter for the shell service and returns.
-     *
-     * @return the session adapter
-     */
-    SessionAdapter newSessionAdapter();
-
-    /**
      * Returns the console.
      *
      * @return the console
      */
     Console getConsole();
+
+    /**
+     * Creates a new session adapter for the shell service and returns.
+     *
+     * @return the session adapter
+     */
+    SessionAdapter newSessionAdapter();
 
     /**
      * Tests if the verbose mode is enabled.

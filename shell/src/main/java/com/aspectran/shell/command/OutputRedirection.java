@@ -22,13 +22,13 @@ import java.util.Collection;
 /**
  * <p>Created: 2017. 3. 8.</p>
  */
-public class TransletOutputRedirection {
+public class OutputRedirection {
 
     private final Operator operator;
 
     private String operand;
 
-    public TransletOutputRedirection(Operator operator) {
+    public OutputRedirection(Operator operator) {
         this.operator = operator;
     }
 
@@ -49,8 +49,8 @@ public class TransletOutputRedirection {
         if (this == o) {
             return true;
         }
-        if (o instanceof TransletOutputRedirection) {
-            TransletOutputRedirection cr = (TransletOutputRedirection)o;
+        if (o instanceof OutputRedirection) {
+            OutputRedirection cr = (OutputRedirection)o;
             if (cr.getOperand().equals(operand) &&
                     cr.getOperator().equals(operator)) {
                 return true;
@@ -76,10 +76,10 @@ public class TransletOutputRedirection {
         return tsb.toString();
     }
 
-    public static String serialize(Collection<TransletOutputRedirection> redirectionList) {
+    public static String serialize(Collection<OutputRedirection> redirectionList) {
         StringBuilder sb = new StringBuilder();
         if (redirectionList != null) {
-            for (TransletOutputRedirection redirection : redirectionList) {
+            for (OutputRedirection redirection : redirectionList) {
                 if (sb.length() > 0) {
                     sb.append(" ");
                 }
@@ -91,7 +91,7 @@ public class TransletOutputRedirection {
     }
 
     /**
-     * Translet output redirection operators.
+     * Output redirection operators.
      */
     public enum Operator {
 

@@ -52,10 +52,10 @@ public class PBEncryptCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         if (options.hasOption("help")) {
             printUsage();
-            return null;
+            return;
         }
 
         String password = options.getValue("password");
@@ -66,20 +66,16 @@ public class PBEncryptCommand extends AbstractCommand {
         }
 
         if (!StringUtils.hasText(password)) {
-            setStyle("RED");
-            writeLine("A password is required to attempt password-based encryption or decryption.");
-            offStyle();
+            writeError("A password is required to attempt password-based encryption or decryption.");
             printUsage();
-            return null;
+            return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
-            setStyle("RED");
-            writeLine("Please enter a string to decrypt.");
-            offStyle();
+            writeError("Please enter a string to decrypt.");
             printUsage();
-            return null;
+            return;
         }
 
         if (!implicitPassword) {
@@ -97,7 +93,6 @@ public class PBEncryptCommand extends AbstractCommand {
             writeLine("%1$-10s: %2$s", "input", input);
             writeLine("%1$-10s: %2$s", "output", output);
         }
-        return null;
     }
 
     @Override

@@ -60,7 +60,7 @@ public class JettyCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         ShellService service = getService();
 
         String serverName = options.getValue("server", "jetty.server");
@@ -70,7 +70,7 @@ public class JettyCommand extends AbstractCommand {
             jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
         } catch (Exception e) {
             writeLine("Jetty server is not available. Cause: " + e.getMessage());
-            return null;
+            return;
         }
 
         String command = null;
@@ -82,7 +82,7 @@ public class JettyCommand extends AbstractCommand {
             if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
                     writeLine("Jetty server is already running");
-                    return null;
+                    return;
                 }
                 try {
                     jettyServer.start();
@@ -93,7 +93,7 @@ public class JettyCommand extends AbstractCommand {
             } else if ("stop".equals(command)) {
                 if (!jettyServer.isRunning()) {
                     writeLine("Jetty Server is not running");
-                    return null;
+                    return;
                 }
                 try {
                     jettyServer.stop();
@@ -114,13 +114,12 @@ public class JettyCommand extends AbstractCommand {
             } else if ("status".equals(command)) {
                 printStatus(jettyServer);
             } else {
-                writeLine("Unknown command '" + String.join(" ", optArgs) + "'");
+                writeError("Unknown command '" + String.join(" ", optArgs) + "'");
                 printUsage();
             }
         } else {
             printUsage();
         }
-        return null;
     }
 
     private void printStatus(JettyServer jettyServer) {

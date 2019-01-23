@@ -58,9 +58,17 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     protected AbstractShellService(Console console) {
         super(new ShellApplicationAdapter());
 
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
         this.console = console;
 
         determineBasePath();
+    }
+
+    @Override
+    public Console getConsole() {
+        return console;
     }
 
     @Override
@@ -86,11 +94,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     public SessionAdapter newSessionAdapter() {
         SessionAgent agent = sessionManager.newSessionAgent();
         return new ShellSessionAdapter(agent);
-    }
-
-    @Override
-    public Console getConsole() {
-        return console;
     }
 
     @Override

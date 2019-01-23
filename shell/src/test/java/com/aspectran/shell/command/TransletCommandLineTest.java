@@ -18,8 +18,6 @@ package com.aspectran.shell.command;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -38,29 +36,6 @@ class TransletCommandLineTest {
         assertEquals(params.getParameter("param2"), "strawberry");
         assertEquals("a", params.getParameterValues("arr")[0]);
         assertEquals("b", params.getParameterValues("arr")[1]);
-        assertEquals(transletCommandLine.getRedirectionList().toString(), "[{operator=>>, operand=abcde.txt}, {operator=>, operand=12345.txt}]");
-    }
-
-    @Test
-    void testRedirectionOperators() {
-        CommandLineParser lineParser = new CommandLineParser(">> abcde > 12345");
-        TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-        List<TransletOutputRedirection> list = transletCommandLine.getRedirectionList();
-        assertEquals(list.get(0).getOperator(), TransletOutputRedirection.Operator.APPEND_OUT);
-        assertEquals(list.get(0).getOperand(), "abcde");
-        assertEquals(list.get(1).getOperator(), TransletOutputRedirection.Operator.OVERWRITE_OUT);
-        assertEquals(list.get(1).getOperand(), "12345");
-    }
-
-    @Test
-    void testRedirectionOperators2() {
-        CommandLineParser lineParser = new CommandLineParser("> '<abcde>' >> 12345");
-        TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-        List<TransletOutputRedirection> list = transletCommandLine.getRedirectionList();
-        assertEquals(list.get(0).getOperator(), TransletOutputRedirection.Operator.OVERWRITE_OUT);
-        assertEquals(list.get(0).getOperand(), "'<abcde>'");
-        assertEquals(list.get(1).getOperator(), TransletOutputRedirection.Operator.APPEND_OUT);
-        assertEquals(list.get(1).getOperand(), "12345");
     }
 
 }

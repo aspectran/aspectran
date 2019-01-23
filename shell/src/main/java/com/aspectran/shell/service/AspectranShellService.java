@@ -30,7 +30,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.TransletCommandLine;
-import com.aspectran.shell.command.TransletOutputRedirection;
+import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.console.Console;
 
 import java.io.IOException;
@@ -81,12 +81,12 @@ public class AspectranShellService extends AbstractShellService {
         }
 
         Writer[] redirectionWriters = null;
-        if (transletCommandLine.getRedirectionList() != null) {
+        if (transletCommandLine.getLineParser().getRedirectionList() != null) {
             try {
-                redirectionWriters = transletCommandLine.getRedirectionWriters(getConsole());
+                redirectionWriters = transletCommandLine.getLineParser().getRedirectionWriters(getConsole());
             } catch (Exception e) {
                 getConsole().writeLine("Invalid Redirection: " +
-                        TransletOutputRedirection.serialize(transletCommandLine.getRedirectionList()), e);
+                        OutputRedirection.serialize(transletCommandLine.getLineParser().getRedirectionList()), e);
                 return;
             }
         }

@@ -35,12 +35,11 @@ public class RestartCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options) throws Exception {
         if (getConsole().confirmRestart()) {
             getConsole().clearScreen();
             getService().getServiceController().restart();
         }
-        return null;
     }
 
     @Override

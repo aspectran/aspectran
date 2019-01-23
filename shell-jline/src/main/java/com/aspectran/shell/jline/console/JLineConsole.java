@@ -60,9 +60,9 @@ public class JLineConsole extends AbstractConsole {
 
     private final LineReader commandReader;
 
-    private final CommandCompleter commandCompleter;
+    private AttributedStyle attributedStyle;
 
-    private AttributedStyle style;
+    private String[] styles;
 
     public JLineConsole() throws IOException {
         DefaultParser parser = new DefaultParser();
@@ -75,10 +75,9 @@ public class JLineConsole extends AbstractConsole {
                 .parser(parser)
                 .terminal(terminal)
                 .build();
-        this.commandCompleter = new CommandCompleter(this);
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
-                .completer(commandCompleter)
+                .completer(new CommandCompleter(this))
                 .parser(parser)
                 .terminal(terminal)
                 .build();
@@ -199,8 +198,8 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public void write(String string) {
-        if (style != null) {
-            AttributedString as = new AttributedString(string, style);
+        if (attributedStyle != null) {
+            AttributedString as = new AttributedString(string, attributedStyle);
             writeRawText(as.toAnsi(terminal));
         } else {
             writeRawText(toAnsi(string));
@@ -274,13 +273,20 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
+    public String[] getStyles() {
+        return styles;
+    }
+
+    @Override
     public void setStyle(String... styles) {
-        this.style = JLineAnsiStyler.makeStyle(styles);
+        this.styles = styles;
+        this.attributedStyle = JLineAnsiStyler.makeStyle(styles);
     }
 
     @Override
     public void offStyle() {
-        this.style = null;
+        this.styles = null;
+        this.attributedStyle = null;
     }
 
     private String toAnsi(String string) {
