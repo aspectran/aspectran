@@ -43,7 +43,7 @@ public class MissingOptionValueException extends OptionParserException {
      * @param option the option requiring an argument
      */
     public MissingOptionValueException(Option option) {
-        this("Missing value for option: " + option.getKey());
+        this("Missing option value for option: " + option.getKey());
         this.option = option;
     }
 

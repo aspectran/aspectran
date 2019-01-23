@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell;
+package com.aspectran.shell.jline;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.AspectranShell;
+import com.aspectran.shell.jline.console.JLineConsole;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Testcase for Aspectran Shell.
- *
- * <p>Created: 2017. 3. 26.</p>
+ * <p>Created: 2019. 1. 23.</p>
  */
-public class AspectranShellTest {
+class JLineAspectranShellOnlyTest {
 
     public static void main(String[] args) throws IOException {
-        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config-test.apon");
-        AspectranShell.bootstrap(aspectranConfigFile, new DefaultConsole());
+        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config-jline-shell-only-test.apon");
+        AspectranShell.bootstrap(aspectranConfigFile, new JLineConsole());
     }
 
 }

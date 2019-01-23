@@ -28,7 +28,7 @@ import java.io.IOException;
 class JLineAspectranShellTest {
 
     public static void main(String[] args) throws IOException {
-        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config.apon");
+        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config-jline-shell-test.apon");
         AspectranShell.bootstrap(aspectranConfigFile, new JLineConsole());
     }
 

@@ -1,0 +1,26 @@
+shell: {
+    prompt: "test-console-app> "
+    commands: [
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
+    verbose: true
+    greetings: (
+        |
+        |   {{bold}}--- Aspectran Demo Application ---{{bold:off}} {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
+        |
+        |{{underline}}Built-in commands for this console application:{{underline:off}}
+        |   {{green}}verbose on{{fg:reset}}   Prints a description of the command each time the command is executed
+        |   {{green}}verbose off{{fg:reset}}  Turns off print a description of the command each time the command is executed
+        |   {{green}}help{{fg:reset}}         Prints help for the available commands that was displayed at startup
+        |   {{green}}restart{{fg:reset}}      Restarts this console application
+        |   {{green}}mem{{fg:reset}}          Shows memory usage
+        |   {{green}}gc{{fg:reset}}           Performs a garbage collection
+        |   {{green}}quit{{fg:reset}}         Exits from this console application
+        |
+    )
+}

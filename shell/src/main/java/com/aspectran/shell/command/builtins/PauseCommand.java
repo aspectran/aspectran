@@ -59,7 +59,7 @@ public class PauseCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Pause the Aspectran Shell";
+            return "Pause the Aspectran Service";
         }
 
         @Override

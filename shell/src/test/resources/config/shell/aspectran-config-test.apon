@@ -1,5 +1,5 @@
 context: {
-    root: classpath:config/shell/jline/shell-test-root-config.xml
+    root: classpath:config/shell/shell-test-root-config.xml
     resources: [
     ]
     hybridLoad: false
@@ -17,7 +17,7 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "test-console-app> "
+    prompt: "aspectran-shell-test> "
     commands: [
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
@@ -35,16 +35,11 @@ shell: {
     verbose: true
     greetings: (
         |
-        |   {{bold}}--- Aspectran Demo Application ---{{bold:off}}
+        |   {{bold}}--- Welcome To Aspectran Demo ---{{bold:off}}   {{BLUE}}ASPECTRAN SHELL #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
         |
-        |{{underline}}Built-in commands for this console application:{{underline:off}}
-        |   {{green}}desc on{{fg:reset}}   Prints a description of the command each time the command is executed
-        |   {{green}}desc off{{fg:reset}}  Turns off print a description of the command each time the command is executed
-        |   {{green}}help{{fg:reset}}      Prints help for the available commands that was displayed at startup
-        |   {{green}}restart{{fg:reset}}   Restarts this console application
-        |   {{green}}mem{{fg:reset}}       Shows memory usage
-        |   {{green}}gc{{fg:reset}}        Performs a garbage collection
-        |   {{green}}quit{{fg:reset}}      Exits from this console application
+        |To run a command, type {{GREEN}}`command_name [args|options]`{{reset}}.
+        |To get help on a specific command, type {{GREEN}}`command_name --help`{{reset}}.
+        |If you want a list of all supported built-in commands, type {{GREEN}}`help`{{reset}}.
         |
     )
 }

@@ -175,11 +175,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public void restart() throws Exception {
-        super.restart();
-    }
-
-    @Override
     public void restart(String message) throws Exception {
         if (console.confirmRestart(message)) {
             super.restart(message);

@@ -36,8 +36,8 @@ public class RestartCommand extends AbstractCommand {
 
     @Override
     public String execute(ParsedOptions options) throws Exception {
-        if (getService().getConsole().confirmRestart()) {
-            getService().getConsole().clearScreen();
+        if (getConsole().confirmRestart()) {
+            getConsole().clearScreen();
             getService().getServiceController().restart();
         }
         return null;
@@ -62,7 +62,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restarts the Aspectran Shell";
+            return "Restarts the Aspectran Service";
         }
 
         @Override

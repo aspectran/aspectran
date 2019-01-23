@@ -23,6 +23,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
+import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
@@ -40,33 +41,27 @@ import java.util.List;
  */
 public class CommandCompleter implements Completer {
 
-    private CommandRegistry commandRegistry;
+    private final Console console;
 
-    private ShellService service;
-
-    public CommandCompleter() {
-    }
-
-    public void setCommandRegistry(CommandRegistry commandRegistry) {
-        this.commandRegistry = commandRegistry;
-    }
-
-    public void setService(ShellService service) {
-        this.service = service;
+    public CommandCompleter(Console console) {
+        this.console = console;
     }
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        if (line.wordIndex() == 0) {
-            makeCommandCandidates(line.word(), candidates);
-            makeTransletCandidates(line.word(), candidates);
-        } else if (line.wordIndex() > 0) {
-            String cmd = line.words().get(0);
-            makeArgumentsCandidates(cmd, line.word(), candidates);
+        if (console.getInterpreter() != null) {
+            if (line.wordIndex() == 0) {
+                makeCommandCandidates(line.word(), candidates);
+                makeTransletCandidates(line.word(), candidates);
+            } else if (line.wordIndex() > 0) {
+                String cmd = line.words().get(0);
+                makeArgumentsCandidates(cmd, line.word(), candidates);
+            }
         }
     }
 
     private void makeCommandCandidates(String cmd, List<Candidate> candidates) {
+        CommandRegistry commandRegistry = console.getInterpreter().getCommandRegistry();
         if (commandRegistry != null) {
             for (Command command : commandRegistry.getAllCommands()) {
                 String commandName = command.getDescriptor().getName();
@@ -79,6 +74,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeArgumentsCandidates(String cmd, String opt, List<Candidate> candidates) {
+        CommandRegistry commandRegistry = console.getInterpreter().getCommandRegistry();
         if (commandRegistry != null) {
             Command command = commandRegistry.getCommand(cmd);
             if (command != null) {
@@ -118,28 +114,27 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeTransletCandidates(String cmd, List<Candidate> candidates) {
-        if (service == null ||
-                !service.getServiceController().isActive()) {
-            return;
-        }
-        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
-        for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-            String transletName = transletRule.getName();
-            String dispName = transletName;
-            if (service.isExposable(transletName)) {
-                if (cmd == null || transletName.indexOf(cmd) == 0) {
-                    if (transletRule.hasPathVariables()) {
-                        transletName = transletRule.getNamePattern().toString();
-                        if (transletRule.getNameTokens().length == 1) {
-                            transletName = transletName.replace(WildcardPattern.STAR_CHAR, ' ');
-                            transletName = transletName.replace(WildcardPattern.PLUS_CHAR, ' ');
-                            transletName = transletName.replace(WildcardPattern.QUESTION_CHAR, ' ');
-                            transletName = transletName.trim();
+        ShellService service = console.getInterpreter().getService();
+        if (service != null && service.getServiceController().isActive()) {
+            TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+            for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
+                String transletName = transletRule.getName();
+                String dispName = transletName;
+                if (service.isExposable(transletName)) {
+                    if (cmd == null || transletName.indexOf(cmd) == 0) {
+                        if (transletRule.hasPathVariables()) {
+                            transletName = transletRule.getNamePattern().toString();
+                            if (transletRule.getNameTokens().length == 1) {
+                                transletName = transletName.replace(WildcardPattern.STAR_CHAR, ' ');
+                                transletName = transletName.replace(WildcardPattern.PLUS_CHAR, ' ');
+                                transletName = transletName.replace(WildcardPattern.QUESTION_CHAR, ' ');
+                                transletName = transletName.trim();
+                            }
                         }
-                    }
-                    if (!transletName.isEmpty()) {
-                        candidates.add(new Candidate(transletName, dispName, "translets",
-                                null, null, null, true));
+                        if (!transletName.isEmpty()) {
+                            candidates.add(new Candidate(transletName, dispName, "translets",
+                                    null, null, null, true));
+                        }
                     }
                 }
             }

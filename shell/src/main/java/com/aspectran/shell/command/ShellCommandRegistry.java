@@ -17,7 +17,6 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.shell.service.ShellService;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -32,15 +31,15 @@ public class ShellCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private ShellService service;
+    private final CommandInterpreter interpreter;
 
-    public ShellCommandRegistry(ShellService service) {
-        this.service = service;
+    public ShellCommandRegistry(CommandInterpreter interpreter) {
+        this.interpreter = interpreter;
     }
 
     @Override
-    public ShellService getService() {
-        return service;
+    public CommandInterpreter getInterpreter() {
+        return interpreter;
     }
 
     @Override

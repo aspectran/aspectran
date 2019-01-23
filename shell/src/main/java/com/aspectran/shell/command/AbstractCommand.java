@@ -20,7 +20,6 @@ import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.DefaultConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.util.ArrayList;
@@ -35,27 +34,38 @@ public abstract class AbstractCommand implements Command {
     private final List<Arguments> argumentsList = new ArrayList<>();
 
     public AbstractCommand(CommandRegistry registry) {
+        if (registry == null) {
+            throw new IllegalArgumentException("registry must not be null");
+        }
         this.registry = registry;
     }
 
+    public CommandRegistry getCommandRegistry() {
+        return registry;
+    }
+
+    public CommandInterpreter getInterpreter() {
+        return registry.getInterpreter();
+    }
+
+    public Console getConsole() {
+        Console console = (getInterpreter() != null ? getInterpreter().getConsole() : null);
+        if (console == null) {
+            throw new IllegalStateException("CONSOLE NOT AVAILABLE");
+        }
+        return console;
+    }
+
     public ShellService getService() {
-        ShellService service = registry.getService();
+        ShellService service = (getInterpreter() != null ? getInterpreter().getService() : null);
         if (service == null || !service.getServiceController().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
         return service;
     }
 
-    public Console getConsole() {
-        if (registry != null) {
-            return getService().getConsole();
-        } else {
-            return new DefaultConsole();
-        }
-    }
-
-    public CommandRegistry getCommandRegistry() {
-        return registry;
+    public boolean isServiceAvailable() {
+        return (getInterpreter() != null && getInterpreter().getService() != null);
     }
 
     protected void addOption(Option option) {

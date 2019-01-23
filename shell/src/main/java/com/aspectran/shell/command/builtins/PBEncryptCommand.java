@@ -82,10 +82,9 @@ public class PBEncryptCommand extends AbstractCommand {
             return null;
         }
 
-        writeLine("--------------------------------------------------------------");
         if (!implicitPassword) {
-            writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-            writeLine("   %1$-10s: %2$s", "password", password);
+            writeLine("%1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+            writeLine("%1$-10s: %2$s", "password", password);
         }
         for (String input : inputValues) {
             String output;
@@ -95,9 +94,8 @@ public class PBEncryptCommand extends AbstractCommand {
                 throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
             }
 
-            writeLine("   %1$-10s: %2$s", "input", input);
-            writeLine("   %1$-10s: %2$s", "output", output);
-            writeLine("--------------------------------------------------------------");
+            writeLine("%1$-10s: %2$s", "input", input);
+            writeLine("%1$-10s: %2$s", "output", output);
         }
         return null;
     }

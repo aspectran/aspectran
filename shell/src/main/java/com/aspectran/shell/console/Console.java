@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.command.ShellCommandInterpreter;
+import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -86,9 +86,9 @@ public interface Console {
 
     boolean confirmQuit();
 
-    ShellCommandInterpreter getInterpreter();
+    CommandInterpreter getInterpreter();
 
-    void setInterpreter(ShellCommandInterpreter interpreter);
+    void setInterpreter(CommandInterpreter interpreter);
 
 }
 

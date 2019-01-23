@@ -37,7 +37,7 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public String execute(ParsedOptions options) throws Exception {
-        if (getService().getConsole().confirmQuit()) {
+        if (getConsole().confirmQuit()) {
             throw new ConsoleTerminatedException();
         }
         return null;

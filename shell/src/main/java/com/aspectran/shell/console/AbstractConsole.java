@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.command.ShellCommandInterpreter;
+import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -29,7 +29,7 @@ public abstract class AbstractConsole implements Console {
 
     private String commandPrompt = DEFAULT_COMMAND_PROMPT;
 
-    private ShellCommandInterpreter interpreter;
+    private CommandInterpreter interpreter;
 
     @Override
     public String getCommandPrompt() {
@@ -47,12 +47,12 @@ public abstract class AbstractConsole implements Console {
     }
 
     @Override
-    public ShellCommandInterpreter getInterpreter() {
+    public CommandInterpreter getInterpreter() {
         return interpreter;
     }
 
     @Override
-    public void setInterpreter(ShellCommandInterpreter interpreter) {
+    public void setInterpreter(CommandInterpreter interpreter) {
         this.interpreter = interpreter;
     }
 

@@ -26,6 +26,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.service.ShellService;
 
 import java.util.Collection;
 
@@ -52,30 +53,31 @@ public class TransletCommand extends AbstractCommand {
 
     @Override
     public String execute(ParsedOptions options) throws Exception {
+        ShellService service = getService();
         if (!options.hasOptions() && options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getArgs());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
             try {
-                getService().execute(transletCommandLine);
+                service.execute(transletCommandLine);
                 writeLine();
             } catch (TransletNotFoundException e) {
                 writeLine("No translet mapped to '" + e.getTransletName() + "'");
             }
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
-            listTranslets(keywords.length > 0 ? keywords : null);
+            listTranslets(service, keywords.length > 0 ? keywords : null);
         } else {
             printUsage();
             if (!options.hasOption("h")) {
                 writeLine("Available translets:");
-                listTranslets(null);
+                listTranslets(service, null);
             }
         }
         return null;
     }
 
-    private void listTranslets(String[] keywords) {
-        TransletRuleRegistry transletRuleRegistry = getService().getActivityContext().getTransletRuleRegistry();
+    private void listTranslets(ShellService service, String[] keywords) {
+        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         writeLine("-%-20s-+-%-63s-", "--------------------",
                 "---------------------------------------------------------------");
@@ -85,7 +87,7 @@ public class TransletCommand extends AbstractCommand {
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
             String desc = StringUtils.trimWhitespace(transletRule.getDescription());
-            if (getService().isExposable(name)) {
+            if (service.isExposable(name)) {
                 if (keywords != null) {
                     boolean exists = false;
                     for (String keyw : keywords) {

@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell;
+package com.aspectran.shell.command;
 
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.console.DefaultConsole;
-
-import java.io.File;
-import java.io.IOException;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.service.ShellService;
 
 /**
- * Testcase for Aspectran Shell.
+ * The Shell Command Interpreter.
  *
- * <p>Created: 2017. 3. 26.</p>
+ * <p>Created: 2017. 6. 3.</p>
  */
-public class AspectranShellTest {
+public interface CommandInterpreter {
 
-    public static void main(String[] args) throws IOException {
-        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config-test.apon");
-        AspectranShell.bootstrap(aspectranConfigFile, new DefaultConsole());
-    }
+    Console getConsole();
+
+    CommandRegistry getCommandRegistry();
+
+    ShellService getService();
 
 }

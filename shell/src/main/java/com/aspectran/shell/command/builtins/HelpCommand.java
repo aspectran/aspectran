@@ -39,39 +39,41 @@ public class HelpCommand extends AbstractCommand {
 
     @Override
     public String execute(ParsedOptions options) throws Exception {
-        String[] filteredCommands = null;
+        String[] targetCommands = null;
         if (options.hasArgs()) {
-            filteredCommands = options.getArgs();
+            targetCommands = options.getArgs();
         }
-        if (filteredCommands == null) {
+        if (targetCommands == null) {
             printHelp(null);
-            getService().printHelp();
-        } else if (filteredCommands.length == 1) {
-            Command command = getCommandRegistry().getCommand(filteredCommands[0]);
+            if (isServiceAvailable()) {
+                getService().printHelp();
+            }
+        } else if (targetCommands.length == 1) {
+            Command command = getCommandRegistry().getCommand(targetCommands[0]);
             if (command != null) {
                 writeLine(command.getDescriptor().getDescription());
                 command.printUsage();
             } else {
                 writeLine("No command mapped to '"
-                        + filteredCommands[0] +  "'");
+                        + targetCommands[0] +  "'");
             }
         } else {
             setStyle("bold");
             writeLine("Built-in commands used in this application:");
             offStyle();
-            printHelp(filteredCommands);
+            printHelp(targetCommands);
         }
         return null;
     }
 
-    private void printHelp(String[] filteredCommands) {
+    private void printHelp(String[] targetCommands) {
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
-        final int commandWidth = maxLengthOfCommandName(filteredCommands);
+        final int commandWidth = maxLengthOfCommandName(targetCommands);
         final String lpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_LEFT_PAD);
         final String dpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_DESC_PAD);
         for (Command command : getCommandRegistry().getAllCommands()) {
             String name = command.getDescriptor().getName();
-            if (commandWidth == 0 || filteredCommands == null || contains(name, filteredCommands)) {
+            if (commandWidth == 0 || targetCommands == null || contains(name, targetCommands)) {
                 String line = renderCommand(command, lineWidth, commandWidth, lpad, dpad);
                 if (line != null) {
                     writeLine(line);

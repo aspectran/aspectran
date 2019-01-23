@@ -247,7 +247,7 @@ public class JLineAnsiStyler {
                             try {
                                 color = Colors.rgbColor(style.toLowerCase());
                             } catch (Throwable e) {
-                                log.warn("Parsing RGB color failed: " + style, e);
+                                log.warn("Unable to parse color from string \"" + style + "\"", e);
                             }
                         }
                         as = as.background(color);
@@ -262,7 +262,7 @@ public class JLineAnsiStyler {
                             try {
                                 color = Colors.rgbColor(style.toLowerCase());
                             } catch (Throwable e) {
-                                log.warn("Parsing RGB color failed: " + style, e);
+                                log.warn("Unable to parse color from string \"" + style + "\"", e);
                             }
                         }
                         as = as.foreground(color);

@@ -21,6 +21,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.service.ShellService;
 import com.aspectran.with.jetty.JettyServer;
 
 import java.net.BindException;
@@ -60,9 +61,10 @@ public class JettyCommand extends AbstractCommand {
 
     @Override
     public String execute(ParsedOptions options) throws Exception {
-        String serverName = options.getValue("server", "jetty.server");
+        ShellService service = getService();
 
-        BeanRegistry beanRegistry = getService().getActivityContext().getBeanRegistry();
+        String serverName = options.getValue("server", "jetty.server");
+        BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
         JettyServer jettyServer;
         try {
             jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);

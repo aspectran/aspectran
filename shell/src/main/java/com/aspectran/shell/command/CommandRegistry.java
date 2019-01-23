@@ -15,8 +15,6 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.service.ShellService;
-
 import java.util.Collection;
 
 /**
@@ -26,7 +24,7 @@ import java.util.Collection;
  */
 public interface CommandRegistry {
 
-    ShellService getService();
+    CommandInterpreter getInterpreter();
 
     Command getCommand(String commandName);
 

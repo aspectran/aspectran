@@ -24,12 +24,12 @@ import java.io.IOException;
 /**
  * Testcase for Aspectran Shell.
  *
- * <p>Created: 2017. 3. 26.</p>
+ * <p>Created: 2019. 1. 23.</p>
  */
-public class AspectranShellTest {
+public class AspectranShellOnlyTest {
 
     public static void main(String[] args) throws IOException {
-        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config-test.apon");
+        File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config-shell-only-test.apon");
         AspectranShell.bootstrap(aspectranConfigFile, new DefaultConsole());
     }
 

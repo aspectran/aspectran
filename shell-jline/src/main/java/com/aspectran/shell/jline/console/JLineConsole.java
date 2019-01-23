@@ -17,7 +17,6 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
-import com.aspectran.shell.command.ShellCommandInterpreter;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosablePrintWriter;
 import org.jline.builtins.Options;
@@ -61,7 +60,7 @@ public class JLineConsole extends AbstractConsole {
 
     private final LineReader commandReader;
 
-    private final CommandCompleter commandCompleter = new CommandCompleter();
+    private final CommandCompleter commandCompleter;
 
     private AttributedStyle style;
 
@@ -76,6 +75,7 @@ public class JLineConsole extends AbstractConsole {
                 .parser(parser)
                 .terminal(terminal)
                 .build();
+        this.commandCompleter = new CommandCompleter(this);
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
                 .completer(commandCompleter)
@@ -317,15 +317,6 @@ public class JLineConsole extends AbstractConsole {
         String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{reset}} ");
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
-    }
-
-    @Override
-    public void setInterpreter(ShellCommandInterpreter interpreter) {
-        super.setInterpreter(interpreter);
-        if (interpreter != null) {
-            commandCompleter.setCommandRegistry(interpreter.getCommandRegistry());
-            commandCompleter.setService(interpreter.getService());
-        }
     }
 
 }

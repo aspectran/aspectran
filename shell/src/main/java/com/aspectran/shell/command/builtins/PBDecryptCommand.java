@@ -82,17 +82,15 @@ public class PBDecryptCommand extends AbstractCommand {
             return null;
         }
 
-        writeLine("--------------------------------------------------------------");
         if (!implicitPassword) {
-            writeLine("   %1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-            writeLine("   %1$-10s: %2$s", "password", password);
+            writeLine("%1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+            writeLine("%1$-10s: %2$s", "password", password);
         }
         for (String input : inputValues) {
             String output;
             try {
                 output = PBEncryptionUtils.decrypt(input, password);
             } catch (Exception e) {
-                writeLine("--------------------------------------------------------------");
                 setStyle("RED");
                 writeLine("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
                 writeLine("Please make sure that the input string is encrypted with the password you entered.");
@@ -100,9 +98,8 @@ public class PBDecryptCommand extends AbstractCommand {
                 return null;
             }
 
-            writeLine("   %1$-10s: %2$s", "input", input);
-            writeLine("   %1$-10s: %2$s", "output", output);
-            writeLine("--------------------------------------------------------------");
+            writeLine("%1$-10s: %2$s", "input", input);
+            writeLine("%1$-10s: %2$s", "output", output);
         }
         return null;
     }

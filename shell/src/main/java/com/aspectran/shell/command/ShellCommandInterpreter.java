@@ -16,28 +16,35 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.component.translet.TransletNotFoundException;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.service.AspectranShellService;
 import com.aspectran.shell.service.ShellService;
+
+import java.io.File;
 
 /**
  * The Shell Command Interpreter.
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ShellCommandInterpreter {
+public class ShellCommandInterpreter implements CommandInterpreter {
 
     private static final Log log = LogFactory.getLog(ShellCommandInterpreter.class);
 
     private final Console console;
 
-    private CommandRegistry commandRegistry;
+    private ShellCommandRegistry commandRegistry;
 
-    private ShellService service;
+    private AspectranShellService service;
 
     public ShellCommandInterpreter(Console console) {
         if (console == null) {
@@ -47,24 +54,56 @@ public class ShellCommandInterpreter {
         this.console = console;
     }
 
+    @Override
     public Console getConsole() {
         return console;
     }
 
+    @Override
     public CommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
-    public void setCommandRegistry(CommandRegistry commandRegistry) {
-        this.commandRegistry = commandRegistry;
-    }
-
+    @Override
     public ShellService getService() {
         return service;
     }
 
-    public void setService(ShellService service) {
-        this.service = service;
+    public void init(String basePath, File aspectranConfigFile) throws Exception {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        try {
+            AponReader.parse(aspectranConfigFile, aspectranConfig);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse aspectran config file: " +
+                    aspectranConfigFile, e);
+        }
+        if (basePath != null) {
+            aspectranConfig.updateBasePath(basePath);
+        }
+
+        ShellConfig shellConfig = aspectranConfig.touchShellConfig();
+        String commandPrompt = shellConfig.getString(ShellConfig.prompt);
+        if (commandPrompt != null) {
+            console.setCommandPrompt(commandPrompt);
+        }
+
+        if (aspectranConfig.isValueAssigned(AspectranConfig.context)) {
+            service = AspectranShellService.create(aspectranConfig, console);
+            service.start();
+        } else {
+            String greetings = shellConfig.getString(ShellConfig.greetings);
+            if (StringUtils.hasText(greetings)) {
+                console.writeLine(greetings);
+            }
+        }
+
+        commandRegistry = new ShellCommandRegistry(this);
+        commandRegistry.addCommand(shellConfig.getStringArray(ShellConfig.commands));
+        if (commandRegistry.getCommand(QuitCommand.class) == null) {
+            commandRegistry.addCommand(QuitCommand.class);
+        }
+
+        console.setInterpreter(this);
     }
 
     public void perform() {
@@ -152,6 +191,13 @@ public class ShellCommandInterpreter {
         } else {
             console.writeLine("No command or translet mapped to '" +
                     transletCommandLine.getLineParser().getCommandLine() + "'");
+        }
+    }
+
+    public void release() {
+        if (service != null) {
+            service.stop();
+            service = null;
         }
     }
 
