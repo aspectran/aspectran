@@ -86,48 +86,6 @@ public abstract class AbstractCommand implements Command {
         options.setSkipParsingAtNonOption(true);
     }
 
-    protected void writeLine(String string) {
-        getConsole().writeLine(string);
-    }
-
-    protected void writeLine(String format, Object... args) {
-        getConsole().writeLine(format, args);
-    }
-
-    protected void writeLine() {
-        getConsole().writeLine();
-    }
-
-    protected void writeError(String string) {
-        String[] oldStyles = getConsole().getStyles();
-        setStyle("RED");
-        getConsole().writeLine(string);
-        if (oldStyles != null) {
-            setStyle(oldStyles);
-        } else {
-            offStyle();
-        }
-    }
-
-    protected void writeError(String format, Object... args) {
-        String[] oldStyles = getConsole().getStyles();
-        setStyle("RED");
-        getConsole().writeLine(format, args);
-        if (oldStyles != null) {
-            setStyle(oldStyles);
-        } else {
-            offStyle();
-        }
-    }
-
-    protected void setStyle(String... styles) {
-        getConsole().setStyle(styles);
-    }
-
-    protected void offStyle() {
-        getConsole().offStyle();
-    }
-
     @Override
     public Options getOptions() {
         return options;
@@ -136,6 +94,41 @@ public abstract class AbstractCommand implements Command {
     @Override
     public List<Arguments> getArgumentsList() {
         return argumentsList;
+    }
+
+    @Override
+    public void writeLine(String string) {
+        getConsole().writeLine(string);
+    }
+
+    @Override
+    public void writeLine(String format, Object... args) {
+        getConsole().writeLine(format, args);
+    }
+
+    @Override
+    public void writeLine() {
+        getConsole().writeLine();
+    }
+
+    @Override
+    public void writeError(String string) {
+        getConsole().writeError(string);
+    }
+
+    @Override
+    public void writeError(String format, Object... args) {
+        getConsole().writeError(format, args);
+    }
+
+    @Override
+    public void setStyle(String... styles) {
+        getConsole().setStyle(styles);
+    }
+
+    @Override
+    public void offStyle() {
+        getConsole().offStyle();
     }
 
     @Override

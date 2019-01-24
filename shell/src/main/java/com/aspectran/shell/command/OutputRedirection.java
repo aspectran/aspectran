@@ -16,7 +16,11 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.shell.console.Console;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Collection;
 
 /**
@@ -50,11 +54,9 @@ public class OutputRedirection {
             return true;
         }
         if (o instanceof OutputRedirection) {
-            OutputRedirection cr = (OutputRedirection)o;
-            if (cr.getOperand().equals(operand) &&
-                    cr.getOperator().equals(operator)) {
-                return true;
-            }
+            OutputRedirection redirection = (OutputRedirection)o;
+            return redirection.getOperand().equals(operand) &&
+                    redirection.getOperator().equals(operator);
         }
         return false;
     }
@@ -90,6 +92,18 @@ public class OutputRedirection {
         return sb.toString();
     }
 
+    public static PrintWriter determineOutputWriter(Console console, Writer[] redirectionWriters) {
+        PrintWriter outputWriter;
+        if (redirectionWriters == null || redirectionWriters.length == 0) {
+            outputWriter = console.getUnclosedWriter();
+        } else if (redirectionWriters.length == 1) {
+            outputWriter = new PrintWriter(redirectionWriters[0]);
+        } else {
+            outputWriter = new PrintWriter(new MultiWriter(redirectionWriters));
+        }
+        return outputWriter;
+    }
+
     /**
      * Output redirection operators.
      */
@@ -114,6 +128,54 @@ public class OutputRedirection {
         @Override
         public String toString() {
             return this.alias;
+        }
+
+    }
+
+    /**
+     * The writer that handles multiple writers.
+     *
+     * <p>Created: 2017. 3. 9.</p>
+     */
+    public static class MultiWriter extends Writer {
+
+        private final Writer[] writers;
+
+        public MultiWriter(Writer[] writers) {
+            this.writers = writers;
+        }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            for (Writer writer : writers) {
+                writer.write(cbuf, off, len);
+            }
+        }
+
+        @Override
+        public void flush() throws IOException {
+            for (Writer writer : writers) {
+                try {
+                    writer.flush();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            int unclosed = 0;
+            for (Writer writer : writers) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    unclosed++;
+                }
+            }
+            if (unclosed > 0) {
+                throw new IOException("Failed to close the multi-writer");
+            }
         }
 
     }

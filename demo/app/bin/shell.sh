@@ -38,8 +38,9 @@ fi
 
 "$JAVA_BIN" \
     ${JAVA_OPTS} \
+    -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.baseDir="$BASE_DIR" \
-    -classpath "$CLASSPATH" \
+    ${ASPECTRAN_OPTS} \
     com.aspectran.shell.jline.JLineAspectranShell \
     "$ASPECTRAN_CONFIG"

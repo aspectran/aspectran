@@ -23,7 +23,7 @@ import com.aspectran.shell.console.Console;
 import java.util.List;
 
 /**
- * The Command interface is there to allow Commander to delegate tasks.
+ * The Command interface allows the command interpreter to delegate tasks.
  */
 public interface Command {
 
@@ -39,6 +39,20 @@ public interface Command {
      * @throws Exception if an error occurs during command execution
      */
     void execute(ParsedOptions options) throws Exception;
+
+    void writeLine(String string);
+
+    void writeLine(String format, Object... args);
+
+    void writeLine();
+
+    void writeError(String string);
+
+    void writeError(String format, Object... args);
+
+    void setStyle(String... styles);
+
+    void offStyle();
 
     /**
      * Prints the usage statement for the specified command.

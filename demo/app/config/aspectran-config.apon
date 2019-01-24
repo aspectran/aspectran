@@ -78,6 +78,7 @@ shell: {
         |To run a translet, type '{{GREEN}}translet translet_name{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
     )
+    workingDir: /work
     verbose: true
     exposals: {
         -: /**

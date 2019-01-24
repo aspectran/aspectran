@@ -9,9 +9,11 @@ if not defined JAVA_OPTS (
 
 "%JAVA_HOME%\bin\java.exe" ^
     %JAVA_OPTS% ^
+    -classpath "%BASE_DIR%/lib/*" ^
     -Dlogback.configurationFile="%BASE_DIR%\config\logback.xml" ^
     -Daspectran.baseDir="%BASE_DIR%" ^
-    -cp "%BASE_DIR%/lib/*" ^
+    -Dfile.encoding=MS949 ^
+    %ASPECTRAN_OPTS% ^
     com.aspectran.shell.jline.JLineAspectranShell ^
     %BASE_DIR%/config/aspectran-config.apon
 goto end

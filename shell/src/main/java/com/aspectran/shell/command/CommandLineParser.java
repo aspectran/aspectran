@@ -16,6 +16,8 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
@@ -30,6 +32,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +48,8 @@ public class CommandLineParser {
     private static final Pattern ARGS_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)");
 
     private static final Pattern REDIRECTION_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
+
+    private static final Log log = LogFactory.getLog(CommandLineParser.class);
 
     private final String commandLine;
 
@@ -130,7 +136,16 @@ public class CommandLineParser {
         if (redirectionList != null) {
             List<Writer> writerList = new ArrayList<>(redirectionList.size());
             for (OutputRedirection redirection : redirectionList) {
-                File file = new File(redirection.getOperand());
+                File file;
+                Path path = Paths.get(redirection.getOperand());
+                if (path.isAbsolute()) {
+                    file = path.toFile();
+                } else if (console.getWorkingDir() != null) {
+                    file = new File(console.getWorkingDir(), redirection.getOperand());
+                } else {
+                    file = new File(redirection.getOperand());
+                }
+                file.getParentFile().mkdirs();
                 boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
                 OutputStream stream = new FileOutputStream(file, append);
                 writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
@@ -203,6 +218,9 @@ public class CommandLineParser {
         }
         if (!redirectionList.isEmpty()) {
             this.redirectionList = redirectionList;
+            if (log.isDebugEnabled()) {
+                log.debug("Output Redirection: " + OutputRedirection.serialize(redirectionList));
+            }
         }
         if (StringUtils.hasLength(commandLine)) {
             return commandLine;

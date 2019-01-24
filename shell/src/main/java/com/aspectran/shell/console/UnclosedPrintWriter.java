@@ -23,17 +23,17 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 /**
- * The Class UnclosablePrintWriter.
+ * The Class UnclosedPrintWriter.
  * 
  * @since 2016. 1. 22.
  */
-public class UnclosablePrintWriter extends PrintWriter {
+public class UnclosedPrintWriter extends PrintWriter {
 
-    public UnclosablePrintWriter(OutputStream out, String encoding) throws UnsupportedEncodingException {
+    public UnclosedPrintWriter(OutputStream out, String encoding) throws UnsupportedEncodingException {
         this(new BufferedWriter(new OutputStreamWriter(out, encoding)));
     }
 
-    public UnclosablePrintWriter(Writer writer) {
+    public UnclosedPrintWriter(Writer writer) {
         super(writer, true);
     }
 

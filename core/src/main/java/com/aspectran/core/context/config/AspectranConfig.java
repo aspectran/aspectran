@@ -23,6 +23,8 @@ import com.aspectran.core.util.apon.Parameters;
 
 import java.io.File;
 import java.io.Reader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AspectranConfig extends AbstractParameters {
 
@@ -217,8 +219,14 @@ public class AspectranConfig extends AbstractParameters {
             }
         } else if (args.length == 1) {
             String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
-            if (baseDir != null && !args[0].startsWith(baseDir)) {
-                file = new File(baseDir, args[0]);
+            if (baseDir != null) {
+                Path basePath = Paths.get(baseDir);
+                Path filePath = Paths.get(args[0]);
+                if (filePath.startsWith(basePath) && filePath.isAbsolute()) {
+                    file = filePath.toFile();
+                } else {
+                    file = new File(baseDir, args[0]);
+                }
             } else {
                 file = new File(args[0]);
             }

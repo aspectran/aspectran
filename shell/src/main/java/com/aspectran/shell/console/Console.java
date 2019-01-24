@@ -17,9 +17,9 @@ package com.aspectran.shell.console;
 
 import com.aspectran.shell.command.CommandInterpreter;
 
+import java.io.File;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.PrintWriter;
 
 /**
  * The Interface for Console I/O.
@@ -62,6 +62,10 @@ public interface Console {
 
     void writeLine();
 
+    void writeError(String string);
+
+    void writeError(String format, Object... args);
+
     void clearScreen();
 
     void flush();
@@ -70,9 +74,9 @@ public interface Console {
 
     OutputStream getOutput();
 
-    Writer getWriter();
+    PrintWriter getWriter();
 
-    Writer getUnclosableWriter() throws UnsupportedEncodingException;
+    PrintWriter getUnclosedWriter();
 
     String[] getStyles();
 
@@ -87,6 +91,10 @@ public interface Console {
     boolean confirmRestart(String message);
 
     boolean confirmQuit();
+
+    File getWorkingDir();
+
+    void setWorkingDir(File workingDir);
 
     CommandInterpreter getInterpreter();
 

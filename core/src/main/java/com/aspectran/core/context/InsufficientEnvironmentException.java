@@ -77,19 +77,17 @@ public class InsufficientEnvironmentException extends IllegalStateException {
             }
             lines[i] = line;
         }
-        String bar = String.format("+-%" + maxLen + "s-+", "").replaceAll(" ","-");
         StringBuilder sb = new StringBuilder();
-        sb.append(bar);
         sb.append(System.lineSeparator());
-        sb.append(String.format("| %-" + maxLen + "s |", "ASPECTRAN RUN FAILURE"));
+        sb.append(String.format("-%" + maxLen + "s-", "").replaceAll(" ","-"));
         sb.append(System.lineSeparator());
-        sb.append(bar);
+        sb.append(String.format(" %-" + maxLen + "s ", "ASPECTRAN RUN FAILURE"));
         sb.append(System.lineSeparator());
         for (String line : lines) {
-            sb.append(String.format("| %-" + maxLen + "s |", line));
+            sb.append(String.format(" %-" + maxLen + "s ", line));
             sb.append(System.lineSeparator());
         }
-        sb.append(bar);
+        sb.append(String.format("-%" + maxLen + "s-", "").replaceAll(" ","-"));
         return sb.toString();
     }
 

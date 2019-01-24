@@ -34,8 +34,8 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.MultiWriter;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
@@ -101,14 +101,7 @@ public class ShellActivity extends CoreActivity {
             requestAdapter.setEncoding(console.getEncoding());
             setRequestAdapter(requestAdapter);
 
-            Writer outputWriter;
-            if (redirectionWriters == null || redirectionWriters.length == 0) {
-                outputWriter = console.getUnclosableWriter();
-            } else if (redirectionWriters.length == 1) {
-                outputWriter = redirectionWriters[0];
-            } else {
-                outputWriter = new MultiWriter(redirectionWriters);
-            }
+            Writer outputWriter = OutputRedirection.determineOutputWriter(console, redirectionWriters);
 
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
             responseAdapter.setEncoding(console.getEncoding());

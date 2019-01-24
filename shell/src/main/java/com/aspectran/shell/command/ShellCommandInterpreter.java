@@ -30,6 +30,9 @@ import com.aspectran.shell.service.AspectranShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The Shell Command Interpreter.
@@ -102,6 +105,8 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             commandRegistry.addCommand(QuitCommand.class);
         }
 
+        File workingDir = determineWorkingDir(basePath, shellConfig.getString(ShellConfig.workingDir));
+        console.setWorkingDir(workingDir);
         console.setInterpreter(this);
     }
 
@@ -133,7 +138,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             }
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error occurred while processing shell command", e);
         } finally {
             if (service != null && service.getServiceController().isActive()) {
@@ -153,7 +158,15 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(Command command, CommandLineParser lineParser) {
         try {
             ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
-            command.execute(options);
+
+            Writer[] redirectionWriters = lineParser.getRedirectionWriters(console);
+            if (redirectionWriters != null) {
+                CommandWrapper wrapper = new CommandWrapper(command);
+                wrapper.setRedirectionWriters(console, redirectionWriters);
+                wrapper.execute(options);
+            } else {
+                command.execute(options);
+            }
         } catch (ConsoleTerminatedException e) {
             throw e;
         } catch (OptionParserException e) {
@@ -195,6 +208,30 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             service.stop();
             service = null;
         }
+    }
+
+    private File determineWorkingDir(String baseDir, String workingDir) {
+        File dir = null;
+        if (baseDir != null && workingDir != null) {
+            Path basePath = Paths.get(baseDir);
+            Path workingPath = Paths.get(workingDir);
+            if (workingPath.startsWith(basePath) && workingPath.isAbsolute()) {
+                dir = workingPath.toFile();
+            } else {
+                dir = new File(baseDir, workingDir);
+            }
+        } else if (workingDir != null) {
+            dir = new File(workingDir);
+        } else {
+            String userDir = System.getProperty("user.dir");
+            if (userDir != null) {
+                dir = new File(userDir);
+            }
+        }
+        if (dir != null) {
+            dir.mkdirs();
+        }
+        return dir;
     }
 
 }

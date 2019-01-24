@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
@@ -40,6 +39,11 @@ public class DefaultConsole extends AbstractConsole {
     private volatile boolean reading;
 
     public DefaultConsole() {
+        this(null);
+    }
+
+    public DefaultConsole(String encoding) {
+        super(encoding);
     }
 
     @Override
@@ -209,6 +213,17 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
+    public void writeError(String string) {
+        System.err.println(string);
+    }
+
+    @Override
+    public void writeError(String format, Object... args) {
+        System.err.print(String.format(format, args));
+        System.err.println();
+    }
+
+    @Override
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -229,7 +244,7 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public Writer getWriter() {
+    public PrintWriter getWriter() {
         if (System.console() != null) {
             return System.console().writer();
         } else {

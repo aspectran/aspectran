@@ -18,7 +18,7 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
-import com.aspectran.shell.console.UnclosablePrintWriter;
+import com.aspectran.shell.console.UnclosedPrintWriter;
 import org.jline.builtins.Options;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -31,11 +31,10 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 
 /**
  * Console I/O implementation that supports JLine.
@@ -52,8 +51,6 @@ public class JLineConsole extends AbstractConsole {
 
     private static final String COMMENT_DELIMITER = "//";
 
-    private static final String encoding = Charset.defaultCharset().name();
-
     private final Terminal terminal;
 
     private final LineReader reader;
@@ -65,11 +62,17 @@ public class JLineConsole extends AbstractConsole {
     private String[] styles;
 
     public JLineConsole() throws IOException {
+        this(null);
+    }
+
+    public JLineConsole(String encoding) throws IOException {
+        super(encoding);
+
         DefaultParser parser = new DefaultParser();
         //It will be applied from jline 3.9.1
         //parser.setEscapeChars(null);
 
-        this.terminal = TerminalBuilder.builder().encoding(encoding).build();
+        this.terminal = TerminalBuilder.builder().encoding(getEncoding()).build();
         this.reader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
                 .parser(parser)
@@ -228,12 +231,25 @@ public class JLineConsole extends AbstractConsole {
         writeRawText(Options.NL);
     }
 
-    private void writeRawText(String string) {
-        try {
-            getWriter().write(string);
-        } catch (IOException e) {
-            throw new IOError(e);
+    @Override
+    public void writeError(String string) {
+        String[] oldStyles = getStyles();
+        setStyle("RED");
+        writeLine(string);
+        if (oldStyles != null) {
+            setStyle(oldStyles);
+        } else {
+            offStyle();
         }
+    }
+
+    @Override
+    public void writeError(String format, Object... args) {
+        writeError(String.format(format, args));
+    }
+
+    private void writeRawText(String string) {
+        getWriter().print(string);
     }
 
     @Override
@@ -244,22 +260,13 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public void flush() {
-        try {
-            getWriter().flush();
-        } catch (IOException e) {
-            throw new IOError(e);
-        }
+        getWriter().flush();
     }
 
     @Override
-    public Writer getUnclosableWriter() {
+    public PrintWriter getUnclosedWriter() {
         Writer writer = new JLineAnsiStringWriter(terminal, getWriter());
-        return new UnclosablePrintWriter(writer);
-    }
-
-    @Override
-    public String getEncoding() {
-        return encoding;
+        return new UnclosedPrintWriter(writer);
     }
 
     @Override
@@ -268,7 +275,7 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public Writer getWriter() {
+    public PrintWriter getWriter() {
         return terminal.writer();
     }
 
