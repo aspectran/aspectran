@@ -131,8 +131,8 @@ public class BeanMethodAction extends AbstractAction {
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("No have a Translet argument on bean method " + beanMethodActionRule);
+                            if (log.isTraceEnabled()) {
+                                log.trace("No have a Translet argument on bean method " + beanMethodActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);

@@ -29,18 +29,16 @@ class FileCommandPollerTest {
 
     @Test
     void testPolling() throws Exception {
-        File baseDir = ResourceUtils.getResourceAsFile("./inbound");
+        File root = ResourceUtils.getResourceAsFile(".");
+        File inboundDir = new File(root, "inbound");
 
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();
-        pollerConfig.putValue(DaemonPollerConfig.inbound, baseDir.getCanonicalPath());
+        pollerConfig.putValue(DaemonPollerConfig.inbound, inboundDir.getCanonicalPath());
 
         SimpleDaemon daemon = new SimpleDaemon();
         daemon.init(daemonConfig);
 
-        FileCommandPoller poller = (FileCommandPoller)daemon.getCommandPoller();
-
-        File inboundDir = poller.getInboundDir();
         File commandFile = new File(inboundDir, "quit.apon");
         try (Writer writer = new FileWriter(commandFile)) {
             writer.write("command: quit");

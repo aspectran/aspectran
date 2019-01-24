@@ -85,7 +85,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                         Pointcut pointcut = aspectRule.getPointcut();
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Apply AspectRule " + aspectRule);
+                                log.debug("aspect " + aspectRule);
                             }
                             postRegister.register(aspectRule);
                         }
@@ -131,7 +131,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Apply AspectRule " + aspectRule);
+            log.debug("aspect " + aspectRule);
         }
 
         List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();

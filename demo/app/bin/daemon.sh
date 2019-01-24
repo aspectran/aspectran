@@ -90,8 +90,8 @@ do_start() {
             $DAEMON_MAIN \
             "$ASPECTRAN_CONFIG" \
             > "$DAEMON_OUT" 2>&1 &
+        sleep 0.5
         until cat "$DAEMON_OUT" | grep "AspectranDaemonService started\|Failed to initialize daemon" -C 600; do sleep 1; done
-        #echo "The Aspectran Daemon has started."
     fi
     sleep 0.5
 }

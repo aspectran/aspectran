@@ -64,7 +64,11 @@ public class TransletCommandLine {
      * @return the translet name
      */
     public String getTransletName() {
-        return lineParser.getCommandName();
+        if (parameterMap != null) {
+            return lineParser.getCommandName();
+        } else {
+            return lineParser.getCommandLine();
+        }
     }
 
     /**
