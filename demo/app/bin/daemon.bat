@@ -11,7 +11,7 @@ if not defined JAVA_OPTS (
     %JAVA_OPTS% ^
     -classpath "%BASE_DIR%/lib/*" ^
     -Dlogback.configurationFile="%BASE_DIR%\config\logback.xml" ^
-    -Daspectran.baseDir="%BASE_DIR%" ^
+    -Daspectran.basePath="%BASE_DIR%" ^
     %ASPECTRAN_OPTS% ^
     com.aspectran.daemon.DefaultDaemon ^
     %BASE_DIR%/config/aspectran-config.apon

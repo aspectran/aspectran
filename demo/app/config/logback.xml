@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="FILE-AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${aspectran.baseDir}/logs/scheduler-report.log</file>
+        <file>${aspectran.basePath}/logs/scheduler-report.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${aspectran.baseDir}/logs/archived/scheduler-report.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${aspectran.basePath}/logs/archived/scheduler-report.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
@@ -16,9 +16,9 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
-        <file>${aspectran.baseDir}/logs/scheduler-error.log</file>
+        <file>${aspectran.basePath}/logs/scheduler-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${aspectran.baseDir}/logs/archived/scheduler-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${aspectran.basePath}/logs/archived/scheduler-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>

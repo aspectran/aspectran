@@ -54,9 +54,9 @@ public interface Console {
 
     void write(String string);
 
-    void write(String format, Object... args);
-
     void writeLine(String string);
+
+    void write(String format, Object... args);
 
     void writeLine(String format, Object... args);
 
@@ -69,8 +69,6 @@ public interface Console {
     void clearScreen();
 
     void flush();
-
-    String getEncoding();
 
     OutputStream getOutput();
 
@@ -91,6 +89,8 @@ public interface Console {
     boolean confirmRestart(String message);
 
     boolean confirmQuit();
+
+    String getEncoding();
 
     File getWorkingDir();
 

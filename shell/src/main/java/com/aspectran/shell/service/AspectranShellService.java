@@ -120,7 +120,9 @@ public class AspectranShellService extends AbstractShellService {
                     try {
                         writer.close();
                     } catch (IOException e) {
-                        log.error("Redirection writer close failed: " + e.getMessage(), e);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Failed to close redirection writer: " + e.getMessage(), e);
+                        }
                     }
                 }
             }

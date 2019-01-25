@@ -116,7 +116,7 @@ do_start() {
         -classpath "$CLASSPATH" \
         -Djava.io.tmpdir="$TMP_DIR" \
         -Dlogback.configurationFile="$LOGGING_CONFIG" \
-        -Daspectran.baseDir="$BASE_DIR" \
+        -Daspectran.basePath="$BASE_DIR" \
         ${ASPECTRAN_OPTS} \
         $DAEMON_MAIN \
         "$ASPECTRAN_CONFIG"
@@ -145,7 +145,7 @@ do_version() {
     "$JAVA_BIN" \
         -classpath "$CLASSPATH" \
         -Dlogback.configurationFile="$LOGGING_CONFIG" \
-        -Daspectran.baseDir="$BASE_DIR" \
+        -Daspectran.basePath="$BASE_DIR" \
         com.aspectran.core.util.Aspectran
 }
 

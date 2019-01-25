@@ -40,7 +40,7 @@ fi
     ${JAVA_OPTS} \
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
-    -Daspectran.baseDir="$BASE_DIR" \
+    -Daspectran.basePath="$BASE_DIR" \
     ${ASPECTRAN_OPTS} \
     com.aspectran.shell.jline.JLineAspectranShell \
     "$ASPECTRAN_CONFIG"

@@ -19,7 +19,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.UnclosedPrintWriter;
-import org.jline.builtins.Options;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -203,9 +202,19 @@ public class JLineConsole extends AbstractConsole {
     public void write(String string) {
         if (attributedStyle != null) {
             AttributedString as = new AttributedString(string, attributedStyle);
-            writeRawText(as.toAnsi(terminal));
+            getWriter().print(as.toAnsi(terminal));
         } else {
-            writeRawText(toAnsi(string));
+            getWriter().print(toAnsi(string));
+        }
+    }
+
+    @Override
+    public void writeLine(String string) {
+        if (attributedStyle != null) {
+            AttributedString as = new AttributedString(string, attributedStyle);
+            getWriter().println(as.toAnsi(terminal));
+        } else {
+            getWriter().println(toAnsi(string));
         }
     }
 
@@ -215,20 +224,13 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public void writeLine(String string) {
-        write(string);
-        writeLine();
-    }
-
-    @Override
     public void writeLine(String format, Object... args) {
-        write(format, args);
-        writeLine();
+        writeLine(String.format(format, args));
     }
 
     @Override
     public void writeLine() {
-        writeRawText(Options.NL);
+        getWriter().println();
     }
 
     @Override
@@ -248,10 +250,6 @@ public class JLineConsole extends AbstractConsole {
         writeError(String.format(format, args));
     }
 
-    private void writeRawText(String string) {
-        getWriter().print(string);
-    }
-
     @Override
     public void clearScreen() {
         terminal.puts(InfoCmp.Capability.clear_screen);
@@ -264,12 +262,6 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public PrintWriter getUnclosedWriter() {
-        Writer writer = new JLineAnsiStringWriter(terminal, getWriter());
-        return new UnclosedPrintWriter(writer);
-    }
-
-    @Override
     public OutputStream getOutput() {
         return terminal.output();
     }
@@ -277,6 +269,12 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public PrintWriter getWriter() {
         return terminal.writer();
+    }
+
+    @Override
+    public PrintWriter getUnclosedWriter() {
+        Writer writer = new JLineAnsiStringWriter(terminal, getWriter());
+        return new UnclosedPrintWriter(writer);
     }
 
     @Override

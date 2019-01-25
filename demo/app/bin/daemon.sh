@@ -86,7 +86,7 @@ do_start() {
             -classpath "$CLASSPATH" \
             -Djava.io.tmpdir="$TMP_DIR" \
             -Dlogback.configurationFile="$LOGGING_CONFIG" \
-            -Daspectran.baseDir="$BASE_DIR" \
+            -Daspectran.basePath="$BASE_DIR" \
             $DAEMON_MAIN \
             "$ASPECTRAN_CONFIG" \
             > "$DAEMON_OUT" 2>&1 &

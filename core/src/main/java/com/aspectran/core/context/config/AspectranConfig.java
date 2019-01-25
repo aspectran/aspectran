@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 
 public class AspectranConfig extends AbstractParameters {
 
-    public static final String BASE_DIR_PROPERTY_NAME = "aspectran.baseDir";
+    public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
     public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
@@ -202,7 +202,7 @@ public class AspectranConfig extends AbstractParameters {
 
     public static String determineBasePath(String[] args) {
         if (args == null || args.length < 2) {
-            return SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            return SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
         } else {
             return args[0];
         }
@@ -211,14 +211,14 @@ public class AspectranConfig extends AbstractParameters {
     public static File determineAspectranConfigFile(String[] args) {
         File file;
         if (args == null || args.length == 0) {
-            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
             if (baseDir != null) {
                 file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
             } else {
                 file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
             }
         } else if (args.length == 1) {
-            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
             if (baseDir != null) {
                 Path basePath = Paths.get(baseDir);
                 Path filePath = Paths.get(args[0]);

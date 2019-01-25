@@ -69,7 +69,7 @@ public class JettyCommand extends AbstractCommand {
         try {
             jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
         } catch (Exception e) {
-            writeLine("Jetty server is not available. Cause: " + e.getMessage());
+            writeError("Jetty server is not available. Cause: " + e.getMessage());
             return;
         }
 
@@ -81,25 +81,25 @@ public class JettyCommand extends AbstractCommand {
             }
             if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
-                    writeLine("Jetty server is already running");
+                    writeError("Jetty server is already running");
                     return;
                 }
                 try {
                     jettyServer.start();
                     printStatus(jettyServer);
                 } catch (BindException e) {
-                    writeLine("Jetty Server Error - Port already in use");
+                    writeError("Jetty Server Error - Port already in use");
                 }
             } else if ("stop".equals(command)) {
                 if (!jettyServer.isRunning()) {
-                    writeLine("Jetty Server is not running");
+                    writeError("Jetty Server is not running");
                     return;
                 }
                 try {
                     jettyServer.stop();
                     printStatus(jettyServer);
                 } catch (BindException e) {
-                    writeLine("Jetty Server Error - " + e.getMessage());
+                    writeError("Jetty Server Error - " + e.getMessage());
                 }
             } else if ("restart".equals(command)) {
                 try {
@@ -109,7 +109,7 @@ public class JettyCommand extends AbstractCommand {
                     jettyServer.start();
                     printStatus(jettyServer);
                 } catch (BindException e) {
-                    writeLine("Jetty Server Error - Port already in use");
+                    writeError("Jetty Server Error - Port already in use");
                 }
             } else if ("status".equals(command)) {
                 printStatus(jettyServer);

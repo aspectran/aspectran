@@ -38,7 +38,7 @@ import com.aspectran.scheduler.service.SchedulerService;
 import java.io.File;
 import java.io.IOException;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_DIR_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 /**
  * The Class AbstractCoreService.
@@ -301,12 +301,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     protected void determineBasePath() {
         try {
-            String baseDir = SystemUtils.getProperty(BASE_DIR_PROPERTY_NAME);
+            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
             if (baseDir != null) {
                 File dir = new File(baseDir);
                 if (!dir.isDirectory()) {
                     throw new IOException("Make sure it is a valid base directory; " +
-                            BASE_DIR_PROPERTY_NAME + "=" + baseDir);
+                            BASE_PATH_PROPERTY_NAME + "=" + baseDir);
                 }
             } else {
                 baseDir = new File("").getCanonicalPath();

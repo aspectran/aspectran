@@ -170,9 +170,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         } catch (ConsoleTerminatedException e) {
             throw e;
         } catch (OptionParserException e) {
-            console.setStyle("RED");
-            console.writeLine(e.getMessage());
-            console.offStyle();
+            console.writeError(e.getMessage());
             command.printUsage();
         } catch (Exception e) {
             log.error("Failed to execute command: " + lineParser.getCommandLine(), e);

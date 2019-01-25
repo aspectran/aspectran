@@ -32,9 +32,7 @@ public class ShellResponseAdapter extends BasicResponseAdapter {
      * @param writer the writer to output
      */
     public ShellResponseAdapter(Writer writer) {
-        super(null);
-
-        setWriter(writer);
+        super(null, writer);
     }
 
 }

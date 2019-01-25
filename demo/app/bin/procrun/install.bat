@@ -55,7 +55,7 @@ rem JVM configuration
 set PR_JVMMS=128
 set PR_JVMMX=512
 set PR_JVMSS=4096
-set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;-Dlogback.configurationFile=%BASE_DIR%\config\logback.xml;-Daspectran.baseDir=%BASE_DIR%
+set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;-Dlogback.configurationFile=%BASE_DIR%\config\logback.xml;-Daspectran.basePath=%BASE_DIR%
 
 rem Install service
 %PR_INSTALL% //IS/%SERVICE_NAME% ^
