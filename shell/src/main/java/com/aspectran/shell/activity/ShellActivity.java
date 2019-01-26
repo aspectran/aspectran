@@ -117,26 +117,11 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
-        showDescription();
-
-        receiveParameters();
+        readParameters();
         parseDeclaredParameters();
 
-        receiveAttributes();
+        readAttributes();
         parseDeclaredAttributes();
-    }
-
-    /**
-     * Prints a description for the {@code Translet}.
-     */
-    private void showDescription() {
-        if (service.isVerbose()) {
-            String description = getTranslet().getDescription();
-            if (description != null) {
-                console.writeLine(description);
-                console.flush();
-            }
-        }
     }
 
     private boolean isSimpleItemRules(ItemRuleList itemRuleList) {
@@ -170,9 +155,9 @@ public class ShellActivity extends CoreActivity {
     }
 
     /**
-     * Receive required input parameters.
+     * Read required input parameters.
      */
-    private void receiveParameters() {
+    private void readParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
@@ -180,7 +165,7 @@ public class ShellActivity extends CoreActivity {
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required parameters:");
-                console.offStyle();
+                console.styleOff();
 
                 if (!simpleInputMode) {
                     for (ItemRule itemRule : parameterItemRuleList) {
@@ -193,25 +178,25 @@ public class ShellActivity extends CoreActivity {
                         String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
                         console.setStyle("YELLOW");
                         console.write(mandatoryMarker);
-                        console.offStyle();
+                        console.styleOff();
                         console.setStyle("bold");
                         console.write("%s: ", itemRule.getName());
-                        console.offStyle();
+                        console.styleOff();
                         console.writeLine(TokenParser.toString(tokens));
                     }
                 }
             }
-            enterRequiredParameters(parameterItemRuleList);
+            readRequiredParameters(parameterItemRuleList);
         }
     }
 
-    private void enterRequiredParameters(ItemRuleList parameterItemRuleList) {
+    private void readRequiredParameters(ItemRuleList parameterItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
             if (simpleInputMode) {
-                missingItemRules1 = enterEachParameter(parameterItemRuleList);
+                missingItemRules1 = readEachParameter(parameterItemRuleList);
             } else {
-                missingItemRules1 = enterEachToken(parameterItemRuleList);
+                missingItemRules1 = readEachToken(parameterItemRuleList);
             }
         } else {
             missingItemRules1 = checkRequiredParameters(parameterItemRuleList);
@@ -219,13 +204,13 @@ public class ShellActivity extends CoreActivity {
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required parameters are missing.");
-            console.offStyle();
+            console.styleOff();
 
             ItemRuleList missingItemRules2;
             if (simpleInputMode) {
-                missingItemRules2 = enterEachParameter(missingItemRules1);
+                missingItemRules2 = readEachParameter(missingItemRules1);
             } else {
-                missingItemRules2 = enterEachToken(missingItemRules1);
+                missingItemRules2 = readEachToken(missingItemRules1);
             }
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
@@ -235,16 +220,16 @@ public class ShellActivity extends CoreActivity {
                 for (String name : itemNames) {
                     console.writeLine("   %s", name);
                 }
-                console.offStyle();
+                console.styleOff();
                 terminate("Required parameters are missing");
             }
         }
     }
 
     /**
-     * Receive required input attributes.
+     * Read required input attributes.
      */
-    private void receiveAttributes() {
+    private void readAttributes() {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
@@ -252,7 +237,7 @@ public class ShellActivity extends CoreActivity {
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required attributes:");
-                console.offStyle();
+                console.styleOff();
 
                 if (!simpleInputMode) {
                     for (ItemRule itemRule : attributeItemRuleList) {
@@ -265,25 +250,25 @@ public class ShellActivity extends CoreActivity {
                         String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
                         console.setStyle("YELLOW");
                         console.write(mandatoryMarker);
-                        console.offStyle();
+                        console.styleOff();
                         console.setStyle("bold");
                         console.write("%s: ", itemRule.getName());
-                        console.offStyle();
+                        console.styleOff();
                         console.writeLine(TokenParser.toString(tokens));
                     }
                 }
             }
-            enterRequiredAttributes(attributeItemRuleList);
+            readRequiredAttributes(attributeItemRuleList);
         }
     }
 
-    private void enterRequiredAttributes(ItemRuleList attributeItemRuleList) {
+    private void readRequiredAttributes(ItemRuleList attributeItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
             if (simpleInputMode) {
-                missingItemRules1 = enterEachAttribute(attributeItemRuleList);
+                missingItemRules1 = readEachAttribute(attributeItemRuleList);
             } else {
-                missingItemRules1 = enterEachToken(attributeItemRuleList);
+                missingItemRules1 = readEachToken(attributeItemRuleList);
             }
         } else {
             missingItemRules1 = checkRequiredAttributes(attributeItemRuleList);
@@ -291,13 +276,13 @@ public class ShellActivity extends CoreActivity {
         if (missingItemRules1 != null) {
             console.setStyle("YELLOW");
             console.writeLine("Required attributes are missing.");
-            console.offStyle();
+            console.styleOff();
 
             ItemRuleList missingItemRules2;
             if (simpleInputMode) {
-                missingItemRules2 = enterEachParameter(missingItemRules1);
+                missingItemRules2 = readEachParameter(missingItemRules1);
             } else {
-                missingItemRules2 = enterEachToken(missingItemRules1);
+                missingItemRules2 = readEachToken(missingItemRules1);
             }
             if (missingItemRules2 != null) {
                 String[] itemNames = missingItemRules2.getItemNames();
@@ -307,17 +292,17 @@ public class ShellActivity extends CoreActivity {
                 for (String name : itemNames) {
                     console.writeLine("   %s", name);
                 }
-                console.offStyle();
+                console.styleOff();
                 terminate("Required attributes are missing");
             }
         }
     }
 
-    private ItemRuleList enterEachParameter(ItemRuleList itemRuleList) {
+    private ItemRuleList readEachParameter(ItemRuleList itemRuleList) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {
             for (ItemRule ir : itemRuleList) {
-                String value = enterParameter(ir);
+                String value = readParameter(ir);
                 if (!StringUtils.isEmpty(value)) {
                     getRequestAdapter().setParameter(ir.getName(), value);
                 } else if (ir.isMandatory()) {
@@ -331,11 +316,11 @@ public class ShellActivity extends CoreActivity {
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
-    private ItemRuleList enterEachAttribute(ItemRuleList itemRuleList) {
+    private ItemRuleList readEachAttribute(ItemRuleList itemRuleList) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {
             for (ItemRule ir : itemRuleList) {
-                String value = enterParameter(ir);
+                String value = readParameter(ir);
                 if (!StringUtils.isEmpty(value)) {
                     getRequestAdapter().setAttribute(ir.getName(), value);
                 } else if (ir.isMandatory()) {
@@ -349,14 +334,14 @@ public class ShellActivity extends CoreActivity {
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
-    private String enterParameter(ItemRule ir) {
+    private String readParameter(ItemRule ir) {
         String mandatoryMarker = ir.isMandatory() ? " * " : "   ";
         console.setStyle("YELLOW");
         console.write(mandatoryMarker);
-        console.offStyle();
+        console.styleOff();
         console.setStyle("bold");
         console.write(ir.getName());
-        console.offStyle();
+        console.styleOff();
         if (ir.isSecurity()) {
             return console.readPassword(": ");
         } else {
@@ -364,10 +349,10 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private ItemRuleList enterEachToken(ItemRuleList itemRuleList) {
+    private ItemRuleList readEachToken(ItemRuleList itemRuleList) {
         console.setStyle("GREEN");
         console.writeLine("Enter a value for each token:");
-        console.offStyle();
+        console.styleOff();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {

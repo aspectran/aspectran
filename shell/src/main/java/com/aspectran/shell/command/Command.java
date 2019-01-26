@@ -52,7 +52,7 @@ public interface Command {
 
     void setStyle(String... styles);
 
-    void offStyle();
+    void styleOff();
 
     /**
      * Prints the usage statement for the specified command.

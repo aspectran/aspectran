@@ -60,7 +60,7 @@ public class HelpCommand extends AbstractCommand {
         } else {
             setStyle("bold");
             writeLine("Built-in commands used in this application:");
-            offStyle();
+            styleOff();
             printHelp(targetCommands);
         }
     }

@@ -261,7 +261,7 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void offStyle() {
+    public void styleOff() {
         // Nothing to do
     }
 

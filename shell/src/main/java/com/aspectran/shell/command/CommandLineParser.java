@@ -57,12 +57,6 @@ public class CommandLineParser {
         shift();
     }
 
-    public CommandLineParser(String[] args) {
-        this.commandLine = null;
-        this.args = args;
-        shift();
-    }
-
     public void shift() {
         if (args != null && args.length > 0) {
             if (!StringUtils.hasLength(args[0])) {

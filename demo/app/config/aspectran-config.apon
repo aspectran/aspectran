@@ -46,7 +46,7 @@ daemon: {
     }
 }
 shell: {
-    prompt: "{{GREEN}}aspectran-demo>{{reset}} "
+    prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand

@@ -97,7 +97,9 @@ public class AspectranCoreService extends AbstractCoreService {
      * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
      */
     private void stopAspectranService() {
-        log.info("Destroying all cached resources...");
+        if (log.isDebugEnabled()) {
+            log.debug("Destroying all cached resources...");
+        }
 
         beforeContextDestroy();
         destroyActivityContext();

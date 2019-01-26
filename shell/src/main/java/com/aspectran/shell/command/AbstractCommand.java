@@ -127,8 +127,8 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public void offStyle() {
-        getConsole().offStyle();
+    public void styleOff() {
+        getConsole().styleOff();
     }
 
     @Override

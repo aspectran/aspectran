@@ -102,7 +102,6 @@ ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 
 do_start() {
-    echo "Starting the Aspectran daemon..."
     > "$DAEMON_OUT"
     "$JSVC" \
         $JAVA_OPTS \
@@ -126,7 +125,6 @@ do_start() {
 }
 
 do_stop() {
-    echo "Stopping the Aspectran daemon..."
     > "$DAEMON_OUT"
     "$JSVC" \
         $JAVA_OPTS \

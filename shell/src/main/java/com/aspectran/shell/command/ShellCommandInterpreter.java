@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
@@ -186,15 +185,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(TransletCommandLine transletCommandLine) {
         if (transletCommandLine.getTransletName() != null) {
             try {
-                Translet translet = service.translate(transletCommandLine);
-                if (translet != null) {
-                    String result = translet.getResponseAdapter().getWriter().toString();
-                    if (StringUtils.hasLength(result)) {
-                        console.writeLine(result);
-                    }
-                }
+                service.translate(transletCommandLine);
             } catch (TransletNotFoundException e) {
-                console.writeLine("No command or translet mapped to '" + e.getTransletName() + "'");
+                console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
             } catch (ConsoleTerminatedException e) {
                 throw e;
             } catch (Exception e) {
@@ -202,7 +195,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                         transletCommandLine.getLineParser().getCommandLine(), e);
             }
         } else {
-            console.writeLine("No command or translet mapped to '" +
+            console.writeError("No command or translet mapped to '" +
                     transletCommandLine.getLineParser().getCommandLine() + "'");
         }
     }

@@ -123,7 +123,9 @@ public class JettyCommand extends AbstractCommand {
     }
 
     private void printStatus(JettyServer jettyServer) {
+        setStyle("YELLOW");
         writeLine(jettyServer.getState() + " - Jetty " + JettyServer.getVersion());
+        styleOff();
     }
 
     @Override

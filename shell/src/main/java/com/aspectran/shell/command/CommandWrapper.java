@@ -95,8 +95,8 @@ public class CommandWrapper implements Command {
     }
 
     @Override
-    public void offStyle() {
-        command.offStyle();
+    public void styleOff() {
+        command.styleOff();
     }
 
     @Override

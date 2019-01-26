@@ -75,12 +75,15 @@ public class JLineConsole extends AbstractConsole {
                 .parser(parser)
                 .terminal(terminal)
                 .build();
+        this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
                 .completer(new CommandCompleter(this))
+                .highlighter(new CommandHighlighter(this))
                 .parser(parser)
                 .terminal(terminal)
                 .build();
+        this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
     }
 
     @Override
@@ -234,12 +237,12 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public void writeError(String string) {
         String[] oldStyles = getStyles();
-        setStyle("RED");
+        setStyle("red");
         writeLine(string);
         if (oldStyles != null) {
             setStyle(oldStyles);
         } else {
-            offStyle();
+            styleOff();
         }
     }
 
@@ -281,7 +284,7 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public void offStyle() {
+    public void styleOff() {
         this.styles = null;
         this.attributedStyle = null;
     }

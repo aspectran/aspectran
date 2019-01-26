@@ -201,6 +201,13 @@ public class WildcardMatcher {
     }
 
     private static boolean matches(WildcardPattern pattern, CharSequence input, int[] separatorFlags) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern must not be null");
+        }
+        if (input == null) {
+            throw new IllegalArgumentException("input must not be null");
+        }
+
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
         char sepa = pattern.getSeparator();

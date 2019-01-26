@@ -109,8 +109,18 @@ public class AspectranShellService extends AbstractShellService {
             activity.setOutputWriter(outputWriter);
             activity.prepare(transletName, requestMethod);
             activity.perform();
+            translet = activity.getTranslet();
+            if (isVerbose()) {
+                String description = translet.getDescription();
+                if (StringUtils.hasLength(description)) {
+                    getConsole().writeLine(description);
+                }
+            }
             if (outputWriter == null) {
-                translet = activity.getTranslet();
+                String result = translet.getResponseAdapter().getWriter().toString();
+                if (StringUtils.hasLength(result)) {
+                    getConsole().writeLine(result);
+                }
             }
         } catch (TransletNotFoundException e) {
             if (log.isTraceEnabled()) {

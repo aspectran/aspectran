@@ -79,7 +79,6 @@ do_start() {
         echo "Aspectran daemon is already running."
         exit 1
     else
-        echo "Starting the Aspectran daemon..."
         rm -f "$DAEMON_OUT"
         nohup "$JAVA_BIN" \
             $JAVA_OPTS \

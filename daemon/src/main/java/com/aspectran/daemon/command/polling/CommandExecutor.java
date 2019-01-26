@@ -153,7 +153,10 @@ public class CommandExecutor {
     }
 
     public void shutdown() {
-        log.info("Shutting down executor...");
+        if (log.isDebugEnabled()) {
+            log.debug("Shutting down executor...");
+        }
+
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             while (true) {

@@ -78,7 +78,7 @@ public interface Console {
 
     void setStyle(String... styles);
 
-    void offStyle();
+    void styleOff();
 
     boolean isReading();
 
