@@ -26,6 +26,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
 import java.util.Collection;
@@ -52,35 +53,35 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
         if (!options.hasOptions() && options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
             try {
-                service.translate(transletCommandLine);
+                service.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
-                writeError("No translet mapped to '" + e.getTransletName() + "'");
+                console.writeError("No translet mapped to '" + e.getTransletName() + "'");
             }
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
-            listTranslets(service, keywords.length > 0 ? keywords : null);
+            listTranslets(service, keywords.length > 0 ? keywords : null, console);
         } else {
-            printUsage();
+            printUsage(console);
             if (!options.hasOption("h")) {
-                writeLine("Available translets:");
-                listTranslets(service, null);
+                console.writeLine("Available translets:");
+                listTranslets(service, null, console);
             }
         }
     }
 
-    private void listTranslets(ShellService service, String[] keywords) {
+    private void listTranslets(ShellService service, String[] keywords, Console console) {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        writeLine("-%-20s-+-%-63s-", "--------------------",
+        console.writeLine("-%-20s-+-%-63s-", "--------------------",
                 "---------------------------------------------------------------");
-        writeLine(" %-20s | %-63s ", "Translet Name", "Description");
-        writeLine("-%-20s-+-%-63s-", "--------------------",
+        console.writeLine(" %-20s | %-63s ", "Translet Name", "Description");
+        console.writeLine("-%-20s-+-%-63s-", "--------------------",
                 "---------------------------------------------------------------");
         for (TransletRule transletRule : transletRules) {
             String name = transletRule.getName();
@@ -107,17 +108,17 @@ public class TransletCommand extends AbstractCommand {
                         sb.append(transletRule.getAllowedMethods()[i].toString());
                     }
                     sb.append("] ");
-                    writeLine(" %-20s | %-63s ", sb, StringUtils.EMPTY);
+                    console.writeLine(" %-20s | %-63s ", sb, StringUtils.EMPTY);
                 }
                 if (desc != null && desc.contains(ActivityContext.LINE_SEPARATOR)) {
                     String[] arr = StringUtils.split(desc, ActivityContext.LINE_SEPARATOR);
                     for (int i = 0; i < arr.length; i++) {
-                        writeLine(" %-20s | %-63s ", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
+                        console.writeLine(" %-20s | %-63s ", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
                     }
                 } else {
-                    writeLine(" %-20s | %-63s ", name, StringUtils.nullToEmpty(desc));
+                    console.writeLine(" %-20s | %-63s ", name, StringUtils.nullToEmpty(desc));
                 }
-                writeLine("-%-20s-+-%-63s-", "--------------------",
+                console.writeLine("-%-20s-+-%-63s-", "--------------------",
                         "---------------------------------------------------------------");
             }
         }

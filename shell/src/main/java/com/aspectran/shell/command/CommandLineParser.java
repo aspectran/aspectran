@@ -92,9 +92,9 @@ public class CommandLineParser {
         return (args != null && args.length > 0);
     }
 
-    public ParsedOptions getParsedOptions(Options options) throws OptionParserException {
+    public ParsedOptions parseOptions(Options options) throws OptionParserException {
         OptionParser parser = new DefaultOptionParser();
-        return parser.parse(options, args);
+        return parser.parse(options, args, options.isSkipParsingAtNonOption());
     }
 
     /**

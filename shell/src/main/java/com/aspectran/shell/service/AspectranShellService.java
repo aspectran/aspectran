@@ -36,7 +36,7 @@ import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.Console;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -58,23 +58,23 @@ public class AspectranShellService extends AbstractShellService {
     }
 
     @Override
-    public Translet translate(TransletCommandLine transletCommandLine) {
+    public Translet translate(TransletCommandLine transletCommandLine, Console console) {
         if (!isExposable(transletCommandLine.getTransletName())) {
-            getConsole().writeLine("Unexposable translet: " + transletCommandLine.getTransletName());
+            console.writeLine("Unexposable translet: " + transletCommandLine.getTransletName());
             return null;
         }
 
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
-                    getConsole().writeLine(getServiceName() + " has been paused");
+                    console.writeLine(getServiceName() + " has been paused");
                 } else {
                     long remains = pauseTimeout - System.currentTimeMillis();
                     if (remains > 0L) {
-                        getConsole().writeLine(getServiceName() + " has been paused and will resume after "
+                        console.writeLine(getServiceName() + " has been paused and will resume after "
                                 + remains + " ms");
                     } else {
-                        getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
+                        console.writeLine(getServiceName() + " has been paused and will soon resume");
                     }
                 }
                 return null;
@@ -83,14 +83,14 @@ public class AspectranShellService extends AbstractShellService {
             }
         }
 
-        Writer outputWriter = null;
+        PrintWriter outputWriter = null;
         List<OutputRedirection> redirectionList = transletCommandLine.getLineParser().getRedirectionList();
         if (redirectionList != null) {
             try {
-                outputWriter = OutputRedirection.determineOutputWriter(redirectionList, getConsole());
+                outputWriter = OutputRedirection.determineOutputWriter(redirectionList, console);
             } catch (Exception e) {
-                getConsole().writeError("Invalid Output Redirection.");
-                getConsole().writeLine(e.getMessage());
+                console.writeError("Invalid Output Redirection.");
+                console.writeLine(e.getMessage());
                 return null;
             }
         }
@@ -103,25 +103,13 @@ public class AspectranShellService extends AbstractShellService {
         ShellActivity activity = null;
         Translet translet = null;
         try {
-            activity = new ShellActivity(this);
+            activity = new ShellActivity(this, console);
             activity.setProcedural(procedural);
             activity.setParameterMap(parameterMap);
             activity.setOutputWriter(outputWriter);
             activity.prepare(transletName, requestMethod);
             activity.perform();
             translet = activity.getTranslet();
-            if (isVerbose()) {
-                String description = translet.getDescription();
-                if (StringUtils.hasLength(description)) {
-                    getConsole().writeLine(description);
-                }
-            }
-            if (outputWriter == null) {
-                String result = translet.getResponseAdapter().getWriter().toString();
-                if (StringUtils.hasLength(result)) {
-                    getConsole().writeLine(result);
-                }
-            }
         } catch (TransletNotFoundException e) {
             if (log.isTraceEnabled()) {
                 log.trace("Unknown translet: " + transletName);
@@ -138,11 +126,17 @@ public class AspectranShellService extends AbstractShellService {
                 activity.finish();
             }
             if (outputWriter != null) {
-                try {
-                    outputWriter.close();
-                } catch (IOException e) {
-                    log.warn("Failed to close redirection writer", e);
+                outputWriter.close();
+            }
+        }
+        if (translet != null && outputWriter == null) {
+            try {
+                String result = translet.getResponseAdapter().getWriter().toString();
+                if (StringUtils.hasLength(result)) {
+                    console.writeLine(result);
                 }
+            } catch (IOException e) {
+                log.warn("Failed to print activity result", e);
             }
         }
         return translet;
@@ -152,7 +146,7 @@ public class AspectranShellService extends AbstractShellService {
      * Returns a new instance of {@code AspectranShellService}.
      *
      * @param aspectranConfig the aspectran configuration
-     * @param console the console
+     * @param console the {@code Console} instance
      * @return the instance of {@code AspectranShellService}
      */
     public static AspectranShellService create(AspectranConfig aspectranConfig, Console console) {

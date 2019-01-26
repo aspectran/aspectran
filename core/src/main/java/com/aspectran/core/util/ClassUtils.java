@@ -17,6 +17,7 @@ package com.aspectran.core.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * Miscellaneous class utility methods.
@@ -54,7 +55,7 @@ public abstract class ClassUtils {
         } catch (Exception e) {
             ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
                     cls.getName() + ", problem: " + e.getMessage());
-            return null;
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -104,7 +105,7 @@ public abstract class ClassUtils {
         } catch (Exception e) {
             ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName()
                     + ", problem: " + e.getMessage());
-            return null;
+            throw new IllegalArgumentException(e);
         }
     }
 

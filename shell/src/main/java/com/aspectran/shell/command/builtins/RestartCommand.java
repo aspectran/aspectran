@@ -18,6 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Restarts the Aspectran Shell.
@@ -35,9 +36,9 @@ public class RestartCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
-        if (getConsole().confirmRestart()) {
-            getConsole().clearScreen();
+    public void execute(ParsedOptions options, Console console) throws Exception {
+        if (console.confirmRestart()) {
+            console.clearScreen();
             getService().getServiceController().restart();
         }
     }

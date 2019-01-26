@@ -68,13 +68,14 @@ public class ShellActivity extends CoreActivity {
     /**
      * Instantiates a new ShellActivity.
      *
-     * @param service the shell service
+     * @param service the {@code ShellService} instance
+     * @param console the {@code Console} instance
      */
-    public ShellActivity(ShellService service) {
+    public ShellActivity(ShellService service, Console console) {
         super(service.getActivityContext());
 
         this.service = service;
-        this.console = service.getConsole();
+        this.console = console;
     }
 
     public void setProcedural(boolean procedural) {
@@ -117,11 +118,25 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
+        showDescription();
+
         readParameters();
         parseDeclaredParameters();
 
         readAttributes();
         parseDeclaredAttributes();
+    }
+
+    /**
+     * Prints a description for the {@code Translet}.
+     */
+    private void showDescription() {
+        if (service.isVerbose()) {
+            String description = getTranslet().getDescription();
+            if (description != null) {
+                console.writeLine(description);
+            }
+        }
     }
 
     private boolean isSimpleItemRules(ItemRuleList itemRuleList) {
@@ -334,15 +349,15 @@ public class ShellActivity extends CoreActivity {
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
-    private String readParameter(ItemRule ir) {
-        String mandatoryMarker = ir.isMandatory() ? " * " : "   ";
+    private String readParameter(ItemRule itemRule) {
+        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
         console.setStyle("YELLOW");
         console.write(mandatoryMarker);
         console.styleOff();
         console.setStyle("bold");
-        console.write(ir.getName());
+        console.write(itemRule.getName());
         console.styleOff();
-        if (ir.isSecurity()) {
+        if (itemRule.isSecurity()) {
             return console.readPassword(": ");
         } else {
             return console.readLine(": ");
@@ -456,7 +471,7 @@ public class ShellActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        ShellActivity activity = new ShellActivity(service);
+        ShellActivity activity = new ShellActivity(service, console);
         activity.setOutputWriter(outputWriter);
         activity.setIncluded(true);
         return (T)activity;

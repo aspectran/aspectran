@@ -21,6 +21,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Display information about builtin commands.
@@ -38,34 +39,33 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         String[] targetCommands = null;
         if (options.hasArgs()) {
             targetCommands = options.getArgs();
         }
         if (targetCommands == null) {
-            printHelp(null);
+            printHelp(null, console);
             if (isServiceAvailable()) {
                 getService().printHelp();
             }
         } else if (targetCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(targetCommands[0]);
             if (command != null) {
-                writeLine(command.getDescriptor().getDescription());
-                command.printUsage();
+                console.writeLine(command.getDescriptor().getDescription());
+                command.printUsage(console);
             } else {
-                writeLine("No command mapped to '"
-                        + targetCommands[0] +  "'");
+                console.writeLine("No command mapped to '" + targetCommands[0] +  "'");
             }
         } else {
-            setStyle("bold");
-            writeLine("Built-in commands used in this application:");
-            styleOff();
-            printHelp(targetCommands);
+            console.setStyle("bold");
+            console.writeLine("Built-in commands:");
+            console.styleOff();
+            printHelp(targetCommands, console);
         }
     }
 
-    private void printHelp(String[] targetCommands) {
+    private void printHelp(String[] targetCommands, Console console) {
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
         final int commandWidth = maxLengthOfCommandName(targetCommands);
         final String lpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_LEFT_PAD);
@@ -75,7 +75,7 @@ public class HelpCommand extends AbstractCommand {
             if (commandWidth == 0 || targetCommands == null || contains(name, targetCommands)) {
                 String line = renderCommand(command, lineWidth, commandWidth, lpad, dpad);
                 if (line != null) {
-                    writeLine(line);
+                    console.writeLine(line);
                 }
             }
         }

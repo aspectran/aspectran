@@ -105,6 +105,7 @@ public class OutputRedirection {
     /**
      * Returns the {@code Writer} instances for translet output redirection.
      *
+     * @param redirectionList a list of the output redirection
      * @param console the Console instance
      * @return the {@code Writer} instance
      * @throws FileNotFoundException if the file has an invalid path

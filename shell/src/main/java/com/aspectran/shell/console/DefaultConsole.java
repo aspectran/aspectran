@@ -192,13 +192,13 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void writeLine(String string) {
-        System.out.println(string);
+    public void write(String format, Object... args) {
+        System.out.print(String.format(format, args));
     }
 
     @Override
-    public void write(String format, Object... args) {
-        System.out.print(String.format(format, args));
+    public void writeLine(String string) {
+        System.out.println(string);
     }
 
     @Override
@@ -224,11 +224,6 @@ public class DefaultConsole extends AbstractConsole {
     @Override
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    @Override
-    public void flush() {
         System.out.flush();
     }
 

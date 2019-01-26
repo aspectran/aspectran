@@ -17,6 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 public class TestCommand extends AbstractCommand {
 
@@ -57,19 +58,19 @@ public class TestCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         String input = options.getTypedValue("input");
         String password = options.getTypedValue("password");
         String D = options.getValue("D");
 
-        getConsole().writeLine("---------------------------------------------");
-        getConsole().writeLine("   %1$-11s: %2$s", "input", input);
-        getConsole().writeLine("   %1$-11s: %2$s", "password", password);
-        getConsole().writeLine("   %1$-11s: %2$s", "D", D);
-        getConsole().writeLine("   %1$-11s: %2$s", "X", options.hasOption("X"));
-        getConsole().writeLine("   %1$-11s: %2$s", "Y", options.hasOption("Y"));
-        getConsole().writeLine("   %1$-11s: %2$s", "Z", options.hasOption("X"));
-        getConsole().writeLine("---------------------------------------------");
+        console.writeLine("---------------------------------------------");
+        console.writeLine("   %1$-11s: %2$s", "input", input);
+        console.writeLine("   %1$-11s: %2$s", "password", password);
+        console.writeLine("   %1$-11s: %2$s", "D", D);
+        console.writeLine("   %1$-11s: %2$s", "X", options.hasOption("X"));
+        console.writeLine("   %1$-11s: %2$s", "Y", options.hasOption("Y"));
+        console.writeLine("   %1$-11s: %2$s", "Z", options.hasOption("X"));
+        console.writeLine("---------------------------------------------");
     }
 
     @Override

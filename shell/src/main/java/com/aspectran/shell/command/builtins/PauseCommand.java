@@ -18,6 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Pause the Aspectran Shell.
@@ -35,7 +36,7 @@ public class PauseCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         getService().getServiceController().pause();
     }
 

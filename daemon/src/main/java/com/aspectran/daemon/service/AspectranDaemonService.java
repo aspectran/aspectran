@@ -113,7 +113,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranDaemonService is paused, so did not execute translet: " + name);
+                    log.debug(getServiceName() + " is paused, so did not execute translet: " + name);
                 }
                 return null;
             } else {
@@ -158,7 +158,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranDaemonService is paused, so did not execute template: " + templateId);
+                    log.debug(getServiceName() + " is paused, so did not execute template: " + templateId);
                 }
                 return null;
             } else {

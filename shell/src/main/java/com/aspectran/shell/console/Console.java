@@ -54,9 +54,9 @@ public interface Console {
 
     void write(String string);
 
-    void writeLine(String string);
-
     void write(String format, Object... args);
+
+    void writeLine(String string);
 
     void writeLine(String format, Object... args);
 
@@ -67,8 +67,6 @@ public interface Console {
     void writeError(String format, Object... args);
 
     void clearScreen();
-
-    void flush();
 
     OutputStream getOutput();
 

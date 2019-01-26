@@ -21,6 +21,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 import java.util.List;
 
@@ -52,9 +53,9 @@ public class PBDecryptCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         if (options.hasOption("help")) {
-            printUsage();
+            printUsage(console);
             return;
         }
 
@@ -66,34 +67,34 @@ public class PBDecryptCommand extends AbstractCommand {
         }
 
         if (!StringUtils.hasText(password)) {
-            writeError("A password is required to attempt password-based encryption or decryption.");
-            printUsage();
+            console.writeError("A password is required to attempt password-based encryption or decryption.");
+            printUsage(console);
             return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
-            writeError("Please enter a string to encrypt.");
-            printUsage();
+            console.writeError("Please enter a string to encrypt.");
+            printUsage(console);
             return;
         }
 
         if (!implicitPassword) {
-            writeLine("%1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-            writeLine("%1$-10s: %2$s", "password", password);
+            console.writeLine("%1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
+            console.writeLine("%1$-10s: %2$s", "password", password);
         }
         for (String input : inputValues) {
             String output;
             try {
                 output = PBEncryptionUtils.decrypt(input, password);
             } catch (Exception e) {
-                writeError("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
-                writeError("Please make sure that the input string is encrypted with the password you entered.");
+                console.writeError("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
+                console.writeError("Please make sure that the input string is encrypted with the password you entered.");
                 return;
             }
 
-            writeLine("%1$-10s: %2$s", "input", input);
-            writeLine("%1$-10s: %2$s", "output", output);
+            console.writeLine("%1$-10s: %2$s", "input", input);
+            console.writeLine("%1$-10s: %2$s", "output", output);
         }
     }
 

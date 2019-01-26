@@ -210,6 +210,11 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
+    public void write(String format, Object... args) {
+        write(String.format(format, args));
+    }
+
+    @Override
     public void writeLine(String string) {
         if (attributedStyle != null) {
             AttributedString as = new AttributedString(string, attributedStyle);
@@ -217,11 +222,6 @@ public class JLineConsole extends AbstractConsole {
         } else {
             getWriter().println(toAnsi(string));
         }
-    }
-
-    @Override
-    public void write(String format, Object... args) {
-        write(String.format(format, args));
     }
 
     @Override
@@ -255,11 +255,6 @@ public class JLineConsole extends AbstractConsole {
     public void clearScreen() {
         terminal.puts(InfoCmp.Capability.clear_screen);
         terminal.flush();
-    }
-
-    @Override
-    public void flush() {
-        getWriter().flush();
     }
 
     @Override

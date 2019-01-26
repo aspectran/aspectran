@@ -19,6 +19,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Releases all resources and exits this application.
@@ -36,8 +37,8 @@ public class QuitCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
-        if (getConsole().confirmQuit()) {
+    public void execute(ParsedOptions options, Console console) throws Exception {
+        if (console.confirmQuit()) {
             throw new ConsoleTerminatedException();
         }
     }

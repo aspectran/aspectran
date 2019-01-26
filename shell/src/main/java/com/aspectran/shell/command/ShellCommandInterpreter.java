@@ -26,6 +26,7 @@ import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ConsoleWrapper;
 import com.aspectran.shell.service.AspectranShellService;
 import com.aspectran.shell.service.ShellService;
 
@@ -156,24 +157,24 @@ public class ShellCommandInterpreter implements CommandInterpreter {
      * @param lineParser the command line parser
      */
     private void execute(Command command, CommandLineParser lineParser) {
+        ConsoleWrapper wrappedConsole = new ConsoleWrapper(console);
+        PrintWriter outputWriter = null;
         try {
-            ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
-
-            PrintWriter outputWriter = OutputRedirection.determineOutputWriter(lineParser.getRedirectionList(), console);
-            if (outputWriter != null) {
-                CommandWrapper wrapper = new CommandWrapper(command);
-                wrapper.setOutputWriter(outputWriter);
-                wrapper.execute(options);
-            } else {
-                command.execute(options);
-            }
+            ParsedOptions options = lineParser.parseOptions(command.getOptions());
+            outputWriter = OutputRedirection.determineOutputWriter(lineParser.getRedirectionList(), wrappedConsole);
+            wrappedConsole.setWriter(outputWriter);
+            command.execute(options, wrappedConsole);
         } catch (ConsoleTerminatedException e) {
             throw e;
         } catch (OptionParserException e) {
-            console.writeError(e.getMessage());
-            command.printUsage();
+            wrappedConsole.writeError(e.getMessage());
+            command.printUsage(wrappedConsole);
         } catch (Exception e) {
             log.error("Failed to execute command: " + lineParser.getCommandLine(), e);
+        } finally {
+            if (outputWriter != null) {
+                outputWriter.close();
+            }
         }
     }
 
@@ -185,7 +186,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(TransletCommandLine transletCommandLine) {
         if (transletCommandLine.getTransletName() != null) {
             try {
-                service.translate(transletCommandLine);
+                service.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
                 console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
             } catch (ConsoleTerminatedException e) {

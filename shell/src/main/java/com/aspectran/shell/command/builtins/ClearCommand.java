@@ -18,6 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Clear the terminal screen.
@@ -35,8 +36,8 @@ public class ClearCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
-        getConsole().clearScreen();
+    public void execute(ParsedOptions options, Console console) throws Exception {
+        console.clearScreen();
     }
 
     @Override

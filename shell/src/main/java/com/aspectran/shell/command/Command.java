@@ -36,28 +36,10 @@ public interface Command {
      * for the action mapped to this command.
      *
      * @param options the parsed options
+     * @param console the console
      * @throws Exception if an error occurs during command execution
      */
-    void execute(ParsedOptions options) throws Exception;
-
-    void writeLine(String string);
-
-    void writeLine(String format, Object... args);
-
-    void writeLine();
-
-    void writeError(String string);
-
-    void writeError(String format, Object... args);
-
-    void setStyle(String... styles);
-
-    void styleOff();
-
-    /**
-     * Prints the usage statement for the specified command.
-     */
-    void printUsage();
+    void execute(ParsedOptions options, Console console) throws Exception;
 
     /**
      * Prints the usage statement for the specified command.

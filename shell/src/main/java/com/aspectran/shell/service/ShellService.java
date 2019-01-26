@@ -29,13 +29,6 @@ import com.aspectran.shell.console.Console;
 public interface ShellService extends CoreService {
 
     /**
-     * Returns the console.
-     *
-     * @return the console
-     */
-    Console getConsole();
-
-    /**
      * Creates a new session adapter for the shell service and returns.
      *
      * @return the session adapter
@@ -86,8 +79,9 @@ public interface ShellService extends CoreService {
      * Executes the translet.
      *
      * @param transletCommandLine the translet command line
-     * @return the {@code Translet} object
+     * @param console the {@code Console} instance
+     * @return the {@code Translet} instance
      */
-    Translet translate(TransletCommandLine transletCommandLine);
+    Translet translate(TransletCommandLine transletCommandLine, Console console);
 
 }

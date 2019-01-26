@@ -35,7 +35,7 @@ public abstract class AbstractCommand implements Command {
 
     public AbstractCommand(CommandRegistry registry) {
         if (registry == null) {
-            throw new IllegalArgumentException("registry must not be null");
+            throw new IllegalArgumentException("Command registry must not be null");
         }
         this.registry = registry;
     }
@@ -46,14 +46,6 @@ public abstract class AbstractCommand implements Command {
 
     public CommandInterpreter getInterpreter() {
         return registry.getInterpreter();
-    }
-
-    public Console getConsole() {
-        Console console = (getInterpreter() != null ? getInterpreter().getConsole() : null);
-        if (console == null) {
-            throw new IllegalStateException("CONSOLE NOT AVAILABLE");
-        }
-        return console;
     }
 
     public ShellService getService() {
@@ -94,46 +86,6 @@ public abstract class AbstractCommand implements Command {
     @Override
     public List<Arguments> getArgumentsList() {
         return argumentsList;
-    }
-
-    @Override
-    public void writeLine(String string) {
-        getConsole().writeLine(string);
-    }
-
-    @Override
-    public void writeLine(String format, Object... args) {
-        getConsole().writeLine(format, args);
-    }
-
-    @Override
-    public void writeLine() {
-        getConsole().writeLine();
-    }
-
-    @Override
-    public void writeError(String string) {
-        getConsole().writeError(string);
-    }
-
-    @Override
-    public void writeError(String format, Object... args) {
-        getConsole().writeError(format, args);
-    }
-
-    @Override
-    public void setStyle(String... styles) {
-        getConsole().setStyle(styles);
-    }
-
-    @Override
-    public void styleOff() {
-        getConsole().styleOff();
-    }
-
-    @Override
-    public void printUsage() {
-        printUsage(getConsole());
     }
 
     @Override

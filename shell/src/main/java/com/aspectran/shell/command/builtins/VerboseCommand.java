@@ -19,6 +19,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 
 /**
  * Turns verbose mode on or off.
@@ -41,7 +42,7 @@ public class VerboseCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         String command = null;
         if (options.hasArgs()) {
             String[] optArgs = options.getArgs();
@@ -50,16 +51,16 @@ public class VerboseCommand extends AbstractCommand {
             }
             if ("on".equals(command)) {
                 getService().setVerbose(true);
-                writeLine("Enabled verbose mode");
+                console.writeLine("Enabled verbose mode");
             } else if ("off".equals(command)) {
                 getService().setVerbose(false);
-                writeLine("Disabled verbose mode");
+                console.writeLine("Disabled verbose mode");
             } else {
-                writeError("Unknown command '" + String.join(" ", optArgs) + "'");
-                printUsage();
+                console.writeError("Unknown command '" + String.join(" ", optArgs) + "'");
+                printUsage(console);
             }
         } else {
-            printUsage();
+            printUsage(console);
         }
     }
 

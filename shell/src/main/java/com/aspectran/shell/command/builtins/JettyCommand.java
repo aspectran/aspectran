@@ -21,6 +21,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.with.jetty.JettyServer;
 
@@ -60,7 +61,7 @@ public class JettyCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options) throws Exception {
+    public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
 
         String serverName = options.getValue("server", "jetty.server");
@@ -69,7 +70,7 @@ public class JettyCommand extends AbstractCommand {
         try {
             jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
         } catch (Exception e) {
-            writeError("Jetty server is not available. Cause: " + e.getMessage());
+            console.writeError("Jetty server is not available. Cause: " + e.getMessage());
             return;
         }
 
@@ -81,25 +82,25 @@ public class JettyCommand extends AbstractCommand {
             }
             if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
-                    writeError("Jetty server is already running");
+                    console.writeError("Jetty server is already running");
                     return;
                 }
                 try {
                     jettyServer.start();
-                    printStatus(jettyServer);
+                    printStatus(jettyServer, console);
                 } catch (BindException e) {
-                    writeError("Jetty Server Error - Port already in use");
+                    console.writeError("Jetty Server Error - Port already in use");
                 }
             } else if ("stop".equals(command)) {
                 if (!jettyServer.isRunning()) {
-                    writeError("Jetty Server is not running");
+                    console.writeError("Jetty Server is not running");
                     return;
                 }
                 try {
                     jettyServer.stop();
-                    printStatus(jettyServer);
+                    printStatus(jettyServer, console);
                 } catch (BindException e) {
-                    writeError("Jetty Server Error - " + e.getMessage());
+                    console.writeError("Jetty Server Error - " + e.getMessage());
                 }
             } else if ("restart".equals(command)) {
                 try {
@@ -107,25 +108,25 @@ public class JettyCommand extends AbstractCommand {
                         jettyServer.stop();
                     }
                     jettyServer.start();
-                    printStatus(jettyServer);
+                    printStatus(jettyServer, console);
                 } catch (BindException e) {
-                    writeError("Jetty Server Error - Port already in use");
+                    console.writeError("Jetty Server Error - Port already in use");
                 }
             } else if ("status".equals(command)) {
-                printStatus(jettyServer);
+                printStatus(jettyServer, console);
             } else {
-                writeError("Unknown command '" + String.join(" ", optArgs) + "'");
-                printUsage();
+                console.writeError("Unknown command '" + String.join(" ", optArgs) + "'");
+                printUsage(console);
             }
         } else {
-            printUsage();
+            printUsage(console);
         }
     }
 
-    private void printStatus(JettyServer jettyServer) {
-        setStyle("YELLOW");
-        writeLine(jettyServer.getState() + " - Jetty " + JettyServer.getVersion());
-        styleOff();
+    private void printStatus(JettyServer jettyServer, Console console) {
+        console.setStyle("YELLOW");
+        console.writeLine(jettyServer.getState() + " - Jetty " + JettyServer.getVersion());
+        console.styleOff();
     }
 
     @Override

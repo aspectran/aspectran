@@ -67,11 +67,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public Console getConsole() {
-        return console;
-    }
-
-    @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("SH");
@@ -141,10 +136,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             TokenEvaluator evaluator = new TokenExpression(getActivityContext());
             String message = evaluator.evaluateAsString(greetingsTokens);
             console.writeLine(message);
-            console.flush();
         } else if (greetings != null) {
             console.writeLine(greetings);
-            console.flush();
         }
     }
 
@@ -173,7 +166,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     public void printHelp() {
         if (isVerbose() && getActivityContext().getDescription() != null) {
             console.writeLine(getActivityContext().getDescription());
-            console.flush();
         }
     }
 
