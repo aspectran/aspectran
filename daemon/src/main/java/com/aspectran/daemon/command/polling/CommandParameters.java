@@ -33,12 +33,11 @@ import java.util.List;
 public class CommandParameters extends AbstractParameters {
 
     public static final ParameterDefinition command;
+    public static final ParameterDefinition translet;
     public static final ParameterDefinition bean;
     public static final ParameterDefinition method;
     public static final ParameterDefinition arguments;
     public static final ParameterDefinition properties;
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition template;
     public static final ParameterDefinition parameters;
     public static final ParameterDefinition attributes;
     public static final ParameterDefinition output;
@@ -48,7 +47,6 @@ public class CommandParameters extends AbstractParameters {
     static {
         command = new ParameterDefinition("command", ParameterValueType.STRING);
         translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-        template = new ParameterDefinition("template", ParameterValueType.STRING);
         bean = new ParameterDefinition("bean", ParameterValueType.STRING);
         method = new ParameterDefinition("method", ParameterValueType.STRING);
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
@@ -60,7 +58,6 @@ public class CommandParameters extends AbstractParameters {
         parameterDefinitions = new ParameterDefinition[] {
                 command,
                 translet,
-                template,
                 bean,
                 method,
                 arguments,
@@ -89,14 +86,6 @@ public class CommandParameters extends AbstractParameters {
 
     public void setTransletName(String transletName) {
         putValue(translet, transletName);
-    }
-
-    public String getTemplateName() {
-        return getString(template);
-    }
-
-    public void setTemplateName(String templateName) {
-        putValue(template, templateName);
     }
 
     public String getBeanName() {

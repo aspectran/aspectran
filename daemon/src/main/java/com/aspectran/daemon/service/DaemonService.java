@@ -58,14 +58,4 @@ public interface DaemonService extends CoreService {
      */
     Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
-    /**
-     * Evaluates the template with a set of parameters and attributes.
-     *
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the output string of the template
-     */
-    String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
-
 }

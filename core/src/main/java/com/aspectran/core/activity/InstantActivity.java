@@ -51,6 +51,16 @@ public class InstantActivity extends DefaultActivity {
      *
      * @param context the activity context
      * @param parameterMap the parameter map
+     */
+    public InstantActivity(ActivityContext context, ParameterMap parameterMap) {
+        this(context, parameterMap, null);
+    }
+
+    /**
+     * Instantiates a new InstantActivity.
+     *
+     * @param context the activity context
+     * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      */
     public InstantActivity(ActivityContext context, ParameterMap parameterMap, Map<String, Object> attributeMap) {

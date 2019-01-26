@@ -18,10 +18,13 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
+
+import java.util.List;
 
 /**
  * Display information about builtin commands.
@@ -63,6 +66,21 @@ public class HelpCommand extends AbstractCommand {
             console.styleOff();
             printHelp(targetCommands, console);
         }
+    }
+
+    @Override
+    public List<Arguments> getArgumentsList() {
+        List<Arguments> argumentsList = super.getArgumentsList();
+        argumentsList.clear();
+
+        Arguments arguments = touchArguments();
+        arguments.setTitle("Commands:");
+        for (Command command : getCommandRegistry().getAllCommands()) {
+            String commandName = command.getDescriptor().getName();
+            arguments.put(commandName, "Display help for command " + commandName);
+        }
+
+        return argumentsList;
     }
 
     private void printHelp(String[] targetCommands, Console console) {

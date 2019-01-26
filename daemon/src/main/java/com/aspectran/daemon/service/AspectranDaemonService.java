@@ -16,7 +16,6 @@
 package com.aspectran.daemon.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -30,7 +29,6 @@ import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -86,30 +84,18 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         return new DaemonSessionAdapter(agent);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         return translate(name, null, parameterMap, attributeMap);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param method the request method
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        if (!isExposable(name)) {
+            log.error("Unexposable translet: " + name);
+            return null;
+        }
+
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
@@ -124,8 +110,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         DaemonActivity activity = null;
         Translet translet = null;
         try {
-            StringOutputWriter outputWriter = new StringOutputWriter();
-            activity = new DaemonActivity(this, outputWriter);
+            activity = new DaemonActivity(this);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
             activity.prepare(name, method);
@@ -143,39 +128,6 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
             }
         }
         return translet;
-    }
-
-    /**
-     * Evaluates the template with a set of parameters and attributes.
-     *
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the output string of the template
-     */
-    @Override
-    public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (log.isDebugEnabled()) {
-                    log.debug(getServiceName() + " is paused, so did not execute template: " + templateId);
-                }
-                return null;
-            } else {
-                pauseTimeout = 0L;
-            }
-        }
-
-        try {
-            InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
-            activity.setSessionAdapter(newSessionAdapter());
-
-            getActivityContext().getTemplateProcessor().process(templateId, activity);
-
-            return activity.getResponseAdapter().getWriter().toString();
-        } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing template: " + templateId, e);
-        }
     }
 
     /**

@@ -30,7 +30,7 @@ class TransletCommandLineTest {
         CommandLineParser lineParser = new CommandLineParser("GET /path/work1 --param1 apple --param2=strawberry --arr=a --arr=b >> abcde.txt > 12345.txt");
         TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
         assertEquals(transletCommandLine.getRequestMethod().toString(), "GET");
-        assertEquals(transletCommandLine.getTransletName(), "/path/work1");
+        assertEquals(transletCommandLine.getRequestName(), "/path/work1");
         ParameterMap params = transletCommandLine.getParameterMap();
         assertEquals(params.getParameter("param1"), "apple");
         assertEquals(params.getParameter("param2"), "strawberry");

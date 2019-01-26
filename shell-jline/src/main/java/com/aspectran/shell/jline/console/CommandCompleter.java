@@ -123,7 +123,7 @@ public class CommandCompleter implements Completer {
                     if (word == null || transletName.startsWith(word)) {
                         if (transletRule.hasPathVariables()) {
                             transletName = transletRule.getNamePattern().toString();
-                            transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ");
+                            transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ").trim();
                         }
                         if (!transletName.isEmpty()) {
                             candidates.add(new Candidate(transletName, dispName, "translets",

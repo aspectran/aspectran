@@ -65,17 +65,17 @@ public class TransletCommand extends AbstractCommand {
             }
         } else if (options.hasOption("l")) {
             String[] keywords = options.getArgs();
-            listTranslets(service, keywords.length > 0 ? keywords : null, console);
+            listTranslets(service, console, keywords.length > 0 ? keywords : null);
         } else {
             printUsage(console);
             if (!options.hasOption("h")) {
                 console.writeLine("Available translets:");
-                listTranslets(service, null, console);
+                listTranslets(service, console, null);
             }
         }
     }
 
-    private void listTranslets(ShellService service, String[] keywords, Console console) {
+    private void listTranslets(ShellService service, Console console, String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%-20s-+-%-63s-", "--------------------",

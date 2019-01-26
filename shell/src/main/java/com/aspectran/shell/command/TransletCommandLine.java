@@ -15,40 +15,21 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 
-import java.util.Arrays;
-
 /**
- * Parses the command line entered to execute the Translet.
+ * Parses the command line entered to execute the translet.
  */
-public class TransletCommandLine {
-
-    private static final String PARAM_NAME_PREFIX = "--";
-
-    private final CommandLineParser lineParser;
+public class TransletCommandLine extends AbstractCommandLine {
 
     private MethodType requestMethod;
 
-    private ParameterMap parameterMap;
-
     public TransletCommandLine(CommandLineParser lineParser) {
-        this.lineParser = lineParser;
-        parse();
+        super(lineParser);
     }
 
     /**
-     * Returns the command line parser.
-     *
-     * @return the command line parser
-     */
-    public CommandLineParser getLineParser() {
-        return lineParser;
-    }
-
-    /**
-     * Returns the request method of the target Translet
+     * Returns the request method of the target translet
      * extracted from the command line.
      *
      * @return the request method
@@ -57,87 +38,19 @@ public class TransletCommandLine {
         return requestMethod;
     }
 
-    /**
-     * Returns the name of the target Translet extracted
-     * from the command line.
-     *
-     * @return the translet name
-     */
-    public String getTransletName() {
-        if (parameterMap != null) {
-            return lineParser.getCommandName();
-        } else {
-            return lineParser.getCommandLine();
-        }
-    }
-
-    /**
-     * Returns the parameters to pass to the execution target
-     * Translet extracted from the command line.
-     *
-     * @return the parameter map
-     */
-    public ParameterMap getParameterMap() {
-        return parameterMap;
-    }
-
-    private void parse() {
-        if (lineParser.getCommandName() == null) {
-            return;
-        }
-
-        String commandName = lineParser.getCommandName();
-        requestMethod = MethodType.resolve(commandName);
-        if (requestMethod != null) {
-            lineParser.shift();
-        }
-        if (lineParser.getCommandName() == null) {
-            lineParser.setCommandName(commandName);
-            return;
-        }
-        parameterMap = extractParameterMap();
-    }
-
-    private ParameterMap extractParameterMap() {
-        if (!lineParser.hasArgs()) {
-            return null;
-        }
-        ParameterMap params = new ParameterMap();
-        String name = null;
-        for (String arg : lineParser.getArgs()) {
-            if (arg.startsWith(PARAM_NAME_PREFIX)) {
-                name = arg.substring(PARAM_NAME_PREFIX.length());
-                int index = name.indexOf('=');
-                if (index == 0) {
-                    name = null;
-                } else if (index > 0) {
-                    String value = name.substring(index + 1);
-                    name = name.substring(0, index);
-                    String[] values = params.getParameterValues(name);
-                    if (values != null) {
-                        values = Arrays.copyOf(values, values.length + 1);
-                        values[values.length - 1] = value;
-                    } else {
-                        values = new String[] { value };
-                    }
-                    params.setParameterValues(name, values);
-                    name = null;
-                } else {
-                    params.setParameterValues(name, null);
-                }
-            } else if (name != null) {
-                String[] values = params.getParameterValues(name);
-                if (values != null) {
-                    values = Arrays.copyOf(values, values.length + 1);
-                    values[values.length - 1] = arg;
-                } else {
-                    values = new String[] { arg };
-                }
-                params.setParameterValues(name, values);
-                name = null;
+    @Override
+    protected void parse() {
+        if (getLineParser().getCommandName() != null) {
+            String commandName = getLineParser().getCommandName();
+            requestMethod = MethodType.resolve(commandName);
+            if (requestMethod != null) {
+                getLineParser().shift();
+            }
+            if (getLineParser().getCommandName() == null) {
+                getLineParser().setCommandName(commandName);
             }
         }
-        return (!params.isEmpty() ? params : null);
+        super.parse();
     }
 
 }

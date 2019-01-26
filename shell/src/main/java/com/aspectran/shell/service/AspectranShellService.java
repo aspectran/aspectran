@@ -59,28 +59,13 @@ public class AspectranShellService extends AbstractShellService {
 
     @Override
     public Translet translate(TransletCommandLine transletCommandLine, Console console) {
-        if (!isExposable(transletCommandLine.getTransletName())) {
-            console.writeLine("Unexposable translet: " + transletCommandLine.getTransletName());
+        if (!isExposable(transletCommandLine.getRequestName())) {
+            console.writeError("Unexposable translet: " + transletCommandLine.getRequestName());
             return null;
         }
 
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (pauseTimeout == -1L) {
-                    console.writeLine(getServiceName() + " has been paused");
-                } else {
-                    long remains = pauseTimeout - System.currentTimeMillis();
-                    if (remains > 0L) {
-                        console.writeLine(getServiceName() + " has been paused and will resume after "
-                                + remains + " ms");
-                    } else {
-                        console.writeLine(getServiceName() + " has been paused and will soon resume");
-                    }
-                }
-                return null;
-            } else {
-                pauseTimeout = 0L;
-            }
+        if (checkPaused(console)) {
+            return null;
         }
 
         PrintWriter outputWriter = null;
@@ -97,7 +82,7 @@ public class AspectranShellService extends AbstractShellService {
 
         boolean procedural = (transletCommandLine.getParameterMap() == null);
         ParameterMap parameterMap = transletCommandLine.getParameterMap();
-        String transletName = transletCommandLine.getTransletName();
+        String transletName = transletCommandLine.getRequestName();
         MethodType requestMethod = transletCommandLine.getRequestMethod();
 
         ShellActivity activity = null;
@@ -140,6 +125,28 @@ public class AspectranShellService extends AbstractShellService {
             }
         }
         return translet;
+    }
+
+    private boolean checkPaused(Console console) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (pauseTimeout == -1L) {
+                    console.writeLine(getServiceName() + " has been paused");
+                } else {
+                    long remains = pauseTimeout - System.currentTimeMillis();
+                    if (remains > 0L) {
+                        console.writeLine(getServiceName() + " has been paused and will resume after "
+                                + remains + " ms");
+                    } else {
+                        console.writeLine(getServiceName() + " has been paused and will soon resume");
+                    }
+                }
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
     /**

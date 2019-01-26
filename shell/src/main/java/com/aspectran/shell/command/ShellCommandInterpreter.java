@@ -184,7 +184,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
      * @param transletCommandLine the {@code TransletCommandLine} instance
      */
     private void execute(TransletCommandLine transletCommandLine) {
-        if (transletCommandLine.getTransletName() != null) {
+        if (transletCommandLine.getRequestName() != null) {
             try {
                 service.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
