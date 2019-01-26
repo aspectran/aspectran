@@ -18,8 +18,6 @@ package com.aspectran.shell.console;
 import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
@@ -29,9 +27,9 @@ import java.nio.charset.Charset;
  */
 public abstract class AbstractConsole implements Console {
 
-    private final String encoding;
-
     private String commandPrompt = DEFAULT_COMMAND_PROMPT;
+
+    private final String encoding;
 
     private File workingDir;
 
@@ -53,15 +51,6 @@ public abstract class AbstractConsole implements Console {
     @Override
     public void setCommandPrompt(String commandPrompt) {
         this.commandPrompt = commandPrompt;
-    }
-
-    @Override
-    public PrintWriter getUnclosedWriter() {
-        try {
-            return new UnclosedPrintWriter(getOutput(), getEncoding());
-        } catch (UnsupportedEncodingException e) {
-            throw new Error(e);
-        }
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.service;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.shell.command.TransletCommandLine;
@@ -82,10 +83,11 @@ public interface ShellService extends CoreService {
     boolean isExposable(String transletName);
 
     /**
-     * Executes a Shell Activity.
+     * Executes the translet.
      *
      * @param transletCommandLine the translet command line
+     * @return the {@code Translet} object
      */
-    void execute(TransletCommandLine transletCommandLine);
+    Translet translate(TransletCommandLine transletCommandLine);
 
 }

@@ -18,10 +18,20 @@ package com.aspectran.shell.command;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.shell.console.Console;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>Created: 2017. 3. 8.</p>
@@ -92,16 +102,51 @@ public class OutputRedirection {
         return sb.toString();
     }
 
-    public static PrintWriter determineOutputWriter(Console console, Writer[] redirectionWriters) {
-        PrintWriter outputWriter;
-        if (redirectionWriters == null || redirectionWriters.length == 0) {
-            outputWriter = console.getUnclosedWriter();
-        } else if (redirectionWriters.length == 1) {
-            outputWriter = new PrintWriter(redirectionWriters[0]);
-        } else {
-            outputWriter = new PrintWriter(new MultiWriter(redirectionWriters));
+    /**
+     * Returns the {@code Writer} instances for translet output redirection.
+     *
+     * @param console the Console instance
+     * @return the {@code Writer} instance
+     * @throws FileNotFoundException if the file has an invalid path
+     * @throws UnsupportedEncodingException if the named encoding is not supported
+     */
+    public static PrintWriter determineOutputWriter(List<OutputRedirection> redirectionList, Console console)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        Writer[] redirectionWriters = getRedirectionWriters(redirectionList, console);
+        PrintWriter outputWriter = null;
+        if (redirectionWriters != null) {
+            if (redirectionWriters.length == 1) {
+                outputWriter = new PrintWriter(redirectionWriters[0]);
+            } else if (redirectionWriters.length > 1) {
+                outputWriter = new PrintWriter(new MultiWriter(redirectionWriters));
+            }
         }
         return outputWriter;
+    }
+
+    private static Writer[] getRedirectionWriters(List<OutputRedirection> redirectionList, Console console)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        if (redirectionList != null && !redirectionList.isEmpty()) {
+            List<Writer> writers = new ArrayList<>(redirectionList.size());
+            for (OutputRedirection redirection : redirectionList) {
+                File file;
+                Path path = Paths.get(redirection.getOperand());
+                if (path.isAbsolute()) {
+                    file = path.toFile();
+                } else if (console.getWorkingDir() != null) {
+                    file = new File(console.getWorkingDir(), redirection.getOperand());
+                } else {
+                    file = new File(redirection.getOperand());
+                }
+                file.getParentFile().mkdirs();
+                boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
+                OutputStream stream = new FileOutputStream(file, append);
+                writers.add(new OutputStreamWriter(stream, console.getEncoding()));
+            }
+            return writers.toArray(new Writer[0]);
+        } else {
+            return null;
+        }
     }
 
     /**

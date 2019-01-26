@@ -21,7 +21,6 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.List;
 
 public class CommandWrapper implements Command {
@@ -34,8 +33,8 @@ public class CommandWrapper implements Command {
         this.command = command;
     }
 
-    public void setRedirectionWriters(Console console, Writer[] redirectionWriters) {
-        writer = OutputRedirection.determineOutputWriter(console, redirectionWriters);
+    public void setOutputWriter(PrintWriter writer) {
+        this.writer = writer;
     }
 
     @Override

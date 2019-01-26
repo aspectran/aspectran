@@ -18,7 +18,6 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
-import com.aspectran.shell.console.UnclosedPrintWriter;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -33,7 +32,6 @@ import org.jline.utils.InfoCmp;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 
 /**
  * Console I/O implementation that supports JLine.
@@ -269,12 +267,6 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public PrintWriter getWriter() {
         return terminal.writer();
-    }
-
-    @Override
-    public PrintWriter getUnclosedWriter() {
-        Writer writer = new JLineAnsiStringWriter(terminal, getWriter());
-        return new UnclosedPrintWriter(writer);
     }
 
     @Override

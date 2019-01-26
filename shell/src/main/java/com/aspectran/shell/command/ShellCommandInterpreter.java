@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
@@ -30,7 +31,7 @@ import com.aspectran.shell.service.AspectranShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -159,10 +160,10 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         try {
             ParsedOptions options = lineParser.getParsedOptions(command.getOptions());
 
-            Writer[] redirectionWriters = lineParser.getRedirectionWriters(console);
-            if (redirectionWriters != null) {
+            PrintWriter outputWriter = OutputRedirection.determineOutputWriter(lineParser.getRedirectionList(), console);
+            if (outputWriter != null) {
                 CommandWrapper wrapper = new CommandWrapper(command);
-                wrapper.setRedirectionWriters(console, redirectionWriters);
+                wrapper.setOutputWriter(outputWriter);
                 wrapper.execute(options);
             } else {
                 command.execute(options);
@@ -185,8 +186,13 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(TransletCommandLine transletCommandLine) {
         if (transletCommandLine.getTransletName() != null) {
             try {
-                service.execute(transletCommandLine);
-                console.writeLine();
+                Translet translet = service.translate(transletCommandLine);
+                if (translet != null) {
+                    String result = translet.getResponseAdapter().getWriter().toString();
+                    if (StringUtils.hasLength(result)) {
+                        console.writeLine(result);
+                    }
+                }
             } catch (TransletNotFoundException e) {
                 console.writeLine("No command or translet mapped to '" + e.getTransletName() + "'");
             } catch (ConsoleTerminatedException e) {

@@ -29,7 +29,7 @@ public class HelloAdvice {
 
     private static final Log log = LogFactory.getLog(HelloAdvice.class);
 
-    public String welcome(Translet translet) {
+    public String welcome() {
         String msg = "Welcome to Aspectran!";
 
         log.info(msg);

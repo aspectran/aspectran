@@ -74,8 +74,6 @@ public interface Console {
 
     PrintWriter getWriter();
 
-    PrintWriter getUnclosedWriter();
-
     String[] getStyles();
 
     void setStyle(String... styles);

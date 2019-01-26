@@ -58,7 +58,7 @@ public class TransletCommand extends AbstractCommand {
             CommandLineParser lineParser = new CommandLineParser(options.getArgs());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
             try {
-                service.execute(transletCommandLine);
+                service.translate(transletCommandLine);
                 writeLine();
             } catch (TransletNotFoundException e) {
                 writeError("No translet mapped to '" + e.getTransletName() + "'");

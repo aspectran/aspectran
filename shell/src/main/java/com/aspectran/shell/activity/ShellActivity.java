@@ -28,13 +28,13 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.ConsoleTerminatedException;
-import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
@@ -61,7 +61,7 @@ public class ShellActivity extends CoreActivity {
 
     private ParameterMap parameterMap;
 
-    private Writer[] redirectionWriters;
+    private Writer outputWriter;
 
     private boolean simpleInputMode;
 
@@ -85,8 +85,8 @@ public class ShellActivity extends CoreActivity {
         this.parameterMap = parameterMap;
     }
 
-    public void setRedirectionWriters(Writer[] redirectionWriters) {
-        this.redirectionWriters = redirectionWriters;
+    public void setOutputWriter(Writer outputWriter) {
+        this.outputWriter = outputWriter;
     }
 
     @Override
@@ -101,7 +101,9 @@ public class ShellActivity extends CoreActivity {
             requestAdapter.setEncoding(console.getEncoding());
             setRequestAdapter(requestAdapter);
 
-            Writer outputWriter = OutputRedirection.determineOutputWriter(console, redirectionWriters);
+            if (outputWriter == null) {
+                outputWriter = new StringOutputWriter();
+            }
 
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
             responseAdapter.setEncoding(console.getEncoding());
@@ -470,7 +472,7 @@ public class ShellActivity extends CoreActivity {
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
         ShellActivity activity = new ShellActivity(service);
-        activity.setRedirectionWriters(redirectionWriters);
+        activity.setOutputWriter(outputWriter);
         activity.setIncluded(true);
         return (T)activity;
     }

@@ -23,17 +23,7 @@ import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,39 +111,6 @@ public class CommandLineParser {
      */
     public List<OutputRedirection> getRedirectionList() {
         return redirectionList;
-    }
-
-    /**
-     * Returns the {@code OutputStreamWriter} instances for translet output redirection.
-     *
-     * @param console the Console instance
-     * @return an array of the {@code OutputStreamWriter} instances
-     * @throws FileNotFoundException if the file has an invalid path
-     * @throws UnsupportedEncodingException if the named encoding is not supported
-     */
-    public Writer[] getRedirectionWriters(Console console) throws FileNotFoundException,
-            UnsupportedEncodingException {
-        if (redirectionList != null) {
-            List<Writer> writerList = new ArrayList<>(redirectionList.size());
-            for (OutputRedirection redirection : redirectionList) {
-                File file;
-                Path path = Paths.get(redirection.getOperand());
-                if (path.isAbsolute()) {
-                    file = path.toFile();
-                } else if (console.getWorkingDir() != null) {
-                    file = new File(console.getWorkingDir(), redirection.getOperand());
-                } else {
-                    file = new File(redirection.getOperand());
-                }
-                file.getParentFile().mkdirs();
-                boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
-                OutputStream stream = new FileOutputStream(file, append);
-                writerList.add(new OutputStreamWriter(stream, console.getEncoding()));
-            }
-            return writerList.toArray(new Writer[0]);
-        } else {
-            return null;
-        }
     }
 
     private String[] splitCommandLine(String commandLine) {

@@ -16,8 +16,10 @@
 package com.aspectran.shell.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.component.translet.TransletNotFoundException;
+import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
@@ -29,11 +31,13 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.shell.activity.ShellActivity;
+import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.Console;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 /**
  * Provides an interactive shell that lets you use or control Aspectran directly
@@ -54,10 +58,10 @@ public class AspectranShellService extends AbstractShellService {
     }
 
     @Override
-    public void execute(TransletCommandLine transletCommandLine) {
+    public Translet translate(TransletCommandLine transletCommandLine) {
         if (!isExposable(transletCommandLine.getTransletName())) {
             getConsole().writeLine("Unexposable translet: " + transletCommandLine.getTransletName());
-            return;
+            return null;
         }
 
         if (pauseTimeout != 0L) {
@@ -73,20 +77,21 @@ public class AspectranShellService extends AbstractShellService {
                         getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
                     }
                 }
-                return;
+                return null;
             } else {
                 pauseTimeout = 0L;
             }
         }
 
-        Writer[] redirectionWriters = null;
-        if (transletCommandLine.getLineParser().getRedirectionList() != null) {
+        Writer outputWriter = null;
+        List<OutputRedirection> redirectionList = transletCommandLine.getLineParser().getRedirectionList();
+        if (redirectionList != null) {
             try {
-                redirectionWriters = transletCommandLine.getLineParser().getRedirectionWriters(getConsole());
+                outputWriter = OutputRedirection.determineOutputWriter(redirectionList, getConsole());
             } catch (Exception e) {
                 getConsole().writeError("Invalid Output Redirection.");
                 getConsole().writeLine(e.getMessage());
-                return;
+                return null;
             }
         }
 
@@ -96,13 +101,17 @@ public class AspectranShellService extends AbstractShellService {
         MethodType requestMethod = transletCommandLine.getRequestMethod();
 
         ShellActivity activity = null;
+        Translet translet = null;
         try {
             activity = new ShellActivity(this);
             activity.setProcedural(procedural);
             activity.setParameterMap(parameterMap);
-            activity.setRedirectionWriters(redirectionWriters);
+            activity.setOutputWriter(outputWriter);
             activity.prepare(transletName, requestMethod);
             activity.perform();
+            if (outputWriter == null) {
+                translet = activity.getTranslet();
+            }
         } catch (TransletNotFoundException e) {
             if (log.isTraceEnabled()) {
                 log.trace("Unknown translet: " + transletName);
@@ -113,23 +122,20 @@ public class AspectranShellService extends AbstractShellService {
                 log.debug("Activity terminated: Cause: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing translet: " + transletName, e);
+            throw new AspectranRuntimeException("An error occurred while processing translet: " + transletName, e);
         } finally {
-            if (redirectionWriters != null) {
-                for (Writer writer : redirectionWriters) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Failed to close redirection writer: " + e.getMessage(), e);
-                        }
-                    }
-                }
-            }
             if (activity != null) {
                 activity.finish();
             }
+            if (outputWriter != null) {
+                try {
+                    outputWriter.close();
+                } catch (IOException e) {
+                    log.warn("Failed to close redirection writer", e);
+                }
+            }
         }
+        return translet;
     }
 
     /**
