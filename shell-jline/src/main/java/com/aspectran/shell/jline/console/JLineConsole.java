@@ -44,15 +44,19 @@ public class JLineConsole extends AbstractConsole {
 
     private static final Character MASK_CHAR = '*';
 
-    private static final String MULTILINE_DELIMITER = "\\";
+    static final String MULTILINE_DELIMITER = "\\";
 
-    private static final String COMMENT_DELIMITER = "//";
+    static final String COMMENT_DELIMITER = "//";
 
     private final Terminal terminal;
 
     private final LineReader reader;
 
     private final LineReader commandReader;
+
+    private final CommandCompleter completer;
+
+    private final CommandHighlighter highlighter;
 
     private AttributedStyle attributedStyle;
 
@@ -64,6 +68,9 @@ public class JLineConsole extends AbstractConsole {
 
     public JLineConsole(String encoding) throws IOException {
         super(encoding);
+
+        this.completer = new CommandCompleter(this);
+        this.highlighter = new CommandHighlighter(this);
 
         DefaultParser parser = new DefaultParser();
         //It will be applied from jline 3.9.1
@@ -78,8 +85,8 @@ public class JLineConsole extends AbstractConsole {
         this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
-                .completer(new CommandCompleter(this))
-                .highlighter(new CommandHighlighter(this))
+                .completer(completer)
+                .highlighter(highlighter)
                 .parser(parser)
                 .terminal(terminal)
                 .build();
@@ -119,6 +126,7 @@ public class JLineConsole extends AbstractConsole {
         if (line == null || continuous) {
             line = commandReader.readLine("> ").trim();
         }
+        multilineStarted();
         String nextLine = null;
         if (continuous) {
             if (!line.isEmpty()) {
@@ -134,6 +142,7 @@ public class JLineConsole extends AbstractConsole {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
             nextLine = readCommandMultiLine(null);
         }
+        multilineEnded();
         if (comments) {
             if (nextLine != null) {
                 return COMMENT_DELIMITER + line + ActivityContext.LINE_SEPARATOR + nextLine;
@@ -318,6 +327,16 @@ public class JLineConsole extends AbstractConsole {
         String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{reset}} ");
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    private void multilineStarted() {
+        completer.setDisable(true);
+        highlighter.setDisable(true);
+    }
+
+    private void multilineEnded() {
+        completer.setDisable(false);
+        highlighter.setDisable(false);
     }
 
 }

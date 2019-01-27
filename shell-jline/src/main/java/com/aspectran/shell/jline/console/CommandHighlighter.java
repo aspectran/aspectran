@@ -17,6 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.Console;
@@ -38,24 +39,52 @@ public class CommandHighlighter implements Highlighter {
 
     private final Console console;
 
+    private boolean disable;
+
     public CommandHighlighter(Console console) {
         this.console = console;
     }
 
+    public boolean isDisable() {
+        return disable;
+    }
+
+    public void setDisable(boolean disable) {
+        this.disable = disable;
+    }
+
     @Override
     public AttributedString highlight(LineReader reader, String buffer) {
-        String best = getMatchedCommandName(buffer);
+        if (isDisable()) {
+            return new AttributedString(buffer);
+        }
+        String str = StringUtils.trimLeadingWhitespace(buffer);
+        String best = getMatchedCommandName(str);
         if (best == null) {
-            best = getMatchedTransletName(buffer);
+            best = getMatchedTransletName(str);
         }
         if (best != null) {
+            String prefix;
+            if (str.length() < buffer.length()) {
+                prefix = buffer.substring(0, buffer.length() - str.length());
+            } else {
+                prefix = "";
+            }
             return new AttributedStringBuilder(buffer.length())
-                    .append(best, AttributedStyle.BOLD)
-                    .append(buffer.substring(best.length()))
+                    .append(prefix + best, AttributedStyle.BOLD)
+                    .append(buffer.substring(prefix.length() + best.length()))
                     .toAttributedString();
         } else {
-            return new AttributedString(buffer,
-                    AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
+            if (buffer.startsWith(JLineConsole.COMMENT_DELIMITER)) {
+                return new AttributedString(buffer);
+            } else {
+                if (buffer.endsWith(JLineConsole.MULTILINE_DELIMITER)) {
+                    return new AttributedString(buffer);
+                } else {
+                    return new AttributedString(buffer,
+                            AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
+                }
+            }
         }
     }
 
@@ -65,11 +94,12 @@ public class CommandHighlighter implements Highlighter {
         if (commandRegistry != null) {
             int len = 0;
             for (Command command : commandRegistry.getAllCommands()) {
-                String commandName = command.getDescriptor().getName();
-                if (commandName.length() > len) {
-                    if (buffer.equals(commandName) || buffer.startsWith(commandName + " ")) {
-                        best = commandName;
-                        len = commandName.length();
+                String name = command.getDescriptor().getName();
+                if (name.length() > len) {
+                    if (buffer.equals(name) || buffer.startsWith(name + " ") ||
+                            buffer.startsWith(name + JLineConsole.MULTILINE_DELIMITER)) {
+                        best = name;
+                        len = name.length();
                     }
                 }
             }
@@ -84,16 +114,17 @@ public class CommandHighlighter implements Highlighter {
             TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
             int len = 0;
             for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-                String transletName = transletRule.getName();
-                if (service.isExposable(transletName)) {
+                String name = transletRule.getName();
+                if (service.isExposable(name)) {
                     if (transletRule.getNamePattern() != null) {
                         if (transletRule.getNamePattern().matches(buffer)) {
                             return buffer;
                         }
-                    } else if (transletName.length() > len) {
-                        if (buffer.equals(transletName) || buffer.startsWith(transletName + " ")) {
-                            best = transletName;
-                            len = transletName.length();
+                    } else if (name.length() > len) {
+                        if (buffer.equals(name) || buffer.startsWith(name + " ") ||
+                                buffer.startsWith(name + JLineConsole.MULTILINE_DELIMITER)) {
+                            best = name;
+                            len = name.length();
                         }
                     }
                 }

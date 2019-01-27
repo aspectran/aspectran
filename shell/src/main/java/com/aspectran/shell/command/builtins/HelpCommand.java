@@ -24,6 +24,8 @@ import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -73,9 +75,12 @@ public class HelpCommand extends AbstractCommand {
         List<Arguments> argumentsList = super.getArgumentsList();
         argumentsList.clear();
 
+        List<Command> list = new LinkedList<>(getCommandRegistry().getAllCommands());
+        list.sort(Comparator.comparing(Command::getDescriptor, Comparator.comparing(Descriptor::getName)));
+
         Arguments arguments = touchArguments();
         arguments.setTitle("Commands:");
-        for (Command command : getCommandRegistry().getAllCommands()) {
+        for (Command command : list) {
             String commandName = command.getDescriptor().getName();
             arguments.put(commandName, "Display help for command " + commandName);
         }

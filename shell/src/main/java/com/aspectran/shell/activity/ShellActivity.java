@@ -22,7 +22,6 @@ import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -195,9 +194,11 @@ public class ShellActivity extends CoreActivity {
                         console.write(mandatoryMarker);
                         console.styleOff();
                         console.setStyle("bold");
-                        console.write("%s: ", itemRule.getName());
+                        console.write(itemRule.getName());
                         console.styleOff();
-                        console.writeLine(TokenParser.toString(tokens));
+                        console.write(": ");
+                        writeToken(tokens);
+                        console.writeLine();
                     }
                 }
             }
@@ -267,9 +268,11 @@ public class ShellActivity extends CoreActivity {
                         console.write(mandatoryMarker);
                         console.styleOff();
                         console.setStyle("bold");
-                        console.write("%s: ", itemRule.getName());
+                        console.write(itemRule.getName());
                         console.styleOff();
-                        console.writeLine(TokenParser.toString(tokens));
+                        console.write(": ");
+                        writeToken(tokens);
+                        console.writeLine();
                     }
                 }
             }
@@ -403,7 +406,10 @@ public class ShellActivity extends CoreActivity {
                 Token token = entry.getKey();
                 String value = getRequestAdapter().getParameter(token.getName());
                 if (value != null) {
-                    console.writeLine("   %s: %s", token.stringify(), value);
+                    console.write("   ");
+                    writeToken(token);
+                    console.write(": ");
+                    console.writeLine(value);
                     continue;
                 }
                 Set<ItemRule> rules = entry.getValue();
@@ -414,11 +420,13 @@ public class ShellActivity extends CoreActivity {
                         break;
                     }
                 }
-                String format = "   %s: ";
+                console.write("   ");
+                writeToken(token);
+                console.write(": ");
                 if (security) {
-                    value = console.readPassword(format, token.stringify());
+                    value = console.readPassword();
                 } else {
-                    value = console.readLine(format, token.stringify());
+                    value = console.readLine();
                 }
                 if (StringUtils.isEmpty(value)) {
                     value = token.getDefaultValue();
@@ -438,6 +446,27 @@ public class ShellActivity extends CoreActivity {
             terminate("User interrupt occurred");
         }
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
+    private void writeToken(Token[] tokens) {
+        for (Token token : tokens) {
+            writeToken(token);
+        }
+    }
+
+    private void writeToken(Token token) {
+        if (token.getType() == TokenType.TEXT) {
+            console.write(token.stringify());
+        } else {
+            String str = token.stringify();
+            console.setStyle("CYAN");
+            console.write(str.substring(0, 2));
+            console.styleOff();
+            console.write(str.substring(2, str.length() - 1));
+            console.setStyle("CYAN");
+            console.write(str.substring(str.length() - 1));
+            console.styleOff();
+        }
     }
 
     private ItemRuleList checkRequiredParameters(ItemRuleList itemRuleList) {

@@ -119,6 +119,7 @@ do_start() {
         ${ASPECTRAN_OPTS} \
         $DAEMON_MAIN \
         "$ASPECTRAN_CONFIG"
+    sleep 0.2
     if [ -e "$DAEMON_OUT" ]; then
         cat "$DAEMON_OUT"
     fi
@@ -134,6 +135,7 @@ do_stop() {
         -classpath "$CLASSPATH" \
         -Djava.io.tmpdir="$TMP_DIR" \
         $DAEMON_MAIN
+    sleep 0.2
     if [ -e "$DAEMON_OUT" ]; then
         cat "$DAEMON_OUT"
     fi

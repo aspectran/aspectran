@@ -46,9 +46,6 @@ public class ParsedOptions implements Serializable {
     /** The unrecognized options/arguments */
     private final List<String> args = new LinkedList<>();
 
-    /**
-     * Creates a command line.
-     */
     protected ParsedOptions() {
         // Nothing to do
     }

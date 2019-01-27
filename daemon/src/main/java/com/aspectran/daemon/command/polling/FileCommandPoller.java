@@ -204,7 +204,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
             AponReader.parse(file, parameters);
             return parameters;
         } catch (AponParseException e) {
-            log.warn("Failed to read command file: " + file.getAbsolutePath(), e);
+            log.error("Failed to read command file: " + file.getAbsolutePath(), e);
+            removeCommandFile(inboundDir, file.getName());
             return null;
         }
     }

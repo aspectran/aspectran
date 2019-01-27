@@ -42,30 +42,41 @@ public class CommandCompleter implements Completer {
 
     private final Console console;
 
+    private boolean disable;
+
     public CommandCompleter(Console console) {
         this.console = console;
     }
 
+    public boolean isDisable() {
+        return disable;
+    }
+
+    public void setDisable(boolean disable) {
+        this.disable = disable;
+    }
+
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        if (console.getInterpreter() != null) {
+        if (!isDisable() && console.getInterpreter() != null) {
             if (line.wordIndex() == 0) {
                 makeCommandCandidates(line.word(), candidates);
                 makeTransletCandidates(line.word(), candidates);
             } else if (line.wordIndex() > 0) {
-                String cmd = line.words().get(0);
-                makeArgumentsCandidates(cmd, line.word(), candidates);
+                String word = line.words().get(0);
+                makeArgumentsCandidates(word, line.word(), candidates);
             }
         }
     }
 
-    private void makeCommandCandidates(String cmd, List<Candidate> candidates) {
+    private void makeCommandCandidates(String word, List<Candidate> candidates) {
         CommandRegistry commandRegistry = console.getInterpreter().getCommandRegistry();
         if (commandRegistry != null) {
             for (Command command : commandRegistry.getAllCommands()) {
-                String commandName = command.getDescriptor().getName();
-                if (cmd == null || commandName.startsWith(cmd)) {
-                    candidates.add(new Candidate(commandName, commandName, command.getDescriptor().getNamespace(),
+                String name = command.getDescriptor().getName();
+                if (word == null || name.startsWith(word) ||
+                        (name + JLineConsole.MULTILINE_DELIMITER).startsWith(word)) {
+                    candidates.add(new Candidate(name, name, command.getDescriptor().getNamespace(),
                             null, null, null, true));
                 }
             }
@@ -117,16 +128,16 @@ public class CommandCompleter implements Completer {
         if (service != null && service.getServiceController().isActive()) {
             TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
             for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-                String transletName = transletRule.getName();
-                String dispName = transletName;
-                if (service.isExposable(transletName)) {
-                    if (word == null || transletName.startsWith(word)) {
+                String name = transletRule.getName();
+                String dispName = name;
+                if (service.isExposable(name)) {
+                    if (word == null || name.startsWith(word)) {
                         if (transletRule.hasPathVariables()) {
-                            transletName = transletRule.getNamePattern().toString();
-                            transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ").trim();
+                            name = transletRule.getNamePattern().toString();
+                            name = name.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ").trim();
                         }
-                        if (!transletName.isEmpty()) {
-                            candidates.add(new Candidate(transletName, dispName, "translets",
+                        if (!name.isEmpty()) {
+                            candidates.add(new Candidate(name, dispName, "translets",
                                     null, null, null, true));
                         }
                     }

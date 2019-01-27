@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class CommandLineParser {
 
-    private static final Pattern ARGS_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^ ]+)");
+    private static final Pattern ARGS_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^\\s]+)");
 
     private static final Pattern REDIRECTION_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 

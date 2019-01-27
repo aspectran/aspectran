@@ -29,9 +29,7 @@ class CommandCompleterTest {
     void testTransletName() {
         WildcardPattern wildcardPattern = new WildcardPattern("speak * msg * speak + msg + speak ? msg ?");
         String transletName = wildcardPattern.toString();
-        System.out.println(transletName);
         transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ");
-        System.out.println(transletName);
         assertEquals("speak msg speak msg speak msg ", transletName);
     }
 
@@ -39,9 +37,8 @@ class CommandCompleterTest {
     void testTransletName2() {
         WildcardPattern wildcardPattern = new WildcardPattern("speak *");
         String transletName = wildcardPattern.toString();
-        System.out.println(transletName);
-        transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", "_");
-        System.out.println(transletName);
+        transletName = transletName.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ");
+        assertEquals("speak ", transletName);
     }
 
 }
