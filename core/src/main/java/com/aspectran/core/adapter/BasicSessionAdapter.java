@@ -78,7 +78,6 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         return getSessionAgent().getAttribute(name);
     }
