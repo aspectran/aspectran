@@ -93,7 +93,6 @@ public class SqlSessionFactoryBean implements ActivityContextAware, Initializabl
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
-
             File configFile = context.getEnvironment().toRealPathAsFile(configLocation);
             sqlSessionFactory = buildSqlSessionFactory(configFile);
         }

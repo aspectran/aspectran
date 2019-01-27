@@ -98,7 +98,8 @@ public class DefaultServletHttpRequestHandler {
             defaultServletName = JEUS_DEFAULT_SERVLET_NAME;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Unable to locate the default servlet for serving static content. Please set the 'web.defaultServletName'.");
+                log.debug("Unable to locate the default servlet for serving static content. " +
+                        "Please set the 'web.defaultServletName'.");
             }
         }
     }
@@ -112,11 +113,13 @@ public class DefaultServletHttpRequestHandler {
      * @throws ServletException the servlet exception
      * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
      */
-    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public boolean handle(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         if (defaultServletName != null) {
             RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
             if (rd == null) {
-                throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'");
+                throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" +
+                        defaultServletName + "'");
             }
             rd.forward(request, response);
             return true;

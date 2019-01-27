@@ -202,7 +202,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
             try {
                 service.getServiceController().start();
             } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start the AspectranWebService");
+                throw new AspectranServiceException("Failed to start AspectranWebService");
             }
         }
         return service;

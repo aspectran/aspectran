@@ -81,7 +81,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         if (getAdaptee() instanceof ActivityRequestWrapper) {
             return (HttpServletRequest)((ActivityRequestWrapper)getAdaptee()).getRequest();
         } else {
-            return (HttpServletRequest) getAdaptee();
+            return (HttpServletRequest)getAdaptee();
         }
     }
 

@@ -38,8 +38,6 @@ import java.util.Map;
  */
 public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
 
-    private static final long serialVersionUID = 2593099556437676842L;
-
     /**
      * Default content charset to be used when no explicit charset parameter is provided by the sender. Media subtypes
      * of the "text" type are defined to have a default charset value of "ISO-8859-1" when received via HTTP.
