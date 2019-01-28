@@ -15,18 +15,25 @@
  */
 package com.aspectran.embed.adapter;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.context.rule.type.ContentType;
+
+import java.io.Writer;
 
 /**
- * The Class EmbeddedRequestAdapter.
+ * The Class AspectranResponseAdapter.
  */
-public class EmbeddedRequestAdapter extends BasicRequestAdapter {
+public class AspectranResponseAdapter extends BasicResponseAdapter {
 
     /**
-     * Instantiates a new EmbeddedRequestAdapter.
+     * Instantiates a new AspectranResponseAdapter.
+     *
+     * @param outputWriter the writer to output
      */
-    public EmbeddedRequestAdapter() {
-        super(null);
+    public AspectranResponseAdapter(Writer outputWriter) {
+        super(null, outputWriter);
+
+        setContentType(ContentType.TEXT_PLAIN.toString());
     }
 
 }

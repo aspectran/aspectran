@@ -34,9 +34,9 @@ import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.embed.activity.EmbeddedActivity;
-import com.aspectran.embed.adapter.EmbeddedApplicationAdapter;
-import com.aspectran.embed.adapter.EmbeddedSessionAdapter;
+import com.aspectran.embed.activity.AspectranActivity;
+import com.aspectran.embed.adapter.AspectranApplicationAdapter;
+import com.aspectran.embed.adapter.AspectranSessionAdapter;
 
 import java.util.Map;
 
@@ -47,16 +47,16 @@ import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONF
  *
  * @since 3.0.0
  */
-public class AspectranEmbeddedService extends AspectranCoreService implements EmbeddedAspectran {
+public class DefaultEmbeddedAspectran extends AspectranCoreService implements EmbeddedAspectran {
 
-    private static final Log log = LogFactory.getLog(AspectranEmbeddedService.class);
+    private static final Log log = LogFactory.getLog(DefaultEmbeddedAspectran.class);
 
     private SessionManager sessionManager;
 
     private volatile long pauseTimeout = -1L;
 
-    public AspectranEmbeddedService() {
-        super(new EmbeddedApplicationAdapter());
+    public DefaultEmbeddedAspectran() {
+        super(new AspectranApplicationAdapter());
 
         determineBasePath();
     }
@@ -83,7 +83,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
     @Override
     public SessionAdapter newSessionAdapter() {
         SessionAgent agent = sessionManager.newSessionAgent();
-        return new EmbeddedSessionAdapter(agent);
+        return new AspectranSessionAdapter(agent);
     }
 
     /**
@@ -185,7 +185,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranEmbeddedService is paused, so did not execute translet: " + name);
+                    log.debug(getServiceName() + " is paused, so did not execute translet: " + name);
                 }
                 return null;
             } else {
@@ -193,11 +193,11 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
             }
         }
 
-        EmbeddedActivity activity = null;
+        AspectranActivity activity = null;
         Translet translet = null;
         try {
             StringOutputWriter outputWriter = new StringOutputWriter();
-            activity = new EmbeddedActivity(this, outputWriter);
+            activity = new AspectranActivity(this, outputWriter);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
             activity.prepare(name, method);
@@ -265,7 +265,7 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranEmbeddedService is paused, so did not execute template: " + templateId);
+                    log.debug(getServiceName() + " is paused, so did not execute template: " + templateId);
                 }
                 return null;
             } else {
@@ -291,12 +291,12 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
     }
 
     /**
-     * Returns a new instance of {@code AspectranEmbeddedService}.
+     * Returns a new instance of {@code DefaultEmbeddedAspectran}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code AspectranEmbeddedService}
+     * @return the instance of {@code DefaultEmbeddedAspectran}
      */
-    protected static AspectranEmbeddedService create(AspectranConfig aspectranConfig) {
+    protected static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.getContextConfig();
         if (contextConfig == null) {
             contextConfig = aspectranConfig.newContextConfig();
@@ -309,18 +309,18 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
             }
         }
 
-        AspectranEmbeddedService service = new AspectranEmbeddedService();
-        service.prepare(aspectranConfig);
+        DefaultEmbeddedAspectran aspectran = new DefaultEmbeddedAspectran();
+        aspectran.prepare(aspectranConfig);
 
-        setServiceStateListener(service);
-        return service;
+        setServiceStateListener(aspectran);
+        return aspectran;
     }
 
-    private static void setServiceStateListener(final AspectranEmbeddedService service) {
-        service.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final DefaultEmbeddedAspectran aspectran) {
+        aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.pauseTimeout = 0;
+                aspectran.pauseTimeout = 0;
             }
 
             @Override
@@ -333,12 +333,12 @@ public class AspectranEmbeddedService extends AspectranCoreService implements Em
                 if (millis < 0L) {
                     throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
                 }
-                service.pauseTimeout = System.currentTimeMillis() + millis;
+                aspectran.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
             public void paused() {
-                service.pauseTimeout = -1L;
+                aspectran.pauseTimeout = -1L;
             }
 
             @Override

@@ -19,19 +19,19 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.embed.adapter.EmbeddedRequestAdapter;
-import com.aspectran.embed.adapter.EmbeddedResponseAdapter;
+import com.aspectran.embed.adapter.AspectranRequestAdapter;
+import com.aspectran.embed.adapter.AspectranResponseAdapter;
 import com.aspectran.embed.service.EmbeddedAspectran;
 
 import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Class EmbeddedActivity.
+ * The Class AspectranActivity.
  */
-public class EmbeddedActivity extends CoreActivity {
+public class AspectranActivity extends CoreActivity {
 
-    private final EmbeddedAspectran service;
+    private final EmbeddedAspectran aspectran;
 
     private final Writer outputWriter;
 
@@ -40,15 +40,15 @@ public class EmbeddedActivity extends CoreActivity {
     private Map<String, Object> attributeMap;
 
     /**
-     * Instantiates a new embedded activity.
+     * Instantiates a new embedded aspectran activity.
      *
-     * @param service the embedded service
+     * @param aspectran the embedded aspectran
      * @param outputWriter the output writer
      */
-    public EmbeddedActivity(EmbeddedAspectran service, Writer outputWriter) {
-        super(service.getActivityContext());
+    public AspectranActivity(EmbeddedAspectran aspectran, Writer outputWriter) {
+        super(aspectran.getActivityContext());
 
-        this.service = service;
+        this.aspectran = aspectran;
         this.outputWriter = outputWriter;
     }
 
@@ -63,12 +63,12 @@ public class EmbeddedActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            setSessionAdapter(service.newSessionAdapter());
+            setSessionAdapter(aspectran.newSessionAdapter());
 
-            EmbeddedRequestAdapter requestAdapter = new EmbeddedRequestAdapter();
+            AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter();
             setRequestAdapter(requestAdapter);
 
-            EmbeddedResponseAdapter responseAdapter = new EmbeddedResponseAdapter(outputWriter);
+            AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 
             if (parameterMap != null) {
@@ -80,14 +80,14 @@ public class EmbeddedActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters required for embedded service activity", e);
+            throw new AdapterException("Failed to specify adapters required for embedded aspectran activity", e);
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        EmbeddedActivity activity = new EmbeddedActivity(service, outputWriter);
+        AspectranActivity activity = new AspectranActivity(aspectran, outputWriter);
         activity.setIncluded(true);
         return (T)activity;
     }

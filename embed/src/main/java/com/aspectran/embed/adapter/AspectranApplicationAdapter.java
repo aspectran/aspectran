@@ -18,14 +18,14 @@ package com.aspectran.embed.adapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
 /**
- * The Class EmbeddedApplicationAdapter.
+ * The Class AspectranApplicationAdapter.
  */
-public class EmbeddedApplicationAdapter extends BasicApplicationAdapter {
+public class AspectranApplicationAdapter extends BasicApplicationAdapter {
 
     /**
-     * Instantiates a new EmbeddedApplicationAdapter.
+     * Instantiates a new AspectranApplicationAdapter.
      */
-    public EmbeddedApplicationAdapter() {
+    public AspectranApplicationAdapter() {
         super(null);
     }
 

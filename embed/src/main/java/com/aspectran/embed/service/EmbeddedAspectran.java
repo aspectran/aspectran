@@ -35,7 +35,7 @@ import java.util.Map;
 public interface EmbeddedAspectran extends CoreService {
 
     /**
-     * Creates a new session adapter for the embedded aspectran and returns.
+     * Create and return a new session adapter from the embedded aspectran.
      *
      * @return the session adapter
      */
@@ -159,10 +159,10 @@ public interface EmbeddedAspectran extends CoreService {
     void release();
 
     /**
-     * Creates and starts a new Aspectran Embedded Service.
+     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
      *
      * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code EmbeddedService}
+     * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(String aspectranConfigFile) {
         File configFile = new File(aspectranConfigFile);
@@ -170,10 +170,10 @@ public interface EmbeddedAspectran extends CoreService {
     }
 
     /**
-     * Creates and starts a new Aspectran Embedded Service.
+     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
      *
      * @param aspectranConfigFile the aspectran configuration file
-     * @return the instance of {@code EmbeddedService}
+     * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(File aspectranConfigFile) {
         AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
@@ -181,10 +181,10 @@ public interface EmbeddedAspectran extends CoreService {
     }
 
     /**
-     * Creates and starts a new Aspectran Embedded Service.
+     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
      *
      * @param configFileReader the aspectran configuration file reader
-     * @return the instance of {@code EmbeddedService}
+     * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(Reader configFileReader) {
         AspectranConfig aspectranConfig = new AspectranConfig(configFileReader);
@@ -192,17 +192,17 @@ public interface EmbeddedAspectran extends CoreService {
     }
 
     /**
-     * Creates and starts a new Aspectran Embedded Service.
+     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code EmbeddedService}
+     * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
         if (aspectranConfig == null) {
             throw new IllegalArgumentException("aspectranConfig must not be null");
         }
         try {
-            AspectranEmbeddedService aspectran = AspectranEmbeddedService.create(aspectranConfig);
+            DefaultEmbeddedAspectran aspectran = DefaultEmbeddedAspectran.create(aspectranConfig);
             aspectran.start();
             return aspectran;
         } catch (AspectranServiceException e) {

@@ -15,25 +15,21 @@
  */
 package com.aspectran.embed.adapter;
 
-import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.context.rule.type.ContentType;
-
-import java.io.Writer;
+import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * The Class EmbeddedResponseAdapter.
+ * The Class AspectranSessionAdapter.
  */
-public class EmbeddedResponseAdapter extends BasicResponseAdapter {
+public class AspectranSessionAdapter extends BasicSessionAdapter {
 
     /**
-     * Instantiates a new EmbeddedResponseAdapter.
+     * Instantiates a new AspectranSessionAdapter.
      *
-     * @param outputWriter the writer for output
+     * @param agent the session agent
      */
-    public EmbeddedResponseAdapter(Writer outputWriter) {
-        super(null, outputWriter);
-
-        setContentType(ContentType.TEXT_PLAIN.toString());
+    public AspectranSessionAdapter(SessionAgent agent) {
+        super(agent);
     }
 
 }
