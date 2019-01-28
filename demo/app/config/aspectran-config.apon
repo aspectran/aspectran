@@ -71,11 +71,10 @@ shell: {
         |{{reset}}
         |{{OrangeRed1}}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
         |
-        |To run a command, type '{{GREEN}}command_name [options] [args]{{reset}}'.
-        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
-        |To run a translet, type '{{GREEN}}translet translet_name{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
+        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
     )
     workingDir: /work
     verbose: true

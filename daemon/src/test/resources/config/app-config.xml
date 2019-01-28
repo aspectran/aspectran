@@ -10,7 +10,7 @@
         |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI escape sequences
         |   {{CYAN}}echo{{fg:reset}}       It accepts parameters and print as is
         |   {{CYAN}}echo2{{fg:reset}}      It accepts parameters and attributes, and print them as is
-        |   (for more examples, type '{{GREEN}}translet -l{{reset}}')
+        |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
         |{{bold}}The Jetty Server is currently running.{{bold:off}}
         |Use the command '{{GREEN}}jetty{{reset}}' to control the Jetty Server.

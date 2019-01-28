@@ -89,6 +89,11 @@ public class HelpCommand extends AbstractCommand {
     }
 
     private void printHelp(String[] targetCommands, Console console) {
+        if (targetCommands == null) {
+            console.setStyle("bold");
+            console.writeLine("Available commands:");
+            console.styleOff();
+        }
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
         final int commandWidth = maxLengthOfCommandName(targetCommands);
         final String lpad = OptionUtils.createPadding(HelpFormatter.DEFAULT_LEFT_PAD);

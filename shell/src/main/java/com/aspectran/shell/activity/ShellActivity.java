@@ -422,11 +422,10 @@ public class ShellActivity extends CoreActivity {
                 }
                 console.write("   ");
                 writeToken(token);
-                console.write(": ");
                 if (security) {
-                    value = console.readPassword();
+                    value = console.readPassword(": ");
                 } else {
-                    value = console.readLine();
+                    value = console.readLine(": ");
                 }
                 if (StringUtils.isEmpty(value)) {
                     value = token.getDefaultValue();
