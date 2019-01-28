@@ -46,9 +46,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
     private String name;
 
-    /**
-     * Instantiates a new ActionList.
-     */
     public ActionList(boolean explicit) {
         super(5);
 
