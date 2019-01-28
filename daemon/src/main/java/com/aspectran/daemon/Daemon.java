@@ -41,4 +41,5 @@ public interface Daemon {
     void stop();
 
     void destroy();
+
 }

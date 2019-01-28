@@ -29,7 +29,7 @@ import com.aspectran.shell.console.Console;
 public interface ShellService extends CoreService {
 
     /**
-     * Creates a new session adapter for the shell service and returns.
+     * Create and return a new session adapter from the shell service.
      *
      * @return the session adapter
      */

@@ -31,7 +31,7 @@ import java.util.Map;
 public interface DaemonService extends CoreService {
 
     /**
-     * Creates a new session adapter for the daemon service and returns.
+     * Create and return a new session adapter from the daemon service.
      *
      * @return the session adapter
      */
