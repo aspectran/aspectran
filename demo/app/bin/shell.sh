@@ -29,12 +29,28 @@ if [ -z "$JAVA_HOME" ]; then
 else
     JAVA_BIN="$JAVA_HOME/bin/java"
 fi
-CLASSPATH="$BASE_DIR/lib/*"
-LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
-ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+while [ ".$1" != . ]
+do
+  case "$1" in
+    --debug )
+        LOGGING_CONFIG="$BASE_DIR/config/logback-debug.xml"
+        shift;
+        continue
+    ;;
+    * )
+        break
+    ;;
+  esac
+done
 if [ -z "$JAVA_OPTS" ]; then
     JAVA_OPTS="-Xms256m -Xmx1024m"
 fi
+CLASSPATH="$BASE_DIR/lib/*"
+if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
+    LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+    echo ${LOGGING_CONFIG};
+fi
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
     ${JAVA_OPTS} \
