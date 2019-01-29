@@ -123,17 +123,17 @@ public class JspViewDispatcher implements ViewDispatcher {
             HttpServletResponse response = responseAdapter.getAdaptee();
 
             if (log.isDebugEnabled()) {
-                log.debug("Dispatch to JSP [" + dispatchName + "]");
+                log.debug("dispatch [" + dispatchName + "]");
             }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
             requestDispatcher.forward(request, response);
 
             if (response.getStatus() == 404) {
-                throw new FileNotFoundException("Failed to find resource '" + dispatchName);
+                throw new FileNotFoundException("Failed to find resource '" + dispatchName + "'");
             }
         } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch for JSP " +
+            throw new ViewDispatcherException("Failed to dispatch to JSP " +
                     dispatchRule.toString(this, dispatchName), e);
         }
     }

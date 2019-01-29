@@ -68,7 +68,7 @@ public class RedirectResponse implements Response {
             }
             responseAdapter.redirect(redirectRule);
         } catch (Exception e) {
-            throw new ResponseException("Failed to redirect " + redirectRule, e);
+            throw new ResponseException("Failed to respond with redirect rule " + redirectRule, e);
         }
     }
 

@@ -151,7 +151,7 @@ public class DispatchResponse implements Response {
                         viewDispatcher = existing;
                     } else {
                         if (log.isDebugEnabled()) {
-                            log.debug("Caching ViewDispatcher " + viewDispatcher);
+                            log.debug("caching " + viewDispatcher);
                         }
                     }
                 }
