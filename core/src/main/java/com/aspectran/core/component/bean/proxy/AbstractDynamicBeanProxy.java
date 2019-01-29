@@ -88,7 +88,7 @@ public abstract class AbstractDynamicBeanProxy {
                 holder = existing;
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("caching [" + pattern + "] aspect " + holder);
+                    log.debug("Caching [" + pattern + "] for Aspect " + holder);
                 }
             }
         }

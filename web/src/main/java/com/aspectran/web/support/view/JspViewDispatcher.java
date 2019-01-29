@@ -123,7 +123,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             HttpServletResponse response = responseAdapter.getAdaptee();
 
             if (log.isDebugEnabled()) {
-                log.debug("dispatch [" + dispatchName + "]");
+                log.debug("Dispatching to JSP [" + dispatchName + "]");
             }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);

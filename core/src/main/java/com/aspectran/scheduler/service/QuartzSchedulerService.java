@@ -286,11 +286,9 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
-        Trigger trigger;
-
         Parameters triggerParameters = scheduleRule.getTriggerParameters();
         Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
-        int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null) ? triggerStartDelaySeconds : 0;
+        int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null ? triggerStartDelaySeconds : 0);
 
         Date firstFireTime;
         if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
@@ -327,7 +325,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                 builder.repeatForever();
             }
 
-            trigger = TriggerBuilder.newTrigger()
+            return TriggerBuilder.newTrigger()
                     .withIdentity(name, group)
                     .startAt(firstFireTime)
                     .withSchedule(builder)
@@ -336,14 +334,12 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             String expression = triggerParameters.getString(TriggerParameters.expression);
             CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
 
-            trigger = TriggerBuilder.newTrigger()
+            return TriggerBuilder.newTrigger()
                     .withIdentity(name, group)
                     .startAt(firstFireTime)
                     .withSchedule(cronSchedule)
                     .build();
         }
-
-        return trigger;
     }
 
 }

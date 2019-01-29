@@ -78,7 +78,7 @@ public class XmlTransformResponse extends TransformResponse {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("response " + transformRule);
+            log.debug("Response " + transformRule);
         }
 
         try {

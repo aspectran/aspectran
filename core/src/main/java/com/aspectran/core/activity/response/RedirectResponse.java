@@ -54,7 +54,7 @@ public class RedirectResponse implements Response {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("response " + redirectRule);
+            log.debug("Response " + redirectRule);
         }
 
         try {

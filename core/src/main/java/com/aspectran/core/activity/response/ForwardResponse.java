@@ -56,7 +56,7 @@ public class ForwardResponse implements Response {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("response " + forwardRule);
+            log.debug("Response " + forwardRule);
         }
 
         ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();

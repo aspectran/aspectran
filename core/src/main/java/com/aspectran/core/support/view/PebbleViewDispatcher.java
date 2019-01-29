@@ -113,13 +113,13 @@ public class PebbleViewDispatcher implements ViewDispatcher {
                 }
             }
 
+            if (debugEnabled) {
+                log.debug("Dispatching to Pebble template [" + dispatchName + "]");
+            }
+
             TemplateDataMap model = new TemplateDataMap(activity);
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
             compiledTemplate.evaluate(responseAdapter.getWriter(), model);
-
-            if (debugEnabled) {
-                log.debug("Dispatch to Pebble template [" + dispatchName + "]");
-            }
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
                     dispatchRule.toString(this, dispatchName), e);

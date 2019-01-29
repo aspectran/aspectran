@@ -256,7 +256,8 @@ public abstract class AbstractRequest {
 
     public void setAttribute(String name, Object value) {
         if (value == null) {
-            // If the object passed in is null, the effect is the same as calling removeAttribute(java.lang.String).
+            // If the object passed in is null, the effect is the same
+            // as calling removeAttribute(java.lang.String).
             removeAttribute(name);
         } else {
             getAttributeMap().put(name, value);

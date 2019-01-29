@@ -146,7 +146,7 @@ public class CoreActivity extends AdviceActivity {
                          Translet parentTranslet) {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("translet " + transletRule);
+                log.debug("Translet " + transletRule);
             }
 
             newTranslet(requestMethod, requestName, transletRule, parentTranslet);
@@ -580,7 +580,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("action " + action);
+                log.debug("Action " + action);
             }
 
             Object resultValue = action.execute(this);
@@ -590,10 +590,6 @@ public class CoreActivity extends AdviceActivity {
                 } else {
                     contentResult.addActionResult(action, resultValue);
                 }
-            }
-
-            if (log.isTraceEnabled()) {
-                log.trace("actionResult " + resultValue);
             }
 
             if (action.isLastInChooseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {

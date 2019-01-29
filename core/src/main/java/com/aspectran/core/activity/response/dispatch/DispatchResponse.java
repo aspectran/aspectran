@@ -57,7 +57,7 @@ public class DispatchResponse implements Response {
     public void commit(Activity activity) {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("response " + dispatchRule);
+                log.debug("Response " + dispatchRule);
             }
 
             ViewDispatcher viewDispatcher = getViewDispatcher(activity);
@@ -151,7 +151,7 @@ public class DispatchResponse implements Response {
                         viewDispatcher = existing;
                     } else {
                         if (log.isDebugEnabled()) {
-                            log.debug("caching " + viewDispatcher);
+                            log.debug("Caching " + viewDispatcher);
                         }
                     }
                 }

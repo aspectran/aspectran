@@ -291,7 +291,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
         switch (loaderCount) {
             case 0:
                 if (log.isDebugEnabled()) {
-                    log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source");
+                    log.debug("No FreeMarker TemplateLoaders specified; Can be used only inner template source");
                 }
                 return null;
             case 1:
@@ -320,19 +320,22 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
+                log.debug("Template loader path [" + templateLoaderPath +
+                        "] resolved to class path [" + basePackagePath + "]");
             }
             return new ClassTemplateLoader(environment.getClassLoader(), basePackagePath);
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
+                log.debug("Template loader path [" + templateLoaderPath +
+                        "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         } else {
             File file = new File(environment.getBasePath(), templateLoaderPath);
             if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
+                log.debug("Template loader path [" + templateLoaderPath +
+                        "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         }

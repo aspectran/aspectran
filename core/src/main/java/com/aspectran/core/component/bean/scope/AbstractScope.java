@@ -67,7 +67,7 @@ public class AbstractScope implements Scope {
     public void destroy() {
         if (log.isDebugEnabled()) {
             if (!scopedBeanMap.isEmpty()) {
-                log.debug("Destroy the " + scopeType + " scoped beans in the " + this);
+                log.debug("Destroy " + scopeType + " scoped beans from " + this);
             }
         }
 
@@ -93,7 +93,7 @@ public class AbstractScope implements Scope {
                     destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
                 }
             } catch (Exception e) {
-                log.error("Could not destroy the " + scopeType + " scoped bean " + beanRule, e);
+                log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
             }
         }
     }

@@ -188,12 +188,11 @@ public class LocaleChangeInterceptor {
         if (configuredMethods == null || configuredMethods.length == 0) {
             return true;
         }
-        if (requestMethod == null) {
-            return false;
-        }
-        for (String configuredMethod : configuredMethods) {
-            if (requestMethod.matches(configuredMethod)) {
-                return true;
+        if (requestMethod != null) {
+            for (String configuredMethod : configuredMethods) {
+                if (requestMethod.matches(configuredMethod)) {
+                    return true;
+                }
             }
         }
         return false;
