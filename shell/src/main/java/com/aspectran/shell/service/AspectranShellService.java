@@ -17,7 +17,7 @@ package com.aspectran.shell.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.config.AspectranConfig;

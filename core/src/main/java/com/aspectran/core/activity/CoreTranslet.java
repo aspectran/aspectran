@@ -16,7 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;

@@ -16,7 +16,7 @@
 package com.aspectran.demo.examples.upload;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.RequestAsDelete;

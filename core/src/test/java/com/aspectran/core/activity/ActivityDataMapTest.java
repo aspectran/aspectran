@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;

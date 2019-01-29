@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.activity.request.parameter.FileParameterMap;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;

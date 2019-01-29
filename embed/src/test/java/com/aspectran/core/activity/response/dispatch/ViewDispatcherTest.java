@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.AspectRule;

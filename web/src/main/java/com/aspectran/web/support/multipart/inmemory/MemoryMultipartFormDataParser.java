@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
-import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;

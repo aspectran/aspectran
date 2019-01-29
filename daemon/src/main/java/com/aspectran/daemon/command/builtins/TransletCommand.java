@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;

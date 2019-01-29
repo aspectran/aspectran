@@ -16,11 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.resource.AspectranClassLoader;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.util.ResourceUtils;
 
 import java.io.File;

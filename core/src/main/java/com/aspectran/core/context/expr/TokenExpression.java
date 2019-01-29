@@ -17,7 +17,7 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
-import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateProcessor;
 import com.aspectran.core.context.ActivityContext;

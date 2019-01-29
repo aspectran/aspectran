@@ -18,7 +18,7 @@ package com.aspectran.daemon.activity;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;

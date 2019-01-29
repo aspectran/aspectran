@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;

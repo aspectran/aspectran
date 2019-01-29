@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.core.activity.request.FileParameter;
+
 /**
  * Supported Item value types.
  * 
@@ -30,7 +32,7 @@ public enum ItemValueType {
     BOOLEAN("boolean", java.lang.Boolean.class),
     PARAMETERS("parameters", com.aspectran.core.util.apon.Parameters.class),
     FILE("file", java.io.File.class),
-    MULTIPART_FILE("multipartFile", com.aspectran.core.activity.request.parameter.FileParameter.class);
+    MULTIPART_FILE("multipartFile", FileParameter.class);
 
     private final String alias;
 

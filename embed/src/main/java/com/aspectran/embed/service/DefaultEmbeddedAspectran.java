@@ -18,7 +18,7 @@ package com.aspectran.embed.service;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.expr;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.MultiValueMap;

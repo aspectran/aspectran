@@ -17,7 +17,7 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AspectAdviceException;
-import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
+import com.aspectran.core.activity.aspect.AspectAdviceResult;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;

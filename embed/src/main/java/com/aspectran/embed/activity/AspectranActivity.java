@@ -18,7 +18,7 @@ package com.aspectran.embed.activity;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
 import com.aspectran.embed.service.EmbeddedAspectran;

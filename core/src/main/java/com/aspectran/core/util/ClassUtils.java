@@ -17,7 +17,6 @@ package com.aspectran.core.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * Miscellaneous class utility methods.

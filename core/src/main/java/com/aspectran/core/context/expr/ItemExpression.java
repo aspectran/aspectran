@@ -16,8 +16,8 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;

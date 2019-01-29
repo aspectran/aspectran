@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.activity.request.parameter.ParameterMap;
+import com.aspectran.core.activity.request.ParameterMap;
 
 import java.util.Arrays;
 

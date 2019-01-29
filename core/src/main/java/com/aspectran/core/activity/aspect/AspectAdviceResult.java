@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.activity.aspect.result;
+package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
