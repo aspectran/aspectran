@@ -398,10 +398,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private void initContextEnvironment(ContextRuleAssistant assistant) {
         ContextEnvironment environment = assistant.getContextEnvironment();
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
-            if (environmentRule.getPropertyItemRuleMap() != null) {
-                String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-                if (environment.acceptsProfiles(profiles)) {
-                    environment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
+            String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
+            if (environment.acceptsProfiles(profiles)) {
+                if (environmentRule.getPropertyItemRuleMapList() != null) {
+                    for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
+                        String[] profiles2 = StringUtils.splitCommaDelimitedString(propertyItemRuleMap.getProfile());
+                        if (environment.acceptsProfiles(profiles2)) {
+                            environment.addPropertyItemRuleMap(propertyItemRuleMap);
+                        }
+                    }
                 }
             }
         }

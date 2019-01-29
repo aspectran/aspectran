@@ -50,7 +50,6 @@ class ActivityContextBuilderTest {
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
         builder.setHybridLoad(true);
-        builder.setActiveProfiles("dev", "local");
     }
 
     @AfterAll
@@ -59,27 +58,48 @@ class ActivityContextBuilderTest {
     }
 
     @Test
-    void test1HybridLoading() throws ActivityContextBuilderException {
+    void testHybridLoading() throws ActivityContextBuilderException {
         File apon1 = new File(baseDir, "config/sample/test-config.xml.apon");
         File apon2 = new File(baseDir, "config/sample/scheduler-config.xml.apon");
+        File apon3 = new File(baseDir, "config/sample/environment-config.xml.apon");
         apon1.delete();
         apon2.delete();
+        apon3.delete();
 
         System.out.println("================ load ===============");
 
-        ActivityContext context = builder.build("/config/sample/test-config.xml");
-        String result = context.getTemplateProcessor().process("echo1");
+        builder.setActiveProfiles("dev", "debug");
+        ActivityContext context1 = builder.build("/config/sample/test-config.xml");
+        String result = context1.getTemplateProcessor().process("echo1");
         //System.out.println(result);
         assertEquals("ECHO-1", result);
+
+        String devProp1 = context1.getEnvironment().getProperty("prop-1", context1);
+        String devProp2 = context1.getEnvironment().getProperty("prop-2", context1);
+        assertEquals("dev-debug-1", devProp1);
+        assertEquals("dev-debug-2", devProp2);
+
         builder.destroy();
 
         System.out.println("=============== reload ==============");
 
+        builder.setActiveProfiles("local");
         ActivityContext context2 = builder.build();
         String result2 = context2.getTemplateProcessor().process("echo2");
         //System.out.println(result2);
         assertEquals("ECHO-2", result2);
+
+        String localProp1 = context2.getEnvironment().getProperty("prop-1", context1);
+        String localProp2 = context2.getEnvironment().getProperty("prop-2", context1);
+        assertEquals("local-!debug-1", localProp1);
+        assertEquals("local-!debug-2", localProp2);
+
         builder.destroy();
+
+        //System.out.println(devProp1);
+        //System.out.println(devProp2);
+        //System.out.println(localProp1);
+        //System.out.println(localProp2);
     }
 
 }

@@ -40,7 +40,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String profile = attrs.get("profile");
 
-            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
+            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
             parser.pushObject(environmentRule);
         });
         parser.addNodeEndlet(text -> {
@@ -65,13 +65,14 @@ class EnvironmentNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/environment/properties");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
+            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
         parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             EnvironmentRule environmentRule = parser.peekObject();
-            environmentRule.setPropertyItemRuleMap(irm);
+            environmentRule.addPropertyItemRuleMap(irm);
         });
     }
 

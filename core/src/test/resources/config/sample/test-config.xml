@@ -11,6 +11,8 @@
         <setting name="defaultTemplateEngineBean" value="freemarker"/>
     </settings>
 
+    <append file="/config/sample/environment-config.xml"/>
+
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.core.support.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>
             <item name="freemarkerSettings" type="properties">

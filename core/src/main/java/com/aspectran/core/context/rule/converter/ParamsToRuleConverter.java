@@ -208,15 +208,20 @@ public class ParamsToRuleConverter {
         if (environmentParameters != null) {
             String description = environmentParameters.getString(EnvironmentParameters.description);
             String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
-            ItemHolderParameters propertyItemHolderParameters = environmentParameters.getParameters(EnvironmentParameters.properties);
-            ItemRuleMap propertyItemRuleMap = null;
-            if (propertyItemHolderParameters != null) {
-                propertyItemRuleMap = convertAsItemRuleMap(propertyItemHolderParameters);
-            }
-            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, propertyItemRuleMap);
+            List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
+
+            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
             if (description != null) {
                 environmentRule.setDescription(description);
             }
+
+            if (propertyItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                    ItemRuleMap propertyItemRuleMap = convertAsItemRuleMap(itemHolderParameters);
+                    environmentRule.addPropertyItemRuleMap(propertyItemRuleMap);
+                }
+            }
+
             assistant.addEnvironmentRule(environmentRule);
         }
     }

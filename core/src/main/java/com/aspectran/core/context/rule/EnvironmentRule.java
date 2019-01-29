@@ -15,7 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.util.ToStringBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class EnvironmentRule.
@@ -26,7 +27,7 @@ public class EnvironmentRule {
 
     private String profile;
 
-    private ItemRuleMap propertyItemRuleMap;
+    private List<ItemRuleMap> propertyItemRuleMapList;
 
     private String description;
 
@@ -38,88 +39,38 @@ public class EnvironmentRule {
         this.profile = profile;
     }
 
-    /**
-     * Gets the property item rule map.
-     *
-     * @return the property item rule map
-     */
-    public ItemRuleMap getPropertyItemRuleMap() {
-        return propertyItemRuleMap;
+    public List<ItemRuleMap> getPropertyItemRuleMapList() {
+        return propertyItemRuleMapList;
     }
 
-    /**
-     * Sets the property item rule map.
-     *
-     * @param propertyItemRuleMap the new property item rule map
-     */
-    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        this.propertyItemRuleMap = propertyItemRuleMap;
+    public void setPropertyItemRuleMapList(List<ItemRuleMap> propertyItemRuleMapList) {
+        this.propertyItemRuleMapList = propertyItemRuleMapList;
     }
 
-    /**
-     * Adds a new property rule with the specified name and returns it.
-     *
-     * @param propertyName the property name
-     * @return the property item rule
-     */
-    public ItemRule newPropertyItemRule(String propertyName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(propertyName);
-        addPropertyItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the property item rule.
-     *
-     * @param propertyItemRule the property item rule
-     */
-    public void addPropertyItemRule(ItemRule propertyItemRule) {
-        if (propertyItemRuleMap == null) {
-            propertyItemRuleMap = new ItemRuleMap();
+    public void addPropertyItemRuleMap(ItemRuleMap itemRuleMap) {
+        if (propertyItemRuleMapList == null) {
+            propertyItemRuleMapList = new ArrayList<>();
         }
-        propertyItemRuleMap.putItemRule(propertyItemRule);
+        propertyItemRuleMapList.add(itemRuleMap);
     }
 
-    /**
-     * Gets the description.
-     *
-     * @return the description
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Sets the description.
-     *
-     * @param description the new description
-     */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("profile", profile);
-        if (propertyItemRuleMap != null) {
-            tsb.append("properties", propertyItemRuleMap.keySet());
-        }
-        return tsb.toString();
     }
 
     /**
      * Returns a new instance of EnvironmentRule.
      *
      * @param profile the profile
-     * @param propertyItemRuleMap the property item rule map
      * @return an instance of EnvironmentRule
      */
-    public static EnvironmentRule newInstance(String profile, ItemRuleMap propertyItemRuleMap) {
+    public static EnvironmentRule newInstance(String profile) {
         EnvironmentRule environmentRule = new EnvironmentRule();
         environmentRule.setProfile(profile);
-        environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
         return environmentRule;
     }
 
