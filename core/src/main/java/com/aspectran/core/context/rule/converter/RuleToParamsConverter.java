@@ -233,6 +233,7 @@ public class RuleToParamsConverter {
             aspectParameters.putValueNonNull(AspectParameters.order, aspectRule.getOrder());
         }
         aspectParameters.putValueNonNull(AspectParameters.isolated, aspectRule.getIsolated());
+        aspectParameters.putValueNonNull(AspectParameters.disabled, aspectRule.getDisabled());
 
         if (aspectRule.getJoinpointRule() != null) {
             JoinpointParameters joinpointParameters = aspectRule.getJoinpointRule().getJoinpointParameters();

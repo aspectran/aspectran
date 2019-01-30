@@ -239,8 +239,9 @@ public class ParamsToRuleConverter {
         String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
         String order = aspectParameters.getString(AspectParameters.order);
         Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
+        Boolean disabled = aspectParameters.getBoolean(AspectParameters.disabled);
 
-        AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
+        AspectRule aspectRule = AspectRule.newInstance(id, order, isolated, disabled);
         if (description != null) {
             aspectRule.setDescription(description);
         }

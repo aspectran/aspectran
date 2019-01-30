@@ -15,7 +15,6 @@
  */
 package com.aspectran.scheduler.service;
 
-import com.aspectran.core.activity.Activity;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
@@ -29,7 +28,7 @@ import org.quartz.JobListener;
  */
 public class QuartzJobListener implements JobListener {
 
-    public static final String LISTENER_NAME = "defaultJobListener";
+    private static final String LISTENER_NAME = "defaultJobListener";
 
     @Override
     public String getName() {

@@ -51,6 +51,7 @@
   id       ID #IMPLIED
   order    CDATA #IMPLIED
   isolated (true | false) #IMPLIED
+  disabled (true | false) #IMPLIED
 >
 
 <!ELEMENT joinpoint (#PCDATA)>

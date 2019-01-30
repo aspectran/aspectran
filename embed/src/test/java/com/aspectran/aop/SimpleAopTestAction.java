@@ -27,15 +27,15 @@ public class SimpleAopTestAction {
 
     @Request(translet = "aop/test/action1")
     public void action1(Translet translet) {
-        System.out.println("===[SimpleAopTest]=== Action Result (Action-1)");
+        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-1)");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         sampleAnnotatedAspect.foo();
     }
 
     @Request(translet = "aop/test/action2")
-    public void action2(Translet translet) {
-        System.out.println("===[SimpleAopTest]=== Action Result (Action-2)");
-        System.out.println("===[SimpleAopTest]=== Force Exception ==============");
+    public void action2() {
+        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-2)");
+        System.out.println("===> aspect02: [SimpleAopTestAction]=== Force Exception ==============");
         throw new SimpleAopTestException();
     }
 

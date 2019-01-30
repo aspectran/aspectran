@@ -17,6 +17,7 @@ package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
@@ -60,6 +63,24 @@ class AspectranSimpleAopTest {
 
     @Test
     void test2() {
+        AspectRule aspectRule = aspectran.getActivityContext().getAspectRuleRegistry().getAspectRule("aspect01");
+        aspectRule.setDisabled(false);
+        Translet translet = aspectran.translate("aop/test/action1");
+        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
+        assertNotNull(simpleAopTestAdvice);
+    }
+
+    @Test
+    void test3() {
+        AspectRule aspectRule = aspectran.getActivityContext().getAspectRuleRegistry().getAspectRule("aspect01");
+        aspectRule.setDisabled(true);
+        Translet translet = aspectran.translate("aop/test/action1");
+        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
+        assertNull(simpleAopTestAdvice);
+    }
+
+    @Test
+    void test4() {
         aspectran.translate("aop/test/action2");
     }
 

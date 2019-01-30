@@ -93,6 +93,8 @@ public class AspectRule implements BeanReferenceInspectable {
 
     private Boolean isolated;
 
+    private Boolean disabled;
+
     private JoinpointRule joinpointRule;
 
     private Pointcut pointcut;
@@ -132,11 +134,23 @@ public class AspectRule implements BeanReferenceInspectable {
     }
 
     public boolean isIsolated() {
-        return BooleanUtils.toBoolean(isolated, false);
+        return BooleanUtils.toBoolean(isolated);
     }
 
     public void setIsolated(Boolean isolated) {
         this.isolated = isolated;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public boolean isDisabled() {
+        return BooleanUtils.toBoolean(disabled);
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
     public JoinpointRule getJoinpointRule() {
@@ -280,6 +294,7 @@ public class AspectRule implements BeanReferenceInspectable {
             tsb.append("order", order);
         }
         tsb.append("isolated", isolated);
+        tsb.append("disabled", disabled);
         tsb.append("joinpoint", joinpointRule);
         tsb.append("adviceBean", adviceBeanId);
         tsb.append("settingsAdvice", settingsAdviceRule);
@@ -289,7 +304,7 @@ public class AspectRule implements BeanReferenceInspectable {
         return tsb.toString();
     }
 
-    public static AspectRule newInstance(String id, String order, Boolean isolated) throws IllegalRuleException {
+    public static AspectRule newInstance(String id, String order, Boolean isolated, Boolean disabled) throws IllegalRuleException {
         if (id == null) {
             throw new IllegalRuleException("The 'aspect' element requires an 'id' attribute");
         }
@@ -297,6 +312,7 @@ public class AspectRule implements BeanReferenceInspectable {
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(id);
         aspectRule.setIsolated(isolated);
+        aspectRule.setDisabled(disabled);
 
         if (!StringUtils.isEmpty(order)) {
             try {

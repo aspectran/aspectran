@@ -161,24 +161,24 @@ public abstract class AdviceActivity extends AbstractActivity {
             touchAspectAdviceRuleRegistry().register(aspectRule);
 
             if (currentAspectAdviceRule != null) {
-                AspectAdviceRule aspectAdviceRule1 = currentAspectAdviceRule;
-                AspectAdviceType aspectAdviceType1 = aspectAdviceRule1.getAspectAdviceType();
-                for (AspectAdviceRule aspectAdviceRule2 : aspectAdviceRuleList) {
-                    AspectAdviceType aspectAdviceType2 = aspectAdviceRule2.getAspectAdviceType();
-                    if (aspectAdviceType1 == aspectAdviceType2) {
-                        int order1 = aspectAdviceRule1.getAspectRule().getOrder();
-                        int order2 = aspectAdviceRule2.getAspectRule().getOrder();
-                        if (aspectAdviceType1 == AspectAdviceType.BEFORE) {
+                AspectAdviceRule adviceRule1 = currentAspectAdviceRule;
+                AspectAdviceType adviceType1 = adviceRule1.getAspectAdviceType();
+                for (AspectAdviceRule adviceRule2 : aspectAdviceRuleList) {
+                    AspectAdviceType adviceType2 = adviceRule2.getAspectAdviceType();
+                    if (adviceType1 == adviceType2) {
+                        int order1 = adviceRule1.getAspectRule().getOrder();
+                        int order2 = adviceRule2.getAspectRule().getOrder();
+                        if (adviceType1 == AspectAdviceType.BEFORE) {
                             if (order2 < order1) {
-                                executeAdvice(aspectAdviceRule2, true);
+                                executeAdvice(adviceRule2, true);
                             }
                         } else {
                             if (order2 > order1) {
-                                executeAdvice(aspectAdviceRule2, true);
+                                executeAdvice(adviceRule2, true);
                             }
                         }
-                    } else if (aspectAdviceType2 == AspectAdviceType.BEFORE) {
-                        executeAdvice(aspectAdviceRule2, true);
+                    } else if (adviceType2 == AspectAdviceType.BEFORE) {
+                        executeAdvice(adviceRule2, true);
                     }
                 }
             } else {
@@ -216,9 +216,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     break;
                 }
             }
-            if (!contained) {
-                return false;
-            }
+            return contained;
         }
         return true;
     }
@@ -282,6 +280,11 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     @Override
     public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) {
+        if (aspectAdviceRule.getAspectRule().isDisabled()) {
+            touchExecutedAspectAdviceRules().add(aspectAdviceRule);
+            return;
+        }
+
         if (isExceptionRaised() && aspectAdviceRule.getExceptionRule() != null) {
             try {
                 handleException(aspectAdviceRule.getExceptionRule());
@@ -299,14 +302,13 @@ public abstract class AdviceActivity extends AbstractActivity {
             }
         }
 
-        currentAspectAdviceRule = aspectAdviceRule;
-        Executable action = aspectAdviceRule.getExecutableAction();
-        currentAspectAdviceRule = null;
-
         touchExecutedAspectAdviceRules().add(aspectAdviceRule);
 
+        Executable action = aspectAdviceRule.getExecutableAction();
         if (action != null) {
             try {
+                currentAspectAdviceRule = aspectAdviceRule;
+
                 if (action.getActionType() == ActionType.BEAN_METHOD) {
                     // If Aspect Advice Bean ID is specified
                     if (aspectAdviceRule.getAdviceBeanId() != null) {
@@ -340,10 +342,6 @@ public abstract class AdviceActivity extends AbstractActivity {
                         }
                     }
                 }
-
-                if (log.isTraceEnabled()) {
-                    log.trace("adviceActionResult " + result);
-                }
             } catch(Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
                     log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
@@ -356,6 +354,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                                 aspectAdviceRule, aspectAdviceRule, e);
                     }
                 }
+            } finally {
+                currentAspectAdviceRule = null;
             }
         }
     }

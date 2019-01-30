@@ -44,8 +44,9 @@ class AspectNodeletAdder implements NodeletAdder {
             String id = StringUtils.emptyToNull(attrs.get("id"));
             String order = StringUtils.emptyToNull(attrs.get("order"));
             Boolean isolated = BooleanUtils.toNullableBooleanObject(attrs.get("isolated"));
+            Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
-            AspectRule aspectRule = AspectRule.newInstance(id, order, isolated);
+            AspectRule aspectRule = AspectRule.newInstance(id, order, isolated, disabled);
             parser.pushObject(aspectRule);
         });
         parser.addNodeEndlet(text -> {
