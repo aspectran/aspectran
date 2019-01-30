@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
 import com.aspectran.embed.service.EmbeddedAspectran;
@@ -33,11 +34,20 @@ public class AspectranActivity extends CoreActivity {
 
     private final EmbeddedAspectran aspectran;
 
-    private final Writer outputWriter;
+    private Writer outputWriter;
 
     private ParameterMap parameterMap;
 
     private Map<String, Object> attributeMap;
+
+    /**
+     * Instantiates a new embedded aspectran activity.
+     *
+     * @param aspectran the embedded aspectran
+     */
+    public AspectranActivity(EmbeddedAspectran aspectran) {
+        this(aspectran, null);
+    }
 
     /**
      * Instantiates a new embedded aspectran activity.
@@ -68,6 +78,9 @@ public class AspectranActivity extends CoreActivity {
             AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter();
             setRequestAdapter(requestAdapter);
 
+            if (outputWriter == null) {
+                outputWriter = new StringOutputWriter();
+            }
             AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
 

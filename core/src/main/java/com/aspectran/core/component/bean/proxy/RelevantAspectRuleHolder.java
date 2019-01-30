@@ -70,7 +70,7 @@ public class RelevantAspectRuleHolder {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-        tsb.append("dynamicAspectRuleList", dynamicAspectRuleList);
+        tsb.append("dynamicAspectRules", dynamicAspectRuleList);
         return tsb.toString();
     }
 

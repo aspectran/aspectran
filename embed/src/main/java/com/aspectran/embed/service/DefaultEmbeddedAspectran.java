@@ -30,7 +30,6 @@ import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -196,8 +195,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         AspectranActivity activity = null;
         Translet translet = null;
         try {
-            StringOutputWriter outputWriter = new StringOutputWriter();
-            activity = new AspectranActivity(this, outputWriter);
+            activity = new AspectranActivity(this);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
             activity.prepare(name, method);
