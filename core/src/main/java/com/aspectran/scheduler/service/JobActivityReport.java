@@ -16,18 +16,18 @@
 package com.aspectran.scheduler.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 
 import java.io.IOException;
-import java.io.Writer;
 
 /**
  * The Class JobActivityReport.
@@ -49,11 +49,11 @@ public class JobActivityReport {
         this.jobException = jobException;
     }
 
-    public void reporting(Activity activity) {
+    public void reporting() {
         try {
             JobDetail jobDetail = jobExecutionContext.getJobDetail();
-            JobKey key = jobDetail.getKey();
 
+            JobKey key = jobDetail.getKey();
             String jobName = key.getName();
             String jobGroup = key.getGroup();
 
@@ -62,31 +62,38 @@ public class JobActivityReport {
             if (jobException != null) {
                 sb.append(" (Failed)");
             }
-            sb.append(ActivityContext.LINE_SEPARATOR);
-            sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Job Group           : ").append(jobGroup).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Job Name            : ").append(jobName).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime() != null ? jobExecutionContext.getPreviousFireTime() : "N/A").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? jobExecutionContext.getNextFireTime() : "N/A").append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(ActivityContext.LINE_SEPARATOR);
-            sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+            sb.append(System.lineSeparator());
+            sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
+            sb.append("- Job Group           : ").append(jobGroup).append(System.lineSeparator());
+            sb.append("- Job Name            : ").append(jobName).append(System.lineSeparator());
+            sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(System.lineSeparator());
+            sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(System.lineSeparator());
+            sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(System.lineSeparator());
+            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime() != null ? jobExecutionContext.getPreviousFireTime() : "N/A").append(System.lineSeparator());
+            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? jobExecutionContext.getNextFireTime() : "N/A").append(System.lineSeparator());
+            sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(System.lineSeparator());
+            sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(System.lineSeparator());
+            sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
 
+            Activity activity = (Activity)jobExecutionContext.getResult();
             if (activity != null) {
-                Writer writer = activity.getResponseAdapter().getWriter();
-                String output = writer.toString();
-                if (!StringUtils.hasLength(output)) {
-                    sb.append(output).append(ActivityContext.LINE_SEPARATOR);
-                    sb.append("----------------------------------------------------------------------------").append(ActivityContext.LINE_SEPARATOR);
+                String result = activity.getResponseAdapter().getWriter().toString();
+                if (StringUtils.hasLength(result)) {
+                    sb.append(result).append(System.lineSeparator());
+                    sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
+                }
+            } else {
+                JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                ScheduleJobRule jobRule = (ScheduleJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
+                if (jobRule.isDisabled()) {
+                    sb.append("- Execution of this job is disabled.").append(System.lineSeparator());
+                    sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
                 }
             }
 
             if (jobException != null) {
                 String msg = ExceptionUtils.getRootCause(jobException).getMessage();
-                sb.append("[ERROR] ").append(msg.trim()).append(ActivityContext.LINE_SEPARATOR);
+                sb.append("[ERROR] ").append(msg.trim()).append(System.lineSeparator());
                 log.error(sb.toString().trim(), jobException);
             } else {
                 log.debug(sb.toString());

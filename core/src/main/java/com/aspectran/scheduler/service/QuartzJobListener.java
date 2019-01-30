@@ -47,8 +47,7 @@ public class QuartzJobListener implements JobListener {
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
         JobActivityReport report = new JobActivityReport(context, jobException);
-        Activity activity = (Activity)context.get(QuartzSchedulerService.ACTIVITY_DATA_KEY);
-        report.reporting(activity);
+        report.reporting();
     }
 
 }

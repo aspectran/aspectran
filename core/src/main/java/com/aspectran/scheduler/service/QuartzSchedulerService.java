@@ -53,9 +53,9 @@ import java.util.Set;
  */
 public class QuartzSchedulerService extends AbstractServiceController implements SchedulerService {
 
-    public static final String ACTIVITY_CONTEXT_DATA_KEY = "ACTIVITY_CONTEXT";
+    static final String SERVICE_DATA_KEY = "SERVICE";
 
-    public static final String ACTIVITY_DATA_KEY = "ACTIVITY";
+    static final String JOB_RULE_DATA_KEY = "JOB_RULE";
 
     private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
@@ -152,8 +152,13 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         stopSchedulerService();
     }
 
+    @Override
+    public ActivityContext getActivityContext() {
+        return coreService.getActivityContext();
+    }
+
     private void startSchedulerService() throws SchedulerServiceException {
-        ScheduleRuleRegistry scheduleRuleRegistry = coreService.getActivityContext().getScheduleRuleRegistry();
+        ScheduleRuleRegistry scheduleRuleRegistry = getActivityContext().getScheduleRuleRegistry();
         if (scheduleRuleRegistry == null) {
             return;
         }
@@ -241,12 +246,12 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
         Scheduler scheduler = null;
         if (scheduleRule.getSchedulerBeanClass() != null) {
-            scheduler = (Scheduler)coreService.getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
+            scheduler = (Scheduler)getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
         } else if (scheduleRule.getSchedulerBeanId() != null) {
-            scheduler = coreService.getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
+            scheduler = getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
         }
         if (scheduler == null) {
-            throw new ActionExecutionException("No such Scheduler bean; Invalid ScheduleRule " + scheduleRule);
+            throw new ActionExecutionException("No such scheduler bean; Invalid ScheduleRule " + scheduleRule);
         }
 
         List<ScheduleJobRule> jobRuleList = scheduleRule.getScheduleJobRuleList();
@@ -257,7 +262,6 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                     String triggerName = jobDetail.getKey().getName();
                     String triggerGroup = scheduleRule.getId();
                     Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
-
                     scheduler.scheduleJob(jobDetail, trigger);
                 }
             } else {
@@ -268,16 +272,13 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return scheduler;
     }
 
-    private JobDetail buildJobDetail(ScheduleJobRule scheduleJobRule) {
-        if (scheduleJobRule.isDisabled()) {
-            return null;
-        }
-
-        String jobName = scheduleJobRule.getTransletName();
-        String jobGroup = scheduleJobRule.getScheduleRule().getId();
+    private JobDetail buildJobDetail(ScheduleJobRule jobRule) {
+        String jobName = jobRule.getTransletName();
+        String jobGroup = jobRule.getScheduleRule().getId();
 
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(ACTIVITY_CONTEXT_DATA_KEY, coreService.getActivityContext());
+        jobDataMap.put(SERVICE_DATA_KEY, this);
+        jobDataMap.put(JOB_RULE_DATA_KEY, jobRule);
 
         return JobBuilder.newJob(ActivityLauncherJob.class)
                 .withIdentity(jobName, jobGroup)

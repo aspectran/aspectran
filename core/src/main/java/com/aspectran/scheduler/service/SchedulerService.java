@@ -15,6 +15,7 @@
  */
 package com.aspectran.scheduler.service;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.ServiceController;
 
 /**
@@ -31,5 +32,7 @@ public interface SchedulerService extends ServiceController {
     void setWaitOnShutdown(boolean waitOnShutdown);
 
     void setExposals(String[] includePatterns, String[] excludePatterns);
+
+    ActivityContext getActivityContext();
 
 }

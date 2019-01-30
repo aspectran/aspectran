@@ -17,6 +17,7 @@ package com.aspectran.scheduler.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.util.StringOutputWriter;
 
 /**
  * The Class QuartzJobResponseAdapter.
@@ -29,7 +30,7 @@ public class QuartzJobResponseAdapter extends BasicResponseAdapter {
         super(null);
 
         setContentType(ContentType.TEXT_PLAIN.toString());
-        setWriter(new QuartzJobOutputWriter());
+        setWriter(new StringOutputWriter(768));
     }
 
 }
