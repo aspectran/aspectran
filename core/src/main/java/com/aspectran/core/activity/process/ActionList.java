@@ -64,16 +64,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
         this.name = name;
     }
 
-    public int getVisibleCount() {
-        int count = 0;
-        for (Executable action : this) {
-            if (!action.isHidden()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     @Override
     public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
         Executable action = new BeanMethodAction(beanMethodActionRule, this);

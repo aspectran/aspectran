@@ -45,6 +45,9 @@ public class CommandCompleter implements Completer {
     private boolean disable;
 
     public CommandCompleter(Console console) {
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
         this.console = console;
     }
 

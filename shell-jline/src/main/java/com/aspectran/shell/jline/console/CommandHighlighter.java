@@ -42,6 +42,9 @@ public class CommandHighlighter implements Highlighter {
     private boolean disable;
 
     public CommandHighlighter(Console console) {
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
         this.console = console;
     }
 
