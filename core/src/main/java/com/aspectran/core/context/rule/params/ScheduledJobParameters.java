@@ -19,7 +19,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class ScheduleJobParameters extends AbstractParameters {
+public class ScheduledJobParameters extends AbstractParameters {
 
     public static final ParameterDefinition translet;
     public static final ParameterDefinition method;
@@ -39,7 +39,7 @@ public class ScheduleJobParameters extends AbstractParameters {
         };
     }
 
-    public ScheduleJobParameters() {
+    public ScheduledJobParameters() {
         super(parameterDefinitions);
     }
 

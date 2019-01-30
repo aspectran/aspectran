@@ -20,7 +20,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.ScheduleJobRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.scheduler.activity.JobActivity;
 import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
 import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
@@ -40,7 +40,7 @@ public class ActivityLauncherJob implements Job {
         try {
             JobDetail jobDetail = jobExecutionContext.getJobDetail();
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            ScheduleJobRule jobRule = (ScheduleJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
+            ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
             if (!jobRule.isDisabled()) {
                 SchedulerService service = (SchedulerService)jobDataMap.get(QuartzSchedulerService.SERVICE_DATA_KEY);
                 if (service.isActive()) {

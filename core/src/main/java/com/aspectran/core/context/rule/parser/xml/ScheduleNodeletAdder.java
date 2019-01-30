@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
@@ -90,8 +90,8 @@ class ScheduleNodeletAdder implements NodeletAdder {
             transletName = assistant.applyTransletNamePattern(transletName);
             ScheduleRule scheduleRule = parser.peekObject();
 
-            ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, transletName, method, disabled);
-            scheduleRule.addScheduleJobRule(scheduleJobRule);
+            ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, method, disabled);
+            scheduleRule.addScheduledJobRule(scheduledJobRule);
         });
     }
 

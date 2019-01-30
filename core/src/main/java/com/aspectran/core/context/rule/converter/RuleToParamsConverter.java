@@ -44,8 +44,8 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -79,8 +79,8 @@ import com.aspectran.core.context.rule.params.RedirectParameters;
 import com.aspectran.core.context.rule.params.RequestParameters;
 import com.aspectran.core.context.rule.params.ResponseParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
-import com.aspectran.core.context.rule.params.ScheduleJobParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
 import com.aspectran.core.context.rule.params.TemplateParameters;
 import com.aspectran.core.context.rule.params.TransformParameters;
@@ -372,15 +372,15 @@ public class RuleToParamsConverter {
             schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
         }
 
-        List<ScheduleJobRule> scheduleJobRuleList = scheduleRule.getScheduleJobRuleList();
-        if (scheduleJobRuleList != null) {
-            for (ScheduleJobRule scheduleJobRule : scheduleJobRuleList) {
-                ScheduleJobParameters jobParameters = scheduleParameters.newParameters(ScheduleParameters.job);
-                jobParameters.putValue(ScheduleJobParameters.translet, scheduleJobRule.getTransletName());
-                if (scheduleJobRule.getRequestMethod() != null) {
-                    jobParameters.putValue(ScheduleJobParameters.method, scheduleJobRule.getRequestMethod().toString());
+        List<ScheduledJobRule> scheduledJobRuleList = scheduleRule.getScheduledJobRuleList();
+        if (scheduledJobRuleList != null) {
+            for (ScheduledJobRule scheduledJobRule : scheduledJobRuleList) {
+                ScheduledJobParameters jobParameters = scheduleParameters.newParameters(ScheduleParameters.job);
+                jobParameters.putValue(ScheduledJobParameters.translet, scheduledJobRule.getTransletName());
+                if (scheduledJobRule.getRequestMethod() != null) {
+                    jobParameters.putValue(ScheduledJobParameters.method, scheduledJobRule.getRequestMethod().toString());
                 }
-                jobParameters.putValueNonNull(ScheduleJobParameters.disabled, scheduleJobRule.getDisabled());
+                jobParameters.putValueNonNull(ScheduledJobParameters.disabled, scheduledJobRule.getDisabled());
             }
         }
 

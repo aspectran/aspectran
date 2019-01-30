@@ -57,7 +57,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
 
     private Class<?> schedulerBeanClass;
 
-    private List<ScheduleJobRule> scheduleJobRuleList = new ArrayList<>();
+    private List<ScheduledJobRule> scheduledJobRuleList = new ArrayList<>();
 
     private String description;
 
@@ -101,16 +101,16 @@ public class ScheduleRule implements BeanReferenceInspectable {
         this.schedulerBeanClass = schedulerBeanClass;
     }
 
-    public List<ScheduleJobRule> getScheduleJobRuleList() {
-        return scheduleJobRuleList;
+    public List<ScheduledJobRule> getScheduledJobRuleList() {
+        return scheduledJobRuleList;
     }
 
-    public void setScheduleJobRuleList(List<ScheduleJobRule> scheduleJobRuleList) {
-        this.scheduleJobRuleList = scheduleJobRuleList;
+    public void setScheduledJobRuleList(List<ScheduledJobRule> scheduledJobRuleList) {
+        this.scheduledJobRuleList = scheduledJobRuleList;
     }
 
-    public void addScheduleJobRule(ScheduleJobRule scheduleJobRule) {
-        scheduleJobRuleList.add(scheduleJobRule);
+    public void addScheduledJobRule(ScheduledJobRule scheduledJobRule) {
+        scheduledJobRuleList.add(scheduledJobRule);
     }
 
     /**
@@ -142,7 +142,7 @@ public class ScheduleRule implements BeanReferenceInspectable {
         tsb.append("id", id);
         tsb.append("scheduler", schedulerBeanId);
         tsb.append("trigger", triggerParameters);
-        tsb.append("jobs", scheduleJobRuleList);
+        tsb.append("jobs", scheduledJobRuleList);
         return tsb.toString();
     }
 

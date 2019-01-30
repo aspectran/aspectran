@@ -16,7 +16,7 @@
 package com.aspectran.scheduler.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.rule.ScheduleJobRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -84,7 +84,7 @@ public class JobActivityReport {
                 }
             } else {
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
-                ScheduleJobRule jobRule = (ScheduleJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
+                ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
                 if (jobRule.isDisabled()) {
                     sb.append("- Execution of this job is disabled.").append(System.lineSeparator());
                     sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());

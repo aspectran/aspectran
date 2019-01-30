@@ -18,8 +18,8 @@ package com.aspectran.scheduler.service;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
@@ -254,8 +254,8 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             throw new ActionExecutionException("No such scheduler bean; Invalid ScheduleRule " + scheduleRule);
         }
 
-        List<ScheduleJobRule> jobRuleList = scheduleRule.getScheduleJobRuleList();
-        for (ScheduleJobRule jobRule : jobRuleList) {
+        List<ScheduledJobRule> jobRuleList = scheduleRule.getScheduledJobRuleList();
+        for (ScheduledJobRule jobRule : jobRuleList) {
             if (isExposable(jobRule.getTransletName())) {
                 JobDetail jobDetail = buildJobDetail(jobRule);
                 if (jobDetail != null) {
@@ -272,7 +272,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return scheduler;
     }
 
-    private JobDetail buildJobDetail(ScheduleJobRule jobRule) {
+    private JobDetail buildJobDetail(ScheduledJobRule jobRule) {
         String jobName = jobRule.getTransletName();
         String jobGroup = jobRule.getScheduleRule().getId();
 

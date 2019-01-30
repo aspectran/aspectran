@@ -41,8 +41,8 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.ScheduleJobRule;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -78,8 +78,8 @@ import com.aspectran.core.context.rule.params.RedirectParameters;
 import com.aspectran.core.context.rule.params.RequestParameters;
 import com.aspectran.core.context.rule.params.ResponseParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
-import com.aspectran.core.context.rule.params.ScheduleJobParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
 import com.aspectran.core.context.rule.params.TemplateParameters;
 import com.aspectran.core.context.rule.params.TransformParameters;
@@ -387,17 +387,17 @@ public class ParamsToRuleConverter {
                 ScheduleRule.updateTrigger(scheduleRule, triggerParameters);
             }
 
-            List<ScheduleJobParameters> jobParametersList = scheduleParameters.getParametersList(ScheduleParameters.job);
+            List<ScheduledJobParameters> jobParametersList = scheduleParameters.getParametersList(ScheduleParameters.job);
             if (jobParametersList != null) {
-                for (ScheduleJobParameters jobParameters : jobParametersList) {
-                    String translet = StringUtils.emptyToNull(jobParameters.getString(ScheduleJobParameters.translet));
-                    String method = StringUtils.emptyToNull(jobParameters.getString(ScheduleJobParameters.method));
-                    Boolean disabled = jobParameters.getBoolean(ScheduleJobParameters.disabled);
+                for (ScheduledJobParameters jobParameters : jobParametersList) {
+                    String translet = StringUtils.emptyToNull(jobParameters.getString(ScheduledJobParameters.translet));
+                    String method = StringUtils.emptyToNull(jobParameters.getString(ScheduledJobParameters.method));
+                    Boolean disabled = jobParameters.getBoolean(ScheduledJobParameters.disabled);
 
                     translet = assistant.applyTransletNamePattern(translet);
 
-                    ScheduleJobRule scheduleJobRule = ScheduleJobRule.newInstance(scheduleRule, translet, method, disabled);
-                    scheduleRule.addScheduleJobRule(scheduleJobRule);
+                    ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, translet, method, disabled);
+                    scheduleRule.addScheduledJobRule(scheduledJobRule);
                 }
             }
         }

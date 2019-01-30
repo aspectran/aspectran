@@ -32,7 +32,7 @@ public class ScheduleParameters extends AbstractParameters {
         description = new ParameterDefinition("description", ParameterValueType.TEXT);
         id = new ParameterDefinition("id", ParameterValueType.STRING);
         scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
-        job = new ParameterDefinition("job", ScheduleJobParameters.class, true, true);
+        job = new ParameterDefinition("job", ScheduledJobParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 description,

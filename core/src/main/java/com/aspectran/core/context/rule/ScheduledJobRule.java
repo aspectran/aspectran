@@ -20,9 +20,9 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class ScheduleJobRule.
+ * The Class ScheduledJobRule.
  */
-public class ScheduleJobRule {
+public class ScheduledJobRule {
 
     private final ScheduleRule scheduleRule;
 
@@ -32,7 +32,7 @@ public class ScheduleJobRule {
 
     private Boolean disabled;
 
-    public ScheduleJobRule(ScheduleRule scheduleRule) {
+    public ScheduledJobRule(ScheduleRule scheduleRule) {
         this.scheduleRule = scheduleRule;
     }
 
@@ -77,25 +77,25 @@ public class ScheduleJobRule {
         return tsb.toString();
     }
 
-    public static ScheduleJobRule newInstance(ScheduleRule scheduleRule, String transletName,
-                                              String method, Boolean disabled) throws IllegalRuleException {
+    public static ScheduledJobRule newInstance(ScheduleRule scheduleRule, String transletName,
+                                               String method, Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'job' element requires a 'translet' attribute");
         }
 
-        ScheduleJobRule scheduleJobRule = new ScheduleJobRule(scheduleRule);
-        scheduleJobRule.setTransletName(transletName);
-        scheduleJobRule.setDisabled(disabled);
+        ScheduledJobRule scheduledJobRule = new ScheduledJobRule(scheduleRule);
+        scheduledJobRule.setTransletName(transletName);
+        scheduledJobRule.setDisabled(disabled);
 
         if (method != null) {
             MethodType methodType = MethodType.resolve(method);
             if (methodType == null) {
                 throw new IllegalRuleException("No request method type for '" + method + "'");
             }
-            scheduleJobRule.setRequestMethod(methodType);
+            scheduledJobRule.setRequestMethod(methodType);
         }
 
-        return scheduleJobRule;
+        return scheduledJobRule;
     }
 
 }
