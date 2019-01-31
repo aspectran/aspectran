@@ -24,6 +24,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.TransletCommandLine;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
@@ -44,12 +45,19 @@ public class TransletCommand extends AbstractCommand {
 
         addOption(Option.builder("l")
                 .longName("list")
+                .hasValues()
+                .optionalValue()
+                .valueName("translet_names")
                 .desc("Print list of all translets or those filtered by the given name")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
                 .desc("Display help for this command")
                 .build());
+
+        Arguments arguments = touchArguments();
+        arguments.put("<translet_name>", "Name of the Translet to execute");
+        arguments.setRequired(false);
     }
 
     @Override
@@ -63,12 +71,12 @@ public class TransletCommand extends AbstractCommand {
             } catch (TransletNotFoundException e) {
                 console.writeError("No translet mapped to '" + e.getTransletName() + "'");
             }
-        } else if (options.hasOption("l")) {
-            String[] keywords = options.getArgs();
+        } else if (options.hasOption("list")) {
+            String[] keywords = options.getValues("list");
             listTranslets(service, console, keywords.length > 0 ? keywords : null);
         } else {
             printUsage(console);
-            if (!options.hasOption("h")) {
+            if (!options.hasOption("help")) {
                 console.writeLine("Available translets:");
                 listTranslets(service, console, null);
             }

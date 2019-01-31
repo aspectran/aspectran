@@ -19,6 +19,7 @@ import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
@@ -50,6 +51,10 @@ public class PBEncryptCommand extends AbstractCommand {
                 .desc("Display help for this command")
                 .build());
         skipParsingAtNonOption();
+
+        Arguments arguments = touchArguments();
+        arguments.put("<input_string>", "String to encrypt");
+        arguments.setRequired(true);
     }
 
     @Override
@@ -120,7 +125,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
         @Override
         public String getUsage() {
-            return "encrypt [-p=<password>] <input_string>";
+            return null;
         }
 
     }

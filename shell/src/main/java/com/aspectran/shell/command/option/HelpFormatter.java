@@ -487,7 +487,6 @@ public class HelpFormatter {
      *
      * @param sb the StringBuilder to append to
      * @param group the group to append
-     * @see #appendOption(StringBuilder, Option, boolean)
      */
     private void appendOptionGroup(StringBuilder sb, OptionGroup group) {
         if (!group.isRequired()) {
@@ -542,7 +541,11 @@ public class HelpFormatter {
         }
         sb.append("<");
         for (Iterator<String> it = arguments.keySet().iterator(); it.hasNext();) {
-            sb.append(it.next());
+            String name = it.next();
+            if (name.startsWith("<") && name.endsWith(">")) {
+                name = name.substring(1, name.length() - 1);
+            }
+            sb.append(name);
             if (it.hasNext()) {
                 sb.append("|");
             }
@@ -573,12 +576,14 @@ public class HelpFormatter {
      * @param options the Options instance
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
+     * @return the longest opt string's length
      */
-    public void printOptions(int width, Options options, int leftPad, int descPad) {
+    public int printOptions(int width, Options options, int leftPad, int descPad) {
         Collection<Option> optList = options.getAllOptions();
         StringBuilder sb = new StringBuilder();
+        int max = 0;
         if (!options.isEmpty()) {
-            renderOptions(sb, width, optList, leftPad, descPad);
+            max = renderOptions(sb, width, optList, leftPad, descPad);
             if (sb.length() > 0) {
                 if (StringUtils.hasLength(options.getTitle())) {
                     console.writeLine(options.getTitle());
@@ -586,18 +591,19 @@ public class HelpFormatter {
                 console.writeLine(sb.toString());
             }
         }
+        return max;
     }
 
     public void printArguments(int width, List<Arguments> argumentsList, int leftPad, int descPad) {
         StringBuilder sb = new StringBuilder();
         for (Arguments arguments : argumentsList) {
-            sb.setLength(0);
             renderArguments(sb, width, arguments, leftPad, descPad);
             if (sb.length() > 0) {
                 if (StringUtils.hasLength(arguments.getTitle())) {
                     console.writeLine(arguments.getTitle());
                 }
                 console.write(sb.toString());
+                sb.setLength(0);
             }
         }
     }
@@ -634,9 +640,9 @@ public class HelpFormatter {
      * @param options the command line Options
      * @param leftPad the number of characters of padding to be prefixed to each line
      * @param descPad the number of characters of padding to be prefixed to each description line
-     * @return the StringBuilder with the rendered Options contents
+     * @return the longest opt string's length
      */
-    protected StringBuilder renderOptions(StringBuilder sb, int width, Collection<Option> options, int leftPad, int descPad) {
+    protected int renderOptions(StringBuilder sb, int width, Collection<Option> options, int leftPad, int descPad) {
         String lpad = OptionUtils.createPadding(leftPad);
         String dpad = OptionUtils.createPadding(descPad);
 
@@ -693,7 +699,7 @@ public class HelpFormatter {
                 sb.append(getNewLine());
             }
         }
-        return sb;
+        return max;
     }
 
     protected StringBuilder renderArguments(StringBuilder sb, int width, Arguments arguments, int leftPad, int descPad) {

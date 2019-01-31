@@ -62,20 +62,20 @@ public class AspectCommand extends AbstractCommand {
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
-        if (options.hasOption("enable")) {
+        if (options.hasOption("list")) {
+            String[] keywords = options.getValues("list");
+            listAspects(service, console, keywords);
+        } else if (options.hasOption("enable")) {
             String aspectId = options.getValue("enable");
             updateAspectActiveState(service, console, aspectId, false);
         } else if (options.hasOption("disable")) {
             String aspectId = options.getValue("disable");
             updateAspectActiveState(service, console, aspectId, true);
-        } else if (options.hasOption("list")) {
-            String[] keywords = options.getValues("list");
-            listAspects(service, console, keywords);
-        } else if (options.hasOption("h")) {
+        } else if (options.hasOption("help")) {
             printUsage(console);
         } else {
             printUsage(console);
-            if (!options.hasOption("h")) {
+            if (!options.hasOption("help")) {
                 console.writeLine("Registered aspects:");
                 listAspects(service, console, null);
             }
@@ -92,14 +92,23 @@ public class AspectCommand extends AbstractCommand {
             console.writeError("Can not be disabled or enabled for isolated Aspect '" + aspectId + "'.");
             return;
         }
-        aspectRule.setDisabled(disabled);
         if (disabled) {
-            console.writeLine("Aspect '" + aspectId + "' is now inactive.");
+            if (aspectRule.isDisabled()) {
+                console.writeLine("Aspect '" + aspectId + "' is already inactive.");
+            } else {
+                aspectRule.setDisabled(true);
+                console.writeLine("Aspect '" + aspectId + "' is now inactive.");
+            }
         } else {
-            console.writeLine("Aspect '" + aspectId + "' is now active.");
+            if (!aspectRule.isDisabled()) {
+                console.writeLine("Aspect '" + aspectId + "' is already active.");
+            } else {
+                aspectRule.setDisabled(false);
+                console.writeLine("Aspect '" + aspectId + "' is now active.");
+            }
         }
     }
-// No. | Aspect ID | Isolated | Disabled
+
     private void listAspects(ShellService service, Console console, String[] keywords) {
         AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
@@ -108,7 +117,7 @@ public class AspectCommand extends AbstractCommand {
         console.writeLine(" %4s | %-45s | %-8s | %-8s ", "No.", "Aspect ID", "Isolated", "Enabled");
         console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
                 "--------", "--------");
-        int num = 1;
+        int num = 0;
         for (AspectRule aspectRule : aspectRules) {
             if (keywords != null) {
                 boolean exists = false;
@@ -121,7 +130,7 @@ public class AspectCommand extends AbstractCommand {
                     continue;
                 }
             }
-            console.write("%5d | %-45s ", num++, aspectRule.getId(), aspectRule.isIsolated());
+            console.write("%5d | %-45s ", ++num, aspectRule.getId(), aspectRule.isIsolated());
             console.write("|");
             if (aspectRule.isIsolated()) {
                 console.setStyle("YELLOW");
@@ -140,6 +149,9 @@ public class AspectCommand extends AbstractCommand {
             console.styleOff();
             console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
                     "--------", "--------");
+        }
+        if (num == 0) {
+            console.writeLine("%33s %s", " ", "No Data");
         }
     }
 
