@@ -306,9 +306,9 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         Executable action = aspectAdviceRule.getExecutableAction();
         if (action != null) {
+            AspectAdviceRule oldAspectAdviceRule = currentAspectAdviceRule;
+            currentAspectAdviceRule = aspectAdviceRule;
             try {
-                currentAspectAdviceRule = aspectAdviceRule;
-
                 if (action.getActionType() == ActionType.BEAN_METHOD) {
                     // If Aspect Advice Bean ID is specified
                     if (aspectAdviceRule.getAdviceBeanId() != null) {
@@ -355,7 +355,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                 }
             } finally {
-                currentAspectAdviceRule = null;
+                currentAspectAdviceRule = oldAspectAdviceRule;
             }
         }
     }
