@@ -53,7 +53,7 @@ public class PBDecryptCommand extends AbstractCommand {
         skipParsingAtNonOption();
 
         Arguments arguments = touchArguments();
-        arguments.put("<input_string>", "String to decrypt");
+        arguments.put("<text>", "The string to decrypt");
         arguments.setRequired(true);
     }
 

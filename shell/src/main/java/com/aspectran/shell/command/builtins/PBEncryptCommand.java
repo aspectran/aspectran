@@ -53,7 +53,7 @@ public class PBEncryptCommand extends AbstractCommand {
         skipParsingAtNonOption();
 
         Arguments arguments = touchArguments();
-        arguments.put("<input_string>", "String to encrypt");
+        arguments.put("<text>", "The string to encrypt");
         arguments.setRequired(true);
     }
 

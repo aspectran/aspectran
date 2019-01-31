@@ -75,14 +75,8 @@ public class JobCommand extends AbstractCommand {
         } else if (options.hasOption("disable")) {
             String[] jobNames = options.getValues("disable");
             updateJobActiveState(service, console, jobNames, true);
-        } else if (options.hasOption("help")) {
-            printUsage(console);
         } else {
             printUsage(console);
-            if (!options.hasOption("help")) {
-                console.writeLine("Registered scheduled jobs:");
-                listScheduledJobs(service, console, null);
-            }
         }
     }
 

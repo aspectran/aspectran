@@ -141,42 +141,8 @@ public class HelpCommand extends AbstractCommand {
             sb.append(OptionUtils.createPadding(commandWidth - name.length()));
         }
         sb.append(descPad);
-
-        int nextLineTabStop = commandWidth + descPad.length();
-        renderWrappedText(sb, lineWidth, nextLineTabStop, desc);
-
+        HelpFormatter.renderWrappedText(sb, lineWidth, sb.length(), desc);
         return (sb.length() > 0 ? sb.toString() : null);
-    }
-
-    private StringBuilder renderWrappedText(StringBuilder sb, int width, int nextLineTabStop, String text) {
-        int pos = OptionUtils.findWrapPos(text, width, 0);
-        if (pos == -1) {
-            sb.append(OptionUtils.rtrim(text));
-            return sb;
-        }
-
-        sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(System.lineSeparator());
-
-        if (nextLineTabStop >= width) {
-            // stops infinite loop happening
-            nextLineTabStop = 1;
-        }
-
-        // all following lines must be padded with nextLineTabStop space characters
-        String padding = OptionUtils.createPadding(nextLineTabStop);
-
-        while (true) {
-            text = padding + text.substring(pos).trim();
-            pos = OptionUtils.findWrapPos(text, width, 0);
-            if (pos == -1) {
-                sb.append(text);
-                return sb;
-            }
-            if (text.length() > width && pos == nextLineTabStop - 1) {
-                pos = width;
-            }
-            sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(System.lineSeparator());
-        }
     }
 
     @Override

@@ -71,14 +71,8 @@ public class AspectCommand extends AbstractCommand {
         } else if (options.hasOption("disable")) {
             String aspectId = options.getValue("disable");
             updateAspectActiveState(service, console, aspectId, true);
-        } else if (options.hasOption("help")) {
-            printUsage(console);
         } else {
             printUsage(console);
-            if (!options.hasOption("help")) {
-                console.writeLine("Registered aspects:");
-                listAspects(service, console, null);
-            }
         }
     }
 

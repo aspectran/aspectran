@@ -91,11 +91,7 @@ public abstract class AbstractCommand implements Command {
     @Override
     public void printUsage(Console console) {
         HelpFormatter formatter = new HelpFormatter(console);
-        if (getDescriptor().getUsage() != null && getDescriptor().getUsage().length() > 0) {
-            formatter.printHelp(getDescriptor().getUsage(), this, false);
-        } else {
-            formatter.printHelp(getDescriptor().getName(), this, true);
-        }
+        formatter.printHelp(this);
     }
 
 }

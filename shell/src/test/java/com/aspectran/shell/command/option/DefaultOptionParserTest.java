@@ -18,7 +18,9 @@ package com.aspectran.shell.command.option;
 import com.aspectran.shell.console.DefaultConsole;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -81,8 +83,8 @@ class DefaultOptionParserTest {
                 .withEqualSign()
                 .optionalValue()
                 .build());
-        options.addOption(Option.builder("p")
-                .desc("pause")
+        options.addOption(Option.builder("long_but_short_option_name")
+                .desc("Long but short option name Long but short option name")
                 .valueName("pause")
                 .withEqualSign()
                 .optionalValue()
@@ -98,21 +100,21 @@ class DefaultOptionParserTest {
                 "D.txt",
                 "-b",
                 "--target",
-                "args",
-                "-pyes"
+                "args"
         };
+
+        Arguments arguments = new Arguments();
+        arguments.put("<command>", "Print list of all aspects or those filtered by the given name");
+        arguments.put("<long_command_name>", "Print list of all aspects or those filtered by the given name");
+        List<Arguments> argumentsList = new ArrayList<>();
+        argumentsList.add(arguments);
 
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
-            formatter.printOptions(90, options, 3, 3);
-
-            System.out.println(Arrays.toString(parsedOptions.getValues("block-size")));
-            System.out.println(Arrays.toString(parsedOptions.getValues("f")));
-            System.out.println(Arrays.toString(parsedOptions.getValues("z")));
-            System.out.println(Arrays.toString(parsedOptions.getValues("p")));
-            System.out.println(Arrays.toString(parsedOptions.getArgs()));
+            int leftPadSize = formatter.printOptions(options);
+            formatter.printArguments(argumentsList, leftPadSize);
 
             assertEquals(parsedOptions.getTypedValue("block-size"), Integer.valueOf(10));
             assertEquals("A.txt", parsedOptions.getValues("f")[0]);
@@ -177,7 +179,7 @@ class DefaultOptionParserTest {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
-            formatter.printOptions(90, options, 3, 3);
+            formatter.printOptions(options);
 
             assertTrue(parsedOptions.hasOption("a"));
             assertTrue(parsedOptions.hasOption("b"));
@@ -205,22 +207,23 @@ class DefaultOptionParserTest {
                 .build());
 
         String[] args = new String[] {
-                "-pyes",
-                "-passwordyes",
-                "-jfkdlsafds",
+                "-password=yes",
+                "-password=no",
                 "-h",
-                "-help"
+                "-help",
+                "arg1",
+                "arg2"
         };
 
         try {
             ParsedOptions parsedOptions = parser.parse(options, args, true);
 
             HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
-            formatter.printOptions(90, options, 3, 3);
+            formatter.printOptions(options);
 
-            System.out.println(Arrays.toString(parsedOptions.getValues("password")));
-            System.out.println(parsedOptions.hasOption("help"));
-            System.out.println(Arrays.toString(parsedOptions.getArgs()));
+            assertEquals("[yes, no]", Arrays.toString(parsedOptions.getValues("password")));
+            assertTrue(parsedOptions.hasOption("help"));
+            assertEquals("[arg1, arg2]", Arrays.toString(parsedOptions.getArgs()));
         } catch(OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }

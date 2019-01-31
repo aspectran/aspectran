@@ -50,6 +50,7 @@ shell: {
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.AspectCommand
+        com.aspectran.shell.command.builtins.JobCommand
         com.aspectran.shell.command.builtins.PBEncryptCommand
         com.aspectran.shell.command.builtins.PBDecryptCommand
         com.aspectran.shell.command.builtins.SysInfoCommand

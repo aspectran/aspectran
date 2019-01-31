@@ -73,13 +73,9 @@ public class TransletCommand extends AbstractCommand {
             }
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
-            listTranslets(service, console, keywords.length > 0 ? keywords : null);
+            listTranslets(service, console, keywords);
         } else {
             printUsage(console);
-            if (!options.hasOption("help")) {
-                console.writeLine("Available translets:");
-                listTranslets(service, console, null);
-            }
         }
     }
 
