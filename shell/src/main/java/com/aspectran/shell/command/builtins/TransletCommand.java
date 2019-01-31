@@ -44,7 +44,7 @@ public class TransletCommand extends AbstractCommand {
 
         addOption(Option.builder("l")
                 .longName("list")
-                .desc("Prints all translets or those filtered by the given name")
+                .desc("Print list of all translets or those filtered by the given name")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -90,7 +90,7 @@ public class TransletCommand extends AbstractCommand {
                 if (keywords != null) {
                     boolean exists = false;
                     for (String keyw : keywords) {
-                        if (name.contains(keyw)) {
+                        if (name.toLowerCase().contains(keyw.toLowerCase())) {
                             exists = true;
                         }
                     }
