@@ -154,12 +154,12 @@ public class AspectCommand extends AbstractCommand {
             }
             console.writeLine(" %-8s ", !aspectRule.isDisabled());
             console.styleOff();
-            console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
-                    "--------", "--------");
         }
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
         }
+        console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
+                "--------", "--------");
     }
 
     private void detailAspectRule(ShellService service, Console console, String aspectId) throws IOException {

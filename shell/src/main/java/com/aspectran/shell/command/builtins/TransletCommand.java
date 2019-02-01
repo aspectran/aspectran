@@ -130,11 +130,11 @@ public class TransletCommand extends AbstractCommand {
                 transletName = Arrays.toString(requestMethods) + " " + transletName;
             }
             console.writeLine("%5d | %s", ++num, transletName);
-            console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         }
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
         }
+        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
     }
 
     private void detailTransletRule(ShellService service, Console console, String transletName, MethodType requestMethod) throws IOException {

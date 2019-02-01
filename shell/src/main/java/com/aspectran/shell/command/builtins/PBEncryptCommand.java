@@ -59,7 +59,7 @@ public class PBEncryptCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (options.hasOption("help")) {
+        if (options.hasOption("help") || (!options.hasOptions() && !options.hasArgs())) {
             printHelp(console);
             return;
         }
@@ -84,9 +84,11 @@ public class PBEncryptCommand extends AbstractCommand {
             return;
         }
 
+        console.writeLine("----------------------------------------------------------------------------");
+
         if (!implicitPassword) {
-            console.writeLine("%1$-10s: %2$s", "algorithm", PBEncryptionUtils.getAlgorithm());
-            console.writeLine("%1$-10s: %2$s", "password", password);
+            console.writeLine(" %1$9s : %2$s", "Algorithm", PBEncryptionUtils.getAlgorithm());
+            console.writeLine(" %1$9s : %2$s", "Password", password);
         }
         for (String input : inputValues) {
             String output;
@@ -96,9 +98,11 @@ public class PBEncryptCommand extends AbstractCommand {
                 throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
             }
 
-            console.writeLine("%1$-10s: %2$s", "input", input);
-            console.writeLine("%1$-10s: %2$s", "output", output);
+            console.writeLine(" %1$9s : %2$s", "Input", input);
+            console.writeLine(" %1$9s : %2$s", "Output", output);
         }
+
+        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override

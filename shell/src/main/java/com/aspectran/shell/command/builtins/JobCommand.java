@@ -165,13 +165,13 @@ public class JobCommand extends AbstractCommand {
                 }
                 console.writeLine(" %-8s ", !jobRule.isDisabled());
                 console.styleOff();
-                console.writeLine("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
-                        "---------------------------------", "--------");
             }
         }
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
         }
+        console.writeLine("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
+                "---------------------------------", "--------");
     }
 
     private void detailJobRule(ShellService service, Console console, String jobName) throws IOException {
