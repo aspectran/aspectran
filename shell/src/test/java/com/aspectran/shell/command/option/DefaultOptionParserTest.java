@@ -104,8 +104,8 @@ class DefaultOptionParserTest {
         };
 
         Arguments arguments = new Arguments();
-        arguments.put("<command>", "Print list of all aspects or those filtered by the given name");
-        arguments.put("<long_command_name>", "Print list of all aspects or those filtered by the given name");
+        arguments.put("<command>", "Print list of all aspects or those filtered by the given name or those filtered by the given name");
+        arguments.put("<long_command_name>", "Print list of all aspects or those filtered by the given name or those filtered by the given name");
         List<Arguments> argumentsList = new ArrayList<>();
         argumentsList.add(arguments);
 

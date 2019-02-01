@@ -17,6 +17,9 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -24,6 +27,7 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public class AspectCommand extends AbstractCommand {
@@ -43,14 +47,20 @@ public class AspectCommand extends AbstractCommand {
                 .optionalValue()
                 .desc("Print list of all aspects or those filtered by the given name")
                 .build());
+        addOption(Option.builder("d")
+                .longName("detail")
+                .hasValue()
+                .valueName("aspect_id")
+                .desc("Print detailed information for the aspect")
+                .build());
         addOption(Option.builder("enable")
                 .hasValue()
-                .valueName("aspectId")
+                .valueName("aspect_id")
                 .desc("Enable an aspect with a given name")
                 .build());
         addOption(Option.builder("disable")
                 .hasValue()
-                .valueName("aspectId")
+                .valueName("aspect_id")
                 .desc("Disable an aspect with a given name")
                 .build());
         addOption(Option.builder("h")
@@ -65,6 +75,9 @@ public class AspectCommand extends AbstractCommand {
         if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listAspects(service, console, keywords);
+        } else if (options.hasOption("detail")) {
+            String aspectId = options.getValue("detail");
+            detailAspectRule(service, console, aspectId);
         } else if (options.hasOption("enable")) {
             String aspectId = options.getValue("enable");
             updateAspectActiveState(service, console, aspectId, false);
@@ -72,7 +85,7 @@ public class AspectCommand extends AbstractCommand {
             String aspectId = options.getValue("disable");
             updateAspectActiveState(service, console, aspectId, true);
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 
@@ -147,6 +160,23 @@ public class AspectCommand extends AbstractCommand {
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
         }
+    }
+
+    private void detailAspectRule(ShellService service, Console console, String aspectId) throws IOException {
+        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+        AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);
+        if (aspectRule == null) {
+            console.writeError("Unknown aspect: " + aspectId);
+            return;
+        }
+
+        Parameters aspectParameters = RuleToParamsConverter.toAspectParameters(aspectRule);
+
+        console.writeLine("----------------------------------------------------------------------------");
+        AponWriter aponWriter = new AponWriter(console.getWriter(), true);
+        aponWriter.setIndentString("  ");
+        aponWriter.write(aspectParameters);
+        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override

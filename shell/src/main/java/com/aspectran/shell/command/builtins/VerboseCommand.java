@@ -57,10 +57,10 @@ public class VerboseCommand extends AbstractCommand {
                 console.writeLine("Disabled verbose mode");
             } else {
                 console.writeError("Unknown command '" + String.join(" ", optArgs) + "'");
-                printUsage(console);
+                printHelp(console);
             }
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 

@@ -46,7 +46,7 @@ public interface Command {
      *
      * @param console the Console instance
      */
-    void printUsage(Console console);
+    void printHelp(Console console);
 
     /**
      * This method returns an instance of Command.Descriptor.

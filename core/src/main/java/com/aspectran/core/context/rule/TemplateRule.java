@@ -370,6 +370,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         } else {
             tsb.appendSize("contentLength", content);
         }
+        tsb.append("style", contentStyle);
         tsb.append("encoding", encoding);
         tsb.append("noCache", noCache);
         return tsb.toString();

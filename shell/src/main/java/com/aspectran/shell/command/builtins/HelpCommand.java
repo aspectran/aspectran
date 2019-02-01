@@ -58,7 +58,7 @@ public class HelpCommand extends AbstractCommand {
             Command command = getCommandRegistry().getCommand(targetCommands[0]);
             if (command != null) {
                 console.writeLine(command.getDescriptor().getDescription());
-                command.printUsage(console);
+                command.printHelp(console);
             } else {
                 console.writeLine("No command mapped to '" + targetCommands[0] +  "'");
             }

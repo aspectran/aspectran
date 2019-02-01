@@ -168,7 +168,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             throw e;
         } catch (OptionParserException e) {
             wrappedConsole.writeError(e.getMessage());
-            command.printUsage(wrappedConsole);
+            command.printHelp(wrappedConsole);
         } catch (Exception e) {
             log.error("Failed to execute command: " + lineParser.getCommandLine(), e);
         } finally {

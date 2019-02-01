@@ -51,8 +51,8 @@
     <schedule id="scheduler1">
         <scheduler bean="defaultScheduler1">
             <trigger type="simple">
-                intervalInSeconds: 3
-                repeatCount: 10
+                intervalInSeconds: 1
+                repeatCount: 1
             </trigger>
         </scheduler>
         <job translet="job1"/>
@@ -61,9 +61,9 @@
     <schedule id="scheduler2">
         <scheduler bean="defaultScheduler2">
             <trigger type="simple">
-                startDelaySeconds: 2
+                startDelaySeconds: 0
                 intervalInSeconds: 1
-                repeatCount: 10
+                repeatCount: 1
             </trigger>
         </scheduler>
         <job translet="job2"/>

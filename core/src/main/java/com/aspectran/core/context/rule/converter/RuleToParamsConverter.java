@@ -375,16 +375,21 @@ public class RuleToParamsConverter {
         List<ScheduledJobRule> scheduledJobRuleList = scheduleRule.getScheduledJobRuleList();
         if (scheduledJobRuleList != null) {
             for (ScheduledJobRule scheduledJobRule : scheduledJobRuleList) {
-                ScheduledJobParameters jobParameters = scheduleParameters.newParameters(ScheduleParameters.job);
-                jobParameters.putValue(ScheduledJobParameters.translet, scheduledJobRule.getTransletName());
-                if (scheduledJobRule.getRequestMethod() != null) {
-                    jobParameters.putValue(ScheduledJobParameters.method, scheduledJobRule.getRequestMethod().toString());
-                }
-                jobParameters.putValueNonNull(ScheduledJobParameters.disabled, scheduledJobRule.getDisabled());
+                scheduleParameters.putValue(ScheduleParameters.job, toScheduledJobParameters(scheduledJobRule));
             }
         }
 
         return scheduleParameters;
+    }
+
+    public static ScheduledJobParameters toScheduledJobParameters(ScheduledJobRule scheduledJobRule) {
+        ScheduledJobParameters jobParameters = new ScheduledJobParameters();
+        jobParameters.putValue(ScheduledJobParameters.translet, scheduledJobRule.getTransletName());
+        if (scheduledJobRule.getRequestMethod() != null) {
+            jobParameters.putValue(ScheduledJobParameters.method, scheduledJobRule.getRequestMethod().toString());
+        }
+        jobParameters.putValueNonNull(ScheduledJobParameters.disabled, scheduledJobRule.getDisabled());
+        return jobParameters;
     }
 
     public static TransletParameters toTransletParameters(TransletRule transletRule) {

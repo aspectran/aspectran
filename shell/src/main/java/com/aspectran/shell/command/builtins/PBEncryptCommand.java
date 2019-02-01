@@ -60,7 +60,7 @@ public class PBEncryptCommand extends AbstractCommand {
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         if (options.hasOption("help")) {
-            printUsage(console);
+            printHelp(console);
             return;
         }
 
@@ -73,14 +73,14 @@ public class PBEncryptCommand extends AbstractCommand {
 
         if (!StringUtils.hasText(password)) {
             console.writeError("A password is required to attempt password-based encryption or decryption.");
-            printUsage(console);
+            printHelp(console);
             return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
             console.writeError("Please enter a string to decrypt.");
-            printUsage(console);
+            printHelp(console);
             return;
         }
 

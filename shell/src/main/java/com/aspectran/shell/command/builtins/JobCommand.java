@@ -17,6 +17,11 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
+import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -24,6 +29,7 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +53,12 @@ public class JobCommand extends AbstractCommand {
                 .valueName("jobNames")
                 .desc("Print list of all scheduled jobs or those filtered by the given name")
                 .build());
+        addOption(Option.builder("d")
+                .longName("detail")
+                .hasValue()
+                .valueName("aspect_id")
+                .desc("Print detailed information for the scheduled job")
+                .build());
         addOption(Option.builder("enable")
                 .hasValues()
                 .valueName("jobNames")
@@ -69,6 +81,9 @@ public class JobCommand extends AbstractCommand {
         if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listScheduledJobs(service, console, keywords);
+        } else if (options.hasOption("detail")) {
+            String jobName = options.getValue("detail");
+            detailJobRule(service, console, jobName);
         } else if (options.hasOption("enable")) {
             String[] jobNames = options.getValues("enable");
             updateJobActiveState(service, console, jobNames, false);
@@ -76,7 +91,7 @@ public class JobCommand extends AbstractCommand {
             String[] jobNames = options.getValues("disable");
             updateJobActiveState(service, console, jobNames, true);
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 
@@ -136,7 +151,13 @@ public class JobCommand extends AbstractCommand {
                         continue;
                     }
                 }
-                console.write("%5d | %-20s | %-33s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
+                String jobName;
+                if (jobRule.getRequestMethod() != null) {
+                    jobName = "[" + jobRule.getRequestMethod() + "] " + jobRule.getTransletName();
+                } else {
+                    jobName = jobRule.getTransletName();
+                }
+                console.write("%5d | %-20s | %-33s |", ++num, scheduleRule.getId(), jobName);
                 if (jobRule.isDisabled()) {
                     console.setStyle("RED");
                 } else {
@@ -150,6 +171,33 @@ public class JobCommand extends AbstractCommand {
         }
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
+        }
+    }
+
+    private void detailJobRule(ShellService service, Console console, String jobName) throws IOException {
+        Collection<ScheduleRule> scheduleRules = service.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
+        for (ScheduleRule scheduleRule : scheduleRules) {
+            for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
+                if (jobRule.getTransletName().equals(jobName)) {
+                    ScheduleParameters scheduleParameters = new ScheduleParameters();
+                    scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
+                    scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
+                    SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
+                    schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
+                    TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
+                    if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
+                        triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
+                        schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
+                    }
+                    scheduleParameters.putValue(ScheduleParameters.job, RuleToParamsConverter.toScheduledJobParameters(jobRule));
+
+                    console.writeLine("----------------------------------------------------------------------------");
+                    AponWriter aponWriter = new AponWriter(console.getWriter(), true);
+                    aponWriter.setIndentString("  ");
+                    aponWriter.write(scheduleParameters);
+                    console.writeLine("----------------------------------------------------------------------------");
+                }
+            }
         }
     }
 

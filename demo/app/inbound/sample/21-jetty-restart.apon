@@ -1,10 +1,10 @@
+# Restart the Jetty server
 command: jetty
-arguments: {
+parameters: {
     item: {
+        name: mode
         value: restart
     }
-}
-parameters: {
     item: {
         name: server
         value: jetty.server

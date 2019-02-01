@@ -47,7 +47,7 @@ class AspectranSchedulerTest {
 
     @Test
     void dummyTest() throws InterruptedException {
-        Thread.sleep(3000);
+        Thread.sleep(2000);
     }
 
 }

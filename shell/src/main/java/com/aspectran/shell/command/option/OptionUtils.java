@@ -174,11 +174,22 @@ public final class OptionUtils {
         if (startPos + width >= text.length()) {
             return -1;
         }
-        // look for the last whitespace character before startPos+width
         for (pos = startPos + width; pos >= startPos; --pos) {
             char c = text.charAt(pos);
-            if (c == ' ' || c == '\n' || c == '\r') {
+            if (c == '[' || c == '\n' || c == '\r') {
                 break;
+            } else if (c == ']') {
+                pos = startPos - 1;
+                break;
+            }
+        }
+        if (pos < startPos) {
+            // look for the last whitespace character before startPos+width
+            for (pos = startPos + width; pos >= startPos; --pos) {
+                char c = text.charAt(pos);
+                if (c == ' ') {
+                    break;
+                }
             }
         }
         // if we found it - just return

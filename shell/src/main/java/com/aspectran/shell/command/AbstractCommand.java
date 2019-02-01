@@ -89,7 +89,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public void printUsage(Console console) {
+    public void printHelp(Console console) {
         HelpFormatter formatter = new HelpFormatter(console);
         formatter.printHelp(this);
     }

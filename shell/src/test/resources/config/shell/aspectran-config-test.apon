@@ -21,9 +21,11 @@ shell: {
     commands: [
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
-        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.AspectCommand
+        com.aspectran.shell.command.builtins.JobCommand
         com.aspectran.shell.command.builtins.PBEncryptCommand
         com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.SysInfoCommand
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.VerboseCommand
         com.aspectran.shell.command.builtins.RestartCommand

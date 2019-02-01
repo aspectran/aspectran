@@ -19,7 +19,6 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.daemon.command.AbstractCommand;
@@ -51,16 +50,19 @@ public class JettyCommand extends AbstractCommand {
             ClassLoader classLoader = getService().getActivityContext().getEnvironment().getClassLoader();
             classLoader.loadClass("com.aspectran.with.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.with.jetty.JettyServer due to missing dependency 'aspectran-with-jetty'", e);
+            return failed("Unable to load class com.aspectran.with.jetty.JettyServer " +
+                    "due to missing dependency 'aspectran-with-jetty'", e);
         }
 
         try {
+            String mode = null;
             String serverName = null;
 
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
                 ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+                mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
             }
 
@@ -76,18 +78,11 @@ public class JettyCommand extends AbstractCommand {
                 return failed("Jetty server is not available", e);
             }
 
-            String arg = null;
-            ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
-            if (!itemRuleList.isEmpty()) {
-                ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
-                arg = evaluator.evaluate(itemRuleList.get(0));
+            if (mode == null) {
+                return failed("'mode' parameter not specified");
             }
 
-            if (arg == null) {
-                return failed("Command for Jetty control not specified");
-            }
-
-            switch (arg) {
+            switch (mode) {
                 case "start":
                     if (jettyServer.isRunning()) {
                         return failed(warn("Jetty server is already running"));
@@ -121,7 +116,7 @@ public class JettyCommand extends AbstractCommand {
                 case "status":
                     return success(getStatus(jettyServer));
                 default:
-                    return failed(error("Unknown command '" + arg + "'"));
+                    return failed(error("Unknown mode '" + mode + "'"));
             }
         } catch (Exception e) {
             return failed(e);

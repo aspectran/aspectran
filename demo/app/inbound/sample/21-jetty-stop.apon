@@ -1,10 +1,10 @@
+# Stop the Jetty server
 command: jetty
-arguments: {
+parameters: {
     item: {
+        name: mode
         value: stop
     }
-}
-parameters: {
     item: {
         name: server
         value: jetty.server

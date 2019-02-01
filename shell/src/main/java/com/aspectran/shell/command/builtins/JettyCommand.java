@@ -116,10 +116,10 @@ public class JettyCommand extends AbstractCommand {
                 printStatus(jettyServer, console);
             } else {
                 console.writeError("Unknown command '" + String.join(" ", optArgs) + "'");
-                printUsage(console);
+                printHelp(console);
             }
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 

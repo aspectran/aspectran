@@ -37,7 +37,7 @@ public class HelpFormatter {
     private static final String NEW_LINE = System.lineSeparator();
 
     /** Default number of characters per line */
-    public static final int DEFAULT_WIDTH = 79;
+    public static final int DEFAULT_WIDTH = 76;
 
     /** Default number of characters per line */
     public static final int DEFAULT_MAX_LEFT_WIDTH = 15;
@@ -62,6 +62,18 @@ public class HelpFormatter {
 
     /** Default separator displayed between a long Option and its value */
     private static final String LONG_OPTION_SEPARATOR = " ";
+
+    /** The opening pointy bracket to wrap an argument */
+    private static final String ARG_BRACKET_OPEN = "<";
+
+    /** The closing pointy bracket to wrap an argument */
+    private static final String ARG_BRACKET_CLOSE = ">";
+
+    /** The opening square bracket to indicate optional option or argument */
+    private static final String OPTIONAL_BRACKET_OPEN = "[";
+
+    /** The closing square bracket to indicate optional option or argument */
+    private static final String OPTIONAL_BRACKET_CLOSE = "]";
 
     private int width = DEFAULT_WIDTH;
 
@@ -248,7 +260,7 @@ public class HelpFormatter {
      */
     private void appendOptionGroup(StringBuilder sb, OptionGroup group) {
         if (!group.isRequired()) {
-            sb.append("[");
+            sb.append(OPTIONAL_BRACKET_OPEN);
         }
         List<Option> optList = new ArrayList<>(group.getOptions());
         if (optList.size() > 1 && getOptionComparator() != null) {
@@ -263,7 +275,7 @@ public class HelpFormatter {
             }
         }
         if (!group.isRequired()) {
-            sb.append("]");
+            sb.append(OPTIONAL_BRACKET_CLOSE);
         }
     }
 
@@ -276,31 +288,31 @@ public class HelpFormatter {
      */
     private void appendOption(StringBuilder sb, Option option, boolean required) {
         if (!required) {
-            sb.append("[");
+            sb.append(OPTIONAL_BRACKET_OPEN);
         }
         if (option.getName() != null) {
-            sb.append("-").append(option.getName());
+            sb.append(OPTION_PREFIX).append(option.getName());
         } else {
-            sb.append("--").append(option.getLongName());
+            sb.append(LONG_OPTION_PREFIX).append(option.getLongName());
         }
         // if the Option has a value and a non blank arg name
         if (option.hasValue() && (option.getValueName() == null || !option.getValueName().isEmpty())) {
             sb.append(option.isWithEqualSign() ? '=' : LONG_OPTION_SEPARATOR);
-            sb.append("<").append(option.getValueName() != null ? option.getValueName() : getArgName()).append(">");
+            sb.append(ARG_BRACKET_OPEN).append(option.getValueName() != null ? option.getValueName() : getArgName()).append(ARG_BRACKET_CLOSE);
         }
         if (!required) {
-            sb.append("]");
+            sb.append(OPTIONAL_BRACKET_CLOSE);
         }
     }
 
     private void appendArguments(StringBuilder sb, Arguments arguments) {
         if (!arguments.isRequired()) {
-            sb.append("[");
+            sb.append(OPTIONAL_BRACKET_OPEN);
         }
-        sb.append("<");
+        sb.append(ARG_BRACKET_OPEN);
         for (Iterator<String> it = arguments.keySet().iterator(); it.hasNext();) {
             String name = it.next();
-            if (name.startsWith("<") && name.endsWith(">")) {
+            if (name.startsWith(ARG_BRACKET_OPEN) && name.endsWith(ARG_BRACKET_CLOSE)) {
                 name = name.substring(1, name.length() - 1);
             }
             sb.append(name);
@@ -308,9 +320,9 @@ public class HelpFormatter {
                 sb.append("|");
             }
         }
-        sb.append(">");
+        sb.append(ARG_BRACKET_CLOSE);
         if (!arguments.isRequired()) {
-            sb.append("]");
+            sb.append(OPTIONAL_BRACKET_CLOSE);
         }
     }
 
@@ -356,7 +368,7 @@ public class HelpFormatter {
      *
      * @param text the text to be written to the PrintWriter
      */
-    private void printWrapped(String text) {
+    public void printWrapped(String text) {
         printWrapped(0, text);
     }
 
@@ -403,7 +415,7 @@ public class HelpFormatter {
             } else {
                 lineBuf.append(lpad).append(OPTION_PREFIX).append(option.getName());
                 if (option.hasLongName()) {
-                    lineBuf.append(',').append(LONG_OPTION_PREFIX).append(option.getLongName());
+                    lineBuf.append(", ").append(LONG_OPTION_PREFIX).append(option.getLongName());
                 }
             }
             if (option.hasValue()) {
@@ -413,7 +425,7 @@ public class HelpFormatter {
                     lineBuf.append(' ');
                 } else {
                     lineBuf.append(option.isWithEqualSign() ? '=' : LONG_OPTION_SEPARATOR);
-                    lineBuf.append("<").append(argName != null ? argName : getArgName()).append(">");
+                    lineBuf.append(ARG_BRACKET_OPEN).append(argName != null ? argName : getArgName()).append(ARG_BRACKET_CLOSE);
                 }
             }
             lineBufList.add(lineBuf);
@@ -439,8 +451,10 @@ public class HelpFormatter {
                 renderWrappedText(sb, getWidth(), leftWidth + getDescPad(), lineBuf.toString());
             } else {
                 sb.append(lineBuf).append(NEW_LINE);
-                sb.append(OptionUtils.createPadding(leftWidth + getDescPad()));
-                renderWrappedText(sb, getWidth(), leftWidth + getDescPad(), option.getDescription());
+                if (option.getDescription() != null) {
+                    String line = OptionUtils.createPadding(leftWidth + getDescPad()) + option.getDescription();
+                    renderWrappedText(sb, getWidth(), leftWidth + getDescPad(), line);
+                }
             }
             if (it.hasNext()) {
                 sb.append(NEW_LINE);
@@ -472,12 +486,16 @@ public class HelpFormatter {
                     buf.append(OptionUtils.createPadding(max - buf.length()));
                 }
                 buf.append(dpad);
-                buf.append(desc);
-                renderWrappedText(sb, getWidth(), max, buf.toString());
+                if (desc != null) {
+                    buf.append(desc);
+                }
+                renderWrappedText(sb, getWidth(), max + getDescPad(), buf.toString());
             } else {
                 sb.append(buf).append(NEW_LINE);
-                sb.append(OptionUtils.createPadding(max + getDescPad()));
-                renderWrappedText(sb, getWidth(), max + getDescPad(), desc);
+                if (desc != null) {
+                    String line = OptionUtils.createPadding(max + getDescPad()) + desc;
+                    renderWrappedText(sb, getWidth(), max + getDescPad(), line);
+                }
             }
             sb.append(NEW_LINE);
         }
@@ -519,7 +537,7 @@ public class HelpFormatter {
      * @param text the text to be rendered
      */
     public static void renderWrappedText(StringBuilder sb, int width, int nextLineTabStop, String text) {
-        int pos = OptionUtils.findWrapPos(text, width - nextLineTabStop, 0);
+        int pos = OptionUtils.findWrapPos(text, width, 0);
         if (pos == -1) {
             sb.append(OptionUtils.rtrim(text));
             return;
@@ -531,17 +549,18 @@ public class HelpFormatter {
         }
         // all following lines must be padded with nextLineTabStop space characters
         String padding = OptionUtils.createPadding(nextLineTabStop);
+        String line = text;
         while (true) {
-            text = padding + text.substring(pos).trim();
-            pos = OptionUtils.findWrapPos(text, width, 0);
+            line = padding + line.substring(pos).trim();
+            pos = OptionUtils.findWrapPos(line, width, 0);
             if (pos == -1) {
-                sb.append(text);
+                sb.append(line);
                 return;
             }
-            if (text.length() > width - nextLineTabStop && pos == nextLineTabStop - 1) {
+            if (line.length() > width && pos == nextLineTabStop - 1) {
                 pos = width;
             }
-            sb.append(OptionUtils.rtrim(text.substring(0, pos))).append(NEW_LINE);
+            sb.append(OptionUtils.rtrim(line.substring(0, pos))).append(NEW_LINE);
         }
     }
 

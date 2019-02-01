@@ -40,21 +40,21 @@ class CommandTest {
     void testVerboseCommand() {
         VerboseCommand command = new VerboseCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
     }
 
     @Test
     void testHelpCommand() {
         HelpCommand command = new HelpCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
     }
 
     @Test
     void testSysInfoCommand() throws Exception {
         SysInfoCommand command = new SysInfoCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("sysinfo -mem");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
@@ -63,7 +63,7 @@ class CommandTest {
     void testPBEncryptCommand() throws Exception {
         PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("encrypt \"aaa ccc d\" -p=bbb");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
@@ -72,7 +72,7 @@ class CommandTest {
     void testPBDecryptCommand() throws Exception {
         PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("decrypt -p=bbb RYr6VMzCxBuY9MoXYBV64w==");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
@@ -83,7 +83,7 @@ class CommandTest {
 
         PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("decrypt input1 input2");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
@@ -102,7 +102,7 @@ class CommandTest {
     void testTestCommand() throws Exception {
         TestCommand command = new TestCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("test -i=aaa -D=123 -p=bbb -X -Y -Z");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
@@ -111,7 +111,7 @@ class CommandTest {
     void testJettyCommand() {
         JettyCommand command = new JettyCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printUsage(getConsole());
+        command.printHelp(getConsole());
     }
 
 }

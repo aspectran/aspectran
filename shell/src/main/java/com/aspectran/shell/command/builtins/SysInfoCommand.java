@@ -74,7 +74,7 @@ public class SysInfoCommand extends AbstractCommand {
         } else if (options.hasOption("gc")) {
             mem(true, console);
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 

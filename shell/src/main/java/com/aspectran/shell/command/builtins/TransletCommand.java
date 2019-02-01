@@ -17,9 +17,11 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;
@@ -30,6 +32,8 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class TransletCommand extends AbstractCommand {
@@ -49,6 +53,19 @@ public class TransletCommand extends AbstractCommand {
                 .optionalValue()
                 .valueName("translet_names")
                 .desc("Print list of all translets or those filtered by the given name")
+                .build());
+        addOption(Option.builder("d")
+                .longName("detail")
+                .hasValue()
+                .valueName("translet_name")
+                .desc("Print detailed information for the translet")
+                .build());
+        addOption(Option.builder("m")
+                .longName("method")
+                .hasValue()
+                .optionalValue()
+                .valueName("request_method")
+                .desc("Specifies the request method for the translet\n(GET, PUT, POST, DELETE)")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -74,58 +91,72 @@ public class TransletCommand extends AbstractCommand {
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listTranslets(service, console, keywords);
+        } else if (options.hasOption("detail")) {
+            String transletName = options.getValue("detail");
+            String method = options.getValue("method");
+            MethodType requestMethod = MethodType.resolve(method);
+            if (method != null && requestMethod == null) {
+                console.writeError("No request method type for '" + method + "'");
+                return;
+            }
+            detailTransletRule(service, console, transletName, requestMethod);
         } else {
-            printUsage(console);
+            printHelp(console);
         }
     }
 
     private void listTranslets(ShellService service, Console console, String[] keywords) {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        console.writeLine("-%-20s-+-%-63s-", "--------------------",
-                "---------------------------------------------------------------");
-        console.writeLine(" %-20s | %-63s ", "Translet Name", "Description");
-        console.writeLine("-%-20s-+-%-63s-", "--------------------",
-                "---------------------------------------------------------------");
+        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
+        console.writeLine(" %4s | %-67s ", "No.", "Translet Name");
+        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
+        int num = 0;
         for (TransletRule transletRule : transletRules) {
-            String name = transletRule.getName();
-            String desc = StringUtils.trimWhitespace(transletRule.getDescription());
-            if (service.isExposable(name)) {
-                if (keywords != null) {
-                    boolean exists = false;
-                    for (String keyw : keywords) {
-                        if (name.toLowerCase().contains(keyw.toLowerCase())) {
-                            exists = true;
-                        }
-                    }
-                    if (!exists) {
-                        continue;
+            String transletName = transletRule.getName();
+            if (keywords != null) {
+                boolean exists = false;
+                for (String keyw : keywords) {
+                    if (transletName.toLowerCase().contains(keyw.toLowerCase())) {
+                        exists = true;
                     }
                 }
-                if (transletRule.getAllowedMethods() != null) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("[");
-                    for (int i = 0; i < transletRule.getAllowedMethods().length; i++) {
-                        if (i > 0) {
-                            sb.append(",");
-                        }
-                        sb.append(transletRule.getAllowedMethods()[i].toString());
-                    }
-                    sb.append("] ");
-                    console.writeLine(" %-20s | %-63s ", sb, StringUtils.EMPTY);
+                if (!exists) {
+                    continue;
                 }
-                if (desc != null && desc.contains(ActivityContext.LINE_SEPARATOR)) {
-                    String[] arr = StringUtils.split(desc, ActivityContext.LINE_SEPARATOR);
-                    for (int i = 0; i < arr.length; i++) {
-                        console.writeLine(" %-20s | %-63s ", (i == 0 ? name : StringUtils.EMPTY), arr[i].trim());
-                    }
-                } else {
-                    console.writeLine(" %-20s | %-63s ", name, StringUtils.nullToEmpty(desc));
-                }
-                console.writeLine("-%-20s-+-%-63s-", "--------------------",
-                        "---------------------------------------------------------------");
             }
+            MethodType[] requestMethods = transletRule.getAllowedMethods();
+            if (requestMethods != null) {
+                transletName = Arrays.toString(requestMethods) + " " + transletName;
+            }
+            console.writeLine("%5d | %s", ++num, transletName);
+            console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         }
+        if (num == 0) {
+            console.writeLine("%33s %s", " ", "No Data");
+        }
+    }
+
+    private void detailTransletRule(ShellService service, Console console, String transletName, MethodType requestMethod) throws IOException {
+        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+        TransletRule transletRule;
+        if (requestMethod != null) {
+            transletRule = transletRuleRegistry.getTransletRule(transletName, requestMethod);
+        } else {
+            transletRule = transletRuleRegistry.getTransletRule(transletName);
+        }
+        if (transletRule == null) {
+            console.writeError("Unknown translet: " + transletName);
+            return;
+        }
+
+        Parameters transletParameters = RuleToParamsConverter.toTransletParameters(transletRule);
+
+        console.writeLine("----------------------------------------------------------------------------");
+        AponWriter aponWriter = new AponWriter(console.getWriter(), true);
+        aponWriter.setIndentString("  ");
+        aponWriter.write(transletParameters);
+        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override
