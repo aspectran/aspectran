@@ -330,13 +330,13 @@ public class JLineConsole extends AbstractConsole {
     }
 
     private void multilineStarted() {
-        completer.setDisable(true);
-        highlighter.setDisable(true);
+        completer.setDisabled(true);
+        highlighter.setDisabled(true);
     }
 
     private void multilineEnded() {
-        completer.setDisable(false);
-        highlighter.setDisable(false);
+        completer.setDisabled(false);
+        highlighter.setDisabled(false);
     }
 
 }

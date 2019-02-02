@@ -304,7 +304,8 @@ public class AspectRule implements BeanReferenceInspectable {
         return tsb.toString();
     }
 
-    public static AspectRule newInstance(String id, String order, Boolean isolated, Boolean disabled) throws IllegalRuleException {
+    public static AspectRule newInstance(String id, String order, Boolean isolated, Boolean disabled)
+            throws IllegalRuleException {
         if (id == null) {
             throw new IllegalRuleException("The 'aspect' element requires an 'id' attribute");
         }

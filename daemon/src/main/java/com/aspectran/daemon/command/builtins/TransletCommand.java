@@ -47,17 +47,16 @@ public class TransletCommand extends AbstractCommand {
         }
 
         try {
-            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-            ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
-
             ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
 
             ParameterMap parameterMap = null;
+            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
                 parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
             }
 
             Map<String, Object> attributeMap = null;
+            ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
                 attributeMap = evaluator.evaluate(attributeItemRuleMap);
             }

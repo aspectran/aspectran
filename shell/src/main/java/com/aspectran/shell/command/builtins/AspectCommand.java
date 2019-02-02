@@ -30,6 +30,9 @@ import com.aspectran.shell.service.ShellService;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * Change the active state of an Aspect or view the list of registered Aspect.
+ */
 public class AspectCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

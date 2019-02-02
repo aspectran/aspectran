@@ -39,7 +39,7 @@ public class CommandHighlighter implements Highlighter {
 
     private final Console console;
 
-    private boolean disable;
+    private boolean disabled;
 
     public CommandHighlighter(Console console) {
         if (console == null) {
@@ -48,17 +48,17 @@ public class CommandHighlighter implements Highlighter {
         this.console = console;
     }
 
-    public boolean isDisable() {
-        return disable;
+    public boolean isDisabled() {
+        return disabled;
     }
 
-    public void setDisable(boolean disable) {
-        this.disable = disable;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override
     public AttributedString highlight(LineReader reader, String buffer) {
-        if (isDisable()) {
+        if (isDisabled()) {
             return new AttributedString(buffer);
         }
         String str = StringUtils.trimLeadingWhitespace(buffer);
