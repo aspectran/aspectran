@@ -77,7 +77,6 @@ public class DaemonCommandRegistry implements CommandRegistry {
         Object[] args = { this };
         Class<?>[] argTypes = { CommandRegistry.class };
         Command command = ClassUtils.createInstance(commandClass, args, argTypes);
-        assert command != null : "command is null";
         if (command.getDescriptor() == null) {
             throw new NullPointerException("A command without a descriptor");
         }

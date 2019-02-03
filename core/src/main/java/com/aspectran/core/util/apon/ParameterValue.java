@@ -275,7 +275,7 @@ public class ParameterValue implements Parameter {
             }
         } else {
             if (value != null) {
-                return new String[] {value.toString()};
+                return new String[] { value.toString() };
             } else {
                 return null;
             }
@@ -430,7 +430,6 @@ public class ParameterValue implements Parameter {
         }
         try {
             Parameters p = ClassUtils.createInstance(parametersClass);
-            assert p != null;
             p.setIdentifier(identifier);
             putValue(p);
             return p;

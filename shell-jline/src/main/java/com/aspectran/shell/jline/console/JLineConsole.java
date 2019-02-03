@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import org.jline.reader.EndOfFileException;
@@ -145,7 +144,7 @@ public class JLineConsole extends AbstractConsole {
         multilineEnded();
         if (comments) {
             if (nextLine != null) {
-                return COMMENT_DELIMITER + line + ActivityContext.LINE_SEPARATOR + nextLine;
+                return COMMENT_DELIMITER + line + System.lineSeparator() + nextLine;
             } else {
                 return COMMENT_DELIMITER + line;
             }
@@ -179,7 +178,7 @@ public class JLineConsole extends AbstractConsole {
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
-                    ActivityContext.LINE_SEPARATOR + readMultiLine(null);
+                    System.lineSeparator() + readMultiLine(null);
         }
         return line;
     }

@@ -19,8 +19,8 @@ import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -215,7 +215,7 @@ public class AspectranNodeParser {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 assistant.getAssistantLocal().setDescription(text);

@@ -1,0 +1,11 @@
+command: component
+parameters: {
+	item: {
+		name: type
+		value: translet
+	}
+	item: {
+		name: mode
+		value: list
+	}
+}

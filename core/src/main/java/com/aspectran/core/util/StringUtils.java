@@ -680,6 +680,28 @@ public class StringUtils {
     }
 
     /**
+     * Convert a {@code String} array into a delimited {@code String}
+     * by a system-dependent line separator.
+     *
+     * @param arr the array to display
+     * @return the delimited {@code String}
+     */
+    public static String toLineDelimitedString(Object[] arr) {
+        return toDelimitedString(arr, System.lineSeparator());
+    }
+
+    /**
+     * Convert a {@code Collection} into a delimited {@code String}
+     * by a system-dependent line separator.
+     *
+     * @param list the collection
+     * @return the delimited {@code String}
+     */
+    public static String toLineDelimitedString(Collection<?> list) {
+        return toDelimitedString(list, System.lineSeparator());
+    }
+
+    /**
      * Convert a comma delimited list (e.g., a row from a CSV file) into an
      * array of strings.
      *

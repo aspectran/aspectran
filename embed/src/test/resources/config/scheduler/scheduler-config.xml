@@ -55,7 +55,7 @@
                 repeatCount: 1
             </trigger>
         </scheduler>
-        <job translet="job1"/>
+        <job translet="job1.job"/>
     </schedule>
 
     <schedule id="scheduler2">
@@ -66,7 +66,7 @@
                 repeatCount: 1
             </trigger>
         </scheduler>
-        <job translet="job2"/>
+        <job translet="job2.job"/>
     </schedule>
 
     <translet name="job1">

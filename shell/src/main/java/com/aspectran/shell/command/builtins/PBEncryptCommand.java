@@ -84,11 +84,14 @@ public class PBEncryptCommand extends AbstractCommand {
             return;
         }
 
-        console.writeLine("----------------------------------------------------------------------------");
 
         if (!implicitPassword) {
+            console.writeLine("----------------------------------------------------------------------------");
             console.writeLine(" %1$9s : %2$s", "Algorithm", PBEncryptionUtils.getAlgorithm());
             console.writeLine(" %1$9s : %2$s", "Password", password);
+            console.writeLine("----------------------------------------------------------------------------");
+        } else {
+            console.writeLine("----------------------------------------------------------------------------");
         }
         for (String input : inputValues) {
             String output;
@@ -97,12 +100,10 @@ public class PBEncryptCommand extends AbstractCommand {
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
             }
-
             console.writeLine(" %1$9s : %2$s", "Input", input);
             console.writeLine(" %1$9s : %2$s", "Output", output);
+            console.writeLine("----------------------------------------------------------------------------");
         }
-
-        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override

@@ -18,8 +18,8 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
@@ -55,7 +55,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 EnvironmentRule environmentRule = parser.peekObject();

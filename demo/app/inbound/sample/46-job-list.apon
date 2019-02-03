@@ -1,0 +1,11 @@
+command: component
+parameters: {
+	item: {
+		name: type
+		value: job
+	}
+	item: {
+		name: mode
+		value: list
+	}
+}

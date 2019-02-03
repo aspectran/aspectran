@@ -19,6 +19,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
+import com.aspectran.daemon.service.DaemonService;
 
 public class RestartCommand extends AbstractCommand {
 
@@ -34,9 +35,11 @@ public class RestartCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
+        DaemonService service = getService();
+
         try {
             info("Restarting Now. See you soon.");
-            getService().getServiceController().restart();
+            service.getServiceController().restart();
             return success(info("Successful restart command"));
         } catch (Exception e) {
             return failed(e);

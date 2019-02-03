@@ -1,0 +1,18 @@
+command: component
+parameters: {
+	item: {
+		name: type
+		value: translet
+	}
+	item: {
+		name: mode
+		value: detail
+	}
+	item: {
+		type: array
+		name: targets
+		value: [
+			hello			
+		]
+	}
+}

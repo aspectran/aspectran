@@ -391,12 +391,11 @@ public class ParamsToRuleConverter {
             if (jobParametersList != null) {
                 for (ScheduledJobParameters jobParameters : jobParametersList) {
                     String translet = StringUtils.emptyToNull(jobParameters.getString(ScheduledJobParameters.translet));
-                    String method = StringUtils.emptyToNull(jobParameters.getString(ScheduledJobParameters.method));
                     Boolean disabled = jobParameters.getBoolean(ScheduledJobParameters.disabled);
 
                     translet = assistant.applyTransletNamePattern(translet);
 
-                    ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, translet, method, disabled);
+                    ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, translet, disabled);
                     scheduleRule.addScheduledJobRule(scheduledJobRule);
                 }
             }

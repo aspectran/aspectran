@@ -243,11 +243,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
 
         try {
-            Object resultValue = action.execute(this);
-
-            if (log.isTraceEnabled()) {
-                log.trace("actionResult " + resultValue);
-            }
+            action.execute(this);
         } catch (Exception e) {
             setRaisedException(e);
             throw new ActionExecutionException("Failed to execute advice action " + action, e);

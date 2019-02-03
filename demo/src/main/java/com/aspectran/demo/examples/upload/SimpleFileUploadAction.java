@@ -140,7 +140,7 @@ public class SimpleFileUploadAction {
     @RequestAsGet("/files")
     @Transform(type = TransformType.JSON)
     @Action(id = "files")
-    public Collection list(Translet translet) {
+    public Collection list() {
         return uploadedFiles.values();
     }
 

@@ -152,20 +152,15 @@ public class FileCommandPoller extends AbstractCommandPoller {
                     String inboundFileName = file.getName();
                     String queuedFileName = writeCommandFile(queuedDir, inboundFileName, parameters);
                     if (queuedFileName != null) {
-                        boolean queued = executeQueuedCommand(parameters, queuedFileName, inboundFileName);
-                        if (queued) {
-                            removeCommandFile(inboundDir, inboundFileName);
-                        } else {
-                            removeCommandFile(queuedDir, queuedFileName);
-                        }
+                        removeCommandFile(inboundDir, inboundFileName);
+                        executeQueuedCommand(parameters, queuedFileName);
                     }
                 }
             }
         }
     }
 
-    private boolean executeQueuedCommand(final CommandParameters parameters, final String queuedFileName,
-                                      final String inboundFileName) {
+    private boolean executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
         return getExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
@@ -182,7 +177,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
             private String makeFileName() {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmssSSS");
                 String datetime = formatter.format(LocalDateTime.now());
-                return datetime + "_" + (inboundFileName != null ? inboundFileName : queuedFileName);
+                return datetime + "_" + queuedFileName;
             }
         });
     }

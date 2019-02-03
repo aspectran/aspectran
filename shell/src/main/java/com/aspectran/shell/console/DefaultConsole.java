@@ -15,8 +15,6 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.context.ActivityContext;
-
 import java.io.BufferedReader;
 import java.io.IOError;
 import java.io.IOException;
@@ -105,7 +103,7 @@ public class DefaultConsole extends AbstractConsole {
         }
         if (comments) {
             if (nextLine != null) {
-                return COMMENT_DELIMITER + line + ActivityContext.LINE_SEPARATOR + nextLine;
+                return COMMENT_DELIMITER + line + System.lineSeparator() + nextLine;
             } else {
                 return COMMENT_DELIMITER + line;
             }
@@ -157,7 +155,7 @@ public class DefaultConsole extends AbstractConsole {
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
-                    ActivityContext.LINE_SEPARATOR + readMultiLine(null);
+                    System.lineSeparator() + readMultiLine(null);
         }
         return line;
     }

@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -78,7 +78,7 @@ class BeanNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (text != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 BeanRule beanRule = parser.peekObject();

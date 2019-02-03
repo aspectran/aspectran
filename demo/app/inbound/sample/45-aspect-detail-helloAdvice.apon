@@ -1,0 +1,15 @@
+command: component
+parameters: {
+	item: {
+		name: type
+		value: aspect
+	}
+	item: {
+		name: mode
+		value: detail
+	}
+	item: {
+		name: targets
+		value: helloAdviceAspect
+	}
+}

@@ -25,6 +25,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
+import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.with.jetty.JettyServer;
 
 import java.net.BindException;
@@ -46,8 +47,10 @@ public class JettyCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
+        DaemonService service = getService();
+
         try {
-            ClassLoader classLoader = getService().getActivityContext().getEnvironment().getClassLoader();
+            ClassLoader classLoader = service.getActivityContext().getEnvironment().getClassLoader();
             classLoader.loadClass("com.aspectran.with.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
             return failed("Unable to load class com.aspectran.with.jetty.JettyServer " +
@@ -60,7 +63,7 @@ public class JettyCommand extends AbstractCommand {
 
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+                ItemEvaluator evaluator = new ItemExpression(service.getActivityContext());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
@@ -70,7 +73,7 @@ public class JettyCommand extends AbstractCommand {
                 serverName = "jetty.server";
             }
 
-            BeanRegistry beanRegistry = getService().getActivityContext().getBeanRegistry();
+            BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
             JettyServer jettyServer;
             try {
                 jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);

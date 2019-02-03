@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -27,8 +26,6 @@ public class ScheduledJobRule {
     private final ScheduleRule scheduleRule;
 
     private String transletName;
-
-    private MethodType requestMethod;
 
     private Boolean disabled;
 
@@ -48,14 +45,6 @@ public class ScheduledJobRule {
         this.transletName = transletName;
     }
 
-    public MethodType getRequestMethod() {
-        return requestMethod;
-    }
-
-    public void setRequestMethod(MethodType requestMethod) {
-        this.requestMethod = requestMethod;
-    }
-
     public Boolean getDisabled() {
         return disabled;
     }
@@ -72,13 +61,12 @@ public class ScheduledJobRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("translet", transletName);
-        tsb.append("method", requestMethod);
         tsb.append("disabled", disabled);
         return tsb.toString();
     }
 
     public static ScheduledJobRule newInstance(ScheduleRule scheduleRule, String transletName,
-                                               String method, Boolean disabled) throws IllegalRuleException {
+                                               Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'job' element requires a 'translet' attribute");
         }
@@ -86,15 +74,6 @@ public class ScheduledJobRule {
         ScheduledJobRule scheduledJobRule = new ScheduledJobRule(scheduleRule);
         scheduledJobRule.setTransletName(transletName);
         scheduledJobRule.setDisabled(disabled);
-
-        if (method != null) {
-            MethodType methodType = MethodType.resolve(method);
-            if (methodType == null) {
-                throw new IllegalRuleException("No request method type for '" + method + "'");
-            }
-            scheduledJobRule.setRequestMethod(methodType);
-        }
-
         return scheduledJobRule;
     }
 

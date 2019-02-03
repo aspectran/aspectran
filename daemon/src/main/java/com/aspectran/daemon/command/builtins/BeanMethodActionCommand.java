@@ -25,6 +25,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
+import com.aspectran.daemon.service.DaemonService;
 
 public class BeanMethodActionCommand extends AbstractCommand {
 
@@ -40,6 +41,8 @@ public class BeanMethodActionCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
+        DaemonService service = getService();
+
         try {
             String beanName = parameters.getBeanName();
             String methodName = parameters.getMethodName();
@@ -61,11 +64,11 @@ public class BeanMethodActionCommand extends AbstractCommand {
 
             if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                Class<?> beanClass = getService().getAspectranClassLoader().loadClass(className);
+                Class<?> beanClass = service.getAspectranClassLoader().loadClass(className);
                 beanMethodActionRule.setBeanClass(beanClass);
             }
 
-            Activity activity = new InstantActivity(getService().getActivityContext());
+            Activity activity = new InstantActivity(service.getActivityContext());
             BeanMethodAction beanMethodAction = new BeanMethodAction(beanMethodActionRule, null);
             Object result = beanMethodAction.execute(activity);
             return success(result != null ? result.toString() : null);

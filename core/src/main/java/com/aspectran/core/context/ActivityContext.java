@@ -38,8 +38,6 @@ public interface ActivityContext {
 
     char NAME_SEPARATOR_CHAR = '/';
 
-    String LINE_SEPARATOR = "\n";
-
     String DEFAULT_ENCODING = "UTF-8";
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";

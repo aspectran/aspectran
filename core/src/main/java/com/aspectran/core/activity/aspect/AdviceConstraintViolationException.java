@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.component.aspect.AspectException;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.util.StringUtils;
 
@@ -58,7 +57,7 @@ public class AdviceConstraintViolationException extends AspectException {
 
     @Override
     public String getMessage() {
-        return StringUtils.toDelimitedString(violations, ActivityContext.LINE_SEPARATOR);
+        return StringUtils.toLineDelimitedString(violations);
     }
 
 }

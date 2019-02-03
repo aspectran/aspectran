@@ -117,7 +117,6 @@
 <!ELEMENT job EMPTY>
 <!ATTLIST job
   translet CDATA #REQUIRED
-  method   CDATA #IMPLIED
   disabled (true | false) #IMPLIED
 >
 

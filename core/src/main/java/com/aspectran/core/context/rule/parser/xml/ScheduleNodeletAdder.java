@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
@@ -56,7 +56,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 ScheduleRule scheduleRule = parser.peekObject();
@@ -84,13 +84,11 @@ class ScheduleNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/schedule/job");
         parser.addNodelet(attrs -> {
             String transletName = StringUtils.emptyToNull(attrs.get("translet"));
-            String method = StringUtils.emptyToNull(attrs.get("method"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
-            transletName = assistant.applyTransletNamePattern(transletName);
             ScheduleRule scheduleRule = parser.peekObject();
 
-            ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, method, disabled);
+            ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, disabled);
             scheduleRule.addScheduledJobRule(scheduledJobRule);
         });
     }

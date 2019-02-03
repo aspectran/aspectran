@@ -74,7 +74,7 @@ public class AspectranShellService extends AbstractShellService {
             try {
                 outputWriter = OutputRedirection.determineOutputWriter(redirectionList, console);
             } catch (Exception e) {
-                console.writeError("Invalid Output Redirection.");
+                console.writeError("Invalid Output Redirection");
                 console.writeLine(e.getMessage());
                 return null;
             }
@@ -96,9 +96,6 @@ public class AspectranShellService extends AbstractShellService {
             activity.perform();
             translet = activity.getTranslet();
         } catch (TransletNotFoundException e) {
-            if (log.isTraceEnabled()) {
-                log.trace("Unknown translet: " + transletName);
-            }
             throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {

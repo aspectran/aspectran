@@ -362,7 +362,7 @@ public class AponReader extends AponFormat {
                 if (sb == null) {
                     sb = new StringBuilder();
                 } else {
-                    sb.append(NEW_LINE_CHAR);
+                    sb.append(NEW_LINE);
                 }
                 str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
                 if (str.length() > 0) {

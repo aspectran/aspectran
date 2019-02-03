@@ -21,9 +21,10 @@ import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.core.context.rule.type.ContentStyleType;
+import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
     private String content;
 
-    private ContentStyleType contentStyle;
+    private TextStyleType contentStyle;
 
     private Boolean noCache;
 
@@ -143,11 +144,11 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         this.content = content;
     }
 
-    public ContentStyleType getContentStyle() {
+    public TextStyleType getContentStyle() {
         return contentStyle;
     }
 
-    protected void setContentStyle(ContentStyleType contentStyle) {
+    protected void setContentStyle(TextStyleType contentStyle) {
         this.contentStyle = contentStyle;
     }
 
@@ -377,16 +378,16 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     }
 
     public static TemplateRule newInstance(String id, String engine, String name, String file,
-            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache)
+            String resource, String url, String content, String style, String encoding, Boolean noCache)
             throws IllegalRuleException {
 
         if (id == null) {
             throw new IllegalRuleException("The 'template' element requires an 'id' attribute");
         }
 
-        ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
-        if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalRuleException("No content style type for '" + contentStyle + "'");
+        TextStyleType textStyleType = TextStyleType.resolve(style);
+        if (style != null && textStyleType == null) {
+            throw new IllegalRuleException("No text style type for '" + style + "'");
         }
 
         TemplateRule tr = new TemplateRule();
@@ -397,7 +398,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         tr.setResource(resource);
         tr.setUrl(url);
         tr.setContent(content);
-        tr.setContentStyle(contentStyleType);
+        tr.setContentStyle(textStyleType);
         tr.setEncoding(encoding);
         tr.setNoCache(noCache);
 
@@ -406,12 +407,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     }
 
     public static TemplateRule newInstanceForBuiltin(String engine, String name, String file,
-            String resource, String url, String content, String contentStyle, String encoding, Boolean noCache)
+            String resource, String url, String content, String style, String encoding, Boolean noCache)
             throws IllegalRuleException {
 
-        ContentStyleType contentStyleType = ContentStyleType.resolve(contentStyle);
-        if (contentStyle != null && contentStyleType == null) {
-            throw new IllegalRuleException("No content style type for '" + contentStyle + "'");
+        TextStyleType textStyleType = TextStyleType.resolve(style);
+        if (style != null && textStyleType == null) {
+            throw new IllegalRuleException("No text style type for '" + style + "'");
         }
 
         TemplateRule tr = new TemplateRule();
@@ -421,7 +422,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
         tr.setResource(resource);
         tr.setUrl(url);
         tr.setContent(content);
-        tr.setContentStyle(contentStyleType);
+        tr.setContentStyle(textStyleType);
         tr.setEncoding(encoding);
         tr.setNoCache(noCache);
         tr.setBuiltin(true);
@@ -456,7 +457,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
     private static void updateTemplateSource(TemplateRule templateRule) {
         String content = templateRule.getContent();
         if (content != null) {
-            content = ContentStyleType.styling(content, templateRule.getContentStyle());
+            content = TextStyler.styling(content, templateRule.getContentStyle());
             templateRule.setTemplateSource(content);
         }
     }

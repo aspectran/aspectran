@@ -420,7 +420,7 @@ public class AnnotatedConfigParser {
 
         if (beanClass.isAnnotationPresent(Settings.class)) {
             Settings settingsAnno = beanClass.getAnnotation(Settings.class);
-            String text = StringUtils.toDelimitedString(settingsAnno.value(), ActivityContext.LINE_SEPARATOR);
+            String text = StringUtils.toLineDelimitedString(settingsAnno.value());
             if (!text.isEmpty()) {
                 SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
                 SettingsAdviceRule.updateSettingsAdviceRule(sar, text);

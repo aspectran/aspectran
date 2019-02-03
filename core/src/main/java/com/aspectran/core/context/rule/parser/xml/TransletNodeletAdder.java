@@ -25,8 +25,8 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
@@ -71,7 +71,7 @@ class TransletNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 TransletRule transletRule = parser.peekObject();

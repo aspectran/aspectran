@@ -17,6 +17,7 @@ package com.aspectran.core.component.schedule;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.util.logging.Log;
@@ -24,7 +25,9 @@ import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The Class ScheduleRuleRegistry.
@@ -72,6 +75,20 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         if (log.isTraceEnabled()) {
             log.trace("add ScheduleRule " + scheduleRule);
         }
+    }
+
+    public Set<ScheduledJobRule> getScheduledJobRules(String[] transletNames) {
+        Set<ScheduledJobRule> scheduledJobRules = new LinkedHashSet<>();
+        for (ScheduleRule scheduleRule : getScheduleRules()) {
+            for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
+                for (String transletName : transletNames) {
+                    if (jobRule.getTransletName().equals(transletName)) {
+                        scheduledJobRules.add(jobRule);
+                    }
+                }
+            }
+        }
+        return scheduledJobRules;
     }
 
     @Override

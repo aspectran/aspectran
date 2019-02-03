@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ContentStyleType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
@@ -61,7 +61,7 @@ class AspectNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             String style = parser.popObject();
             if (style != null) {
-                text = ContentStyleType.styling(text, style);
+                text = TextStyler.styling(text, style);
             }
             if (StringUtils.hasText(text)) {
                 AspectRule aspectRule = parser.peekObject();

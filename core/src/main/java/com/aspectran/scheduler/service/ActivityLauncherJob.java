@@ -21,7 +21,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.scheduler.activity.JobActivity;
 import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
 import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
@@ -45,7 +44,7 @@ public class ActivityLauncherJob implements Job {
             if (!jobRule.isDisabled()) {
                 SchedulerService service = (SchedulerService)jobDataMap.get(QuartzSchedulerService.SERVICE_DATA_KEY);
                 if (service.isActive()) {
-                    Activity activity = runActivity(service.getActivityContext(), jobRule, jobExecutionContext);
+                    Activity activity = runActivity(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
                     jobExecutionContext.setResult(activity);
                 }
             }
@@ -54,17 +53,15 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
-    private Activity runActivity(ActivityContext context, ScheduledJobRule jobRule, JobExecutionContext jobExecutionContext)
+    private Activity runActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
-        String transletName = jobRule.getTransletName();
-        MethodType requestMethod = jobRule.getRequestMethod();
         RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
         ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
 
         Activity activity = null;
         try {
             activity = new JobActivity(context, requestAdapter, responseAdapter);
-            activity.prepare(transletName, requestMethod);
+            activity.prepare(transletName);
             activity.perform();
         } finally {
             if (activity != null) {

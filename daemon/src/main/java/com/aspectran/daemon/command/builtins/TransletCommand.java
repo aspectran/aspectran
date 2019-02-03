@@ -24,6 +24,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
+import com.aspectran.daemon.service.DaemonService;
 
 import java.util.Map;
 
@@ -41,13 +42,15 @@ public class TransletCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
+        DaemonService service = getService();
+
         String transletName = parameters.getTransletName();
         if (transletName == null) {
             return failed(error("'translet' parameter is not specified"));
         }
 
         try {
-            ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+            ItemEvaluator evaluator = new ItemExpression(service.getActivityContext());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
@@ -61,7 +64,7 @@ public class TransletCommand extends AbstractCommand {
                 attributeMap = evaluator.evaluate(attributeItemRuleMap);
             }
 
-            Translet translet = getService().translate(transletName, parameterMap, attributeMap);
+            Translet translet = service.translate(transletName, parameterMap, attributeMap);
             String result = translet.getResponseAdapter().getWriter().toString();
             return success(result);
         } catch (Exception e) {

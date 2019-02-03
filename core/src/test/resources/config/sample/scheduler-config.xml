@@ -52,7 +52,7 @@
                 repeatCount: 10
             </trigger>
         </scheduler>
-        <job translet="job1"/>
+        <job translet="job1.job"/>
     </schedule>
 
     <schedule id="scheduler2">
@@ -63,7 +63,7 @@
                 repeatCount: 10
             </trigger>
         </scheduler>
-        <job translet="job2"/>
+        <job translet="job2.job"/>
     </schedule>
 
     <bean id="scheduleAction" class="com.aspectran.core.sample.schedule.ScheduleAction"/>

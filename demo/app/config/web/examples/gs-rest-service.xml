@@ -12,18 +12,17 @@
     </settings>
 
     <translet name="/">
-        <dispatch name="templates/default">
-            <echo id="page">
-                <attributes>
-                    <item name="headline">Building a RESTful Web Service</item>
-                    <item name="teaser">
-                        A sample page that uses RESTful web services using HTTP support methods such as
-                        GET, PUT, POST, and DELETE.
-                    </item>
-                    <item name="include">examples/gs-rest-service</item>
-                </attributes>
-            </echo>
-        </dispatch>
+        <echo id="page">
+            <attributes>
+                <item name="headline">Building a RESTful Web Service</item>
+                <item name="teaser">
+                    A sample page that uses RESTful web services using HTTP support methods such as
+                    GET, PUT, POST, and DELETE.
+                </item>
+                <item name="include">examples/gs-rest-service</item>
+            </attributes>
+        </echo>
+        <dispatch name="templates/default"/>
     </translet>
 
     <translet name="customers" method="GET">

@@ -84,11 +84,13 @@ public class PBDecryptCommand extends AbstractCommand {
             return;
         }
 
-        console.writeLine("----------------------------------------------------------------------------");
 
         if (!implicitPassword) {
+            console.writeLine("----------------------------------------------------------------------------");
             console.writeLine(" %1$9s : %2$s", "Algorithm", PBEncryptionUtils.getAlgorithm());
             console.writeLine(" %1$9s : %2$s", "Password", password);
+        } else {
+            console.writeLine("----------------------------------------------------------------------------");
         }
         for (String input : inputValues) {
             String output;
@@ -99,12 +101,10 @@ public class PBDecryptCommand extends AbstractCommand {
                 console.writeError("Please make sure that the input string is encrypted with the password you entered.");
                 return;
             }
-
             console.writeLine(" %1$9s : %2$s", "Input", input);
             console.writeLine(" %1$9s : %2$s", "Output", output);
+            console.writeLine("----------------------------------------------------------------------------");
         }
-
-        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override

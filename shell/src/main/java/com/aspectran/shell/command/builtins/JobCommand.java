@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command.builtins;
 
+import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
@@ -22,6 +23,7 @@ import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -30,10 +32,8 @@ import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public class JobCommand extends AbstractCommand {
 
@@ -50,23 +50,24 @@ public class JobCommand extends AbstractCommand {
                 .longName("list")
                 .hasValues()
                 .optionalValue()
-                .valueName("jobNames")
-                .desc("Print list of all scheduled jobs or those filtered by the given name")
+                .valueName("keywords")
+                .desc("Print list of all scheduled jobs or those filtered by given keywords")
                 .build());
         addOption(Option.builder("d")
                 .longName("detail")
-                .hasValue()
-                .valueName("aspect_id")
+                .hasValues()
+                .optionalValue()
+                .valueName("translet_name")
                 .desc("Print detailed information for the scheduled job")
                 .build());
         addOption(Option.builder("enable")
                 .hasValues()
-                .valueName("jobNames")
+                .valueName("translet_name")
                 .desc("Enable a scheduled job with a given name")
                 .build());
         addOption(Option.builder("disable")
                 .hasValues()
-                .valueName("jobNames")
+                .valueName("translet_name")
                 .desc("Disable a scheduled job with a given name")
                 .build());
         addOption(Option.builder("h")
@@ -82,63 +83,28 @@ public class JobCommand extends AbstractCommand {
             String[] keywords = options.getValues("list");
             listScheduledJobs(service, console, keywords);
         } else if (options.hasOption("detail")) {
-            String jobName = options.getValue("detail");
-            detailJobRule(service, console, jobName);
+            String[] transletNames = options.getValues("detail");
+            detailScheduledJobRule(service, console, transletNames);
         } else if (options.hasOption("enable")) {
-            String[] jobNames = options.getValues("enable");
-            updateJobActiveState(service, console, jobNames, false);
+            String[] transletNames = options.getValues("enable");
+            changeJobActiveState(service, console, transletNames, false);
         } else if (options.hasOption("disable")) {
-            String[] jobNames = options.getValues("disable");
-            updateJobActiveState(service, console, jobNames, true);
+            String[] transletNames = options.getValues("disable");
+            changeJobActiveState(service, console, transletNames, true);
         } else {
             printHelp(console);
         }
     }
 
-    private void updateJobActiveState(ShellService service, Console console, String[] jobNames, boolean disabled) {
-        Collection<ScheduleRule> scheduleRules = service.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
-        List<ScheduledJobRule> scheduledJobRules = new ArrayList<>();
-        for (ScheduleRule scheduleRule : scheduleRules) {
-            for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
-                for (String jobName : jobNames) {
-                    if (jobRule.getTransletName().equals(jobName)) {
-                        scheduledJobRules.add(jobRule);
-                    }
-                }
-            }
-        }
-        if (scheduledJobRules.isEmpty()) {
-            console.writeError("No scheduled jobs with the name: '" + Arrays.toString(jobNames));
-            return;
-        }
-        for (ScheduledJobRule jobRule : scheduledJobRules) {
-            if (disabled) {
-                if (jobRule.isDisabled()) {
-                    console.writeLine("Scheduled job '" + jobRule.getTransletName() + "' is already inactive.");
-                } else {
-                    jobRule.setDisabled(true);
-                    console.writeLine("Scheduled job '" + jobRule.getTransletName() + "' is now inactive.");
-                }
-            } else {
-                if (!jobRule.isDisabled()) {
-                    console.writeLine("Scheduled job '" + jobRule.getTransletName() + "' is already active.");
-                } else {
-                    jobRule.setDisabled(false);
-                    console.writeLine("Scheduled job '" + jobRule.getTransletName() + "' is now active.");
-                }
-            }
-        }
-    }
-
     private void listScheduledJobs(ShellService service, Console console, String[] keywords) {
-        Collection<ScheduleRule> scheduleRules = service.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
+        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
         console.writeLine("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
                 "---------------------------------", "--------");
         console.writeLine(" %4s | %-20s | %-33s | %-8s ", "No.", "Schedule ID", "Job Name", "Enabled");
         console.writeLine("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
                 "---------------------------------", "--------");
         int num = 0;
-        for (ScheduleRule scheduleRule : scheduleRules) {
+        for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
             for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
                 if (keywords != null) {
                     boolean exists = false;
@@ -151,13 +117,7 @@ public class JobCommand extends AbstractCommand {
                         continue;
                     }
                 }
-                String jobName;
-                if (jobRule.getRequestMethod() != null) {
-                    jobName = "[" + jobRule.getRequestMethod() + "] " + jobRule.getTransletName();
-                } else {
-                    jobName = jobRule.getTransletName();
-                }
-                console.write("%5d | %-20s | %-33s |", ++num, scheduleRule.getId(), jobName);
+                console.write("%5d | %-20s | %-33s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
                 if (jobRule.isDisabled()) {
                     console.setStyle("RED");
                 } else {
@@ -174,28 +134,84 @@ public class JobCommand extends AbstractCommand {
                 "---------------------------------", "--------");
     }
 
-    private void detailJobRule(ShellService service, Console console, String jobName) throws IOException {
-        Collection<ScheduleRule> scheduleRules = service.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
-        for (ScheduleRule scheduleRule : scheduleRules) {
-            for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
-                if (jobRule.getTransletName().equals(jobName)) {
-                    ScheduleParameters scheduleParameters = new ScheduleParameters();
-                    scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
-                    scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
-                    SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
-                    schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
-                    TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
-                    if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
-                        triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-                        schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
-                    }
-                    scheduleParameters.putValue(ScheduleParameters.job, RuleToParamsConverter.toScheduledJobParameters(jobRule));
+    private void detailScheduledJobRule(ShellService service, Console console, String[] transletNames)
+            throws IOException {
+        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+        if (transletNames != null && transletNames.length > 0) {
+            Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
+            if (scheduledJobRules.isEmpty()) {
+                console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+                return;
+            }
+            int count = 0;
+            for (ScheduledJobRule jobRule : scheduledJobRules) {
+                ScheduleRule scheduleRule = jobRule.getScheduleRule();
+                ScheduleParameters scheduleParameters = new ScheduleParameters();
+                scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
+                scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
+                SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
+                schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
+                TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
+                if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
+                    triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
+                    schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
+                }
+                scheduleParameters.putValue(ScheduleParameters.job, RuleToParamsConverter.toScheduledJobParameters(jobRule));
 
+                if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
-                    AponWriter aponWriter = new AponWriter(console.getWriter(), true);
-                    aponWriter.setIndentString("  ");
-                    aponWriter.write(scheduleParameters);
+                }
+                AponWriter aponWriter = new AponWriter(console.getWriter(), true);
+                aponWriter.setIndentString("  ");
+                aponWriter.write(scheduleParameters);
+                console.writeLine("----------------------------------------------------------------------------");
+                count++;
+            }
+            if (count == 0) {
+                console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+            }
+        } else {
+            int count = 0;
+            for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
+                Parameters scheduleParameters = RuleToParamsConverter.toScheduleParameters(scheduleRule);
+
+                if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
+                }
+                AponWriter aponWriter = new AponWriter(console.getWriter(), true);
+                aponWriter.setIndentString("  ");
+                aponWriter.write(scheduleParameters);
+                console.writeLine("----------------------------------------------------------------------------");
+                count++;
+            }
+        }
+    }
+
+    private void changeJobActiveState(ShellService service, Console console, String[] transletNames, boolean disabled) {
+        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+        Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
+        if (scheduledJobRules.isEmpty()) {
+            console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+            return;
+        }
+        for (ScheduledJobRule jobRule : scheduledJobRules) {
+            if (disabled) {
+                if (jobRule.isDisabled()) {
+                    console.writeLine("Scheduled job '%s' on schedule '%s' is already inactive.",
+                            jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                } else {
+                    jobRule.setDisabled(true);
+                    console.writeLine("Scheduled job '%s' on schedule '%s' is now inactive.",
+                            jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                }
+            } else {
+                if (!jobRule.isDisabled()) {
+                    console.writeLine("Scheduled job '%s' on schedule '%s' is already active.",
+                            jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                } else {
+                    jobRule.setDisabled(false);
+                    console.writeLine("Scheduled job '%s' on schedule '%s' is now active.",
+                            jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 }
             }
         }

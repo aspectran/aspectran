@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Converts a Parameters object to an APON formatted string.
@@ -151,8 +150,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      */
     public void write(Parameters parameters) throws IOException {
         if (parameters != null) {
-            Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
-            for (Parameter pv : parameterValueMap.values()) {
+            for (Parameter pv : parameters.getParameterValueMap().values()) {
                 if (pv.isAssigned()) {
                     write(pv);
                 }
@@ -277,28 +275,28 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
                         openSquareBracket();
-                        for (String value : list) {
+                        for (String text : list) {
                             indent();
                             openRoundBracket();
-                            writeText(value);
+                            writeText(text);
                             closeRoundBracket();
                         }
                         closeSquareBracket();
                     } else {
-                        for (String value : list) {
+                        for (String text : list) {
                             writeName(parameter);
                             openRoundBracket();
-                            writeText(value);
+                            writeText(text);
                             closeRoundBracket();
                         }
                     }
                 }
             } else {
-                String s = parameter.getValueAsString();
-                if (s != null) {
+                String text = parameter.getValueAsString();
+                if (text != null) {
                     writeName(parameter);
                     openRoundBracket();
-                    writeText(s);
+                    writeText(text);
                     closeRoundBracket();
                 } else if (nullWrite) {
                     writeName(parameter);
@@ -398,17 +396,17 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
     }
 
-    private void writeText(String value) throws IOException {
+    private void writeText(String text) throws IOException {
         String line;
         int start = 0;
-        while ((line = readLine(value, start)) != null) {
+        while ((line = readLine(text, start)) != null) {
             indent();
             writer.write(TEXT_LINE_START);
             writer.write(line);
             newLine();
 
             start += line.length();
-            start = skipNewLineChar(value, start);
+            start = skipNewLineChar(text, start);
             if (start == -1) {
                 break;
             }
@@ -474,7 +472,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void newLine() throws IOException {
-        writer.write(NEW_LINE_CHAR);
+        writer.write(NEW_LINE);
     }
 
     private void indent() throws IOException {
