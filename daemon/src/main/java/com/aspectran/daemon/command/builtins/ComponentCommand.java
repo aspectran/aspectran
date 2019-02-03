@@ -50,6 +50,10 @@ import java.util.Formatter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * A daemon command that displays detailed information about an aspect,
+ * translet, or scheduled job, and can control its active state.
+ */
 public class ComponentCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
@@ -478,7 +482,8 @@ public class ComponentCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Executes a translet";
+            return "Display detailed information about aspect, translet, " +
+                    "or scheduled job and control its active state";
         }
 
     }
