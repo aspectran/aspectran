@@ -95,20 +95,38 @@ public interface Parameters {
     boolean hasParameter(ParameterDefinition parameterDefinition);
 
     /**
-     * Returns whether the value is assigned to the specified parameter.
+     * Returns whether a value is assigned to the specified parameter.
+     * Even if a null is assigned, it is valid.
      *
      * @param name the name of the parameter to check
      * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
-    boolean isValueAssigned(String name);
+    boolean isAssigned(String name);
 
     /**
-     * Returns whether the value is assigned to the specified parameter.
+     * Returns whether a value is assigned to the specified parameter.
+     * Even if a null is assigned, it is valid.
      *
      * @param parameterDefinition the parameter definition
      * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
-    boolean isValueAssigned(ParameterDefinition parameterDefinition);
+    boolean isAssigned(ParameterDefinition parameterDefinition);
+
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     *
+     * @param name the name of the parameter to check
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(String name);
+
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     *
+     * @param parameterDefinition the parameter definition
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(ParameterDefinition parameterDefinition);
 
     /**
      * Return the value for the specified parameter,

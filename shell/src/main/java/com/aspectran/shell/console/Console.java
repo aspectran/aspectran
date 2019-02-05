@@ -20,6 +20,7 @@ import com.aspectran.shell.command.CommandInterpreter;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * The Interface for Console I/O.
@@ -31,10 +32,6 @@ import java.io.PrintWriter;
 public interface Console {
 
     String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
-
-    String getCommandPrompt();
-
-    void setCommandPrompt(String commandPrompt);
 
     String readCommandLine();
 
@@ -88,6 +85,16 @@ public interface Console {
 
     String getEncoding();
 
+    String getCommandPrompt();
+
+    void setCommandPrompt(String commandPrompt);
+
+    List<String> getCommandHistory();
+
+    void clearCommandHistory();
+
+    void setCommandHistoryFile(String historyFile);
+
     File getWorkingDir();
 
     void setWorkingDir(File workingDir);
@@ -95,6 +102,5 @@ public interface Console {
     CommandInterpreter getInterpreter();
 
     void setInterpreter(CommandInterpreter interpreter);
-
 }
 

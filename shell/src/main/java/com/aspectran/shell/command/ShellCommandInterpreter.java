@@ -90,7 +90,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             console.setCommandPrompt(commandPrompt);
         }
 
-        if (aspectranConfig.isValueAssigned(AspectranConfig.context)) {
+        if (aspectranConfig.hasValue(AspectranConfig.context)) {
             service = AspectranShellService.create(aspectranConfig, console);
             service.start();
         } else {
@@ -108,6 +108,13 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         File workingDir = determineWorkingDir(basePath, shellConfig.getString(ShellConfig.workingDir));
         console.setWorkingDir(workingDir);
+
+        if (shellConfig.hasValue(ShellConfig.historyFile)) {
+            String historyFile = shellConfig.getString(ShellConfig.historyFile);
+            historyFile = new File(basePath, historyFile).getCanonicalPath();
+            console.setCommandHistoryFile(historyFile);
+        }
+
         console.setInterpreter(this);
     }
 

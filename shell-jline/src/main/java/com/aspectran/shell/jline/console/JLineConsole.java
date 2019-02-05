@@ -18,10 +18,12 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
 import org.jline.reader.EndOfFileException;
+import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
@@ -31,6 +33,8 @@ import org.jline.utils.InfoCmp;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Console I/O implementation that supports JLine.
@@ -53,9 +57,11 @@ public class JLineConsole extends AbstractConsole {
 
     private final LineReader commandReader;
 
-    private final CommandCompleter completer;
+    private final CommandCompleter commandCompleter;
 
-    private final CommandHighlighter highlighter;
+    private final CommandHighlighter commandHighlighter;
+
+    private final History commandHistory;
 
     private AttributedStyle attributedStyle;
 
@@ -68,8 +74,9 @@ public class JLineConsole extends AbstractConsole {
     public JLineConsole(String encoding) throws IOException {
         super(encoding);
 
-        this.completer = new CommandCompleter(this);
-        this.highlighter = new CommandHighlighter(this);
+        this.commandCompleter = new CommandCompleter(this);
+        this.commandHighlighter = new CommandHighlighter(this);
+        this.commandHistory = new DefaultHistory();
 
         DefaultParser parser = new DefaultParser();
         //It will be applied from jline 3.9.1
@@ -84,8 +91,9 @@ public class JLineConsole extends AbstractConsole {
         this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
-                .completer(completer)
-                .highlighter(highlighter)
+                .completer(commandCompleter)
+                .highlighter(commandHighlighter)
+                .history(commandHistory)
                 .parser(parser)
                 .terminal(terminal)
                 .build();
@@ -328,14 +336,36 @@ public class JLineConsole extends AbstractConsole {
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
+    @Override
+    public List<String> getCommandHistory() {
+        List<String> result = new ArrayList<>(commandHistory.size());
+        commandHistory.forEach(e -> result.add(e.line()));
+        return result;
+    }
+
+    @Override
+    public void clearCommandHistory() {
+        try {
+            commandHistory.purge();
+        } catch (IOException e) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setCommandHistoryFile(String historyFile) {
+        commandReader.setVariable(LineReader.HISTORY_FILE, historyFile);
+        commandHistory.attach(commandReader);
+    }
+
     private void multilineStarted() {
-        completer.setDisabled(true);
-        highlighter.setDisabled(true);
+        commandCompleter.setDisabled(true);
+        commandHighlighter.setDisabled(true);
     }
 
     private void multilineEnded() {
-        completer.setDisabled(false);
-        highlighter.setDisabled(false);
+        commandCompleter.setDisabled(false);
+        commandHighlighter.setDisabled(false);
     }
 
 }

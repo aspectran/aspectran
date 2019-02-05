@@ -44,6 +44,11 @@ public abstract class AbstractConsole implements Console {
     }
 
     @Override
+    public String getEncoding() {
+        return encoding;
+    }
+
+    @Override
     public String getCommandPrompt() {
         return commandPrompt;
     }
@@ -51,11 +56,6 @@ public abstract class AbstractConsole implements Console {
     @Override
     public void setCommandPrompt(String commandPrompt) {
         this.commandPrompt = commandPrompt;
-    }
-
-    @Override
-    public String getEncoding() {
-        return encoding;
     }
 
     @Override

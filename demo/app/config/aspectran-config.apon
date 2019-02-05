@@ -56,6 +56,7 @@ shell: {
         com.aspectran.shell.command.builtins.PBDecryptCommand
         com.aspectran.shell.command.builtins.SysInfoCommand
         com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.HistoryCommand
         com.aspectran.shell.command.builtins.VerboseCommand
         com.aspectran.shell.command.builtins.RestartCommand
         com.aspectran.shell.command.builtins.PauseCommand
@@ -65,14 +66,14 @@ shell: {
     ]
     greetings: (
         |
-        |{{154}}     ___                         __                      ____  __         ____
-        |{{155}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
-        |{{156}}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
-        |{{157}}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
-        |{{158}} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
-        |{{159}}=========== /_/ ==========================================================
-        |{{reset}}
-        |{{OrangeRed1}}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
+        |{{YELLOW}}     ___                         __                      ____  __         ____
+        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
+        |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
+        |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
+        |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
+        |{{CYAN  }}=========== /_/ ==========================================================
+        |{{reset }}
+        |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
         |
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
         |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
@@ -80,6 +81,7 @@ shell: {
         |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
     )
     workingDir: /work
+    historyFile: /logs/history.log
     verbose: true
     exposals: {
         -: /**

@@ -100,8 +100,8 @@ class BeanNodeletAdder implements NodeletAdder {
                 filterParameters = new FilterParameters();
                 filterParameters.readFrom(text);
             }
-            if (filterParameters.isValueAssigned(FilterParameters.filterClass) ||
-                    filterParameters.isValueAssigned(FilterParameters.exclude)) {
+            if (filterParameters.hasValue(FilterParameters.filterClass) ||
+                    filterParameters.hasValue(FilterParameters.exclude)) {
                 BeanRule beanRule = parser.peekObject();
                 beanRule.setFilterParameters(filterParameters);
             }

@@ -170,6 +170,19 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
+    public boolean hasValue() {
+        if (assigned) {
+            if (array) {
+                return (list != null);
+            } else {
+                return (value != null);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public int getArraySize() {
         List<?> list = getValueList();
         return (list != null ? list.size() : 0);

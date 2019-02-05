@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Console I/O implementation that supports System Console.
@@ -287,6 +289,22 @@ public class DefaultConsole extends AbstractConsole {
         String confirm = "Are you sure you want to quit [Y/n]? ";
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public List<String> getCommandHistory() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public void clearCommandHistory() {
+        // History not supported
+    }
+
+    @Override
+    public void setCommandHistoryFile(String historyFile) {
+        // History not supported
     }
 
 }

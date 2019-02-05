@@ -104,7 +104,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (sessionConfig != null) {
-            if (sessionConfig.isValueAssigned(SessionConfig.timeout)) {
+            if (sessionConfig.hasValue(SessionConfig.timeout)) {
                 int timeout = sessionConfig.getInt(SessionConfig.timeout);
                 setDefaultMaxIdleSecs(timeout);
             }

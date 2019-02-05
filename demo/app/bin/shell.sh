@@ -48,7 +48,6 @@ fi
 CLASSPATH="$BASE_DIR/lib/*"
 if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
     LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
-    echo ${LOGGING_CONFIG};
 fi
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 

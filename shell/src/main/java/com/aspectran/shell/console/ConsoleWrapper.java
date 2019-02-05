@@ -20,6 +20,7 @@ import com.aspectran.shell.command.CommandInterpreter;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class ConsoleWrapper implements Console {
 
@@ -29,16 +30,6 @@ public class ConsoleWrapper implements Console {
 
     public ConsoleWrapper(Console console) {
         this.console = console;
-    }
-
-    @Override
-    public String getCommandPrompt() {
-        return console.getCommandPrompt();
-    }
-
-    @Override
-    public void setCommandPrompt(String commandPrompt) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -189,6 +180,31 @@ public class ConsoleWrapper implements Console {
     @Override
     public String getEncoding() {
         return console.getEncoding();
+    }
+
+    @Override
+    public String getCommandPrompt() {
+        return console.getCommandPrompt();
+    }
+
+    @Override
+    public void setCommandPrompt(String commandPrompt) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<String> getCommandHistory() {
+        return console.getCommandHistory();
+    }
+
+    @Override
+    public void clearCommandHistory() {
+        console.clearCommandHistory();
+    }
+
+    @Override
+    public void setCommandHistoryFile(String historyFile) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

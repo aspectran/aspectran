@@ -25,6 +25,7 @@ public class ShellConfig extends AbstractParameters {
     public static final ParameterDefinition commands;
     public static final ParameterDefinition greetings;
     public static final ParameterDefinition workingDir;
+    public static final ParameterDefinition historyFile;
     public static final ParameterDefinition verbose;
     public static final ParameterDefinition exposals;
 
@@ -35,6 +36,7 @@ public class ShellConfig extends AbstractParameters {
         commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
         greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
         workingDir = new ParameterDefinition("workingDir", ParameterValueType.STRING);
+        historyFile = new ParameterDefinition("historyFile", ParameterValueType.STRING);
         verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
@@ -43,6 +45,7 @@ public class ShellConfig extends AbstractParameters {
                 commands,
                 greetings,
                 workingDir,
+                historyFile,
                 verbose,
                 exposals
         };

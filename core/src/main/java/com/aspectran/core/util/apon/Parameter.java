@@ -92,10 +92,18 @@ public interface Parameter {
 
     /**
      * Returns whether a parameter has been assigned a value.
+     * Even if a null is assigned, it is valid.
      *
      * @return {@code true} if a parameter has been assigned a value, otherwise {@code false}
      */
     boolean isAssigned();
+
+    /**
+     * Returns whether a non-null value has been assigned.
+     *
+     * @return {@code true} if a non-null value is assigned, otherwise {@code false}
+     */
+    boolean hasValue();
 
     /**
      * Returns the size of the array if the value is an array.

@@ -109,14 +109,26 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean isValueAssigned(String name) {
+    public boolean isAssigned(String name) {
         Parameter p = parameterValueMap.get(name);
         return (p != null && p.isAssigned());
     }
 
     @Override
-    public boolean isValueAssigned(ParameterDefinition parameterDefinition) {
-        return isValueAssigned(parameterDefinition.getName());
+    public boolean isAssigned(ParameterDefinition parameterDefinition) {
+        return isAssigned(parameterDefinition.getName());
+    }
+
+    @Override
+    public boolean hasValue(String name) {
+        Parameter p = parameterValueMap.get(name);
+        return (p != null && p.hasValue());
+    }
+
+    @Override
+    public boolean hasValue(ParameterDefinition parameterDefinition) {
+        Parameter p = parameterValueMap.get(parameterDefinition.getName());
+        return (p != null && p.hasValue());
     }
 
     @Override
