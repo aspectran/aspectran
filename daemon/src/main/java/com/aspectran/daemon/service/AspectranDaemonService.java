@@ -25,6 +25,8 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.config.DaemonConfig;
+import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
@@ -86,11 +88,24 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
     @Override
     public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        return translate(name, null, parameterMap, attributeMap);
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
+        MethodType requestMethod = null;
+        for (MethodType methodType : MethodType.values()) {
+            if (name.startsWith(methodType.name() + " ")) {
+                requestMethod = methodType;
+                name = name.substring(methodType.name().length()).trim();
+            }
+        }
+        return translate(name, requestMethod, parameterMap, attributeMap);
     }
 
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         if (!isExposable(name)) {
             log.error("Unexposable translet: " + name);
             return null;
@@ -130,6 +145,11 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         return translet;
     }
 
+    @Override
+    public boolean isExposable(String transletName) {
+        return super.isExposable(transletName);
+    }
+
     /**
      * Returns a new instance of {@code AspectranDaemonService}.
      *
@@ -159,9 +179,21 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
         AspectranDaemonService service = new AspectranDaemonService();
         service.prepare(aspectranConfig);
-
+        DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
+        if (daemonConfig != null) {
+            applyDaemonConfig(service, daemonConfig);
+        }
         setServiceStateListener(service);
         return service;
+    }
+
+    private static void applyDaemonConfig(AspectranDaemonService service, DaemonConfig daemonConfig) {
+        ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
+            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            service.setExposals(includePatterns, excludePatterns);
+        }
     }
 
     private static void setServiceStateListener(final AspectranDaemonService service) {

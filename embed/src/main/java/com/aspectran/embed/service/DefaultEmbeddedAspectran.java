@@ -181,6 +181,9 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
      */
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {

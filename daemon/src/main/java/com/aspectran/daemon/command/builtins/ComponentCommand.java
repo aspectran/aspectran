@@ -80,7 +80,7 @@ public class ComponentCommand extends AbstractCommand {
             }
 
             if (parameterMap == null) {
-                return failed(error("There are no parameters specified"));
+                return failed(error("No parameters specified"));
             }
 
             String type = parameterMap.getParameter("type");
@@ -107,9 +107,13 @@ public class ComponentCommand extends AbstractCommand {
                 case "translet": {
                     switch (mode) {
                         case "list":
-                            return listTranslets(service, targets);
+                            return listTranslets(service, targets, false);
+                        case "list-all":
+                            return listTranslets(service, targets, true);
                         case "detail":
-                            return detailTransletRule(service, targets);
+                            return detailTransletRule(service, targets, false);
+                        case "detail-all":
+                            return detailTransletRule(service, targets, true);
                     }
                     break;
                 }
@@ -242,7 +246,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult listTranslets(DaemonService service, String[] keywords) {
+    private CommandResult listTranslets(DaemonService service, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         Formatter formatter = new Formatter();
@@ -252,6 +256,9 @@ public class ComponentCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
+            if (!all && !service.isExposable(transletName)) {
+                continue;
+            }
             if (keywords != null) {
                 boolean exists = false;
                 for (String keyw : keywords) {
@@ -276,7 +283,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult detailTransletRule(DaemonService service, String[] targets) throws IOException {
+    private CommandResult detailTransletRule(DaemonService service, String[] targets, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (targets == null || targets.length == 0) {
@@ -287,7 +294,7 @@ public class ComponentCommand extends AbstractCommand {
                 MethodType requestMethod = null;
                 for (MethodType methodType : MethodType.values()) {
                     if (transletName.startsWith(methodType.name() + " ")) {
-                        transletName = transletName.substring(methodType.name().length() + 1);
+                        transletName = transletName.substring(methodType.name().length() + 1).trim();
                         requestMethod = methodType;
                         break;
                     }
@@ -307,6 +314,10 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (TransletRule transletRule : transletRules) {
+            if (!all && !service.isExposable(transletRule.getName())) {
+                continue;
+            }
+
             Parameters transletParameters = RuleToParamsConverter.toTransletParameters(transletRule);
 
             if (count > 0) {

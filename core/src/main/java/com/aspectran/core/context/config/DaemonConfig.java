@@ -52,4 +52,12 @@ public class DaemonConfig extends AbstractParameters {
         return touchParameters(poller);
     }
 
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
+    }
+
+    public ExposalsConfig getExposalsConfig() {
+        return getParameters(exposals);
+    }
+
 }

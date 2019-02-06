@@ -52,7 +52,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>(256);
 
-    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>();
+    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>(256);
 
     private final Map<String, TransletRule> postTransletRuleMap = new HashMap<>();
 
@@ -105,12 +105,9 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
 
         TransletRule transletRule;
-        switch(requestMethod) {
+        switch (requestMethod) {
             case GET:
-                transletRule = transletRuleMap.get(transletName);
-                if (transletRule == null) {
-                    transletRule = getTransletRuleMap.get(transletName);
-                }
+                transletRule = getTransletRuleMap.get(transletName);
                 if (transletRule == null) {
                     transletRule = lookupWildTransletRule(wildGetTransletRuleSet, transletName);
                 }
@@ -303,7 +300,7 @@ public class TransletRuleRegistry extends AbstractComponent {
                 String restfulTransletName = assembleTransletName(transletName, allowedMethods);
                 transletRuleMap.put(restfulTransletName, transletRule);
                 for (MethodType methodType : allowedMethods) {
-                    switch(methodType) {
+                    switch (methodType) {
                         case GET:
                             getTransletRuleMap.put(transletName, transletRule);
                             break;
@@ -325,6 +322,7 @@ public class TransletRuleRegistry extends AbstractComponent {
                 }
             } else {
                 transletRuleMap.put(transletName, transletRule);
+                getTransletRuleMap.put(transletName, transletRule);
             }
         }
 

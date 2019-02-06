@@ -59,6 +59,12 @@ public class AspectranShellService extends AbstractShellService {
 
     @Override
     public Translet translate(TransletCommandLine transletCommandLine, Console console) {
+        if (transletCommandLine == null) {
+            throw new IllegalArgumentException("transletCommandLine must not be null");
+        }
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
         if (!isExposable(transletCommandLine.getRequestName())) {
             console.writeError("Unexposable translet: " + transletCommandLine.getRequestName());
             return null;

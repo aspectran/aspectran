@@ -28,6 +28,10 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * The Class JobActivityReport.
@@ -66,11 +70,11 @@ public class JobActivityReport {
             sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
             sb.append("- Job Group           : ").append(jobGroup).append(System.lineSeparator());
             sb.append("- Job Name            : ").append(jobName).append(System.lineSeparator());
-            sb.append("- Scheduled Fire Time : ").append(jobExecutionContext.getScheduledFireTime()).append(System.lineSeparator());
-            sb.append("- Actual Fire Time    : ").append(jobExecutionContext.getFireTime()).append(System.lineSeparator());
+            sb.append("- Scheduled Fire Time : ").append(formatDate(jobExecutionContext.getScheduledFireTime())).append(System.lineSeparator());
+            sb.append("- Actual Fire Time    : ").append(formatDate(jobExecutionContext.getFireTime())).append(System.lineSeparator());
             sb.append("- Run Time            : ").append(jobExecutionContext.getJobRunTime()).append(" milliseconds").append(System.lineSeparator());
-            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime() != null ? jobExecutionContext.getPreviousFireTime() : "N/A").append(System.lineSeparator());
-            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? jobExecutionContext.getNextFireTime() : "N/A").append(System.lineSeparator());
+            sb.append("- Previous Fire Time  : ").append(jobExecutionContext.getPreviousFireTime() != null ? formatDate(jobExecutionContext.getPreviousFireTime()) : "N/A").append(System.lineSeparator());
+            sb.append("- Next Fire Time      : ").append(jobExecutionContext.getNextFireTime() != null ? formatDate(jobExecutionContext.getNextFireTime()) : "N/A").append(System.lineSeparator());
             sb.append("- Recovering          : ").append(jobExecutionContext.isRecovering()).append(System.lineSeparator());
             sb.append("- Re-fire Count       : ").append(jobExecutionContext.getRefireCount()).append(System.lineSeparator());
             sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());
@@ -101,6 +105,11 @@ public class JobActivityReport {
         } catch(IOException e) {
             log.warn("Job activity reporting failed", e);
         }
+    }
+
+    private String formatDate(Date date) {
+        LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ldt);
     }
 
 }

@@ -55,20 +55,12 @@ public class ShellConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
-    }
-
     public ExposalsConfig touchExposalsConfig() {
         return touchParameters(exposals);
     }
 
     public ExposalsConfig getExposalsConfig() {
         return getParameters(exposals);
-    }
-
-    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
-        putValue(exposals, exposalsConfig);
     }
 
 }

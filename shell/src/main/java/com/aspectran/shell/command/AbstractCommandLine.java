@@ -19,7 +19,7 @@ import com.aspectran.core.activity.request.ParameterMap;
 
 import java.util.Arrays;
 
-public class AbstractCommandLine {
+public abstract class AbstractCommandLine {
 
     private static final String PARAM_NAME_PREFIX = "--";
 
@@ -48,11 +48,7 @@ public class AbstractCommandLine {
      * @return the request name
      */
     public String getRequestName() {
-        if (parameterMap != null) {
-            return lineParser.getCommandName();
-        } else {
-            return lineParser.getCommandLine();
-        }
+        return lineParser.getCommandName();
     }
 
     /**

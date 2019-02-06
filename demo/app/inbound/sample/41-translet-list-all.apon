@@ -6,6 +6,6 @@ parameters: {
 	}
 	item: {
 		name: mode
-		value: detail
+		value: list-all
 	}
 }

@@ -58,4 +58,12 @@ public interface DaemonService extends CoreService {
      */
     Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
+    /**
+     * Returns whether the translet is exposed in the daemon execution environment.
+     *
+     * @param transletName the name of the translet to check
+     * @return true if the translet can be exposed; false otherwise
+     */
+    boolean isExposable(String transletName);
+
 }
